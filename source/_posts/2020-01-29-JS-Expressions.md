@@ -61,11 +61,11 @@ a = a || 100 // 可以用于设置保底值
 
 ```js
 for(var i = 0; i < 5; i++){
-	setTimeout(() => console.log(i))
+  setTimeout(() => console.log(i))
 }
 // 5 5 5 5 5
 for(let i = 0; i < 5; i++){
-	setTimeout(() => console.log(i))
+  setTimeout(() => console.log(i))
 }
 // 0 1 2 3 4
 ```
