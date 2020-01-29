@@ -36,4 +36,4 @@ JavaScript 有 7 中数据类型，3 种变量声明的方式，以及一些奇�
 
 ### 范围和精度
 
-![](/images/JS-001.png)
+![](./images/JS-001.png)
