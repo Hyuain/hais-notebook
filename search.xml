@@ -1,6 +1,543 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Git 入门</title>
+    <url>/hais-notebook/2020/01/29/2020-01-29-Git/</url>
+    <content><![CDATA[<p>主要记录 Git 的基本用法及一些坑的解决。</p>
+<a id="more"></a>
+
+<h1 id="Git-本地仓库"><a href="#Git-本地仓库" class="headerlink" title="Git 本地仓库"></a>Git 本地仓库</h1><h2 id="六行配置"><a href="#六行配置" class="headerlink" title="六行配置"></a>六行配置</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global user.name [username] </span><br><span class="line">git config --global user.email [useremail@example.com]</span><br><span class="line">git config --global push.default simple</span><br><span class="line">git config --global core.quotepath <span class="literal">false</span></span><br><span class="line">git config --global core.editor <span class="string">"code --wait"</span></span><br><span class="line">git config --global core.autocrlf input</span><br></pre></td></tr></table></figure>
+
+<h2 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h2><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>git init</code></td>
+<td>创建 <code>.git</code> 目录，容纳代码快照</td>
+</tr>
+<tr>
+<td><code>git add</code></td>
+<td>准备将文件提交进 git 目录（本地仓库），路径可以是绝对路径、相对路径、<code>.</code>（当前目录）和 <code>*</code></td>
+</tr>
+<tr>
+<td><code>git status</code></td>
+<td>查看目前的状态</td>
+</tr>
+<tr>
+<td><code>git commit</code></td>
+<td>提交（实际上是复制到了.git目录）</td>
+</tr>
+<tr>
+<td><code>git commit -m &quot;version1&quot;</code></td>
+<td>查看更新时间</td>
+</tr>
+<tr>
+<td><code>git commit -v（--verbose）</code></td>
+<td>推荐，提交理由写得更详细</td>
+</tr>
+<tr>
+<td><code>git reset --hard xxxxxx（提交号的前六位）</code></td>
+<td>这个操作会使没有 commit 过的变动消失</td>
+</tr>
+<tr>
+<td><code>git log</code></td>
+<td>查看历史记录</td>
+</tr>
+<tr>
+<td><code>git reflog</code></td>
+<td>查看包括 reset 的历史记录</td>
+</tr>
+<tr>
+<td><code>git branch xxx</code></td>
+<td>基于当前的commit创建一份新的分支</td>
+</tr>
+<tr>
+<td><code>git branch</code></td>
+<td>查看所有分支和当前分支</td>
+</tr>
+<tr>
+<td><code>git branch -d xxx</code></td>
+<td>删除分支</td>
+</tr>
+<tr>
+<td><code>git checkout xxx</code></td>
+<td>切换分支，当前未提交的文件如果与另一个分支不冲突，切换分支的操作就不会产生影响，如果冲突，可以用git stash或合并冲突</td>
+</tr>
+<tr>
+<td><code>git merge xxx</code></td>
+<td>合并分支，先到达想要保留的分支再使用</td>
+</tr>
+</tbody></table>
+<p><code>.gitignore</code> 文件中可以输路径来忽略不想提交的文件，比如 <code>node_modules</code> <code>DS_Store</code> <code>.idea</code> <code>.vscode</code></p>
+<h1 id="Git-远程仓库"><a href="#Git-远程仓库" class="headerlink" title="Git 远程仓库"></a>Git 远程仓库</h1><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 创建一个私钥和公钥</span></span><br><span class="line">ssh-keygen -t rsa -b 4096 -C [useremail@example.com]</span><br><span class="line">cat ~/.ssh/id_rsa.pub</span><br><span class="line"></span><br><span class="line"><span class="comment"># 测试</span></span><br><span class="line">ssh -T git@github.com</span><br><span class="line"></span><br><span class="line"><span class="comment"># 上传一个本地仓库</span></span><br><span class="line">git remote add origin [git@github.com:Hyuain/git-demo-1.git]</span><br><span class="line">git push -u origin master <span class="comment"># 一个新的分支需要写 -u 和后面的</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 下载一个远程仓库</span></span><br><span class="line">git <span class="built_in">clone</span></span><br><span class="line"><span class="comment"># git clone git@?/xxx.git：创建一个新目录，与 xxx 同名</span></span><br><span class="line"><span class="comment"># git clone git@?/xxx.git yyy：创建一个新目录，命名为 yyy</span></span><br><span class="line"><span class="comment"># git clone git@?/xxx.git .：不会新建目录，使用当前目录容纳代码和 .git</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 其他</span></span><br><span class="line"><span class="comment"># git stash：把文件藏起来</span></span><br><span class="line"><span class="comment"># git stash pop：再把文件取出来</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="高级操作"><a href="#高级操作" class="headerlink" title="高级操作"></a>高级操作</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">touch ~/.bashrc</span><br><span class="line"><span class="built_in">echo</span> <span class="string">'alias ga="git add"'</span>&gt;&gt; ~/.bashrc</span><br><span class="line"><span class="built_in">echo</span> <span class="string">'alias gc="git commit -v"'</span>&gt;&gt; ~/.bashrc</span><br><span class="line"><span class="built_in">echo</span> <span class="string">'alias gl="git pull"'</span>&gt;&gt; ~/.bashrc</span><br><span class="line"><span class="built_in">echo</span> <span class="string">'alias gp="git push"'</span>&gt;&gt; ~/.bashrc</span><br><span class="line"><span class="built_in">echo</span> <span class="string">'alias gco="git checkout"'</span>&gt;&gt; ~/.bashrc</span><br><span class="line"><span class="built_in">echo</span> <span class="string">'alias gst="git status -sb"'</span>&gt;&gt; ~/.bashrc</span><br><span class="line"></span><br><span class="line">code ~/.bashrc</span><br><span class="line"><span class="comment"># 在文件最后加上</span></span><br><span class="line"><span class="built_in">alias</span> glog=<span class="string">"git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)&lt;%an&gt;%Creset' --abbrev-commit -- | less"</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="踩坑记录"><a href="#踩坑记录" class="headerlink" title="踩坑记录"></a>踩坑记录</h1><h2 id="git-log-中文乱码"><a href="#git-log-中文乱码" class="headerlink" title="git log 中文乱码"></a>git log 中文乱码</h2><p>输入以下命令即可解决</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global i18n.commitencoding utf-8</span><br><span class="line">git config --global i18n.logoutputencoding utf-8</span><br><span class="line"><span class="built_in">export</span> LESSCHARSET=utf-8</span><br></pre></td></tr></table></figure>
+
+<h2 id="git-push-clone-报错"><a href="#git-push-clone-报错" class="headerlink" title="git push / clone 报错"></a>git push / clone 报错</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh: connect to host github.com port 22: Connection timed out</span><br><span class="line">fatal: Could not <span class="built_in">read</span> from remote repository.</span><br><span class="line"></span><br><span class="line">Please make sure you have the correct access rights</span><br><span class="line">and the repository exists.</span><br></pre></td></tr></table></figure>
+
+<h3 id="方法-1"><a href="#方法-1" class="headerlink" title="方法 1"></a>方法 1</h3><p>防火墙添加 22 端口入站策略配置为允许，有时候不能解决问题。</p>
+<h3 id="方法-2"><a href="#方法-2" class="headerlink" title="方法 2"></a>方法 2</h3><ol>
+<li>在 <code>~/.ssh</code> 存放密钥（<code>id_rsa</code> 和 <code>id_rsa.pub</code>）的文件夹，新建 <code>config</code>，内容如下：</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Host github.com</span><br><span class="line">User XXX@xx.com</span><br><span class="line">Hostname ssh.github.com</span><br><span class="line">PreferredAuthentications publickey</span><br><span class="line">IdentityFile ~&#x2F;.ssh&#x2F;id_rsa</span><br><span class="line">Port 443</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>刷新 <code>config</code></li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global user.name <span class="string">"XXX"</span></span><br><span class="line">git config --global user.email XXX@xx.com</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>测试</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh -T git@github.com</span><br></pre></td></tr></table></figure>
+
+<p>有时候还是不能解决问题</p>
+<h3 id="方法-3"><a href="#方法-3" class="headerlink" title="方法 3"></a>方法 3</h3><ol>
+<li>修改 hosts 文件，也可以进入 <a href="https://www.ipaddress.com/" target="_blank" rel="noopener">IPAddress</a> 查询这域名的 IP 地址。</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">192.30.253.112 github.com</span><br><span class="line">185.199.108.153 assets-cdn.github.com</span><br><span class="line">185.199.109.153 assets-cdn.github.com</span><br><span class="line">185.199.110.153 assets-cdn.github.com</span><br><span class="line">185.199.111.153 assets-cdn.github.com</span><br><span class="line">199.232.5.194 github.global.ssl.fastly.net</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>刷新 DNS 缓存</li>
+</ol>
+<figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line"><span class="built_in">ipconfig</span> /flushdns</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>常识</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>饥人谷</tag>
+        <tag>踩坑</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>命令行基础</title>
+    <url>/hais-notebook/2020/01/29/2020-01-29-CommonSense-Command/</url>
+    <content><![CDATA[<p>主要记录命令行的基本用法。</p>
+<a id="more"></a>
+
+<h1 id="文件的增删改查"><a href="#文件的增删改查" class="headerlink" title="文件的增删改查"></a>文件的增删改查</h1><h2 id="查"><a href="#查" class="headerlink" title="查"></a>查</h2><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>cd ~</code></td>
+<td>~ 表示用户目录</td>
+</tr>
+<tr>
+<td><code>pwd</code></td>
+<td>Print Work Directory，展示当前的绝对路径</td>
+</tr>
+<tr>
+<td><code>ls</code></td>
+<td>List，查看当前目录文件内容（默认不显示以 <code>.</code> 开头的文件）</td>
+</tr>
+<tr>
+<td><code>ls [file path]</code></td>
+<td>查看文件路径内容</td>
+</tr>
+<tr>
+<td><code>ls -l</code></td>
+<td>查看更新时间</td>
+</tr>
+<tr>
+<td><code>cat</code></td>
+<td>Concatenate，打印文件内容</td>
+</tr>
+<tr>
+<td><code>head</code></td>
+<td>展示前 10 行文件，或者 <code>-n [数字]</code></td>
+</tr>
+<tr>
+<td><code>tail</code></td>
+<td>展示后 10 行文件</td>
+</tr>
+<tr>
+<td><code>less</code></td>
+<td>进入一个可滚动的界面，按上、下（或 J、K ）滚动，按 Q 退出</td>
+</tr>
+</tbody></table>
+<h2 id="增"><a href="#增" class="headerlink" title="增"></a>增</h2><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>touch</code></td>
+<td>创建空文件，可以同时创建多个文件；或者修改文件的更新时间</td>
+</tr>
+<tr>
+<td><code>echo</code></td>
+<td>返回你 <code>echo</code> 的东西</td>
+</tr>
+<tr>
+<td><code>echo [content] &gt; 4.txt</code></td>
+<td>创建有内容的文件，会覆盖之前的内容</td>
+</tr>
+<tr>
+<td><code>echo [content] &gt;&gt; 4.txt</code></td>
+<td>追加内容</td>
+</tr>
+<tr>
+<td><code>echo -e &quot;[content]\n&quot; &gt;&gt; 4.txt</code></td>
+<td>有换行的内容</td>
+</tr>
+<tr>
+<td><code>mkdir</code></td>
+<td>创建目录，可以同时创建多个目录</td>
+</tr>
+<tr>
+<td><code>mkdir -p a/b/c/d</code></td>
+<td>创建多级目录</td>
+</tr>
+<tr>
+<td><code>cp [filename] [new filename]</code></td>
+<td>复制文件</td>
+</tr>
+<tr>
+<td><code>cp -r [dir] [new dir]</code></td>
+<td>复制目录</td>
+</tr>
+</tbody></table>
+<h2 id="删"><a href="#删" class="headerlink" title="删"></a>删</h2><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>rm</code></td>
+<td>删除</td>
+</tr>
+<tr>
+<td><code>rm -r</code></td>
+<td>删除目录</td>
+</tr>
+<tr>
+<td><code>rm -rf</code></td>
+<td>强制删除（不管里面有没有内容）</td>
+</tr>
+</tbody></table>
+<h2 id="改"><a href="#改" class="headerlink" title="改"></a>改</h2><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>code</code></td>
+<td>使用 VSCode 打开</td>
+</tr>
+<tr>
+<td><code>start</code></td>
+<td>使用默认程序打开</td>
+</tr>
+<tr>
+<td><code>mv [filename] .</code></td>
+<td>移动到当前目录</td>
+</tr>
+<tr>
+<td><code>mv [filename] [new filename]</code></td>
+<td>重命名文件</td>
+</tr>
+</tbody></table>
+<h2 id="命令的组合"><a href="#命令的组合" class="headerlink" title="命令的组合"></a>命令的组合</h2><ul>
+<li>成功返回 <code>0</code>，失败返回 <code>error</code> 和非 <code>0</code> 值，通过 <code>echo $?</code> 查看</li>
+<li><code>&amp;&amp;</code>：第一条命令后才会执行后面的</li>
+<li><code>;</code>：不管前面是否成功都会执行后面的</li>
+</ul>
+<h2 id="把命令变成文件"><a href="#把命令变成文件" class="headerlink" title="把命令变成文件"></a>把命令变成文件</h2><ul>
+<li>MAC上需要执行：<code>chmod +x [filename]</code>，赋予执行权限</li>
+<li>执行命令：<code>./[filename]</code> 或者 <code>sh [filename]</code></li>
+<li>如果加入 <code>PATH</code>，就可以不用输入文件路径，也不用输入 <code>./</code>，输入文件名就能执行</li>
+<li>命令行的本质就是可执行文件</li>
+<li>windows 会优先去找 <code>.exe</code> 的文件</li>
+</ul>
+]]></content>
+      <categories>
+        <category>常识</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>饥人谷</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>JavaScript DOM API</title>
+    <url>/hais-notebook/2020/01/29/2020-01-29-JS-DOM/</url>
+    <content><![CDATA[<p>Document Object Model，即将网页抽象成对象，并用 JS 进行操作的方式。</p>
+<a id="more"></a>
+
+<h1 id="获取节点"><a href="#获取节点" class="headerlink" title="获取节点"></a>获取节点</h1><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">window</span>.id <span class="comment">// 或者直接 id</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">document</span>.getElementById(<span class="string">'idxxx'</span>)</span><br><span class="line"><span class="built_in">document</span>.getElementsByTagName(<span class="string">'div'</span>)[<span class="number">0</span>]</span><br><span class="line"><span class="built_in">document</span>.getElementsByClassName(<span class="string">'div'</span>)[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line"><span class="built_in">document</span>.querySelector(<span class="string">'div&gt;span:nth-child(2)'</span>)</span><br><span class="line"><span class="built_in">document</span>.querySelectorAll(<span class="string">'.red'</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="获取特定的元素"><a href="#获取特定的元素" class="headerlink" title="获取特定的元素"></a>获取特定的元素</h2><ul>
+<li>获取 html： <code>document.documentElement</code></li>
+<li>获取 head： <code>document.head</code></li>
+<li>获取 body： <code>document.body</code></li>
+<li>获取 window： <code>window</code></li>
+<li>获取所有元素： <code>document.all</code>，第 6 个 <code>falsy</code> 值，别的浏览器为了不使用为了 IE 设计的代码（这个是 IE 发明的）</li>
+</ul>
+<h2 id="获取的元素的原型"><a href="#获取的元素的原型" class="headerlink" title="获取的元素的原型"></a>获取的元素的原型</h2><p>div 的原型链：</p>
+<p><code>HTMLDivElement.prototype</code> → <code>HTMLElement.prototype</code> → <code>Elment.prototype</code> → <code>Node.prototype</code> → <code>EventTarget.prototype</code> → <code>Object.prototype</code></p>
+<h2 id="节点（Node）和元素（Element）的区别"><a href="#节点（Node）和元素（Element）的区别" class="headerlink" title="节点（Node）和元素（Element）的区别"></a>节点（Node）和元素（Element）的区别</h2><p>使用 x.nodeType 可以得到一个数字：</p>
+<ul>
+<li>1 表示 Element（也叫 Tag ）</li>
+<li>3 表示 Text</li>
+<li>8 表示 Comment</li>
+<li>9 表示 Document</li>
+<li>11 表示 DocumentFragment</li>
+</ul>
+<h2 id="获取附近的元素"><a href="#获取附近的元素" class="headerlink" title="获取附近的元素"></a>获取附近的元素</h2><ul>
+<li>查爸爸： <code>div.parentNode</code> 或者 <code>div.parentElement</code></li>
+<li>查子代： <code>div.childNodes</code> 或者 <code>div.children</code>，推荐使用后者，因为前者包括了文本节点，比如空格，两者都会实时变化</li>
+<li>查兄弟姐妹： <code>div.parentNode.childNodes</code> 或者 <code>div.parentNode.children</code>，然后再排除自己</li>
+<li>查看老大： <code>div.firstChild</code></li>
+<li>查看老幺： <code>div.lastChild</code></li>
+<li>查看上一个哥哥： <code>div.previousSibling</code>（有可能查到文本节点，可以用 <code>div.previousElementSibling</code>）</li>
+<li>查看下一个弟弟： <code>div.nextSibling</code>（有可能查到文本节点，可以用 <code>div.nextElementSibling</code>）</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 遍历一个 div 里面所有的元素</span></span><br><span class="line">travel = <span class="function">(<span class="params">node, fn</span>) =&gt;</span> &#123;</span><br><span class="line">  fn(node)</span><br><span class="line">    <span class="keyword">if</span>(node.children) &#123;</span><br><span class="line">      <span class="keyword">for</span>(<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; node.children.length; i++) &#123;</span><br><span class="line">      travel(node.children[i], fn)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">travel(div1, (node) =&gt; <span class="built_in">console</span>.log(node))</span><br></pre></td></tr></table></figure>
+
+<h1 id="创建节点"><a href="#创建节点" class="headerlink" title="创建节点"></a>创建节点</h1><h2 id="创建一个标签"><a href="#创建一个标签" class="headerlink" title="创建一个标签"></a>创建一个标签</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> div1 = <span class="built_in">document</span>.createElement(<span class="string">'div'</span>)</span><br><span class="line"><span class="built_in">document</span>.createElement(<span class="string">'style'</span>)</span><br><span class="line"><span class="built_in">document</span>.createElement(<span class="string">'script'</span>)</span><br><span class="line"><span class="built_in">document</span>.createElement(<span class="string">'li'</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="创建一个文本节点"><a href="#创建一个文本节点" class="headerlink" title="创建一个文本节点"></a>创建一个文本节点</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">text = <span class="built_in">document</span>.createTextNode(<span class="string">'你好'</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="在标签里面插入文本"><a href="#在标签里面插入文本" class="headerlink" title="在标签里面插入文本"></a>在标签里面插入文本</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">div1.appendChild(text1)</span><br><span class="line">div1.innerText = <span class="string">'你好'</span></span><br><span class="line"><span class="comment">// 或者</span></span><br><span class="line">div1.textContent = <span class="string">'你好'</span></span><br><span class="line"><span class="comment">//但是不能用</span></span><br><span class="line">div.appendChild(<span class="string">'你好'</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="插入到页面中"><a href="#插入到页面中" class="headerlink" title="插入到页面中"></a>插入到页面中</h2><ul>
+<li><code>document.body.appendChild(div)</code> 或者 <code>已经在页面中的元素.appendChild(div)</code></li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 页面中有 div#test1 和 div#test2</span></span><br><span class="line"><span class="keyword">let</span> div = <span class="built_in">document</span>.createElement(<span class="string">'div'</span>)</span><br><span class="line">test1.appendChild(div)</span><br><span class="line">test2.appendChild(div)</span><br><span class="line"><span class="comment">// div 最终只会出现在 test2 里面</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>让两个地方都有： <code>let div2 = div1.cloneNode(true)</code>，如果后面为 <code>true</code> 则使用深拷贝，所有的后代也会被拷贝</li>
+</ul>
+<h1 id="删除节点"><a href="#删除节点" class="headerlink" title="删除节点"></a>删除节点</h1><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">div.parentNode.removeChild(div)</span><br><span class="line">div.remove()</span><br></pre></td></tr></table></figure>
+
+<div class="note warning">
+            <p>如果一个 Node 被移除了页面（DOM）树，它还可以再被放回去，它暂存在了内存里面，如果想删除，<code>div = null</code>，一会儿会自动回收</p>
+          </div>
+
+<h1 id="编辑节点"><a href="#编辑节点" class="headerlink" title="编辑节点"></a>编辑节点</h1><h2 id="编辑属性"><a href="#编辑属性" class="headerlink" title="编辑属性"></a>编辑属性</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">div.className = <span class="string">'red blue'</span><span class="comment">// 会覆盖掉之前的 class，要用 div.className += ' red'</span></span><br><span class="line"></span><br><span class="line">div.classList.add(<span class="string">'red'</span>)</span><br><span class="line"></span><br><span class="line">div.style = <span class="string">'color: blue'</span></span><br><span class="line"><span class="comment">// 会覆盖掉之前的 style，一般就写 style 的一部分</span></span><br><span class="line"><span class="comment">// 比如 div.style.color = 'blue'，注意大小写问题：div.style.backgroundColor</span></span><br><span class="line"></span><br><span class="line">div.setAttribute(<span class="string">'data-x'</span>, <span class="string">'test'</span>)</span><br><span class="line"></span><br><span class="line">div.getAtrribute(<span class="string">'data-x'</span>) <span class="comment">// 强加的，这样写也行</span></span><br></pre></td></tr></table></figure>
+
+<div class="note warning">
+            <p>如果用 <code>a.href</code> 获取属性，然后是相对路径的话，他会把域名一起弄下来<br>如果用 <code>a.href.getAttribute(&#39;href&#39;)</code> 只获取属性里面写了的部分</p>
+          </div>
+
+<h2 id="编辑事件"><a href="#编辑事件" class="headerlink" title="编辑事件"></a>编辑事件</h2><ul>
+<li><code>div.onclick</code> 默认为 <code>null</code>，如果改成 <code>fn</code>，那么在点击的时候就会调用 <code>fn.call(div, event)</code>，<code>event</code> 包含了点击事件的所有信息，比如坐标</li>
+<li><code>div.addEventListener</code></li>
+</ul>
+<h2 id="编辑内容"><a href="#编辑内容" class="headerlink" title="编辑内容"></a>编辑内容</h2><h3 id="编辑文本内容"><a href="#编辑文本内容" class="headerlink" title="编辑文本内容"></a>编辑文本内容</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">test.innerText = <span class="string">'hi'</span></span><br><span class="line">test.textContent = <span class="string">'hi'</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="修改-HTML-内容"><a href="#修改-HTML-内容" class="headerlink" title="修改 HTML 内容"></a>修改 HTML 内容</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">test.innerHTML = <span class="string">''</span> <span class="comment">// 里面的字符不能超过两万个</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="修改标签"><a href="#修改标签" class="headerlink" title="修改标签"></a>修改标签</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">test.innerHTML = <span class="string">''</span> <span class="comment">// 先清空</span></span><br><span class="line">test.appendChild(div) <span class="comment">//再加内容</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="跨线程"><a href="#跨线程" class="headerlink" title="跨线程"></a>跨线程</h2><p>一个栗子：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.start</span>&#123;</span><br><span class="line">  <span class="attribute">border</span>: <span class="number">1px</span> solid red;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">100px</span>;</span><br><span class="line">  <span class="attribute">height</span>: <span class="number">100px</span>;</span><br><span class="line">  <span class="attribute">transition</span>: width <span class="number">1s</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.end</span>&#123;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">200px</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">test.classList.add(<span class="string">'start'</span>)</span><br><span class="line">test.clientWidth <span class="comment">// 如果没有这句话，上下两句话就会合并，这句话会触发重新渲染</span></span><br><span class="line">test.classList.add(<span class="string">'end'</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="属性同步"><a href="#属性同步" class="headerlink" title="属性同步"></a>属性同步</h3><ul>
+<li>标准属性，会自动同步，比如 <code>id</code> <code>className</code> <code>title</code></li>
+<li><code>data-*</code> 属性，也会自动同步</li>
+<li>非标准属性，不会同步到页面里，只会停留在JS 线程中，而不会自动同步到页面上</li>
+</ul>
+<p><img src="/hais-notebook/images/JS-007.png" alt=""><br><img src="/hais-notebook/images/JS-008.png" alt=""></p>
+<div class="note warning">
+            <p>自定义属性最好以 <code>data-</code> 为前缀</p>
+          </div>
+
+<h3 id="Property-和-Attribute"><a href="#Property-和-Attribute" class="headerlink" title="Property 和 Attribute"></a>Property 和 Attribute</h3><ul>
+<li>Property 是 JS 线程中 div1 的所有属性</li>
+<li>Attribute 是 渲染引擎中 div1 对应标签的属性</li>
+<li>大部分时候，同名的 Property 和 Attribute 值相等</li>
+<li>如果不是标准属性，那么他们俩只会在一开始的时候相等</li>
+<li>但注意 Attribute 只支持字符串，而 Property 支持字符串、布尔等类型</li>
+</ul>
+]]></content>
+      <categories>
+        <category>前端</category>
+        <category>JavaScript</category>
+        <category>原生 JavaScript</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>饥人谷</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>JavaScript 世界</title>
+    <url>/hais-notebook/2020/01/29/2020-01-29-JS-World/</url>
+    <content><![CDATA[<p>介绍 JavaScript 这个世界从诞生开始的故事。</p>
+<a id="more"></a>
+
+<h1 id="开机"><a href="#开机" class="headerlink" title="开机"></a>开机</h1><h2 id="固件"><a href="#固件" class="headerlink" title="固件"></a>固件</h2><ul>
+<li>固件是固定在主板上的存储设备，里面有开机程序</li>
+<li>开机程序会将文件里的 OS 加载到内存里运行</li>
+</ul>
+<h2 id="操作系统（以-Linux-为例）"><a href="#操作系统（以-Linux-为例）" class="headerlink" title="操作系统（以 Linux 为例）"></a>操作系统（以 Linux 为例）</h2><ul>
+<li>首先加载操作系统内核</li>
+<li>然后启动初始化进程，编号为 1，每个进程都有 PID</li>
+<li>启动系统服务：文件、安全、联网</li>
+<li>等待用户登录：输入密码登录 / ssh 登录</li>
+<li>登录后，运行 shell，用户就可以和操作系统对话了</li>
+<li>bash 是一种 shell，图形化界面可认为是一种 shell</li>
+</ul>
+<h1 id="打开浏览器"><a href="#打开浏览器" class="headerlink" title="打开浏览器"></a>打开浏览器</h1><h2 id="chrome-exe"><a href="#chrome-exe" class="headerlink" title="chrome.exe"></a>chrome.exe</h2><ul>
+<li>运行 chrome.exe 文件</li>
+<li>开启 chrome 进程，作为主进程</li>
+<li>主进程会开启一些辅助进程，如网络服务、GPU 加速</li>
+<li>每新建一个标签，就有可能开启一个子进程</li>
+</ul>
+<h2 id="浏览器的功能"><a href="#浏览器的功能" class="headerlink" title="浏览器的功能"></a>浏览器的功能</h2><ul>
+<li>发起请求、下载 HTML、解析 HTML、下载 CSS、解析 CSS、渲染界面、下载 JS、解析 JS、执行 JS</li>
+<li>功能模块：用户界面、渲染引擎、JS 引擎、存储等，这些功能模块属于不同的线程<ul>
+<li>JS 通过<strong>跨线程通信</strong>，使渲染引擎重新渲染</li>
+<li>JS 是单线程的</li>
+<li>DOM 操作慢：跨线程通信慢</li>
+</ul>
+</li>
+</ul>
+<h2 id="JavaScript-引擎"><a href="#JavaScript-引擎" class="headerlink" title="JavaScript 引擎"></a>JavaScript 引擎</h2><ul>
+<li>浏览器用的什么 JS 引擎？<ul>
+<li>Chrome 用的是 V8 引擎，C++ 编写</li>
+<li>网景用的是 SpiderMonkey，后被 Firefox 使用，C++</li>
+<li>Safari 用的是 JavaScriptCore</li>
+<li>IE 用的是 Chakra（JScript 9）</li>
+<li>Edge 用的是 Chakra (JavaScript)</li>
+<li>Node.js 用的是 V8 引擎</li>
+</ul>
+</li>
+<li>主要功能<ul>
+<li>编译：把 JS 代码翻译为机器能执行的字节码或机器码</li>
+<li>优化：改写代码，使其更加高效</li>
+<li>执行：执行上面的字节码或机器码</li>
+<li>垃圾回收：把 JS 用完的内存回收，方便之后再次使用</li>
+</ul>
+</li>
+</ul>
+<h2 id="运行-JavaScript-代码"><a href="#运行-JavaScript-代码" class="headerlink" title="运行 JavaScript 代码"></a>运行 JavaScript 代码</h2><ul>
+<li>准备工作<ul>
+<li>提供 API： window、document、setTimeout（这些功能成为运行环境 runtime env）</li>
+</ul>
+</li>
+<li>内存图<ul>
+<li><img src="/hais-notebook/images/JS-002.png" alt=""></li>
+<li>红色区域（存放数据，但不会存变量名）<ul>
+<li>Stack 栈：每个数据顺序存放，非对象都存在 Stack</li>
+<li>Heap 堆：每个数据随机存放，对象都存在 Heap（数组、函数）</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="JavaScript-世界"><a href="#JavaScript-世界" class="headerlink" title="JavaScript 世界"></a>JavaScript 世界</h1><blockquote class="blockquote-center"><p><strong>JS 公式：<code>对象.__proto__ === 其构造函数.prototype</code></strong><br><strong>根公理：<code>Object.prototype</code> 是所有对象的（直接或间接）原型</strong><br><strong>函数公理：所有函数都是由 <code>Function</code> 构造的</strong></p>
+</blockquote>
+
+<p><img src="/hais-notebook/images/JS-003.png" alt=""><br><img src="/hais-notebook/images/JS-004.png" alt=""><br><img src="/hais-notebook/images/JS-005.png" alt=""><br><img src="/hais-notebook/images/JS-006.png" alt=""></p>
+]]></content>
+      <categories>
+        <category>前端</category>
+        <category>JavaScript</category>
+        <category>原生 JavaScript</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>饥人谷</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>JavaScript Function</title>
+    <url>/hais-notebook/2020/01/29/2020-01-29-JS-Function/</url>
+    <content><![CDATA[<p>正式介绍 JavaScript 中的函数。</p>
+<a id="more"></a>
+
+<h1 id="定义一个函数"><a href="#定义一个函数" class="headerlink" title="定义一个函数"></a>定义一个函数</h1><h2 id="具名函数"><a href="#具名函数" class="headerlink" title="具名函数"></a>具名函数</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> 函数名(<span class="params">形参</span>) </span>&#123; 函数体 &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="匿名函数"><a href="#匿名函数" class="headerlink" title="匿名函数"></a>匿名函数</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> a = <span class="function"><span class="keyword">function</span>(<span class="params">形参</span>) </span>&#123; 函数体 &#125; <span class="comment">// 右边的部分也叫函数表达式</span></span><br><span class="line"><span class="keyword">let</span> a = <span class="function"><span class="keyword">function</span> <span class="title">fn</span>(<span class="params">形参</span>)</span>&#123; 函数体 &#125;</span><br><span class="line"><span class="comment">// 如果函数的声明是在 = 右边</span></span><br><span class="line"><span class="comment">// fn 的作用域只能在 = 右边</span></span><br><span class="line"><span class="comment">// 别的地方不能用 fn 这个名字</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="使用构造函数"><a href="#使用构造函数" class="headerlink" title="使用构造函数"></a>使用构造函数</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> a = <span class="keyword">new</span> <span class="built_in">Function</span>()</span><br></pre></td></tr></table></figure>
+
+<h2 id="箭头函数"><a href="#箭头函数" class="headerlink" title="箭头函数"></a>箭头函数</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">输入参数 =&gt; 输出参数</span><br><span class="line">( 输入参数<span class="number">1</span>, 输入参数<span class="number">2</span> )  =&gt; 输出参数</span><br><span class="line">( 输入参数<span class="number">1</span>, 输入参数<span class="number">2</span> )  =&gt; &#123;</span><br><span class="line">  语句<span class="number">1</span></span><br><span class="line">  语句<span class="number">2</span></span><br><span class="line">  <span class="keyword">return</span> 语句</span><br><span class="line">&#125;</span><br><span class="line">x =&gt; (&#123; <span class="attr">name</span>: <span class="string">'...'</span> &#125;) <span class="comment">// 如果要返回对象，就要加圆括号</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="函数提升"><a href="#函数提升" class="headerlink" title="函数提升"></a>函数提升</h2><p>函数可以先使用再声明，因为 function 会跑到最前面<br>但是 <code>let fn = function(){}</code> 不是函数提升，他不能先使用再声明，因为这句话是赋值，右边的匿名函数不会提升</p>
+<h1 id="作用域"><a href="#作用域" class="headerlink" title="作用域"></a>作用域</h1><ul>
+<li><strong>全局变量与局部变量</strong>：在 <strong>顶级作用域</strong> 声明的变量是全局变量（比如 window 上的变量是全局变量）；其他的都是局部变量</li>
+<li><strong>就近原则</strong>：如果有多个作用域有同名变量 <code>a</code>，那么查找 <code>a</code> 的声明时，就向上取最近的作用域</li>
+<li><strong>作用域的确定与函数的执行无关（JavaScript 的作用域为静态作用域），但变量的值在函数执行的时候才能确定</strong></li>
+</ul>
+<h2 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h2><blockquote>
+<p>函数用到了外部的变量，则函数+这个变量=闭包，作用域遵循就近原则</p>
+</blockquote>
+<p>闭包的作用：隐藏局部变量，暴露操作函数</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> createAdd = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">let</span> n = <span class="number">0</span></span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    n += <span class="number">1</span></span><br><span class="line">    <span class="built_in">console</span>.log(n)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> add = createAdd()</span><br><span class="line">add() <span class="comment">// 1</span></span><br><span class="line">add() <span class="comment">// 2</span></span><br></pre></td></tr></table></figure>
+
+<p>闭包的缺点：容易内存泄露。注意，虽然闭包并不会造成内存泄露，真实原因是 JS 引擎的实现有问题。</p>
+<h1 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h1><h2 id="参数传递"><a href="#参数传递" class="headerlink" title="参数传递"></a>参数传递</h2><p>复制内存图中 stack 里面的东西（简单类型复制值，对象复制地址）</p>
+<h2 id="形参"><a href="#形参" class="headerlink" title="形参"></a>形参</h2><p>实际上就是变量声明： <code>var x = arguments[0]</code></p>
+<div class="note warning">
+            <p>形参可多可少</p>
+          </div>
+
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params">x</span>) </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> x + <span class="built_in">arguments</span>[<span class="number">1</span>]</span><br><span class="line">&#125;</span><br><span class="line">add(<span class="number">1</span>, <span class="number">2</span>) <span class="comment">// 3</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params">x, y, z</span>) </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> x + y</span><br><span class="line">&#125;</span><br><span class="line">add(<span class="number">3</span>, <span class="number">4</span>) <span class="comment">// 7</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h2><ul>
+<li>每个函数都有返回值，默认是 <code>undefined</code></li>
+<li>只有函数才有返回值</li>
+</ul>
+<h2 id="调用栈"><a href="#调用栈" class="headerlink" title="调用栈"></a>调用栈</h2><ul>
+<li>JS 在调用函数之前，需要把函数的环境 push 到一个数组（调用栈）里面，等函数执行完之后把环境 pop 出来，然后 return 到之前的环境中</li>
+<li>递归很容易把栈压满：爆栈</li>
+<li>调用栈最长有多少？Chrome 12578；Firefox 26773；Node 12536</li>
+</ul>
+<h1 id="this-和-arguments"><a href="#this-和-arguments" class="headerlink" title="this 和 arguments"></a>this 和 arguments</h1><blockquote>
+<p>关于 this 更多的内容可以看看这篇文章—— <a href="https://hais-teatime.com/post/2019-12-24-this/" target="_blank" rel="noopener">再看 this</a>。</p>
+</blockquote>
+<h2 id="arguments"><a href="#arguments" class="headerlink" title="arguments"></a>arguments</h2><p>调用函数即传入 arguments， arguments 是包含传入参数的伪数组</p>
+<h2 id="this"><a href="#this" class="headerlink" title="this"></a>this</h2><ul>
+<li><code>this</code> 的存在是为了解决函数获取一个对象的引用的问题</li>
+<li>如果不给任何的条件， <code>this</code> 为 <code>window</code></li>
+<li>如果想要指定 <code>this</code>，要用 <code>fn.call(xxx, 1, 2, 3)</code> 传入 <code>this</code> 和 <code>arguments</code>（如果传入的 <code>this</code> 不是对象，将会默认封装成对象，除非加上 <code>&#39;use strict&#39;</code>，JS的糟粕）</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fn</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line"><span class="meta">  'use strict'</span></span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'this: '</span> + <span class="keyword">this</span>)</span><br><span class="line">&#125;</span><br><span class="line">fn.call(<span class="number">1</span>) <span class="comment">// 'this: 1'</span></span><br><span class="line">fn.call(<span class="literal">undefined</span>) <span class="comment">// 'this: undefined'</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="两种调用函数的方法"><a href="#两种调用函数的方法" class="headerlink" title="两种调用函数的方法"></a>两种调用函数的方法</h3><h4 id="隐式传递"><a href="#隐式传递" class="headerlink" title="隐式传递"></a>隐式传递</h4><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">person.sayHi()</span><br><span class="line"><span class="comment">// 会自动地把 person 传到函数里，作为 this</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="显式传递"><a href="#显式传递" class="headerlink" title="显式传递"></a>显式传递</h4><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">person.sayHi.call(person)</span><br><span class="line"><span class="comment">// 手动把 person 传到函数里，作为 this</span></span><br><span class="line"><span class="comment">// apply 跟 call 的区别就是后面要加中括号（参数传的是数组）</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="绑定-this"><a href="#绑定-this" class="headerlink" title="绑定 this"></a>绑定 this</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">f1</span>(<span class="params">p1, p2</span>)</span>&#123; <span class="built_in">console</span>.log(<span class="keyword">this</span>, p1, p2) &#125;</span><br><span class="line"><span class="keyword">let</span> f3 = f1.bind( &#123;<span class="attr">name</span>:<span class="string">'hai'</span>&#125;, <span class="string">'hi'</span> )</span><br><span class="line">f3()  <span class="comment">// 等价于 f1.call( &#123;name:'hai'&#125;, 'hi' )</span></span><br><span class="line">      <span class="comment">// 相当于让 f3 的 this 和 arguments 永远等于这个</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="箭头函数-1"><a href="#箭头函数-1" class="headerlink" title="箭头函数"></a>箭头函数</h3><p>没有 <code>arguments</code> 和 <code>this</code>，里面的 <code>this</code> 就是外面的 <code>this</code>，就算加 <code>call</code> 也没有</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="keyword">this</span>) <span class="comment">// window</span></span><br><span class="line"><span class="keyword">let</span> fn = <span class="function"><span class="params">()</span> =&gt;</span> <span class="built_in">console</span>.log(<span class="keyword">this</span>)</span><br><span class="line">fn() <span class="comment">// window</span></span><br><span class="line">fn.call( &#123;<span class="attr">name</span>:<span class="string">'hai'</span>&#125; ) <span class="comment">// window</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="立即执行函数"><a href="#立即执行函数" class="headerlink" title="立即执行函数"></a>立即执行函数</h3><p>只想要一个局部变量，而不想要一个函数</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">+<span class="regexp">/-/</span><span class="number">1</span>*<span class="regexp">/! function ()&#123; var a = 2; console.log(a) &#125; ()</span></span><br><span class="line"><span class="regexp">/</span><span class="regexp">/ 声明了一个全局函数，立即调用</span></span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>前端</category>
+        <category>JavaScript</category>
+        <category>原生 JavaScript</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>饥人谷</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>JavaScript Array</title>
     <url>/hais-notebook/2020/01/29/2020-01-29-JS-Array/</url>
     <content><![CDATA[<p>JS 的数组不是典型的数组，而是一个对象；<strong>元素的数据类型可以不同，内存不一定连续，是通过字符串下标（而不是数字下标）获取元素</strong>。</p>
@@ -23,7 +560,7 @@
 
 <h1 id="删除元素"><a href="#删除元素" class="headerlink" title="删除元素"></a>删除元素</h1><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">arr = [<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>];  <span class="keyword">delete</span> arr[<span class="string">'0'</span>]</span><br><span class="line"><span class="comment">// arr 为 [ empty, 'b', 'c']，如果3个都是 empty，称为稀疏数组，不推荐</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 改 length 也可以删除数组的元素，不推荐</span></span><br><span class="line"></span><br><span class="line">arr.shift()</span><br><span class="line"><span class="comment">// 删除最开始的元素，并返回他，arr 被修改</span></span><br><span class="line"></span><br><span class="line">arr.pop()</span><br><span class="line"><span class="comment">// 删除最后一个元素，并返回他，arr 被修改</span></span><br><span class="line"> </span><br><span class="line">arr.splice(<span class="number">2</span>, <span class="number">3</span>)</span><br><span class="line"><span class="comment">// 从 2 开始，删除 3 个，并返回删除的部分，arr 被修改</span></span><br><span class="line"></span><br><span class="line">arr.splice(<span class="number">2</span>, <span class="number">3</span>, <span class="string">'x'</span>, <span class="string">'y'</span>)</span><br><span class="line"><span class="comment">// 从 2 开始，删除 3 个，增加 'x' 和 'y'</span></span><br><span class="line"><span class="comment">// 并返回删除的部分，arr 被修改</span></span><br></pre></td></tr></table></figure>
 
-<h1 id="查找元素"><a href="#查找元素" class="headerlink" title="查找元素"></a>查找元素</h1><h2 id="遍历元素"><a href="#遍历元素" class="headerlink" title="遍历元素"></a>遍历元素</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Object</span>.keys(arr) <span class="comment">// 不推荐</span></span><br><span class="line"><span class="built_in">Object</span>.values(arr) <span class="comment">// 不推荐</span></span><br><span class="line"><span class="keyword">for</span> <span class="keyword">in</span> <span class="comment">// 不推荐</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; arr.length; i++) &#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">`<span class="subst">$&#123;i&#125;</span> : <span class="subst">$&#123;arr[i]&#125;</span>`</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">arr.forEach( <span class="function"><span class="keyword">function</span>(<span class="params">item, index, array</span>) </span>&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">`$(index) : $(item)`</span>)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 以上两种基本没有区别</span></span><br><span class="line"><span class="comment">// 但 for 关键字有 continue 和 break，forEach 没有</span></span><br><span class="line"><span class="comment">// for 是块级作用域，forEach 是函数作用域</span></span><br></pre></td></tr></table></figure>
+<h1 id="查找元素"><a href="#查找元素" class="headerlink" title="查找元素"></a>查找元素</h1><h2 id="遍历元素"><a href="#遍历元素" class="headerlink" title="遍历元素"></a>遍历元素</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Object</span>.keys(arr) <span class="comment">// 不推荐</span></span><br><span class="line"><span class="built_in">Object</span>.values(arr) <span class="comment">// 不推荐</span></span><br><span class="line"><span class="keyword">for</span> <span class="keyword">in</span> <span class="comment">// 不推荐</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; arr.length; i++) &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">`<span class="subst">$&#123;i&#125;</span> : <span class="subst">$&#123;arr[i]&#125;</span>`</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">arr.forEach( <span class="function"><span class="keyword">function</span>(<span class="params">item, index, array</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">`$(index) : $(item)`</span>)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 以上两种基本没有区别</span></span><br><span class="line"><span class="comment">// 但 for 关键字有 continue 和 break，forEach 没有</span></span><br><span class="line"><span class="comment">// for 是块级作用域，forEach 是函数作用域</span></span><br></pre></td></tr></table></figure>
 
 <h2 id="查找单个元素"><a href="#查找单个元素" class="headerlink" title="查找单个元素"></a>查找单个元素</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">arr.indexOf(item) <span class="comment">// 有就会返回 index，没有就会返回 -1</span></span><br><span class="line"></span><br><span class="line">arr.find(<span class="function"><span class="params">item</span> =&gt;</span> item % <span class="number">2</span> ===<span class="number">0</span>) </span><br><span class="line"><span class="comment">// 会返回第一个符合条件的元素</span></span><br><span class="line">arr.findIndex(<span class="function"><span class="params">item</span> =&gt;</span> item % <span class="number">2</span> ===<span class="number">0</span>)</span><br><span class="line"><span class="comment">// 会返回第一个符合条件的元素对应的索引</span></span><br></pre></td></tr></table></figure>
 
@@ -33,10 +570,10 @@
 
 <h1 id="增加元素"><a href="#增加元素" class="headerlink" title="增加元素"></a>增加元素</h1><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">arr.push()</span><br><span class="line"><span class="comment">// 在尾部添加，返回数组长度，arr 被修改</span></span><br><span class="line"></span><br><span class="line">arr.unshift()</span><br><span class="line"><span class="comment">// 在头部添加，返回数组长度，arr 被修改</span></span><br><span class="line"></span><br><span class="line">arr.splice(<span class="number">8</span>, <span class="number">0</span>, <span class="string">'x'</span>, <span class="string">'y'</span>)</span><br><span class="line"><span class="comment">// 增加 'x' 和 'y'，并返回删除的部分（[]），arr 被修改</span></span><br></pre></td></tr></table></figure>
 
-<h1 id="修改元素"><a href="#修改元素" class="headerlink" title="修改元素"></a>修改元素</h1><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">arr.reverse() <span class="comment">// arr 被修改</span></span><br><span class="line">arr.sort() <span class="comment">// arr 被修改</span></span><br><span class="line"></span><br><span class="line">arr.sort( <span class="function"><span class="keyword">function</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> ( a &gt; b ) <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> ( a === b ) <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">// 返回 1，a 在 b 之后</span></span><br><span class="line"><span class="comment">// 返回 0，不变</span></span><br><span class="line"><span class="comment">// 返回 -1，b 在 a 之后</span></span><br><span class="line"></span><br><span class="line">arr.sort(<span class="function">(<span class="params">a, b</span>) =&gt;</span> a.score - b.score) <span class="comment">// 按 score 从小到大排序</span></span><br></pre></td></tr></table></figure>
+<h1 id="修改元素"><a href="#修改元素" class="headerlink" title="修改元素"></a>修改元素</h1><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">arr.reverse() <span class="comment">// arr 被修改</span></span><br><span class="line">arr.sort() <span class="comment">// arr 被修改</span></span><br><span class="line"></span><br><span class="line">arr.sort( <span class="function"><span class="keyword">function</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> ( a &gt; b ) <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">  <span class="keyword">else</span> <span class="keyword">if</span> ( a === b ) <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">  <span class="keyword">else</span> <span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">// 返回 1，a 在 b 之后</span></span><br><span class="line"><span class="comment">// 返回 0，不变</span></span><br><span class="line"><span class="comment">// 返回 -1，b 在 a 之后</span></span><br><span class="line"></span><br><span class="line">arr.sort(<span class="function">(<span class="params">a, b</span>) =&gt;</span> a.score - b.score) <span class="comment">// 按 score 从小到大排序</span></span><br></pre></td></tr></table></figure>
 
 <h1 id="数组变换"><a href="#数组变换" class="headerlink" title="数组变换"></a>数组变换</h1><p>得到新数组，原数组不变</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// map： n 变 n</span></span><br><span class="line">arr.map(<span class="function"><span class="params">item</span> =&gt;</span> item * item)</span><br><span class="line"></span><br><span class="line"><span class="comment">// filter：n 变少</span></span><br><span class="line">arr.filter(<span class="function"><span class="params">item</span> =&gt;</span> item % <span class="number">2</span> === <span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// reduce：n 变 1</span></span><br><span class="line">arr.reduce(<span class="function">(<span class="params">sum, item</span>) =&gt;</span> sum + item, <span class="number">0</span>)</span><br><span class="line">arr.reduce(<span class="function">(<span class="params">result, item</span>) =&gt;</span> result.concat(item * item), [])</span><br><span class="line">arr.reduce(<span class="function">(<span class="params">result, item</span>) =&gt;</span></span><br><span class="line">	result.concat(item % <span class="number">2</span> === <span class="number">1</span> ? [] : item), [])</span><br></pre></td></tr></table></figure>]]></content>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// map： n 变 n</span></span><br><span class="line">arr.map(<span class="function"><span class="params">item</span> =&gt;</span> item * item)</span><br><span class="line"></span><br><span class="line"><span class="comment">// filter：n 变少</span></span><br><span class="line">arr.filter(<span class="function"><span class="params">item</span> =&gt;</span> item % <span class="number">2</span> === <span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// reduce：n 变 1</span></span><br><span class="line">arr.reduce(<span class="function">(<span class="params">sum, item</span>) =&gt;</span> sum + item, <span class="number">0</span>)</span><br><span class="line">arr.reduce(<span class="function">(<span class="params">result, item</span>) =&gt;</span> result.concat(item * item), [])</span><br><span class="line">arr.reduce(<span class="function">(<span class="params">result, item</span>) =&gt;</span></span><br><span class="line">  result.concat(item % <span class="number">2</span> === <span class="number">1</span> ? [] : item), [])</span><br></pre></td></tr></table></figure>]]></content>
       <categories>
         <category>前端</category>
         <category>JavaScript</category>
@@ -330,7 +867,7 @@
 <h2 id=""><a href="#" class="headerlink" title="||"></a>||</h2><p>如果前面是 <strong>假的</strong>，就执行后面的</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">a = a || <span class="number">100</span> <span class="comment">// 可以用于设置保底值</span></span><br></pre></td></tr></table></figure>
 
-<h2 id="for"><a href="#for" class="headerlink" title="for"></a>for</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++)&#123;</span><br><span class="line">	setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> <span class="built_in">console</span>.log(i))</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 5 5 5 5 5</span></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++)&#123;</span><br><span class="line">	setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> <span class="built_in">console</span>.log(i))</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 0 1 2 3 4</span></span><br></pre></td></tr></table></figure>
+<h2 id="for"><a href="#for" class="headerlink" title="for"></a>for</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++)&#123;</span><br><span class="line">  setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> <span class="built_in">console</span>.log(i))</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 5 5 5 5 5</span></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++)&#123;</span><br><span class="line">  setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> <span class="built_in">console</span>.log(i))</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 0 1 2 3 4</span></span><br></pre></td></tr></table></figure>
 
 <h2 id="label"><a href="#label" class="headerlink" title="label"></a>label</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123; <span class="attr">a</span>:<span class="number">1</span> &#125; <span class="comment">// a 是一个 label，值是 1</span></span><br></pre></td></tr></table></figure>]]></content>
       <categories>
