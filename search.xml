@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>JavaScript 数据类型与运算符</title>
+    <url>/hais-notebook/2020/01/29/2020-01-29-JS-DataTypes-Operators/</url>
+    <content><![CDATA[<p>JavaScript 有 7 中数据类型，3 种变量声明的方式，以及一些奇怪的运算符。</p>
+<a id="more"></a>
+
+<h1 id="字符存储"><a href="#字符存储" class="headerlink" title="字符存储"></a>字符存储</h1><ul>
+<li>如何存数字？十进制转二进制，用十六进制（HEX）表示二进制</li>
+<li>如何存字符？转换为数字，48 号表示 0，65 号表示 A，97 号表示 a</li>
+<li>如何表示汉字（GB、GBK）？0000~FFFF，16 位，2 字节</li>
+<li>Unicode 已收录 13 万字符（大于 16 位），全世界通用，以后还会继续扩充；缺点：两个字节不够用了，至少要三个字节</li>
+<li>UTF-8：通过变长的存法，减小容量</li>
+</ul>
+<h1 id="7-种数据类型"><a href="#7-种数据类型" class="headerlink" title="7 种数据类型"></a>7 种数据类型</h1><blockquote>
+<p>4 基 2 空 1 对象</p>
+</blockquote>
+<h2 id="Number"><a href="#Number" class="headerlink" title="Number"></a>Number</h2><blockquote>
+<p>64 位浮点数组成</p>
+</blockquote>
+<h3 id="特殊值"><a href="#特殊值" class="headerlink" title="特殊值"></a>特殊值</h3><p><code>0</code> <code>+0</code> <code>-0</code><br><code>Infinity</code> <code>+Infinity</code> (1/0) <code>-Infinity</code> (1/-0)<br><code>NaN</code>（0/0，但他还是一个数字，NaN不等于NaN）</p>
+<h3 id="范围和精度"><a href="#范围和精度" class="headerlink" title="范围和精度"></a>范围和精度</h3><p><img src="/images/JS-001.png" alt=""></p>
+]]></content>
+      <categories>
+        <category>前端</category>
+        <category>JavaScript</category>
+        <category>原生 JavaScript</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>饥人谷</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>JavaScript 表达式与语句</title>
+    <url>/hais-notebook/2020/01/29/2020-01-29-JS-Expressions/</url>
+    <content><![CDATA[<p>JavaScript 的表达式与语句，包括标识符、block 等概念。</p>
+<a id="more"></a>
+
+<h1 id="表达式与语句"><a href="#表达式与语句" class="headerlink" title="表达式与语句"></a>表达式与语句</h1><h2 id="直观区别"><a href="#直观区别" class="headerlink" title="直观区别"></a>直观区别</h2><ul>
+<li>表达式一般都有值，语句可能有也可能没有</li>
+<li>语句一般会改变环境（声明、赋值），逗号表示语句没完</li>
+</ul>
+<h2 id="表达式"><a href="#表达式" class="headerlink" title="表达式"></a>表达式</h2><ul>
+<li><code>1 + 2</code>：值为 <code>3</code></li>
+<li><code>add(1, 2)</code>：值为函数的返回值</li>
+<li><code>console.log</code>：值为函数本身</li>
+<li><code>console.log(3)</code>：值为函数的返回值—— <code>undefined</code></li>
+</ul>
+<h2 id="语句"><a href="#语句" class="headerlink" title="语句"></a>语句</h2><ul>
+<li><code>var a = 1</code></li>
+</ul>
+<div class="note warning">
+            <p><strong>注意</strong><br><code>retrun</code> 后面不能接回车，否则相当于返回 <code>undefined</code></p>
+          </div>
+
+<h2 id="标识符"><a href="#标识符" class="headerlink" title="标识符"></a>标识符</h2><p>第一个字符可以是 unicode 字符、$、_、中文，后面可以加数字</p>
+<h2 id="代码区块-block"><a href="#代码区块-block" class="headerlink" title="代码区块 block"></a>代码区块 block</h2><p>简单来说就是把代码用大括号包在一起</p>
+<h2 id="amp-amp"><a href="#amp-amp" class="headerlink" title="&amp;&amp;"></a>&amp;&amp;</h2><p>如果前面是 <strong>真的</strong>，就执行后面的（若前面是假的，表达式的值为前面；若前面是真的，表达式的值为后面）</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">window</span>.f1 &amp;&amp; <span class="built_in">console</span>.log(<span class="string">'f1 存在'</span>)</span><br><span class="line"><span class="built_in">console</span> &amp;&amp; <span class="built_in">console</span>.log &amp;&amp; <span class="built_in">console</span>.log(<span class="string">'hi'</span>) <span class="comment">// 因为 IE 没有 console.log，所以可以这样写防止出错</span></span><br></pre></td></tr></table></figure>
+
+<h2 id=""><a href="#" class="headerlink" title="||"></a>||</h2><p>如果前面是 <strong>假的</strong>，就执行后面的</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">a = a || <span class="number">100</span> <span class="comment">// 可以用于设置保底值</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="for"><a href="#for" class="headerlink" title="for"></a>for</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++)&#123;</span><br><span class="line">	setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> <span class="built_in">console</span>.log(i))</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 5 5 5 5 5</span></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++)&#123;</span><br><span class="line">	setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> <span class="built_in">console</span>.log(i))</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 0 1 2 3 4</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="label"><a href="#label" class="headerlink" title="label"></a>label</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123; <span class="attr">a</span>:<span class="number">1</span> &#125; <span class="comment">// a 是一个 label，值是 1</span></span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>前端</category>
+        <category>JavaScript</category>
+        <category>原生 JavaScript</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>饥人谷</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>JavaScript 序章</title>
+    <url>/hais-notebook/2020/01/29/2020-01-29-JS-Overview/</url>
+    <content><![CDATA[<p>JavaScript 的历史和评价的简单介绍。</p>
+<a id="more"></a>
+
+<h1 id="历史"><a href="#历史" class="headerlink" title="历史"></a>历史</h1><ul>
+<li>网景公司，布兰登的作品。由于版权问题，JS 语言标准不叫 JavaScript，叫 ECMAScript<ul>
+<li>1997年6月，第一版 ECMAScript</li>
+<li>1999年12月，第三版 ECMAScript</li>
+<li>2015年6月，第六版 ECMAScript</li>
+<li>之后每一年发布一版，版本以年份命名，JS 是 ES 的浏览器实现——现在是先实现，再更新标准</li>
+</ul>
+</li>
+<li>2004年，发布 <strong>Gmail</strong></li>
+<li>2005年，Jesse 将谷歌用到的技术命名为 AJAX</li>
+<li>2006年，发布 <strong>jQuery</strong></li>
+<li>2008年，发布 Chrome</li>
+<li>Chrome 的 JS 引擎叫做 V8（非常快）</li>
+<li>2009年，Ryan 基于 V8 写了 <strong>Node.js</strong></li>
+<li>2010年，Isaac 基于 Node.js 写了 npm</li>
+<li>2010年，TJ 受 Sinatra启发，写了 Express.js</li>
+</ul>
+<h1 id="评价"><a href="#评价" class="headerlink" title="评价"></a>评价</h1><ul>
+<li>JS 是历史的选择，最开始浏览器支持 Java、Flash、VBScript，只有 JS 活到了最后</li>
+<li>JS 低开高走，一开始是一个玩具语言，但每次都走对了风口（ECMA 标准、Gmail、移动端、Node.js）</li>
+<li>对于初学者，目前可以忽略与 IE 相关的知识</li>
+</ul>
+]]></content>
+      <categories>
+        <category>前端</category>
+        <category>JavaScript</category>
+        <category>原生 JavaScript</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>饥人谷</tag>
+      </tags>
+  </entry>
+</search>
