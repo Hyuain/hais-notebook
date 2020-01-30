@@ -1,6 +1,234 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Cookie</title>
+    <url>/hais-notebook/2020/01/30/2020-01-30-Browser-Cookie/</url>
+    <content><![CDATA[<p>Cookie 是浏览器下发给浏览器的一段字符串，浏览器必须保存这个 Cookie，之后发起的相同二级域名的请求，浏览器必须附上 Cookie。</p>
+<a id="more"></a>
+
+<h1 id="Cookie-防篡改"><a href="#Cookie-防篡改" class="headerlink" title="Cookie 防篡改"></a>Cookie 防篡改</h1><p>思路一：加密，但是有安全漏洞（加密后的内容可以无限期使用）</p>
+<p>思路二：把用户信息隐藏在服务器，这样我就可以自由控制 Cookie 的失效时间</p>
+<ul>
+<li>把用户信息放在服务器的 <code>session</code> 里，再给信息一个随机 <code>id</code></li>
+<li>把随机的 <code>id</code> 发送给浏览器</li>
+<li>后端读取的时候，通过 <code>session[id]</code> 获取用户信息</li>
+</ul>
+]]></content>
+      <categories>
+        <category>前端</category>
+        <category>浏览器</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>饥人谷</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>同源策略与跨域</title>
+    <url>/hais-notebook/2020/01/30/2020-01-30-Browser-CrossDomain/</url>
+    <content><![CDATA[<p>关于同源策略、CORS 和 JSONP 等的笔记。</p>
+<a id="more"></a>
+
+<h1 id="同源策略"><a href="#同源策略" class="headerlink" title="同源策略"></a>同源策略</h1><ul>
+<li>源：输入 <code>window.origin</code> 或者 <code>location.origin</code>，我们就可以看到 <strong>源</strong>，实际上他就是 <strong>协议 + 域名 + 端口号</strong>。</li>
+<li>同源：当两个 url 的源（协议、域名、端口号）完全一致，则称之为 <strong>同源</strong>，比如 <code>https://baidu.com</code> 和 <code>https://www.baidu.com</code> 就不同源。</li>
+<li>同源策略：<strong>浏览器</strong> 规定：如果 JS <strong>运行在</strong>源 A 里，那么就不能获取源 B 的数据，这就是 <strong>同源策略</strong> ——不允许不同源的资源 <strong>跨域访问</strong>。</li>
+</ul>
+<div class="note warning">
+            <p>要注意的是，同源策略限制的是 <strong>数据的访问</strong>，引用 CSS、JS 和图片的时候，其实并不知道其内容，只是在 <strong>引用</strong>，因此不受同源策略限制。</p>
+          </div>
+
+<h2 id="CORS"><a href="#CORS" class="headerlink" title="CORS"></a>CORS</h2><blockquote>
+<p>Cross-Origin Resource Sharing</p>
+</blockquote>
+<p>只需要在响应头里面写 <code>Access-Control-Allow-Origin: http://foo.example</code> 就可以了，但是 IE 6、7、8、9 都不支持，得用 JSONP。</p>
+<h2 id="JSONP"><a href="#JSONP" class="headerlink" title="JSONP"></a>JSONP</h2><blockquote>
+<p>JSONP 和 JSON 没有多大关系</p>
+</blockquote>
+<p>让 <code>frank.com</code> 访问 <code>qq.com</code> 的方法：</p>
+<ol>
+<li><code>qq.com</code> 将 数据写到 <code>/friends.js</code></li>
+<li><code>frank.com</code> 用 <code>script</code> 标签引用 <code>/friends.js</code></li>
+<li><code>/friends.js</code> 执行，执行 <code>frank.com</code> 事先定义好的 <code>window.xxx</code> 函数（<code>window.xxx({friends:[...]})</code>）</li>
+<li>然后 <code>frank.com</code> 通过 <code>window.xxx</code> 获取到了数据，这也是一个回调</li>
+</ol>
+<p>但是，JSONP 存在安全性问题：</p>
+<ul>
+<li>因为每个人都可以引用 js，需要进行 <code>referer</code> 检查</li>
+<li>仍然存在安全问题，如果 <code>frank.com</code> 被攻陷，则 <code>qq.com</code> 也被攻陷</li>
+</ul>
+<p>如何自动生成 window.xxx（如何把 frank.com 定义好的函数传给后台）？</p>
+<ul>
+<li>通过查询参数</li>
+</ul>
+<blockquote>
+<p>什么是 JSONP？<br>背景：当前浏览器或者由于某些因素导致不支持跨域<br>方法：请求一个 JS 文件，文件会执行一个回调，回调里面有我们的数据，回调的名字可以随机生成，我们把名字用 callback 参数传给后台，后台再返回给我们再执行<br>优点：兼容 IE、可以跨域<br>缺点：由于是 <code>script</code> 标签，所以读不到 AJAX 那么精确的状态（比如 Status、响应头等等），并且只能发 <code>GET</code> 请求，不支持 <code>POST</code></p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>前端</category>
+        <category>浏览器</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>饥人谷</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>JavaScript 异步</title>
+    <url>/hais-notebook/2020/01/30/2020-01-30-JS-Async/</url>
+    <content><![CDATA[<p>介绍 AJAX 与异步等。</p>
+<a id="more"></a>
+
+<h1 id="AJAX"><a href="#AJAX" class="headerlink" title="AJAX"></a>AJAX</h1><blockquote>
+<p>AJAX 即 Asynchronous JavaScript and XML（异步的 JavaScript 与 XML 技术），其实就是一套综合了多项技术的浏览器端网页开发技术。Google 在它多个著名的交互应用程序中使用了这套技术，如 Google 讨论组、Google 地图、Google 搜索建议、Gmail 等，这使得人们看到了前端领域新的可能性。</p>
+<p>传统的 Web 应用允许用户端填写表单（form），当提交表单时就向网页服务器发送一个请求；服务器接收并处理传来的表单，然后送回一个<strong>新的网页</strong>。</p>
+<p>但这个做法浪费了许多带宽，因为在前后两个页面中的大部分 HTML 码往往是相同的。由于每次应用的沟通都需要向服务器发送请求，应用的回应时间依赖于服务器的回应时间。这导致了用户界面的回应比本机应用慢得多。</p>
+<p>与此不同，AJAX 应用可以仅向服务器发送并取回必须的数据，并在客户端采用 JavaScript 处理来自服务器的回应。因为在服务器和浏览器之间交换的数据大量减少，服务器回应更快了。同时，很多的处理工作可以在发出请求的客户端机器上完成，因此Web服务器的负荷也减少了。</p>
+</blockquote>
+<p>简单来讲：</p>
+<ol>
+<li>AJAX 是浏览器上的功能，浏览器可以使用 AJAX 发请求、收响应；</li>
+<li>浏览器在 <code>window</code> 上面加了一个 <code>XMLHttpRequest</code>，方便开发者通过 JS 来发请求、收响应，这是一个构造函数</li>
+</ol>
+<h2 id="加载-CSS-JS-HTML-XML"><a href="#加载-CSS-JS-HTML-XML" class="headerlink" title="加载 CSS / JS / HTML / XML"></a>加载 CSS / JS / HTML / XML</h2><p>如果想要使用 <code>XMLHttpRequest</code> 让浏览器来帮我们加载 CSS / JS / HTML / XML，一共需要进行四步：</p>
+<ol>
+<li>创建 <code>XMLHttpResquest</code> 对象</li>
+<li>调用他的 <code>open()</code> 方法</li>
+<li>使用 <code>onreadystatechange</code> 监听他的成功和失败事件</li>
+<li>调用他的 <code>send()</code> 方法</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> request = <span class="keyword">new</span> XMLHttpRequest()</span><br><span class="line">request.open(<span class="string">'GET'</span>, <span class="string">'/&#123;url&#125;'</span>)</span><br><span class="line">request.onreadystatechange = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (request.readyState == <span class="number">4</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (request.status &gt;= <span class="number">200</span> &amp;&amp; request.status &lt; <span class="number">300</span>) &#123;</span><br><span class="line">      alert(<span class="string">'success'</span>)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      alert(<span class="string">'error'</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;     </span><br><span class="line">&#125;</span><br><span class="line">request.send()</span><br></pre></td></tr></table></figure>
+
+<p>HTTP 里面可以装 HTML / CSS / JS / XML 等，但得知道怎么解析他们：</p>
+<ul>
+<li>拿到 CSS 之后生成 <code>&lt;style&gt;</code> 标签</li>
+<li>拿到 JS 之后生成 <code>&lt;script&gt;</code> 标签</li>
+<li>拿到 HTML 之后使用 <code>innerHTML</code> 和 DOM API，可以新建一个 <code>div</code></li>
+<li>拿到 XML 之后的 <code>request.responseXML</code> 实际上已经是一个 DOM 节点了</li>
+</ul>
+<h2 id="JSON"><a href="#JSON" class="headerlink" title="JSON"></a>JSON</h2><blockquote>
+<p>JavaScript Object Natation，JSON 不是对象，而是一种标记语言（就像 HTML、XML、Markdown），用来展示数据，<a href="http://json.org/json-zh.html" target="_blank" rel="noopener">JSON 中文官网</a></p>
+</blockquote>
+<h3 id="JSON-的数据类型"><a href="#JSON-的数据类型" class="headerlink" title="JSON 的数据类型"></a>JSON 的数据类型</h3><ul>
+<li>string（但是只支持双引号）</li>
+<li>number（支持科学计数法）</li>
+<li>bool</li>
+<li>null</li>
+<li>object</li>
+<li>array</li>
+</ul>
+<div class="note warning">
+            <p>JSON 中，不支持函数和变量</p>
+          </div>
+
+<h3 id="JSON-parse"><a href="#JSON-parse" class="headerlink" title="JSON.parse()"></a>JSON.parse()</h3><blockquote>
+<p>反序列化</p>
+</blockquote>
+<ul>
+<li>将符合 JSON 语法的字符串转换为 JS 对应类型的数据</li>
+<li>JSON 字符串 ⇒ JS 数据</li>
+<li>由于 JSON 只有六种类型，所以转换出的数据也只有六种</li>
+<li>如果不符合 JSON 语法，则会抛出 Error，一般用 try catch 捕获错误，比如</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> object</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">	object = <span class="built_in">JSON</span>.parse(<span class="string">`&#123;'name':'harvey'&#125;`</span>)</span><br><span class="line">&#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">'出错了，错误详情是：'</span>)</span><br><span class="line">	<span class="built_in">console</span>.log(error)</span><br><span class="line">	object = &#123;<span class="string">'name'</span>: <span class="string">'no name'</span>&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">console</span>.log(object)</span><br></pre></td></tr></table></figure>
+
+<h3 id="JSON-stringify"><a href="#JSON-stringify" class="headerlink" title="JSON.stringify()"></a>JSON.stringify()</h3><blockquote>
+<p>序列化</p>
+</blockquote>
+<ul>
+<li>是 JSON.parse 的逆运算</li>
+<li>JS 数据 ⇒ JSON 字符串</li>
+<li>由于 JS 的数据类型比 JSON 多，所以不一定能够成功</li>
+<li>如果失败，则会抛出一个 Error 对象</li>
+</ul>
+<h1 id="异步"><a href="#异步" class="headerlink" title="异步"></a>异步</h1><h2 id="异步与同步"><a href="#异步与同步" class="headerlink" title="异步与同步"></a>异步与同步</h2><ul>
+<li><strong>同步</strong>： <strong>能直接拿到结果，不拿到结果就不离开</strong>，就像医院挂号一样，可能需要花上几分钟，但是 <strong>拿到号之后才会离开窗口</strong></li>
+<li><strong>异步</strong>： <strong>不能直接拿到结果</strong>，比如在餐厅门口等位，拿到号之后我们可以去逛街，那什么时候真正吃上饭呢？我们可以：<ul>
+<li>每 10 分钟去餐厅问一下（<strong>轮询</strong>）</li>
+<li>也可以扫码用微信接收通知（<strong>回调</strong>）</li>
+</ul>
+</li>
+</ul>
+<p>AJAX 举例：当 <code>request.send()</code> 之后，并不能直接得到 <code>response</code>，必须要等待 <code>readyState</code> 变成 <code>4</code> 之后，浏览器回头调用 <code>request.onreadystatechange</code> 函数</p>
+<h2 id="回调（callback）"><a href="#回调（callback）" class="headerlink" title="回调（callback）"></a>回调（callback）</h2><ul>
+<li>写给自己的函数，不是回调</li>
+<li>写给别人用的函数，放在一个地方，让他来调用，就是回调</li>
+<li><code>request.onreadystatechange</code>，是写给浏览器调用的，意思是让浏览器回头调一下这个函数</li>
+</ul>
+<p>举例：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">f1</span>(<span class="params"></span>)</span>&#123;&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">f2</span>(<span class="params">fn</span>)</span>&#123;</span><br><span class="line">  fn()</span><br><span class="line">&#125;</span><br><span class="line">f2(f1)</span><br><span class="line"><span class="comment">// 我调用了 f2，因此 f2 不是回调</span></span><br><span class="line"><span class="comment">// 我把 f1 传给了 f2</span></span><br><span class="line"><span class="comment">// 我没有调用，而是 f2 调用了 f1</span></span><br><span class="line"><span class="comment">// 所以 f1 是回调</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="异步与回调"><a href="#异步与回调" class="headerlink" title="异步与回调"></a>异步与回调</h2><h3 id="关联"><a href="#关联" class="headerlink" title="关联"></a>关联</h3><p>异步任务需要在得到结果时通知 JS 来拿结果，怎么通知呢？</p>
+<ol>
+<li>可以让 JS 留一个函数地址（电话号码）给浏览器</li>
+<li>异步任务完成之后，浏览器调用该函数的地址（拨打电话）</li>
+<li>同时 <strong>把结果作为参数</strong> 传给该函数（电话里说可以来吃了）</li>
+</ol>
+<p>这个函数是我写给浏览器调用的，所以是回调函数</p>
+<h3 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h3><p>异步任务需要用回调函数来通知结果</p>
+<ul>
+<li>但异步也可以用 <strong>轮询</strong></li>
+<li>回调也不一定用在异步里面，比如 <code>array.forEach( n ⇒ console.log(n) )</code>，这就是 <strong>同步回调</strong></li>
+</ul>
+<h2 id="异步函数"><a href="#异步函数" class="headerlink" title="异步函数"></a>异步函数</h2><p><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Statements/async_function" target="_blank" rel="noopener">MDN Async Function</a></p>
+<p>如果一个函数的返回值处于以下这三个内部，即为异步函数：</p>
+<ul>
+<li><code>setTimeout</code></li>
+<li>AJAX（即 <code>XMLHttpRequest</code>）</li>
+<li><code>AddEventListener</code></li>
+</ul>
+<p>也可以设置同步的 AJAX，<code>request.open(&quot;get&quot;, &quot;/5.json&quot;, false)</code>，但是这样会使页面在请求期间卡住</p>
+<p>举例：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> 摇骰子(<span class="params"></span>)</span>&#123;</span><br><span class="line">  setTimeout( <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">parseInt</span>(<span class="built_in">Math</span>.random() * <span class="number">6</span>) + <span class="number">1</span></span><br><span class="line">  &#125;, <span class="number">1000</span>)</span><br><span class="line">  <span class="comment">// return undefined</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 如果是按上面这样写，将拿不到 1 ~ 6 的随机数，而是 undefined</span></span><br><span class="line"><span class="keyword">const</span> n = 摇骰子()</span><br><span class="line"><span class="built_in">console</span>.log(n) <span class="comment">// undefined</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 通过回调来拿到异步的结果</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> 摇骰子(<span class="params">fn</span>)</span>&#123;</span><br><span class="line">  setTimeout( <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    fn(<span class="built_in">parseInt</span>(<span class="built_in">Math</span>.random() * <span class="number">6</span>) + <span class="number">1</span>)</span><br><span class="line">  &#125;, <span class="number">1000</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">f1</span>(<span class="params">x</span>)</span>&#123; <span class="built_in">console</span>.log(x) &#125;</span><br><span class="line">摇骰子(f1)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 可以简化代码，因为 f1 只用了一次</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> 摇骰子(<span class="params">fn</span>)</span>&#123;</span><br><span class="line">  setTimeout( <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    fn(<span class="built_in">parseInt</span>(<span class="built_in">Math</span>.random() * <span class="number">6</span>) +<span class="number">1</span>)</span><br><span class="line">  &#125;, <span class="number">1000</span>)</span><br><span class="line">&#125;</span><br><span class="line">摇骰子(<span class="function"><span class="params">x</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(x)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 可以再简化为</span></span><br><span class="line">摇骰子(<span class="built_in">console</span>.log) <span class="comment">// 但是如果参数个数不一致就不能这样简化</span></span><br></pre></td></tr></table></figure>
+
+<p>可以再看一下下面这道题：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> array = [<span class="string">'1'</span>, <span class="string">'2'</span>, <span class="string">'3'</span>].map(<span class="built_in">parseInt</span>)</span><br><span class="line">  <span class="built_in">console</span>.log(array) <span class="comment">// [1, NaN, NaN]</span></span><br><span class="line">    </span><br><span class="line">  <span class="comment">// 正确的写法，i 和 arr 可以省略</span></span><br><span class="line">  <span class="keyword">const</span> array = [<span class="string">'1'</span>, <span class="string">'2'</span>, <span class="string">'3'</span>].map(<span class="function">(<span class="params">item, i, arr</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> paseInt(item)</span><br><span class="line">  &#125;)</span><br><span class="line">    </span><br><span class="line">  <span class="comment">// 最开始的写法相当于</span></span><br><span class="line">  <span class="keyword">const</span> array = [<span class="string">'1'</span>, <span class="string">'2'</span>, <span class="string">'3'</span>].map(<span class="function">(<span class="params">item, i, arr</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> paseInt(item, i, arr)</span><br><span class="line">    <span class="comment">// parseInt('1', 0, arr)，0 为无效参数，忽略</span></span><br><span class="line">    <span class="comment">// parseInt('2', 1, arr)，相当于把 '2' 作为 1 进制来进行解析 =&gt; NaN</span></span><br><span class="line">    <span class="comment">// parseInt('3', 2, arr)，相当于把 '3' 作为 2 进制来进行解析 =&gt; NaN</span></span><br><span class="line">  &#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="Promise"><a href="#Promise" class="headerlink" title="Promise"></a>Promise</h2><blockquote>
+<p>如果异步任务有两个结果：成功或失败，怎么做？</p>
+</blockquote>
+<p>方法一：回调接受两个参数</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">fs.readFile(<span class="string">'./1.txt'</span>, (error, data) =&gt; &#123;</span><br><span class="line">  <span class="keyword">if</span>(error)&#123; <span class="built_in">console</span>.log(<span class="string">'失败'</span>); <span class="keyword">return</span> &#125;</span><br><span class="line">    <span class="built_in">console</span>.log(data.toString())</span><br><span class="line">  &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>方法二：使用两个回调</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">ajax(<span class="string">'get'</span>, <span class="string">'/1.json'</span>, data=&gt;&#123;&#125;, error=&gt;&#123;&#125;)</span><br><span class="line">ajax(<span class="string">'get'</span>, <span class="string">'/1.json'</span>, &#123;</span><br><span class="line">  success: <span class="function"><span class="params">()</span>=&gt;</span>&#123;&#125;, <span class="attr">fail</span>: <span class="function"><span class="params">()</span>=&gt;</span>&#123;&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>但是这两个方法都有问题：</p>
+<ol>
+<li>不规范，名称五花八门，有人用 <code>success + error</code>，有人用 <code>success + fail</code>，有人用 <code>done + fail</code></li>
+<li>容易出现回调地狱，代码看不懂</li>
+<li>很难进行错误处理</li>
+</ol>
+<h3 id="回调地狱"><a href="#回调地狱" class="headerlink" title="回调地狱"></a>回调地狱</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">getUser( <span class="function"><span class="params">user</span> =&gt;</span> &#123;</span><br><span class="line">  getGroups( user, groups =&gt; &#123;</span><br><span class="line">    groups.forEach( <span class="function">(<span class="params">g</span>) =&gt;</span> &#123;</span><br><span class="line">      g.filter( <span class="function"><span class="params">x</span> =&gt;</span> x.owenerId === user.id)</span><br><span class="line">        .forEach( <span class="function"><span class="params">x</span> =&gt;</span> <span class="built_in">console</span>.log(x))</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h3 id="Promise-1"><a href="#Promise-1" class="headerlink" title="Promise"></a>Promise</h3><h4 id="基本用法"><a href="#基本用法" class="headerlink" title="基本用法"></a>基本用法</h4><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">ajax = <span class="function">(<span class="params">method, url, options</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> &#123;success, fail&#125; = options</span><br><span class="line">  <span class="keyword">const</span> request = <span class="keyword">new</span> XMLHttpRequest()</span><br><span class="line">  request.open(method, url)</span><br><span class="line">  request.onreadystatechange = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span>(request.readyState === <span class="number">4</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span>(request.status &lt; <span class="number">400</span>) &#123;</span><br><span class="line">       success.call(<span class="literal">null</span>, request.response)</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span>(request.status &gt;= <span class="number">400</span>) &#123;</span><br><span class="line">        fail.call(<span class="literal">null</span>, request, request.status)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  request.send()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">ajax(<span class="string">'get'</span>, <span class="string">'/xxx'</span>, &#123;</span><br><span class="line">  success(response)&#123;&#125;, <span class="attr">fail</span>:<span class="function">(<span class="params">request, status</span>) =&gt;</span> &#123;&#125;</span><br><span class="line">&#125;)  <span class="comment">// 左边是 function 的缩写，右边是箭头函数</span></span><br></pre></td></tr></table></figure>
+
+<p>↑ 上面是普通的写法，↓ 下面是 Promise 的写法</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">ajax = <span class="function">(<span class="params">method, url</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>( <span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;  <span class="comment">// return new Promise((resolve, reject)=&gt;&#123;..&#125;)</span></span><br><span class="line">    <span class="keyword">const</span> request = <span class="keyword">new</span> XMLHttpRequest()</span><br><span class="line">    request.open(method, url)</span><br><span class="line">    request.onreadystatechange = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">if</span>(request.readyState === <span class="number">4</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span>(request.status &lt; <span class="number">400</span>) &#123;</span><br><span class="line">          resolve.call(<span class="literal">null</span>, request.response)  <span class="comment">// 成功调用 resolve(result)，他再回调用第一个函数</span></span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span>(request.status &gt;= <span class="number">400</span>) &#123;</span><br><span class="line">          reject.call(<span class="literal">null</span>, request)  <span class="comment">// 失败调用 reject(error)，他再会调用第二个函数</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    request.send()</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line">    </span><br><span class="line">ajax(<span class="string">'get'</span>, <span class="string">'/xxx'</span>)</span><br><span class="line">  .then( <span class="function">(<span class="params">response</span>) =&gt;</span> &#123;&#125;, (request) =&gt; &#123;&#125; )   <span class="comment">// Promise 的回调（成功/失败）只能接受一个参数</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="Promise-all"><a href="#Promise-all" class="headerlink" title="Promise.all()"></a>Promise.all()</h4><ul>
+<li>如果传入的参数是一个空的可迭代对象，比如空数组，则返回一个已完成（already resolved）状态的 Promise。</li>
+<li>如果传入的参数不包含任何 promise，则返回一个异步完成（asynchronously resolved） Promise。</li>
+<li>其它情况下返回一个处理中（pending）的Promise。</li>
+</ul>
+<p>返回的 promise 之后会在所有的 promise 都完成或有一个 promise 失败时异步地变为完成或失败。（如果都成功，则成功；有一个失败，则失败）</p>
+<p>返回值将会按照参数内的 promise 顺序排列，而不是由调用 promise 的完成顺序决定。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> p1 = <span class="built_in">Promise</span>.resolve(<span class="number">3</span>);</span><br><span class="line"><span class="keyword">var</span> p2 = <span class="number">1337</span>;</span><br><span class="line"><span class="keyword">var</span> p3 = <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">  setTimeout(resolve, <span class="number">100</span>, <span class="string">'foo'</span>);</span><br><span class="line">&#125;); </span><br><span class="line"></span><br><span class="line"><span class="built_in">Promise</span>.all([p1, p2, p3]).then(<span class="function"><span class="params">values</span> =&gt;</span> &#123; </span><br><span class="line">  <span class="built_in">console</span>.log(values); <span class="comment">// [3, 1337, "foo"] </span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h4 id="Promise-race"><a href="#Promise-race" class="headerlink" title="Promise.race()"></a>Promise.race()</h4><p>可以传入多个 promise，谁快，Promise.race() 就会跟谁一样，如果传的迭代是空的，则返回的 promise 将永远等待。</p>
+]]></content>
+      <categories>
+        <category>前端</category>
+        <category>JavaScript</category>
+        <category>原生 JavaScript</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>饥人谷</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Git 入门</title>
     <url>/hais-notebook/2020/01/29/2020-01-29-Git/</url>
     <content><![CDATA[<p>主要记录 Git 的基本用法及一些坑的解决。</p>
