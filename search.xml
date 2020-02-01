@@ -1,6 +1,151 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>CSS 基本概念</title>
+    <url>/hais-notebook/2020/02/01/2020-02-01-CSS-Concepts/</url>
+    <content><![CDATA[<p>主要是包括文档流、脱离文档流、盒模型、margin 合并等问题</p>
+<a id="more"></a>
+
+<h1 id="文档流"><a href="#文档流" class="headerlink" title="文档流"></a>文档流</h1><blockquote>
+<p>这里的文档流指的是 <strong>Normal Flow</strong></p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th><code>display</code></th>
+<th>流动方向</th>
+<th>宽度</th>
+<th>高度</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>inline</code></td>
+<td>从左到右排列，<strong>行尾会截断成两行</strong></td>
+<td>里面所有 inline 元素之和，不接受指定 <code>width</code></td>
+<td><strong>实际高度</strong>由<strong>行高（<code>line-height</code>）间接</strong>（与字体有关，具体可以看 <a href="https://zhuanlan.zhihu.com/p/25808995?group_id=825729887779307520" target="_blank" rel="noopener">这个</a>）<strong>确定</strong>，<code>padding</code> 只能改变<strong>看得见</strong>的高度（而不是实际高度），如果没有内容，也有高度，为 <code>line-height</code></td>
+</tr>
+<tr>
+<td><code>block</code></td>
+<td>从上到下排列（每个占一行）</td>
+<td>默认为 <code>auto</code>（不是100%），可以指定 <code>width</code>，但永远不要写 <code>width: 100%</code></td>
+<td>由里面<strong>所有</strong>的<strong>文档流</strong>元素决定，也可以设置 <code>height</code>，如果没有内容，高度为 <code>0</code></td>
+</tr>
+<tr>
+<td><code>inline-block</code></td>
+<td>从左到右排列，<strong>行尾不会分成两块</strong></td>
+<td>默认为里面所有 <code>inline</code> 元素之和，但接受指定 width</td>
+<td>由里面<strong>所有</strong>的<strong>文档流</strong>元素决定，也可以设置 <code>height</code></td>
+</tr>
+</tbody></table>
+<h1 id="溢出"><a href="#溢出" class="headerlink" title="溢出"></a>溢出</h1><blockquote>
+<p>这里的溢出指的是 <strong>Overflow</strong></p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th><code>overflow</code></th>
+<th>特性</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>hidden</code></td>
+<td>隐藏</td>
+</tr>
+<tr>
+<td><code>scroll</code></td>
+<td>滚动，就算没有溢出，依然有滚动条，<strong>如果有横向滚动条，inline 元素也只会在第一屏</strong></td>
+</tr>
+<tr>
+<td><code>auto</code></td>
+<td>没有溢出就没有滚动条，并且只显示必要的滚动条</td>
+</tr>
+</tbody></table>
+<p>可以分开设置 <code>overflow-x</code> 和 <code>overflow-y</code></p>
+<h1 id="脱离文档流"><a href="#脱离文档流" class="headerlink" title="脱离文档流"></a>脱离文档流</h1><blockquote>
+<p>也就是 <strong>Out of flow</strong></p>
+</blockquote>
+<div class="note warning">
+            <p>block 不计算其高度</p>
+          </div>
+
+<ul>
+<li>position: absolute / fixed</li>
+<li>float</li>
+</ul>
+<h1 id="盒模型"><a href="#盒模型" class="headerlink" title="盒模型"></a>盒模型</h1><blockquote>
+<p>通过 <code>box-sizing</code> 控制，一般使用 <code>border-box</code></p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th><code>box-sizing</code></th>
+<th>特性</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>content-box</code></td>
+<td>宽度只有内容</td>
+</tr>
+<tr>
+<td><code>border-box</code></td>
+<td>宽度除了内容之外，包括 <code>padding</code> 和 <code>border</code></td>
+</tr>
+</tbody></table>
+<h1 id="Margin-合并"><a href="#Margin-合并" class="headerlink" title="Margin 合并"></a>Margin 合并</h1><div class="note warning">
+            <p>只有上下会发生 margin 合并</p>
+          </div>
+
+<ul>
+<li><code>block</code> 会发生 margin 合并；<code>inline-block</code> 不会发生</li>
+<li>第一个和最后一个 child 也会和 parent 发生 margin 合并；给 parent 上面加东西（<code>padding</code>、<code>border</code>、<code>overflow</code>）则不会再合并；用<code>overflow:hidden</code> 就不会再合并；用 <code>display:flex</code> 就不会再合并</li>
+</ul>
+]]></content>
+      <categories>
+        <category>前端</category>
+        <category>CSS</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>饥人谷</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>CSS 开始</title>
+    <url>/hais-notebook/2020/02/01/2020-02-01-CSS-Overview/</url>
+    <content><![CDATA[<p>记录 CSS 的含义及基本语法。</p>
+<a id="more"></a>
+
+<h1 id="层叠的含义"><a href="#层叠的含义" class="headerlink" title="层叠的含义"></a>层叠的含义</h1><ul>
+<li><strong>样式层叠</strong>：可以对同一个选择器进行样式声明</li>
+<li><strong>选择器层叠</strong>：可以用不同的选择器对同一个元素进行样式声明</li>
+<li><strong>文件层叠</strong>：可以用多个文件进行层叠</li>
+</ul>
+<h1 id="样式语法"><a href="#样式语法" class="headerlink" title="样式语法"></a>样式语法</h1><figure class="highlight css"><table><tr><td class="code"><pre><span class="line">选择器 &#123;</span><br><span class="line">  属性名: 属性值;</span><br><span class="line">  <span class="comment">/* 注释 */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="语法"><a href="#语法" class="headerlink" title="@ 语法"></a>@ 语法</h1><figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="keyword">@charset</span> <span class="string">"UTF-8"</span>;   <span class="comment">/* 必须放在第一行 */</span></span><br><span class="line"><span class="keyword">@import</span> url(<span class="number">2</span>.css); </span><br><span class="line"><span class="keyword">@media</span> (<span class="attribute">min-width:</span> <span class="number">100px</span>) <span class="keyword">and</span> (<span class="attribute">max-width:</span> <span class="number">200px</span>) &#123; &#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="charset"><a href="#charset" class="headerlink" title="charset"></a>charset</h1><ul>
+<li>charset 是字符集的意思，但 UTF-8 不是字符集，而是字符编码(encoding)，这是历史遗留问题</li>
+<li>ASCII 字符集的编码形式就是 ASCII，这个字符集只有英文</li>
+<li>GB2312 字符集是中国人发明的简体中文字符集，他的编码形式也是 GB2312</li>
+<li>GBK 是微软发明的中日韩（CJK）字符集，他的编码形式也是 GBK</li>
+<li>unicode 是支持所有字符的字符集，他的编码形式有 UTF-8/UTF-16/UTF-32</li>
+</ul>
+<h1 id="找资料"><a href="#找资料" class="headerlink" title="找资料"></a>找资料</h1><ul>
+<li>查资料：<a href="https://developer.mozilla.org/zh-CN/docs/Web/CSS" target="_blank" rel="noopener">MDN</a>、<a href="https://css-tricks.com/" target="_blank" rel="noopener">CSS Tricks</a>、<a href="https://www.zhangxinxu.com/wordpress/" target="_blank" rel="noopener">张鑫旭的博客</a></li>
+<li>找素材（可以搜 PSD WEB）：<a href="https://www.freepik.com/" target="_blank" rel="noopener">Freepik</a>、<a href="http://dribbble.com/" target="_blank" rel="noopener">Dribbble</a>、<a href="https://cn.365psd.com/" target="_blank" rel="noopener">365 PSD</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>前端</category>
+        <category>CSS</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>饥人谷</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Vuex</title>
     <url>/hais-notebook/2020/02/01/2020-02-01-Vue-Vuex/</url>
     <content><![CDATA[<p>用了几次 Vuex 之后抄一下文档。</p>
