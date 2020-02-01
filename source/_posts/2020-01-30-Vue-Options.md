@@ -74,7 +74,14 @@ Vue.component('my-component', {
         return ['success', 'warning', 'danger'].indexOf(value) !== -1
       }
     }
-  }
+  }const User = {
+     template: '...',
+     watch: {
+       '$route' (to, from) {
+         // 对路由变化作出响应...
+       }
+     }
+   }
 })
 ```
 
