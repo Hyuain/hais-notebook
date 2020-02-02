@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/hais-notebook/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/hais-notebook/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/hais-notebook/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/hais-notebook/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/hais-notebook/css/main.css">
+
+
+<link rel="stylesheet" href="/hais-notebook/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('https://hyuain.github.io/hais-notebook').hostname,
+    root: '/hais-notebook/',
+    scheme: 'Gemini',
+    version: '7.7.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: 'W0QZQNNH7N',
+      apiKey: '00189c8d102508ea71e94422b5f129fd',
+      indexName: 'hais-notebook',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="如何选择布局。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CSS 布局">
+<meta property="og:url" content="https://hyuain.github.io/hais-notebook/2020/02/02/2020-02-02-CSS-Layout/index.html">
+<meta property="og:site_name" content="Hais Notebook">
+<meta property="og:description" content="如何选择布局。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://hyuain.github.io/hais-notebook/images/CSS-001.png">
+<meta property="og:image" content="https://hyuain.github.io/hais-notebook/images/CSS-002.png">
+<meta property="og:image" content="https://hyuain.github.io/hais-notebook/images/CSS-007.png">
+<meta property="article:published_time" content="2020-02-02T10:57:39.000Z">
+<meta property="article:modified_time" content="2020-02-02T07:28:04.044Z">
+<meta property="article:author" content="Harvey Zhang">
+<meta property="article:tag" content="入门">
+<meta property="article:tag" content="饥人谷">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://hyuain.github.io/hais-notebook/images/CSS-001.png">
+
+<link rel="canonical" href="https://hyuain.github.io/hais-notebook/2020/02/02/2020-02-02-CSS-Layout/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>CSS 布局 | Hais Notebook</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/hais-notebook/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hais Notebook</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/hais-notebook/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/hais-notebook/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/hais-notebook/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/hais-notebook/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2020/02/02/2020-02-02-CSS-Layout/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
+      <meta itemprop="name" content="Harvey Zhang">
+      <meta itemprop="description" content="小海的笔记本">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hais Notebook">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          CSS 布局
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-02-02 10:57:39 / 修改时间：07:28:04" itemprop="dateCreated datePublished" datetime="2020-02-02T10:57:39+00:00">2020-02-02</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hais-notebook/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index">
+                    <span itemprop="name">前端</span>
+                  </a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hais-notebook/categories/%E5%89%8D%E7%AB%AF/CSS/" itemprop="url" rel="index">
+                    <span itemprop="name">CSS</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>如何选择布局。</p>
+<a id="more"></a>
+
+<h1 id="两种布局方式"><a href="#两种布局方式" class="headerlink" title="两种布局方式"></a>两种布局方式</h1><ul>
+<li><strong>固定宽度布局</strong>：960、1000、1024</li>
+<li><strong>不固定宽度布局</strong>：一般在手机上使用，主要靠文档流原理来布局</li>
+<li><strong>响应式布局</strong>：PC上固定宽度，手机上不固定宽度，也就是一种<strong>混合布局</strong></li>
+</ul>
+<h1 id="两种布局思路"><a href="#两种布局思路" class="headerlink" title="两种布局思路"></a>两种布局思路</h1><ul>
+<li>从大到小：先定下大局，然后再完善每个部分的小布局</li>
+<li>从小到大：先完成小布局，然后再组合成大布局</li>
+</ul>
+<p><img src="/hais-notebook/images/CSS-001.png" alt=""></p>
+<h1 id="Float"><a href="#Float" class="headerlink" title="Float"></a>Float</h1><ol>
+<li>在子元素上加 <code>float: left</code> 和 <code>width</code></li>
+<li>在父元素加上 <code>class=&quot;clearfix&quot;</code></li>
+</ol>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.clearfix</span><span class="selector-pseudo">:after</span>&#123;</span><br><span class="line">  <span class="attribute">content</span>: <span class="string">''</span>;</span><br><span class="line">  <span class="attribute">display</span>: block;</span><br><span class="line">  <span class="attribute">clear</span>: both;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>经验：</p>
+<ul>
+<li>有经验者会留一些空间或最后一个不设置 <code>width</code>（可以设置一个 <code>max-width</code>）</li>
+<li>不需要考虑响应式，因为手机上没有 IE，这个布局是专门为 IE 准备的</li>
+<li>在IE上有BUG：最左边浮动元素的 <code>margin-left</code> 会变成双倍<ul>
+<li>可以加一句兼容性写法：<code>_margin-left: ?px</code></li>
+<li>也可以加上 <code>display: inline-block</code></li>
+</ul>
+</li>
+<li>如果图片下面有空隙，加上 <code>vertical-align: middle | top</code> 就可以消除</li>
+<li><strong><code>float</code> 元素外边距不合并</strong></li>
+</ul>
+<div class="note warning">
+            <p>必要时可以采用负 margin</p>
+          </div>
+
+<p>比如说做平均布局，在所有的小块外面加一个 <code>div</code> ，然后再给这个 <code>div</code> 一个负 <code>margin</code></p>
+<p><img src="/hais-notebook/images/CSS-002.png" alt=""></p>
+<h1 id="Flex"><a href="#Flex" class="headerlink" title="Flex"></a>Flex</h1><p>这里是 <a href="https://css-tricks.com/snippets/css/a-guide-to-flexbox/" target="_blank" rel="noopener">CSS Tricks 上的 Flex 教程</a></p>
+<h2 id="Container"><a href="#Container" class="headerlink" title="Container"></a>Container</h2><ul>
+<li>让一个元素变成 flex 容器：<code>display: flex | inline-flex</code></li>
+<li>改变 items 的流动方向（主轴）：<code>flex-direction: row | row-reverse | column | column-reverse</code></li>
+<li>改变折行：<code>flex-wrap: nowrap | wrap | wrap-revers</code></li>
+<li>主轴的对齐方式：<code>justify-content: flex-start | flex-end | center | space-between | space-around | space-evenly</code></li>
+<li>次轴对齐：<code>align-items: flex-start | flex-end | center | stretch(默认)</code></li>
+<li>多行对齐（基本不用）：<code>align-content: flex-start | flex-end | center | strech | space-between | space-around</code></li>
+</ul>
+<h2 id="Items"><a href="#Items" class="headerlink" title="Items"></a>Items</h2><ul>
+<li><code>order</code>：改变显示顺序</li>
+<li><code>flex-grow</code>：控制自己如何长胖（占多余所有空间的权重），默认是0（尽可能窄）</li>
+<li>导航栏常用左边 logo 和右边用户头像都是 0，中间是 1</li>
+<li><code>flex-shrink</code>：控制如何变瘦，（在空间不够用的时候，压缩的比例）默认是1（大家一起变小），可以写0（防止变小）</li>
+<li><code>flex-basis</code>：控制基准宽度，一般用得比较少，默认是 auto（跟宽度一样）</li>
+</ul>
+<p>以上可以缩写为：<code>flex: grow shrink basis</code></p>
+<ul>
+<li><code>align-self: flex-start | flex-end</code></li>
+</ul>
+<p>经验：</p>
+<ul>
+<li>永远不要把 <code>width</code> 和 <code>height</code> 写死</li>
+<li>尽量使用 <code>min-width</code> | <code>max-width</code> 等来写</li>
+<li><code>margin-xxx: auto</code>，有奇效，类似于 <code>between</code></li>
+</ul>
+<h1 id="Grid"><a href="#Grid" class="headerlink" title="Grid"></a>Grid</h1><p>这里是 <a href="https://css-tricks.com/snippets/css/complete-guide-grid/" target="_blank" rel="noopener">CSS Tricks 上的 Grid 教程</a></p>
+<p><img src="/hais-notebook/images/CSS-007.png" alt=""></p>
+<h2 id="Container-1"><a href="#Container-1" class="headerlink" title="Container"></a>Container</h2><ul>
+<li><p>让一个元素变成 grid 容器：<code>display: grid | inline-grid</code></p>
+</li>
+<li><p>行和列：</p>
+<ul>
+<li><p><code>grid-template-columns</code>: 每一列的宽度，可以写 <code>auto</code></p>
+</li>
+<li><p><code>grid-template-rows</code>: 每一行的高度，可以写 <code>auto</code></p>
+</li>
+<li><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">grid-template-areas</span>:</span><br><span class="line">  "<span class="selector-tag">header</span> <span class="selector-tag">header</span> <span class="selector-tag">header</span>"</span><br><span class="line">  "<span class="selector-tag">aside</span> <span class="selector-tag">main</span> <span class="selector-tag">ad</span>"</span><br><span class="line">  "<span class="selector-tag">footer</span> <span class="selector-tag">fotter</span> ."</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>grid-gap</code></p>
+</li>
+<li><p><code>grid-column-gap</code></p>
+</li>
+<li><p><code>grid-row-gap</code></p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Items-1"><a href="#Items-1" class="headerlink" title="Items"></a>Items</h2><ul>
+<li>grid-row-start</li>
+<li>grid-row-end</li>
+<li>grid-column-start</li>
+<li>grid-column-end</li>
+<li>fr：free space，类似于flex-grow</li>
+<li><strong>grid-area: header;</strong></li>
+<li><strong>grid-area: main;</strong></li>
+<li><strong>….</strong></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/hais-notebook/tags/%E5%85%A5%E9%97%A8/" rel="tag"># 入门</a>
+              <a href="/hais-notebook/tags/%E9%A5%A5%E4%BA%BA%E8%B0%B7/" rel="tag"># 饥人谷</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/hais-notebook/2020/02/01/2020-02-01-CSS-Concepts/" rel="prev" title="CSS 基本概念">
+      <i class="fa fa-chevron-left"></i> CSS 基本概念
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/hais-notebook/2020/02/02/2020-02-02-CSS-Positioning/" rel="next" title="CSS 定位">
+      CSS 定位 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#两种布局方式"><span class="nav-number">1.</span> <span class="nav-text">两种布局方式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#两种布局思路"><span class="nav-number">2.</span> <span class="nav-text">两种布局思路</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Float"><span class="nav-number">3.</span> <span class="nav-text">Float</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Flex"><span class="nav-number">4.</span> <span class="nav-text">Flex</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Container"><span class="nav-number">4.1.</span> <span class="nav-text">Container</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Items"><span class="nav-number">4.2.</span> <span class="nav-text">Items</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Grid"><span class="nav-number">5.</span> <span class="nav-text">Grid</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Container-1"><span class="nav-number">5.1.</span> <span class="nav-text">Container</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Items-1"><span class="nav-number">5.2.</span> <span class="nav-text">Items</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Harvey Zhang</p>
+  <div class="site-description" itemprop="description">小海的笔记本</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/hais-notebook/archives/">
+        
+          <span class="site-state-item-count">26</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/hais-notebook/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/hais-notebook/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Harvey Zhang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/hais-notebook/lib/anime.min.js"></script>
+  <script src="/hais-notebook/lib/velocity/velocity.min.js"></script>
+  <script src="/hais-notebook/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/hais-notebook/js/utils.js"></script>
+
+<script src="/hais-notebook/js/motion.js"></script>
+
+
+<script src="/hais-notebook/js/schemes/pisces.js"></script>
+
+
+<script src="/hais-notebook/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/hais-notebook/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

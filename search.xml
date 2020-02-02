@@ -1,13 +1,481 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>VSCode</title>
+    <url>/hais-notebook/2020/02/02/2020-02-02-Tools-VSCode/</url>
+    <content><![CDATA[<p>收集关于 VSCode 的用法及插件。</p>
+<a id="more"></a>
+
+<h1 id="插件"><a href="#插件" class="headerlink" title="插件"></a>插件</h1><ul>
+<li>Vue<ul>
+<li>Vetur</li>
+<li>Vue VSCode Snippets</li>
+</ul>
+</li>
+<li>TypeScript<ul>
+<li>TypeScript Importer</li>
+</ul>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>工具</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>效率</tag>
+        <tag>收集</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>HTML 标签</title>
+    <url>/hais-notebook/2020/02/02/2020-02-02-HTML-Elements/</url>
+    <content><![CDATA[<p>一些常见和重点的 HTML 标签。</p>
+<a id="more"></a>
+
+<h1 id="常用标签"><a href="#常用标签" class="headerlink" title="常用标签"></a>常用标签</h1><ul>
+<li>表示书/文章的层级<ul>
+<li>标题 <code>&lt;h1&gt;</code> ~ <code>&lt;h6&gt;</code></li>
+<li>章节 <code>&lt;section&gt;</code></li>
+<li>文章 <code>&lt;article&gt;</code></li>
+<li>段落 <code>&lt;p&gt;</code></li>
+<li>头部 <code>&lt;header&gt;</code></li>
+<li>脚部 <code>&lt;footer&gt;</code></li>
+<li>主要内容 <code>&lt;main&gt;</code></li>
+<li>旁支内容 <code>&lt;aside&gt;</code></li>
+<li>划分 <code>&lt;div&gt;</code></li>
+</ul>
+</li>
+<li>内容标签<ul>
+<li>有序列表 <code>&lt;ol&gt;</code> + <code>&lt;li&gt;</code></li>
+<li>无序列表 <code>&lt;ul&gt;</code> + <code>&lt;li&gt;</code></li>
+<li>描述 <code>&lt;dl&gt;</code> + <code>&lt;dt&gt;</code> + <code>&lt;dd&gt;</code>，其中 <code>&lt;dt&gt;</code> 表示描述词，<code>&lt;dd&gt;</code> 表示描述的内容（ <code>Emmet</code> 速写: <code>dl+</code>）</li>
+<li>保留空格的段落 <code>&lt;pre&gt;</code></li>
+<li>分割线 <code>&lt;hr&gt;</code></li>
+<li>换行 <code>&lt;br&gt;</code></li>
+<li>定位符、超链接 <code>&lt;a&gt;</code></li>
+<li>语气的强调 <code>&lt;em&gt;</code></li>
+<li>本质的强调 <code>&lt;strong&gt;</code></li>
+<li>代码 <code>&lt;code&gt;</code>，默认是内联元素，可以用 <code>&lt;pre&gt;</code> 包住 <code>&lt;code&gt;</code></li>
+<li>引用 <code>&lt;quote&gt;</code></li>
+<li>块级引用 <code>&lt;blockquote&gt;</code></li>
+</ul>
+</li>
+<li>全局属性<ul>
+<li><code>class</code> 类</li>
+<li><code>contenteditable</code> 用户可以直接编辑页面上的东西</li>
+<li><code>hidden</code> 隐藏</li>
+<li><code>id</code> 标记</li>
+<li><code>style</code> 样式</li>
+<li><code>tabindex</code> 控制 <code>Tab键</code> 激活元素的顺序，<code>tabindex=0</code> 是最后一个，<code>tabindex=-1</code> 代表永远不会访问</li>
+<li><code>title</code> 鼠标悬浮显示的内容</li>
+</ul>
+</li>
+</ul>
+<div class="note warning">
+            <p><strong>为什么会有默认样式？</strong><br>因为 HTML 被发明的时候，还没有CSS<br><strong>怎么看默认样式？</strong><br>开发者工具 -&gt; Elments -&gt; Styles -&gt; user agent stylesheet<br><strong>CSS Reset?</strong><br><a href="https://dev.to/hankchizljaw/a-modern-css-reset-6p3" target="_blank" rel="noopener">Andy Bell</a><br><a href="https://meyerweb.com/eric/tools/css/reset/" target="_blank" rel="noopener">Meyerweb</a><br><a href="https://gist.github.com/FrankFang/df5e57a0799823ed89a960a642b3a1e2" target="_blank" rel="noopener">Frank Fang</a></p>
+          </div>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">http-server . -c-1 <span class="comment"># -c-1 表示不要缓存</span></span><br><span class="line"><span class="comment"># OR</span></span><br><span class="line">parcel index.html</span><br></pre></td></tr></table></figure>
+
+<h1 id="lt-a-gt-标签"><a href="#lt-a-gt-标签" class="headerlink" title="&lt;a&gt; 标签"></a><code>&lt;a&gt;</code> 标签</h1><h2 id="href-属性"><a href="#href-属性" class="headerlink" title="href 属性"></a><code>href</code> 属性</h2><ul>
+<li>网址<ul>
+<li><code>http://google.com</code></li>
+<li><code>https://google.com</code></li>
+<li><code>//google.com</code> 无协议网址</li>
+</ul>
+</li>
+<li>路径<ul>
+<li><code>/a/b/c</code> 绝对路径，但是是基于 <strong>HTTP 服务</strong> 开启的根目录，不是整个计算机的根目录</li>
+<li><code>a/b/c</code> 相对路径，基于当前路径的目录</li>
+<li><code>index.html</code> 当前目录的文件</li>
+<li><code>./index.html</code> 当前目录的文件</li>
+</ul>
+</li>
+<li><code>#id</code></li>
+<li>伪协议<ul>
+<li><code>javascript:alert(1);</code><ul>
+<li><code>javasrcript:;</code> 可以写一个什么都不做的a标签</li>
+</ul>
+</li>
+<li><code>mailto:xxx@xxx.com</code> 会呼出邮件客户端</li>
+<li><code>tel:1300000000</code> 会呼出拨号界面</li>
+</ul>
+</li>
+</ul>
+<h2 id="target-属性"><a href="#target-属性" class="headerlink" title="target 属性"></a><code>target</code> 属性</h2><ul>
+<li>内置名字<ul>
+<li><code>_blank</code> 新标签</li>
+<li><code>_top</code> 在最顶层打开（比如 <code>iframe</code> 的最外层页面）</li>
+<li><code>_parent</code> 在父级窗口打开，没有 <code>_top</code> 那么高层</li>
+<li><code>_self</code> 在当前页面打开（比如 <code>iframe</code> 的当前层）</li>
+</ul>
+</li>
+<li>其他自定义的新窗口的名字（<code>window.name</code>）或者 <code>iframe</code> 的名字</li>
+</ul>
+<p>使用 rel=noopener 不打开新标签</p>
+<h2 id="download-属性"><a href="#download-属性" class="headerlink" title="download 属性"></a><code>download</code> 属性</h2><p>下载而不是查看网页，但是大部分不支持</p>
+<h1 id="lt-iframe-gt-标签"><a href="#lt-iframe-gt-标签" class="headerlink" title="&lt;iframe&gt; 标签"></a><code>&lt;iframe&gt;</code> 标签</h1><p>内嵌窗口，现在大都不用了</p>
+<h1 id="lt-table-gt-标签"><a href="#lt-table-gt-标签" class="headerlink" title="&lt;table&gt; 标签"></a><code>&lt;table&gt;</code> 标签</h1><div class="note warning">
+            <p>里面必须写<code>&lt;thead&gt;</code> <code>&lt;tbody&gt;</code> <code>&lt;tfoot&gt;</code>，否则浏览器也会自己加上，并且显示的顺序与实际写的这三个顺序无关，浏览器一定是按照<code>&lt;thead&gt;</code> <code>&lt;tbody&gt;</code> <code>&lt;tfoot&gt;</code>的顺序显示</p>
+          </div>
+
+<p>相关的样式有：</p>
+<ul>
+<li><code>table-layout</code><ul>
+<li><code>auto</code> 按照内容的多少来分配宽度权重</li>
+<li><code>fixed</code> 等宽</li>
+</ul>
+</li>
+<li><code>border-collapse: collapse</code> 表示两个单元格的边线合并</li>
+<li><code>border-spacing</code> 两个单元格中间的空隙</li>
+</ul>
+<h1 id="lt-img-gt-标签"><a href="#lt-img-gt-标签" class="headerlink" title="&lt;img&gt; 标签"></a><code>&lt;img&gt;</code> 标签</h1><blockquote>
+<p>发出一个GET请求，展示一张图片</p>
+</blockquote>
+<h2 id="src-属性"><a href="#src-属性" class="headerlink" title="src 属性"></a><code>src</code> 属性</h2><p>可以是相对路径，也可以是绝对路径</p>
+<h2 id="alt-属性"><a href="#alt-属性" class="headerlink" title="alt 属性"></a><code>alt</code> 属性</h2><p>图片加载失败的时候显示的内容</p>
+<h2 id="height-和-width-属性"><a href="#height-和-width-属性" class="headerlink" title="height 和 width 属性"></a><code>height</code> 和 <code>width</code> 属性</h2><p>若只写高度或宽度，图像比例保持不变</p>
+<h2 id="事件"><a href="#事件" class="headerlink" title="事件"></a>事件</h2><ul>
+<li><code>onload</code>图片加载成功</li>
+<li><code>onerror</code> 图片加载失败</li>
+</ul>
+<h2 id="响应式"><a href="#响应式" class="headerlink" title="响应式"></a>响应式</h2><p><code>max-width: 100%</code></p>
+<h1 id="lt-form-gt-标签"><a href="#lt-form-gt-标签" class="headerlink" title="&lt;form&gt; 标签"></a><code>&lt;form&gt;</code> 标签</h1><blockquote>
+<p>发出一个 GET 或 POST 请求，然后刷新页面</p>
+</blockquote>
+<h2 id="action-属性"><a href="#action-属性" class="headerlink" title="action 属性"></a><code>action</code> 属性</h2><p>请求到哪个页面</p>
+<h2 id="method-属性"><a href="#method-属性" class="headerlink" title="method 属性"></a><code>method</code> 属性</h2><p>是用 GET 还是 POST</p>
+<h2 id="autocomplete-属性"><a href="#autocomplete-属性" class="headerlink" title="autocomplete 属性"></a><code>autocomplete</code> 属性</h2><p>为 <code>on</code> 则打开自动填充，下面的 <code>text</code> 要写 <code>name</code></p>
+<h2 id="target-属性-1"><a href="#target-属性-1" class="headerlink" title="target 属性"></a><code>target</code> 属性</h2><p>把哪个页面（ 值可以为 <code>_blank</code> 等等）变成要请求到的那个页面（也就是说哪个页面需要刷新）</p>
+<div class="note warning">
+            <ul><li>一般不监听 <code>input</code> 的 <code>click</code> 事件</li><li><code>form</code> 里面的 <code>input</code> 要有 <code>name</code></li><li>一个 form 必须要有一个 <code>type=&quot;submit&quot;</code>，如果 <code>button</code> 不写 <code>type</code>，默认 <code>submit</code></li></ul>
+          </div>
+
+<div class="note warning">
+            <p><strong><code>&lt;input type=&quot;submit&quot;&gt;</code> 和 <code>&lt;button type=&quot;submit&quot;&gt;</code> 的区别？</strong><br><code>input</code> 里面不能再有标签（但是文字可以用 <code>value=&quot;&quot;</code> 进行更改）<br><code>button</code> 里面可以有任何东西（包括图片等其他标签）</p>
+          </div>
+
+<h1 id="lt-input-gt-标签"><a href="#lt-input-gt-标签" class="headerlink" title="&lt;input&gt; 标签"></a><code>&lt;input&gt;</code> 标签</h1><h2 id="type-属性"><a href="#type-属性" class="headerlink" title="type 属性"></a><code>type</code> 属性</h2><ul>
+<li><code>text</code></li>
+<li><code>color</code></li>
+<li><code>password</code></li>
+<li><code>radio</code> 所有的 <code>input</code> 要有同一个 <code>name</code></li>
+<li><code>checkbox</code> 所有的 <code>input</code> 要有同一个 <code>name</code></li>
+<li><code>file</code> 加上 <code>multiple</code> 属性可以同时选多个文件</li>
+<li><code>hidden</code></li>
+<li><code>tel</code></li>
+<li><code>email</code></li>
+<li><code>search</code></li>
+</ul>
+<h2 id="事件-1"><a href="#事件-1" class="headerlink" title="事件"></a>事件</h2><ul>
+<li><code>onchange</code></li>
+<li><code>onfocus</code></li>
+<li><code>onblur</code></li>
+</ul>
+<h1 id="lt-textarea-gt-标签"><a href="#lt-textarea-gt-标签" class="headerlink" title="&lt;textarea&gt; 标签"></a><code>&lt;textarea&gt;</code> 标签</h1><p><code>style=&quot;resize: none&quot;</code> 让右下角不能拖动</p>
+<h1 id="lt-select-gt-标签"><a href="#lt-select-gt-标签" class="headerlink" title="&lt;select&gt; 标签"></a><code>&lt;select&gt;</code> 标签</h1><p><code>&lt;option value=&quot;1&quot;&gt;星期一&lt;/option&gt;</code></p>
+]]></content>
+      <categories>
+        <category>前端</category>
+        <category>HTML</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>饥人谷</tag>
+        <tag>自学</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>HTML 序章</title>
+    <url>/hais-notebook/2020/02/02/2020-02-02-HTML-Overview/</url>
+    <content><![CDATA[<p>WWW 和 HTML 的历史。</p>
+<a id="more"></a>
+
+<h1 id="Word-Wide-Web"><a href="#Word-Wide-Web" class="headerlink" title="Word Wide Web"></a>Word Wide Web</h1><ul>
+<li>互联网，基于IP之间通信，但是无法输入地址得到一个网页</li>
+<li>WWW = URL + HTTP + HTML（李爵士发明的，基于互联网实现的，输入地址得到一个网页的网络）</li>
+</ul>
+<h1 id="HTML-历史"><a href="#HTML-历史" class="headerlink" title="HTML 历史"></a>HTML 历史</h1><p>诞生于李爵士的一篇文章，最开始只有 18 个元素，这些元素如今还有 11 个健在，现在最新版的HTML大概有 110 个标签</p>
+<h2 id="HTML-5"><a href="#HTML-5" class="headerlink" title="HTML 5"></a>HTML 5</h2><ul>
+<li>狭义HTML 5：最新版本 HTML 语言，多了 32 个新标签</li>
+<li>广义HTML 5：包括 CSS3 等朋友们</li>
+</ul>
+<h3 id="HTML-5-技术集合"><a href="#HTML-5-技术集合" class="headerlink" title="HTML 5 技术集合"></a>HTML 5 技术集合</h3><ul>
+<li>新标签、新属性</li>
+<li>新的通信技术：WebSockets、WebRTC</li>
+<li>离线存储技术：LocalStorage、断网检测</li>
+<li>多媒体技术：视频、音频</li>
+<li>图像技术：Canvas、SVG、WebGL</li>
+<li>Web增强技术：History API、全屏</li>
+<li>设备相关技术：摄像头、触摸屏</li>
+<li>新的样式技术：CSS3新的 Flex、Grid 的布局方式</li>
+</ul>
+<h1 id="HTML-起手式"><a href="#HTML-起手式" class="headerlink" title="HTML 起手式"></a>HTML 起手式</h1><p>用 <code>Emmet</code> 所提供的速写法可以很快地写出你在写 <code>HTML</code> 所需要写的一个骨架。<br>你只需要在安装了插件的编辑器（某些编辑器默认具有此功能）中输入 <code>!</code> 再敲击 <code>Tab</code>，便可以很方便地输入以下内容。</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span> <span class="comment">&lt;!-- 表示文档类型是 HTML 5 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span> <span class="comment">&lt;!-- html 标签，可以在这里设置语言，比如 lang="zh-CN" --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span>  <span class="comment">&lt;!-- 这里的东西不会显示到页面上 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span>  <span class="comment">&lt;!-- 文件的字符编码 --&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 设置视口大小为设备宽度（以兼容手机），并设置初始缩放为 1.0 并禁用缩放 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"viewport"</span> <span class="attr">content</span>=<span class="string">"width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">"X-UA-Compatible"</span> <span class="attr">content</span>=<span class="string">"ie=edge"</span>&gt;</span> <span class="comment">&lt;!-- 让 IE 浏览器使用最新的内核 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span> <span class="comment">&lt;!-- 标题 --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span> </span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span> <span class="comment">&lt;!-- 内容 --&gt;</span></span><br><span class="line">    </span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>前端</category>
+        <category>HTML</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>饥人谷</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>CSS 动画</title>
+    <url>/hais-notebook/2020/02/02/2020-02-02-CSS-Animation/</url>
+    <content><![CDATA[<p>用 <code>transform</code> 的性能会比直接修改 <code>left</code> 属性好，因为浏览器不会 repaint 那么多次</p>
+<a id="more"></a>
+
+<h1 id="浏览器的渲染过程"><a href="#浏览器的渲染过程" class="headerlink" title="浏览器的渲染过程"></a>浏览器的渲染过程</h1><p>根据 <a href="https://developers.google.com/web/fundamentals/performance/critical-rendering-path/render-tree-construction" target="_blank" rel="noopener">Google 团队的文章</a>分析，我们可以将网页的渲染过程大致分为以下几步：</p>
+<ol>
+<li>根据 HTML 构建 HTML 树（DOM）</li>
+<li>根据 CSS 构建 CSS 树（CSSOM）</li>
+<li>将两棵树合并为渲染树（Render Tree）</li>
+<li>布局 <strong>Layout</strong>（文档流、盒模型、计算大小和位置）</li>
+<li>绘制 <strong>Paint</strong>（边框颜色、文字颜色、阴影）</li>
+<li>合成 <strong>Compose</strong>（根据层叠关系展示画面）</li>
+</ol>
+<p><img src="/hais-notebook/images/CSS-006.png" alt=""></p>
+<h1 id="更新样式"><a href="#更新样式" class="headerlink" title="更新样式"></a>更新样式</h1><div class="note warning">
+            <p>一般用 JS 更新样式，比如</p><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">div.style.background = <span class="string">'red'</span></span><br><span class="line">div.style.display = <span class="string">'none'</span></span><br><span class="line">div.classList.add(<span class="string">'red'</span>)</span><br><span class="line">div.remove()</span><br></pre></td></tr></table></figure>
+          </div>
+
+<h2 id="三种更新样式的路径"><a href="#三种更新样式的路径" class="headerlink" title="三种更新样式的路径"></a>三种更新样式的路径</h2><p>在 <a href="https://csstriggers.com/" target="_blank" rel="noopener">这里</a> 可以看到不同的属性在不同的浏览器中的更新路径</p>
+<ul>
+<li>JS/CSS &gt; Style &gt; Layout &gt; Paint &gt; Composite: remove</li>
+<li>JS/CSS &gt; Style &gt; Paint &gt; Composite: background-color</li>
+<li>JS/CSS &gt; Style &gt; Composite: transform</li>
+</ul>
+<h2 id="CSS-动画优化"><a href="#CSS-动画优化" class="headerlink" title="CSS 动画优化"></a>CSS 动画优化</h2><p>可以看看 <a href="https://developers.google.com/web/fundamentals/performance/rendering" target="_blank" rel="noopener">谷歌的这篇文档</a></p>
+<ul>
+<li>JS 优化：使用 <code>requestAnimationFrame</code> 代替 <code>setTimeout</code> 或者 <code>setInterval</code></li>
+<li>CSS 优化：使用 <code>will-change</code> 或者 <code>translate</code></li>
+</ul>
+<h1 id="transform"><a href="#transform" class="headerlink" title="transform"></a><code>transform</code></h1><blockquote>
+<p>使用 <code>transform: none</code>，取消所有</p>
+</blockquote>
+<h2 id="位移"><a href="#位移" class="headerlink" title="位移"></a>位移</h2><figure class="highlight"><table><tr><td class="code"><pre><span class="line">transform: translateX(50px) | translateY(50%) | translateZ(50px) | translate(50px, 50px)</span><br></pre></td></tr></table></figure>
+
+<p>视点的确定（在父元素上）： <code>perspective: 1000px</code> 表示父元素的中心为坐标原点，距离屏幕为 1000px</p>
+<p>可以这样做绝对定位的居中：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">top</span>: 50%; <span class="selector-tag">left</span>: 50%; <span class="selector-tag">transform</span>: <span class="selector-tag">translate</span>(<span class="selector-tag">-50</span>%, <span class="selector-tag">-50</span>%)</span><br></pre></td></tr></table></figure>
+
+<h2 id="缩放"><a href="#缩放" class="headerlink" title="缩放"></a>缩放</h2><p>border 也会一起变</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">transform: scaleX(&lt;number&gt;) | scaleY(&lt;number&gt;) | scale(&lt;number&gt;, &lt;number&gt;?)</span><br></pre></td></tr></table></figure>
+
+<h2 id="旋转"><a href="#旋转" class="headerlink" title="旋转"></a>旋转</h2><p>一般用来做 360 度旋转的 loading 或者按钮的交互</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">transform: rotate([&lt;angle&gt;|&lt;zero&gt;]) | rotateZ([&lt;angle&gt;|&lt;zero&gt;]) | rotateX([&lt;angle&gt;|&lt;zero&gt;])</span><br></pre></td></tr></table></figure>
+
+<h2 id="扭曲"><a href="#扭曲" class="headerlink" title="扭曲"></a>扭曲</h2><figure class="highlight"><table><tr><td class="code"><pre><span class="line">transform: skewX(&lt;angle&gt;|&lt;zero&gt;) | skewY(&lt;angle&gt;|&lt;zero&gt;) | skew(&lt;angle&gt;|&lt;zero&gt;, &lt;angle&gt;|&lt;zero&gt;?)</span><br></pre></td></tr></table></figure>
+
+<h1 id="transition"><a href="#transition" class="headerlink" title="transition"></a><code>transition</code></h1><figure class="highlight css"><table><tr><td class="code"><pre><span class="line">transition: 属性名(可以写all) 时长 过渡方式( linear | ease | ease-in | ease-in-out | cubic-bezier | step-start | step-end | steps ) 延迟</span><br><span class="line"><span class="selector-tag">transition</span>: <span class="selector-tag">width</span> 2<span class="selector-tag">s</span> <span class="selector-tag">linear</span> 3<span class="selector-tag">s</span></span><br></pre></td></tr></table></figure>
+
+<div class="note warning">
+            <p>不是所有属性都有过渡<br><code>display: none =&gt; block</code>，一般改成 <code>visibility: hidden =&gt; visible</code>=</p>
+          </div>
+
+<h1 id="animation"><a href="#animation" class="headerlink" title="animation"></a><code>animation</code></h1><figure class="highlight"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* 声明关键帧 */</span></span><br><span class="line"><span class="keyword">@keyframes</span> xxx &#123;</span><br><span class="line">  0% &#123;</span><br><span class="line">    <span class="attribute">transform</span>: none;</span><br><span class="line">  &#125;</span><br><span class="line">  66<span class="selector-class">.66</span>% &#123;</span><br><span class="line">  <span class="attribute">transform</span>: <span class="built_in">translateX</span>(<span class="number">200px</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 添加动画 */</span></span><br><span class="line">animation: 时长 过渡方式 延迟 次数( infinite ) 方向( reverse | alternate | alternate-reverse ) 填充模式( none | forwards | backwards | both) 是否暂停( paused )  动画名</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>前端</category>
+        <category>CSS</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>饥人谷</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>CSS 层叠上下文</title>
+    <url>/hais-notebook/2020/02/02/2020-02-02-CSS-StakingContext/</url>
+    <content><![CDATA[<p>我们假定用户正面向（浏览器）视窗或网页，而 HTML 元素沿着其相对于用户的一条虚构的 z 轴排开，<strong>层叠上下文</strong> 就是对这些 HTML 元素的一个 <strong>三维构想</strong>。众 HTML 元素基于其元素属性 <strong>按照优先级顺序</strong> 占据这个空间。</p>
+<a id="more"></a>
+
+<p><img src="/hais-notebook/images/CSS-004.png" alt=""></p>
+<p>默认的元素的三维层叠顺序如上图所示，可以看到定位元素会超出原来的高度范畴，换句话说，<strong>原来的 background、border、块级子元素、浮动元素、内联子元素均处在 z-index = -1 ~ 0 这个区间之内</strong>。</p>
+<p>每一个层叠上下文就好像一个小世界，只有这里面的 <code>z-index</code> 才能进行比较，具有不同 <code>z-index</code> 的父元素之中的子元素根本无法同台竞技。</p>
+<p>这些常见的属性（或元素）可以创建一个层叠上下文：</p>
+<ul>
+<li><code>HTML</code>（根元素）</li>
+<li><code>z-index</code> 值不为 <code>auto</code> 的 <code>relative | absolute</code> 元素</li>
+<li><code>z-index</code> 值不为 <code>auto</code> 的 <code>flex</code> <code>grid</code> 子项</li>
+<li><code>transform</code> 值不为 <code>none</code> 的元素</li>
+<li><code>opacity</code> 值小于 <code>1</code> 的元素</li>
+</ul>
+<p>更多资料可以查看 <a href="https://developer.mozilla.org/zh-CN/docs/Web/Guide/CSS/Understanding_z_index/The_stacking_context" target="_blank" rel="noopener">MDN 文档</a> 。</p>
+]]></content>
+      <categories>
+        <category>前端</category>
+        <category>CSS</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>饥人谷</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>CSS 定位</title>
+    <url>/hais-notebook/2020/02/02/2020-02-02-CSS-Positioning/</url>
+    <content><![CDATA[<p>定位和布局的区别：布局是平面上的，定位是垂直于屏幕的。</p>
+<a id="more"></a>
+
+<h1 id="一个-div-的分层"><a href="#一个-div-的分层" class="headerlink" title="一个 div 的分层"></a>一个 div 的分层</h1><p><img src="/hais-notebook/images/CSS-003.png" alt=""></p>
+<h1 id="position"><a href="#position" class="headerlink" title="position"></a><code>position</code></h1><h2 id="static"><a href="#static" class="headerlink" title="static"></a><code>static</code></h2><p>默认值，当前元素在文档流中</p>
+<h2 id="relative"><a href="#relative" class="headerlink" title="relative"></a><code>relative</code></h2><ul>
+<li>距离自己原来的位置的偏离（<code>top</code> / <code>bottom</code>），还是占据原来的空间</li>
+<li>做位移</li>
+<li>做 <code>absolute</code> 元素的爸爸</li>
+<li>配合 <code>z-index</code>，默认是 <code>auto</code>，<code>auto</code> 计算出来的值为 <code>0</code></li>
+<li><strong>经验</strong>：不要写 <code>z-index: 9999</code>，要学会 <code>z-index</code> 的管理</li>
+</ul>
+<h2 id="absolute"><a href="#absolute" class="headerlink" title="absolute"></a><code>absolute</code></h2><ul>
+<li>脱离原来的位置，另起一层；会相对于<strong>祖先元素中最近的</strong>一个<strong>定位元素</strong>（即非 <code>static</code> 元素）</li>
+<li>可以用于悬浮显示提示内容</li>
+<li><code>white-space: nowrap</code> 文字内容不换行</li>
+<li>经验：<ul>
+<li>某些浏览器如果不写 <code>top / left</code> 会引起混乱</li>
+<li>善用 <code>left: 100%</code>，善用 <code>left: 50%</code>加负 <code>margin</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="fixed"><a href="#fixed" class="headerlink" title="fixed"></a><code>fixed</code></h2><ul>
+<li>相对于视口定位，但是如果放到具有 <code>transform</code>  属性的元素里面，会有问题</li>
+<li>做广告</li>
+<li>做回到顶部按钮</li>
+<li><strong>经验</strong><ul>
+<li>某些浏览器如果不写 <code>top / left</code> 会引起混乱</li>
+<li>手机上尽量不要使用 <code>fixed</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="sticky"><a href="#sticky" class="headerlink" title="sticky"></a><code>sticky</code></h2><p>兼容性很差</p>
+]]></content>
+      <categories>
+        <category>前端</category>
+        <category>CSS</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>饥人谷</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>CSS 布局</title>
+    <url>/hais-notebook/2020/02/02/2020-02-02-CSS-Layout/</url>
+    <content><![CDATA[<p>如何选择布局。</p>
+<a id="more"></a>
+
+<h1 id="两种布局方式"><a href="#两种布局方式" class="headerlink" title="两种布局方式"></a>两种布局方式</h1><ul>
+<li><strong>固定宽度布局</strong>：960、1000、1024</li>
+<li><strong>不固定宽度布局</strong>：一般在手机上使用，主要靠文档流原理来布局</li>
+<li><strong>响应式布局</strong>：PC上固定宽度，手机上不固定宽度，也就是一种<strong>混合布局</strong></li>
+</ul>
+<h1 id="两种布局思路"><a href="#两种布局思路" class="headerlink" title="两种布局思路"></a>两种布局思路</h1><ul>
+<li>从大到小：先定下大局，然后再完善每个部分的小布局</li>
+<li>从小到大：先完成小布局，然后再组合成大布局</li>
+</ul>
+<p><img src="/hais-notebook/images/CSS-001.png" alt=""></p>
+<h1 id="Float"><a href="#Float" class="headerlink" title="Float"></a>Float</h1><ol>
+<li>在子元素上加 <code>float: left</code> 和 <code>width</code></li>
+<li>在父元素加上 <code>class=&quot;clearfix&quot;</code></li>
+</ol>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.clearfix</span><span class="selector-pseudo">:after</span>&#123;</span><br><span class="line">  <span class="attribute">content</span>: <span class="string">''</span>;</span><br><span class="line">  <span class="attribute">display</span>: block;</span><br><span class="line">  <span class="attribute">clear</span>: both;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>经验：</p>
+<ul>
+<li>有经验者会留一些空间或最后一个不设置 <code>width</code>（可以设置一个 <code>max-width</code>）</li>
+<li>不需要考虑响应式，因为手机上没有 IE，这个布局是专门为 IE 准备的</li>
+<li>在IE上有BUG：最左边浮动元素的 <code>margin-left</code> 会变成双倍<ul>
+<li>可以加一句兼容性写法：<code>_margin-left: ?px</code></li>
+<li>也可以加上 <code>display: inline-block</code></li>
+</ul>
+</li>
+<li>如果图片下面有空隙，加上 <code>vertical-align: middle | top</code> 就可以消除</li>
+<li><strong><code>float</code> 元素外边距不合并</strong></li>
+</ul>
+<div class="note warning">
+            <p>必要时可以采用负 margin</p>
+          </div>
+
+<p>比如说做平均布局，在所有的小块外面加一个 <code>div</code> ，然后再给这个 <code>div</code> 一个负 <code>margin</code></p>
+<p><img src="/hais-notebook/images/CSS-002.png" alt=""></p>
+<h1 id="Flex"><a href="#Flex" class="headerlink" title="Flex"></a>Flex</h1><p>这里是 <a href="https://css-tricks.com/snippets/css/a-guide-to-flexbox/" target="_blank" rel="noopener">CSS Tricks 上的 Flex 教程</a></p>
+<h2 id="Container"><a href="#Container" class="headerlink" title="Container"></a>Container</h2><ul>
+<li>让一个元素变成 flex 容器：<code>display: flex | inline-flex</code></li>
+<li>改变 items 的流动方向（主轴）：<code>flex-direction: row | row-reverse | column | column-reverse</code></li>
+<li>改变折行：<code>flex-wrap: nowrap | wrap | wrap-revers</code></li>
+<li>主轴的对齐方式：<code>justify-content: flex-start | flex-end | center | space-between | space-around | space-evenly</code></li>
+<li>次轴对齐：<code>align-items: flex-start | flex-end | center | stretch(默认)</code></li>
+<li>多行对齐（基本不用）：<code>align-content: flex-start | flex-end | center | strech | space-between | space-around</code></li>
+</ul>
+<h2 id="Items"><a href="#Items" class="headerlink" title="Items"></a>Items</h2><ul>
+<li><code>order</code>：改变显示顺序</li>
+<li><code>flex-grow</code>：控制自己如何长胖（占多余所有空间的权重），默认是0（尽可能窄）</li>
+<li>导航栏常用左边 logo 和右边用户头像都是 0，中间是 1</li>
+<li><code>flex-shrink</code>：控制如何变瘦，（在空间不够用的时候，压缩的比例）默认是1（大家一起变小），可以写0（防止变小）</li>
+<li><code>flex-basis</code>：控制基准宽度，一般用得比较少，默认是 auto（跟宽度一样）</li>
+</ul>
+<p>以上可以缩写为：<code>flex: grow shrink basis</code></p>
+<ul>
+<li><code>align-self: flex-start | flex-end</code></li>
+</ul>
+<p>经验：</p>
+<ul>
+<li>永远不要把 <code>width</code> 和 <code>height</code> 写死</li>
+<li>尽量使用 <code>min-width</code> | <code>max-width</code> 等来写</li>
+<li><code>margin-xxx: auto</code>，有奇效，类似于 <code>between</code></li>
+</ul>
+<h1 id="Grid"><a href="#Grid" class="headerlink" title="Grid"></a>Grid</h1><p>这里是 <a href="https://css-tricks.com/snippets/css/complete-guide-grid/" target="_blank" rel="noopener">CSS Tricks 上的 Grid 教程</a></p>
+<p><img src="/hais-notebook/images/CSS-007.png" alt=""></p>
+<h2 id="Container-1"><a href="#Container-1" class="headerlink" title="Container"></a>Container</h2><ul>
+<li><p>让一个元素变成 grid 容器：<code>display: grid | inline-grid</code></p>
+</li>
+<li><p>行和列：</p>
+<ul>
+<li><p><code>grid-template-columns</code>: 每一列的宽度，可以写 <code>auto</code></p>
+</li>
+<li><p><code>grid-template-rows</code>: 每一行的高度，可以写 <code>auto</code></p>
+</li>
+<li><figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">grid-template-areas</span>:</span><br><span class="line">  "<span class="selector-tag">header</span> <span class="selector-tag">header</span> <span class="selector-tag">header</span>"</span><br><span class="line">  "<span class="selector-tag">aside</span> <span class="selector-tag">main</span> <span class="selector-tag">ad</span>"</span><br><span class="line">  "<span class="selector-tag">footer</span> <span class="selector-tag">fotter</span> ."</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>grid-gap</code></p>
+</li>
+<li><p><code>grid-column-gap</code></p>
+</li>
+<li><p><code>grid-row-gap</code></p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Items-1"><a href="#Items-1" class="headerlink" title="Items"></a>Items</h2><ul>
+<li>grid-row-start</li>
+<li>grid-row-end</li>
+<li>grid-column-start</li>
+<li>grid-column-end</li>
+<li>fr：free space，类似于flex-grow</li>
+<li><strong>grid-area: header;</strong></li>
+<li><strong>grid-area: main;</strong></li>
+<li><strong>….</strong></li>
+</ul>
+]]></content>
+      <categories>
+        <category>前端</category>
+        <category>CSS</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>饥人谷</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>CSS 基本概念</title>
     <url>/hais-notebook/2020/02/01/2020-02-01-CSS-Concepts/</url>
     <content><![CDATA[<p>主要是包括文档流、脱离文档流、盒模型、margin 合并等问题</p>
 <a id="more"></a>
 
 <h1 id="文档流"><a href="#文档流" class="headerlink" title="文档流"></a>文档流</h1><blockquote>
-<p>这里的文档流指的是 <strong>Normal Flow</strong></p>
+<p>这里的文档流指的是 <strong>Normal Flow</strong>，也就是 <strong>正常布局流</strong><br>当我们没有使用过任何 CSS 规则来改变元素的展现方式的时候，他们会按照正常的布局流来组织——也就是默认情况下的元素布局——这也就是我们所说的 <strong>Noraml Flow</strong>，即 <strong>文档流</strong> </p>
 </blockquote>
 <table>
 <thead>
@@ -68,13 +536,15 @@
             <p>block 不计算其高度</p>
           </div>
 
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">position: absolute | fixed;</span><br><span class="line"><span class="comment">/* OR */</span></span><br><span class="line">float: left | right;</span><br></pre></td></tr></table></figure>
+
+<h1 id="盒模型"><a href="#盒模型" class="headerlink" title="盒模型"></a>盒模型</h1><p>可以把网页中显示的 HTML 元素看成是一个个盒子，盒子具有四层：</p>
 <ul>
-<li>position: absolute / fixed</li>
-<li>float</li>
+<li>内容（content）</li>
+<li>内边距（padding）</li>
+<li>边框（border）</li>
+<li>外边距（margin）</li>
 </ul>
-<h1 id="盒模型"><a href="#盒模型" class="headerlink" title="盒模型"></a>盒模型</h1><blockquote>
-<p>通过 <code>box-sizing</code> 控制，一般使用 <code>border-box</code></p>
-</blockquote>
 <table>
 <thead>
 <tr>
@@ -84,21 +554,26 @@
 </thead>
 <tbody><tr>
 <td><code>content-box</code></td>
-<td>宽度只有内容</td>
+<td>指定 <code>width</code> 或 <code>height</code> 时，说的是他的最里面的 <code>content</code> 的 宽或高</td>
 </tr>
 <tr>
 <td><code>border-box</code></td>
-<td>宽度除了内容之外，包括 <code>padding</code> 和 <code>border</code></td>
+<td>指定 <code>width</code> 或 <code>heihgt</code> 时，除了 <code>content</code> 的宽或高之外，还包括了 <code>padding</code> 和 <code>border</code> 的厚度</td>
 </tr>
 </tbody></table>
-<h1 id="Margin-合并"><a href="#Margin-合并" class="headerlink" title="Margin 合并"></a>Margin 合并</h1><div class="note warning">
-            <p>只有上下会发生 margin 合并</p>
-          </div>
-
-<ul>
-<li><code>block</code> 会发生 margin 合并；<code>inline-block</code> 不会发生</li>
-<li>第一个和最后一个 child 也会和 parent 发生 margin 合并；给 parent 上面加东西（<code>padding</code>、<code>border</code>、<code>overflow</code>）则不会再合并；用<code>overflow:hidden</code> 就不会再合并；用 <code>display:flex</code> 就不会再合并</li>
-</ul>
+<p>通过 <code>box-sizing</code> 控制，一般使用 <code>border-box</code></p>
+<h1 id="Margin-合并"><a href="#Margin-合并" class="headerlink" title="Margin 合并"></a>Margin 合并</h1><p>是说我们上下两个元素若都有 margin，那么他们的 margin 将不会同时生效。有以下几个注意点：</p>
+<ol>
+<li>只有上下才会发生 <code>margin</code> 合并，左右不会发生</li>
+<li>只有 <code>block</code> 会发生 <code>margin</code> 合并，<code>inline-block</code> 不会发生</li>
+<li><code>first-child</code> 和 <code>last-child</code> 也会和 <code>parent</code> 发生 margin 合并</li>
+</ol>
+<p>取消 margin 合并的方法：</p>
+<ol>
+<li>使用 <code>overflow:hidden</code> 之后就不会再合并</li>
+<li>使用 <code>display:flex</code> 之后就不会再合并</li>
+<li>通过给 <code>parent</code> 上面加东西（<code>padding</code> <code>border</code> <code>overflow</code> 等）之后就不会再合并</li>
+</ol>
 ]]></content>
       <categories>
         <category>前端</category>
@@ -110,7 +585,7 @@
       </tags>
   </entry>
   <entry>
-    <title>CSS 开始</title>
+    <title>CSS 序章</title>
     <url>/hais-notebook/2020/02/01/2020-02-01-CSS-Overview/</url>
     <content><![CDATA[<p>记录 CSS 的含义及基本语法。</p>
 <a id="more"></a>
@@ -864,7 +1339,7 @@
   </entry>
   <entry>
     <title>Git 入门</title>
-    <url>/hais-notebook/2020/01/29/2020-01-29-Git/</url>
+    <url>/hais-notebook/2020/01/29/2020-01-29-Tools-Git/</url>
     <content><![CDATA[<p>主要记录 Git 的基本用法及一些坑的解决。</p>
 <a id="more"></a>
 
@@ -971,7 +1446,7 @@
 </ol>
 <figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line"><span class="built_in">ipconfig</span> /flushdns</span><br></pre></td></tr></table></figure>]]></content>
       <categories>
-        <category>常识</category>
+        <category>工具</category>
       </categories>
       <tags>
         <tag>入门</tag>
@@ -981,7 +1456,7 @@
   </entry>
   <entry>
     <title>命令行基础</title>
-    <url>/hais-notebook/2020/01/29/2020-01-29-CommonSense-Command/</url>
+    <url>/hais-notebook/2020/01/29/2020-01-29-Tools-Command/</url>
     <content><![CDATA[<p>主要记录命令行的基本用法。</p>
 <a id="more"></a>
 
@@ -1131,7 +1606,7 @@
 </ul>
 ]]></content>
       <categories>
-        <category>常识</category>
+        <category>工具</category>
       </categories>
       <tags>
         <tag>入门</tag>
