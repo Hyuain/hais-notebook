@@ -14,7 +14,8 @@ categories:
 
 # 文档流
 
-> 这里的文档流指的是 **Normal Flow**
+> 这里的文档流指的是 **Normal Flow**，也就是 **正常布局流**
+> 当我们没有使用过任何 CSS 规则来改变元素的展现方式的时候，他们会按照正常的布局流来组织——也就是默认情况下的元素布局——这也就是我们所说的 **Noraml Flow**，即 **文档流** 
 
 | `display` | 流动方向 | 宽度 | 高度 |
 | --- | --- | --- | --- |
@@ -42,23 +43,38 @@ categories:
 block 不计算其高度
 {% endnote %}
 
-- position: absolute / fixed
-- float
+```css
+position: absolute | fixed;
+/* OR */
+float: left | right;
+```
 
 # 盒模型
 
-> 通过 `box-sizing` 控制，一般使用 `border-box`
+可以把网页中显示的 HTML 元素看成是一个个盒子，盒子具有四层：
+
+- 内容（content）
+- 内边距（padding）
+- 边框（border）
+- 外边距（margin）
 
 | `box-sizing` | 特性 |
 | --- | --- |
-| `content-box` | 宽度只有内容 |
-| `border-box` | 宽度除了内容之外，包括 `padding` 和 `border` |
+| `content-box` | 指定 `width` 或 `height` 时，说的是他的最里面的 `content` 的 宽或高 |
+| `border-box` | 指定 `width` 或 `heihgt` 时，除了 `content` 的宽或高之外，还包括了 `padding` 和 `border` 的厚度 |
+
+通过 `box-sizing` 控制，一般使用 `border-box`
 
 # Margin 合并
 
-{% note warning %}
-只有上下会发生 margin 合并
-{% endnote %}
+是说我们上下两个元素若都有 margin，那么他们的 margin 将不会同时生效。有以下几个注意点：
 
-- `block` 会发生 margin 合并；`inline-block` 不会发生
-- 第一个和最后一个 child 也会和 parent 发生 margin 合并；给 parent 上面加东西（`padding`、`border`、`overflow`）则不会再合并；用`overflow:hidden` 就不会再合并；用 `display:flex` 就不会再合并
+1. 只有上下才会发生 `margin` 合并，左右不会发生
+2. 只有 `block` 会发生 `margin` 合并，`inline-block` 不会发生
+3. `first-child` 和 `last-child` 也会和 `parent` 发生 margin 合并
+
+取消 margin 合并的方法：
+
+1. 使用 `overflow:hidden` 之后就不会再合并
+2. 使用 `display:flex` 之后就不会再合并
+3. 通过给 `parent` 上面加东西（`padding` `border` `overflow` 等）之后就不会再合并
