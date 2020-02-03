@@ -1,6 +1,616 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>axios</title>
+    <url>/hais-notebook/2020/02/02/2020-02-02-Tools-axios/</url>
+    <content><![CDATA[<p>文档翻译<br>用于浏览器和 node.js 的基于 Promise 的 HTTP 客户端。</p>
+<a id="more"></a>
+
+<h1 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h1><ul>
+<li>从浏览器发起 <a href="https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest" target="_blank" rel="noopener">XMLHttpRequest</a></li>
+<li>从 node.js 发起 <a href="http://nodejs.org/api/http.html" target="_blank" rel="noopener">http</a> 请求</li>
+<li>支持 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise" target="_blank" rel="noopener">Promise</a> API</li>
+<li>拦截请求和响应</li>
+<li>转换请求和响应数据</li>
+<li>取消请求</li>
+<li>JSON 数据的自动转换</li>
+<li>从客户端防范 XSRF 攻击</li>
+</ul>
+<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><p>使用 npm：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ npm install axios</span><br></pre></td></tr></table></figure>
+
+<p>使用 bower：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ bower install axios</span><br></pre></td></tr></table></figure>
+
+<p>使用 yarn：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ yarn add axios</span><br></pre></td></tr></table></figure>
+
+<p>使用 cdn：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"https://unpkg.com/axios/dist/axios.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1><h2 id="注意：这是在-CommonJS-中的使用方法"><a href="#注意：这是在-CommonJS-中的使用方法" class="headerlink" title="注意：这是在 CommonJS 中的使用方法"></a>注意：这是在 CommonJS 中的使用方法</h2><p>为了在使用 <code>require()</code> 进行导入的 CommonJS 中获得 TypeScript 输入时的智能补充和类型提示，需要使用这样的方法：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> axios = <span class="built_in">require</span>(<span class="string">'axios'</span>).default;</span><br><span class="line"><span class="comment">// 这样 axios.&lt;method&gt; 就可以提供自动补充和参数类型了</span></span><br></pre></td></tr></table></figure>
+
+<p>执行一个 <code>GET</code> 请求：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> axios = <span class="built_in">require</span>(<span class="string">'axios'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 在已知 ID 的情况下请求 user</span></span><br><span class="line">axios.get(<span class="string">'/user?ID=12345'</span>)</span><br><span class="line">  .then(<span class="function"><span class="keyword">function</span> (<span class="params">response</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 处理成功的情形</span></span><br><span class="line">  <span class="built_in">console</span>.log(response);</span><br><span class="line">  &#125;)</span><br><span class="line">  .catch(<span class="function"><span class="keyword">function</span> (<span class="params">error</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 处理失败的情形</span></span><br><span class="line">  <span class="built_in">console</span>.log(error);</span><br><span class="line">  &#125;)</span><br><span class="line">  .then(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 永远执行</span></span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 上面的请求也可以这样写：</span></span><br><span class="line">axios.get(<span class="string">'/user'</span>, &#123;</span><br><span class="line">    params: &#123;</span><br><span class="line">      ID: <span class="number">12345</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">  .then(<span class="function"><span class="keyword">function</span> (<span class="params">response</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 处理成功的情形</span></span><br><span class="line">  <span class="built_in">console</span>.log(response);</span><br><span class="line">  &#125;)</span><br><span class="line">  .catch(<span class="function"><span class="keyword">function</span> (<span class="params">error</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 处理失败的情形</span></span><br><span class="line">  <span class="built_in">console</span>.log(error);</span><br><span class="line">  &#125;)</span><br><span class="line">  .then(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 永远执行</span></span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 想要使用 async/await？那就在你外面的函数/方法上加上 `async` 关键字</span></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">getUser</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> response = <span class="keyword">await</span> aixos.get(<span class="string">'/user?ID=12345'</span>);</span><br><span class="line">    <span class="built_in">console</span>.log(response);</span><br><span class="line">  &#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(error);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>注意：</strong><code>async/await</code> 是 ECMAScript 2017 的一部分，并且不支持 Internet Explorer 和一些更久的浏览器，所以使用的时候要注意。</p>
+</blockquote>
+<p>执行一个 <code>POST</code> 请求：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">axios.post(<span class="string">'/user'</span>, &#123;</span><br><span class="line">    firstName: <span class="string">'Fred'</span>,</span><br><span class="line">    lastName: <span class="string">'Flintstone'</span></span><br><span class="line">  &#125;)</span><br><span class="line">  .then(<span class="function"><span class="keyword">function</span> (<span class="params">response</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(response);</span><br><span class="line">  &#125;)</span><br><span class="line">  .catch(<span class="function"><span class="keyword">function</span> (<span class="params">error</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(error);</span><br><span class="line">  &#125;)</span><br></pre></td></tr></table></figure>
+
+<p>执行多个并发请求：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getUserAccount</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> axios.get(<span class="string">'/user/12345'</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getUserPermission</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> axios.get(<span class="string">'/user/12345/permission'</span>);</span><br><span class="line">&#125;</span><br><span class="line">axios.all([getUserAccount(), getUserPermission()])</span><br><span class="line">  .then(axios.spread(<span class="function"><span class="keyword">function</span> (<span class="params">acct,perms</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 两个请求都完成了</span></span><br><span class="line">  &#125;));</span><br></pre></td></tr></table></figure>
+
+<h1 id="axios-API"><a href="#axios-API" class="headerlink" title="axios API"></a>axios API</h1><p>可以通过给 <code>axios</code> 传递相关的 config 来执行请求。</p>
+<p>axios(config)</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 发送一个 POST 请求</span></span><br><span class="line">axios(&#123;</span><br><span class="line">  method: <span class="string">'post'</span>,</span><br><span class="line">  url: <span class="string">'/user/12345'</span>,</span><br><span class="line">  data: &#123;</span><br><span class="line">    firstName: <span class="string">'Fred'</span>,</span><br><span class="line">    lastName: <span class="string">'Flintstone'</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 使用 GET 方法请求一个图片</span></span><br><span class="line">axios(&#123;</span><br><span class="line">  method: <span class="string">'get'</span>,</span><br><span class="line">  url: <span class="string">'http://bit.ly/2mTM3nY'</span>,</span><br><span class="line">  responseType: <span class="string">'stream'</span></span><br><span class="line">&#125;)</span><br><span class="line">  .then(<span class="function"><span class="keyword">function</span> (<span class="params">response</span>) </span>&#123;</span><br><span class="line">    response.data.pipe(fs.createWriteStream(<span class="string">'ada_lovelace.jpg'</span>))</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
+
+<p>axios(url[, config])</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 发送一个 GET 请求（默认方法）</span></span><br><span class="line">axios(<span class="string">'/user/12345'</span>);</span><br></pre></td></tr></table></figure>
+
+<h2 id="请求方法的别名"><a href="#请求方法的别名" class="headerlink" title="请求方法的别名"></a>请求方法的别名</h2><p>为了方便，所有支持的请求方法都提供了别名。</p>
+<p>axios.request(config)<br>axios.get(url[, config])<br>axios.delete(url[, config])<br>axios.head(url[, config])<br>axios.options(url[, config])<br>axios.post(url[, data[, config]])<br>axios.put(url[, data[, config]])<br>axios.patch(url[, data[, config]])</p>
+<blockquote>
+<p>注意<br>当使用别名时，不需要再在 config 中指定 <code>url</code> <code>method</code> 和 <code>data</code> 属性</p>
+</blockquote>
+<h2 id="并发性"><a href="#并发性" class="headerlink" title="并发性"></a>并发性</h2><p>有一些帮助函数来处理并发请求。</p>
+<p>axios.all(iterable)<br>axios.spread(callback)</p>
+<h2 id="创建一个实例"><a href="#创建一个实例" class="headerlink" title="创建一个实例"></a>创建一个实例</h2><p>你可以使用自定义的 config 来创建一个 axios 实例。</p>
+<p>axios.create([config])</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> instance = axios.create(&#123;</span><br><span class="line">  baseURL: <span class="string">'https://some-domain.com/api'</span>,</span><br><span class="line">  timeout: <span class="number">1000</span>,</span><br><span class="line">  headers: &#123;<span class="string">'X-Custom-Header'</span>: <span class="string">'foobar'</span>&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="实例方法"><a href="#实例方法" class="headerlink" title="实例方法"></a>实例方法</h2><p>下面列举了可用的实例方法，指定的 config 会与实例的 config 合并。</p>
+<p>axios#request(config)<br>axios#get(url[, config])<br>axios#delete(url[, config])<br>axios#head(url[, config])<br>axios#options(url[, config])<br>axios#post(url[, data[, config]])<br>axios#put(url[, data[, config]])<br>axios#patch(url[, data[, config]])<br>axios#getUri([config])</p>
+<h1 id="请求的-config"><a href="#请求的-config" class="headerlink" title="请求的 config"></a>请求的 config</h1><p>在众多的 config 选项中，只有 <code>url</code> 是必须的。如果没有指定 <code>method</code>，则默认为 <code>GET</code>。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="comment">// `url` 是被用于请求的服务器的 URL</span></span><br><span class="line">  url: <span class="string">'/user'</span>,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `method` 是发起请求时用的方法</span></span><br><span class="line">  method: <span class="string">'get'</span>, <span class="comment">// 默认值</span></span><br><span class="line">  </span><br><span class="line">  <span class="comment">// `baseURL` 将在 `url` 不是绝对路径的时候放在 `url` 的前面</span></span><br><span class="line">  <span class="comment">// 给 axios 实例设置一个 `baseURL` 就可以很方便地给实例的方法传递相对路径</span></span><br><span class="line">  baseURL: <span class="string">'https://some-domain.com/api/'</span>,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `transformRequest` 允许在请求发送给服务器之前变换数据</span></span><br><span class="line">  <span class="comment">// 这只适用于 'PUT' 'POST' 'PATCH' 和 'DELETE' 方法</span></span><br><span class="line">  <span class="comment">// 数组中最后的函数必须返回一个字符串</span></span><br><span class="line">  <span class="comment">// 或者 Buffer、ArrayBuffer、FormData 或 Stream 的实例</span></span><br><span class="line">  <span class="comment">// 你可以修改 headers 对象</span></span><br><span class="line">  transformRequest: [<span class="function"><span class="keyword">function</span> (<span class="params">data, headers</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 做些什么来修改数据</span></span><br><span class="line">    <span class="keyword">return</span> data</span><br><span class="line">  &#125;],</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `transformResponse` 允许对响应数据在传递给 then/catch 之前进行变换</span></span><br><span class="line">  transformResponse: [<span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 做些什么来修改数据</span></span><br><span class="line">    <span class="keyword">return</span> data    </span><br><span class="line">  &#125;],</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// `headers` 是自定义的请求头</span></span><br><span class="line">  headers: &#123;<span class="string">'X-Requested-With'</span>: <span class="string">'XMLHttpRequest'</span>&#125;,</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// `params` 是请求时的 URL 参数</span></span><br><span class="line">  <span class="comment">// 必须要是一个纯粹的对象或者 URLSearchParams 对象</span></span><br><span class="line">  params: &#123;</span><br><span class="line">    ID: <span class="number">12345</span></span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `paramsSerializer` 是一个可选的函数，用来控制序列化的 `params`</span></span><br><span class="line">  <span class="comment">// （比如 https://www.npmjs.com/package/qs, http://api.jquery.com/jquery.param/）</span></span><br><span class="line">  paramsSerializer: <span class="function"><span class="keyword">function</span> (<span class="params">params</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Qs.stringify(params, &#123;<span class="attr">arrayFormat</span>: <span class="string">'brackets'</span>&#125;)</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `data` 是被当做请求体发送的数据</span></span><br><span class="line">  <span class="comment">// 只适用于 'PUT' 'POST' 和 'PATCH' 方法</span></span><br><span class="line">  <span class="comment">// 当没有设置 `transformRequest` 时，必须是以下几种类型之一：</span></span><br><span class="line">  <span class="comment">// - 字符串、纯粹的对象、ArrayBuffer、ArrayBufferView、URLSearchParams</span></span><br><span class="line">  <span class="comment">// - 只有浏览器可用：FormData、文件、Blob</span></span><br><span class="line">  <span class="comment">// - 只有 Node 可用： Stream、Buffer</span></span><br><span class="line">  data: &#123;</span><br><span class="line">    firstName: <span class="string">'Fred'</span></span><br><span class="line">  &#125;,</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 发送请求数据的另一种写法</span></span><br><span class="line">  <span class="comment">// post 方法</span></span><br><span class="line">  <span class="comment">// 只有 value 被发送，key 不会</span></span><br><span class="line">  data: <span class="string">'Country=Brasil&amp;City=Belo Horizonte'</span>,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `timeout` 指定了请求超时的毫秒数</span></span><br><span class="line">  <span class="comment">// 如果请求超过了 `timeout`，则请求将会被放弃</span></span><br><span class="line">  timeout: <span class="number">1000</span>, <span class="comment">// 默认为 `0` （没有时限）</span></span><br><span class="line">  </span><br><span class="line">  <span class="comment">// `withCredentials` 指定了访问跨站点的 Access-Control 请求</span></span><br><span class="line">  <span class="comment">// 是否使用证书</span></span><br><span class="line">  withCredentials: <span class="literal">false</span>, <span class="comment">// 默认</span></span><br><span class="line">  </span><br><span class="line">  <span class="comment">// `adapter` 允许自定义让测试变简单的请求控制器</span></span><br><span class="line">  <span class="comment">// 返回一个 promise 并且提供一个合法的响应</span></span><br><span class="line">  adapter: <span class="function"><span class="keyword">function</span> (<span class="params">config</span>) </span>&#123;</span><br><span class="line">    <span class="comment">/* ... */</span></span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `auth` 说明需要使用 HTTP 基本身份验证，并且提供合法的证书</span></span><br><span class="line">  <span class="comment">// 他将会 设置一个 `Authorization` 请求头</span></span><br><span class="line">  <span class="comment">// 并且会覆盖在 `headers` 中自定义的 `Authorization` 请求头</span></span><br><span class="line">  <span class="comment">// 请注意这里只能设置 HTTP 基本身份验证</span></span><br><span class="line">  <span class="comment">// 对于不记名令牌等，需要使用自定义的 `Authorization` 请求头</span></span><br><span class="line">  auth: &#123;</span><br><span class="line">    username: <span class="string">'janedoe'</span>,</span><br><span class="line">    password: <span class="string">'s00pers3cret'</span></span><br><span class="line">  &#125;,</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// `responseType` 指定了服务器返回的数据类型</span></span><br><span class="line">  <span class="comment">// 包括 'arraybuffer' 'document' 'json' 'text' 'stream'</span></span><br><span class="line">  <span class="comment">// 只有浏览器可用：'blob'</span></span><br><span class="line">  responseType: <span class="string">'json'</span>, <span class="comment">// 默认</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// `responseEncoding` 指定了解码响应数据的编码方式</span></span><br><span class="line">  <span class="comment">// 注意：在 'stream' 或客户端请求的 `responseType` 被忽略</span></span><br><span class="line">  responseEncoding: <span class="string">'utf-8'</span>, <span class="comment">// 默认</span></span><br><span class="line">  </span><br><span class="line">  <span class="comment">// `xsrfCookieName` 是用来做为 xsrf 令牌值的 cookie 的名字</span></span><br><span class="line">  xsrfCookieName: <span class="string">'XSRF-TOKEN'</span>, <span class="comment">// 默认</span></span><br><span class="line">  </span><br><span class="line">  <span class="comment">// `xsrfHeaderName` 是保存 xsrf 令牌值的 HTTP 头的名字</span></span><br><span class="line">  xsrfHeaderName: <span class="string">'X-XSRF-TOKEN'</span>, <span class="comment">// 默认</span></span><br><span class="line">  </span><br><span class="line">  <span class="comment">// `onUploadProgress` 允许控制上传的事件</span></span><br><span class="line">  onUploadProgress: <span class="function"><span class="keyword">function</span> (<span class="params">progressEvent</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 对原生事件做些什么</span></span><br><span class="line">  &#125;,</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// `onDownloadProgress` 允许控制下载的事件</span></span><br><span class="line">  onUploadProgress: <span class="function"><span class="keyword">function</span> (<span class="params">progressEvent</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 对原生事件做些什么</span></span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `maxContentLength` 定义了以字节计量的 HTTP 响应允许的最大容量</span></span><br><span class="line">  maxContentLength: <span class="number">2000</span>,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `validateStatus` 定义根据 HTTP 响应的状态码</span></span><br><span class="line">  <span class="comment">// 是 resolve 还是 reject 这个 promise</span></span><br><span class="line">  <span class="comment">// 如果 `validateStatus` 返回 `true`（或设为 `null` 或 `undefined`），</span></span><br><span class="line">  <span class="comment">// 将会 resolve 这个 promise</span></span><br><span class="line">  <span class="comment">// 反之则 reject 这个 promise</span></span><br><span class="line">  validateStatus: <span class="function"><span class="keyword">function</span> (<span class="params">status</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> status &gt;= <span class="number">200</span> &amp;&amp; status &lt; <span class="number">300</span>; <span class="comment">// 默认</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `maxRedirects` 定义了在 node.js 中最大的重定向数</span></span><br><span class="line">  <span class="comment">// 如果设为 0，则不允许重定向</span></span><br><span class="line">  maxRedirect: <span class="number">5</span>, <span class="comment">// 默认</span></span><br><span class="line">  </span><br><span class="line">  <span class="comment">// `socketPath` 定义了在 node.js 中使用的 UNIX Socket</span></span><br><span class="line">  <span class="comment">// 比如 '/var/run/docker.sock' 来发送请求到 docker daemon</span></span><br><span class="line">  <span class="comment">// `socketPath` 与 `proxy` 中只有一个生效</span></span><br><span class="line">  <span class="comment">// 如果都被设置了，则使用 `socketPath`</span></span><br><span class="line">  socketPath: <span class="literal">null</span>, <span class="comment">// 默认</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// `httpAgent` 和 `httpsAgent` 分别定义了一个执行 http 和 https 请求时</span></span><br><span class="line">  <span class="comment">// 在 node.js 中的代理</span></span><br><span class="line">  <span class="comment">// 这允许诸如 `keepAlive` 之类的默认情况下不允许的选项</span></span><br><span class="line">  httpAgent: <span class="keyword">new</span> http.Agent(&#123; <span class="attr">keepAlive</span>: <span class="literal">true</span> &#125;),</span><br><span class="line">  httpsAgent: <span class="keyword">new</span> https.Agent(&#123; <span class="attr">keepAlive</span>: <span class="literal">true</span> &#125;),</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 'proxy' 定义了代理服务器的主机名和端口</span></span><br><span class="line">  <span class="comment">// 你也可以用常规的 `http_proxy` `https_proxy` 环境变量定义你的代理</span></span><br><span class="line">  <span class="comment">// 如果你正在使用环境变量来配置代理，你也可以定义 `no_proxy` 环境变量</span></span><br><span class="line">  <span class="comment">// 这是一个用逗号分隔的不应该被代理的主机列表</span></span><br><span class="line">  <span class="comment">// 用 `false` 来禁用代理，忽略环境变量</span></span><br><span class="line">  <span class="comment">// `auth` 表示在连接这个代理的时候应该使用 HTTP 基本身份验证，并提供证书</span></span><br><span class="line">  <span class="comment">// 这将会设置 `Proxy-Authorization` 请求头</span></span><br><span class="line">  <span class="comment">// 并且覆盖已经存在的在 `headers` 中自定义的 `Proxy-Authorization`</span></span><br><span class="line">  proxy: &#123;</span><br><span class="line">    host: <span class="string">'127.0.0.1'</span>,</span><br><span class="line">    port: <span class="number">9000</span>,</span><br><span class="line">    auth: &#123;</span><br><span class="line">      username: <span class="string">'mikeymike'</span>,</span><br><span class="line">      password: <span class="string">'rapunz3l'</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `cancelToken` 指定了一个可以被用来取消请求的取消令牌</span></span><br><span class="line">  <span class="comment">// （查看下面的取消部分来获取更多信息）</span></span><br><span class="line">  cancelToken: <span class="keyword">new</span> CancelToken(<span class="function"><span class="keyword">function</span> (<span class="params">cancel</span>) </span>&#123;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="响应模式"><a href="#响应模式" class="headerlink" title="响应模式"></a>响应模式</h1><p>请求的响应包含了以下信息：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="comment">// `data` 是服务器提供的响应</span></span><br><span class="line">  data: &#123;&#125;,</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// `status` 是服务器返回的 HTTP 状态码</span></span><br><span class="line">  status: <span class="number">200</span>,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `statusText` 是服务器返回的 HTTP 状态信息</span></span><br><span class="line">  statusText: <span class="string">'OK'</span>,</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// `headers` 是服务器返回的响应头</span></span><br><span class="line">  <span class="comment">// 所有的返回头都是小写</span></span><br><span class="line">  headers: &#123;&#125;,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `config` 是提供给 `axios` 做请求的 config</span></span><br><span class="line">  config: &#123;&#125;,</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// `request` 是产生这个响应的请求</span></span><br><span class="line">  <span class="comment">// 这是 node.js 中（在重定向中）的最后一个 ClientRequest 实例</span></span><br><span class="line">  <span class="comment">// 和浏览器中的 XMLHttpRequest 实例</span></span><br><span class="line">  request: &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当使用 <code>then</code> 的时候，你会收到这样的响应：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">axios.get(<span class="string">'/user/12345'</span>)</span><br><span class="line">  .then(<span class="function"><span class="keyword">function</span> (<span class="params">response</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(response.data);</span><br><span class="line">    <span class="built_in">console</span>.log(response.status);</span><br><span class="line">    <span class="built_in">console</span>.log(response.statusText);</span><br><span class="line">    <span class="built_in">console</span>.log(response.header);</span><br><span class="line">    <span class="built_in">console</span>.log(response.config);</span><br><span class="line">  &#125;)</span><br></pre></td></tr></table></figure>
+
+<p>当使用 <code>catch</code> ，或者传递一个 rejection 回调作为 <code>then</code> 的第二个参数的时候，响应将在 <code>error</code> 对象中可用，就像在处理错误章节中说的一样。</p>
+<h1 id="配置的默认值"><a href="#配置的默认值" class="headerlink" title="配置的默认值"></a>配置的默认值</h1><p>你可以指定一个默认配置应用于所有的请求。</p>
+<h2 id="全局-axios-默认配置"><a href="#全局-axios-默认配置" class="headerlink" title="全局 axios 默认配置"></a>全局 axios 默认配置</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">axios.defaults.baseURL = <span class="string">'https://api.example.com'</span>;</span><br><span class="line">axios.defaults.headers.common[<span class="string">'Authorization'</span>] = AUTH_TOKEN;</span><br><span class="line">axios.defaults.helpers.post[<span class="string">'Content-Type'</span>] = <span class="string">'application/x-www-form-urlencoded'</span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="自定义实例默认配置"><a href="#自定义实例默认配置" class="headerlink" title="自定义实例默认配置"></a>自定义实例默认配置</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 在创建实例的时候设置默认配置</span></span><br><span class="line"><span class="keyword">const</span> instance = axios.create(&#123;</span><br><span class="line">  baseURL: <span class="string">'https://api.example.com'</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 在创建实例之后改变默认配置</span></span><br><span class="line">instance.defaults.headers.common[<span class="string">'Authorization'</span>] = AUTH_TOKEN;</span><br></pre></td></tr></table></figure>
+
+<h2 id="配置的优先顺序"><a href="#配置的优先顺序" class="headerlink" title="配置的优先顺序"></a>配置的优先顺序</h2><p>配置会根据优先顺序自动合并。首先是在 lib/defaults.js 里面的库默认配置，然后是实例中的 <code>defaults</code> 属性，最后是请求的 <code>config</code> 参数。后者的优先级比前者高。这里是一个例子：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 用库中提供的默认配置来创建一个实例</span></span><br><span class="line"><span class="comment">// 就这个例子来说，timeout 配置是 `0`，因为是库的默认值</span></span><br><span class="line"><span class="keyword">const</span> instance = axios.create();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 覆盖库中默认的 timeout 值</span></span><br><span class="line"><span class="comment">// 现在这个实例的所有请求会在超时之前等待 2.5 秒</span></span><br><span class="line">instance.defaults.timeout = <span class="number">2500</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 覆盖这个请求的 timeout 值，因为我们知道他会花更长的时间</span></span><br><span class="line">instance.get(<span class="string">'/longRequest'</span>, &#123;</span><br><span class="line">  timeout: <span class="number">5000</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h1 id="拦截器"><a href="#拦截器" class="headerlink" title="拦截器"></a>拦截器</h1><p>你可以在请求或者响应被 <code>then</code> 或 <code>catch</code> 处理之前拦截它们。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 添加一个请求拦截器</span></span><br><span class="line">axios.interceptors.request.use(<span class="function"><span class="keyword">function</span> (<span class="params">config</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 在请求发出之前做些什么</span></span><br><span class="line">  <span class="keyword">return</span> config;</span><br><span class="line">&#125;, <span class="function"><span class="keyword">function</span> (<span class="params">error</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 在请求失败的时候做些什么</span></span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">Promise</span>.reject(error)</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 添加一个响应拦截器</span></span><br><span class="line">axios.interceptors.response.use(<span class="function"><span class="keyword">function</span> (<span class="params">response</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 所有状态码在 2xx 范围的都会触发</span></span><br><span class="line">  <span class="comment">// 对返回的数据做些什么</span></span><br><span class="line">  <span class="keyword">return</span> response;</span><br><span class="line">&#125;, <span class="function"><span class="keyword">function</span> (<span class="params">error</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 所有状态码不在 2xx 范围的都会触发</span></span><br><span class="line">  <span class="comment">// 对返回的错误做些什么</span></span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">Promise</span>.reject(error)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>如果你需要移除一个拦截器：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> myInterceptor = axios.interseptors.request.use(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;<span class="comment">/*...*/</span>&#125;);</span><br><span class="line">axios.interseptors.request.eject(myInterceptor);</span><br></pre></td></tr></table></figure>
+
+<p>你可以给一个 axios 实例增加拦截器：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> instance = axios.create();</span><br><span class="line">instance.interceptors.request.use(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;<span class="comment">/*...*/</span>&#125;);</span><br></pre></td></tr></table></figure>
+
+<h1 id="处理错误"><a href="#处理错误" class="headerlink" title="处理错误"></a>处理错误</h1><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">axios.get(<span class="string">'/user/12345'</span>)</span><br><span class="line">  .catch(<span class="function"><span class="keyword">function</span> (<span class="params">error</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(error.response) &#123;</span><br><span class="line">      <span class="comment">// 发出请求后收到一个状态码不在 2xx 范围的回复</span></span><br><span class="line">      <span class="built_in">console</span>.log(error.response.data);</span><br><span class="line">      <span class="built_in">console</span>.log(error.response.status);</span><br><span class="line">      <span class="built_in">console</span>.log(error.response.headers);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (error.request) &#123;</span><br><span class="line">      <span class="comment">// 请求发出了但是没有收到回复</span></span><br><span class="line">      <span class="comment">// `error.request` 是浏览器中 XMLHttpRequest 的实例</span></span><br><span class="line">      <span class="comment">// 也是一个 node.js 中 http.ClientRequest 的实例</span></span><br><span class="line">      <span class="built_in">console</span>.log(error.request);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="comment">// 在引发错误的请求的安装过程中发生了些状况</span></span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">'Error'</span>, error.message);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">console</span>.log(error.config);</span><br><span class="line">  &#125;)</span><br></pre></td></tr></table></figure>
+
+<p>使用 <code>validateStatus</code> 配置选项，可以配置应该抛出错误的 HTTP 状态码。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">axios.get(<span class="string">'/user/12345'</span>, &#123;</span><br><span class="line">  validateStatus: <span class="function"><span class="keyword">function</span> (<span class="params">status</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> status &lt; <span class="number">500</span>; <span class="comment">// 只 reject 状态码大于等于 500 的响应</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>使用 <code>toJSON</code> 可以获得关于 HTTP 错误的更多信息。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">axios.get(<span class="string">'/user/12345'</span>)</span><br><span class="line">  .catch(<span class="function"><span class="keyword">function</span> (<span class="params">error</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(error.toJSON());</span><br><span class="line">  &#125;)</span><br></pre></td></tr></table></figure>
+
+<h1 id="取消"><a href="#取消" class="headerlink" title="取消"></a>取消</h1><p>你可以使用取消令牌来取消请求。</p>
+<blockquote>
+<p>axios 取消令牌 API 基于被弃用的 <a href="https://github.com/tc39/proposal-cancelable-promises" target="_blank" rel="noopener">cancelable promises proposal</a></p>
+</blockquote>
+<p>你可以用 <code>CancelToken.source</code> 工厂函数创建一个取消令牌：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> CancelToken = axios.CancelToken();</span><br><span class="line"><span class="keyword">const</span> source = CancelToken.source();</span><br><span class="line"></span><br><span class="line">axios.get(<span class="string">'/user/12345'</span>, &#123;</span><br><span class="line">  cancelToken: source.token</span><br><span class="line">&#125;).catch(<span class="function"><span class="keyword">function</span> (<span class="params">thrown</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (axios.isCancel(thrown)) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'Request canceled'</span>, thrown.message);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// 处理错误</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">axios.post(<span class="string">'/user/12345'</span>, &#123;</span><br><span class="line">  name: <span class="string">'new name'</span></span><br><span class="line">&#125;, &#123;</span><br><span class="line">  cancelToken: source.token</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 取消请求（消息参数是可选的）</span></span><br><span class="line">source.cancel(<span class="string">'Operation canceled by user.'</span>);</span><br></pre></td></tr></table></figure>
+
+<p>你也可以通过传递一个执行函数给 <code>CancelToken</code> 构造器来创建一个取消令牌：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> CancelToken = axios.CancelToken;</span><br><span class="line"><span class="keyword">let</span> cancel;</span><br><span class="line"></span><br><span class="line">axios.get(<span class="string">'/user/12345'</span>, &#123;</span><br><span class="line">  cancelToken: <span class="keyword">new</span> CancelToken(<span class="function"><span class="keyword">function</span> <span class="title">executor</span>(<span class="params">c</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 一个执行函数接受取消函数作为参数</span></span><br><span class="line">    cancel = c;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 取消请求</span></span><br><span class="line">cancel();</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：你可以用同一个取消令牌取消多个请求。</p>
+</blockquote>
+<h1 id="使用-application-x-www-form-urlencoded-表格"><a href="#使用-application-x-www-form-urlencoded-表格" class="headerlink" title="使用 application/x-www-form-urlencoded 表格"></a>使用 application/x-www-form-urlencoded 表格</h1><p>默认情况下，axios 会将 JavaScript 对象序列化为 <code>JSON</code>。如果需要以 <code>application/x-www-form-urlencoded</code> 的格式来发送数据，你可以下面的选项之一：</p>
+<h2 id="浏览器"><a href="#浏览器" class="headerlink" title="浏览器"></a>浏览器</h2><p>在浏览器中，你可以使用 <a href="https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams" target="_blank" rel="noopener"><code>URLSearchParams</code></a> API：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> params = <span class="keyword">new</span> URLSearchParams();</span><br><span class="line">params.append(<span class="string">'param1'</span>, <span class="string">'value1'</span>);</span><br><span class="line">params.append(<span class="string">'param2'</span>, <span class="string">'value2'</span>);</span><br><span class="line">axios.post(<span class="string">'/foo'</span>, params);</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意并不是所有的浏览器都支持 <code>URLSearchParams</code>，但是这里有一个可用的 <a href="https://github.com/WebReflection/url-search-params" target="_blank" rel="noopener">polyfill</a>（务必确认 polyfill 全局环境）</p>
+</blockquote>
+<p>你也可以用 <a href="https://github.com/ljharb/qs" target="_blank" rel="noopener"><code>qs</code></a> 库进行编码：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> qs = <span class="built_in">require</span>(<span class="string">'qs'</span>);</span><br><span class="line">axios.post(<span class="string">'/foo'</span>, qs.stringify(&#123; <span class="string">'bar'</span>: <span class="number">123</span> &#125;));</span><br></pre></td></tr></table></figure>
+
+<p>或者用别的方法（ES 6）：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> qs <span class="keyword">from</span> <span class="string">'qs'</span>;</span><br><span class="line"><span class="keyword">const</span> data = &#123; <span class="string">'bar'</span>: <span class="number">123</span> &#125;;</span><br><span class="line"><span class="keyword">const</span> options = &#123;</span><br><span class="line">  method: <span class="string">'POST'</span>,</span><br><span class="line">  headers: &#123; <span class="string">'content-type'</span>: <span class="string">'application/x-www-form-urlencoded'</span> &#125;,</span><br><span class="line">  data: qs.stringify(data),</span><br><span class="line">  url,</span><br><span class="line">&#125;;</span><br><span class="line">axios(options);</span><br></pre></td></tr></table></figure>
+
+<h2 id="Node-js"><a href="#Node-js" class="headerlink" title="Node.js"></a>Node.js</h2><p>在 node.js 中，你可以使用 <a href="https://nodejs.org/api/querystring.html" target="_blank" rel="noopener"><code>querystring</code></a> 模组：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> querystring = <span class="built_in">require</span>(<span class="string">'querystring'</span>);</span><br><span class="line">axios.post(<span class="string">'http://something.com/'</span>, querystring.stringify(&#123; <span class="attr">foo</span>: <span class="string">'bar'</span> &#125;));</span><br></pre></td></tr></table></figure>
+
+<p>你也可以使用 <a href="https://github.com/ljharb/qs" target="_blank" rel="noopener"><code>qs</code></a> 库。</p>
+<blockquote>
+<p>注意<br>如果你需要序列化嵌套对象，使用 <code>qs</code> 库是更合适的，因为 <code>querystring</code> 方法有些已知的问题（<a href="https://github.com/nodejs/node-v0.x-archive/issues/1665" target="_blank" rel="noopener">https://github.com/nodejs/node-v0.x-archive/issues/1665</a>）</p>
+</blockquote>
+<h1 id="语义化版本"><a href="#语义化版本" class="headerlink" title="语义化版本"></a>语义化版本</h1><p>axios <code>1.0</code> 版本之后，新的 minor 版本会发布一些重大的变化。比如 <code>0.5.1</code> 和 <code>0.5.4</code> 有着同样的 API，但是 <code>0.6.0</code> 版本会有一些重要的改变。</p>
+<h1 id="Promises"><a href="#Promises" class="headerlink" title="Promises"></a>Promises</h1><p>axios 依赖于原生 ES6 的 Promise。如果你的环境不支持 ES6 Promises，你可以 <a href="https://github.com/stefanpenner/es6-promise" target="_blank" rel="noopener">polyfill</a>。</p>
+<h1 id="TypeScript"><a href="#TypeScript" class="headerlink" title="TypeScript"></a>TypeScript</h1><p>axios 包括一些 <a href="http://typescriptlang.org/" target="_blank" rel="noopener">TypeScript</a> 定义。</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> axios <span class="keyword">from</span> <span class="string">'axios'</span>;</span><br><span class="line">axios.get(<span class="string">'/user?ID=12345'</span>);</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>工具</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>收集</tag>
+        <tag>杂谈</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>一些 Tips</title>
+    <url>/hais-notebook/2020/02/02/2020-02-02-Others-Tips/</url>
+    <content><![CDATA[<p>收集一些 Tips。</p>
+<a id="more"></a>
+
+<h1 id="滚动条的宽度"><a href="#滚动条的宽度" class="headerlink" title="滚动条的宽度"></a>滚动条的宽度</h1><p>滚动条的宽度在 14 ~ 19px 之间，根据操作系统不同</p>
+<h1 id="jQuery-制作-Tab"><a href="#jQuery-制作-Tab" class="headerlink" title="jQuery 制作 Tab"></a>jQuery 制作 Tab</h1><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">$tabBar.on(<span class="string">'click'</span>, <span class="string">'li'</span>, e =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> $li = $(e.currentTarget)</span><br><span class="line">  $li</span><br><span class="line">    .addClass(<span class="string">'selected'</span>)</span><br><span class="line">    .siblings()</span><br><span class="line">    .removeClass(<span class="string">'selected'</span>)</span><br><span class="line">  <span class="keyword">const</span> index = $li.index()</span><br><span class="line">  $tabContent</span><br><span class="line">    .children()</span><br><span class="line">    .eq(index)</span><br><span class="line">    .addClass(<span class="string">'active'</span>) <span class="comment">// 一定不要用.css 和.show，样式和行为分离</span></span><br><span class="line">    .siblings()</span><br><span class="line">    .removeClass(<span class="string">'active'</span>)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">$tabBar.children().eq(<span class="number">0</span>).trigger(<span class="string">'click'</span>)  <span class="comment">// 默认触发第一个</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="jQuery-如果有-class-就删掉，没有就加上"><a href="#jQuery-如果有-class-就删掉，没有就加上" class="headerlink" title="jQuery 如果有 class 就删掉，没有就加上"></a>jQuery 如果有 class 就删掉，没有就加上</h1><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">$square.on(<span class="string">'click'</span>, () =&gt; &#123;</span><br><span class="line">  $square.toggleClass(<span class="string">'active'</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h1 id="JS-的代码不能以括号开头"><a href="#JS-的代码不能以括号开头" class="headerlink" title="JS 的代码不能以括号开头"></a>JS 的代码不能以括号开头</h1><h1 id="方法-和-函数"><a href="#方法-和-函数" class="headerlink" title="*方法 和 函数"></a><strong>*方法</strong> 和 <strong>函数</strong></h1><ul>
+<li>方法是面向对象概念，一定是依附于一个对象的</li>
+<li>函数是数学概念</li>
+<li>都是指的 function</li>
+</ul>
+<h1 id="常用的画草图的软件"><a href="#常用的画草图的软件" class="headerlink" title="常用的画草图的软件"></a>常用的画草图的软件</h1><ul>
+<li>balsamiq</li>
+<li>figma</li>
+</ul>
+<h1 id="Promise"><a href="#Promise" class="headerlink" title="Promise"></a>Promise</h1><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Promise</span>.reject(<span class="string">'error'</span>)</span><br><span class="line">  .then( <span class="function"><span class="params">()</span>=&gt;</span>&#123;<span class="built_in">console</span>.log(<span class="string">'success1'</span>)&#125;, ()=&gt;&#123;<span class="built_in">console</span>.log(<span class="string">'error1'</span>)&#125; )</span><br><span class="line">  .then( <span class="function"><span class="params">()</span>=&gt;</span>&#123;<span class="built_in">console</span>.log(<span class="string">'success2'</span>)&#125;, ()=&gt;&#123;<span class="built_in">console</span>.log(<span class="string">'error2'</span>)&#125; )</span><br><span class="line"><span class="comment">// error1 -&gt; success2</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="新建一个项目要考虑哪些东西？"><a href="#新建一个项目要考虑哪些东西？" class="headerlink" title="新建一个项目要考虑哪些东西？"></a>新建一个项目要考虑哪些东西？</h1><ul>
+<li>创建仓库</li>
+<li>声明 LICENCE<br><img src="https://www.ruanyifeng.com/blogimg/asset/201105/free_software_licenses.png" alt=""></li>
+<li>要用什么第三方的东西？ npm</li>
+<li>在 webstorm 里面搜 VCS</li>
+</ul>
+<h1 id="单元测试"><a href="#单元测试" class="headerlink" title="单元测试"></a>单元测试</h1><ul>
+<li>BDD（Behavior-Driven Development）：行为驱动开发，用自然语言描述需求</li>
+<li>TDD（Test-Driven Development）：测试驱动开发，目的是为了让测试通过</li>
+<li>Assert：断言</li>
+</ul>
+<h1 id="持续集成"><a href="#持续集成" class="headerlink" title="持续集成"></a>持续集成</h1><ul>
+<li>持续测试</li>
+<li>持续交付</li>
+<li>持续部署</li>
+</ul>
+<h1 id="nodejs-Client-does-not-support-authentication-protocol-requested-by-server-consider-upgrading-MySQL-client"><a href="#nodejs-Client-does-not-support-authentication-protocol-requested-by-server-consider-upgrading-MySQL-client" class="headerlink" title="nodejs Client does not support authentication protocol requested by server; consider upgrading MySQL client"></a>nodejs Client does not support authentication protocol requested by server; consider upgrading MySQL client</h1><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">USER</span> <span class="string">'root'</span>@<span class="string">'localhost'</span> <span class="keyword">IDENTIFIED</span> <span class="keyword">WITH</span> mysql_native_password <span class="keyword">BY</span> <span class="string">'123456'</span>;</span><br></pre></td></tr></table></figure>
+
+<h1 id="redis"><a href="#redis" class="headerlink" title="redis"></a>redis</h1><ul>
+<li>web server 常用的缓存数据库，数据放在内存中</li>
+<li>相比于 mysql，访问速度快；但是成本更高，数据量更小</li>
+<li>解决：将 web server 和 redis 拆分成两个服务，不会占用 web server 的内存，可以跨进程访问</li>
+<li>为何用 redis 来存 session？session 访问频繁，对性能要求高；不用考虑断电数据丢失的问题；session 数据量不会太大</li>
+</ul>
+<h1 id="Vue-的渲染过程"><a href="#Vue-的渲染过程" class="headerlink" title="Vue 的渲染过程"></a>Vue 的渲染过程</h1><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 普通的同步渲染过程</span></span><br><span class="line"><span class="keyword">const</span> div = <span class="built_in">document</span>.createElement(<span class="string">'div'</span>)</span><br><span class="line"><span class="keyword">const</span> child = <span class="built_in">document</span>.createElement(<span class="string">'div'</span>)</span><br><span class="line">div.appendChild(child) <span class="comment">// -&gt; Vue.$mounted 调用，$mounted 是异步的，队列 1</span></span><br><span class="line">body.appendChild(div) <span class="comment">// -&gt; Vue.$mounted 调用，$mounted 是异步的，队列 2</span></span><br><span class="line"><span class="built_in">console</span>.log(div.outerHTML)</span><br></pre></td></tr></table></figure>
+
+<h1 id="不能让-A-—更新—-gt-B-的同时-B-—更新—-gt-A"><a href="#不能让-A-—更新—-gt-B-的同时-B-—更新—-gt-A" class="headerlink" title="不能让  A —更新—&gt; B 的同时 B —更新—&gt; A"></a>不能让  A —更新—&gt; B 的同时 B —更新—&gt; A</h1><h1 id="造轮子"><a href="#造轮子" class="headerlink" title="造轮子"></a>造轮子</h1><ol>
+<li>没有需求不要写代码，没有设计稿不要写代码</li>
+<li>单元测试是重构的前提</li>
+<li>设计模式<ol>
+<li>发布订阅模式</li>
+<li>单向数据流</li>
+<li>正交（props）</li>
+</ol>
+</li>
+</ol>
+]]></content>
+      <categories>
+        <category>前端</category>
+        <category>其他</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>踩坑</tag>
+        <tag>收集</tag>
+        <tag>Tip</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>React Props &amp; State</title>
+    <url>/hais-notebook/2020/02/02/2020-02-02-React-PropsState/</url>
+    <content><![CDATA[<p>主要记录了 React 的 Props 和 State。</p>
+<a id="more"></a>
+
+<h1 id="Props"><a href="#Props" class="headerlink" title="Props"></a>Props</h1><p>可以查看<a href="https://codesandbox.io/s/billowing-wind-d8kzw" target="_blank" rel="noopener">CodeSandbox 上的这个例子</a></p>
+<h1 id="State"><a href="#State" class="headerlink" title="State"></a>State</h1><p>可以查看<a href="https://codesandbox.io/s/silly-diffie-9yk38" target="_blank" rel="noopener">CodeSandbox 上的这个例子</a></p>
+<h2 id="setState-的注意事项"><a href="#setState-的注意事项" class="headerlink" title="setState 的注意事项"></a>setState 的注意事项</h2><ul>
+<li><code>this.state.n += 1</code> 无效，UI 不会自动更新，需要用 <code>setState</code></li>
+<li><code>setState</code> 不会马上改变 <code>state</code>，是异步更新的，推荐使用 <code>setState(函数)</code></li>
+<li>不推荐 <code>this.setState(this.state)</code>，因为 React 不推荐我们修改旧的 <code>state</code>（不可变数据）</li>
+</ul>
+<h2 id="复杂-state"><a href="#复杂-state" class="headerlink" title="复杂 state"></a>复杂 state</h2><ul>
+<li>类组件的 <code>setState</code> 会自动合并第一层，建议使用 <code>Object.assign</code> 或者 <code>...sate</code></li>
+<li>函数组件不会自动合并，建议分开写</li>
+</ul>
+<h2 id="Vue-和-React-的区别"><a href="#Vue-和-React-的区别" class="headerlink" title="Vue 和 React 的区别"></a>Vue 和 React 的区别</h2><p>共同点：</p>
+<ul>
+<li>都是对视图的封装，React 是用类和函数表示一个组件，Vue 是用构造选项表示一个组件</li>
+<li>都提供了 <code>creatElement</code> 的 XML 简写，React 是 JSX，Vue 是 template</li>
+</ul>
+<p>Vue：</p>
+<ul>
+<li>一个对象，对应一个虚拟 DOM，当对象的属性改变时，把属性相关的 DOM 节点全部更新</li>
+<li>JS in HTML</li>
+</ul>
+<p>React：</p>
+<ul>
+<li>一个对象，对应一个虚拟 DOM，另一个对象对应另一个虚拟 DOM，对比两个更新，用 DOM Diff 算法找不同，然后局部更新 DOM</li>
+<li>HTML in JS</li>
+</ul>
+]]></content>
+      <categories>
+        <category>前端</category>
+        <category>JavaScript</category>
+        <category>框架</category>
+        <category>React</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>饥人谷</tag>
+        <tag>文档</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>React Component</title>
+    <url>/hais-notebook/2020/02/02/2020-02-02-React-Component/</url>
+    <content><![CDATA[<p>主要记录了 React 的组件的用法。</p>
+<a id="more"></a>
+
+<h1 id="元素（Element）与组件（Component）"><a href="#元素（Element）与组件（Component）" class="headerlink" title="元素（Element）与组件（Component）"></a>元素（Element）与组件（Component）</h1><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> div = React.createElement(<span class="string">'div'</span>,...) <span class="comment">// React 元素</span></span><br><span class="line"><span class="keyword">const</span> Div = <span class="function"><span class="params">()</span> =&gt;</span> React.createElement(<span class="string">'div'</span>,...) <span class="comment">// React 组件</span></span><br></pre></td></tr></table></figure>
+
+<div class="note warning">
+            <p>目前而言，<br>React 中，一个返回 React 元素的<strong>函数</strong>就是组件<br>Vue 中，一个 <strong>构造选项</strong> 就可以表示一个组件</p>
+          </div>
+
+<h1 id="两种组件"><a href="#两种组件" class="headerlink" title="两种组件"></a>两种组件</h1><ul>
+<li>函数组件：</li>
+</ul>
+<figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Welcome</span>(<span class="params">props</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="xml"><span class="tag">&lt;<span class="name">h1</span>&gt;</span>Hello,&#123;props.name&#125;<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span> <span class="comment">// 会自动变成 React.createElement(...)</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>类组件：</li>
+</ul>
+<figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Welcome</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">component</span> </span>&#123;</span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="xml"><span class="tag">&lt;<span class="name">h1</span>&gt;</span>Hello,&#123;this.props.name&#125;<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>两者的使用方法都是：</p>
+<figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line">&lt;Welcome name=<span class="string">"frank"</span>/&gt;</span><br></pre></td></tr></table></figure>
+
+<p>可以看看 <a href="https://codesandbox.io/s/tender-nightingale-eu1ne" target="_blank" rel="noopener">这个例子</a></p>
+<h1 id="React-中的标签会被翻译成什么？"><a href="#React-中的标签会被翻译成什么？" class="headerlink" title="React 中的标签会被翻译成什么？"></a>React 中的标签会被翻译成什么？</h1><p><code>&lt;div/&gt;</code> 会被翻译成 <code>React.createElement(&#39;div&#39;)</code></p>
+<p><code>&lt;Welcome/&gt;</code> 会被翻译成 <code>React.createElement(Welcome)</code></p>
+<h1 id="React-creatElement"><a href="#React-creatElement" class="headerlink" title="React.creatElement"></a><code>React.creatElement</code></h1><ul>
+<li>如果传入一个字符串 <code>&#39;div&#39;</code> ，则会创建一个 <code>div</code></li>
+<li>如果传入一个函数，则会调用该函数，获取其返回值</li>
+<li>如果传入一个类，则会在前面加类前面加 <code>new</code> （执行 constructor），获取一个组件的对象，然后调用对象的 render 方法，获取其返回值</li>
+</ul>
+]]></content>
+      <categories>
+        <category>前端</category>
+        <category>JavaScript</category>
+        <category>框架</category>
+        <category>React</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>饥人谷</tag>
+        <tag>文档</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>React JSX</title>
+    <url>/hais-notebook/2020/02/02/2020-02-02-React-JSX/</url>
+    <content><![CDATA[<p>JSX 介绍。</p>
+<a id="more"></a>
+
+<h1 id="引入-babel-loader"><a href="#引入-babel-loader" class="headerlink" title="引入 babel-loader"></a>引入 babel-loader</h1><h2 id="CDN-引入"><a href="#CDN-引入" class="headerlink" title="CDN 引入"></a>CDN 引入</h2><p>每次需要写</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/babel"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="webpack"><a href="#webpack" class="headerlink" title="webpack"></a>webpack</h2><p>使用 babel-loader</p>
+<h2 id="create-react-app"><a href="#create-react-app" class="headerlink" title="create-react-app"></a>create-react-app</h2><h1 id="JSX-语法"><a href="#JSX-语法" class="headerlink" title="JSX 语法"></a>JSX 语法</h1><h2 id="嵌入表达式"><a href="#嵌入表达式" class="headerlink" title="嵌入表达式"></a>嵌入表达式</h2><p>可以在大括号中使用任何合法的 JavaScript 表达式。</p>
+<figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> name = <span class="string">'Josh Perez'</span>;</span><br><span class="line"><span class="keyword">const</span> element = <span class="xml"><span class="tag">&lt;<span class="name">h1</span>&gt;</span>Hello, &#123;name&#125;<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">formatName</span>(<span class="params">user</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> user.firstName + <span class="string">' '</span> + user.lastName;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> user = &#123;</span><br><span class="line">  firstName: <span class="string">'Harper'</span>,</span><br><span class="line">  lastName: <span class="string">'Perez'</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> element = (</span><br><span class="line">  &lt;h1&gt;</span><br><span class="line">    Hello, &#123;formatName(user)&#125;!</span><br><span class="line">  &lt;<span class="regexp">/h1&gt;</span></span><br><span class="line"><span class="regexp">);</span></span><br></pre></td></tr></table></figure>
+
+<div class="note warning">
+            <p>使用小括号将多行的 JSX 包裹起来，避免 JS 自动加分号的缺陷</p>
+          </div>
+
+<h2 id="JSX-也是一个表达式"><a href="#JSX-也是一个表达式" class="headerlink" title="JSX 也是一个表达式"></a>JSX 也是一个表达式</h2><p>可以返回在 <code>if</code> 语句和 <code>for</code> 循环中使用，可以传参给变量，可以作为参数接收，可以作为返回值</p>
+<figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getGreeting</span>(<span class="params">user</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (user) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="xml"><span class="tag">&lt;<span class="name">h1</span>&gt;</span>Hello, &#123;formatName(user)&#125;!<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="xml"><span class="tag">&lt;<span class="name">h1</span>&gt;</span>Hello, Stranger.<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="指定属性"><a href="#指定属性" class="headerlink" title="指定属性"></a>指定属性</h2><p>注意如果要使用大括号包裹 JS 表达式，别在大括号外面写引号</p>
+<figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> element = <span class="xml"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">&#123;user.avatarUrl&#125;</span>&gt;</span><span class="tag">&lt;/<span class="name">img</span>&gt;</span></span>;</span><br></pre></td></tr></table></figure>
+
+<div class="note warning">
+            <p>注意 <code>class</code> 变成了 <code>className</code>、<code>tabindex</code> 变成了 <code>tabIndex</code> 等</p>
+          </div>
+
+<h2 id="指定子元素"><a href="#指定子元素" class="headerlink" title="指定子元素"></a>指定子元素</h2><figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> element = (</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    &lt;h1&gt;Hello!<span class="xml"><span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span></span><br><span class="line">    &lt;h2&gt;Good to see you here.&lt;<span class="regexp">/h2&gt;</span></span><br><span class="line"><span class="regexp">  &lt;/</span>div&gt;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<h2 id="JSX-阻止-XSS"><a href="#JSX-阻止-XSS" class="headerlink" title="JSX 阻止 XSS"></a>JSX 阻止 XSS</h2><figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> title = response.potentiallyMaliciousInput;</span><br><span class="line"><span class="comment">// This is safe:</span></span><br><span class="line"><span class="keyword">const</span> element = <span class="xml"><span class="tag">&lt;<span class="name">h1</span>&gt;</span>&#123;title&#125;<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="JSX-代表了什么"><a href="#JSX-代表了什么" class="headerlink" title="JSX 代表了什么"></a>JSX 代表了什么</h2><p>下面两个表达方式是一样的：</p>
+<figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> element = (</span><br><span class="line">  &lt;h1 className=<span class="string">"greeting"</span>&gt;</span><br><span class="line">    Hello, world!</span><br><span class="line">  &lt;<span class="regexp">/h1&gt;</span></span><br><span class="line"><span class="regexp">);</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> element = React.createElement(</span><br><span class="line">  <span class="string">'h1'</span>,</span><br><span class="line">  &#123;<span class="attr">className</span>: <span class="string">'greeting'</span>&#125;,</span><br><span class="line">  <span class="string">'Hello, world!'</span></span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>前端</category>
+        <category>JavaScript</category>
+        <category>框架</category>
+        <category>React</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>饥人谷</tag>
+        <tag>文档</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>React 开始</title>
+    <url>/hais-notebook/2020/02/02/2020-02-02-React-Start/</url>
+    <content><![CDATA[<p>React 笔记的开始，主要记录了 React 的安装。</p>
+<a id="more"></a>
+
+<h1 id="引入-React"><a href="#引入-React" class="headerlink" title="引入 React"></a>引入 React</h1><h2 id="CDN-引入"><a href="#CDN-引入" class="headerlink" title="CDN 引入"></a>CDN 引入</h2><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"https://cdn.bootcss.com/react/16.10.2/umd/react.development.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"https://cdn.bootcss.com/react-dom/16.10.2/umd/react-dom.development.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>cjs 和 umd 的区别？</p>
+<ul>
+<li>cjs 全称是 CommonJS，是 Node.js 支持的模块规范</li>
+<li>umd 是统一模块定义，兼容各种模块规范（包含浏览器）</li>
+<li>理论上优先使用 umd，同时支持 Node.js 和浏览器</li>
+<li>最新的模块规范是使用 <code>import</code> 和 <code>export</code> 关键字</li>
+</ul>
+<h2 id="通过-webpack-引入"><a href="#通过-webpack-引入" class="headerlink" title="通过 webpack 引入"></a>通过 webpack 引入</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">yarn add react react-dom</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span></span><br><span class="line"><span class="keyword">import</span> ReactDOM <span class="keyword">from</span> <span class="string">'react-dom'</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="使用-create-react-app"><a href="#使用-create-react-app" class="headerlink" title="使用 create-react-app"></a>使用 create-react-app</h2><h1 id="函数与普通代码的区别"><a href="#函数与普通代码的区别" class="headerlink" title="函数与普通代码的区别"></a>函数与普通代码的区别</h1><p>看 <a href="https://codesandbox.io/s/spring-waterfall-iyekc" target="_blank" rel="noopener">这个例子</a></p>
+<ul>
+<li>普通代码<strong>立即求值</strong>，读取当前值</li>
+<li>函数会等调用的时候再求值（<strong>延迟求值</strong>），求值时才会读取 a 的最新值</li>
+</ul>
+<h1 id="对比-React-元素和函数组件的区别"><a href="#对比-React-元素和函数组件的区别" class="headerlink" title="对比 React 元素和函数组件的区别"></a>对比 React <strong>元素</strong>和<strong>函数组件</strong>的区别</h1><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> App1 = React.createElement(<span class="string">'div'</span>, <span class="literal">null</span>, n) <span class="comment">// App1 是一个 React 元素</span></span><br><span class="line"><span class="keyword">const</span> App2 = <span class="function"><span class="params">()</span> =&gt;</span> React.createElement(<span class="string">'div'</span>, <span class="literal">null</span>, n) <span class="comment">// App2 是一个 React 函数组件</span></span><br><span class="line"><span class="comment">// App2 是延迟执行的代码，会在被调用的时候执行（会获取到 n 的最新值）</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>React 元素<ul>
+<li><code>createElement</code> 的返回值 <code>element</code> 可以代表一个 <code>div</code></li>
+<li>但是 <code>element</code> 不是真正的 DOM 对象，而是一个 <strong>虚拟 DOM</strong> 对象</li>
+</ul>
+</li>
+<li>() ⇒ React 元素<ul>
+<li>返回 <code>element</code> 的函数，也可以代表一个 <code>div</code></li>
+<li>函数可以多次执行，每次获取到最新的虚拟 <code>div</code></li>
+<li>React 会对比两个虚拟 <code>div</code> ，找出不同，局部更新视图</li>
+<li>找不同的算法叫做 <strong>DOM Diff 算法</strong></li>
+</ul>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>前端</category>
+        <category>JavaScript</category>
+        <category>框架</category>
+        <category>React</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>饥人谷</tag>
+        <tag>文档</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>webpack</title>
+    <url>/hais-notebook/2020/02/02/2020-02-02-Tools-webpack/</url>
+    <content><![CDATA[<p>webpack 的基础使用及问题。</p>
+<a id="more"></a>
+
+<div class="note warning">
+            <p>webpack 安装的所有东西都是 –dev</p>
+          </div>
+
+<h1 id="Loader-与-Plugin"><a href="#Loader-与-Plugin" class="headerlink" title="Loader 与 Plugin"></a>Loader 与 Plugin</h1><ul>
+<li>翻译</li>
+<li>解释：加载文件；拓展功能</li>
+<li>加载一个个 JS 文件，把 JS 文件转换成低版本浏览器可以支持的（JS Loader）；加载 CSS 文件，把 CSS 变成标签，或者进行其他处理 （CSS Loader、Style Loader）；加载图片，对图片进行优化；</li>
+<li>HTML Webpack Plugin 生成 HTML 文件</li>
+<li>Mini CSS Extract Plugin 抽取 CSS 文件</li>
+</ul>
+<h1 id="加载-JavaScript-文件"><a href="#加载-JavaScript-文件" class="headerlink" title="加载 JavaScript 文件"></a>加载 JavaScript 文件</h1><p>可以这样来调用本地安装的 webpack：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">./node_modules/.bin/webpack —version </span><br><span class="line"><span class="comment"># 或者用 npx，但 npx 不够稳定，比如如果 node 装到了有空格的目录，可能就有问题</span></span><br><span class="line">npx webpack</span><br></pre></td></tr></table></figure>
+
+<p>webpack 自带了 JS Loader，我们需要自定义一下 <code>webpack.config.js</code></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  mode: <span class="string">'development'</span>,</span><br><span class="line">  entry: <span class="string">'./src/index.js'</span>, <span class="comment">// 默认为 './src/index.js'</span></span><br><span class="line">  output: &#123;</span><br><span class="line">    path: path.resolve(__dirname, <span class="string">'dist'</span>),</span><br><span class="line">    filename: <span class="string">'[name].[contenthash].js'</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>HTTP Cache</strong><br>Response Header: Cache-Control</p>
+</blockquote>
+<p>可以设置 <code>package.json</code> 中的 <code>script</code>，让他每次自动删除之前的 <code>dist</code> 目录</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">"scripts": &#123;</span><br><span class="line">  "build": "rm -rf dist &amp;&amp; webpack"</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>之后只要每次用：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm run build</span><br><span class="line"><span class="comment"># 或者</span></span><br><span class="line">yarn build</span><br></pre></td></tr></table></figure>
+
+<h1 id="生成-HTML-文件"><a href="#生成-HTML-文件" class="headerlink" title="生成 HTML 文件"></a>生成 HTML 文件</h1><p>可以使用 <a href="https://webpack.js.org/plugins/html-webpack-plugin/" target="_blank" rel="noopener">html-webpack-plugin</a></p>
+<p>首先进行安装</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install --save-dev html-webpack-plugin</span><br></pre></td></tr></table></figure>
+
+<p>使用 html-webpack-plugin 需要修改 <code>webpack.config.js</code></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> HtmlWebPackPlugin = <span class="built_in">require</span>(<span class="string">'html-webpack-plugin'</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  plugins: [</span><br><span class="line">    <span class="keyword">new</span> HtmlWebPackPlugin(&#123;</span><br><span class="line">      title: <span class="string">'my title'</span>,</span><br><span class="line">      template: <span class="string">'src/assets/index.html'</span></span><br><span class="line">    &#125;)</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>此外，在 template 文件里面的 title 需要这样写：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">title</span>&gt;</span><span class="tag">&lt;<span class="name">%=</span> <span class="attr">htmlWebpackPlugin.options.title</span> %&gt;</span><span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="加载-CSS-文件"><a href="#加载-CSS-文件" class="headerlink" title="加载 CSS 文件"></a>加载 CSS 文件</h1><p>可以使用 <a href="https://webpack.js.org/loaders/css-loader/" target="_blank" rel="noopener">css-loader</a> 和 <a href="https://webpack.js.org/loaders/style-loader/" target="_blank" rel="noopener">style-loader</a></p>
+<p>首先进行安装</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install --save-dev css-loader style-loader</span><br></pre></td></tr></table></figure>
+
+<p>使用 css-loader 和 style-loader 需要修改 <code>webpack.config.js</code></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">module</span>: &#123;</span><br><span class="line">  rules: [</span><br><span class="line">    &#123;</span><br><span class="line">      test: <span class="regexp">/\.css$/i</span>,</span><br><span class="line">      use: [<span class="string">'style-loader'</span>, <span class="string">'css-loader'</span>],</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<div class="note warning">
+            <p>CSSLoader 会把 .css 后缀的文件读到 JS 里面<br>StyleLoader 会把 style 标签放到 HTML 的 head 里面</p>
+          </div>
+
+<h1 id="预览与调试网页"><a href="#预览与调试网页" class="headerlink" title="预览与调试网页"></a>预览与调试网页</h1><p>可以使用 <a href="https://webpack.js.org/guides/development/" target="_blank" rel="noopener">webpack-dev-server</a></p>
+<p>首先进行安装</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install --save-dev webpack-dev-server</span><br></pre></td></tr></table></figure>
+
+<p>使用 webpack-dev-server 同样需要修改 <code>webpack.config.js</code></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">devServer: &#123;</span><br><span class="line">  contentBase: <span class="string">'./dist'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后再在 <code>package.json</code> 里面加入 <code>script</code> 方便使用</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">"scripts": &#123;</span><br><span class="line">  "start": "webpack-dev-server --open",</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="提取-CSS"><a href="#提取-CSS" class="headerlink" title="提取 CSS"></a>提取 CSS</h1><p>可以使用 <a href="https://github.com/webpack-contrib/mini-css-extract-plugin" target="_blank" rel="noopener">mini-css-extract-plugin</a></p>
+<p>首先进行安装</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install --save-dev mini-css-extract-plugin</span><br></pre></td></tr></table></figure>
+
+<p>使用 mini-css-extract-plugin 需要修改 <code>webpack.config.js</code></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> MiniCssExtractPlugin = <span class="built_in">require</span>(<span class="string">'mini-css-extract-plugin'</span>);</span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  plugins: [</span><br><span class="line">    <span class="keyword">new</span> MiniCssExtractPlugin(&#123;</span><br><span class="line">      <span class="comment">// Options similar to the same options in webpackOptions.output</span></span><br><span class="line">      <span class="comment">// all options are optional</span></span><br><span class="line">      filename: devMode ? <span class="string">'[name].css'</span> : <span class="string">'[name].[hash].css'</span>,</span><br><span class="line">      chunkFilename: devMode ? <span class="string">'[id].css'</span> : <span class="string">'[id].[hash].css'</span>,</span><br><span class="line">      ignoreOrder: <span class="literal">false</span>, <span class="comment">// Enable to remove warnings about conflicting order</span></span><br><span class="line">    &#125;),</span><br><span class="line">  ],</span><br><span class="line">  <span class="built_in">module</span>: &#123;</span><br><span class="line">    rules: [</span><br><span class="line">      &#123;</span><br><span class="line">        test: <span class="regexp">/\.css$/</span>,</span><br><span class="line">        use: [</span><br><span class="line">          &#123;</span><br><span class="line">            loader: MiniCssExtractPlugin.loader,</span><br><span class="line">            options: &#123;</span><br><span class="line">              <span class="comment">// you can specify a publicPath here</span></span><br><span class="line">              <span class="comment">// by default it uses publicPath in webpackOptions.output</span></span><br><span class="line">              publicPath: <span class="string">'../'</span>,</span><br><span class="line">              hmr: process.env.NODE_ENV === <span class="string">'development'</span>,</span><br><span class="line">            &#125;,</span><br><span class="line">          &#125;,</span><br><span class="line">          <span class="string">'css-loader'</span>,</span><br><span class="line">        ],</span><br><span class="line">      &#125;,</span><br><span class="line">    ],</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h1 id="加载-Sass"><a href="#加载-Sass" class="headerlink" title="加载 Sass"></a>加载 Sass</h1><div class="note warning">
+            <p>node sass 已经过时，应该使用 dart sass</p>
+          </div>
+
+<p>可以使用 <a href="https://webpack.js.org/loaders/sass-loader/" target="_blank" rel="noopener">sass-loader</a></p>
+<p>同样需要修改 <code>webpack.config.js</code></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">module</span>: &#123;</span><br><span class="line">    rules: [</span><br><span class="line">      &#123;</span><br><span class="line">        test: <span class="regexp">/\.scss$/i</span>,</span><br><span class="line">        use: [</span><br><span class="line">          <span class="string">'style-loader'</span>,</span><br><span class="line">          <span class="string">'css-loader'</span>,</span><br><span class="line">          &#123;</span><br><span class="line">            loader: <span class="string">'sass-loader'</span>,</span><br><span class="line">            options:&#123;<span class="attr">implementation</span>: <span class="built_in">require</span>(<span class="string">'dart-sass'</span>)&#125;</span><br><span class="line">          &#125;,</span><br><span class="line">        ],</span><br><span class="line">      &#125;,</span><br><span class="line">    ]</span><br><span class="line">  &#125;,</span><br></pre></td></tr></table></figure>
+
+<h1 id="加载-Less"><a href="#加载-Less" class="headerlink" title="加载 Less"></a>加载 Less</h1><p>可以使用 <a href="https://webpack.js.org/loaders/less-loader/" target="_blank" rel="noopener">less-loader</a></p>
+<h1 id="加载-Stylus"><a href="#加载-Stylus" class="headerlink" title="加载 Stylus"></a>加载 Stylus</h1><p>可以使用 <a href="https://github.com/shama/stylus-loader" target="_blank" rel="noopener">stylus-loader</a></p>
+<h1 id="加载图片"><a href="#加载图片" class="headerlink" title="加载图片"></a>加载图片</h1><p>可以使用 file-loader，把文件变成文件路径</p>
+<h1 id="懒加载"><a href="#懒加载" class="headerlink" title="懒加载"></a>懒加载</h1><p>等到真正需要的时候再加载</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> promise = <span class="keyword">import</span>(<span class="string">'./lazy.js'</span>)</span><br><span class="line"><span class="comment">// 将会得到一个 Promise 对象</span></span><br><span class="line">promise.then(<span class="function">(<span class="params"><span class="built_in">module</span></span>) =&gt;</span> &#123;</span><br><span class="line">	<span class="built_in">module</span>.default() <span class="comment">// 将会执行 export default 导出的函数</span></span><br><span class="line">&#125;, () =&gt; &#123;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h1 id="在-GitHub-Pages-上部署"><a href="#在-GitHub-Pages-上部署" class="headerlink" title="在 GitHub Pages 上部署"></a>在 GitHub Pages 上部署</h1><p>第一次</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git branch gh-pages</span><br><span class="line">git checkout gh-pages</span><br><span class="line"><span class="comment"># 删除别的，只留下 dist、node_modules 和 .gitignore</span></span><br><span class="line">mv dist/* ./</span><br><span class="line">rm -rf dist</span><br></pre></td></tr></table></figure>
+
+<p>以后</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm run build: &amp;&amp;</span><br><span class="line">git checkout gh-pages &amp;&amp;</span><br><span class="line">rm -rf *.html *.js *.css *.png &amp;&amp;</span><br><span class="line">mv ./dist/* ./ &amp;&amp;</span><br><span class="line">rm -rf dist</span><br><span class="line">git add . &amp;&amp;</span><br><span class="line">git commit -m <span class="string">'update'</span> &amp;&amp;</span><br><span class="line">git push &amp;&amp;</span><br><span class="line">git checkout -</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>工具</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>踩坑</tag>
+        <tag>收集</tag>
+        <tag>效率</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>npm &amp; yarn</title>
+    <url>/hais-notebook/2020/02/02/2020-02-02-Tools-npm/</url>
+    <content><![CDATA[<p>收集 npm 的包和问题。</p>
+<a id="more"></a>
+
+<h1 id="基础配置"><a href="#基础配置" class="headerlink" title="基础配置"></a>基础配置</h1><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm i -g nrm</span><br><span class="line">nrm use taobao</span><br><span class="line"><span class="comment"># 所有的全局安装都在 C:\Users\Zhang\AppData\Roaming\npm\</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">yarn global add yrm</span><br><span class="line">yrm use taobao</span><br></pre></td></tr></table></figure>
+
+<h1 id="axios"><a href="#axios" class="headerlink" title="axios"></a>axios</h1>]]></content>
+      <categories>
+        <category>工具</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>踩坑</tag>
+        <tag>收集</tag>
+        <tag>效率</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>一些话题</title>
+    <url>/hais-notebook/2020/02/02/2020-02-02-Others-Topics/</url>
+    <content><![CDATA[<p>收集大佬的推荐。</p>
+<a id="more"></a>
+
+<h1 id="一些需要掌握的技术栈"><a href="#一些需要掌握的技术栈" class="headerlink" title="一些需要掌握的技术栈"></a>一些需要掌握的技术栈</h1><h2 id="最重要的"><a href="#最重要的" class="headerlink" title="最重要的"></a>最重要的</h2><ul>
+<li>React Hooks</li>
+<li>ES6</li>
+<li>TypeScript</li>
+<li>Flutter</li>
+</ul>
+<h2 id="值得一学的"><a href="#值得一学的" class="headerlink" title="值得一学的"></a>值得一学的</h2><ul>
+<li>Graph QL</li>
+<li>PWA</li>
+<li>WebAssembly</li>
+<li>WebGL 3D</li>
+<li>《计算的本质》</li>
+</ul>
+<h2 id="需要了解的"><a href="#需要了解的" class="headerlink" title="需要了解的"></a>需要了解的</h2><h3 id="HTML-5"><a href="#HTML-5" class="headerlink" title="HTML 5"></a>HTML 5</h3><ul>
+<li>语义化标签</li>
+<li>音视频处理</li>
+<li>canvas / webGL</li>
+<li>history API</li>
+<li>requestAnimationFrame</li>
+<li>地理位置</li>
+<li>web socket</li>
+</ul>
+<h3 id="CSS-3"><a href="#CSS-3" class="headerlink" title="CSS 3"></a>CSS 3</h3><ul>
+<li>常规</li>
+<li>动画</li>
+<li>盒子模型</li>
+<li>响应式布局</li>
+</ul>
+<h3 id="JavaScript"><a href="#JavaScript" class="headerlink" title="JavaScript"></a>JavaScript</h3><ul>
+<li>ES 3/5/6/7/8/9</li>
+<li>DOM</li>
+<li>BOM</li>
+<li>设计模式</li>
+<li>底层原理<ul>
+<li>堆栈内存</li>
+<li>闭包作用域 AO/VO/GO/EC/ESTACK</li>
+<li>面向对象 OOP</li>
+<li>This</li>
+<li>EventLoop</li>
+<li>浏览器渲染原理</li>
+<li>回流重绘</li>
+</ul>
+</li>
+</ul>
+<h3 id="网络通信层"><a href="#网络通信层" class="headerlink" title="网络通信层"></a>网络通信层</h3><ul>
+<li>AJAX / Fetch / axios</li>
+<li>HTTP 1.0/2.0</li>
+<li>TCP</li>
+<li>跨域处理方案</li>
+<li>性能优化</li>
+</ul>
+<h3 id="Hybrid-APP-小程序"><a href="#Hybrid-APP-小程序" class="headerlink" title="Hybrid / APP / 小程序"></a>Hybrid / APP / 小程序</h3><ul>
+<li>Hybrid</li>
+<li>uni-app</li>
+<li>RN</li>
+<li>Flutter</li>
+<li>MPVUE</li>
+<li>Weex</li>
+<li>PWA</li>
+</ul>
+<h3 id="工程化"><a href="#工程化" class="headerlink" title="工程化"></a>工程化</h3><ul>
+<li>webpack</li>
+<li>git</li>
+<li>linux / nginx</li>
+</ul>
+]]></content>
+      <categories>
+        <category>前端</category>
+        <category>其他</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>收集</tag>
+        <tag>杂谈</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>VSCode</title>
     <url>/hais-notebook/2020/02/02/2020-02-02-Tools-VSCode/</url>
     <content><![CDATA[<p>收集关于 VSCode 的用法及插件。</p>
@@ -23,8 +633,8 @@
       </categories>
       <tags>
         <tag>入门</tag>
-        <tag>效率</tag>
         <tag>收集</tag>
+        <tag>效率</tag>
       </tags>
   </entry>
   <entry>
@@ -273,7 +883,7 @@
 <h1 id="transition"><a href="#transition" class="headerlink" title="transition"></a><code>transition</code></h1><figure class="highlight css"><table><tr><td class="code"><pre><span class="line">transition: 属性名(可以写all) 时长 过渡方式( linear | ease | ease-in | ease-in-out | cubic-bezier | step-start | step-end | steps ) 延迟</span><br><span class="line"><span class="selector-tag">transition</span>: <span class="selector-tag">width</span> 2<span class="selector-tag">s</span> <span class="selector-tag">linear</span> 3<span class="selector-tag">s</span></span><br></pre></td></tr></table></figure>
 
 <div class="note warning">
-            <p>不是所有属性都有过渡<br><code>display: none =&gt; block</code>，一般改成 <code>visibility: hidden =&gt; visible</code>=</p>
+            <p>不是所有属性都有过渡<br><code>display: none =&gt; block</code>，一般改成 <code>visibility: hidden =&gt; visible</code></p>
           </div>
 
 <h1 id="animation"><a href="#animation" class="headerlink" title="animation"></a><code>animation</code></h1><figure class="highlight"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* 声明关键帧 */</span></span><br><span class="line"><span class="keyword">@keyframes</span> xxx &#123;</span><br><span class="line">  0% &#123;</span><br><span class="line">    <span class="attribute">transform</span>: none;</span><br><span class="line">  &#125;</span><br><span class="line">  66<span class="selector-class">.66</span>% &#123;</span><br><span class="line">  <span class="attribute">transform</span>: <span class="built_in">translateX</span>(<span class="number">200px</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 添加动画 */</span></span><br><span class="line">animation: 时长 过渡方式 延迟 次数( infinite ) 方向( reverse | alternate | alternate-reverse ) 填充模式( none | forwards | backwards | both) 是否暂停( paused )  动画名</span><br></pre></td></tr></table></figure>]]></content>

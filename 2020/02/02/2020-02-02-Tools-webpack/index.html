@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/hais-notebook/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/hais-notebook/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/hais-notebook/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/hais-notebook/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/hais-notebook/css/main.css">
+
+
+<link rel="stylesheet" href="/hais-notebook/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('https://hyuain.github.io/hais-notebook').hostname,
+    root: '/hais-notebook/',
+    scheme: 'Gemini',
+    version: '7.7.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: 'W0QZQNNH7N',
+      apiKey: '00189c8d102508ea71e94422b5f129fd',
+      indexName: 'hais-notebook',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="webpack 的基础使用及问题。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="webpack">
+<meta property="og:url" content="https://hyuain.github.io/hais-notebook/2020/02/02/2020-02-02-Tools-webpack/index.html">
+<meta property="og:site_name" content="Hais Notebook">
+<meta property="og:description" content="webpack 的基础使用及问题。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-02-02T15:37:40.000Z">
+<meta property="article:modified_time" content="2020-02-03T13:41:20.160Z">
+<meta property="article:author" content="Harvey Zhang">
+<meta property="article:tag" content="入门">
+<meta property="article:tag" content="踩坑">
+<meta property="article:tag" content="收集">
+<meta property="article:tag" content="效率">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://hyuain.github.io/hais-notebook/2020/02/02/2020-02-02-Tools-webpack/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>webpack | Hais Notebook</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/hais-notebook/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hais Notebook</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/hais-notebook/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/hais-notebook/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/hais-notebook/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/hais-notebook/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2020/02/02/2020-02-02-Tools-webpack/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
+      <meta itemprop="name" content="Harvey Zhang">
+      <meta itemprop="description" content="小海的笔记本">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hais Notebook">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          webpack
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-02-02 15:37:40" itemprop="dateCreated datePublished" datetime="2020-02-02T15:37:40+00:00">2020-02-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-02-03 13:41:20" itemprop="dateModified" datetime="2020-02-03T13:41:20+00:00">2020-02-03</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hais-notebook/categories/%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index">
+                    <span itemprop="name">工具</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>webpack 的基础使用及问题。</p>
+<a id="more"></a>
+
+<div class="note warning">
+            <p>webpack 安装的所有东西都是 –dev</p>
+          </div>
+
+<h1 id="Loader-与-Plugin"><a href="#Loader-与-Plugin" class="headerlink" title="Loader 与 Plugin"></a>Loader 与 Plugin</h1><ul>
+<li>翻译</li>
+<li>解释：加载文件；拓展功能</li>
+<li>加载一个个 JS 文件，把 JS 文件转换成低版本浏览器可以支持的（JS Loader）；加载 CSS 文件，把 CSS 变成标签，或者进行其他处理 （CSS Loader、Style Loader）；加载图片，对图片进行优化；</li>
+<li>HTML Webpack Plugin 生成 HTML 文件</li>
+<li>Mini CSS Extract Plugin 抽取 CSS 文件</li>
+</ul>
+<h1 id="加载-JavaScript-文件"><a href="#加载-JavaScript-文件" class="headerlink" title="加载 JavaScript 文件"></a>加载 JavaScript 文件</h1><p>可以这样来调用本地安装的 webpack：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">./node_modules/.bin/webpack —version </span><br><span class="line"><span class="comment"># 或者用 npx，但 npx 不够稳定，比如如果 node 装到了有空格的目录，可能就有问题</span></span><br><span class="line">npx webpack</span><br></pre></td></tr></table></figure>
+
+<p>webpack 自带了 JS Loader，我们需要自定义一下 <code>webpack.config.js</code></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  mode: <span class="string">'development'</span>,</span><br><span class="line">  entry: <span class="string">'./src/index.js'</span>, <span class="comment">// 默认为 './src/index.js'</span></span><br><span class="line">  output: &#123;</span><br><span class="line">    path: path.resolve(__dirname, <span class="string">'dist'</span>),</span><br><span class="line">    filename: <span class="string">'[name].[contenthash].js'</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>HTTP Cache</strong><br>Response Header: Cache-Control</p>
+</blockquote>
+<p>可以设置 <code>package.json</code> 中的 <code>script</code>，让他每次自动删除之前的 <code>dist</code> 目录</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">"scripts": &#123;</span><br><span class="line">  "build": "rm -rf dist &amp;&amp; webpack"</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>之后只要每次用：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">npm run build</span><br><span class="line"><span class="comment"># 或者</span></span><br><span class="line">yarn build</span><br></pre></td></tr></table></figure>
+
+<h1 id="生成-HTML-文件"><a href="#生成-HTML-文件" class="headerlink" title="生成 HTML 文件"></a>生成 HTML 文件</h1><p>可以使用 <a href="https://webpack.js.org/plugins/html-webpack-plugin/" target="_blank" rel="noopener">html-webpack-plugin</a></p>
+<p>首先进行安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save-dev html-webpack-plugin</span><br></pre></td></tr></table></figure>
+
+<p>使用 html-webpack-plugin 需要修改 <code>webpack.config.js</code></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> HtmlWebPackPlugin = <span class="built_in">require</span>(<span class="string">'html-webpack-plugin'</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  plugins: [</span><br><span class="line">    <span class="keyword">new</span> HtmlWebPackPlugin(&#123;</span><br><span class="line">      title: <span class="string">'my title'</span>,</span><br><span class="line">      template: <span class="string">'src/assets/index.html'</span></span><br><span class="line">    &#125;)</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>此外，在 template 文件里面的 title 需要这样写：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">title</span>&gt;</span><span class="tag">&lt;<span class="name">%=</span> <span class="attr">htmlWebpackPlugin.options.title</span> %&gt;</span><span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="加载-CSS-文件"><a href="#加载-CSS-文件" class="headerlink" title="加载 CSS 文件"></a>加载 CSS 文件</h1><p>可以使用 <a href="https://webpack.js.org/loaders/css-loader/" target="_blank" rel="noopener">css-loader</a> 和 <a href="https://webpack.js.org/loaders/style-loader/" target="_blank" rel="noopener">style-loader</a></p>
+<p>首先进行安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save-dev css-loader style-loader</span><br></pre></td></tr></table></figure>
+
+<p>使用 css-loader 和 style-loader 需要修改 <code>webpack.config.js</code></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>: &#123;</span><br><span class="line">  rules: [</span><br><span class="line">    &#123;</span><br><span class="line">      test: <span class="regexp">/\.css$/i</span>,</span><br><span class="line">      use: [<span class="string">'style-loader'</span>, <span class="string">'css-loader'</span>],</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<div class="note warning">
+            <p>CSSLoader 会把 .css 后缀的文件读到 JS 里面<br>StyleLoader 会把 style 标签放到 HTML 的 head 里面</p>
+          </div>
+
+<h1 id="预览与调试网页"><a href="#预览与调试网页" class="headerlink" title="预览与调试网页"></a>预览与调试网页</h1><p>可以使用 <a href="https://webpack.js.org/guides/development/" target="_blank" rel="noopener">webpack-dev-server</a></p>
+<p>首先进行安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save-dev webpack-dev-server</span><br></pre></td></tr></table></figure>
+
+<p>使用 webpack-dev-server 同样需要修改 <code>webpack.config.js</code></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">devServer: &#123;</span><br><span class="line">  contentBase: <span class="string">'./dist'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后再在 <code>package.json</code> 里面加入 <code>script</code> 方便使用</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">"scripts": &#123;</span><br><span class="line">  "start": "webpack-dev-server --open",</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="提取-CSS"><a href="#提取-CSS" class="headerlink" title="提取 CSS"></a>提取 CSS</h1><p>可以使用 <a href="https://github.com/webpack-contrib/mini-css-extract-plugin" target="_blank" rel="noopener">mini-css-extract-plugin</a></p>
+<p>首先进行安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save-dev mini-css-extract-plugin</span><br></pre></td></tr></table></figure>
+
+<p>使用 mini-css-extract-plugin 需要修改 <code>webpack.config.js</code></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> MiniCssExtractPlugin = <span class="built_in">require</span>(<span class="string">'mini-css-extract-plugin'</span>);</span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  plugins: [</span><br><span class="line">    <span class="keyword">new</span> MiniCssExtractPlugin(&#123;</span><br><span class="line">      <span class="comment">// Options similar to the same options in webpackOptions.output</span></span><br><span class="line">      <span class="comment">// all options are optional</span></span><br><span class="line">      filename: devMode ? <span class="string">'[name].css'</span> : <span class="string">'[name].[hash].css'</span>,</span><br><span class="line">      chunkFilename: devMode ? <span class="string">'[id].css'</span> : <span class="string">'[id].[hash].css'</span>,</span><br><span class="line">      ignoreOrder: <span class="literal">false</span>, <span class="comment">// Enable to remove warnings about conflicting order</span></span><br><span class="line">    &#125;),</span><br><span class="line">  ],</span><br><span class="line">  <span class="built_in">module</span>: &#123;</span><br><span class="line">    rules: [</span><br><span class="line">      &#123;</span><br><span class="line">        test: <span class="regexp">/\.css$/</span>,</span><br><span class="line">        use: [</span><br><span class="line">          &#123;</span><br><span class="line">            loader: MiniCssExtractPlugin.loader,</span><br><span class="line">            options: &#123;</span><br><span class="line">              <span class="comment">// you can specify a publicPath here</span></span><br><span class="line">              <span class="comment">// by default it uses publicPath in webpackOptions.output</span></span><br><span class="line">              publicPath: <span class="string">'../'</span>,</span><br><span class="line">              hmr: process.env.NODE_ENV === <span class="string">'development'</span>,</span><br><span class="line">            &#125;,</span><br><span class="line">          &#125;,</span><br><span class="line">          <span class="string">'css-loader'</span>,</span><br><span class="line">        ],</span><br><span class="line">      &#125;,</span><br><span class="line">    ],</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h1 id="加载-Sass"><a href="#加载-Sass" class="headerlink" title="加载 Sass"></a>加载 Sass</h1><div class="note warning">
+            <p>node sass 已经过时，应该使用 dart sass</p>
+          </div>
+
+<p>可以使用 <a href="https://webpack.js.org/loaders/sass-loader/" target="_blank" rel="noopener">sass-loader</a></p>
+<p>同样需要修改 <code>webpack.config.js</code></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>: &#123;</span><br><span class="line">    rules: [</span><br><span class="line">      &#123;</span><br><span class="line">        test: <span class="regexp">/\.scss$/i</span>,</span><br><span class="line">        use: [</span><br><span class="line">          <span class="string">'style-loader'</span>,</span><br><span class="line">          <span class="string">'css-loader'</span>,</span><br><span class="line">          &#123;</span><br><span class="line">            loader: <span class="string">'sass-loader'</span>,</span><br><span class="line">            options:&#123;<span class="attr">implementation</span>: <span class="built_in">require</span>(<span class="string">'dart-sass'</span>)&#125;</span><br><span class="line">          &#125;,</span><br><span class="line">        ],</span><br><span class="line">      &#125;,</span><br><span class="line">    ]</span><br><span class="line">  &#125;,</span><br></pre></td></tr></table></figure>
+
+<h1 id="加载-Less"><a href="#加载-Less" class="headerlink" title="加载 Less"></a>加载 Less</h1><p>可以使用 <a href="https://webpack.js.org/loaders/less-loader/" target="_blank" rel="noopener">less-loader</a></p>
+<h1 id="加载-Stylus"><a href="#加载-Stylus" class="headerlink" title="加载 Stylus"></a>加载 Stylus</h1><p>可以使用 <a href="https://github.com/shama/stylus-loader" target="_blank" rel="noopener">stylus-loader</a></p>
+<h1 id="加载图片"><a href="#加载图片" class="headerlink" title="加载图片"></a>加载图片</h1><p>可以使用 file-loader，把文件变成文件路径</p>
+<h1 id="懒加载"><a href="#懒加载" class="headerlink" title="懒加载"></a>懒加载</h1><p>等到真正需要的时候再加载</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> promise = <span class="keyword">import</span>(<span class="string">'./lazy.js'</span>)</span><br><span class="line"><span class="comment">// 将会得到一个 Promise 对象</span></span><br><span class="line">promise.then(<span class="function">(<span class="params"><span class="built_in">module</span></span>) =&gt;</span> &#123;</span><br><span class="line">	<span class="built_in">module</span>.default() <span class="comment">// 将会执行 export default 导出的函数</span></span><br><span class="line">&#125;, () =&gt; &#123;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h1 id="在-GitHub-Pages-上部署"><a href="#在-GitHub-Pages-上部署" class="headerlink" title="在 GitHub Pages 上部署"></a>在 GitHub Pages 上部署</h1><p>第一次</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git branch gh-pages</span><br><span class="line">git checkout gh-pages</span><br><span class="line"><span class="comment"># 删除别的，只留下 dist、node_modules 和 .gitignore</span></span><br><span class="line">mv dist/* ./</span><br><span class="line">rm -rf dist</span><br></pre></td></tr></table></figure>
+
+<p>以后</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">npm run build: &amp;&amp;</span><br><span class="line">git checkout gh-pages &amp;&amp;</span><br><span class="line">rm -rf *.html *.js *.css *.png &amp;&amp;</span><br><span class="line">mv ./dist/* ./ &amp;&amp;</span><br><span class="line">rm -rf dist</span><br><span class="line">git add . &amp;&amp;</span><br><span class="line">git commit -m <span class="string">'update'</span> &amp;&amp;</span><br><span class="line">git push &amp;&amp;</span><br><span class="line">git checkout -</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/hais-notebook/tags/%E5%85%A5%E9%97%A8/" rel="tag"># 入门</a>
+              <a href="/hais-notebook/tags/%E8%B8%A9%E5%9D%91/" rel="tag"># 踩坑</a>
+              <a href="/hais-notebook/tags/%E6%94%B6%E9%9B%86/" rel="tag"># 收集</a>
+              <a href="/hais-notebook/tags/%E6%95%88%E7%8E%87/" rel="tag"># 效率</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/hais-notebook/2020/02/02/2020-02-02-Tools-npm/" rel="prev" title="npm & yarn">
+      <i class="fa fa-chevron-left"></i> npm & yarn
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/hais-notebook/2020/02/02/2020-02-02-React-Start/" rel="next" title="React 开始">
+      React 开始 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Loader-与-Plugin"><span class="nav-number">1.</span> <span class="nav-text">Loader 与 Plugin</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#加载-JavaScript-文件"><span class="nav-number">2.</span> <span class="nav-text">加载 JavaScript 文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#生成-HTML-文件"><span class="nav-number">3.</span> <span class="nav-text">生成 HTML 文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#加载-CSS-文件"><span class="nav-number">4.</span> <span class="nav-text">加载 CSS 文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#预览与调试网页"><span class="nav-number">5.</span> <span class="nav-text">预览与调试网页</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#提取-CSS"><span class="nav-number">6.</span> <span class="nav-text">提取 CSS</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#加载-Sass"><span class="nav-number">7.</span> <span class="nav-text">加载 Sass</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#加载-Less"><span class="nav-number">8.</span> <span class="nav-text">加载 Less</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#加载-Stylus"><span class="nav-number">9.</span> <span class="nav-text">加载 Stylus</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#加载图片"><span class="nav-number">10.</span> <span class="nav-text">加载图片</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#懒加载"><span class="nav-number">11.</span> <span class="nav-text">懒加载</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#在-GitHub-Pages-上部署"><span class="nav-number">12.</span> <span class="nav-text">在 GitHub Pages 上部署</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Harvey Zhang</p>
+  <div class="site-description" itemprop="description">小海的笔记本</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/hais-notebook/archives/">
+        
+          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/hais-notebook/categories/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/hais-notebook/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Harvey Zhang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/hais-notebook/lib/anime.min.js"></script>
+  <script src="/hais-notebook/lib/velocity/velocity.min.js"></script>
+  <script src="/hais-notebook/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/hais-notebook/js/utils.js"></script>
+
+<script src="/hais-notebook/js/motion.js"></script>
+
+
+<script src="/hais-notebook/js/schemes/pisces.js"></script>
+
+
+<script src="/hais-notebook/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/hais-notebook/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
