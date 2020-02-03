@@ -101,7 +101,7 @@ transition: width 2s linear 3s
 
 {% note warning %}
 不是所有属性都有过渡
-`display: none => block`，一般改成 `visibility: hidden => visible`=
+`display: none => block`，一般改成 `visibility: hidden => visible`
 {% endnote %}
 
 # `animation`
