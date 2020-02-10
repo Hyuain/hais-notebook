@@ -1,6 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>FAQs：数据结构</title>
+    <url>/hais-notebook/2020/02/10/2020-02-10-Others-QA-DataStructure/</url>
+    <content><![CDATA[<p>关于数据结构的一些问题与答案。</p>
+<a id="more"></a>
+
+<h1 id="哈希表"><a href="#哈希表" class="headerlink" title="哈希表"></a>哈希表</h1><p>按照一定的规则（有很多种不同的规则，可以按实际情况选择）去存储数据，这样找数据的时候就会很快了。<br>有时候会出现冲突（不同的数据根据规则计算应该放到同样的地方），这个时候需要解决冲突。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HashTable</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(length = 1000) &#123;</span><br><span class="line">    <span class="keyword">this</span>.slots = <span class="built_in">Array</span>(length) <span class="comment">// slots 就是哈希表的这个数组</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 计算出要存的位置，这里的方法是：将这个字符串的每一位的 ASCII 码算出来，再把每一位的加起来，再%哈希表的总长度</span></span><br><span class="line">  hash(v) &#123;</span><br><span class="line">    <span class="comment">// 将字符串解构为一个个的数组</span></span><br><span class="line">    <span class="keyword">let</span> value =[...v.toString()].map(<span class="function"><span class="params">char</span> =&gt;</span> char.charCodeAt(<span class="number">0</span>)).reduce(<span class="function">(<span class="params">result, item</span>) =&gt;</span> result + item)</span><br><span class="line">    <span class="keyword">return</span> value%<span class="keyword">this</span>.slots.length</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 存数据，因为 hash 值可能相同，所以用 push</span></span><br><span class="line">  add(value) &#123;</span><br><span class="line">    <span class="keyword">let</span> key = <span class="keyword">this</span>.hash(value)</span><br><span class="line">    <span class="keyword">if</span>(<span class="keyword">this</span>.slots[key]) &#123;</span><br><span class="line">      <span class="keyword">if</span>(!<span class="keyword">this</span>.slots[key].includes((value))) <span class="keyword">this</span>.slots[key].push[value]</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">this</span>.slots[key] = [value]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 删数据</span></span><br><span class="line">  remove(value)&#123;</span><br><span class="line">    <span class="keyword">let</span> key = <span class="keyword">this</span>.hash(value)</span><br><span class="line">    <span class="keyword">if</span>(<span class="keyword">this</span>.slots[key] &amp;&amp; <span class="keyword">this</span>.slots[key].includes(value)) &#123;</span><br><span class="line">      <span class="keyword">this</span>.slots[key] = <span class="keyword">this</span>.slots[key].filter(<span class="function"><span class="params">v</span> =&gt;</span> v !== value)</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">  &#125;</span><br><span class="line">  search(value)&#123;</span><br><span class="line">    <span class="keyword">let</span> key = <span class="keyword">this</span>.hash(value)</span><br><span class="line">    <span class="keyword">return</span> !!(<span class="keyword">this</span>.slots[key] &amp;&amp; <span class="keyword">this</span>.slots[key].includes(value));</span><br><span class="line">  &#125;</span><br><span class="line">  show()&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>.slots)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="图"><a href="#图" class="headerlink" title="图"></a>图</h1><p>顶点：vertex<br>边：edge</p>
+<p>可以这样表示：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[[V1, V2, V4], [V0, V2, V3], [V0, V1], [V1], [V0]]</span><br></pre></td></tr></table></figure>
+
+<p>每一个数组表示对应的顶点与那些点相邻</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Graph</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(vCount) &#123;</span><br><span class="line">    <span class="keyword">this</span>.vertexCount = vCount <span class="comment">// 顶点数</span></span><br><span class="line">    <span class="keyword">this</span>.adjacencyList = [...Array(vCount)].map(<span class="function"><span class="params">v</span> =&gt;</span> []) <span class="comment">// 相邻顶点的列表，得到类似于数组 [[], [], [], []]</span></span><br><span class="line">    <span class="keyword">this</span>.verticesStatus = [...Array(vCount)].map(<span class="function"><span class="params">v</span> =&gt;</span> <span class="literal">false</span>) <span class="comment">// 记录点是不是找过了</span></span><br><span class="line">  &#125;</span><br><span class="line">  addEdge(v1, v2) &#123;</span><br><span class="line">    <span class="keyword">this</span>.adjacencyList[v1].push(v2)</span><br><span class="line">    <span class="keyword">this</span>.adjacencyList[v2].push(v1)</span><br><span class="line">  &#125;</span><br><span class="line">  showGraph() &#123;</span><br><span class="line">    <span class="keyword">this</span>.adjacencyList.forEach(<span class="function">(<span class="params">adjVertices, v</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">`<span class="subst">$&#123;v&#125;</span> -&gt; <span class="subst">$&#123;adjVertices.toString()&#125;</span>`</span>)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">  resetStatus() &#123;</span><br><span class="line">    <span class="keyword">this</span>.verticesStatus = [...Array(<span class="keyword">this</span>.vertexCount)].map(<span class="function"><span class="params">v</span> =&gt;</span> <span class="literal">false</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 深度优先搜索</span></span><br><span class="line">  dfs(v) &#123;</span><br><span class="line">    <span class="keyword">this</span>.verticesStatus[v] = <span class="literal">true</span></span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">`访问到：<span class="subst">$&#123;v&#125;</span>`</span>)</span><br><span class="line">    <span class="comment">// Array.isArray 判断传递进来的是否是一个 Array</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">Array</span>.isArray(<span class="keyword">this</span>.adjacencyList[v])) &#123;</span><br><span class="line">      <span class="keyword">this</span>.adjacencyList[v].forEach(<span class="function"><span class="params">adjVertex</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">if</span>(!<span class="keyword">this</span>.verticesStatus[adjVertex]) <span class="keyword">this</span>.dfs(adjVertex)      </span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 广度优先搜索</span></span><br><span class="line">  bfs(v) &#123;</span><br><span class="line">    <span class="keyword">let</span> queue = []</span><br><span class="line">    queue.push(v)</span><br><span class="line">    <span class="keyword">while</span> (queue.length &gt; <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="keyword">let</span> v = queue.shift()</span><br><span class="line">      <span class="keyword">if</span> (<span class="keyword">this</span>.verticesStatus[v]) <span class="keyword">continue</span></span><br><span class="line">      <span class="keyword">this</span>.verticesStatus[v] = <span class="literal">true</span></span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">`访问到 <span class="subst">$&#123;v&#125;</span>`</span>)</span><br><span class="line">      <span class="keyword">this</span>.adjacencyList[v].forEach(<span class="function"><span class="params">adjVertex</span> =&gt;</span> &#123;</span><br><span class="line">        queue.push(adjVertex)</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>前端</category>
+        <category>其他</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>收集</tag>
+        <tag>FAQ</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Vue 组件</title>
+    <url>/hais-notebook/2020/02/09/2020-02-09-Vue-Component/</url>
+    <content><![CDATA[<p>记录 Vue Options 中的内容。</p>
+<a id="more"></a>
+
+<h1 id="Vue-组件的三种写法"><a href="#Vue-组件的三种写法" class="headerlink" title="Vue 组件的三种写法"></a>Vue 组件的三种写法</h1><ol>
+<li>用 JS 对象</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  options</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>使用 TS 类</li>
+</ol>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">'vue'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;Component, Prop&#125; <span class="keyword">from</span> <span class="string">'vue-property-decorator'</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Component</span>(&#123;</span><br><span class="line">  <span class="comment">// components: &#123;...&#125;</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">class</span> MyComponent <span class="keyword">extends</span> Vue &#123;</span><br><span class="line">  num: <span class="built_in">number</span> = <span class="number">0</span>;</span><br><span class="line">  <span class="meta">@Prop</span>(<span class="built_in">Number</span>) propA: <span class="built_in">number</span> | <span class="literal">undefined</span>;</span><br><span class="line">  add(num: <span class="built_in">number</span>) &#123;</span><br><span class="line">    <span class="keyword">this</span>.num = num ++;</span><br><span class="line">  &#125;</span><br><span class="line">  mounted() &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>.propA);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>使用 JS 类</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">'vue'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;Component, Prop&#125; <span class="keyword">from</span> <span class="string">'vue-property-decorator'</span>;</span><br><span class="line"></span><br><span class="line">@Component</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="class"><span class="keyword">class</span> <span class="title">MyComponent</span> <span class="keyword">extends</span> <span class="title">Vue</span> </span>&#123;</span><br><span class="line">  num = <span class="number">0</span>;</span><br><span class="line">  @Prop(<span class="built_in">Number</span>) propA</span><br><span class="line">  add(num) &#123;</span><br><span class="line">    <span class="keyword">this</span>.num = num ++;</span><br><span class="line">  &#125;</span><br><span class="line">  mounted() &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>.propA);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>前端</category>
+        <category>JavaScript</category>
+        <category>框架</category>
+        <category>Vue</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>饥人谷</tag>
+        <tag>文档</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>TypeScript 基本用法</title>
+    <url>/hais-notebook/2020/02/06/2020-02-06-TS-Trail/</url>
+    <content><![CDATA[<p>TypeScript 三个好处： 1. 自动提示更智能；2. 不能随便写 .xxx()；3. 错误前移到编译时 </p>
+<a id="more"></a>
+
+<h1 id="Vue-的-TS-组件"><a href="#Vue-的-TS-组件" class="headerlink" title="Vue 的 TS 组件"></a>Vue 的 TS 组件</h1><figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">'vue'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;Component, Prop&#125; <span class="keyword">from</span> <span class="string">'vue-property-decorator'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 这是一个装饰器，告诉 Vue 这是一个组件，Vue 会自动把下面的东西处理成 data、method 等</span></span><br><span class="line"><span class="meta">@Component</span>(&#123;</span><br><span class="line">  <span class="comment">// components: &#123;Child,...&#125;</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">class</span> MyComponent <span class="keyword">extends</span> Vue &#123;</span><br><span class="line">  num = <span class="number">0</span>; <span class="comment">// 这就是 TS 组件的 data</span></span><br><span class="line"></span><br><span class="line">  <span class="meta">@Prop</span>(<span class="built_in">Number</span>) propA: <span class="built_in">number</span> | <span class="literal">undefined</span>; <span class="comment">// 这是 vue-property-decorator 带来的 props 写法</span></span><br><span class="line">  <span class="comment">// @Prop 是装饰器，告诉 Vue，后面的东西不是 data，是 prop</span></span><br><span class="line">  <span class="comment">// 左边的 Number 是告诉 Vue，propsA 是 Number，是**运行时**的类型检查</span></span><br><span class="line">  <span class="comment">// 右边的 number 是告诉 TS propsA 的类型，是**编译时**的类型检查，比如说你没办法写 this.propA.xxx，会无法编译成功</span></span><br><span class="line"></span><br><span class="line">  add(num: <span class="built_in">number</span>) &#123; <span class="comment">// 这就是 TS 组件的 methods</span></span><br><span class="line">    <span class="keyword">this</span>.num = num ++;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  mounted() &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>.propA);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="编译时与运行时"><a href="#编译时与运行时" class="headerlink" title="编译时与运行时"></a>编译时与运行时</h2><p>TypeScript –编译–&gt; JavaScript –运行–&gt; 浏览器</p>
+<p>编译时：编译错误 -&gt; 无法得到 JS，会在编译的终端 Error<br>运行时：运行错误 -&gt; 控制台 Error（浏览器）</p>
+<h1 id="TypeScript-的本质"><a href="#TypeScript-的本质" class="headerlink" title="TypeScript 的本质"></a>TypeScript 的本质</h1><blockquote class="blockquote-center"><p>JS: 类型</p>
+</blockquote>
+
+<p>TSC（TypeScriptCompiler）会利用类型来检查 JS 代码：</p>
+<ul>
+<li>若检查出错误，就会编译报错，但还是会编译成 JS</li>
+<li>若没有检查出错误，就会删掉类型，然后编译成 JS（TSC 或者 Babel 都可以编译，有一点点区别）</li>
+</ul>
+<h1 id="一些问题"><a href="#一些问题" class="headerlink" title="一些问题"></a>一些问题</h1><h2 id="强制指定类型"><a href="#强制指定类型" class="headerlink" title="强制指定类型"></a>强制指定类型</h2><figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line">inputNumber(event: MouseEvent | TouchEvent) &#123;</span><br><span class="line">  <span class="keyword">const</span> button = (event.target <span class="keyword">as</span> HTMLButtonElement); <span class="comment">// 因为有的元素的 textContent 可能为空（比如图片），所以我们需要强制指定为 Button 元素</span></span><br><span class="line">  <span class="built_in">console</span>.log(button.textContent);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 也可以给返回值强制指定类型</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Func</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">JSON</span>.parse(localStorage.getItem(<span class="string">'records'</span>) || <span class="string">'[]'</span>) <span class="keyword">as</span> RecordItem[];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="配合-JS-使用"><a href="#配合-JS-使用" class="headerlink" title="配合 JS 使用"></a>配合 JS 使用</h2><figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> xxx <span class="built_in">require</span>(<span class="string">'...'</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="全局声明-type"><a href="#全局声明-type" class="headerlink" title="全局声明 type"></a>全局声明 <code>type</code></h2><p>在 <code>src</code> 中创建 <code>custom.d.ts</code>（也可以叫 <code>xxx.d.ts</code>），在里面声明 <code>type</code></p>
+]]></content>
+      <categories>
+        <category>前端</category>
+        <category>TypeScript</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>踩坑</tag>
+        <tag>Tip</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>SQL 基本语法</title>
     <url>/hais-notebook/2020/02/04/2020-02-04-SQL/</url>
     <content><![CDATA[<p>涉及 SQL 的基本语法。</p>
@@ -524,6 +617,7 @@
 <li>三级域名：<a href="http://www.baidu.com" target="_blank" rel="noopener">www.baidu.com</a></li>
 </ul>
 <p>三级域名跟二级域名可以没关系，有可能都不是属于一家公司，注意辨别。</p>
+<h1 id="instanceof"><a href="#instanceof" class="headerlink" title="instanceof"></a><code>instanceof</code></h1><p>看这个对象是不是处于原型链上的</p>
 ]]></content>
       <categories>
         <category>前端</category>
@@ -835,9 +929,11 @@
 
 <h1 id="基础配置"><a href="#基础配置" class="headerlink" title="基础配置"></a>基础配置</h1><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm i -g nrm</span><br><span class="line">nrm use taobao</span><br><span class="line"><span class="comment"># 所有的全局安装都在 C:\Users\Zhang\AppData\Roaming\npm\</span></span><br></pre></td></tr></table></figure>
 
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">yarn global add yrm</span><br><span class="line">yrm use taobao</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">yarn global add yrm</span><br><span class="line">yrm use taobao</span><br><span class="line"><span class="comment"># 用 yrm ls 可以看所有源</span></span><br></pre></td></tr></table></figure>
 
-<h1 id="axios"><a href="#axios" class="headerlink" title="axios"></a>axios</h1>]]></content>
+<h1 id="一些问题"><a href="#一些问题" class="headerlink" title="一些问题"></a>一些问题</h1><h2 id="怎么知道包的最新版是多少？"><a href="#怎么知道包的最新版是多少？" class="headerlink" title="怎么知道包的最新版是多少？"></a>怎么知道包的最新版是多少？</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm info [name] version</span><br></pre></td></tr></table></figure>
+
+]]></content>
       <categories>
         <category>工具</category>
       </categories>
@@ -1599,7 +1695,7 @@
 </ul>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> store = <span class="keyword">new</span> Vuex.Store(&#123;</span><br><span class="line">  state: &#123;</span><br><span class="line">    count: <span class="number">0</span></span><br><span class="line">  &#125;,</span><br><span class="line">  mutations: &#123;</span><br><span class="line">    increment (state) &#123;</span><br><span class="line">      state.count++</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="comment">// 接受一个与 store 实例具有相同方法和属性的 context 对象</span></span><br><span class="line">  <span class="comment">// 这个 context 对象也有 context.state context.getters 这种方法</span></span><br><span class="line">  actions: &#123;</span><br><span class="line">    increment (context) &#123;</span><br><span class="line">      context.commit(<span class="string">'increment'</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 可以这样简化代码：</span></span><br><span class="line">  action: &#123;</span><br><span class="line">    incrementAsync (&#123; commit &#125;) &#123;</span><br><span class="line">      setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">        commit(<span class="string">'increment'</span>)</span><br><span class="line">      &#125;, <span class="number">1000</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 <p>然后这样触发，同 Mutation 一样，也支持 payload 和含有 type 的对象的形式</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">store.dispatch(<span class="string">'incrementAsync'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 或者在组件中触发</span></span><br><span class="line">methods: &#123;</span><br><span class="line">  increment () &#123;</span><br><span class="line">    <span class="keyword">this</span>.$store.dispatch(<span class="string">'incrementAsync'</span>)</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="comment">// 或者使用 mapActions</span></span><br><span class="line">  ...mapActions([</span><br><span class="line">    <span class="string">'incrementAsync'</span> <span class="comment">// 将 `this.increment()` 映射为 `this.$store.commit('increment')`</span></span><br><span class="line">  ]),</span><br><span class="line">  ...mapActions(&#123;</span><br><span class="line">    add: <span class="string">'incrementAsync'</span> <span class="comment">// 将 `this.add()` 映射为 `this.$store.commit('increment')`</span></span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">store.dispatch(<span class="string">'incrementAsync'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 或者在组件中触发</span></span><br><span class="line">methods: &#123;</span><br><span class="line">  increment () &#123;</span><br><span class="line">    <span class="keyword">this</span>.$store.dispatch(<span class="string">'incrementAsync'</span>)</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="comment">// 或者使用 mapActions</span></span><br><span class="line">  ...mapActions([</span><br><span class="line">    <span class="string">'incrementAsync'</span> <span class="comment">// 将 `this.increment()` 映射为 `this.$store.dispatch('incrementAsync')`</span></span><br><span class="line">  ]),</span><br><span class="line">  ...mapActions(&#123;</span><br><span class="line">    add: <span class="string">'incrementAsync'</span> <span class="comment">// 将 `this.add()` 映射为 `this.$store.dispatch('incrementAsync')`</span></span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h1 id="Module"><a href="#Module" class="headerlink" title="Module"></a>Module</h1><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> moduleA = &#123;</span><br><span class="line">  state: &#123; ... &#125;,</span><br><span class="line">  mutations: &#123; ... &#125;,</span><br><span class="line">  actions: &#123; ... &#125;,</span><br><span class="line">  getters: &#123; ... &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> moduleB = &#123;</span><br><span class="line">  state: &#123; ... &#125;,</span><br><span class="line">  mutations: &#123; ... &#125;,</span><br><span class="line">  actions: &#123; ... &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> store = <span class="keyword">new</span> Vuex.Store(&#123;</span><br><span class="line">  modules: &#123;</span><br><span class="line">    a: moduleA,</span><br><span class="line">    b: moduleB</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">store.state.a <span class="comment">// -&gt; moduleA 的状态</span></span><br><span class="line">store.state.b <span class="comment">// -&gt; moduleB 的状态</span></span><br></pre></td></tr></table></figure>]]></content>
       <categories>
@@ -1679,6 +1775,10 @@
           </div>
 
 <h2 id="router-replace-location-onComplete-onAbort"><a href="#router-replace-location-onComplete-onAbort" class="headerlink" title="router.replace(location, onComplete?, onAbort?"></a><code>router.replace(location, onComplete?, onAbort?</code></h2><p>相当于 <code>router-link :to=&quot;...&quot; replace</code>，不会向 history 添加新的记录，而是替换掉当前的 history 目录</p>
+<div class="note warning">
+            <p>跟 <code>push</code> 的主要区别就是 <code>replace</code> 可以回去，<code>push</code> 则不能</p>
+          </div>
+
 <h2 id="router-go-n"><a href="#router-go-n" class="headerlink" title="router.go(n)"></a><code>router.go(n)</code></h2><p>类似 <code>window.history.go(n)</code> 意为在 history 记录中前进或后退多少步</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 在浏览器记录中前进一步，等同于 history.forward()</span></span><br><span class="line">router.go(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 后退一步记录，等同于 history.back()</span></span><br><span class="line">router.go(<span class="number">-1</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 前进 3 步记录</span></span><br><span class="line">router.go(<span class="number">3</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 如果 history 记录不够用，那就默默地失败呗</span></span><br><span class="line">router.go(<span class="number">-100</span>)</span><br><span class="line">router.go(<span class="number">100</span>)</span><br></pre></td></tr></table></figure>
 
@@ -1904,6 +2004,9 @@
 
 <h4 id="双向绑定"><a href="#双向绑定" class="headerlink" title="双向绑定"></a>双向绑定</h4><p><code>v-model</code> 可以实现常用表单元素的双向绑定，包括文本、多行文本、复选框、单选按钮、选择框等</p>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">v-model</span>=<span class="string">"message"</span> <span class="attr">placeholder</span>=<span class="string">"edit me"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span>Message is: &#123;&#123; message &#125;&#125;<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>相当于这样的简写：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">:value</span>=<span class="string">"message"</span></span></span><br><span class="line"><span class="tag">       @<span class="attr">input</span>=<span class="string">"message = $event.target.value"</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
 <h1 id="Lifecycle-Hooks"><a href="#Lifecycle-Hooks" class="headerlink" title="Lifecycle Hooks"></a>Lifecycle Hooks</h1><blockquote>
 <p>出现的时机可以用 debugger 证明</p>
