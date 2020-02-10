@@ -522,6 +522,13 @@ update:money 是事件名
 <p>Message is: {{ message }}</p>
 ```
 
+相当于这样的简写：
+
+```html
+<input type="text" :value="message"
+       @input="message = $event.target.value">
+```
+
 # Lifecycle Hooks
 
 > 出现的时机可以用 debugger 证明

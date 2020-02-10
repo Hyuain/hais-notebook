@@ -172,3 +172,7 @@ nslookup hais-teatime.com
 - 三级域名：www.baidu.com
 
 三级域名跟二级域名可以没关系，有可能都不是属于一家公司，注意辨别。
+
+# `instanceof`
+
+看这个对象是不是处于原型链上的

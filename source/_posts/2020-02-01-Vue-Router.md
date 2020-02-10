@@ -174,6 +174,10 @@ router.push({ path: '/user', params: { userId }}) // -> /user
 
 相当于 `router-link :to="..." replace`，不会向 history 添加新的记录，而是替换掉当前的 history 目录
 
+{% note warning %}
+跟 `push` 的主要区别就是 `replace` 可以回去，`push` 则不能
+{% endnote %}
+
 ## `router.go(n)`
 
 类似 `window.history.go(n)` 意为在 history 记录中前进或后退多少步
