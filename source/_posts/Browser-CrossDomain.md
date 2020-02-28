@@ -54,3 +54,27 @@ categories:
 > 优点：兼容 IE、可以跨域
 > 缺点：由于是 `script` 标签，所以读不到 AJAX 那么精确的状态（比如 Status、响应头等等），并且只能发 `GET` 请求，不支持 `POST`
 
+一个代码实现：
+
+```js
+function jsonp(settings) {
+  const data = settings.data || {}
+  const key = settings.key || 'callback'
+  const callback = settings.callback || function() {}
+  
+  data[key] = '__onGetData__'
+  window.__onGetData__ = function(response) {
+    callback(response)
+  }
+  
+  const query = []
+  for (let key in data) {
+    query.push(key + '=' + data.key)
+  }
+
+  const script = document.createElement('script')
+  script.src = url + '?' + encodeURIComponent(query.join('&'))
+  document.head.appendChild(script)
+  document.head.removeChild(script)
+}
+```

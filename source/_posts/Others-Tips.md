@@ -176,3 +176,14 @@ nslookup hais-teatime.com
 # `instanceof`
 
 看这个对象是不是处于原型链上的
+
+# 使用 `@` 表示 `src` 目录（import alias）
+
+## 在 JS 或 TS 中使用 `@`
+
+可以直接使用
+
+## 在 CSS 或 SCSS 中使用 `@`
+
+需要使用 `~@`，但是 webstorm 中会报错，需要点开 `settings`-`webpack`，在路径中找到 `node_modules\@vue\cli-service\webpack.config.js`
+

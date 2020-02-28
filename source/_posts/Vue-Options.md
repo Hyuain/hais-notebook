@@ -161,8 +161,6 @@ watch: {
 > computed 是用来计算一个值的，调用的时候不需要加括号，会根据依赖缓存
 > watch 有两个比较常用的选项：`immediate` 和 `deep`
   
-  watch 有两个选项，immediate，deep
-
 # DOM
 
 ## el

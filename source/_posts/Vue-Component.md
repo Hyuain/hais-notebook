@@ -26,7 +26,7 @@ export default {
 2. 使用 TS 类
 
 ```typescript
-import Vue from 'vue';
+import Vue from 'source/_posts/Others-QA-Vue';
 import {Component, Prop} from 'vue-property-decorator';
 
 @Component({

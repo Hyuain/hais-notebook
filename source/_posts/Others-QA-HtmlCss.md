@@ -13,9 +13,40 @@ categories:
 
 <!-- more -->
 
-# 水平垂直居中的方案
+# HTML
 
-## 定位：三种
+## HTML 语义化？
+
+### HTML 语义化的历史
+
+最开始是后台用写 HTML，主要使用 table 来布局，维护起来非常麻烦；后来进入 DIV+CSS 的时代，问题是不够语义化；现在才是比较专业的，使用正确的标签的正确的写法。
+
+具体：平时写的代码中用到的语义化标签。
+
+## meta viewport？
+
+## 用过哪些 HTML 5 标签？
+
+## H5 是什么？
+
+# CSS
+
+## 回溯机制？
+
+## flex 的常见属性？
+
+## 页面导入样式时，`link` 和 `@import` 有什么区别？
+
+| link | @import |
+| --- | --- |
+| HTML 标签，除了 CSS 之外还可以定义 RSS 等 | CSS 提供的 |
+| 加载页面时同时加载 | 页面加载完之后再加载 |
+| 没有兼容性问题 | 不兼容 IE 5 以下 |
+| 可以通过 DOM 动态引入 | 不能动态引入 |
+
+## 水平垂直居中的方案
+
+### 定位：三种
 
 1. `absolute` + `margin`：需要知道自己的宽高
 
@@ -68,7 +99,7 @@ categories:
 }
 ```
 
-## `flex`
+### `flex`
 
 ```scss
 .father{
@@ -79,7 +110,7 @@ categories:
 }
 ```
 
-## JavaScript
+### JavaScript
 
 ```scss
 body{
@@ -98,7 +129,7 @@ box.style.left = (winW - boxW) / 2 + 'px'
 box.style.top = (winH - boxH) / 2 + 'px'
 ```
 
-## `table-cell`
+### `table-cell`
 
 要求父级有固定宽高，相当于给文本居中
 
@@ -115,9 +146,9 @@ box.style.top = (winH - boxH) / 2 + 'px'
 }
 ```
 
-# 左右固定、中间自适应布局
+## 左右固定、中间自适应布局
 
-## `float` + 负 `margin`
+### `float` + 负 `margin`
 
 圣杯布局
 
@@ -168,7 +199,7 @@ box.style.top = (winH - boxH) / 2 + 'px'
 }
 ```
 
-## `calc`
+### `calc`
 
 兼容到 IE 9，渲染会比较慢
 
@@ -178,7 +209,7 @@ box.style.top = (winH - boxH) / 2 + 'px'
 }
 ```
 
-## `flex`
+### `flex`
 
 ```scss
 .container{
@@ -193,7 +224,7 @@ box.style.top = (winH - boxH) / 2 + 'px'
 }
 ```
 
-## 定位
+### 定位
 
 ```scss
 .container{
@@ -215,12 +246,35 @@ box.style.top = (winH - boxH) / 2 + 'px'
 }
 ```
 
-# 移动端响应式方案
+## 移动端响应式方案
 
-## @media
+1. @media
+2. PC 固定布局，移动端 rem
+3. flex
+4. vh/vw
 
-## PC 固定布局，移动端 rem
+## BFC
 
-## flex
+> BFC （块级格式化上下文）就是一块小区域，一块独立的布局环境，在这个区域之内的任何布局和定位都不会影响到外面，外面也不能影响到里面。
 
-## vh/vw
+### BFC 的作用
+
+1. 同一个 BFC 内会发生垂直方向的 Margin 合并，如果是不同 BFC 则不会
+2. 形成了 BFC 的区域不会与 float 元素重叠，可以与浮动元素形成左右自适应布局
+3. 清除浮动，因为浮动元素的高度也会被 BFC 纳入计算，因此可以解决高度塌陷的问题
+
+### 如何形成 BFC
+
+1. `float: left`
+2. `position: absolute`
+3. `overflow: hidden`，经常使用
+4. `display: inline-block`
+5. `display: table-cell`
+
+## CSS 选择器优先级？
+
+1. 越具体优先级越高
+2. 写在后面的覆盖写在前面的
+3. `important!` 最高，但是少用
+
+## 清除浮动

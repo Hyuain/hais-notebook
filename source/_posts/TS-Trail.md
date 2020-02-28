@@ -16,7 +16,7 @@ TypeScript 三个好处： 1. 自动提示更智能；2. 不能随便写 .xxx()�
 # Vue 的 TS 组件
 
 ```typescript
-import Vue from 'vue';
+import Vue from 'source/_posts/Others-QA-Vue';
 import {Component, Prop} from 'vue-property-decorator';
 
 // 这是一个装饰器，告诉 Vue 这是一个组件，Vue 会自动把下面的东西处理成 data、method 等

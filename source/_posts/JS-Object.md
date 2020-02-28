@@ -132,14 +132,17 @@ function X(a, b) {
 
 const y = new X(1, 2)
 
-function NEW(fun, arguments){
-    let newObj = {}
-    newObj.__proto__ = fun.prototype
-    fun.apply(newObj, arguments)
-    return newObj
+function NEW(fun, ...args){
+    const newObj = Object.create(obj.prototype)
+    // 相当于
+    // let newObj = {}
+    // newObj.__proto__ = fun.prototype
+    const result = fun.apply(newObj, args)
+    // 原版的 new 中，如果构造函数返回一个对象，则 new 也返回一个对象；如果构造函数返回一个简单类型，则 new 返回刚刚创建的新对象
+    return typeof result === 'object' ? result : newObj
 }
 
-const z = NEW(X, [3, 4])
+const z = NEW(X, 3, 4)
 ```
 
 ## 构造函数 `X`

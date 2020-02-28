@@ -67,6 +67,8 @@ float: left | right;
 
 # Margin 合并
 
+跟 BFC 有关系，可以查看 [CSS BFC](/hais-notebook/2020/02/12/CSS-BFC/)
+
 是说我们上下两个元素若都有 margin，那么他们的 margin 将不会同时生效。有以下几个注意点：
 
 1. 只有上下才会发生 `margin` 合并，左右不会发生
