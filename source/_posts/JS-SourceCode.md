@@ -1,5 +1,5 @@
 ---
-title: JavaScript：实现部分 API
+title: JavaScript 实现部分 API
 date: 2020-02-23 16:33:44
 tags:
   - 入门
@@ -676,7 +676,7 @@ if (!Function.proptotype.bind) {
 
 ```js
 function myNew(fun, ...args){
-    const newObj = Object.create(obj.prototype)
+    const newObj = Object.create(fun.prototype)
     // 相当于
     // let newObj = {}
     // newObj.__proto__ = fun.prototype

@@ -111,7 +111,7 @@ person.__proto__ = common // 原型链增加一个环节
 # 对象的原型
 
 {% note warning %}
-所有的函数自带 prototype
+所有的函数自带 prototype（箭头函数没有 prototype）
 prototype 中自带 constructor
 constructor 里面的东西就是函数的内容
 {% endnote %}
@@ -133,7 +133,7 @@ function X(a, b) {
 const y = new X(1, 2)
 
 function NEW(fun, ...args){
-    const newObj = Object.create(obj.prototype)
+    const newObj = Object.create(fun.prototype)
     // 相当于
     // let newObj = {}
     // newObj.__proto__ = fun.prototype

@@ -40,6 +40,10 @@ import ReactDOM from 'react-dom'
 
 ## 使用 create-react-app
 
+```bash
+yarn create react-app my-app
+```
+
 # 函数与普通代码的区别
 
 看 [这个例子](https://codesandbox.io/s/spring-waterfall-iyekc)

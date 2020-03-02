@@ -14,6 +14,15 @@ JS 的数组不是典型的数组，而是一个对象；**元素的数据类�
 
 # 获得新数组
 
+## 将类数组转化为数组
+
+```js
+args = Array.prototype.slice.call(arguments)
+args = Array.from(arguments)
+args = [...arguments]
+args = Array.prototype.concat.apply([], arguments)
+```
+
 ## 新建数组
 
 ```javascript
@@ -106,7 +115,7 @@ for(let i = 0; i < arr.length; i++) {
   console.log(`${i} : ${arr[i]}`)
 }
 
-arr.forEach( function(item, index, array) {
+arr.forEach(function(item, index, array) {
   console.log(`$(index) : $(item)`)
 })
 
@@ -120,9 +129,9 @@ arr.forEach( function(item, index, array) {
 ```js
 arr.indexOf(item) // 有就会返回 index，没有就会返回 -1
 
-arr.find(item => item % 2 ===0) 
+arr.find(item => item % 2 === 0) 
 // 会返回第一个符合条件的元素
-arr.findIndex(item => item % 2 ===0)
+arr.findIndex(item => item % 2 === 0)
 // 会返回第一个符合条件的元素对应的索引
 ```
 

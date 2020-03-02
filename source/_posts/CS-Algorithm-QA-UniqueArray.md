@@ -195,7 +195,7 @@ Array.prototype.unique = function() {
 [ 1, 0, { a: 1 }, undefined, null, NaN]
 ```
 
-不能区分：对象（存进去的时候所有对象都变成了 `[object Object]`）、'1' 和 1
+不能区分：对象（存进去的时候所有对象都变成了 `[object Object]`）、`'1'` 和 `1`
 
 ## 改进版本 1
 

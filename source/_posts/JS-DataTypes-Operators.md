@@ -61,7 +61,7 @@ JavaScript 有 7 种数据类型，3 种变量声明的方式，以及一些奇�
 - 下标： `s[0]`
 - base64 转码： `window.btoa` 编码， `window.atob` 反编码
 
-## Bool
+## Boolean
 
 > 否定运算、相等运算、比较运算可以得到 bool 值
 
@@ -290,3 +290,222 @@ let f = x => (console.log('hi'), x + 1)
 ## 优先级
 
 圆括号的优先级最高
+
+# 数据类型检测
+
+## `typeof` `instanceof` `toString` 的比较
+
+<table>
+  <tr>
+    <td colspan="2">类型</td>
+    <td>举例</td>
+    <td colspan="2">typeof</td>
+    <td colspan="2">instanceof</td>
+    <td colspan="2">Object.prototype.toString.call()</td>
+  </tr>
+  <tr>
+    <td rowspan="4">基本类型</td>
+    <td>Number</td>
+    <td>1</td>
+    <td>number</td>
+    <td>√</td>
+    <td>false*</td>
+    <td>○</td>
+    <td>[object Number]</td>
+    <td>√</td>
+  </tr>
+  <tr>
+    <td>String</td>
+    <td>hello'</td>
+    <td>string</td>
+    <td>√</td>
+    <td>false*</td>
+    <td>○</td>
+    <td>[object String]</td>
+    <td>√</td>
+  </tr>
+  <tr>
+    <td>Boolean</td>
+    <td>true</td>
+    <td>boolean</td>
+    <td>√</td>
+    <td>false*</td>
+    <td>○</td>
+    <td>[object Boolean]</td>
+    <td>√</td>
+  </tr>
+  <tr>
+    <td>Symbol / new Symbol()</td>
+    <td>new Symbol()</td>
+    <td>symbol</td>
+    <td>√</td>
+    <td>false*</td>
+    <td>○</td>
+    <td>[object Symbol]</td>
+    <td>√</td>
+  </tr>
+  <tr>
+    <td rowspan="3">new 基本类型</td>
+    <td>new Number()</td>
+    <td>new Number(1)</td>
+    <td>object</td>
+    <td>○</td>
+    <td>true</td>
+    <td>√</td>
+    <td>[object Number]**</td>
+    <td>√</td>
+  </tr>
+  <tr>
+    <td>new String()</td>
+    <td>new String('hello')</td>
+    <td>object</td>
+    <td>○</td>
+    <td>true</td>
+    <td>√</td>
+    <td>[object String]**</td>
+    <td>√</td>
+  </tr>
+  <tr>
+    <td>new Boolean()</td>
+    <td>new Boolean('false')</td>
+    <td>object</td>
+    <td>○</td>
+    <td>true</td>
+    <td>√</td>
+    <td>[object Boolean]**</td>
+    <td>√</td>
+  </tr>
+  <tr>
+    <td rowspan="2">空值</td>
+    <td>null</td>
+    <td>null</td>
+    <td>object</td>
+    <td>×</td>
+    <td>false*</td>
+    <td>○</td>
+    <td>[object Null]</td>
+    <td>√</td>
+  </tr>
+  <tr>
+    <td>undefined</td>
+    <td>undefined</td>
+    <td>undefined</td>
+    <td>√</td>
+    <td>false*</td>
+    <td>○</td>
+    <td>[object Undefined]</td>
+    <td>√</td>
+  </tr>
+  <tr>
+    <td rowspan="6">对象类型</td>
+    <td>普通对象</td>
+    <td>{a: '1', b: '2'}</td>
+    <td>object</td>
+    <td>√</td>
+    <td>true</td>
+    <td>√</td>
+    <td>[object Object]</td>
+    <td>√</td>
+  </tr>
+  <tr>
+    <td>Array</td>
+    <td>[1, 2, 3]</td>
+    <td>object</td>
+    <td>○</td>
+    <td>true</td>
+    <td>√</td>
+    <td>[object Array]</td>
+    <td>√</td>
+  </tr>
+  <tr>
+    <td>Function</td>
+    <td>function() {}</td>
+    <td>function</td>
+    <td>√</td>
+    <td>true</td>
+    <td>√</td>
+    <td>[object Function]</td>
+    <td>√</td>
+  </tr>
+  <tr>
+    <td>Error</td>
+    <td>new Error()</td>
+    <td>object</td>
+    <td>○</td>
+    <td>true</td>
+    <td>√</td>
+    <td>[object Error]</td>
+    <td>√</td>
+  </tr>
+  <tr>
+    <td>Date</td>
+    <td>new Date()</td>
+    <td>object</td>
+    <td>○</td>
+    <td>true</td>
+    <td>√</td>
+    <td>[object Date]</td>
+    <td>√</td>
+  </tr>
+  <tr>
+    <td>RegExp</td>
+    <td>new RegExp()</td>
+    <td>object</td>
+    <td>○</td>
+    <td>true</td>
+    <td>√</td>
+    <td>[object RegExp]</td>
+    <td>√</td>
+  </tr>
+</table>
+
+*尽管我们直接使用 `1 instanceof Number` 会出现错误，但是我们可以自定义 `instanceof` 方法，让他可以判断基本类型：
+
+```js
+class PrimitiveNumber {
+  static [Symbol.hasInstance](instance) {
+    return typeof instance === 'number'
+  }
+}
+1 instanceof PrimitiveNumber // true 
+```
+
+**基本类型与用 `new Constructor` 构造的用对象包裹的基本类型实际上是不一样的，特别是在 `Boolean` 上，这点需要注意：
+
+```js
+const boolean = false
+!!boolean // false
+
+const newBoolean = new Boolean(false)
+!!newBoolean // true
+```
+
+## 自己实现一个 `instanceof`
+
+```js
+function myInstanceof(left, right) {
+  if (typeof left !== 'object' || left === null) return false
+  let proto = Object.getPrototypeOf(left) // 相当于 left.__proto__
+  while(true) {
+    if(proto === null) return false
+    if(proto === right.prototype) return true
+    proto = Object.getPrototypeOf(proto)
+  }
+}
+```
+
+## `Object.is` 和 `===`
+
+`Object.is` 修复了 `===` 的一些失误：
+
+```js
+function is(x, y) {
+  if (x === y) {
+    // 修复 +0 和 -0 相等的问题
+    return x !== 0 || y !== 0 || 1 / x === 1 / y
+  } else {
+    // 修复 NaN 和 NaN 不相等的问题
+    return x !== x && y !== y
+  }
+}
+```

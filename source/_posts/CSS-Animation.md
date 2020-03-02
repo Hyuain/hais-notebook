@@ -50,7 +50,7 @@ div.remove()
 可以看看 [谷歌的这篇文档](https://developers.google.com/web/fundamentals/performance/rendering)
 
 - JS 优化：使用 `requestAnimationFrame` 代替 `setTimeout` 或者 `setInterval`
-- CSS 优化：使用 `will-change` 或者 `translate`
+- CSS 优化：使用 `will-change` 或者 `transform`
 
 # `transform`
 

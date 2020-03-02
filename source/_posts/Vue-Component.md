@@ -9,7 +9,7 @@ categories:
   - [前端, JavaScript, 框架, Vue]
 ---
 
-记录 Vue Options 中的内容。
+记录 Vue Component 中的内容。
 
 <!-- more -->
 

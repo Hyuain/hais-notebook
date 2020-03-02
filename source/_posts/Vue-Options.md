@@ -88,8 +88,8 @@ Vue.component('my-component', {
 
 
 {% note warning %}
-props 和 data 的区别：
-如果需要传值，就放在 props 里面
+`props` 和 `data` 的区别：
+如果需要传值，就放在 `props` 里面
 {% endnote %}
 
 ## computed
@@ -157,10 +157,12 @@ watch: {
 不要使用箭头函数来定义 watcher，`this` 是 `window`
 {% endnote %}
 
-> computed 和 watch 的区别？
-> computed 是用来计算一个值的，调用的时候不需要加括号，会根据依赖缓存
-> watch 有两个比较常用的选项：`immediate` 和 `deep`
-  
+{% note warning %}
+`computed` 和 `watch` 的区别？
+- `computed` 是用来计算一个值的，调用的时候不需要加括号，会根据依赖缓存
+- `watch` 有两个比较常用的选项：`immediate` 和 `deep`，通常是在需要进行异步或者开销比较大的操作的时候使用
+{% endnote %}
+
 # DOM
 
 ## el
@@ -529,19 +531,29 @@ update:money 是事件名
 
 # Lifecycle Hooks
 
-> 出现的时机可以用 debugger 证明
+## Vue Lifecycle
 
-- beforeCreate
-- created：出现在内存中，没有出现在页面中
-- beforeMount
-- mounted：出现在页面中
-- beforeUpdate
-- updated：更新了
-- activated
-- deactivated
-- beforeDestroy
-- destroyed：消亡了再弄出来之后是新的组件，占用新的内存地址
-- errorCaptured
+![](https://cn.vuejs.org/images/lifecycle.png)
+
+在调用每个生命周期钩子的时候，已经完成了哪些事情：
+
+1. **beforeCreate**：创建一个新的 Vue 实例，初始化事件与生命周期
+2. **created**：初始化数据，进行数据的观测（比如将使用 `Object.defineProperty` 改造 data，并将 vm 作为代理）
+3. **beforeMount**：将模板编译为 render 函数，将 v-if 变为 if、v-for 变为 map 等
+4. **mounted**：给 vm 添加 $el 成员，并且替换掉挂载的 DOM 元素
+5. **updated**：数据发生改变，触发组件更新，将会使用新的数据构造一份新的 DOM，替换掉原来的
+6. **destroyed**：vm 指示的所有东西都会解绑，所有的事件监听器被移除，所有的子实例被销毁
+
+对于父子组件：
+
+1. 加载渲染过程
+父 BeforeCreate -> 父 Created -> 父 BeforeMount -> 子 BeforeCreate -> 子 Created -> 子 BeforeMount -> 子 Mounted -> 父 Mounted
+2. 子组件更新过程
+父 BeforeUpdate -> 子 BeforeUpdate -> 子 Updated -> 父 Updated
+3. 父组件更新过程
+父 BeforeUpdate -> 父 Updated
+4. 销毁过程
+父 BeforeDestroy -> 子 BeforeDestroy -> 子 Destroyed -> 父 Destroyed
 
 # Assets
 

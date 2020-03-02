@@ -42,7 +42,7 @@ categories:
 
 - 有经验者会留一些空间或最后一个不设置 `width`（可以设置一个 `max-width`）
 - 不需要考虑响应式，因为手机上没有 IE，这个布局是专门为 IE 准备的
-- 在IE上有BUG：最左边浮动元素的 `margin-left` 会变成双倍
+- 在 IE 上有 BUG：最左边浮动元素的 `margin-left` 会变成双倍
     - 可以加一句兼容性写法：`_margin-left: ?px`
     - 也可以加上 `display: inline-block`
 - 如果图片下面有空隙，加上 `vertical-align: middle | top` 就可以消除
@@ -122,3 +122,204 @@ grid-template-areas:
 - **grid-area: main;**
 - **....**
 
+# 水平垂直居中的方案
+
+## 定位：三种
+
+1. `absolute` + `margin`：需要知道自己的宽高
+
+```scss
+.father{
+  position: relative;
+  .child{
+    position: absolute;
+    height: 50px;
+    width: 100px;
+    left: 50%;
+    top: 50%;
+    margin-top: -25px;
+    margin-left: -50px;
+  }
+}
+```
+
+2. `absolute` + `margin`：不需要知道自己的宽高，但是得有宽高
+
+```scss
+.father{
+  position: relative;
+  .child{
+    position: absolute;
+    height: 50px;
+    width: 100px;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+  }
+}
+```
+
+3. `absolute` + `translate`： 不需要知道自己的宽高，不需要有具体的宽高
+
+```scss
+.father{
+  position: relative;
+  .child{
+    position: absolute;
+    height: 50px;
+    width: 100px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+```
+
+## `flex`
+
+```scss
+.father{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .child{ }
+}
+```
+
+## JavaScript
+
+```scss
+body{
+  position: relative;
+  #box{ }
+}
+```
+```js
+const HTML = document.documentElement,
+      winW = HTML.clientWidth,
+      winH = HTML.clientHeight,
+      boxW = box.offsetWidth, // 带边框的宽，也可以用 getBoundingClientReact
+      boxH = box.offsetHeight // 带边框的高
+box.style.position = 'absolute'
+box.style.left = (winW - boxW) / 2 + 'px'
+box.style.top = (winH - boxH) / 2 + 'px'
+```
+
+## `table-cell`
+
+要求父级有固定宽高，相当于给文本居中
+
+```scss
+.father{
+  display: table-cell;
+  width: 500px;
+  height: 500px;
+  vertical-align: middle;
+  text-align: center;
+  .child{
+    display: inline-block;
+  }
+}
+```
+
+# 左右固定、中间自适应布局
+
+## `float` + 负 `margin`
+
+圣杯布局
+
+```scss
+.container{
+  padding: 0 200px;
+  .left, .right{
+    width: 200px;
+  }
+  .center{
+    width: 100%;
+  }
+  .center, .left, .right{
+    float: left;
+  }
+  .left{
+    margin-left: -100%;
+    position: relative;
+    left: -200px;
+  }
+  .right{
+    margin-right: -200px;
+  }
+}
+```
+
+双飞翼布局
+
+```scss
+.container{
+  width: 100%;
+  padding: 0 200px;
+  .center{
+    width: 100%;
+  }
+}
+.left, .right{
+  width: 200px;
+}
+.left, .right, .center{
+  float: left;
+}
+.left{
+  margin-left: -100%;
+}
+.right{
+  margin-right: -200px;
+}
+```
+
+## `calc`
+
+兼容到 IE 9，渲染会比较慢
+
+```scss
+.center{
+  width: calc(100% - 400px);
+}
+```
+
+## `flex`
+
+```scss
+.container{
+  display: flex;
+  justify-content: space-between;
+  .left, .right{
+    flex: 0 0 200px;
+  }
+  .center{
+    flex: 1;
+  }
+}
+```
+
+## 定位
+
+```scss
+.container{
+  position: relative;
+  .left, .right{
+    position: absolute;
+    width: 200px;
+    top: 0;
+  }
+  .left{
+    left: 0;
+  }
+  .right{
+    right: 0;
+  }
+  .center{
+    margin: 0 200px;
+  }
+}
+```

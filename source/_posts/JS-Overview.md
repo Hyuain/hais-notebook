@@ -33,7 +33,7 @@ JavaScript 的历史和评价的简单介绍。
 > 3. 借鉴 Scheme，将函数提升到“第一等公民”（first class）的地位；
 > 4. 借鉴 Self，使用基于原型（prototype）的继承机制。
 
-由于 JavaScript 在浏览器上的大获成功，微软（Microsoft）在后续推出的 IE 3 上也使用了 **JScript** ——这与 JavaScript 是类似、但不同标准的语言。于是当年市场上出现了两者对峙的情况，网页设计者通常会在主页放上“用Netscape可达到最佳效果”或“用IE可达到最佳效果”的标志。
+由于 JavaScript 在浏览器上的大获成功，微软（Microsoft）在后续推出的 IE 3 上也使用了 **JScript** ——这与 JavaScript 是类似、但不同标准的语言。于是当年市场上出现了两者对峙的情况，网页设计者通常会在主页放上“用 Netscape可达到最佳效果 ”或“用 IE 可达到最佳效果”的标志。
 
 1996 年 11 月，网景正式向 **欧洲计算机制造商协会（ECMA）** 提交语言标准；1997 年 6 月，ECMA 以 JavaScript 语言为基础制定了 ECMAScript 标准规范 ECMA-262。自然 JavaScript 也成为了 ECMAScript 最著名的实现之一。
 
