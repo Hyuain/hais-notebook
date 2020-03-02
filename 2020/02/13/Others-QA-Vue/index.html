@@ -53,15 +53,13 @@
 <meta property="og:site_name" content="Hais Notebook">
 <meta property="og:description" content="关于 Vue 的一些问题与答案。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://cn.vuejs.org/images/lifecycle.png">
 <meta property="article:published_time" content="2020-02-13T21:17:05.000Z">
-<meta property="article:modified_time" content="2020-02-28T09:08:07.689Z">
+<meta property="article:modified_time" content="2020-03-02T08:42:56.636Z">
 <meta property="article:author" content="Harvey Zhang">
 <meta property="article:tag" content="入门">
 <meta property="article:tag" content="FAQ">
 <meta property="article:tag" content="收集">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://cn.vuejs.org/images/lifecycle.png">
 
 <link rel="canonical" href="https://hyuain.github.io/hais-notebook/2020/02/13/Others-QA-Vue/">
 
@@ -239,7 +237,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-02-28 09:08:07" itemprop="dateModified" datetime="2020-02-28T09:08:07+00:00">2020-02-28</time>
+                <time title="修改时间：2020-03-02 08:42:56" itemprop="dateModified" datetime="2020-03-02T08:42:56+00:00">2020-03-02</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -273,31 +271,11 @@
         <p>关于 Vue 的一些问题与答案。</p>
 <a id="more"></a>
 
-<h1 id="Vue-的生命周期"><a href="#Vue-的生命周期" class="headerlink" title="Vue 的生命周期"></a>Vue 的生命周期</h1><p><img src="https://cn.vuejs.org/images/lifecycle.png" alt=""></p>
-<p>在调用每个生命周期钩子的时候，已经完成了哪些事情：</p>
-<ol>
-<li><strong>beforeCreate</strong>：创建一个新的 Vue 实例，初始化事件与生命周期</li>
-<li><strong>created</strong>：初始化数据，进行数据的观测（比如将使用 <code>Object.defineProperty</code> 改造 data，并将 vm 作为代理）</li>
-<li><strong>beforeMount</strong>：将模板编译为 render 函数，将 v-if 变为 if、v-for 变为 map 等</li>
-<li><strong>mounted</strong>：给 vm 添加 $el 成员，并且替换掉挂载的 DOM 元素</li>
-<li><strong>updated</strong>：数据发生改变，触发组件更新，将会使用新的数据构造一份新的 DOM，替换掉原来的</li>
-<li><strong>destroyed</strong>：vm 指示的所有东西都会解绑，所有的事件监听器被移除，所有的子实例被销毁</li>
-</ol>
-<h1 id="v-if-和-v-show-的区别？"><a href="#v-if-和-v-show-的区别？" class="headerlink" title="v-if 和 v-show 的区别？"></a><code>v-if</code> 和 <code>v-show</code> 的区别？</h1><ul>
-<li><code>v-if</code> 是真正的条件渲染，涉及事件监听器和子组件的销毁和重建过程；而且是惰性的，若初始条件为假，<code>v-if</code> 不会渲染</li>
-<li><code>v-show</code> 仅仅是 <code>display</code> 属性的改变，不支持 <code>&lt;template&gt;</code> 元素</li>
-</ul>
-<h1 id="watch-和-computed-的区别？"><a href="#watch-和-computed-的区别？" class="headerlink" title="watch 和 computed 的区别？"></a><code>watch</code> 和 <code>computed</code> 的区别？</h1><ul>
-<li><code>computed</code> 是用来计算一个值的，调用的时候不需要加括号，会根据依赖缓存</li>
-<li><code>watch</code> 有两个比较常用的选项：<code>immediate</code> 和 <code>deep</code>，通常是在需要进行异步或者开销比较大的操作的时候使用</li>
-</ul>
 <h1 id="Vue-组件间的通信？"><a href="#Vue-组件间的通信？" class="headerlink" title="Vue 组件间的通信？"></a>Vue 组件间的通信？</h1><ol>
 <li>父子组件：<code>$emit</code> 和 <code>$on</code></li>
 <li>爷孙组件、兄弟组件：eventBus</li>
 <li>Vuex</li>
 </ol>
-<h1 id="Vuex？"><a href="#Vuex？" class="headerlink" title="Vuex？"></a>Vuex？</h1><p>Vuex 是一个专为 Vue.js 应用程序开发的状态管理工具，分别有几个核心概念：State、Getter、Mutation、Action、Module。</p>
-<h1 id="Vue-的数据响应式是如何做到的？"><a href="#Vue-的数据响应式是如何做到的？" class="headerlink" title="Vue 的数据响应式是如何做到的？"></a>Vue 的数据响应式是如何做到的？</h1><h1 id="VueRouter？"><a href="#VueRouter？" class="headerlink" title="VueRouter？"></a>VueRouter？</h1><p>VueRouter 是 Vue.js 官方的路由管理器</p>
 
     </div>
 
@@ -384,7 +362,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Vue-的生命周期"><span class="nav-number">1.</span> <span class="nav-text">Vue 的生命周期</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#v-if-和-v-show-的区别？"><span class="nav-number">2.</span> <span class="nav-text">v-if 和 v-show 的区别？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#watch-和-computed-的区别？"><span class="nav-number">3.</span> <span class="nav-text">watch 和 computed 的区别？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Vue-组件间的通信？"><span class="nav-number">4.</span> <span class="nav-text">Vue 组件间的通信？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Vuex？"><span class="nav-number">5.</span> <span class="nav-text">Vuex？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Vue-的数据响应式是如何做到的？"><span class="nav-number">6.</span> <span class="nav-text">Vue 的数据响应式是如何做到的？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#VueRouter？"><span class="nav-number">7.</span> <span class="nav-text">VueRouter？</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Vue-组件间的通信？"><span class="nav-number">1.</span> <span class="nav-text">Vue 组件间的通信？</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -398,7 +376,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/hais-notebook/archives/">
         
-          <span class="site-state-item-count">53</span>
+          <span class="site-state-item-count">56</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

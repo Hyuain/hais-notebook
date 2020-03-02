@@ -1,7 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>JavaScript：实现部分 API</title>
+    <title>算法小问题：排序</title>
+    <url>/hais-notebook/2020/02/28/CS-Algorithm-QA-sort/</url>
+    <content><![CDATA[<p>介绍几种简单的排序方法。</p>
+<p>可以看 <a href="https://visualgo.net/en/sorting" target="_blank" rel="noopener">这个网站</a> 的动图</p>
+<a id="more"></a>
+
+<h1 id="选择排序"><a href="#选择排序" class="headerlink" title="选择排序"></a>选择排序</h1><p>每次从剩下的部分选择最小的排到前面来，O(n^2)</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> minIndex = <span class="function"><span class="params">numbers</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">let</span> index = <span class="number">0</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">1</span>; i &lt; numbers.length; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (numbers[i] &lt; numbers[index]) &#123;</span><br><span class="line">      index = i</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> index</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> selectionSort = <span class="function"><span class="params">numbers</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; numbers.length - <span class="number">1</span>; i++)&#123;</span><br><span class="line">    <span class="keyword">let</span> index = minIndex(numbers.slice(i))</span><br><span class="line">    <span class="keyword">if</span> (i !== index) &#123;</span><br><span class="line">      <span class="keyword">let</span> temp = numbers[index]</span><br><span class="line">      numbers[index] = numbers[i]</span><br><span class="line">      numbers[i] = temp</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="快速排序"><a href="#快速排序" class="headerlink" title="快速排序"></a>快速排序</h1><p>找出 Pivot，把小于 Pivot 的放左边，大于 Pivot 的放右边，最好 O(nlogn)，最坏 O(n^2)</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> quickSort = <span class="function"><span class="params">numbers</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (numbers.length &lt; <span class="number">2</span>) <span class="keyword">return</span> numbers</span><br><span class="line">  <span class="keyword">let</span> pivotIndex = <span class="built_in">Math</span>.floor(numbers.length / <span class="number">2</span>)</span><br><span class="line">  <span class="keyword">let</span> pivot = numbers.splice(pivotIndex, <span class="number">1</span>)[<span class="number">0</span>]</span><br><span class="line">  <span class="keyword">let</span> left = []</span><br><span class="line">  <span class="keyword">let</span> right = []</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; numbers.length; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (numbers[i] &lt;= pivot) &#123;</span><br><span class="line">      left.push(numbers[i])</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      right.push(numbers[i])</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> quickSort(left).concat([pivot], quickSort(right))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="冒泡排序"><a href="#冒泡排序" class="headerlink" title="冒泡排序"></a>冒泡排序</h1><p>两两比较，如果后者比前者小，则交换，最终每次循环使得最大数冒泡到最后去（O(n^2)，最好 O(n)）</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> bubbleSort = <span class="function"><span class="params">numbers</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">let</span> length = numbers.length</span><br><span class="line">  <span class="keyword">while</span> (length &gt; <span class="number">1</span>) &#123;</span><br><span class="line">    <span class="keyword">let</span> swapped = <span class="literal">false</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; numbers.length - <span class="number">1</span>; i++) &#123;</span><br><span class="line">      <span class="keyword">if</span> (numbers[i + <span class="number">1</span>] &lt; numbers[i]) &#123;</span><br><span class="line">        <span class="keyword">let</span> temp = numbers[i + <span class="number">1</span>]</span><br><span class="line">        numbers[i + <span class="number">1</span>] = numbers[i]</span><br><span class="line">        numbers[i] = temp</span><br><span class="line">        swapped = <span class="literal">true</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (!swapped) <span class="keyword">break</span></span><br><span class="line">    length--</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>计算机</category>
+        <category>算法</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>FAQ</tag>
+        <tag>收集</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>JavaScript ES6 的新玩意儿</title>
+    <url>/hais-notebook/2020/02/28/JS-ES6/</url>
+    <content><![CDATA[<p>关于 ES6 新增的一些东西，这里的 ES6 泛指 ES6 及之后出现的各种新语法。</p>
+<a id="more"></a>
+
+<h1 id="ES6-常用语法"><a href="#ES6-常用语法" class="headerlink" title="ES6 常用语法"></a>ES6 常用语法</h1><p>作用域、箭头函数、默认参数、展开运算符、模板字符串、解构赋值、import export、class、for of、Generator、新的数据类型（Symbol、Map、Set）</p>
+<h1 id="Generator"><a href="#Generator" class="headerlink" title="Generator"></a>Generator</h1><h2 id="生成器执行流程"><a href="#生成器执行流程" class="headerlink" title="生成器执行流程"></a>生成器执行流程</h2><p>生成器是一个带星号的“函数”（其实他并不是真正的函数），可以通过 yield 关键字暂停执行和恢复执行</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">gen</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'enter'</span>)</span><br><span class="line">  <span class="keyword">let</span> a = <span class="keyword">yield</span> <span class="number">1</span></span><br><span class="line">  <span class="keyword">let</span> b = <span class="keyword">yield</span> (<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">2</span></span><br><span class="line">  &#125;)</span><br><span class="line">  <span class="keyword">return</span> <span class="number">3</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> g = gen()</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>调用 <code>gen()</code> 之后，程序会阻塞住，不会执行任何语句</li>
+<li>调用 <code>g.next()</code> 之后，程序会继续执行，直到遇到 <code>yield</code></li>
+<li><code>next</code> 方法会返回一个对象，有 <code>value</code> 和 <code>done</code> 属性，<code>value</code> 为 当前 <code>yield</code> 后面的结果，<code>done</code> 表示是否执行完，遇到 <code>return</code> 后，<code>done</code> 变为 <code>true</code></li>
+</ol>
+<h2 id="yield"><a href="#yield" class="headerlink" title="yield*"></a>yield*</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">gen1</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">1</span></span><br><span class="line">  <span class="keyword">yield</span>* gen2()</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">4</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">gen2</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">2</span></span><br><span class="line">  <span class="keyword">yield</span> <span class="number">3</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 会按 1 2 3 4 的顺序执行</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="生成器的实现机制：协程"><a href="#生成器的实现机制：协程" class="headerlink" title="生成器的实现机制：协程"></a>生成器的实现机制：协程</h2><p>一个线程可以存在多个协程，协程不受操作系统的管理，而是被具体的应用程序代码所控制，因此没有进程的上下文切换的开销，性能高。</p>
+<p>一个线程一次只能执行一个协程，可以通过 <code>yield</code> 暂停当前协程，并将 JS 线程的控制权转移给另一个协程。</p>
+<h2 id="Generator-与异步"><a href="#Generator-与异步" class="headerlink" title="Generator 与异步"></a>Generator 与异步</h2><h3 id="thunk-函数"><a href="#thunk-函数" class="headerlink" title="thunk 函数"></a>thunk 函数</h3><p>thunk 函数即偏函数，核心是接受一定的参数，生产出定制化的函数，然后使用定制化的函数去完成功能，相当于一群函数的抽象和封装</p>
+<h3 id="Generator-与异步-1"><a href="#Generator-与异步-1" class="headerlink" title="Generator 与异步"></a>Generator 与异步</h3><h4 id="thunk"><a href="#thunk" class="headerlink" title="thunk"></a>thunk</h4><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> readFileThunk = <span class="function">(<span class="params">filename</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function">(<span class="params">callback</span>) =&gt;</span> &#123;</span><br><span class="line">    fs.readFile(filename, callback)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> gen = <span class="function"><span class="keyword">function</span>* (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> data1 = <span class="keyword">yield</span> readFileThunk(<span class="string">'001.txt'</span>)</span><br><span class="line">  <span class="built_in">console</span>.log(data1.toString())</span><br><span class="line">  <span class="keyword">const</span> data2 = <span class="keyword">yield</span> readFileThunk(<span class="string">'002.txt'</span>)</span><br><span class="line">  <span class="built_in">console</span>.log(data2.toString())</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> g = gen()</span><br><span class="line"><span class="comment">// value 值即为 thunk 生成的定制化函数</span></span><br><span class="line">g.next().value(<span class="function">(<span class="params">err, data1</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// 拿到上一次的结果，调用 next，将结果作为参数传入</span></span><br><span class="line">  g.next(data1).value(<span class="function">(<span class="params">err, data2</span>) =&gt;</span> &#123;</span><br><span class="line">    g.next(data2)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 可以将上面的代码进行封装，减少嵌套</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">run</span>(<span class="params">gen</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> next = <span class="function">(<span class="params">err, data</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> res = gen.next(data)</span><br><span class="line">    <span class="keyword">if</span> (res.done) <span class="keyword">return</span></span><br><span class="line">    res.value(next)</span><br><span class="line">  &#125;</span><br><span class="line">  next()</span><br><span class="line">&#125;</span><br><span class="line">run(g)</span><br></pre></td></tr></table></figure>
+
+<h4 id="Promise"><a href="#Promise" class="headerlink" title="Promise"></a>Promise</h4><p>也可以用 Promise 来实现：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> readFilePromise = <span class="function">(<span class="params">filename</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">    fs.readFile(filename, (err, data) =&gt; &#123;</span><br><span class="line">      <span class="keyword">if</span> (err) &#123;</span><br><span class="line">        reject(err)</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        resolve(data)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;).then(<span class="function"><span class="params">res</span> =&gt;</span> res)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> gen = <span class="function"><span class="keyword">function</span>* (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> data1 = <span class="keyword">yield</span> readFilePromise(<span class="string">'001.txt'</span>)</span><br><span class="line">  <span class="built_in">console</span>.log(data1.toString())</span><br><span class="line">  <span class="keyword">const</span> data2 = <span class="keyword">yield</span> readFilePromise(<span class="string">'002.txt'</span>)</span><br><span class="line">  <span class="built_in">console</span>.log(data2.toString())</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> g = gen()</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getGenPromise</span>(<span class="params">gem ,data</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> gen.next(data).value</span><br><span class="line">&#125;</span><br><span class="line">getGenPromise(g).then(<span class="function"><span class="params">data1</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> getGenPromise(g, data1)</span><br><span class="line">&#125;).then(<span class="function"><span class="params">data2</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> getGenPromise(g, data2)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>前端</category>
+        <category>JavaScript</category>
+        <category>原生 JavaScript</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>JavaScript 实现部分 API</title>
     <url>/hais-notebook/2020/02/23/JS-SourceCode/</url>
     <content><![CDATA[<p>实现一些常见的 API。</p>
 <a id="more"></a>
@@ -87,7 +146,7 @@
 <li>自动将空对象作为 <code>this</code> 关键字运行构造函数</li>
 <li>自动 <code>return this</code>（也就是说可以接着写 <code>new X().getName()</code>）</li>
 </ol>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">myNew</span>(<span class="params">fun, ...args</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">const</span> newObj = <span class="built_in">Object</span>.create(obj.prototype)</span><br><span class="line">    <span class="comment">// 相当于</span></span><br><span class="line">    <span class="comment">// let newObj = &#123;&#125;</span></span><br><span class="line">    <span class="comment">// newObj.__proto__ = fun.prototype</span></span><br><span class="line">    <span class="keyword">const</span> result = fun.apply(newObj, args)</span><br><span class="line">    <span class="comment">// 原版的 new 中，如果构造函数返回一个对象，则 new 也返回一个对象；如果构造函数返回一个简单类型，则 new 返回刚刚创建的新对象</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">typeof</span> result === <span class="string">'object'</span> ? result : newObj</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">myNew</span>(<span class="params">fun, ...args</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">const</span> newObj = <span class="built_in">Object</span>.create(fun.prototype)</span><br><span class="line">    <span class="comment">// 相当于</span></span><br><span class="line">    <span class="comment">// let newObj = &#123;&#125;</span></span><br><span class="line">    <span class="comment">// newObj.__proto__ = fun.prototype</span></span><br><span class="line">    <span class="keyword">const</span> result = fun.apply(newObj, args)</span><br><span class="line">    <span class="comment">// 原版的 new 中，如果构造函数返回一个对象，则 new 也返回一个对象；如果构造函数返回一个简单类型，则 new 返回刚刚创建的新对象</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">typeof</span> result === <span class="string">'object'</span> ? result : newObj</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
       <categories>
         <category>前端</category>
         <category>JavaScript</category>
@@ -225,31 +284,11 @@
     <content><![CDATA[<p>关于 Vue 的一些问题与答案。</p>
 <a id="more"></a>
 
-<h1 id="Vue-的生命周期"><a href="#Vue-的生命周期" class="headerlink" title="Vue 的生命周期"></a>Vue 的生命周期</h1><p><img src="https://cn.vuejs.org/images/lifecycle.png" alt=""></p>
-<p>在调用每个生命周期钩子的时候，已经完成了哪些事情：</p>
-<ol>
-<li><strong>beforeCreate</strong>：创建一个新的 Vue 实例，初始化事件与生命周期</li>
-<li><strong>created</strong>：初始化数据，进行数据的观测（比如将使用 <code>Object.defineProperty</code> 改造 data，并将 vm 作为代理）</li>
-<li><strong>beforeMount</strong>：将模板编译为 render 函数，将 v-if 变为 if、v-for 变为 map 等</li>
-<li><strong>mounted</strong>：给 vm 添加 $el 成员，并且替换掉挂载的 DOM 元素</li>
-<li><strong>updated</strong>：数据发生改变，触发组件更新，将会使用新的数据构造一份新的 DOM，替换掉原来的</li>
-<li><strong>destroyed</strong>：vm 指示的所有东西都会解绑，所有的事件监听器被移除，所有的子实例被销毁</li>
-</ol>
-<h1 id="v-if-和-v-show-的区别？"><a href="#v-if-和-v-show-的区别？" class="headerlink" title="v-if 和 v-show 的区别？"></a><code>v-if</code> 和 <code>v-show</code> 的区别？</h1><ul>
-<li><code>v-if</code> 是真正的条件渲染，涉及事件监听器和子组件的销毁和重建过程；而且是惰性的，若初始条件为假，<code>v-if</code> 不会渲染</li>
-<li><code>v-show</code> 仅仅是 <code>display</code> 属性的改变，不支持 <code>&lt;template&gt;</code> 元素</li>
-</ul>
-<h1 id="watch-和-computed-的区别？"><a href="#watch-和-computed-的区别？" class="headerlink" title="watch 和 computed 的区别？"></a><code>watch</code> 和 <code>computed</code> 的区别？</h1><ul>
-<li><code>computed</code> 是用来计算一个值的，调用的时候不需要加括号，会根据依赖缓存</li>
-<li><code>watch</code> 有两个比较常用的选项：<code>immediate</code> 和 <code>deep</code>，通常是在需要进行异步或者开销比较大的操作的时候使用</li>
-</ul>
 <h1 id="Vue-组件间的通信？"><a href="#Vue-组件间的通信？" class="headerlink" title="Vue 组件间的通信？"></a>Vue 组件间的通信？</h1><ol>
 <li>父子组件：<code>$emit</code> 和 <code>$on</code></li>
 <li>爷孙组件、兄弟组件：eventBus</li>
 <li>Vuex</li>
 </ol>
-<h1 id="Vuex？"><a href="#Vuex？" class="headerlink" title="Vuex？"></a>Vuex？</h1><p>Vuex 是一个专为 Vue.js 应用程序开发的状态管理工具，分别有几个核心概念：State、Getter、Mutation、Action、Module。</p>
-<h1 id="Vue-的数据响应式是如何做到的？"><a href="#Vue-的数据响应式是如何做到的？" class="headerlink" title="Vue 的数据响应式是如何做到的？"></a>Vue 的数据响应式是如何做到的？</h1><h1 id="VueRouter？"><a href="#VueRouter？" class="headerlink" title="VueRouter？"></a>VueRouter？</h1><p>VueRouter 是 Vue.js 官方的路由管理器</p>
 ]]></content>
       <categories>
         <category>前端</category>
@@ -288,17 +327,6 @@
 <li>GET 幂等，POST 不幂等</li>
 <li>语义不同，GET 是为了获取数据，POST 是为了提交数据</li>
 </ul>
-<h1 id="Cookie、LocalStorage、SessionStorage-和-Session"><a href="#Cookie、LocalStorage、SessionStorage-和-Session" class="headerlink" title="Cookie、LocalStorage、SessionStorage 和 Session"></a>Cookie、LocalStorage、SessionStorage 和 Session</h1><h2 id="Cookie-和-Session-的区别"><a href="#Cookie-和-Session-的区别" class="headerlink" title="Cookie 和 Session 的区别"></a>Cookie 和 Session 的区别</h2><p>Cookie 是服务器发给浏览器的一段字符串，每次浏览器在访问对应域名的时候，都需要把这个字符串带上<br>Session 是会话，表示浏览器与服务器一段时间内的会话</p>
-<ul>
-<li>一般 Cookie 在浏览器上，Session 在服务器上</li>
-<li>Session 一般是基于 Cookie 来实现的（把 SessionID 放到 Cookie 里面）</li>
-</ul>
-<h2 id="Cookie-和-LocalStorage-的区别"><a href="#Cookie-和-LocalStorage-的区别" class="headerlink" title="Cookie 和 LocalStorage 的区别"></a>Cookie 和 LocalStorage 的区别</h2><ul>
-<li>Cookie 上限一般为 4K，LocalStorage 为 5M</li>
-<li>Cookie 一般存储用户信息，LocalStorage 一般存储不重要的数据</li>
-<li>Cookie 需要发送到服务器上，LocalStorage 不发送到服务器上</li>
-</ul>
-<h2 id="LocalStorage-和-SessionStorage-的区别"><a href="#LocalStorage-和-SessionStorage-的区别" class="headerlink" title="LocalStorage 和 SessionStorage 的区别"></a>LocalStorage 和 SessionStorage 的区别</h2><p>LocalStorage 一般不过期，SessionStorage 一般在 Session 结束的时候过期</p>
 <h1 id="HTTP-2-和-HTTP-1-的区别"><a href="#HTTP-2-和-HTTP-1-的区别" class="headerlink" title="HTTP/2 和 HTTP/1 的区别"></a>HTTP/2 和 HTTP/1 的区别</h1>]]></content>
       <categories>
         <category>前端</category>
@@ -389,7 +417,7 @@
   <entry>
     <title>Vue 组件</title>
     <url>/hais-notebook/2020/02/09/Vue-Component/</url>
-    <content><![CDATA[<p>记录 Vue Options 中的内容。</p>
+    <content><![CDATA[<p>记录 Vue Component 中的内容。</p>
 <a id="more"></a>
 
 <h1 id="Vue-组件的三种写法"><a href="#Vue-组件的三种写法" class="headerlink" title="Vue 组件的三种写法"></a>Vue 组件的三种写法</h1><ol>
@@ -505,7 +533,7 @@
   </entry>
   <entry>
     <title>算法小问题：数组去重</title>
-    <url>/hais-notebook/2020/02/04/CS-Algorithm-QA/</url>
+    <url>/hais-notebook/2020/02/04/CS-Algorithm-QA-UniqueArray/</url>
     <content><![CDATA[<p>总结：恰当地利用对象和 Map key 的唯一性可以实现对 <code>&#39;1&#39;</code> 和 <code>1</code> 的区分、对象的去重，以及 <code>undefined</code> <code>null</code> <code>NaN</code> 的良好识别。</p>
 <a id="more"></a>
 
@@ -550,7 +578,7 @@
 
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">[ <span class="number">1</span>, <span class="number">1</span>, <span class="string">'1'</span>, <span class="string">'1'</span>, <span class="number">0</span>, <span class="number">0</span>, &#123; <span class="attr">a</span>: <span class="number">1</span> &#125;, &#123; <span class="attr">a</span>: <span class="number">1</span> &#125;, x, y, z, <span class="literal">undefined</span>, <span class="literal">undefined</span>, <span class="literal">null</span>, <span class="literal">null</span>, <span class="literal">NaN</span>, <span class="literal">NaN</span> ]</span><br><span class="line">    |</span><br><span class="line">    ↓</span><br><span class="line">[ <span class="number">1</span>, <span class="number">0</span>, &#123; <span class="attr">a</span>: <span class="number">1</span> &#125;, <span class="literal">undefined</span>, <span class="literal">null</span>, <span class="literal">NaN</span>]</span><br></pre></td></tr></table></figure>
 
-<p>不能区分：对象（存进去的时候所有对象都变成了 <code>[object Object]</code>）、’1’ 和 1</p>
+<p>不能区分：对象（存进去的时候所有对象都变成了 <code>[object Object]</code>）、<code>&#39;1&#39;</code> 和 <code>1</code></p>
 <h2 id="改进版本-1"><a href="#改进版本-1" class="headerlink" title="改进版本 1"></a>改进版本 1</h2><p>可以区分 <code>&#39;1&#39;</code> 和 <code>1</code></p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Array</span>.prototype.unique = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> obj = &#123;&#125;</span><br><span class="line">  <span class="keyword">const</span> newArray = []</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; <span class="keyword">this</span>.length; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (!obj[<span class="keyword">typeof</span> <span class="keyword">this</span>[i] + <span class="keyword">this</span>[i]]) &#123;</span><br><span class="line">      obj[<span class="keyword">typeof</span> <span class="keyword">this</span>[i] + <span class="keyword">this</span>[i]] = <span class="literal">true</span></span><br><span class="line">      newArray.push(<span class="keyword">this</span>[i])</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> newArray</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -588,26 +616,7 @@
     <content><![CDATA[<p>关于原生 JavaScript 的一些问题与答案。</p>
 <a id="more"></a>
 
-<h1 id="ES6-常用语法"><a href="#ES6-常用语法" class="headerlink" title="ES6 常用语法"></a>ES6 常用语法</h1><p>作用域、箭头函数、默认参数、展开运算符、模板字符串、解构赋值、import export、class、for of、Generator、新的数据类型（Symbol、Map、Set）</p>
-<h1 id="Generator"><a href="#Generator" class="headerlink" title="Generator"></a>Generator</h1><h2 id="生成器执行流程"><a href="#生成器执行流程" class="headerlink" title="生成器执行流程"></a>生成器执行流程</h2><p>生成器是一个带星号的“函数”（其实他并不是真正的函数），可以通过 yield 关键字暂停执行和恢复执行</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">gen</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'enter'</span>)</span><br><span class="line">  <span class="keyword">let</span> a = <span class="keyword">yield</span> <span class="number">1</span></span><br><span class="line">  <span class="keyword">let</span> b = <span class="keyword">yield</span> (<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">2</span></span><br><span class="line">  &#125;)</span><br><span class="line">  <span class="keyword">return</span> <span class="number">3</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> g = gen()</span><br></pre></td></tr></table></figure>
-
-<ol>
-<li>调用 <code>gen()</code> 之后，程序会阻塞住，不会执行任何语句</li>
-<li>调用 <code>g.next()</code> 之后，程序会继续执行，直到遇到 <code>yield</code></li>
-<li><code>next</code> 方法会返回一个对象，有 <code>value</code> 和 <code>done</code> 属性，<code>value</code> 为 当前 <code>yield</code> 后面的结果，<code>done</code> 表示是否执行完，遇到 <code>return</code> 后，<code>done</code> 变为 <code>true</code></li>
-</ol>
-<h2 id="yield"><a href="#yield" class="headerlink" title="yield*"></a>yield*</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">gen1</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">1</span></span><br><span class="line">  <span class="keyword">yield</span>* gen2()</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">4</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">gen2</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">2</span></span><br><span class="line">  <span class="keyword">yield</span> <span class="number">3</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 会按 1 2 3 4 的顺序执行</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="生成器的实现机制：协程"><a href="#生成器的实现机制：协程" class="headerlink" title="生成器的实现机制：协程"></a>生成器的实现机制：协程</h2><p>一个线程可以存在多个协程，协程不受操作系统的管理，而是被具体的应用程序代码所控制，因此没有进程的上下文切换的开销，性能高。</p>
-<p>一个线程一次只能执行一个协程，可以通过 yield 暂停当前协程，并将 JS 线程的控制权转移给另一个协程。</p>
-<h2 id="Generator-与异步"><a href="#Generator-与异步" class="headerlink" title="Generator 与异步"></a>Generator 与异步</h2><h3 id="thunk-函数"><a href="#thunk-函数" class="headerlink" title="thunk 函数"></a>thunk 函数</h3><p>thunk 函数即偏函数，核心是接受一定的参数，生产出定制化的函数，然后使用定制化的函数去完成功能，相当于一群函数的抽象和封装</p>
-<h3 id="Generator-与异步-1"><a href="#Generator-与异步-1" class="headerlink" title="Generator 与异步"></a>Generator 与异步</h3><h4 id="thunk"><a href="#thunk" class="headerlink" title="thunk"></a>thunk</h4><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> readFileThunk = <span class="function">(<span class="params">filename</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function">(<span class="params">callback</span>) =&gt;</span> &#123;</span><br><span class="line">    fs.readFile(filename, callback)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> gen = <span class="function"><span class="keyword">function</span>* (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> data1 = <span class="keyword">yield</span> readFileThunk(<span class="string">'001.txt'</span>)</span><br><span class="line">  <span class="built_in">console</span>.log(data1.toString())</span><br><span class="line">  <span class="keyword">const</span> data2 = <span class="keyword">yield</span> readFileThunk(<span class="string">'002.txt'</span>)</span><br><span class="line">  <span class="built_in">console</span>.log(data2.toString())</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> g = gen()</span><br><span class="line"><span class="comment">// value 值即为 thunk 生成的定制化函数</span></span><br><span class="line">g.next().value(<span class="function">(<span class="params">err, data1</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// 拿到上一次的结果，调用 next，将结果作为参数传入</span></span><br><span class="line">  g.next(data1).value(<span class="function">(<span class="params">err, data2</span>) =&gt;</span> &#123;</span><br><span class="line">    g.next(data2)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 可以将上面的代码进行封装，减少嵌套</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">run</span>(<span class="params">gen</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> next = <span class="function">(<span class="params">err, data</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> res = gen.next(data)</span><br><span class="line">    <span class="keyword">if</span> (res.done) <span class="keyword">return</span></span><br><span class="line">    res.value(next)</span><br><span class="line">  &#125;</span><br><span class="line">  next()</span><br><span class="line">&#125;</span><br><span class="line">run(g)</span><br></pre></td></tr></table></figure>
-
-<h4 id="Promise"><a href="#Promise" class="headerlink" title="Promise"></a>Promise</h4><p>也可以用 Promise 来实现：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> readFilePromise = <span class="function">(<span class="params">filename</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">    fs.readFile(filename, (err, data) =&gt; &#123;</span><br><span class="line">      <span class="keyword">if</span> (err) &#123;</span><br><span class="line">        reject(err)</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        resolve(data)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;).then(<span class="function"><span class="params">res</span> =&gt;</span> res)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> gen = <span class="function"><span class="keyword">function</span>* (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> data1 = <span class="keyword">yield</span> readFilePromise(<span class="string">'001.txt'</span>)</span><br><span class="line">  <span class="built_in">console</span>.log(data1.toString())</span><br><span class="line">  <span class="keyword">const</span> data2 = <span class="keyword">yield</span> readFilePromise(<span class="string">'002.txt'</span>)</span><br><span class="line">  <span class="built_in">console</span>.log(data2.toString())</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> g = gen()</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getGenPromise</span>(<span class="params">gem ,data</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> gen.next(data).value</span><br><span class="line">&#125;</span><br><span class="line">getGenPromise(g).then(<span class="function"><span class="params">data1</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> getGenPromise(g, data1)</span><br><span class="line">&#125;).then(<span class="function"><span class="params">data2</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> getGenPromise(g, data2)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-
-<h1 id="Promise-1"><a href="#Promise-1" class="headerlink" title="Promise"></a>Promise</h1><h2 id="Promise-如何消灭回调地狱"><a href="#Promise-如何消灭回调地狱" class="headerlink" title="Promise 如何消灭回调地狱"></a>Promise 如何消灭回调地狱</h2><p>回调地狱：</p>
+<h1 id="Promise"><a href="#Promise" class="headerlink" title="Promise"></a>Promise</h1><h2 id="Promise-如何消灭回调地狱"><a href="#Promise-如何消灭回调地狱" class="headerlink" title="Promise 如何消灭回调地狱"></a>Promise 如何消灭回调地狱</h2><p>回调地狱：</p>
 <ol>
 <li>多层嵌套</li>
 <li>无法方便地进行错误处理</li>
@@ -620,213 +629,7 @@
 </ol>
 <h2 id="Promise-怎样实现链式调用的"><a href="#Promise-怎样实现链式调用的" class="headerlink" title="Promise 怎样实现链式调用的"></a>Promise 怎样实现链式调用的</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> PENDING = <span class="string">'pending'</span></span><br><span class="line"><span class="keyword">const</span> FULFILLED = <span class="string">'fulfilled'</span></span><br><span class="line"><span class="keyword">const</span> REJECTED = <span class="string">'rejected'</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">MyPromise</span>(<span class="params">executor</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 缓存当前 Promise 实例</span></span><br><span class="line">  <span class="keyword">let</span> self = <span class="keyword">this</span></span><br><span class="line">  self.value = <span class="literal">null</span></span><br><span class="line">  self.error = <span class="literal">null</span></span><br><span class="line">  self.status = PENDING</span><br><span class="line">  <span class="comment">// 回调函数有可能是个数组</span></span><br><span class="line">  self.onFulfilledCallbacks = []</span><br><span class="line">  self.onRejectedCallbacks = []</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> resolve = <span class="function"><span class="params">value</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (self.status !== PENDING) <span class="keyword">return</span></span><br><span class="line">    setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      self.status = FULFILLED</span><br><span class="line">      self.value = value</span><br><span class="line">      self.onFulfilledCallbacks.forEach(<span class="function"><span class="params">callback</span> =&gt;</span> callback(self.value))</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">const</span> reject = <span class="function"><span class="params">error</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (self.status !== PENDING) <span class="keyword">return</span></span><br><span class="line">    setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      self.status = REJECTED</span><br><span class="line">      self.error = error</span><br><span class="line">      self.onRejectedCallbacks.forEach(<span class="function"><span class="params">callback</span> =&gt;</span> callback(self.error))</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  executor(resolve, reject)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">MyPromise.prototype.then = <span class="function"><span class="keyword">function</span>(<span class="params">onFulfilled, onRejected</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> self = <span class="keyword">this</span></span><br><span class="line">  <span class="keyword">let</span> bridgePromise</span><br><span class="line">  onFulfilled = <span class="keyword">typeof</span> onFulfilled === <span class="string">'function'</span> ? onFulfilled : <span class="function"><span class="params">value</span> =&gt;</span> value</span><br><span class="line">  onRejected = <span class="keyword">typeof</span> onRejected === <span class="string">'function'</span> ? onRejected : <span class="function"><span class="params">error</span> =&gt;</span> &#123; <span class="keyword">throw</span> error &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">resolvePromise</span>(<span class="params">bridgePromise, x, resolve, reject</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (x <span class="keyword">instanceof</span> MyPromise) &#123;</span><br><span class="line">      <span class="comment">// 拆解这个 promise，直到返回值不为 promise 为止</span></span><br><span class="line">      <span class="keyword">if</span> (x.status === PENDING) &#123;</span><br><span class="line">        x.then(<span class="function"><span class="params">y</span> =&gt;</span> &#123;</span><br><span class="line">          resolvePromise(bridgePromise, y, resolve, reject)</span><br><span class="line">        &#125;, error =&gt; &#123;</span><br><span class="line">          reject(error)</span><br><span class="line">        &#125;)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      resolve(x)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (self.status === PENDING) &#123;</span><br><span class="line">    <span class="keyword">return</span> bridgePromise =  <span class="keyword">new</span> MyPromise(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">      self.onFulfilledCallbacks.push(<span class="function"><span class="params">value</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="comment">// 要拿到 then 中回调返回的结果</span></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">          <span class="keyword">let</span> x = onFulfilled(value)</span><br><span class="line">          resolvePromise(bridgePromise, x, resolve, reject)</span><br><span class="line">        &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">          reject(e)</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;)</span><br><span class="line">      self.onRejectedCallbacks.push(<span class="function"><span class="params">error</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">          reject(onRejected(error))</span><br><span class="line">        &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">          reject(e)</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (self.status === FULFILLED) &#123;</span><br><span class="line">    <span class="keyword">return</span> bridgePromise = <span class="keyword">new</span> MyPromise(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">      setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">          <span class="keyword">let</span> x = onFulfilled(self.value)</span><br><span class="line">          resolvePromise(bridgePromise, x, resolve, reject)</span><br><span class="line">        &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">          reject(e)</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> bridgePromise = <span class="keyword">new</span> MyPromise(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">      setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">          <span class="keyword">let</span> x = onRejected(self.error)</span><br><span class="line">          resolvePromise(bridgePromise, x, resolve, reject)</span><br><span class="line">        &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">          reject(e)</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">MyPromise.prototype.catch = <span class="function"><span class="keyword">function</span> (<span class="params">onRejected</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">this</span>.then(<span class="literal">null</span>, onRejected)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h1 id="V8-执行一段代码的过程？"><a href="#V8-执行一段代码的过程？" class="headerlink" title="V8 执行一段代码的过程？"></a>V8 执行一段代码的过程？</h1><ol>
-<li>首先通过词法分析和语法分析生成 <strong>AST</strong></li>
-<li><strong>解释器</strong> 将 AST 转换为字节码</li>
-<li>由 <strong>解释器</strong> 逐行执行字节码，遇到热点代码启动 <strong>编译器</strong> 进行编译，生成对应的字节码，优化执行效率</li>
-</ol>
-<h2 id="生成-AST"><a href="#生成-AST" class="headerlink" title="生成 AST"></a>生成 AST</h2><h3 id="词法分析"><a href="#词法分析" class="headerlink" title="词法分析"></a>词法分析</h3><p>主要是把一行行代码分解成一个个 token：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> name = <span class="string">'harvey'</span></span><br></pre></td></tr></table></figure>
 
-<p>会把句子拆分成四个部分（四个 token）：关键字 let、变量名 name、赋值 =、字符串 ‘harvey’</p>
-<h3 id="语法分析"><a href="#语法分析" class="headerlink" title="语法分析"></a>语法分析</h3><p>将生成的这些 token 数据，根据一定的语法规则转化为 AST，之后会生成执行上下文。<br>babel 实际上就是将 ES6 代码解析生成  ES6 的 AST，然后再转换为 ES5 的 AST，然后再转换为 ES5 的代码。</p>
-<p>将这些token</p>
-<h2 id="生成字节码"><a href="#生成字节码" class="headerlink" title="生成字节码"></a>生成字节码</h2><p>生成 AST 之后，直接通过 V8 解释器（Ignition） 生成字节码，但是字节码并不能让机器直接运行——之所以不直接转化为机器码，是因为机器码空间占用太大了。</p>
-<p>字节码比机器码轻量很多，是介于 AST 和机器码之间的一种代码，但是与特定类型的机器码无关，字节码需要通过解释器将其转换为机器码然后执行。但和原来不同的是，现在不用一次性将全部的字节码都转换成机器码，而是通过解释器来逐行执行字节码，省去了生成二进制文件的操作，这样就大大降低了内存的压力。</p>
-<h2 id="执行代码"><a href="#执行代码" class="headerlink" title="执行代码"></a>执行代码</h2><p>热点代码：在执行字节码的过程中，如果有一段代码反复出现，则记为 <strong>热点代码</strong>（HotSpot），这段代码会被编译成机器码保存起来。在这样的机制下，代码执行的时间越久，那么执行效率会越来越高，因为有越来越多的字节码被标记为热点代码。</p>
-<p>JS 实际上并不是一门完全的解释型语言，因为字节码不仅配合了 <strong>解释器</strong>，还要配合 <strong>编译器</strong>。编译器和解释器的根本区别在于前者会编译生成二进制文件而后者不会。</p>
-<h1 id="将类数组转化为数组"><a href="#将类数组转化为数组" class="headerlink" title="将类数组转化为数组"></a>将类数组转化为数组</h1><p>以 <code>arguments</code> 为例：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">args = <span class="built_in">Array</span>.prototype.slice.call(<span class="built_in">arguments</span>)</span><br><span class="line">args = <span class="built_in">Array</span>.from(<span class="built_in">arguments</span>)</span><br><span class="line">args = [...arguments]</span><br><span class="line">args = <span class="built_in">Array</span>.prototype.concat.apply([], <span class="built_in">arguments</span>)</span><br></pre></td></tr></table></figure>
-
-<h1 id="数据类型检测"><a href="#数据类型检测" class="headerlink" title="数据类型检测"></a>数据类型检测</h1><h2 id="typeof-instanceof-toString-的比较"><a href="#typeof-instanceof-toString-的比较" class="headerlink" title="typeof instanceof toString 的比较"></a><code>typeof</code> <code>instanceof</code> <code>toString</code> 的比较</h2><table>
-  <tr>
-    <td colspan="2">类型</td>
-    <td>举例</td>
-    <td colspan="2">typeof</td>
-    <td colspan="2">instanceof</td>
-    <td colspan="2">Object.prototype.toString.call()</td>
-  </tr>
-  <tr>
-    <td rowspan="4">基本类型</td>
-    <td>Number</td>
-    <td>1</td>
-    <td>number</td>
-    <td>√</td>
-    <td>false*</td>
-    <td>○</td>
-    <td>[object Number]</td>
-    <td>√</td>
-  </tr>
-  <tr>
-    <td>String</td>
-    <td>hello'</td>
-    <td>string</td>
-    <td>√</td>
-    <td>false*</td>
-    <td>○</td>
-    <td>[object String]</td>
-    <td>√</td>
-  </tr>
-  <tr>
-    <td>Boolean</td>
-    <td>true</td>
-    <td>boolean</td>
-    <td>√</td>
-    <td>false*</td>
-    <td>○</td>
-    <td>[object Boolean]</td>
-    <td>√</td>
-  </tr>
-  <tr>
-    <td>Symbol / new Symbol()</td>
-    <td>new Symbol()</td>
-    <td>symbol</td>
-    <td>√</td>
-    <td>false*</td>
-    <td>○</td>
-    <td>[object Symbol]</td>
-    <td>√</td>
-  </tr>
-  <tr>
-    <td rowspan="3">new 基本类型</td>
-    <td>new Number()</td>
-    <td>new Number(1)</td>
-    <td>object</td>
-    <td>○</td>
-    <td>true</td>
-    <td>√</td>
-    <td>[object Number]**</td>
-    <td>√</td>
-  </tr>
-  <tr>
-    <td>new String()</td>
-    <td>new String('hello')</td>
-    <td>object</td>
-    <td>○</td>
-    <td>true</td>
-    <td>√</td>
-    <td>[object String]**</td>
-    <td>√</td>
-  </tr>
-  <tr>
-    <td>new Boolean()</td>
-    <td>new Boolean('false')</td>
-    <td>object</td>
-    <td>○</td>
-    <td>true</td>
-    <td>√</td>
-    <td>[object Boolean]**</td>
-    <td>√</td>
-  </tr>
-  <tr>
-    <td rowspan="2">空值</td>
-    <td>null</td>
-    <td>null</td>
-    <td>object</td>
-    <td>×</td>
-    <td>false*</td>
-    <td>○</td>
-    <td>[object Null]</td>
-    <td>√</td>
-  </tr>
-  <tr>
-    <td>undefined</td>
-    <td>undefined</td>
-    <td>undefined</td>
-    <td>√</td>
-    <td>false*</td>
-    <td>○</td>
-    <td>[object Undefined]</td>
-    <td>√</td>
-  </tr>
-  <tr>
-    <td rowspan="6">对象类型</td>
-    <td>普通对象</td>
-    <td>{a: '1', b: '2'}</td>
-    <td>object</td>
-    <td>√</td>
-    <td>true</td>
-    <td>√</td>
-    <td>[object Object]</td>
-    <td>√</td>
-  </tr>
-  <tr>
-    <td>Array</td>
-    <td>[1, 2, 3]</td>
-    <td>object</td>
-    <td>○</td>
-    <td>true</td>
-    <td>√</td>
-    <td>[object Array]</td>
-    <td>√</td>
-  </tr>
-  <tr>
-    <td>Function</td>
-    <td>function() {}</td>
-    <td>function</td>
-    <td>√</td>
-    <td>true</td>
-    <td>√</td>
-    <td>[object Function]</td>
-    <td>√</td>
-  </tr>
-  <tr>
-    <td>Error</td>
-    <td>new Error()</td>
-    <td>object</td>
-    <td>○</td>
-    <td>true</td>
-    <td>√</td>
-    <td>[object Error]</td>
-    <td>√</td>
-  </tr>
-  <tr>
-    <td>Date</td>
-    <td>new Date()</td>
-    <td>object</td>
-    <td>○</td>
-    <td>true</td>
-    <td>√</td>
-    <td>[object Date]</td>
-    <td>√</td>
-  </tr>
-  <tr>
-    <td>RegExp</td>
-    <td>new RegExp()</td>
-    <td>object</td>
-    <td>○</td>
-    <td>true</td>
-    <td>√</td>
-    <td>[object RegExp]</td>
-    <td>√</td>
-  </tr>
-</table>
-
-<p>*尽管我们直接使用 <code>1 instanceof Number</code> 会出现错误，但是我们可以自定义 <code>instanceof</code> 方法，让他可以判断基本类型：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PrimitiveNumber</span> </span>&#123;</span><br><span class="line">  <span class="keyword">static</span> [<span class="built_in">Symbol</span>.hasInstance](instance) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">typeof</span> instance === <span class="string">'number'</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="number">1</span> <span class="keyword">instanceof</span> PrimitiveNumber <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
-
-<p>**基本类型与用 <code>new Constructor</code> 构造的用对象包裹的基本类型实际上是不一样的，特别是在 <code>Boolean</code> 上，这点需要注意：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> boolean = <span class="literal">false</span></span><br><span class="line">!!boolean <span class="comment">// false</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> newBoolean = <span class="keyword">new</span> <span class="built_in">Boolean</span>(<span class="literal">false</span>)</span><br><span class="line">!!newBoolean <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="自己实现一个-instanceof"><a href="#自己实现一个-instanceof" class="headerlink" title="自己实现一个 instanceof"></a>自己实现一个 <code>instanceof</code></h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">myInstanceof</span>(<span class="params">left, right</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> left !== <span class="string">'object'</span> || left === <span class="literal">null</span>) <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">  <span class="keyword">let</span> proto = <span class="built_in">Object</span>.getPrototypeOf(left) <span class="comment">// 相当于 left.__proto__</span></span><br><span class="line">  <span class="keyword">while</span>(<span class="literal">true</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span>(proto === <span class="literal">null</span>) <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">    <span class="keyword">if</span>(proto === right.prototype) <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">    proto = <span class="built_in">Object</span>.getPrototypeOf(proto)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="Object-is-和"><a href="#Object-is-和" class="headerlink" title="Object.is 和 ==="></a><code>Object.is</code> 和 <code>===</code></h2><p><code>Object.is</code> 修复了 <code>===</code> 的一些失误：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">is</span>(<span class="params">x, y</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (x === y) &#123;</span><br><span class="line">    <span class="comment">// 修复 +0 和 -0 相等的问题</span></span><br><span class="line">    <span class="keyword">return</span> x !== <span class="number">0</span> || y !== <span class="number">0</span> || <span class="number">1</span> / x === <span class="number">1</span> / y</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// 修复 NaN 和 NaN 不相等的问题</span></span><br><span class="line">    <span class="keyword">return</span> x !== x &amp;&amp; y !== y</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h1 id="堆内存与栈内存"><a href="#堆内存与栈内存" class="headerlink" title="堆内存与栈内存"></a>堆内存与栈内存</h1><p>JS 的内存空间分为</p>
-<ul>
-<li>栈（Stack）：存放简单类型，LIFO</li>
-<li>堆（Heap）：存放引用类型，是一种经过排序的树形结构，每个节点都有一个值，通常说的堆是指二叉堆，存取随意</li>
-<li>池（一般也被归类为栈中）：存放常量，故又称常量池</li>
-</ul>
-<h1 id="堆与栈的优缺点"><a href="#堆与栈的优缺点" class="headerlink" title="堆与栈的优缺点"></a>堆与栈的优缺点</h1><ul>
-<li>栈内存系统效率高，因为堆内存需要分配空间和地址，还要把地址存在栈内存中，因此效率低</li>
-<li>引用类型变量大小不确定，如果放到栈内存中就无法轻易改变自己的大小，同时也浪费空间</li>
-</ul>
-<h1 id="闭包与堆内存"><a href="#闭包与堆内存" class="headerlink" title="闭包与堆内存"></a>闭包与堆内存</h1><p>闭包中的变量保存在堆内存中，而不是栈内存中，因此函数调用之后闭包仍然能够引用到函数内的变量</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">A</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> a = <span class="number">1</span></span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">B</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(a)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> B</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> res = A()</span><br></pre></td></tr></table></figure>
-
-<p>函数 A 弹出调用栈之后，函数 A 中的变量这个时候是存储在堆上的，现在的 JS 引擎可以通过逃逸分析辨别出哪些变量需要存储在堆上，哪些需要存储在栈上</p>
 <h1 id="前端路由"><a href="#前端路由" class="headerlink" title="前端路由"></a>前端路由</h1><blockquote>
 <p>路由就是根据不同的 URL 来展示不同的内容或页面</p>
 </blockquote>
@@ -1109,62 +912,11 @@
 <td>不能动态引入</td>
 </tr>
 </tbody></table>
-<h2 id="水平垂直居中的方案"><a href="#水平垂直居中的方案" class="headerlink" title="水平垂直居中的方案"></a>水平垂直居中的方案</h2><h3 id="定位：三种"><a href="#定位：三种" class="headerlink" title="定位：三种"></a>定位：三种</h3><ol>
-<li><code>absolute</code> + <code>margin</code>：需要知道自己的宽高</li>
-</ol>
-<figure class="highlight scss"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.father</span>&#123;</span><br><span class="line">  <span class="attribute">position</span>: relative;</span><br><span class="line">  <span class="selector-class">.child</span>&#123;</span><br><span class="line">    <span class="attribute">position</span>: absolute;</span><br><span class="line">    <span class="attribute">height</span>: <span class="number">50px</span>;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">100px</span>;</span><br><span class="line">    <span class="attribute">left</span>: <span class="number">50%</span>;</span><br><span class="line">    <span class="attribute">top</span>: <span class="number">50%</span>;</span><br><span class="line">    <span class="attribute">margin-top</span>: -<span class="number">25px</span>;</span><br><span class="line">    <span class="attribute">margin-left</span>: -<span class="number">50px</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ol start="2">
-<li><code>absolute</code> + <code>margin</code>：不需要知道自己的宽高，但是得有宽高</li>
-</ol>
-<figure class="highlight scss"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.father</span>&#123;</span><br><span class="line">  <span class="attribute">position</span>: relative;</span><br><span class="line">  <span class="selector-class">.child</span>&#123;</span><br><span class="line">    <span class="attribute">position</span>: absolute;</span><br><span class="line">    <span class="attribute">height</span>: <span class="number">50px</span>;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">100px</span>;</span><br><span class="line">    <span class="attribute">left</span>: <span class="number">0</span>;</span><br><span class="line">    <span class="attribute">right</span>: <span class="number">0</span>;</span><br><span class="line">    <span class="attribute">top</span>: <span class="number">0</span>;</span><br><span class="line">    <span class="attribute">bottom</span>: <span class="number">0</span>;</span><br><span class="line">    <span class="attribute">margin</span>: auto;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ol start="3">
-<li><code>sbsolute</code> + <code>translate</code>： 不需要知道自己的宽高，不需要有具体的宽高</li>
-</ol>
-<figure class="highlight scss"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.father</span>&#123;</span><br><span class="line">  <span class="attribute">position</span>: relative;</span><br><span class="line">  <span class="selector-class">.child</span>&#123;</span><br><span class="line">    <span class="attribute">position</span>: absolute;</span><br><span class="line">    <span class="attribute">height</span>: <span class="number">50px</span>;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">100px</span>;</span><br><span class="line">    <span class="attribute">left</span>: <span class="number">50%</span>;</span><br><span class="line">    <span class="attribute">top</span>: <span class="number">50%</span>;</span><br><span class="line">    <span class="attribute">transform</span>: translate(-<span class="number">50%</span>, -<span class="number">50%</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="flex"><a href="#flex" class="headerlink" title="flex"></a><code>flex</code></h3><figure class="highlight scss"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.father</span>&#123;</span><br><span class="line">  <span class="attribute">display</span>: flex;</span><br><span class="line">  <span class="attribute">justify-content</span>: center;</span><br><span class="line">  <span class="attribute">align-items</span>: center;</span><br><span class="line">  <span class="selector-class">.child</span>&#123; &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="JavaScript"><a href="#JavaScript" class="headerlink" title="JavaScript"></a>JavaScript</h3><figure class="highlight scss"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">body</span>&#123;</span><br><span class="line">  <span class="attribute">position</span>: relative;</span><br><span class="line">  <span class="selector-id">#box</span>&#123; &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> HTML = <span class="built_in">document</span>.documentElement,</span><br><span class="line">      winW = HTML.clientWidth,</span><br><span class="line">      winH = HTML.clientHeight,</span><br><span class="line">      boxW = box.offsetWidth, <span class="comment">// 带边框的宽，也可以用 getBoundingClientReact</span></span><br><span class="line">      boxH = box.offsetHeight <span class="comment">// 带边框的高</span></span><br><span class="line">box.style.position = <span class="string">'absolute'</span></span><br><span class="line">box.style.left = (winW - boxW) / <span class="number">2</span> + <span class="string">'px'</span></span><br><span class="line">box.style.top = (winH - boxH) / <span class="number">2</span> + <span class="string">'px'</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="table-cell"><a href="#table-cell" class="headerlink" title="table-cell"></a><code>table-cell</code></h3><p>要求父级有固定宽高，相当于给文本居中</p>
-<figure class="highlight scss"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.father</span>&#123;</span><br><span class="line">  <span class="attribute">display</span>: table-cell;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">500px</span>;</span><br><span class="line">  <span class="attribute">height</span>: <span class="number">500px</span>;</span><br><span class="line">  <span class="attribute">vertical-align</span>: middle;</span><br><span class="line">  <span class="attribute">text-align</span>: center;</span><br><span class="line">  <span class="selector-class">.child</span>&#123;</span><br><span class="line">    <span class="attribute">display</span>: inline-block;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="左右固定、中间自适应布局"><a href="#左右固定、中间自适应布局" class="headerlink" title="左右固定、中间自适应布局"></a>左右固定、中间自适应布局</h2><h3 id="float-负-margin"><a href="#float-负-margin" class="headerlink" title="float + 负 margin"></a><code>float</code> + 负 <code>margin</code></h3><p>圣杯布局</p>
-<figure class="highlight scss"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.container</span>&#123;</span><br><span class="line">  <span class="attribute">padding</span>: <span class="number">0</span> <span class="number">200px</span>;</span><br><span class="line">  <span class="selector-class">.left</span>, <span class="selector-class">.right</span>&#123;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">200px</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="selector-class">.center</span>&#123;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">100%</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="selector-class">.center</span>, <span class="selector-class">.left</span>, <span class="selector-class">.right</span>&#123;</span><br><span class="line">    <span class="attribute">float</span>: left;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="selector-class">.left</span>&#123;</span><br><span class="line">    <span class="attribute">margin-left</span>: -<span class="number">100%</span>;</span><br><span class="line">    <span class="attribute">position</span>: relative;</span><br><span class="line">    <span class="attribute">left</span>: -<span class="number">200px</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="selector-class">.right</span>&#123;</span><br><span class="line">    <span class="attribute">margin-right</span>: -<span class="number">200px</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>双飞翼布局</p>
-<figure class="highlight scss"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.container</span>&#123;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">100%</span>;</span><br><span class="line">  <span class="attribute">padding</span>: <span class="number">0</span> <span class="number">200px</span>;</span><br><span class="line">  <span class="selector-class">.center</span>&#123;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">100%</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.left</span>, <span class="selector-class">.right</span>&#123;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">200px</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.left</span>, <span class="selector-class">.right</span>, <span class="selector-class">.center</span>&#123;</span><br><span class="line">  <span class="attribute">float</span>: left;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.left</span>&#123;</span><br><span class="line">  <span class="attribute">margin-left</span>: -<span class="number">100%</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.right</span>&#123;</span><br><span class="line">  <span class="attribute">margin-right</span>: -<span class="number">200px</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="calc"><a href="#calc" class="headerlink" title="calc"></a><code>calc</code></h3><p>兼容到 IE 9，渲染会比较慢</p>
-<figure class="highlight scss"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.center</span>&#123;</span><br><span class="line">  <span class="attribute">width</span>: calc(<span class="number">100%</span> - <span class="number">400px</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="flex-1"><a href="#flex-1" class="headerlink" title="flex"></a><code>flex</code></h3><figure class="highlight scss"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.container</span>&#123;</span><br><span class="line">  <span class="attribute">display</span>: flex;</span><br><span class="line">  <span class="attribute">justify-content</span>: space-between;</span><br><span class="line">  <span class="selector-class">.left</span>, <span class="selector-class">.right</span>&#123;</span><br><span class="line">    <span class="attribute">flex</span>: <span class="number">0</span> <span class="number">0</span> <span class="number">200px</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="selector-class">.center</span>&#123;</span><br><span class="line">    <span class="attribute">flex</span>: <span class="number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="定位"><a href="#定位" class="headerlink" title="定位"></a>定位</h3><figure class="highlight scss"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.container</span>&#123;</span><br><span class="line">  <span class="attribute">position</span>: relative;</span><br><span class="line">  <span class="selector-class">.left</span>, <span class="selector-class">.right</span>&#123;</span><br><span class="line">    <span class="attribute">position</span>: absolute;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">200px</span>;</span><br><span class="line">    <span class="attribute">top</span>: <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="selector-class">.left</span>&#123;</span><br><span class="line">    <span class="attribute">left</span>: <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="selector-class">.right</span>&#123;</span><br><span class="line">    <span class="attribute">right</span>: <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="selector-class">.center</span>&#123;</span><br><span class="line">    <span class="attribute">margin</span>: <span class="number">0</span> <span class="number">200px</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <h2 id="移动端响应式方案"><a href="#移动端响应式方案" class="headerlink" title="移动端响应式方案"></a>移动端响应式方案</h2><ol>
 <li>@media</li>
 <li>PC 固定布局，移动端 rem</li>
 <li>flex</li>
 <li>vh/vw</li>
-</ol>
-<h2 id="BFC"><a href="#BFC" class="headerlink" title="BFC"></a>BFC</h2><blockquote>
-<p>BFC （块级格式化上下文）就是一块小区域，一块独立的布局环境，在这个区域之内的任何布局和定位都不会影响到外面，外面也不能影响到里面。</p>
-</blockquote>
-<h3 id="BFC-的作用"><a href="#BFC-的作用" class="headerlink" title="BFC 的作用"></a>BFC 的作用</h3><ol>
-<li>同一个 BFC 内会发生垂直方向的 Margin 合并，如果是不同 BFC 则不会</li>
-<li>形成了 BFC 的区域不会与 float 元素重叠，可以与浮动元素形成左右自适应布局</li>
-<li>清除浮动，因为浮动元素的高度也会被 BFC 纳入计算，因此可以解决高度塌陷的问题</li>
-</ol>
-<h3 id="如何形成-BFC"><a href="#如何形成-BFC" class="headerlink" title="如何形成 BFC"></a>如何形成 BFC</h3><ol>
-<li><code>float: left</code></li>
-<li><code>position: absolute</code></li>
-<li><code>overflow: hidden</code>，经常使用</li>
-<li><code>display: inline-block</code></li>
-<li><code>display: table-cell</code></li>
 </ol>
 <h2 id="CSS-选择器优先级？"><a href="#CSS-选择器优先级？" class="headerlink" title="CSS 选择器优先级？"></a>CSS 选择器优先级？</h2><ol>
 <li>越具体优先级越高</li>
@@ -1479,6 +1231,172 @@
       </tags>
   </entry>
   <entry>
+    <title>React Advanced</title>
+    <url>/hais-notebook/2020/02/02/React-Advanced/</url>
+    <content><![CDATA[<p>主要抄了一下 React 文档。</p>
+<a id="more"></a>
+
+<h1 id="Composition"><a href="#Composition" class="headerlink" title="Composition"></a>Composition</h1><p>React 提供了类似于 Vue slot 的组合模式：</p>
+<figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Wrapper</span>(<span class="params">props</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    &lt;div className=<span class="string">'wrapper'</span>&gt;</span><br><span class="line">      &#123;props.children&#125;</span><br><span class="line">    &lt;<span class="regexp">/div&gt;  </span></span><br><span class="line"><span class="regexp">  )</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">function App() &#123;</span></span><br><span class="line"><span class="regexp">  return (</span></span><br><span class="line"><span class="regexp">    &lt;Wrapper&gt;</span></span><br><span class="line"><span class="regexp">      &lt;h1&gt; Welcome &lt;/</span>h1&gt;</span><br><span class="line">    &lt;<span class="regexp">/Wrapper&gt;</span></span><br><span class="line"><span class="regexp">  )</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>同样的，也可以预留很多个洞：</p>
+<figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">SplitPane</span>(<span class="params">props</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    &lt;div className=<span class="string">"split-pane"</span>&gt;</span><br><span class="line">      &lt;div className=<span class="string">"left"</span>&gt;</span><br><span class="line">        &#123;props.left&#125;</span><br><span class="line">      &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">      &lt;div className="right"&gt;</span></span><br><span class="line"><span class="regexp">        &#123;props.right&#125;</span></span><br><span class="line"><span class="regexp">      &lt;/</span>div&gt;</span><br><span class="line">    &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">  )</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">function App() &#123;</span></span><br><span class="line"><span class="regexp">  return (</span></span><br><span class="line"><span class="regexp">    &lt;SplitPane</span></span><br><span class="line"><span class="regexp">      left=&#123;&lt;Left/</span>&gt;&#125;</span><br><span class="line">      right=&#123;&lt;Right/&gt;&#125;</span><br><span class="line">    /&gt;</span><br><span class="line">  )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="Context"><a href="#Context" class="headerlink" title="Context"></a>Context</h1><p>Context 类似于 Vue 的 provide / eject，使得数据可以跨层传递，而不必显式地通过组件树逐层传递 props。</p>
+<figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> MyContext = React.createContext(<span class="string">'defaultValue'</span>)</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">App</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;MyContext value=<span class="string">"someValue"</span>&gt;</span><br><span class="line">        &lt;ButtonWrapper/&gt;</span><br><span class="line">      &lt;<span class="regexp">/MyContext&gt;</span></span><br><span class="line"><span class="regexp">    )</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp">function ButtonWrapper() &#123;</span></span><br><span class="line"><span class="regexp">  return (</span></span><br><span class="line"><span class="regexp">    &lt;div&gt;</span></span><br><span class="line"><span class="regexp">      &lt;Button/</span>&gt;</span><br><span class="line">    &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">  )</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp">class MyButton extends React.Component &#123;</span></span><br><span class="line"><span class="regexp">  static contextType = MyContext</span></span><br><span class="line"><span class="regexp">  render() &#123;</span></span><br><span class="line"><span class="regexp">    return &lt;Button themeColor=&#123;this.context&#125;/</span>&gt;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>除了 Context 之外还有一种避免中间组件显式传递底层组件的各种属性值的方法：直接将底层组件作为属性传递下去。</p>
+<h2 id="API"><a href="#API" class="headerlink" title="API"></a>API</h2><h3 id="React-createContext"><a href="#React-createContext" class="headerlink" title="React.createContext"></a>React.createContext</h3><figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> MyContext = React.createContext(defaultValue)</span><br></pre></td></tr></table></figure>
+
+<p>一旦有一个组件订阅了这个 Context 对象，这个组件会从组件树中寻找最近的匹配的 <code>Provider</code> 中读取 context 值；如果没有匹配到，则使用 <code>defaultValue</code>。需要注意的是，就算给 Provider 传递的是 <code>undefined</code>，<code>defaultValue</code> 也不会生效。</p>
+<h3 id="Context-Provider"><a href="#Context-Provider" class="headerlink" title="Context.Provider"></a>Context.Provider</h3><figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line">&lt;MyContext.Provider value=&#123;<span class="comment">/* SomeValue */</span>&#125;&gt;</span><br><span class="line">  &lt;Child/&gt;</span><br><span class="line">&lt;<span class="regexp">/MyContext.Provider&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>当 Provider 的 <code>value</code> 值发生变化时，内部所有的消费组件都会重新渲染，不受制于 <code>shouldComponentUpdate</code>，变化与否通过 <code>Object.is</code> 判定。</p>
+<p>比如在下面这种情况时：</p>
+<figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">App</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">component</span> </span>&#123;</span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;Provider value=&#123;&#123;<span class="attr">something</span>: <span class="string">'something'</span>&#125;&#125;&gt;</span><br><span class="line">        &lt;Child/&gt;</span><br><span class="line">      &lt;<span class="regexp">/Provider&gt;</span></span><br><span class="line"><span class="regexp">    )</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>一旦 Provider 的父组件 App 进行重新渲染，每次 value 就会被赋值为新的对象，会引起所有下面的 consumer 组件的重新渲染。为了防止这么做，需要使用 state：</p>
+<figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">App</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">component</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(props) &#123;</span><br><span class="line">    <span class="keyword">super</span>(props)</span><br><span class="line">    <span class="keyword">this</span>.state = &#123;</span><br><span class="line">      value: &#123;<span class="attr">something</span>: <span class="string">'something'</span>&#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;Provider value=&#123;<span class="keyword">this</span>.state.value&#125;&gt;</span><br><span class="line">        &lt;Child/&gt;</span><br><span class="line">      &lt;<span class="regexp">/Provider&gt;</span></span><br><span class="line"><span class="regexp">    )</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Class-contextType"><a href="#Class-contextType" class="headerlink" title="Class.contextType"></a>Class.contextType</h3><figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">  componentDidMount() &#123;</span><br><span class="line">    <span class="keyword">let</span> value = <span class="keyword">this</span>.context</span><br><span class="line">  &#125;</span><br><span class="line">  componentDidUpdate() &#123;</span><br><span class="line">    <span class="keyword">let</span> value = <span class="keyword">this</span>.context</span><br><span class="line">  &#125;</span><br><span class="line">  componentWillUnmount() &#123;</span><br><span class="line">    <span class="keyword">let</span> value = <span class="keyword">this</span>.context</span><br><span class="line">  &#125;</span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">let</span> value = <span class="keyword">this</span>.context</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">MyClass.contextType = MyContext</span><br></pre></td></tr></table></figure>
+
+<p>通过挂载在 class 上的 <code>contextType</code> 属性获取一个 Context 对象，可以通过 <code>this.context</code> 来消费最近 Context 上的那个值，可以在包括 render 在内的任何生命周期中访问到他。</p>
+<p>也可以通过 public class fields 语法中的 <code>static</code> 来初始化 <code>contextType</code>：</p>
+<figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">  <span class="keyword">static</span> contextType = MyContext</span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">let</span> value = <span class="keyword">this</span>.context</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Context-Consumer"><a href="#Context-Consumer" class="headerlink" title="Context.Consumer"></a>Context.Consumer</h3><figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line">&lt;MyContext.Consumer&gt;</span><br><span class="line">  &#123;value =&gt; <span class="comment">/* 基于 context 值进行渲染*/</span>&#125;</span><br><span class="line">&lt;<span class="regexp">/MyContext.Consumer&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>在函数式组件中，我们需要这样使用 context，中间的部分接受一个 context 值，返回一个 React 节点</p>
+<h3 id="Context-displayName"><a href="#Context-displayName" class="headerlink" title="Context.displayName"></a>Context.displayName</h3><p>修改在 React DevTools 中显示的名字</p>
+<figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> MyContext = React.createContext(<span class="comment">/* someValue */</span>)</span><br><span class="line">MyContext.displayName = <span class="string">'MyDisplayName'</span></span><br><span class="line"></span><br><span class="line">&lt;MyContext.Provider&gt; <span class="comment">// 在 DevTools 中显示 "MyDisplayName.Provider"</span></span><br><span class="line">&lt;MyContext.Consumer&gt; <span class="comment">// 在 DevTools 中显示 "MyDisplayName.Consumer"</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs"></a>Refs</h1><h2 id="如何使用-ref"><a href="#如何使用-ref" class="headerlink" title="如何使用 ref"></a>如何使用 ref</h2><h3 id="React-createRef"><a href="#React-createRef" class="headerlink" title="React.createRef"></a>React.createRef</h3><p>可以这样创建一个属性 myRef，然后传递给 DOM 元素 <code>div</code>，后续就可以使用 <code>this.myRef.current</code> 访问到这个 <code>div</code></p>
+<figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyComp</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(props) &#123;</span><br><span class="line">    <span class="keyword">super</span>(props)</span><br><span class="line">    <span class="keyword">this</span>.myRef = React.createRef()</span><br><span class="line">  &#125;</span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;div ref=&#123;<span class="keyword">this</span>.myRef&#125;&gt;<span class="xml"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当 Ref 用于普通 HTML 元素时，<code>this.myRef.current</code> 为 HTML 元素：</p>
+<figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyComp</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(props) &#123;</span><br><span class="line">    <span class="keyword">super</span>(props)</span><br><span class="line">    <span class="keyword">this</span>.textInput = React.createRef()</span><br><span class="line">  &#125;</span><br><span class="line">  focusEvent = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">this</span>.textInput.current.focus()</span><br><span class="line">  &#125;</span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;div ref=&#123;<span class="keyword">this</span>.myRef&#125;&gt;</span><br><span class="line">        &lt;input type=<span class="string">"text"</span> ref=&#123;<span class="keyword">this</span>.textInput&#125;/&gt;</span><br><span class="line">        &lt;button onClick=&#123;<span class="keyword">this</span>.focusEvent&#125;&gt;Focus&lt;<span class="regexp">/button&gt;</span></span><br><span class="line"><span class="regexp">      &lt;/</span>div&gt;</span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当 Ref 用于自定义 class 组件时，<code>this.myRef.current</code> 为组件的实例：</p>
+<figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyComp</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(props) &#123;</span><br><span class="line">    <span class="keyword">super</span>(props)</span><br><span class="line">    <span class="keyword">this</span>.textInput = React.createRef()</span><br><span class="line">  &#125;</span><br><span class="line">  componentDidMount() &#123;</span><br><span class="line">    <span class="comment">// 可以调用到 Child 组件里面的 focusTextInput 方法</span></span><br><span class="line">    <span class="keyword">this</span>.textInput.current.focusTextInput()</span><br><span class="line">  &#125;</span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;Child ref=&#123;<span class="keyword">this</span>.textInput&#125;/&gt;</span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Child</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意，不能在函数组件上使用 ref（函数组件没有实例，ref.current 没办法指向函数组件），但是可以在函数组件里面使用 ref。</p>
+<h3 id="回调-Refs"><a href="#回调-Refs" class="headerlink" title="回调 Refs"></a>回调 Refs</h3><p>在这种方式中，传递的不是 <code>createRef()</code> 创建 <code>ref</code> 属性，而是一个函数。这个函数中接受 React 组件实例或者 HTML DOM 元素作为参数。</p>
+<figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyComp</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(props) &#123;</span><br><span class="line">    <span class="keyword">super</span>(props)</span><br><span class="line">    <span class="keyword">this</span>.textInput = <span class="literal">null</span></span><br><span class="line">  &#125;</span><br><span class="line">  setTextInputRef = <span class="function"><span class="params">element</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">this</span>.textInput = element</span><br><span class="line">  &#125;</span><br><span class="line">  focusTextInput = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// 使用原生 DOM API 使得 textInput 获得焦点</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.textInput) <span class="keyword">this</span>.textInput.focus()</span><br><span class="line">  &#125;</span><br><span class="line">  componentDidMount() &#123;</span><br><span class="line">    <span class="keyword">this</span>.focusTextInput()</span><br><span class="line">  &#125;</span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="comment">// 给 ref 属性传一个一个回调函数，React 组件挂载式会调用回调函数并传入 element</span></span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;div&gt;</span><br><span class="line">        &lt;input type=<span class="string">"text"</span> ref=&#123;<span class="keyword">this</span>.setTextInputRef&#125;/&gt;</span><br><span class="line">        &lt;button onClick=&#123;<span class="keyword">this</span>.focusTextInput&#125;&gt;Focus&lt;<span class="regexp">/button&gt;</span></span><br><span class="line"><span class="regexp">      &lt;/</span>div&gt;</span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>同样的，你可以让 <code>textInpu</code> 指向一个 class 组件，但仍然不能让其指向一个函数组件（因为函数组件没有实例）；但是你可以给函数组件传递一个回调，并将其赋值给函数组件内部的 <code>ref</code> 属性，React 在挂载的时候将调用这个回调，并传入 <code>element</code> 作为参数：</p>
+<figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyComp</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(props) &#123;</span><br><span class="line">    <span class="keyword">super</span>(props)</span><br><span class="line">    <span class="keyword">this</span>.textInput = <span class="literal">null</span></span><br><span class="line">  &#125;  </span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;div&gt;</span><br><span class="line">        &lt;Child inputRef=&#123;el =&gt; <span class="keyword">this</span>.textInput = el&#125;/&gt;</span><br><span class="line">      &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">    )</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp">function Child() &#123;</span></span><br><span class="line"><span class="regexp">  return (</span></span><br><span class="line"><span class="regexp">    &lt;div&gt;</span></span><br><span class="line"><span class="regexp">      &lt;input type="text" ref=&#123;props.inputRef&#125;/</span>&gt;</span><br><span class="line">    &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">  )</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>↑ 在 <code>forWardRef</code> 出现之前，函数组件需要借用回调函数达到 Ref 转发的目的</p>
+<h2 id="Refs-转发"><a href="#Refs-转发" class="headerlink" title="Refs 转发"></a>Refs 转发</h2><p>为了解决上面这个问题，<code>forwardRef</code> 出现了，他允许组件接收 ref 并将其向下传递，最终可以使得 ref 指向最底层的 HTML DOM：</p>
+<figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> MyComp = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> myRef = React.createRef()</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    &lt;Child ref=&#123;myRef&#125;&gt; I am a Button &lt;<span class="regexp">/Child&gt;</span></span><br><span class="line"><span class="regexp">  )</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp">const Child = React.forwardRef((props, ref) =&gt; (</span></span><br><span class="line"><span class="regexp">  &lt;button ref=&#123;ref&#125; className="button-wrapper"&gt;</span></span><br><span class="line"><span class="regexp">    &#123;props.children&#125;</span></span><br><span class="line"><span class="regexp">  &lt;/</span>button&gt;</span><br><span class="line">))</span><br></pre></td></tr></table></figure>
+
+<p>通过这样的方式，我们在 MyComp 中就可以通过 <code>myRef.current</code> 获取到原生的 button 了</p>
+<h2 id="高阶组件的-Ref-转发"><a href="#高阶组件的-Ref-转发" class="headerlink" title="高阶组件的 Ref 转发"></a>高阶组件的 Ref 转发</h2><p>有时候我们会使用高阶组件：</p>
+<figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">logProps</span>(<span class="params">Component</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="class"><span class="keyword">class</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">    componentDidUpdate(prevProps) &#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">'old props: '</span>, prevProps)</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">'new props: '</span>, <span class="keyword">this</span>.props)</span><br><span class="line">    &#125;</span><br><span class="line">    render() &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="xml"><span class="tag">&lt;<span class="name">Component</span> &#123;<span class="attr">...this.props</span>&#125;/&gt;</span></span></span><br><span class="line"><span class="xml">    &#125;</span></span><br><span class="line"><span class="xml">  &#125;</span></span><br><span class="line"><span class="xml">&#125;</span></span><br><span class="line"><span class="xml">class Child extends React.Component &#123;</span></span><br><span class="line"><span class="xml">  // ...</span></span><br><span class="line"><span class="xml">&#125;</span></span><br><span class="line"><span class="xml">export default logProps(Child)</span></span><br></pre></td></tr></table></figure>
+
+<p>需要注意的是，如果对 HOC 添加 ref，该 ref 将会引用到其外层的容器组件，而不是被包裹的组件：</p>
+<figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> Child <span class="keyword">from</span> <span class="string">'./Child'</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyComp</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(props) &#123;</span><br><span class="line">    <span class="keyword">super</span>(props)</span><br><span class="line">    <span class="keyword">this</span>.textInput = React.createRef()</span><br><span class="line">  &#125;</span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      <span class="comment">// 按照以前的逻辑，这里的 ref 应该指向组件 Child</span></span><br><span class="line">      <span class="comment">// 但实际上，这里的 ref 指向的并不是 Child，而是他外面的 LogProps</span></span><br><span class="line">      &lt;Child ref=&#123;<span class="keyword">this</span>.textInput&#125;/&gt;</span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>因此，我们需要使用 <code>React.forward</code> 来将 ref 透传下去（就像之前函数组件使用 <code>React.forward</code> 将 ref 透传，指向了最终的 HTML DOM 元素一样），使得 ref 指向原来被包裹的组件：</p>
+<figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">logProps</span>(<span class="params">Component</span>) </span>&#123;</span><br><span class="line">  <span class="class"><span class="keyword">class</span> <span class="title">LongProps</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">    componentDidUpdate(prevProps) &#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">'old props: '</span>, prevProps)</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">'new props: '</span>, <span class="keyword">this</span>.props)</span><br><span class="line">    &#125;</span><br><span class="line">    render() &#123;</span><br><span class="line">      <span class="keyword">const</span> &#123;forwardedRef, ...rest&#125; = <span class="keyword">this</span>.props</span><br><span class="line">      <span class="keyword">return</span> <span class="xml"><span class="tag">&lt;<span class="name">Component</span> <span class="attr">ref</span>=<span class="string">&#123;forwardedRef&#125;</span> &#123;<span class="attr">...rest</span>&#125;/&gt;</span></span></span><br><span class="line"><span class="xml">    &#125;</span></span><br><span class="line"><span class="xml">  &#125;</span></span><br><span class="line"><span class="xml">  return React.fowardRef((props, ref) =&gt; &#123;</span></span><br><span class="line">    return &lt;LongProps &#123;...props&#125; forwardedRef=&#123;ref&#125;/&gt;  </span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line">class Child extends React.Component &#123;</span><br><span class="line">  // ...</span><br><span class="line">&#125;</span><br><span class="line">export default logProps(Child)</span><br></pre></td></tr></table></figure>
+
+<h1 id="Fragments"><a href="#Fragments" class="headerlink" title="Fragments"></a>Fragments</h1><p>类似于 <code>&lt;template&gt;</code>，使用 Fragments 可以创建类似的一个包裹器，而不会在 DOM 中添加额外的节点：</p>
+<figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line">render() &#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    &lt;React.Fragment&gt;</span><br><span class="line">      &lt;ChildA/&gt;</span><br><span class="line">      &lt;ChildB/&gt;</span><br><span class="line">      &lt;ChildC/&gt;</span><br><span class="line">    &lt;<span class="regexp">/React.Fragment&gt;</span></span><br><span class="line"><span class="regexp">  )</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>还有一个简写版本，简写版不支持使用 key 或其他属性：</p>
+<figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line">render() &#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    &lt;&gt;</span><br><span class="line">      &lt;ChildA/&gt;</span><br><span class="line">      &lt;ChildB/&gt;</span><br><span class="line">      &lt;ChildC/&gt;</span><br><span class="line">    &lt;<span class="regexp">/&gt;</span></span><br><span class="line"><span class="regexp">  )</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="Higher-Order-Component"><a href="#Higher-Order-Component" class="headerlink" title="Higher-Order Component"></a>Higher-Order Component</h1><p>React 中经常会使用高阶组件（HOC, Higher-Order Component）来复用组件逻辑，它是一种设计模式。<br>具体来说，高阶组件是参数为组件，返回值为新组建的函数：</p>
+<figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> EnhancedComponent = higherOrderComponent(WrappedComponent)</span><br></pre></td></tr></table></figure>
+
+<h2 id="HOC-的使用场景"><a href="#HOC-的使用场景" class="headerlink" title="HOC 的使用场景"></a>HOC 的使用场景</h2><h3 id="修改-props"><a href="#修改-props" class="headerlink" title="修改 props"></a>修改 props</h3><figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">enhance</span>(<span class="params">WrappedComponent</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="class"><span class="keyword">class</span> <span class="title">EnhancedComponent</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">    render() &#123;</span><br><span class="line">      <span class="keyword">let</span> props = &#123;</span><br><span class="line">        ...this.props,</span><br><span class="line">        <span class="comment">// 增加 message 这个 Prop</span></span><br><span class="line">        message: <span class="string">'Hello'</span></span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> <span class="xml"><span class="tag">&lt;<span class="name">WrappedComponent</span> &#123;<span class="attr">...props</span>&#125;/&gt;</span></span></span><br><span class="line"><span class="xml">    &#125;</span></span><br><span class="line"><span class="xml">  &#125;</span></span><br><span class="line"><span class="xml">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="渲染劫持"><a href="#渲染劫持" class="headerlink" title="渲染劫持"></a>渲染劫持</h3><figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">enhance</span>(<span class="params">WrappedComponent</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="class"><span class="keyword">class</span> <span class="title">EnhancedComponent</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">    render() &#123;</span><br><span class="line">      <span class="keyword">if</span> (!<span class="keyword">this</span>.props.data) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span>loading...<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> <span class="xml"><span class="tag">&lt;<span class="name">WrappedComponent</span> &#123;<span class="attr">...this.props</span>&#125;/&gt;</span></span></span><br><span class="line"><span class="xml">    &#125;</span></span><br><span class="line"><span class="xml">  &#125;</span></span><br><span class="line"><span class="xml">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="HOC-的例子"><a href="#HOC-的例子" class="headerlink" title="HOC 的例子"></a>HOC 的例子</h2><h3 id="React-Redux"><a href="#React-Redux" class="headerlink" title="React Redux"></a>React Redux</h3><p>通过 HOC 监听 redux store，然后把下级组件需要的 state、action creator 绑定到 WrappedComponent 的 props 上</p>
+<h3 id="logger-和-debugger"><a href="#logger-和-debugger" class="headerlink" title="logger 和 debugger"></a>logger 和 debugger</h3><figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">logProps</span>(<span class="params">WrappedComponent</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="class"><span class="keyword">class</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">    componentWillReceiveProps(nextProps) &#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">`WrappedComponent: <span class="subst">$&#123;WrappedComponent.displayName&#125;</span>, Current props: `</span>, <span class="keyword">this</span>.props)</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">`WrappedComponent: <span class="subst">$&#123;WrappedComponent.displayName&#125;</span>, Next props: `</span>, nextProps)</span><br><span class="line">    &#125;</span><br><span class="line">    render() &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="xml"><span class="tag">&lt;<span class="name">WrappedComponent</span> &#123;<span class="attr">...this.props</span>&#125;/&gt;</span></span></span><br><span class="line"><span class="xml">    &#125;</span></span><br><span class="line"><span class="xml">  &#125;</span></span><br><span class="line"><span class="xml">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="页面权限管理"><a href="#页面权限管理" class="headerlink" title="页面权限管理"></a>页面权限管理</h3><p>通过 HOC 对组件进行包裹，当用户跳转到其他页面的时候，检查用户是否含有对应的权限，如果有的话，渲染页面，如果没有的话，跳转到其他页面</p>
+<h1 id="DOM-Diff"><a href="#DOM-Diff" class="headerlink" title="DOM Diff"></a>DOM Diff</h1><h2 id="Reconciliation"><a href="#Reconciliation" class="headerlink" title="Reconciliation"></a>Reconciliation</h2><p>Reconciliation 直译为协调，即 React 的渲染机制，他有以下几步：</p>
+<ol>
+<li>props 或 state 改变</li>
+<li>render 函数返回不同的元素树（虚拟 DOM）</li>
+<li>新旧 DOM 对比（vDOM Diff）</li>
+<li>针对差异的地方进行更新</li>
+<li>渲染为真实的 DOM 树</li>
+</ol>
+<h2 id="DOM-Diff-原理"><a href="#DOM-Diff-原理" class="headerlink" title="DOM Diff 原理"></a>DOM Diff 原理</h2><h3 id="设计思想"><a href="#设计思想" class="headerlink" title="设计思想"></a>设计思想</h3><ol>
+<li>永远只比较同层的节点，不会跨层级比较</li>
+<li>不同的两个节点产生不同的树（两个类型不同的节点直接用新的全部替代旧的，包括其后代）</li>
+<li>通过 key 判断哪些元素是相同的（比如列表如果没有 key，从头部插入元素会导致列表全部更新），因此 key 需要在列表中保持唯一（不需要全局唯一）</li>
+</ol>
+<h3 id="比较流程"><a href="#比较流程" class="headerlink" title="比较流程"></a>比较流程</h3><ul>
+<li>若元素类型不相同：直接用新的树替换掉原来的树</li>
+<li>若元素类型相同：<ul>
+<li>若都是 DOM 节点：更新 DOM 属性，比如 <code>style</code>、<code>title</code> 等，再向下递归找</li>
+<li>若都是组件节点：组件实例保持不变，更新 Props</li>
+</ul>
+</li>
+</ul>
+<h2 id="如何减少-Diff-过程"><a href="#如何减少-Diff-过程" class="headerlink" title="如何减少 Diff 过程"></a>如何减少 Diff 过程</h2><blockquote>
+<p>利用 <code>shouldComponentUpdate</code></p>
+</blockquote>
+<p>默认的 <code>shouldComponentUpdate</code> 会在 props 或 state 发生变化的时候返回 true，表示组件会重新渲染，然后调用 render 函数，进行 vDOM Diff；相对的，我们也可以通过控制它的返回值来控制是否发生 vDOM Diff</p>
+<h2 id="浅比较与深比较"><a href="#浅比较与深比较" class="headerlink" title="浅比较与深比较"></a>浅比较与深比较</h2><p>如果不想使用 <code>shouldComponentUpdate</code> 来一个一个检查，可以使用 <code>pureComponent</code> 对所有 <code>props</code> 和 <code>state</code> 进行 <strong>浅比较</strong>：</p>
+<figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyComp</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">PureComponent</span> </span>&#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对于函数组件，可以使用 <code>React.memo</code>：</p>
+<figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Component</span>(<span class="params"></span>) </span>&#123; &#125;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> React.memo(Component)</span><br></pre></td></tr></table></figure>
+
+<div class="note warning">
+            <p>浅比较：</p><ol><li>首先会使用等价于 <code>Object.is</code> 的方法进行判断，因此若引用类型的地址相同则判定为没有发生变化；</li><li>然后对于地址不同的，会进行 <strong>一层</strong> key 和 value 的比较</li></ol>
+          </div>
+
+<p>因此，如果数据结构比较复杂，浅比较会损失掉很多信息，比如说通过 <code>push</code> 方法改变数组的值，浅比较将不能发现变化。</p>
+<figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line">handleClick() &#123;</span><br><span class="line"><span class="comment">// 这部分代码很糟，而且还有 bug</span></span><br><span class="line">  <span class="keyword">const</span> words = <span class="keyword">this</span>.state.words;</span><br><span class="line">  words.push(<span class="string">'marklar'</span>);</span><br><span class="line">  <span class="keyword">this</span>.setState(&#123;<span class="attr">words</span>: words&#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个时候应该使用不可变数据，尽量避免修改正在用于 props 或 state 的值，而是创建一个新的值，去覆盖原来的值：</p>
+<figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line">handleClick() &#123;</span><br><span class="line">  <span class="keyword">this</span>.setState(<span class="function"><span class="params">state</span> =&gt;</span> (&#123;</span><br><span class="line">    words: state.words.concat([<span class="string">'marklar'</span>])</span><br><span class="line">  &#125;))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 或者使用 ES6 里的扩展运算符</span></span><br><span class="line">handleClick() &#123;</span><br><span class="line">  <span class="keyword">this</span>.setState(<span class="function"><span class="params">state</span> =&gt;</span> (&#123;</span><br><span class="line">    words: [...state.words, <span class="string">'marklar'</span>]</span><br><span class="line">  &#125;))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对于对象，我们可以用 <code>Object.assign</code></p>
+<figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">updateColorMap</span>(<span class="params">colorMap</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">Object</span>.assign(&#123;&#125;, colorMap, &#123;<span class="attr">right</span>: <span class="string">'blue'</span>&#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 或者使用扩展运算符</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">updateColorMap</span>(<span class="params">colorMap</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;...colorMap, <span class="attr">right</span>: <span class="string">'blue'</span>&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>需要注意的是，尽管扩展运算符和 <code>Object.assign</code> 创建了新的引用，但是他们仍然是 <strong>浅拷贝</strong>，这并不冲突</p>
+<h2 id="immutable-数据结构"><a href="#immutable-数据结构" class="headerlink" title="immutable 数据结构"></a>immutable 数据结构</h2><p>immutable 的意义：浅比较缺点很明显，深比较有时候又比较浪费性能</p>
+<p>简单来说：</p>
+<ol>
+<li><strong>节省性能</strong>：immutable 内部采用多叉树结构，如果它里面有节点被改变，那么则更新 <strong>这个节点</strong> 和他有关的所有 <strong>上级节点</strong></li>
+<li><strong>返回一个新的引用</strong>，即使是浅比较也能感知到数据的变化</li>
+</ol>
+<h3 id="一些-immutable-API"><a href="#一些-immutable-API" class="headerlink" title="一些 immutable API"></a>一些 immutable API</h3><h4 id="fromJS"><a href="#fromJS" class="headerlink" title="fromJS"></a>fromJS</h4><p>将 JS 对象转换为 immutable 对象</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;fromJS&#125; <span class="keyword">from</span> <span class="string">'immutable'</span></span><br><span class="line"><span class="keyword">const</span> immutableState = fromJS (&#123;</span><br><span class="line">  count: <span class="number">0</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h4 id="toJS"><a href="#toJS" class="headerlink" title="toJS"></a>toJS</h4><p>将 immutable 对象转换为 JS 对象</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> jsObj = immutableState.toJS()</span><br></pre></td></tr></table></figure>
+
+<h4 id="get-getIn"><a href="#get-getIn" class="headerlink" title="get/getIn"></a>get/getIn</h4><p>用来获取 immutable 对象属性</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> jsObj = &#123;<span class="attr">a</span>: <span class="number">1</span>&#125;</span><br><span class="line"><span class="keyword">let</span> res = jsObj.a</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> immutableObj = fromJS(jsObj)</span><br><span class="line"><span class="keyword">let</span> res = immutableObj.get(<span class="string">'a'</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> jsObj = &#123;<span class="attr">a</span>:&#123;<span class="attr">b</span>: <span class="number">1</span>&#125;&#125;</span><br><span class="line"><span class="keyword">let</span> res = jsObj.a.b</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> immutableObj = fromJS(jsObj)</span><br><span class="line"><span class="keyword">let</span> res = immutableObj.getIn([<span class="string">'a'</span>, <span class="string">'b'</span>]) <span class="comment">// 传入一个数组</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="set"><a href="#set" class="headerlink" title="set"></a>set</h4><p>用来给 immutable 对象的属性赋值</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> immutableObj = fromJS(&#123;<span class="attr">a</span>: <span class="number">1</span>&#125;)</span><br><span class="line">immutableObj.set(<span class="string">'a'</span>, <span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="merge"><a href="#merge" class="headerlink" title="merge"></a>merge</h4><p>新旧数据对比，旧数据中不存在的属性直接添加，存在的属性用新数据覆盖</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> immutableObj = fromJS(&#123;<span class="attr">a</span>: <span class="number">1</span>&#125;)</span><br><span class="line">immutableObj.merge(&#123;</span><br><span class="line">  a: <span class="number">2</span>,</span><br><span class="line">  b: <span class="number">3</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h1 id="Portals"><a href="#Portals" class="headerlink" title="Portals"></a>Portals</h1>]]></content>
+      <categories>
+        <category>前端</category>
+        <category>JavaScript</category>
+        <category>框架</category>
+        <category>React</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>饥人谷</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>React Props &amp; State</title>
     <url>/hais-notebook/2020/02/02/React-PropsState/</url>
     <content><![CDATA[<p>主要记录了 React 的 Props 和 State。</p>
@@ -1500,16 +1418,46 @@
 <li>都是对视图的封装，React 是用类和函数表示一个组件，Vue 是用构造选项表示一个组件</li>
 <li>都提供了 <code>creatElement</code> 的 XML 简写，React 是 JSX，Vue 是 template</li>
 </ul>
-<p>Vue：</p>
-<ul>
-<li>一个对象，对应一个虚拟 DOM，当对象的属性改变时，把属性相关的 DOM 节点全部更新</li>
-<li>JS in HTML</li>
+<p>不同点：</p>
+<ol>
+<li>监听数据变化的实现原理不同<ul>
+<li>Vue 通过 getter/setter 和代理等方式进行劫持，能够精确知道数据的变化，不需要特别的优化</li>
+<li>React 默认是通过比较引用的方式来进行的，可能会造成不必要的 vDOM 重新渲染，需要用诸如 PureComponent/shouldComponentUpdate 等方式来进行优化</li>
 </ul>
-<p>React：</p>
-<ul>
-<li>一个对象，对应一个虚拟 DOM，另一个对象对应另一个虚拟 DOM，对比两个更新，用 DOM Diff 算法找不同，然后局部更新 DOM</li>
-<li>HTML in JS</li>
+</li>
+<li>数据流不同<ul>
+<li>Vue 在 1.0 的时候 <strong>父子组件</strong> props 可以双向绑定，还有 v-model 可以实现 <strong>组件与 DOM</strong> 双向绑定</li>
+<li>Vue 2 的时候 <strong>父子组件</strong> 不能双向绑定了（虽然仍然提供了 .sync 语法糖），并且还有 v-model</li>
+<li>React 中是单向数据流，并且组件与 DOM 之间也需要使用 onChange/setState。</li>
 </ul>
+</li>
+<li>HoC 和 mixins<ul>
+<li>Vue 中使用不同功能的组合是通过 mixins 实现的</li>
+<li>React 中则使用 HoC</li>
+</ul>
+</li>
+<li>组件间的通信<ul>
+<li>都有 props，也都可以跨层级通信，比如 Vue 的 provide/inject、React 的 context</li>
+<li>React 本身不支持自定义事件，因此 Vue 里面一般使用事件，React 中一般使用父组件传来的回调函数</li>
+</ul>
+</li>
+<li>更新视图<ul>
+<li>Vue 中一个对象，对应一个虚拟 DOM，当对象的属性改变时，把属性相关的 DOM 节点全部更新</li>
+<li>React 一个对象，对应一个虚拟 DOM，另一个对象对应另一个虚拟 DOM，对比两个更新，用 DOM Diff 算法找不同，然后局部更新 DOM</li>
+</ul>
+</li>
+<li>写法不同<ul>
+<li>Vue 是 JS in HTML</li>
+<li>React 是 HTML in JS</li>
+</ul>
+</li>
+<li>Vuex 和 Redux 的区别<ul>
+<li>Vue 中的 $store 直接注入到了组件实例中，可以直接用 dispatch、commit、mapState、this.$store 等；React 中需要用 connect 把 props 和 dispatch、state 连接起来</li>
+<li>Vue 中可以用 dispatch action、commit mutation；React 中只能使用 dispatch，不能直接操作 reduce</li>
+<li>Redux 中的使用的是不可变数据，每次都要用新的 State 替换旧的，而 Vue 中是直接修改的</li>
+</ul>
+</li>
+</ol>
 ]]></content>
       <categories>
         <category>前端</category>
@@ -1636,7 +1584,9 @@
 <h2 id="通过-webpack-引入"><a href="#通过-webpack-引入" class="headerlink" title="通过 webpack 引入"></a>通过 webpack 引入</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">yarn add react react-dom</span><br></pre></td></tr></table></figure>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span></span><br><span class="line"><span class="keyword">import</span> ReactDOM <span class="keyword">from</span> <span class="string">'react-dom'</span></span><br></pre></td></tr></table></figure>
 
-<h2 id="使用-create-react-app"><a href="#使用-create-react-app" class="headerlink" title="使用 create-react-app"></a>使用 create-react-app</h2><h1 id="函数与普通代码的区别"><a href="#函数与普通代码的区别" class="headerlink" title="函数与普通代码的区别"></a>函数与普通代码的区别</h1><p>看 <a href="https://codesandbox.io/s/spring-waterfall-iyekc" target="_blank" rel="noopener">这个例子</a></p>
+<h2 id="使用-create-react-app"><a href="#使用-create-react-app" class="headerlink" title="使用 create-react-app"></a>使用 create-react-app</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">yarn create react-app my-app</span><br></pre></td></tr></table></figure>
+
+<h1 id="函数与普通代码的区别"><a href="#函数与普通代码的区别" class="headerlink" title="函数与普通代码的区别"></a>函数与普通代码的区别</h1><p>看 <a href="https://codesandbox.io/s/spring-waterfall-iyekc" target="_blank" rel="noopener">这个例子</a></p>
 <ul>
 <li>普通代码<strong>立即求值</strong>，读取当前值</li>
 <li>函数会等调用的时候再求值（<strong>延迟求值</strong>），求值时才会读取 a 的最新值</li>
@@ -2125,7 +2075,7 @@
 <h2 id="CSS-动画优化"><a href="#CSS-动画优化" class="headerlink" title="CSS 动画优化"></a>CSS 动画优化</h2><p>可以看看 <a href="https://developers.google.com/web/fundamentals/performance/rendering" target="_blank" rel="noopener">谷歌的这篇文档</a></p>
 <ul>
 <li>JS 优化：使用 <code>requestAnimationFrame</code> 代替 <code>setTimeout</code> 或者 <code>setInterval</code></li>
-<li>CSS 优化：使用 <code>will-change</code> 或者 <code>translate</code></li>
+<li>CSS 优化：使用 <code>will-change</code> 或者 <code>transform</code></li>
 </ul>
 <h1 id="transform"><a href="#transform" class="headerlink" title="transform"></a><code>transform</code></h1><blockquote>
 <p>使用 <code>transform: none</code>，取消所有</p>
@@ -2260,7 +2210,7 @@
 <ul>
 <li>有经验者会留一些空间或最后一个不设置 <code>width</code>（可以设置一个 <code>max-width</code>）</li>
 <li>不需要考虑响应式，因为手机上没有 IE，这个布局是专门为 IE 准备的</li>
-<li>在IE上有BUG：最左边浮动元素的 <code>margin-left</code> 会变成双倍<ul>
+<li>在 IE 上有 BUG：最左边浮动元素的 <code>margin-left</code> 会变成双倍<ul>
 <li>可以加一句兼容性写法：<code>_margin-left: ?px</code></li>
 <li>也可以加上 <code>display: inline-block</code></li>
 </ul>
@@ -2332,6 +2282,41 @@
 <li><strong>grid-area: main;</strong></li>
 <li><strong>….</strong></li>
 </ul>
+<h1 id="水平垂直居中的方案"><a href="#水平垂直居中的方案" class="headerlink" title="水平垂直居中的方案"></a>水平垂直居中的方案</h1><h2 id="定位：三种"><a href="#定位：三种" class="headerlink" title="定位：三种"></a>定位：三种</h2><ol>
+<li><code>absolute</code> + <code>margin</code>：需要知道自己的宽高</li>
+</ol>
+<figure class="highlight scss"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.father</span>&#123;</span><br><span class="line">  <span class="attribute">position</span>: relative;</span><br><span class="line">  <span class="selector-class">.child</span>&#123;</span><br><span class="line">    <span class="attribute">position</span>: absolute;</span><br><span class="line">    <span class="attribute">height</span>: <span class="number">50px</span>;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">100px</span>;</span><br><span class="line">    <span class="attribute">left</span>: <span class="number">50%</span>;</span><br><span class="line">    <span class="attribute">top</span>: <span class="number">50%</span>;</span><br><span class="line">    <span class="attribute">margin-top</span>: -<span class="number">25px</span>;</span><br><span class="line">    <span class="attribute">margin-left</span>: -<span class="number">50px</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><code>absolute</code> + <code>margin</code>：不需要知道自己的宽高，但是得有宽高</li>
+</ol>
+<figure class="highlight scss"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.father</span>&#123;</span><br><span class="line">  <span class="attribute">position</span>: relative;</span><br><span class="line">  <span class="selector-class">.child</span>&#123;</span><br><span class="line">    <span class="attribute">position</span>: absolute;</span><br><span class="line">    <span class="attribute">height</span>: <span class="number">50px</span>;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">100px</span>;</span><br><span class="line">    <span class="attribute">left</span>: <span class="number">0</span>;</span><br><span class="line">    <span class="attribute">right</span>: <span class="number">0</span>;</span><br><span class="line">    <span class="attribute">top</span>: <span class="number">0</span>;</span><br><span class="line">    <span class="attribute">bottom</span>: <span class="number">0</span>;</span><br><span class="line">    <span class="attribute">margin</span>: auto;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li><code>absolute</code> + <code>translate</code>： 不需要知道自己的宽高，不需要有具体的宽高</li>
+</ol>
+<figure class="highlight scss"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.father</span>&#123;</span><br><span class="line">  <span class="attribute">position</span>: relative;</span><br><span class="line">  <span class="selector-class">.child</span>&#123;</span><br><span class="line">    <span class="attribute">position</span>: absolute;</span><br><span class="line">    <span class="attribute">height</span>: <span class="number">50px</span>;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">100px</span>;</span><br><span class="line">    <span class="attribute">left</span>: <span class="number">50%</span>;</span><br><span class="line">    <span class="attribute">top</span>: <span class="number">50%</span>;</span><br><span class="line">    <span class="attribute">transform</span>: translate(-<span class="number">50%</span>, -<span class="number">50%</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="flex"><a href="#flex" class="headerlink" title="flex"></a><code>flex</code></h2><figure class="highlight scss"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.father</span>&#123;</span><br><span class="line">  <span class="attribute">display</span>: flex;</span><br><span class="line">  <span class="attribute">justify-content</span>: center;</span><br><span class="line">  <span class="attribute">align-items</span>: center;</span><br><span class="line">  <span class="selector-class">.child</span>&#123; &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="JavaScript"><a href="#JavaScript" class="headerlink" title="JavaScript"></a>JavaScript</h2><figure class="highlight scss"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">body</span>&#123;</span><br><span class="line">  <span class="attribute">position</span>: relative;</span><br><span class="line">  <span class="selector-id">#box</span>&#123; &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> HTML = <span class="built_in">document</span>.documentElement,</span><br><span class="line">      winW = HTML.clientWidth,</span><br><span class="line">      winH = HTML.clientHeight,</span><br><span class="line">      boxW = box.offsetWidth, <span class="comment">// 带边框的宽，也可以用 getBoundingClientReact</span></span><br><span class="line">      boxH = box.offsetHeight <span class="comment">// 带边框的高</span></span><br><span class="line">box.style.position = <span class="string">'absolute'</span></span><br><span class="line">box.style.left = (winW - boxW) / <span class="number">2</span> + <span class="string">'px'</span></span><br><span class="line">box.style.top = (winH - boxH) / <span class="number">2</span> + <span class="string">'px'</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="table-cell"><a href="#table-cell" class="headerlink" title="table-cell"></a><code>table-cell</code></h2><p>要求父级有固定宽高，相当于给文本居中</p>
+<figure class="highlight scss"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.father</span>&#123;</span><br><span class="line">  <span class="attribute">display</span>: table-cell;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">500px</span>;</span><br><span class="line">  <span class="attribute">height</span>: <span class="number">500px</span>;</span><br><span class="line">  <span class="attribute">vertical-align</span>: middle;</span><br><span class="line">  <span class="attribute">text-align</span>: center;</span><br><span class="line">  <span class="selector-class">.child</span>&#123;</span><br><span class="line">    <span class="attribute">display</span>: inline-block;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="左右固定、中间自适应布局"><a href="#左右固定、中间自适应布局" class="headerlink" title="左右固定、中间自适应布局"></a>左右固定、中间自适应布局</h1><h2 id="float-负-margin"><a href="#float-负-margin" class="headerlink" title="float + 负 margin"></a><code>float</code> + 负 <code>margin</code></h2><p>圣杯布局</p>
+<figure class="highlight scss"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.container</span>&#123;</span><br><span class="line">  <span class="attribute">padding</span>: <span class="number">0</span> <span class="number">200px</span>;</span><br><span class="line">  <span class="selector-class">.left</span>, <span class="selector-class">.right</span>&#123;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">200px</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="selector-class">.center</span>&#123;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">100%</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="selector-class">.center</span>, <span class="selector-class">.left</span>, <span class="selector-class">.right</span>&#123;</span><br><span class="line">    <span class="attribute">float</span>: left;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="selector-class">.left</span>&#123;</span><br><span class="line">    <span class="attribute">margin-left</span>: -<span class="number">100%</span>;</span><br><span class="line">    <span class="attribute">position</span>: relative;</span><br><span class="line">    <span class="attribute">left</span>: -<span class="number">200px</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="selector-class">.right</span>&#123;</span><br><span class="line">    <span class="attribute">margin-right</span>: -<span class="number">200px</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>双飞翼布局</p>
+<figure class="highlight scss"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.container</span>&#123;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">100%</span>;</span><br><span class="line">  <span class="attribute">padding</span>: <span class="number">0</span> <span class="number">200px</span>;</span><br><span class="line">  <span class="selector-class">.center</span>&#123;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">100%</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.left</span>, <span class="selector-class">.right</span>&#123;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">200px</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.left</span>, <span class="selector-class">.right</span>, <span class="selector-class">.center</span>&#123;</span><br><span class="line">  <span class="attribute">float</span>: left;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.left</span>&#123;</span><br><span class="line">  <span class="attribute">margin-left</span>: -<span class="number">100%</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.right</span>&#123;</span><br><span class="line">  <span class="attribute">margin-right</span>: -<span class="number">200px</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="calc"><a href="#calc" class="headerlink" title="calc"></a><code>calc</code></h2><p>兼容到 IE 9，渲染会比较慢</p>
+<figure class="highlight scss"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.center</span>&#123;</span><br><span class="line">  <span class="attribute">width</span>: calc(<span class="number">100%</span> - <span class="number">400px</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="flex-1"><a href="#flex-1" class="headerlink" title="flex"></a><code>flex</code></h2><figure class="highlight scss"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.container</span>&#123;</span><br><span class="line">  <span class="attribute">display</span>: flex;</span><br><span class="line">  <span class="attribute">justify-content</span>: space-between;</span><br><span class="line">  <span class="selector-class">.left</span>, <span class="selector-class">.right</span>&#123;</span><br><span class="line">    <span class="attribute">flex</span>: <span class="number">0</span> <span class="number">0</span> <span class="number">200px</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="selector-class">.center</span>&#123;</span><br><span class="line">    <span class="attribute">flex</span>: <span class="number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="定位"><a href="#定位" class="headerlink" title="定位"></a>定位</h2><figure class="highlight scss"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.container</span>&#123;</span><br><span class="line">  <span class="attribute">position</span>: relative;</span><br><span class="line">  <span class="selector-class">.left</span>, <span class="selector-class">.right</span>&#123;</span><br><span class="line">    <span class="attribute">position</span>: absolute;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">200px</span>;</span><br><span class="line">    <span class="attribute">top</span>: <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="selector-class">.left</span>&#123;</span><br><span class="line">    <span class="attribute">left</span>: <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="selector-class">.right</span>&#123;</span><br><span class="line">    <span class="attribute">right</span>: <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="selector-class">.center</span>&#123;</span><br><span class="line">    <span class="attribute">margin</span>: <span class="number">0</span> <span class="number">200px</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
         <category>前端</category>
@@ -2375,7 +2360,7 @@
 <tr>
 <td><code>inline-block</code></td>
 <td>从左到右排列，<strong>行尾不会分成两块</strong></td>
-<td>默认为里面所有 <code>inline</code> 元素之和，但接受指定 width</td>
+<td>默认为里面所有 <code>inline</code> 元素之和，但接受指定 <code>width</code></td>
 <td>由里面<strong>所有</strong>的<strong>文档流</strong>元素决定，也可以设置 <code>height</code></td>
 </tr>
 </tbody></table>
@@ -2436,18 +2421,35 @@
 </tr>
 </tbody></table>
 <p>通过 <code>box-sizing</code> 控制，一般使用 <code>border-box</code></p>
-<h1 id="Margin-合并"><a href="#Margin-合并" class="headerlink" title="Margin 合并"></a>Margin 合并</h1><p>跟 BFC 有关系，可以查看 <a href="/hais-notebook/2020/02/12/CSS-BFC/">CSS BFC</a></p>
-<p>是说我们上下两个元素若都有 margin，那么他们的 margin 将不会同时生效。有以下几个注意点：</p>
+<h1 id="Margin-合并"><a href="#Margin-合并" class="headerlink" title="Margin 合并"></a>Margin 合并</h1><blockquote>
+<p>跟 BFC 有关系</p>
+</blockquote>
+<p>是说我们上下两个元素若都有 <code>margin</code>，那么他们的 <code>margin</code> 将不会同时生效。有以下几个注意点：</p>
 <ol>
 <li>只有上下才会发生 <code>margin</code> 合并，左右不会发生</li>
-<li>只有 <code>block</code> 会发生 <code>margin</code> 合并，<code>inline-block</code> 不会发生</li>
-<li><code>first-child</code> 和 <code>last-child</code> 也会和 <code>parent</code> 发生 margin 合并</li>
+<li>只有 <code>block</code> 会发生 <code>margin</code> 合并，<code>inline-block</code> 不会发生（生成了 BFC）</li>
+<li><code>first-child</code> 和 <code>last-child</code> 也会和 <code>parent</code> 发生 <code>margin</code> 合并</li>
 </ol>
-<p>取消 margin 合并的方法：</p>
+<p>取消 margin 合并的方法，主要是靠生成 BFC：</p>
 <ol>
 <li>使用 <code>overflow:hidden</code> 之后就不会再合并</li>
 <li>使用 <code>display:flex</code> 之后就不会再合并</li>
 <li>通过给 <code>parent</code> 上面加东西（<code>padding</code> <code>border</code> <code>overflow</code> 等）之后就不会再合并</li>
+</ol>
+<h1 id="BFC"><a href="#BFC" class="headerlink" title="BFC"></a>BFC</h1><blockquote>
+<p>BFC （块级格式化上下文）就是一块小区域，一块独立的布局环境，在这个区域之内的任何布局和定位都不会影响到外面，外面也不能影响到里面。</p>
+</blockquote>
+<h2 id="BFC-的作用"><a href="#BFC-的作用" class="headerlink" title="BFC 的作用"></a>BFC 的作用</h2><ol>
+<li>同一个 BFC 内会发生垂直方向的 Margin 合并，如果是不同 BFC 则不会</li>
+<li>形成了 BFC 的区域不会与 float 元素重叠，可以与浮动元素形成左右自适应布局</li>
+<li>清除浮动，因为浮动元素的高度也会被 BFC 纳入计算，因此可以解决高度塌陷的问题</li>
+</ol>
+<h2 id="如何形成-BFC"><a href="#如何形成-BFC" class="headerlink" title="如何形成 BFC"></a>如何形成 BFC</h2><ol>
+<li><code>float: left</code></li>
+<li><code>position: absolute</code></li>
+<li><code>overflow: hidden</code>，经常使用</li>
+<li><code>display: inline-block</code></li>
+<li><code>display: table-cell</code></li>
 </ol>
 ]]></content>
       <categories>
@@ -2715,7 +2717,7 @@
 
 
 <div class="note warning">
-            <p>props 和 data 的区别：<br>如果需要传值，就放在 props 里面</p>
+            <p><code>props</code> 和 <code>data</code> 的区别：<br>如果需要传值，就放在 <code>props</code> 里面</p>
           </div>
 
 <h2 id="computed"><a href="#computed" class="headerlink" title="computed"></a>computed</h2><p>可以查看 <a href="https://codesandbox.io/s/beautiful-blackburn-5dn48" target="_blank" rel="noopener">在 CodeSandbox 上的这个例子</a></p>
@@ -2734,9 +2736,10 @@
             <p>不要使用箭头函数来定义 watcher，<code>this</code> 是 <code>window</code></p>
           </div>
 
-<blockquote>
-<p>computed 和 watch 的区别？<br>computed 是用来计算一个值的，调用的时候不需要加括号，会根据依赖缓存<br>watch 有两个比较常用的选项：<code>immediate</code> 和 <code>deep</code></p>
-</blockquote>
+<div class="note warning">
+            <p><code>computed</code> 和 <code>watch</code> 的区别？</p><ul><li><code>computed</code> 是用来计算一个值的，调用的时候不需要加括号，会根据依赖缓存</li><li><code>watch</code> 有两个比较常用的选项：<code>immediate</code> 和 <code>deep</code>，通常是在需要进行异步或者开销比较大的操作的时候使用</li></ul>
+          </div>
+
 <h1 id="DOM"><a href="#DOM" class="headerlink" title="DOM"></a>DOM</h1><h2 id="el"><a href="#el" class="headerlink" title="el"></a>el</h2><ul>
 <li>想要挂载到哪个节点，节点内容会被替换</li>
 <li>在里面写了内容，基本上是不太可能被用户看见的，除非用户网速特别慢</li>
@@ -2856,22 +2859,23 @@
 <p>相当于这样的简写：</p>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">:value</span>=<span class="string">"message"</span></span></span><br><span class="line"><span class="tag">       @<span class="attr">input</span>=<span class="string">"message = $event.target.value"</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
-<h1 id="Lifecycle-Hooks"><a href="#Lifecycle-Hooks" class="headerlink" title="Lifecycle Hooks"></a>Lifecycle Hooks</h1><blockquote>
-<p>出现的时机可以用 debugger 证明</p>
-</blockquote>
-<ul>
-<li>beforeCreate</li>
-<li>created：出现在内存中，没有出现在页面中</li>
-<li>beforeMount</li>
-<li>mounted：出现在页面中</li>
-<li>beforeUpdate</li>
-<li>updated：更新了</li>
-<li>activated</li>
-<li>deactivated</li>
-<li>beforeDestroy</li>
-<li>destroyed：消亡了再弄出来之后是新的组件，占用新的内存地址</li>
-<li>errorCaptured</li>
-</ul>
+<h1 id="Lifecycle-Hooks"><a href="#Lifecycle-Hooks" class="headerlink" title="Lifecycle Hooks"></a>Lifecycle Hooks</h1><h2 id="Vue-Lifecycle"><a href="#Vue-Lifecycle" class="headerlink" title="Vue Lifecycle"></a>Vue Lifecycle</h2><p><img src="https://cn.vuejs.org/images/lifecycle.png" alt=""></p>
+<p>在调用每个生命周期钩子的时候，已经完成了哪些事情：</p>
+<ol>
+<li><strong>beforeCreate</strong>：创建一个新的 Vue 实例，初始化事件与生命周期</li>
+<li><strong>created</strong>：初始化数据，进行数据的观测（比如将使用 <code>Object.defineProperty</code> 改造 data，并将 vm 作为代理）</li>
+<li><strong>beforeMount</strong>：将模板编译为 render 函数，将 v-if 变为 if、v-for 变为 map 等</li>
+<li><strong>mounted</strong>：给 vm 添加 $el 成员，并且替换掉挂载的 DOM 元素</li>
+<li><strong>updated</strong>：数据发生改变，触发组件更新，将会使用新的数据构造一份新的 DOM，替换掉原来的</li>
+<li><strong>destroyed</strong>：vm 指示的所有东西都会解绑，所有的事件监听器被移除，所有的子实例被销毁</li>
+</ol>
+<p>对于父子组件：</p>
+<ol>
+<li>加载渲染过程<br>父 BeforeCreate -&gt; 父 Created -&gt; 父 BeforeMount -&gt; 子 BeforeCreate -&gt; 子 Created -&gt; 子 BeforeMount -&gt; 子 Mounted -&gt; 父 Mounted</li>
+<li>子组件更新过程<br>父 BeforeUpdate -&gt; 子 BeforeUpdate -&gt; 子 Updated -&gt; 父 Updated</li>
+<li>父组件更新过程<br>父 BeforeUpdate -&gt; 父 Updated</li>
+<li>销毁过程<br>父 BeforeDestroy -&gt; 子 BeforeDestroy -&gt; 子 Destroyed -&gt; 父 Destroyed</li>
+</ol>
 <h1 id="Assets"><a href="#Assets" class="headerlink" title="Assets"></a>Assets</h1><h2 id="directives"><a href="#directives" class="headerlink" title="directives"></a>directives</h2><h3 id="指令声明"><a href="#指令声明" class="headerlink" title="指令声明"></a>指令声明</h3><p>可以查看 <a href="https://codesandbox.io/s/dank-cloud-99drb" target="_blank" rel="noopener">在 CodSandbox 上的这个例子</a></p>
 <p>声明全局指令：</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">Vue.directive(<span class="string">'x'</span>, directiveOptions)</span><br><span class="line"><span class="comment">// 然后就可以全局使用 v-x 了</span></span><br></pre></td></tr></table></figure>
@@ -3003,6 +3007,17 @@
 <li>把随机的 <code>id</code> 发送给浏览器</li>
 <li>后端读取的时候，通过 <code>session[id]</code> 获取用户信息</li>
 </ul>
+<h1 id="Cookie、LocalStorage、SessionStorage-和-Session"><a href="#Cookie、LocalStorage、SessionStorage-和-Session" class="headerlink" title="Cookie、LocalStorage、SessionStorage 和 Session"></a>Cookie、LocalStorage、SessionStorage 和 Session</h1><h2 id="Cookie-和-Session-的区别"><a href="#Cookie-和-Session-的区别" class="headerlink" title="Cookie 和 Session 的区别"></a>Cookie 和 Session 的区别</h2><p>Cookie 是服务器发给浏览器的一段字符串，每次浏览器在访问对应域名的时候，都需要把这个字符串带上<br>Session 是会话，表示浏览器与服务器一段时间内的会话</p>
+<ul>
+<li>一般 Cookie 在浏览器上，Session 在服务器上</li>
+<li>Session 一般是基于 Cookie 来实现的（把 SessionID 放到 Cookie 里面）</li>
+</ul>
+<h2 id="Cookie-和-LocalStorage-的区别"><a href="#Cookie-和-LocalStorage-的区别" class="headerlink" title="Cookie 和 LocalStorage 的区别"></a>Cookie 和 LocalStorage 的区别</h2><ul>
+<li>Cookie 上限一般为 4K，LocalStorage 为 5M</li>
+<li>Cookie 一般存储用户信息，LocalStorage 一般存储不重要的数据</li>
+<li>Cookie 需要发送到服务器上，LocalStorage 不发送到服务器上</li>
+</ul>
+<h2 id="LocalStorage-和-SessionStorage-的区别"><a href="#LocalStorage-和-SessionStorage-的区别" class="headerlink" title="LocalStorage 和 SessionStorage 的区别"></a>LocalStorage 和 SessionStorage 的区别</h2><p>LocalStorage 一般不过期，SessionStorage 一般在 Session 结束的时候过期（比如关闭浏览器的时候）</p>
 ]]></content>
       <categories>
         <category>前端</category>
@@ -3199,6 +3214,17 @@
 <p>↑ 上面是普通的写法，↓ 下面是 Promise 的写法</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">ajax = <span class="function">(<span class="params">method, url</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>( <span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;  <span class="comment">// return new Promise((resolve, reject)=&gt;&#123;..&#125;)</span></span><br><span class="line">    <span class="keyword">const</span> request = <span class="keyword">new</span> XMLHttpRequest()</span><br><span class="line">    request.open(method, url)</span><br><span class="line">    request.onreadystatechange = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">if</span>(request.readyState === <span class="number">4</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span>(request.status &lt; <span class="number">400</span>) &#123;</span><br><span class="line">          resolve.call(<span class="literal">null</span>, request.response)  <span class="comment">// 成功调用 resolve(result)，他再回调用第一个函数</span></span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span>(request.status &gt;= <span class="number">400</span>) &#123;</span><br><span class="line">          reject.call(<span class="literal">null</span>, request)  <span class="comment">// 失败调用 reject(error)，他再会调用第二个函数</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    request.send()</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line">    </span><br><span class="line">ajax(<span class="string">'get'</span>, <span class="string">'/xxx'</span>)</span><br><span class="line">  .then( <span class="function">(<span class="params">response</span>) =&gt;</span> &#123;&#125;, (request) =&gt; &#123;&#125; )   <span class="comment">// Promise 的回调（成功/失败）只能接受一个参数</span></span><br></pre></td></tr></table></figure>
 
+<h4 id="Promise-是如何解决回调地狱的"><a href="#Promise-是如何解决回调地狱的" class="headerlink" title="Promise 是如何解决回调地狱的"></a>Promise 是如何解决回调地狱的</h4><p>回调地狱：</p>
+<ol>
+<li>多层嵌套</li>
+<li>无法方便地进行错误处理</li>
+</ol>
+<p>解决办法：</p>
+<ol>
+<li>回调函数延迟绑定，回调函数是通过后面的 then 方法传入的</li>
+<li>返回值穿透，根据 then 中回调函数的传入值创建不同类型的 Promise，再把返回的 Promise 穿透到外层，以供后续使用。以上两点实现了链式调用，解决多层嵌套问题</li>
+<li>错误冒泡，前面产生的错误会一直向后传递，被 catch 接收到，就不用频繁地检查错误了</li>
+</ol>
 <h4 id="Promise-all"><a href="#Promise-all" class="headerlink" title="Promise.all()"></a>Promise.all()</h4><ul>
 <li>如果传入的参数是一个空的可迭代对象，比如空数组，则返回一个已完成（already resolved）状态的 Promise。</li>
 <li>如果传入的参数不包含任何 promise，则返回一个异步完成（asynchronously resolved） Promise。</li>
@@ -3666,6 +3692,34 @@
 </ul>
 </li>
 </ul>
+<h2 id="堆内存与栈内存"><a href="#堆内存与栈内存" class="headerlink" title="堆内存与栈内存"></a>堆内存与栈内存</h2><p>JS 的内存空间分为</p>
+<ul>
+<li>栈（Stack）：存放简单类型，LIFO</li>
+<li>堆（Heap）：存放引用类型，是一种经过排序的树形结构，每个节点都有一个值，通常说的堆是指二叉堆，存取随意</li>
+<li>池（一般也被归类为栈中）：存放常量，故又称常量池</li>
+</ul>
+<h3 id="堆与栈的优缺点"><a href="#堆与栈的优缺点" class="headerlink" title="堆与栈的优缺点"></a>堆与栈的优缺点</h3><ul>
+<li>栈内存系统效率高，因为堆内存需要分配空间和地址，还要把地址存在栈内存中，因此效率低</li>
+<li>引用类型变量大小不确定，如果放到栈内存中就无法轻易改变自己的大小，同时也浪费空间</li>
+</ul>
+<p>闭包中的变量保存在堆内存中，而不是栈内存中，因此函数调用之后闭包仍然能够引用到函数内的变量</p>
+<h3 id="闭包与堆内存"><a href="#闭包与堆内存" class="headerlink" title="闭包与堆内存"></a>闭包与堆内存</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">A</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> a = <span class="number">1</span></span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">B</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(a)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> B</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> res = A()</span><br></pre></td></tr></table></figure>
+
+<p>函数 A 弹出调用栈之后，函数 A 中的变量这个时候是存储在堆上的，现在的 JS 引擎可以通过逃逸分析辨别出哪些变量需要存储在堆上，哪些需要存储在栈上</p>
+<h2 id="V8-执行一段代码的过程"><a href="#V8-执行一段代码的过程" class="headerlink" title="V8 执行一段代码的过程"></a>V8 执行一段代码的过程</h2><ol>
+<li>首先通过词法分析和语法分析生成 <strong>AST</strong></li>
+<li><strong>解释器</strong> 将 AST 转换为字节码</li>
+<li>由 <strong>解释器</strong> 逐行执行字节码，遇到热点代码启动 <strong>编译器</strong> 进行编译，生成对应的机器码，优化执行效率</li>
+</ol>
+<h3 id="生成-AST"><a href="#生成-AST" class="headerlink" title="生成 AST"></a>生成 AST</h3><h4 id="词法分析"><a href="#词法分析" class="headerlink" title="词法分析"></a>词法分析</h4><p>主要是把一行行代码分解成一个个 token：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> name = <span class="string">'harvey'</span></span><br></pre></td></tr></table></figure>
+
+<p>会把句子拆分成四个部分（四个 token）：关键字 let、变量名 name、赋值 =、字符串 ‘harvey’</p>
+<h4 id="语法分析"><a href="#语法分析" class="headerlink" title="语法分析"></a>语法分析</h4><p>将生成的这些 token 数据，根据一定的语法规则转化为 AST，之后会生成执行上下文。<br>babel 实际上就是将 ES6 代码解析生成  ES6 的 AST，然后再转换为 ES5 的 AST，然后再转换为 ES5 的代码。</p>
+<h3 id="生成字节码"><a href="#生成字节码" class="headerlink" title="生成字节码"></a>生成字节码</h3><p>生成 AST 之后，直接通过 V8 解释器（Ignition） 生成字节码，但是字节码并不能让机器直接运行——之所以不直接转化为机器码，是因为机器码空间占用太大了。</p>
+<p>字节码比机器码轻量很多，是介于 AST 和机器码之间的一种代码，但是与特定类型的机器码无关，字节码需要通过解释器将其转换为机器码然后执行。但和原来不同的是，现在不用一次性将全部的字节码都转换成机器码，而是通过解释器来逐行执行字节码，省去了生成二进制文件的操作，这样就大大降低了内存的压力。</p>
+<h3 id="执行代码"><a href="#执行代码" class="headerlink" title="执行代码"></a>执行代码</h3><p>热点代码：在执行字节码的过程中，如果有一段代码反复出现，则记为 <strong>热点代码</strong>（HotSpot），这段代码会被编译成机器码保存起来。在这样的机制下，代码执行的时间越久，那么执行效率会越来越高，因为有越来越多的字节码被标记为热点代码。</p>
+<p>JS 实际上并不是一门完全的解释型语言，因为字节码不仅配合了 <strong>解释器</strong>，还要配合 <strong>编译器</strong>。编译器和解释器的根本区别在于前者会编译生成二进制文件而后者不会。</p>
 <h1 id="JavaScript-世界"><a href="#JavaScript-世界" class="headerlink" title="JavaScript 世界"></a>JavaScript 世界</h1><blockquote class="blockquote-center"><p><strong>JS 公式：<code>对象.__proto__ === 其构造函数.prototype</code></strong><br><strong>根公理：<code>Object.prototype</code> 是所有对象的（直接或间接）原型</strong><br><strong>函数公理：所有函数都是由 <code>Function</code> 构造的</strong></p>
 </blockquote>
 
@@ -3763,7 +3817,9 @@
     <content><![CDATA[<p>JS 的数组不是典型的数组，而是一个对象；<strong>元素的数据类型可以不同，内存不一定连续，是通过字符串下标（而不是数字下标）获取元素</strong>。</p>
 <a id="more"></a>
 
-<h1 id="获得新数组"><a href="#获得新数组" class="headerlink" title="获得新数组"></a>获得新数组</h1><h2 id="新建数组"><a href="#新建数组" class="headerlink" title="新建数组"></a>新建数组</h2><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 数组的简便定义</span></span><br><span class="line"><span class="keyword">let</span> arr = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">// 数组的标准写法</span></span><br><span class="line"><span class="keyword">let</span> arr = <span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 或者只传入一个参数，表示数组的长度</span></span><br><span class="line"><span class="keyword">let</span> arr = <span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">3</span>)</span><br></pre></td></tr></table></figure>
+<h1 id="获得新数组"><a href="#获得新数组" class="headerlink" title="获得新数组"></a>获得新数组</h1><h2 id="将类数组转化为数组"><a href="#将类数组转化为数组" class="headerlink" title="将类数组转化为数组"></a>将类数组转化为数组</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">args = <span class="built_in">Array</span>.prototype.slice.call(<span class="built_in">arguments</span>)</span><br><span class="line">args = <span class="built_in">Array</span>.from(<span class="built_in">arguments</span>)</span><br><span class="line">args = [...arguments]</span><br><span class="line">args = <span class="built_in">Array</span>.prototype.concat.apply([], <span class="built_in">arguments</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="新建数组"><a href="#新建数组" class="headerlink" title="新建数组"></a>新建数组</h2><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 数组的简便定义</span></span><br><span class="line"><span class="keyword">let</span> arr = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">// 数组的标准写法</span></span><br><span class="line"><span class="keyword">let</span> arr = <span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 或者只传入一个参数，表示数组的长度</span></span><br><span class="line"><span class="keyword">let</span> arr = <span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">3</span>)</span><br></pre></td></tr></table></figure>
 
 <h2 id="转化为数组"><a href="#转化为数组" class="headerlink" title="转化为数组"></a>转化为数组</h2><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 以','分隔的字符串</span></span><br><span class="line"><span class="keyword">let</span> arr = <span class="string">'1,2,3'</span>.split(<span class="string">','</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 没有间隔的字符串</span></span><br><span class="line"><span class="keyword">let</span> arr = <span class="string">'123'</span>.split(<span class="string">''</span>)</span><br><span class="line"><span class="built_in">Array</span>.from(<span class="string">'123'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 由对象转换</span></span><br><span class="line"><span class="keyword">let</span> arr = <span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">3</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 数组转化为字符串</span></span><br><span class="line"><span class="keyword">let</span> str = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>].join(<span class="string">','</span>)</span><br></pre></td></tr></table></figure>
 
@@ -3780,9 +3836,9 @@
 
 <h1 id="删除元素"><a href="#删除元素" class="headerlink" title="删除元素"></a>删除元素</h1><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">arr = [<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>];  <span class="keyword">delete</span> arr[<span class="string">'0'</span>]</span><br><span class="line"><span class="comment">// arr 为 [ empty, 'b', 'c']，如果3个都是 empty，称为稀疏数组，不推荐</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 改 length 也可以删除数组的元素，不推荐</span></span><br><span class="line"></span><br><span class="line">arr.shift()</span><br><span class="line"><span class="comment">// 删除最开始的元素，并返回他，arr 被修改</span></span><br><span class="line"></span><br><span class="line">arr.pop()</span><br><span class="line"><span class="comment">// 删除最后一个元素，并返回他，arr 被修改</span></span><br><span class="line"> </span><br><span class="line">arr.splice(<span class="number">2</span>, <span class="number">3</span>)</span><br><span class="line"><span class="comment">// 从 2 开始，删除 3 个，并返回删除的部分，arr 被修改</span></span><br><span class="line"></span><br><span class="line">arr.splice(<span class="number">2</span>, <span class="number">3</span>, <span class="string">'x'</span>, <span class="string">'y'</span>)</span><br><span class="line"><span class="comment">// 从 2 开始，删除 3 个，增加 'x' 和 'y'</span></span><br><span class="line"><span class="comment">// 并返回删除的部分，arr 被修改</span></span><br></pre></td></tr></table></figure>
 
-<h1 id="查找元素"><a href="#查找元素" class="headerlink" title="查找元素"></a>查找元素</h1><h2 id="遍历元素"><a href="#遍历元素" class="headerlink" title="遍历元素"></a>遍历元素</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Object</span>.keys(arr) <span class="comment">// 不推荐</span></span><br><span class="line"><span class="built_in">Object</span>.values(arr) <span class="comment">// 不推荐</span></span><br><span class="line"><span class="keyword">for</span> <span class="keyword">in</span> <span class="comment">// 不推荐</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; arr.length; i++) &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">`<span class="subst">$&#123;i&#125;</span> : <span class="subst">$&#123;arr[i]&#125;</span>`</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">arr.forEach( <span class="function"><span class="keyword">function</span>(<span class="params">item, index, array</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">`$(index) : $(item)`</span>)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 以上两种基本没有区别</span></span><br><span class="line"><span class="comment">// 但 for 关键字有 continue 和 break，forEach 没有</span></span><br><span class="line"><span class="comment">// for 是块级作用域，forEach 是函数作用域</span></span><br></pre></td></tr></table></figure>
+<h1 id="查找元素"><a href="#查找元素" class="headerlink" title="查找元素"></a>查找元素</h1><h2 id="遍历元素"><a href="#遍历元素" class="headerlink" title="遍历元素"></a>遍历元素</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Object</span>.keys(arr) <span class="comment">// 不推荐</span></span><br><span class="line"><span class="built_in">Object</span>.values(arr) <span class="comment">// 不推荐</span></span><br><span class="line"><span class="keyword">for</span> <span class="keyword">in</span> <span class="comment">// 不推荐</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; arr.length; i++) &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">`<span class="subst">$&#123;i&#125;</span> : <span class="subst">$&#123;arr[i]&#125;</span>`</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">arr.forEach(<span class="function"><span class="keyword">function</span>(<span class="params">item, index, array</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">`$(index) : $(item)`</span>)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 以上两种基本没有区别</span></span><br><span class="line"><span class="comment">// 但 for 关键字有 continue 和 break，forEach 没有</span></span><br><span class="line"><span class="comment">// for 是块级作用域，forEach 是函数作用域</span></span><br></pre></td></tr></table></figure>
 
-<h2 id="查找单个元素"><a href="#查找单个元素" class="headerlink" title="查找单个元素"></a>查找单个元素</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">arr.indexOf(item) <span class="comment">// 有就会返回 index，没有就会返回 -1</span></span><br><span class="line"></span><br><span class="line">arr.find(<span class="function"><span class="params">item</span> =&gt;</span> item % <span class="number">2</span> ===<span class="number">0</span>) </span><br><span class="line"><span class="comment">// 会返回第一个符合条件的元素</span></span><br><span class="line">arr.findIndex(<span class="function"><span class="params">item</span> =&gt;</span> item % <span class="number">2</span> ===<span class="number">0</span>)</span><br><span class="line"><span class="comment">// 会返回第一个符合条件的元素对应的索引</span></span><br></pre></td></tr></table></figure>
+<h2 id="查找单个元素"><a href="#查找单个元素" class="headerlink" title="查找单个元素"></a>查找单个元素</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">arr.indexOf(item) <span class="comment">// 有就会返回 index，没有就会返回 -1</span></span><br><span class="line"></span><br><span class="line">arr.find(<span class="function"><span class="params">item</span> =&gt;</span> item % <span class="number">2</span> === <span class="number">0</span>) </span><br><span class="line"><span class="comment">// 会返回第一个符合条件的元素</span></span><br><span class="line">arr.findIndex(<span class="function"><span class="params">item</span> =&gt;</span> item % <span class="number">2</span> === <span class="number">0</span>)</span><br><span class="line"><span class="comment">// 会返回第一个符合条件的元素对应的索引</span></span><br></pre></td></tr></table></figure>
 
 <div class="note warning">
             <p><strong>索引越界</strong></p><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">arr[arr.length] === <span class="literal">undefined</span></span><br><span class="line">a[<span class="number">-1</span>] === <span class="literal">undefined</span></span><br></pre></td></tr></table></figure>
@@ -3857,7 +3913,7 @@
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 修改原型的属性</span></span><br><span class="line">obj.__proto__.toString =</span><br><span class="line"><span class="built_in">Object</span>.prototype.toString =</span><br><span class="line"></span><br><span class="line"><span class="comment">// 修改原型</span></span><br><span class="line"><span class="keyword">let</span> person = <span class="built_in">Object</span>.create(common)</span><br><span class="line"><span class="comment">// 相当于</span></span><br><span class="line">person.__proto__ = common <span class="comment">// 原型链增加一个环节</span></span><br></pre></td></tr></table></figure>
 
 <h1 id="对象的原型"><a href="#对象的原型" class="headerlink" title="对象的原型"></a>对象的原型</h1><div class="note warning">
-            <p>所有的函数自带 prototype<br>prototype 中自带 constructor<br>constructor 里面的东西就是函数的内容</p>
+            <p>所有的函数自带 prototype（箭头函数没有 prototype）<br>prototype 中自带 constructor<br>constructor 里面的东西就是函数的内容</p>
           </div>
 
 <h2 id="new-X"><a href="#new-X" class="headerlink" title="new X()"></a>new X()</h2><ol>
@@ -3866,7 +3922,7 @@
 <li>自动将空对象作为 <code>this</code> 关键字运行构造函数</li>
 <li>自动 <code>return this</code>（也就是说可以接着写 <code>new X().getName()</code>）</li>
 </ol>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 自己实现一个类似 new 的函数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">X</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.a = a + <span class="number">1</span></span><br><span class="line">    <span class="keyword">this</span>.b = b + <span class="number">1</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> y = <span class="keyword">new</span> X(<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">NEW</span>(<span class="params">fun, ...args</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">const</span> newObj = <span class="built_in">Object</span>.create(obj.prototype)</span><br><span class="line">    <span class="comment">// 相当于</span></span><br><span class="line">    <span class="comment">// let newObj = &#123;&#125;</span></span><br><span class="line">    <span class="comment">// newObj.__proto__ = fun.prototype</span></span><br><span class="line">    <span class="keyword">const</span> result = fun.apply(newObj, args)</span><br><span class="line">    <span class="comment">// 原版的 new 中，如果构造函数返回一个对象，则 new 也返回一个对象；如果构造函数返回一个简单类型，则 new 返回刚刚创建的新对象</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">typeof</span> result === <span class="string">'object'</span> ? result : newObj</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> z = NEW(X, <span class="number">3</span>, <span class="number">4</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 自己实现一个类似 new 的函数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">X</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.a = a + <span class="number">1</span></span><br><span class="line">    <span class="keyword">this</span>.b = b + <span class="number">1</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> y = <span class="keyword">new</span> X(<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">NEW</span>(<span class="params">fun, ...args</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">const</span> newObj = <span class="built_in">Object</span>.create(fun.prototype)</span><br><span class="line">    <span class="comment">// 相当于</span></span><br><span class="line">    <span class="comment">// let newObj = &#123;&#125;</span></span><br><span class="line">    <span class="comment">// newObj.__proto__ = fun.prototype</span></span><br><span class="line">    <span class="keyword">const</span> result = fun.apply(newObj, args)</span><br><span class="line">    <span class="comment">// 原版的 new 中，如果构造函数返回一个对象，则 new 也返回一个对象；如果构造函数返回一个简单类型，则 new 返回刚刚创建的新对象</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">typeof</span> result === <span class="string">'object'</span> ? result : newObj</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> z = NEW(X, <span class="number">3</span>, <span class="number">4</span>)</span><br></pre></td></tr></table></figure>
 
 <h2 id="构造函数-X"><a href="#构造函数-X" class="headerlink" title="构造函数 X"></a>构造函数 <code>X</code></h2><ul>
 <li><code>X</code> 自身用于添加新对象的<strong>自身的属性</strong></li>
@@ -3950,7 +4006,7 @@
 <li>下标： <code>s[0]</code></li>
 <li>base64 转码： <code>window.btoa</code> 编码， <code>window.atob</code> 反编码</li>
 </ul>
-<h2 id="Bool"><a href="#Bool" class="headerlink" title="Bool"></a>Bool</h2><blockquote>
+<h2 id="Boolean"><a href="#Boolean" class="headerlink" title="Boolean"></a>Boolean</h2><blockquote>
 <p>否定运算、相等运算、比较运算可以得到 bool 值</p>
 </blockquote>
 <div class="note warning">
@@ -4052,6 +4108,180 @@
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> a = (<span class="number">1</span>, <span class="number">2</span>) <span class="comment">// a 为 2</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> f = <span class="function"><span class="params">x</span> =&gt;</span> &#123; <span class="built_in">console</span>.log(<span class="string">'hi'</span>); <span class="keyword">return</span> x + <span class="number">1</span> &#125;</span><br><span class="line"><span class="keyword">let</span> f = <span class="function"><span class="params">x</span> =&gt;</span> (<span class="built_in">console</span>.log(<span class="string">'hi'</span>), x + <span class="number">1</span>)</span><br><span class="line"><span class="comment">// 跟上面是一样的，先执行 console.log，再让 return 为x + 1</span></span><br></pre></td></tr></table></figure>
 
 <h2 id="优先级"><a href="#优先级" class="headerlink" title="优先级"></a>优先级</h2><p>圆括号的优先级最高</p>
+<h1 id="数据类型检测"><a href="#数据类型检测" class="headerlink" title="数据类型检测"></a>数据类型检测</h1><h2 id="typeof-instanceof-toString-的比较"><a href="#typeof-instanceof-toString-的比较" class="headerlink" title="typeof instanceof toString 的比较"></a><code>typeof</code> <code>instanceof</code> <code>toString</code> 的比较</h2><table>
+  <tr>
+    <td colspan="2">类型</td>
+    <td>举例</td>
+    <td colspan="2">typeof</td>
+    <td colspan="2">instanceof</td>
+    <td colspan="2">Object.prototype.toString.call()</td>
+  </tr>
+  <tr>
+    <td rowspan="4">基本类型</td>
+    <td>Number</td>
+    <td>1</td>
+    <td>number</td>
+    <td>√</td>
+    <td>false*</td>
+    <td>○</td>
+    <td>[object Number]</td>
+    <td>√</td>
+  </tr>
+  <tr>
+    <td>String</td>
+    <td>hello'</td>
+    <td>string</td>
+    <td>√</td>
+    <td>false*</td>
+    <td>○</td>
+    <td>[object String]</td>
+    <td>√</td>
+  </tr>
+  <tr>
+    <td>Boolean</td>
+    <td>true</td>
+    <td>boolean</td>
+    <td>√</td>
+    <td>false*</td>
+    <td>○</td>
+    <td>[object Boolean]</td>
+    <td>√</td>
+  </tr>
+  <tr>
+    <td>Symbol / new Symbol()</td>
+    <td>new Symbol()</td>
+    <td>symbol</td>
+    <td>√</td>
+    <td>false*</td>
+    <td>○</td>
+    <td>[object Symbol]</td>
+    <td>√</td>
+  </tr>
+  <tr>
+    <td rowspan="3">new 基本类型</td>
+    <td>new Number()</td>
+    <td>new Number(1)</td>
+    <td>object</td>
+    <td>○</td>
+    <td>true</td>
+    <td>√</td>
+    <td>[object Number]**</td>
+    <td>√</td>
+  </tr>
+  <tr>
+    <td>new String()</td>
+    <td>new String('hello')</td>
+    <td>object</td>
+    <td>○</td>
+    <td>true</td>
+    <td>√</td>
+    <td>[object String]**</td>
+    <td>√</td>
+  </tr>
+  <tr>
+    <td>new Boolean()</td>
+    <td>new Boolean('false')</td>
+    <td>object</td>
+    <td>○</td>
+    <td>true</td>
+    <td>√</td>
+    <td>[object Boolean]**</td>
+    <td>√</td>
+  </tr>
+  <tr>
+    <td rowspan="2">空值</td>
+    <td>null</td>
+    <td>null</td>
+    <td>object</td>
+    <td>×</td>
+    <td>false*</td>
+    <td>○</td>
+    <td>[object Null]</td>
+    <td>√</td>
+  </tr>
+  <tr>
+    <td>undefined</td>
+    <td>undefined</td>
+    <td>undefined</td>
+    <td>√</td>
+    <td>false*</td>
+    <td>○</td>
+    <td>[object Undefined]</td>
+    <td>√</td>
+  </tr>
+  <tr>
+    <td rowspan="6">对象类型</td>
+    <td>普通对象</td>
+    <td>{a: '1', b: '2'}</td>
+    <td>object</td>
+    <td>√</td>
+    <td>true</td>
+    <td>√</td>
+    <td>[object Object]</td>
+    <td>√</td>
+  </tr>
+  <tr>
+    <td>Array</td>
+    <td>[1, 2, 3]</td>
+    <td>object</td>
+    <td>○</td>
+    <td>true</td>
+    <td>√</td>
+    <td>[object Array]</td>
+    <td>√</td>
+  </tr>
+  <tr>
+    <td>Function</td>
+    <td>function() {}</td>
+    <td>function</td>
+    <td>√</td>
+    <td>true</td>
+    <td>√</td>
+    <td>[object Function]</td>
+    <td>√</td>
+  </tr>
+  <tr>
+    <td>Error</td>
+    <td>new Error()</td>
+    <td>object</td>
+    <td>○</td>
+    <td>true</td>
+    <td>√</td>
+    <td>[object Error]</td>
+    <td>√</td>
+  </tr>
+  <tr>
+    <td>Date</td>
+    <td>new Date()</td>
+    <td>object</td>
+    <td>○</td>
+    <td>true</td>
+    <td>√</td>
+    <td>[object Date]</td>
+    <td>√</td>
+  </tr>
+  <tr>
+    <td>RegExp</td>
+    <td>new RegExp()</td>
+    <td>object</td>
+    <td>○</td>
+    <td>true</td>
+    <td>√</td>
+    <td>[object RegExp]</td>
+    <td>√</td>
+  </tr>
+</table>
+
+<p>*尽管我们直接使用 <code>1 instanceof Number</code> 会出现错误，但是我们可以自定义 <code>instanceof</code> 方法，让他可以判断基本类型：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PrimitiveNumber</span> </span>&#123;</span><br><span class="line">  <span class="keyword">static</span> [<span class="built_in">Symbol</span>.hasInstance](instance) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">typeof</span> instance === <span class="string">'number'</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="number">1</span> <span class="keyword">instanceof</span> PrimitiveNumber <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+
+<p>**基本类型与用 <code>new Constructor</code> 构造的用对象包裹的基本类型实际上是不一样的，特别是在 <code>Boolean</code> 上，这点需要注意：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> boolean = <span class="literal">false</span></span><br><span class="line">!!boolean <span class="comment">// false</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> newBoolean = <span class="keyword">new</span> <span class="built_in">Boolean</span>(<span class="literal">false</span>)</span><br><span class="line">!!newBoolean <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="自己实现一个-instanceof"><a href="#自己实现一个-instanceof" class="headerlink" title="自己实现一个 instanceof"></a>自己实现一个 <code>instanceof</code></h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">myInstanceof</span>(<span class="params">left, right</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> left !== <span class="string">'object'</span> || left === <span class="literal">null</span>) <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">  <span class="keyword">let</span> proto = <span class="built_in">Object</span>.getPrototypeOf(left) <span class="comment">// 相当于 left.__proto__</span></span><br><span class="line">  <span class="keyword">while</span>(<span class="literal">true</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span>(proto === <span class="literal">null</span>) <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">    <span class="keyword">if</span>(proto === right.prototype) <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">    proto = <span class="built_in">Object</span>.getPrototypeOf(proto)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Object-is-和"><a href="#Object-is-和" class="headerlink" title="Object.is 和 ==="></a><code>Object.is</code> 和 <code>===</code></h2><p><code>Object.is</code> 修复了 <code>===</code> 的一些失误：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">is</span>(<span class="params">x, y</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (x === y) &#123;</span><br><span class="line">    <span class="comment">// 修复 +0 和 -0 相等的问题</span></span><br><span class="line">    <span class="keyword">return</span> x !== <span class="number">0</span> || y !== <span class="number">0</span> || <span class="number">1</span> / x === <span class="number">1</span> / y</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// 修复 NaN 和 NaN 不相等的问题</span></span><br><span class="line">    <span class="keyword">return</span> x !== x &amp;&amp; y !== y</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
         <category>前端</category>
@@ -4123,7 +4353,7 @@
 <li>借鉴 Self，使用基于原型（prototype）的继承机制。</li>
 </ol>
 </blockquote>
-<p>由于 JavaScript 在浏览器上的大获成功，微软（Microsoft）在后续推出的 IE 3 上也使用了 <strong>JScript</strong> ——这与 JavaScript 是类似、但不同标准的语言。于是当年市场上出现了两者对峙的情况，网页设计者通常会在主页放上“用Netscape可达到最佳效果”或“用IE可达到最佳效果”的标志。</p>
+<p>由于 JavaScript 在浏览器上的大获成功，微软（Microsoft）在后续推出的 IE 3 上也使用了 <strong>JScript</strong> ——这与 JavaScript 是类似、但不同标准的语言。于是当年市场上出现了两者对峙的情况，网页设计者通常会在主页放上“用 Netscape可达到最佳效果 ”或“用 IE 可达到最佳效果”的标志。</p>
 <p>1996 年 11 月，网景正式向 <strong>欧洲计算机制造商协会（ECMA）</strong> 提交语言标准；1997 年 6 月，ECMA 以 JavaScript 语言为基础制定了 ECMAScript 标准规范 ECMA-262。自然 JavaScript 也成为了 ECMAScript 最著名的实现之一。</p>
 <p>由于只有短短十天的设计时间，而且世界上之前没有出现过结合了函数式编程和对象编程的语言，以及发展的迅速导致没有时间调整设计，JavaScript 成功成为了有着众多设计缺陷的语言，在这里不做细谈。</p>
 <p>2001 年，微软发布 Windows XP，并捆绑了 IE 6。由于 Windows XP 迅速爆火以及长期的垄断，IE 6 也随之占据非常高的市场份额。前文已经说过，IE 6 对 JavaScript 支持并不好，同时 IE 6 对 CSS 标准的支持也不尽完善，导致前端技术的发展进入了漫长的蛰伏期。</p>
