@@ -23,7 +23,7 @@ categories:
 5. 绘制 **Paint**（边框颜色、文字颜色、阴影）
 6. 合成 **Compose**（根据层叠关系展示画面）
 
-![](/hais-notebook/images/CSS-006.png)
+![浏览器渲染过程](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Browser-Render-Process.png)
 
 # 更新样式
 

@@ -12,7 +12,7 @@ categories:
 
 <!-- more -->
 
-![](/hais-notebook/images/CSS-004.png)
+![CSS 层叠上下文](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Staking-Context.png)
 
 默认的元素的三维层叠顺序如上图所示，可以看到定位元素会超出原来的高度范畴，换句话说，**原来的 background、border、块级子元素、浮动元素、内联子元素均处在 z-index = -1 ~ 0 这个区间之内**。
 

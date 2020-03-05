@@ -201,8 +201,8 @@ test.classList.add('end')
 - `data-*` 属性，也会自动同步
 - 非标准属性，不会同步到页面里，只会停留在JS 线程中，而不会自动同步到页面上
 
-![](/hais-notebook/images/JS-007.png)
-![](/hais-notebook/images/JS-008.png)
+![JSProperty-1](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/JS-Property-1.png)
+![JSProperty-2](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/JS-Property-2.png)
 
 {% note warning %}
 自定义属性最好以 `data-` 为前缀

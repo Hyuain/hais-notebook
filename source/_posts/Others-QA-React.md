@@ -54,7 +54,7 @@ Reconciliation 直译为协调，即 React 的渲染机制，他有以下几步�
 
 ## 浅比较与深比较
 
-- 类组件的 `shouldComponent` 中可以对 props 和 state 进行浅比较（使用 `pureComponent` API，比较一层 key 和 value，类似于浅拷贝），也可以进行深比较（递归）
+- 类组件的 `shouldComponentUpdate` 中可以对 props 和 state 进行浅比较（使用 `pureComponent` API，比较一层 key 和 value，类似于浅拷贝），也可以进行深比较（递归）
 - 函数组件使用 `memo` 方法可以进行肩比较，但是只比较了 props：
 
 ```js

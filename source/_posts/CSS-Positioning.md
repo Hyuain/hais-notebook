@@ -14,7 +14,7 @@ categories:
 
 # 一个 div 的分层
 
-![](/hais-notebook/images/CSS-003.png)
+![一个div的分层](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/CSS-Position.png)
 
 # `position`
 

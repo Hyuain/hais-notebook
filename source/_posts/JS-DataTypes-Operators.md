@@ -36,7 +36,7 @@ JavaScript 有 7 种数据类型，3 种变量声明的方式，以及一些奇�
 
 ### 范围和精度
 
-![](/hais-notebook/images/JS-001.png)
+![JSNumber的存储](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/JS-Number-Range.png)
 
 范围：`Number.MAX_VALUE` 到 `Number.MIN_VALUE`
 精度：大概是 15 个十进制有效数字

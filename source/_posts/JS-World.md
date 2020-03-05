@@ -65,7 +65,7 @@ categories:
 - 准备工作
     - 提供 API： window、document、setTimeout（这些功能成为运行环境 runtime env）
 - 内存图
-    - ![](/hais-notebook/images/JS-002.png)
+    - ![内存图](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/RAM-Graph.png)
     - 红色区域（存放数据，但不会存变量名）
         - Stack 栈：每个数据顺序存放，非对象都存在 Stack
         - Heap 堆：每个数据随机存放，对象都存在 Heap（数组、函数）
@@ -143,7 +143,7 @@ JS 实际上并不是一门完全的解释型语言，因为字节码不仅配�
 **函数公理：所有函数都是由 `Function` 构造的**
 {% endcq %}
 
-![](/hais-notebook/images/JS-003.png)
-![](/hais-notebook/images/JS-004.png)
-![](/hais-notebook/images/JS-005.png)
-![](/hais-notebook/images/JS-006.png)
+![JSWorld-1](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/JS-World-1.png)
+![JSWorld-2](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/JS-World-2.png)
+![JSWorld-3](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/JS-World-3.png)
+![JSWorld-4](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/JS-World-4.png)

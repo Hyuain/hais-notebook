@@ -23,7 +23,7 @@ categories:
 - 从大到小：先定下大局，然后再完善每个部分的小布局
 - 从小到大：先完成小布局，然后再组合成大布局
 
-![](/hais-notebook/images/CSS-001.png)
+![两种布局思路](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/CSS-Layout.png)
 
 # Float
 
@@ -54,7 +54,7 @@ categories:
 
 比如说做平均布局，在所有的小块外面加一个 `div` ，然后再给这个 `div` 一个负 `margin`
 
-![](/hais-notebook/images/CSS-002.png)
+![负Margin](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/CSS-Layout-Minus-Margin.png)
 
 # Flex
 
@@ -91,7 +91,7 @@ categories:
 
 这里是 [CSS Tricks 上的 Grid 教程](https://css-tricks.com/snippets/css/complete-guide-grid/)
 
-![](/hais-notebook/images/CSS-007.png)
+![Grid布局](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/CSS-Grid.png)
 
 ## Container
 

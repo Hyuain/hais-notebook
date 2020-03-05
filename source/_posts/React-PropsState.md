@@ -32,7 +32,7 @@ categories:
 - 类组件的 `setState` 会自动合并第一层，建议使用 `Object.assign` 或者 `...sate`
 - 函数组件不会自动合并，建议分开写
 
-## Vue 和 React 的区别
+# Vue 和 React 的区别
 
 共同点：
 - 都是对视图的封装，React 是用类和函数表示一个组件，Vue 是用构造选项表示一个组件

@@ -3,7 +3,7 @@ title: React Advanced
 date: 2020-02-02 16:54:25
 tags:
   - 入门
-  - 饥人谷
+  - 文档
 categories:
   - [前端, JavaScript, 框架, React]
 ---
@@ -514,9 +514,7 @@ function logProps(WrappedComponent) {
 
 通过 HOC 对组件进行包裹，当用户跳转到其他页面的时候，检查用户是否含有对应的权限，如果有的话，渲染页面，如果没有的话，跳转到其他页面
 
-# DOM Diff
-
-## Reconciliation
+# Reconciliation
 
 Reconciliation 直译为协调，即 React 的渲染机制，他有以下几步：
 
@@ -685,3 +683,159 @@ immutableObj.merge({
 
 # Portals
 
+借助 Portal，可以将子节点渲染到存在于父组件以外的 DOM 节点。
+
+```jsx harmony
+ReactDOM.createPortal(child, container)
+```
+
+其中，`child` 是任何可以渲染的 React 子元素，比如组件、字符串、fragment，`container` 是一个 DOM 元素
+
+通常我们这样写一个子组件，然后在父组件中调用它：
+
+```jsx harmony
+render() {
+  return (
+    <div>
+      {this.props.children}
+    </div>
+  )
+}
+```
+
+但是有些时候如果父组件有 `overflow: hidden` `z-index` 等样式，如果子组件是对话框、悬浮卡或者提示框等时，我们需要让子组件跳脱出容器：
+
+```jsx harmony
+render() {
+  return ReactDOM.createPortal(
+    this.props.children,
+    domNode
+  )
+}
+```
+
+## 事件处理
+
+尽管 portal 可以被放在 DOM 树的任何位置，但他仍然在 React 树中，且与其在 DOM 树中的位置无关，因此像 context 之类的功能特性均不变。
+事件冒泡也是这样，他会在 React 树中冒泡至 React 树的祖先，与 DOM 树无关。
+
+# Profiler
+
+`Profiler` 可以测量 React 多久渲染一次以及每次渲染的开销
+
+```jsx harmony
+render(
+  <App>
+    {/* Profiler 需要两个 Prop，一个是 id(string)，一个是当组件树中提交更新时被 React 调用的回调函数 onRender */}
+    <Profiler id="Navigation" onRender={callback}>
+      <Navigation {...props}/>
+    </Profiler>
+    <Profiler id="Main" onRender={callback}>
+      <Main {...props}/>    
+    </Profiler>
+  </App>
+)
+```
+
+```jsx harmony
+function onRenderCallback(
+  id, // 发生提交的 Profiler 树的 “id”
+  phase, // "mount" （如果组件树刚加载） 或者 "update" （如果它重渲染了）之一
+  actualDuration, // 本次更新 committed 花费的渲染时间
+  baseDuration, // 估计不使用 memoization 的情况下渲染整颗子树需要的时间
+  startTime, // 本次更新中 React 开始渲染的时间
+  commitTime, // 本次更新中 React committed 的时间
+  interactions // 属于本次更新的 interactions 的集合
+) {
+  // 合计或记录渲染时间
+}
+```
+
+# Render Props
+
+目的：封装组件，提高可复用性，可以这样使用：
+
+```jsx harmony
+class Cat extends React.Component {
+  render() {
+    const mouse = this.props.mouse
+    return (
+      <img src="/cat.jpg" style={{position: 'abosolute', left: mouse.x, top: mouse.y}}/>
+    )
+  }
+}
+class Mouse extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {x: 0, y: 0}
+  }
+  handleMouseMove = (event) => {
+    this.setState({
+      x: event.clientX,
+      y: event.clientY
+    })
+  }
+  render() {
+    return (
+      <div style={{height: '100%'}} onMouseMove={this.handleMouseMove}>
+        {this.props.render(this.state)}
+      </div>
+    )
+  }
+}
+class MouseTracker extends React.Component {
+  render() {
+    return (
+      <div>
+        <h1>滑动鼠标</h1>
+        <Mouse render={mouse => (
+          <Cat mouse={mouse}/>
+        )}/>
+      </div>
+    )
+  }
+}
+```
+
+也可以创建一个 HOC：
+
+```jsx harmony
+function withMouse(Component) {
+  return class extends React.Component {
+    render() {
+      return (
+        <Mouse render={mouse => (
+          <Component {...this.props} mouse={mouse}/>
+        )}/>
+      ) 
+    }
+  }
+}
+```
+
+类似的功能也可以通过在 `<Mouse>` 中使用 `props.children`，然后直接使用类似于这样的写法：
+
+```jsx harmony
+<Mouse>
+  {mouse => (
+    <Cat mouse={mouse}/>
+  )}
+</Mouse>
+```
+
+需要注意的是，使用 render prop 会导致 `React.PureComponent` 失效，因为外层组件更新的时候，render prop 的函数总是新的，除非你把它写成一个实例方法
+
+# LifeCycle
+
+![React LifeCycle](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/React-LifeCycle.png)
+
+- **`render()`**：当 state 或 props 发生变化时调用，可以通过 `shouldComponentUpdate` 调解调用时机
+- **`constructor(props)`**：用于初始化 state 和为事件处理函数绑定实例（`bind(this)`）
+- **`componentDidMount()`**：会在组件挂载后（插入 DOM 树中）立即调用
+- **`componentDidUpdate(prevProps, prevState, snapshot)`**： 会在更新后会被立即调用。首次渲染不会执行此方法
+- **`componentWillUnmount()`**：会在组件卸载及销毁之前直接调用
+- **`shouldComponentUpdate()`**：判断 React 组件的输出是否受当前 state 或 props 更改的影响
+- **`static getDerivedStateFromProps(props, state)`**：会在调用 render 方法之前调用，并且在初始挂载及后续更新时都会被调用。它应返回一个对象来更新 state，如果返回 null 则不更新任何内容
+- **`getSnapshotBeforeUpdate(prevProps, prevState)`**：会在最近一次渲染输出之前调用。它使得组件能在发生更改之前从 DOM 中捕获一些信息（例如，滚动位置）
+- **`static getDerivedStateFromError(error)`**：此生命周期会在后代组件抛出错误后被调用。 它将抛出的错误作为参数，并返回一个值以更新 state
+- **`componentDidCatch(error, info)`**：此生命周期在后代组件抛出错误后被调用
