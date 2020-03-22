@@ -825,17 +825,3 @@ function withMouse(Component) {
 
 需要注意的是，使用 render prop 会导致 `React.PureComponent` 失效，因为外层组件更新的时候，render prop 的函数总是新的，除非你把它写成一个实例方法
 
-# LifeCycle
-
-![React LifeCycle](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/React-LifeCycle.png)
-
-- **`render()`**：当 state 或 props 发生变化时调用，可以通过 `shouldComponentUpdate` 调解调用时机
-- **`constructor(props)`**：用于初始化 state 和为事件处理函数绑定实例（`bind(this)`）
-- **`componentDidMount()`**：会在组件挂载后（插入 DOM 树中）立即调用
-- **`componentDidUpdate(prevProps, prevState, snapshot)`**： 会在更新后会被立即调用。首次渲染不会执行此方法
-- **`componentWillUnmount()`**：会在组件卸载及销毁之前直接调用
-- **`shouldComponentUpdate()`**：判断 React 组件的输出是否受当前 state 或 props 更改的影响
-- **`static getDerivedStateFromProps(props, state)`**：会在调用 render 方法之前调用，并且在初始挂载及后续更新时都会被调用。它应返回一个对象来更新 state，如果返回 null 则不更新任何内容
-- **`getSnapshotBeforeUpdate(prevProps, prevState)`**：会在最近一次渲染输出之前调用。它使得组件能在发生更改之前从 DOM 中捕获一些信息（例如，滚动位置）
-- **`static getDerivedStateFromError(error)`**：此生命周期会在后代组件抛出错误后被调用。 它将抛出的错误作为参数，并返回一个值以更新 state
-- **`componentDidCatch(error, info)`**：此生命周期在后代组件抛出错误后被调用
