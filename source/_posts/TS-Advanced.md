@@ -7,7 +7,7 @@ categories:
   - [前端, TypeScript]
 ---
 
-TypeScript 的高级类型以及其他的用法
+TypeScript 的高级类型以及其他的用法。
 
 <!-- more -->
 
