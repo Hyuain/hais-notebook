@@ -94,7 +94,27 @@ Rails.application.routes.draw do
 end
 ```
 
+### 默认的增删改查路径
+
+```ruby
+get '/users', to: 'users#index'
+get '/users/:id', to: 'users#show'
+get '/users', to: 'users#create'
+delete '/users/:id', to: 'users#destroy'
+patch '/users/:id', to: 'users#update'
+```
+
+简单的增删改查我们不需要配置如上的路径，只需要下面这一句：
+
+```ruby
+resources :users
+```
+
+可以通过 `bin/rails routes` 命令查看所有的路由
+
 ## Controller
+
+### 手动创建 controller
 
 controller 需要在 `/app/controllers` 中进行配置。
 比如如上面 routes 中的配置所说，我们需要一个 `/app/controllers/first_controller.rb` 文件，里面有一个 `FirstController` class，其中对应有 `hello` 和 `hi` 方法：
@@ -107,6 +127,12 @@ class FirstController < ApplicationController
   end
 end
 ```
+
+### 通过命令创建 controller
+
+```bash
+bin/rails g controller users
+``` 
 
 ### 渲染 JSON
 
@@ -177,3 +203,92 @@ erb 可以使用 `<% %>` 来包裹语句：
   页脚内容
 <% end %>
 ```
+
+## Model
+
+### 创建 Model 与数据表
+
+```bash
+bin/rails g model User
+# 也可以像下面这样写，他会在数据库迁移脚本中多两个字段
+bin/rails g model User email:string password_digest:string
+```
+
+执行此命令后，会创建一个数据库迁移脚本，和一个新文件 `app/model/user.rb`。
+
+数据库迁移脚本形式如下：
+
+```ruby
+class CreateUsers < ActiveRecord::Migration[6.1]
+  def change
+    create_table :users do |t|
+      t.string :email
+      t.string :password_digest
+
+      t.timestamps
+    end
+  end
+end
+```
+
+然后需要运行迁移脚本，创建 User 表：
+
+```bash
+bin/rails db:migrate
+```
+
+然后可以在 rubyMine 中查看数据库、User 表。
+
+### 增删改查
+
+#### Rails Console
+
+```bash
+bin/rails console
+```
+
+然后执行：
+
+```ruby
+u = User.new
+u.email = '1@qq.com'
+u.password_digest = '123456'
+u.save
+```
+
+就会自动执行一个 SQL 语句，**创建** 一个新用户。
+
+可以通过 `User.first` `User.second` 来 **查看** 已有的用户。
+
+输入 `exit` 或者按 `Ctrl`+`D` 可以退出 Rails Console。
+
+#### has_secure_password
+
+放开 `Gemfile` 中 `bcrypt` 的注释，通过 `bundle install` 安装依赖。
+
+然后需要在 `/app/modles/user.rb` 中加上 `has_secure_password`：
+
+```ruby
+class User < ApplicationRecord
+  has_secure_password
+end
+```
+
+这时在 Rails Console 中执行以下代码试试：
+
+```ruby
+u = User.new
+u.email = '1@qq.com'
+u.password = '123456'
+u.password_confirmation = '123456'
+u.save
+```
+
+这样就会自动在表中 `password_digest` 中存一段密文。
+
+然后可以通过这样来比对用户的密码是否正确：
+
+```ruby
+u.authenticate('123')
+```
+
