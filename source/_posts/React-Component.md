@@ -3,7 +3,6 @@ title: React Component
 date: 2020-02-02 16:51:41
 tags:
   - 入门
-  - 饥人谷
   - 文档
 categories:
   - [前端, JavaScript, 框架, React]

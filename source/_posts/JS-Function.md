@@ -3,7 +3,6 @@ title: JavaScript Function
 date: 2020-01-29 18:58:01
 tags:
   - 入门
-  - 饥人谷
 categories:
   - [前端, JavaScript, 原生 JavaScript]
 ---

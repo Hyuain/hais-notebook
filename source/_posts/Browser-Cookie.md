@@ -3,7 +3,6 @@ title: Cookie
 date: 2020-01-30 09:45:22
 tags:
   - 入门
-  - 饥人谷
 categories:
   - [前端, 浏览器]
 ---

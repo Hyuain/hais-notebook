@@ -3,7 +3,6 @@ title: Git 入门
 date: 2020-01-29 20:58:04
 tags:
   - 入门
-  - 饥人谷
   - 踩坑
 categories:
   - [工具]

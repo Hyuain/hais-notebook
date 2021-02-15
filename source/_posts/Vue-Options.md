@@ -3,7 +3,6 @@ title: Vue 选项
 date: 2020-01-30 10:35:47
 tags:
   - 入门
-  - 饥人谷
   - 文档
 categories:
   - [前端, JavaScript, 框架, Vue]

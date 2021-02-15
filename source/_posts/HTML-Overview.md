@@ -3,7 +3,6 @@ title: HTML 序章
 date: 2020-02-02 13:29:55
 tags:
   - 入门
-  - 饥人谷
 categories:
   - [前端, HTML]
 ---
