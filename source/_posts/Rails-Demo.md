@@ -44,7 +44,9 @@ docker run -v [容器路径]:/var/lib/postgresql/data -p 5001:5432 -e POSTGRES_U
 - `docer rm [id]` 删除对应的容器
 - `docker container prune` 删除无用的容器，以节省空间
 
-# 配置数据库
+# 准备数据库
+
+## 配置数据库
 
 数据库需要在 `config/database.yml` 中进行配置。
 
@@ -75,10 +77,25 @@ production:
 
 ```
 
-# 创建数据库
+## 创建数据库
 
 ```bash
 bin/rials db:create
+```
+
+## 查看数据库
+
+```bash
+# 进入虚拟机并运行 bash：
+docker exec -it [容器名] bash
+# 登录
+psql -U [用户名]
+# 连接数据库
+\c [数据库名称]
+# display tables
+\dt
+# 查看某一个表的内容
+select * from [表名称] limit 10;
 ```
 
 # Hello Rails
@@ -188,7 +205,7 @@ erb 可以使用 `<% %>` 来包裹语句：
 <% end %>
 ```
 
-# User
+# 注册功能
 
 ### 第一步：创建 Model 与数据表
 
@@ -336,8 +353,6 @@ end
 
 ##### 使用 Postman 测试
 
-
-
 ### 第六步：在 Model 中进行数据校验
 
 ```ruby
@@ -393,3 +408,6 @@ bin/rails generate mailer UserMailer
 这个命令会创建文件 `app/mailers/user_mailer`，详细请看 [相关 commit](https://github.com/Hyuain/ruby-demo/commits/master)
 
 通过 `dotenv-rails` 和 `.env` `.env.local` 文件来抽出环境变量，注意 `.env.local` 需要被加入 `.gitignore` 中，防止将密码提交到 Git 记录中。
+
+# 登录功能
+
