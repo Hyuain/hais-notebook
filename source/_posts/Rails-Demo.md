@@ -46,7 +46,7 @@ docker run -v [容器路径]:/var/lib/postgresql/data -p 5001:5432 -e POSTGRES_U
 
 # 配置数据库
 
-数据库需要在 `/config/database.yml` 中进行配置。
+数据库需要在 `config/database.yml` 中进行配置。
 
 ```yaml
 default: &default # 默认公共配置
@@ -85,7 +85,7 @@ bin/rials db:create
 
 ## Routes
 
-路由需要在 `/config/routes.rb` 中进行配置。
+路由需要在 `config/routes.rb` 中进行配置。
 
 ```ruby
 Rails.application.routes.draw do
@@ -94,30 +94,14 @@ Rails.application.routes.draw do
 end
 ```
 
-### 默认的增删改查路径
-
-```ruby
-get '/users', to: 'users#index'
-get '/users/:id', to: 'users#show'
-get '/users', to: 'users#create'
-delete '/users/:id', to: 'users#destroy'
-patch '/users/:id', to: 'users#update'
-```
-
-简单的增删改查我们不需要配置如上的路径，只需要下面这一句：
-
-```ruby
-resources :users
-```
-
-可以通过 `bin/rails routes` 命令查看所有的路由
+可以通过 `bin/rails routes` 命令查看所有的路由。
 
 ## Controller
 
 ### 手动创建 controller
 
-controller 需要在 `/app/controllers` 中进行配置。
-比如如上面 routes 中的配置所说，我们需要一个 `/app/controllers/first_controller.rb` 文件，里面有一个 `FirstController` class，其中对应有 `hello` 和 `hi` 方法：
+controller 需要在 `app/controllers` 中进行配置。
+比如如上面 routes 中的配置所说，我们需要一个 `app/controllers/first_controller.rb` 文件，里面有一个 `FirstController` class，其中对应有 `hello` 和 `hi` 方法：
 
 ```ruby
 # 继承自 ApplicationController
@@ -148,7 +132,7 @@ end
 
 ### 渲染 HTML
 
-一般前后端分离的情况下，不是由 rails 来渲染 HTML，当然 rails 也可以用于渲染 HTML，这时我们需要建立一个新的文件 `/app/views/first/hello.html`，然后在 FirstController 中这样写：
+一般前后端分离的情况下，不是由 rails 来渲染 HTML，当然 rails 也可以用于渲染 HTML，这时我们需要建立一个新的文件 `app/views/first/hello.html`，然后在 FirstController 中这样写：
 
 ```ruby
 class FirstController < ApplicationController
@@ -158,7 +142,7 @@ class FirstController < ApplicationController
 end
 ```
 
-注意，如果使用 API 模式，默认是不支持渲染 html 的，我们需要在 `/app/controllers/application_controller.rb` 中进行引入：
+注意，如果使用 API 模式，默认是不支持渲染 html 的，我们需要在 `app/controllersapplication_controller.rb` 中进行引入：
 
 ```ruby
 class ApplicationController < ActionController::API
@@ -183,7 +167,7 @@ erb 可以使用 `<% %>` 来包裹语句：
 <%= @dataInController %>
 ```
 
-此外很多 html 有公共的部分，我们可以将其放在 `views/layouts/application.html.erb` 中，然后在其中空出类似插槽的东西：
+此外很多 html 有公共的部分，我们可以将其放在 `views/layoutsapplication.html.erb` 中，然后在其中空出类似插槽的东西：
 
 ```html
 <!-- 前略 -->
@@ -204,9 +188,9 @@ erb 可以使用 `<% %>` 来包裹语句：
 <% end %>
 ```
 
-## Model
+# User
 
-### 创建 Model 与数据表
+### 第一步：创建 Model 与数据表
 
 ```bash
 bin/rails g model User
@@ -239,9 +223,27 @@ bin/rails db:migrate
 
 然后可以在 rubyMine 中查看数据库、User 表。
 
-### 增删改查
+### 第二步：配置路由
 
-#### Rails Console
+```ruby
+Rails.application.routes.draw do
+  get '/users', to: 'users#index'
+  get '/users/:id', to: 'users#show'
+  post '/users', to: 'users#create'
+  delete '/users/:id', to: 'users#destroy'
+  patch '/users/:id', to: 'users#update'
+end
+```
+
+简单的增删改查我们不需要配置如上的路由，只需要下面这一句，他就会帮我们自动创建路由：
+
+```ruby
+resources :users
+```
+
+### 第三步：在 Rails Console 中尝试进行增删改查
+
+可以在 Rails Console 中先体验一下增删改查是如何进行的：
 
 ```bash
 bin/rails console
@@ -262,11 +264,13 @@ u.save
 
 输入 `exit` 或者按 `Ctrl`+`D` 可以退出 Rails Console。
 
-#### has_secure_password
+### 第四步：存储密码
+
+我们平时的 User 表中不会存储密码的明文，而是存储一个 `password_digest` 字段，这可以通过 has_secure_password 来实现。
 
 放开 `Gemfile` 中 `bcrypt` 的注释，通过 `bundle install` 安装依赖。
 
-然后需要在 `/app/modles/user.rb` 中加上 `has_secure_password`：
+然后需要在 `app/modles/user.rb` 中加上 `has_secure_password`：
 
 ```ruby
 class User < ApplicationRecord
@@ -292,3 +296,79 @@ u.save
 u.authenticate('123')
 ```
 
+### 第五步：创建与配置 Controller
+
+我们可以通过如下命令创建 Controller，得到 `app/controllers/users_controller.rb`：
+
+```bash
+bin/rails g controller users
+``` 
+
+```ruby
+class UsersController < ApplicationController
+  def create
+    def create
+      user = User.new({ email: params[:email], password: params[:password], password_confirmation: params[:password_confirmation] })
+      if user.save # 会返回保存是否成功，将成功与失败分别返回给前端
+        render json: { resource: user }, status: 200
+      else
+        render json: { errors: user.errors }, status: 400
+      end
+    end
+  end
+end
+```
+
+#### 模拟请求进行调试
+
+##### 使用 RubyMine 中的 HTTP Client
+
+`Double Shift` - `HTTP Client`，然后可以通过 examples 看看如何使用。
+
+##### 使用 Postman 测试
+
+
+
+### 第六步：在 Model 中进行数据校验
+
+```ruby
+class User < ApplicationRecord
+  has_secure_password
+
+  validates_presence_of :email # email 必须存在
+  validates_presence_of :password # password 必须存在
+  validates_presence_of :password_confirmation, on: [:create] # 在创建时，确认输入密码必须存在
+
+  validates_format_of :email, with: /.+@.+/, if: :email # 在 email 存在时校验邮箱格式
+  validates_length_of :password, minimum: 6, on: [:create], if: :password # 在创建时，校验密码格式
+end
+```
+
+### 第七步：错误信息汉化
+
+首先需要在 `config/initializers/local.rb` 中添加：
+
+```ruby
+I18n.available_locales = [:en, 'zh-CN']
+I18n.default_locale = 'zh-CN'
+```
+
+然后按照提示在 `config/locales/zh-CN.yml` 中进行配置：
+
+```yaml
+zh-CN:
+  activerecord:
+    errors:
+      models:
+        user:
+          attributes:
+            password:
+              blank: 密码不能为空
+              too_short: 密码不能少于6个字符
+            email:
+              blank: 邮箱不能为空
+              invalid: 邮箱必须含有 @ 字符
+            password_confirmation:
+              blank: 请添加确认密码
+              confirmation: 两次密码不匹配
+```
