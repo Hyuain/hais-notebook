@@ -307,13 +307,22 @@ bin/rails g controller users
 ```ruby
 class UsersController < ApplicationController
   def create
-    def create
-      user = User.new({ email: params[:email], password: params[:password], password_confirmation: params[:password_confirmation] })
-      if user.save # 会返回保存是否成功，将成功与失败分别返回给前端
-        render json: { resource: user }, status: 200
-      else
-        render json: { errors: user.errors }, status: 400
-      end
+    user = User.new create_params
+    user.save
+    # new + save 可以简写为 User.create
+    render_resource user
+  end
+
+  def create_params
+    params.permit(:email, :password, :password_confirmation)
+  end
+
+  def render_resource(resource)
+    # 也可以用 resource.valid?，不过据说会触发重新校验
+    if resource.errors.empty?
+      render json: { resource: resource }, status: 200
+    else
+      render json: { errors: resource.errors }, status: 400
     end
   end
 end
@@ -372,3 +381,15 @@ zh-CN:
               blank: 请添加确认密码
               confirmation: 两次密码不匹配
 ```
+
+### 第八步：发送邮件
+
+可以通过 `mailer` 来发送邮件，点击 [这里查看官方文档](https://ruby-china.github.io/rails-guides/action_mailer_basics.html)。
+
+```bash
+bin/rails generate mailer UserMailer
+```
+
+这个命令会创建文件 `app/mailers/user_mailer`，详细请看 [相关 commit](https://github.com/Hyuain/ruby-demo/commits/master)
+
+通过 `dotenv-rails` 和 `.env` `.env.local` 文件来抽出环境变量，注意 `.env.local` 需要被加入 `.gitignore` 中，防止将密码提交到 Git 记录中。

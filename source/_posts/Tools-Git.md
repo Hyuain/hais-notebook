@@ -43,6 +43,7 @@ git config --global core.autocrlf input
 | `git branch -d xxx` | 删除分支 |
 | `git checkout xxx` | 切换分支，当前未提交的文件如果与另一个分支不冲突，切换分支的操作就不会产生影响，如果冲突，可以用git stash或合并冲突 |
 | `git merge xxx` | 合并分支，先到达想要保留的分支再使用 |
+| `git rm --chached xxx` | 将已经被 add 的文件从缓存中删除 |
 
 `.gitignore` 文件中可以输路径来忽略不想提交的文件，比如 `node_modules` `DS_Store` `.idea` `.vscode`
 
