@@ -1,6 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Webpack 核心原理</title>
+    <url>/hais-notebook/2021/03/03/Webpack-Core/</url>
+    <content><![CDATA[<p>Webpack 的核心原理及一些前置知识。</p>
+<a id="more"></a>
+
+<h1 id="Babel"><a href="#Babel" class="headerlink" title="Babel"></a>Babel</h1><h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><ol>
+<li><strong>Parse</strong>(<code>@babel/parser</code>): 把代码变成 AST</li>
+<li><strong>Traverse</strong>(<code>@babel/traverse</code>)：遍历 AST 进行修改，或者遍历 AST 找到源代码的依赖</li>
+<li><strong>Generate</strong>(<code>@babel/generator</code>)：把新的 AST 变成另外的代码</li>
+</ol>
+<p><code>@babel/core</code> 包含了前三者，<code>@babel/preset-env</code> 中有很多内置的规则</p>
+<blockquote>
+<p>为什么要用 AST？<br>因为显然用正则表达式是不太科学的，需要识别到每个单词的意思</p>
+</blockquote>
+<h2 id="示例：把-let-变成-var"><a href="#示例：把-let-变成-var" class="headerlink" title="示例：把 let 变成 var"></a>示例：把 let 变成 var</h2><figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; parse &#125; <span class="keyword">from</span> <span class="string">"@babel/parser"</span></span><br><span class="line"><span class="keyword">import</span> traverse <span class="keyword">from</span> <span class="string">"@babel/traverse"</span></span><br><span class="line"><span class="keyword">import</span> generate <span class="keyword">from</span> <span class="string">"@babel/generator"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> code = <span class="string">`let a = "let"; let b = 2`</span></span><br><span class="line"><span class="keyword">const</span> ast = parse(code, &#123; sourceType: <span class="string">'module'</span> &#125;)</span><br><span class="line">traverse(ast, &#123;</span><br><span class="line">  <span class="comment">// 进入时执行的钩子</span></span><br><span class="line">  enter: <span class="function"><span class="params">item</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> &#123; <span class="keyword">type</span>, kind &#125; = item.node</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">type</span> === <span class="string">"VariableDeclaration"</span> &amp;&amp; kind === <span class="string">"let"</span>) &#123;</span><br><span class="line">      item.node.kind = <span class="string">"var"</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">const</span> result = generate(ast, &#123;&#125;, code)</span><br><span class="line"><span class="built_in">console</span>.log(result.code)</span><br></pre></td></tr></table></figure>
+
+<p>可使用命令执行上述 DEMO：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">node -r --inspect-brk ts-node/register [filename]</span><br></pre></td></tr></table></figure>
+
+<h2 id="示例：把代码转变为-ES5"><a href="#示例：把代码转变为-ES5" class="headerlink" title="示例：把代码转变为 ES5"></a>示例：把代码转变为 ES5</h2><figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; parse &#125; <span class="keyword">from</span> <span class="string">"@babel/parser"</span></span><br><span class="line"><span class="keyword">import</span> * <span class="keyword">as</span> babel <span class="keyword">from</span> <span class="string">"@babel/core"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> code = <span class="string">`let a = "let"; const b = 2`</span></span><br><span class="line"><span class="keyword">const</span> ast = parse(code, &#123; sourceType: <span class="string">"module"</span> &#125;)</span><br><span class="line"><span class="keyword">const</span> result = babel.transformFromAstSync(ast, code, &#123;</span><br><span class="line">  presets: [<span class="string">"@babel/preset-env"</span>]</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="示例：依赖分析"><a href="#示例：依赖分析" class="headerlink" title="示例：依赖分析"></a>示例：依赖分析</h2><figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line">traverse(ast, &#123;</span><br><span class="line">  enter: <span class="function"><span class="params">item</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (item.node.type === <span class="string">"ImportDeclaration"</span>) &#123;</span><br><span class="line">      <span class="comment">// import 后面的路径，往往是一个相对路径</span></span><br><span class="line">      <span class="built_in">console</span>.log(item.node.source.value)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>可以用一个 hash 表来存放依赖关系</li>
+<li>可以用递归实现嵌套依赖分析</li>
+<li>可以记住以前分析过的依赖，如果发现分析过就直接 return，这样就能实现对循环依赖的静态分析（不执行代码，只进行字面理解）</li>
+</ol>
+<h1 id="Webpack-核心原理"><a href="#Webpack-核心原理" class="headerlink" title="Webpack 核心原理"></a>Webpack 核心原理</h1><h2 id="让浏览器支持-import-export"><a href="#让浏览器支持-import-export" class="headerlink" title="让浏览器支持 import / export"></a>让浏览器支持 import / export</h2><p>根据 <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Statements/import" target="_blank" rel="noopener">MDN 上的描述</a>，在浏览器中，import 语句只能在声明了 type=”module” 的 script 的标签中使用。并且 IE 是不支持这个特性的。</p>
+<ul>
+<li>兼容策略 1：把代码全部放在 <code>&lt;script type=module&gt;</code> 中，这样会导致 IE 不兼容，并且会导致文件请求过多，因为每个被依赖的文件都需要被单独发出请求</li>
+<li>兼容策略 2：把关键字转译为普通的代码，并且把所有的文件打包成一个文件</li>
+</ul>
+]]></content>
+      <categories>
+        <category>前端</category>
+        <category>浏览器</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Rails 的项目搭建</title>
     <url>/hais-notebook/2021/02/13/Rails-Demo/</url>
     <content><![CDATA[<p>Rails 的一个项目是如何搭建起来的。</p>
@@ -108,7 +151,39 @@
 
 <p>这个命令会创建文件 <code>app/mailers/user_mailer</code>，详细请看 <a href="https://github.com/Hyuain/ruby-demo/commits/master" target="_blank" rel="noopener">相关 commit</a></p>
 <p>通过 <code>dotenv-rails</code> 和 <code>.env</code> <code>.env.local</code> 文件来抽出环境变量，注意 <code>.env.local</code> 需要被加入 <code>.gitignore</code> 中，防止将密码提交到 Git 记录中。</p>
-<h1 id="登录功能"><a href="#登录功能" class="headerlink" title="登录功能"></a>登录功能</h1>]]></content>
+<h1 id="登录功能"><a href="#登录功能" class="headerlink" title="登录功能"></a>登录功能</h1><h2 id="第一步：配置路由"><a href="#第一步：配置路由" class="headerlink" title="第一步：配置路由"></a>第一步：配置路由</h2><p>按照惯例我们需要先配置路由：</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">Rails.application.routes.draw <span class="keyword">do</span></span><br><span class="line">  resources <span class="symbol">:sessions</span>, <span class="symbol">only:</span> %i[create destroy]</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="第二步：创建-Model"><a href="#第二步：创建-Model" class="headerlink" title="第二步：创建 Model"></a>第二步：创建 Model</h2><p>Session 不需要写入数据库，故而不需要创建一个完整的 Model（继承于 ActiveRecord），而是一个轻量的 Model（继承于/include ActiveModel）。</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Session</span></span></span><br><span class="line">  <span class="keyword">include</span> ActiveModel::Model</span><br><span class="line">  <span class="keyword">attr_accessor</span> <span class="symbol">:email</span>, <span class="symbol">:password</span></span><br><span class="line"></span><br><span class="line">  validates <span class="symbol">:email</span>, <span class="symbol">presence:</span> <span class="literal">true</span></span><br><span class="line">  validates <span class="symbol">:password</span>, <span class="symbol">presence:</span> <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">  validates_format_of <span class="symbol">:email</span>, <span class="symbol">with:</span> /.+@.+<span class="regexp">/, if: :email</span></span><br><span class="line"><span class="regexp">  validates_length_of :password, minimum: 6, if: :password</span></span><br><span class="line"><span class="regexp">end</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="attr-accessor"><a href="#attr-accessor" class="headerlink" title="attr_accessor"></a>attr_accessor</h3><figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="keyword">attr_accessor</span> <span class="symbol">:xxx</span></span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>会声明一个对象的属性：<code>@xxx</code></li>
+<li>会定义一个方法：<code>xxx</code>，用于获取 <code>@xxx</code> 的值</li>
+<li>会定义一个方法：<code>xxx=</code>，用于给 <code>@xxx</code> 赋值</li>
+</ol>
+<h2 id="第三步：创建-Controller"><a href="#第三步：创建-Controller" class="headerlink" title="第三步：创建 Controller"></a>第三步：创建 Controller</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">bin/rails g controller sessions</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SessionsController</span> &lt; ApplicationController</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">create</span></span></span><br><span class="line">    s = Session.new create_params</span><br><span class="line">    s.validate</span><br><span class="line">    render_resource s</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">destroy</span></span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">create_params</span></span></span><br><span class="line">    params.permit(<span class="symbol">:email</span>, <span class="symbol">:password</span>)</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="第四步：自定义校验，校验账号密码"><a href="#第四步：自定义校验，校验账号密码" class="headerlink" title="第四步：自定义校验，校验账号密码"></a>第四步：自定义校验，校验账号密码</h2><figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Session</span></span></span><br><span class="line">  <span class="keyword">include</span> ActiveModel::Model</span><br><span class="line">  <span class="keyword">attr_accessor</span> <span class="symbol">:email</span>, <span class="symbol">:password</span>, <span class="symbol">:email</span></span><br><span class="line"></span><br><span class="line">  validate <span class="symbol">:check_email</span>, <span class="symbol">if:</span> <span class="symbol">:email</span></span><br><span class="line">  validate <span class="symbol">:check_email_password_matched</span>, <span class="symbol">if:</span> Proc.new&#123; <span class="params">|s|</span> s.email.present? <span class="keyword">and</span> s.password.present? &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">check_email</span></span></span><br><span class="line">    @user <span class="params">||</span>= User.find_by <span class="symbol">email:</span> email</span><br><span class="line">    <span class="keyword">if</span> user.<span class="literal">nil</span>?</span><br><span class="line">      errors.add <span class="symbol">:email</span>, <span class="symbol">:unregistered</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">check_email_password_matched</span></span></span><br><span class="line">    @user <span class="params">||</span>= User.find_by <span class="symbol">email:</span> email</span><br><span class="line">    <span class="keyword">if</span> user <span class="keyword">and</span> !user.authenticate(password)</span><br><span class="line">      errors.add <span class="symbol">:password</span>, <span class="symbol">:mismatch</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="第五步：使用中间件，记录-session（cookie）"><a href="#第五步：使用中间件，记录-session（cookie）" class="headerlink" title="第五步：使用中间件，记录 session（cookie）"></a>第五步：使用中间件，记录 session（cookie）</h2><p><code>config/application.rb</code></p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">config.session_store <span class="symbol">:cookie_store</span>, <span class="symbol">key:</span> <span class="string">'rails_demo_session_id'</span></span><br><span class="line">config.middleware.use ActionDispatch::Cookies</span><br><span class="line">config.middleware.use config.session_store, config.session_options</span><br></pre></td></tr></table></figure>
+
+<p><code>session_controller.rb</code></p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SessionsController</span> &lt; ApplicationController</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">create</span></span></span><br><span class="line">    s = Session.new create_params</span><br><span class="line">    s.validate</span><br><span class="line">    render_resource s</span><br><span class="line">    session[<span class="symbol">:current_user_id</span>] = s.user.id <span class="comment"># 将 id 记录起来</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<p>这样前端在发送请求之后将会得到一个 cookie，RubyMine 可以在 <code>http-client.cookies</code> 中查看</p>
+<h2 id="第六步：获取当前用户的信息"><a href="#第六步：获取当前用户的信息" class="headerlink" title="第六步：获取当前用户的信息"></a>第六步：获取当前用户的信息</h2><figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">current_user</span></span></span><br><span class="line">  <span class="comment"># 如果找不到，会返回 nil，ruby 这样会默认返回 current_user</span></span><br><span class="line">  @current_user <span class="params">||</span>= User.find_by_id session[<span class="symbol">:current_user_id</span>]</span><br><span class="line">  <span class="comment"># 如果找不到，会报错</span></span><br><span class="line">  <span class="comment"># User.find user_id</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="第七步：注销登录"><a href="#第七步：注销登录" class="headerlink" title="第七步：注销登录"></a>第七步：注销登录</h2><figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SessionsController</span> &lt; ApplicationController</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">destroy</span></span></span><br><span class="line">    session[<span class="symbol">:current_user_id</span>] = <span class="literal">nil</span></span><br><span class="line">    head <span class="symbol">:ok</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<p>将 session 中对应 id 的值删掉即可。</p>
+<h1 id="单元测试"><a href="#单元测试" class="headerlink" title="单元测试"></a>单元测试</h1><p>使用 RSpec 进行单元测试</p>
+]]></content>
       <categories>
         <category>全栈</category>
         <category>Ruby</category>
@@ -2934,6 +3009,80 @@
       </tags>
   </entry>
   <entry>
+    <title>React Props &amp; State</title>
+    <url>/hais-notebook/2020/02/02/React-PropsState/</url>
+    <content><![CDATA[<p>主要记录了 React 的 Props 和 State。</p>
+<a id="more"></a>
+
+<h1 id="Props"><a href="#Props" class="headerlink" title="Props"></a>Props</h1><p>可以查看<a href="https://codesandbox.io/s/billowing-wind-d8kzw" target="_blank" rel="noopener">CodeSandbox 上的这个例子</a></p>
+<h1 id="State"><a href="#State" class="headerlink" title="State"></a>State</h1><p>可以查看<a href="https://codesandbox.io/s/silly-diffie-9yk38" target="_blank" rel="noopener">CodeSandbox 上的这个例子</a></p>
+<h2 id="setState-的注意事项"><a href="#setState-的注意事项" class="headerlink" title="setState 的注意事项"></a>setState 的注意事项</h2><ul>
+<li><code>this.state.n += 1</code> 无效，UI 不会自动更新，需要用 <code>setState</code></li>
+<li><code>setState</code> 不会马上改变 <code>state</code>，是异步更新的，推荐使用 <code>setState(函数)</code></li>
+<li>不推荐 <code>this.setState(this.state)</code>，因为 React 不推荐我们修改旧的 <code>state</code>（不可变数据）</li>
+</ul>
+<h2 id="复杂-state"><a href="#复杂-state" class="headerlink" title="复杂 state"></a>复杂 state</h2><ul>
+<li>类组件的 <code>setState</code> 会自动合并第一层，建议使用 <code>Object.assign</code> 或者 <code>...sate</code></li>
+<li>函数组件不会自动合并，建议分开写</li>
+</ul>
+<h1 id="Vue-和-React-的区别"><a href="#Vue-和-React-的区别" class="headerlink" title="Vue 和 React 的区别"></a>Vue 和 React 的区别</h1><p>共同点：</p>
+<ul>
+<li>都是对视图的封装，React 是用类和函数表示一个组件，Vue 是用构造选项表示一个组件</li>
+<li>都提供了 <code>creatElement</code> 的 XML 简写，React 是 JSX，Vue 是 template</li>
+</ul>
+<p>不同点：</p>
+<ol>
+<li>监听数据变化的实现原理不同<ul>
+<li>Vue 通过 getter/setter 和代理等方式进行劫持，能够精确知道数据的变化，不需要特别的优化</li>
+<li>React 默认是通过比较引用的方式来进行的，可能会造成不必要的 vDOM 重新渲染，需要用诸如 PureComponent/shouldComponentUpdate 等方式来进行优化</li>
+</ul>
+</li>
+<li>数据流不同<ul>
+<li>Vue 在 1.0 的时候 <strong>父子组件</strong> props 可以双向绑定，还有 v-model 可以实现 <strong>组件与 DOM</strong> 双向绑定</li>
+<li>Vue 2 的时候 <strong>父子组件</strong> 不能双向绑定了（虽然仍然提供了 .sync 语法糖），并且还有 v-model</li>
+<li>React 中是单向数据流，并且组件与 DOM 之间也需要使用 onChange/setState。</li>
+</ul>
+</li>
+<li>HoC 和 mixins<ul>
+<li>Vue 中使用不同功能的组合是通过 mixins 实现的</li>
+<li>React 中则使用 HoC</li>
+</ul>
+</li>
+<li>组件间的通信<ul>
+<li>都有 props，也都可以跨层级通信，比如 Vue 的 provide/inject、React 的 context</li>
+<li>React 本身不支持自定义事件，因此 Vue 里面一般使用事件，React 中一般使用父组件传来的回调函数</li>
+</ul>
+</li>
+<li>更新视图<ul>
+<li>Vue 中一个对象，对应一个虚拟 DOM，当对象的属性改变时，把属性相关的 DOM 节点全部更新</li>
+<li>React 一个对象，对应一个虚拟 DOM，另一个对象对应另一个虚拟 DOM，对比两个更新，用 DOM Diff 算法找不同，然后局部更新 DOM</li>
+</ul>
+</li>
+<li>写法不同<ul>
+<li>Vue 是 JS in HTML</li>
+<li>React 是 HTML in JS</li>
+</ul>
+</li>
+<li>Vuex 和 Redux 的区别<ul>
+<li>Vue 中的 $store 直接注入到了组件实例中，可以直接用 dispatch、commit、mapState、this.$store 等；React 中需要用 connect 把 props 和 dispatch、state 连接起来</li>
+<li>Vue 中可以用 dispatch action、commit mutation；React 中只能使用 dispatch，不能直接操作 reduce</li>
+<li>Redux 中的使用的是不可变数据，每次都要用新的 State 替换旧的，而 Vue 中是直接修改的</li>
+</ul>
+</li>
+</ol>
+]]></content>
+      <categories>
+        <category>前端</category>
+        <category>JavaScript</category>
+        <category>框架</category>
+        <category>React</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>文档</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>React Advanced</title>
     <url>/hais-notebook/2020/02/02/React-Advanced/</url>
     <content><![CDATA[<p>主要抄了一下 React 文档。</p>
@@ -3113,80 +3262,6 @@
 <figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line">&lt;Mouse&gt;</span><br><span class="line">  &#123;mouse =&gt; (</span><br><span class="line">    &lt;Cat mouse=&#123;mouse&#125;/&gt;</span><br><span class="line">  )&#125;</span><br><span class="line">&lt;<span class="regexp">/Mouse&gt;</span></span><br></pre></td></tr></table></figure>
 
 <p>需要注意的是，使用 render prop 会导致 <code>React.PureComponent</code> 失效，因为外层组件更新的时候，render prop 的函数总是新的，除非你把它写成一个实例方法</p>
-]]></content>
-      <categories>
-        <category>前端</category>
-        <category>JavaScript</category>
-        <category>框架</category>
-        <category>React</category>
-      </categories>
-      <tags>
-        <tag>入门</tag>
-        <tag>文档</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>React Props &amp; State</title>
-    <url>/hais-notebook/2020/02/02/React-PropsState/</url>
-    <content><![CDATA[<p>主要记录了 React 的 Props 和 State。</p>
-<a id="more"></a>
-
-<h1 id="Props"><a href="#Props" class="headerlink" title="Props"></a>Props</h1><p>可以查看<a href="https://codesandbox.io/s/billowing-wind-d8kzw" target="_blank" rel="noopener">CodeSandbox 上的这个例子</a></p>
-<h1 id="State"><a href="#State" class="headerlink" title="State"></a>State</h1><p>可以查看<a href="https://codesandbox.io/s/silly-diffie-9yk38" target="_blank" rel="noopener">CodeSandbox 上的这个例子</a></p>
-<h2 id="setState-的注意事项"><a href="#setState-的注意事项" class="headerlink" title="setState 的注意事项"></a>setState 的注意事项</h2><ul>
-<li><code>this.state.n += 1</code> 无效，UI 不会自动更新，需要用 <code>setState</code></li>
-<li><code>setState</code> 不会马上改变 <code>state</code>，是异步更新的，推荐使用 <code>setState(函数)</code></li>
-<li>不推荐 <code>this.setState(this.state)</code>，因为 React 不推荐我们修改旧的 <code>state</code>（不可变数据）</li>
-</ul>
-<h2 id="复杂-state"><a href="#复杂-state" class="headerlink" title="复杂 state"></a>复杂 state</h2><ul>
-<li>类组件的 <code>setState</code> 会自动合并第一层，建议使用 <code>Object.assign</code> 或者 <code>...sate</code></li>
-<li>函数组件不会自动合并，建议分开写</li>
-</ul>
-<h1 id="Vue-和-React-的区别"><a href="#Vue-和-React-的区别" class="headerlink" title="Vue 和 React 的区别"></a>Vue 和 React 的区别</h1><p>共同点：</p>
-<ul>
-<li>都是对视图的封装，React 是用类和函数表示一个组件，Vue 是用构造选项表示一个组件</li>
-<li>都提供了 <code>creatElement</code> 的 XML 简写，React 是 JSX，Vue 是 template</li>
-</ul>
-<p>不同点：</p>
-<ol>
-<li>监听数据变化的实现原理不同<ul>
-<li>Vue 通过 getter/setter 和代理等方式进行劫持，能够精确知道数据的变化，不需要特别的优化</li>
-<li>React 默认是通过比较引用的方式来进行的，可能会造成不必要的 vDOM 重新渲染，需要用诸如 PureComponent/shouldComponentUpdate 等方式来进行优化</li>
-</ul>
-</li>
-<li>数据流不同<ul>
-<li>Vue 在 1.0 的时候 <strong>父子组件</strong> props 可以双向绑定，还有 v-model 可以实现 <strong>组件与 DOM</strong> 双向绑定</li>
-<li>Vue 2 的时候 <strong>父子组件</strong> 不能双向绑定了（虽然仍然提供了 .sync 语法糖），并且还有 v-model</li>
-<li>React 中是单向数据流，并且组件与 DOM 之间也需要使用 onChange/setState。</li>
-</ul>
-</li>
-<li>HoC 和 mixins<ul>
-<li>Vue 中使用不同功能的组合是通过 mixins 实现的</li>
-<li>React 中则使用 HoC</li>
-</ul>
-</li>
-<li>组件间的通信<ul>
-<li>都有 props，也都可以跨层级通信，比如 Vue 的 provide/inject、React 的 context</li>
-<li>React 本身不支持自定义事件，因此 Vue 里面一般使用事件，React 中一般使用父组件传来的回调函数</li>
-</ul>
-</li>
-<li>更新视图<ul>
-<li>Vue 中一个对象，对应一个虚拟 DOM，当对象的属性改变时，把属性相关的 DOM 节点全部更新</li>
-<li>React 一个对象，对应一个虚拟 DOM，另一个对象对应另一个虚拟 DOM，对比两个更新，用 DOM Diff 算法找不同，然后局部更新 DOM</li>
-</ul>
-</li>
-<li>写法不同<ul>
-<li>Vue 是 JS in HTML</li>
-<li>React 是 HTML in JS</li>
-</ul>
-</li>
-<li>Vuex 和 Redux 的区别<ul>
-<li>Vue 中的 $store 直接注入到了组件实例中，可以直接用 dispatch、commit、mapState、this.$store 等；React 中需要用 connect 把 props 和 dispatch、state 连接起来</li>
-<li>Vue 中可以用 dispatch action、commit mutation；React 中只能使用 dispatch，不能直接操作 reduce</li>
-<li>Redux 中的使用的是不可变数据，每次都要用新的 State 替换旧的，而 Vue 中是直接修改的</li>
-</ul>
-</li>
-</ol>
 ]]></content>
       <categories>
         <category>前端</category>
