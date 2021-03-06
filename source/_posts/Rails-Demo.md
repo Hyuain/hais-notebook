@@ -411,3 +411,142 @@ bin/rails generate mailer UserMailer
 
 # 登录功能
 
+## 第一步：配置路由
+
+按照惯例我们需要先配置路由：
+
+```ruby
+Rails.application.routes.draw do
+  resources :sessions, only: %i[create destroy]
+end
+```
+
+## 第二步：创建 Model
+
+Session 不需要写入数据库，故而不需要创建一个完整的 Model（继承于 ActiveRecord），而是一个轻量的 Model（继承于/include ActiveModel）。
+
+```ruby
+class Session
+  include ActiveModel::Model
+  attr_accessor :email, :password
+
+  validates :email, presence: true
+  validates :password, presence: true
+
+  validates_format_of :email, with: /.+@.+/, if: :email
+  validates_length_of :password, minimum: 6, if: :password
+end
+```
+
+### attr_accessor
+
+```ruby
+attr_accessor :xxx
+```
+
+1. 会声明一个对象的属性：`@xxx`
+2. 会定义一个方法：`xxx`，用于获取 `@xxx` 的值
+3. 会定义一个方法：`xxx=`，用于给 `@xxx` 赋值
+
+## 第三步：创建 Controller
+
+```bash
+bin/rails g controller sessions
+```
+
+```ruby
+class SessionsController < ApplicationController
+  def create
+    s = Session.new create_params
+    s.validate
+    render_resource s
+  end
+
+  def destroy
+
+  end
+
+  def create_params
+    params.permit(:email, :password)
+  end
+end
+```
+
+## 第四步：自定义校验，校验账号密码
+
+```ruby
+class Session
+  include ActiveModel::Model
+  attr_accessor :email, :password, :email
+
+  validate :check_email, if: :email
+  validate :check_email_password_matched, if: Proc.new{ |s| s.email.present? and s.password.present? }
+
+  def check_email
+    @user ||= User.find_by email: email
+    if user.nil?
+      errors.add :email, :unregistered
+    end
+  end
+
+  def check_email_password_matched
+    @user ||= User.find_by email: email
+    if user and !user.authenticate(password)
+      errors.add :password, :mismatch
+    end
+  end
+end
+```
+
+## 第五步：使用中间件，记录 session（cookie）
+
+`config/application.rb`
+
+```ruby
+config.session_store :cookie_store, key: 'rails_demo_session_id'
+config.middleware.use ActionDispatch::Cookies
+config.middleware.use config.session_store, config.session_options
+```
+
+`session_controller.rb`
+
+```ruby
+class SessionsController < ApplicationController
+  def create
+    s = Session.new create_params
+    s.validate
+    render_resource s
+    session[:current_user_id] = s.user.id # 将 id 记录起来
+  end
+end
+```
+
+这样前端在发送请求之后将会得到一个 cookie，RubyMine 可以在 `http-client.cookies` 中查看
+
+## 第六步：获取当前用户的信息
+
+```ruby
+def current_user
+  # 如果找不到，会返回 nil，ruby 这样会默认返回 current_user
+  @current_user ||= User.find_by_id session[:current_user_id]
+  # 如果找不到，会报错
+  # User.find user_id
+end
+```
+
+## 第七步：注销登录
+
+```ruby
+class SessionsController < ApplicationController
+  def destroy
+    session[:current_user_id] = nil
+    head :ok
+  end
+end
+```
+
+将 session 中对应 id 的值删掉即可。
+
+# 单元测试
+
+使用 RSpec 进行单元测试
