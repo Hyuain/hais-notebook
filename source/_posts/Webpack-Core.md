@@ -82,8 +82,6 @@ traverse(ast, {
 2. 可以用递归实现嵌套依赖分析
 3. 可以记住以前分析过的依赖，如果发现分析过就直接 return，这样就能实现对循环依赖的静态分析（不执行代码，只进行字面理解）
 
-
-
 # Webpack 核心原理
 
 ## 让浏览器支持 import / export
@@ -92,3 +90,49 @@ traverse(ast, {
 
 - 兼容策略 1：把代码全部放在 `<script type=module>` 中，这样会导致 IE 不兼容，并且会导致文件请求过多，因为每个被依赖的文件都需要被单独发出请求
 - 兼容策略 2：把关键字转译为普通的代码，并且把所有的文件打包成一个文件
+
+## @babel/core 帮助我们转义 import 和 export
+
+babel 会帮助我们将 ESModule 的语法按照 CommonJS 的规则书写：import 关键字会变成 require 函数，export 关键字会变成 exports 对象
+
+```typescript
+import * as babel from "@babel/core"
+const es5Code = babel.transform(code, {
+  presets: ['@babel/preset-env']
+})
+```
+
+```javascript
+// 原始代码
+import b from './b.js'
+const a = {
+  getB: () => b.value,
+}
+export default a
+```
+
+```javascript
+// babel 转译之后的 es5 代码
+// 使用严格模式
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true }); // 给当前模块添加 __esModule 属性，方便与 CommonJS 分开
+exports["default"] = void 0;
+
+var _b = _interopRequireDefault(require("./b.js"));
+
+// 其实是为了给这个模块增加 default，因为 CommonJS 模块没有默认导出，这样是方便兼容，大部分 _interop 开头的代码都是为了兼容旧代码
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { "default": obj };
+};
+
+var a = {
+  getB: function getB() {
+    return _b["default"].value;
+  }
+};
+var _default = a;
+exports["default"] = _default;
+```
+
+## 将所有文件打包成一个文件

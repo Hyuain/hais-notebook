@@ -39,9 +39,9 @@ docker run -v [容器路径]:/var/lib/postgresql/data -p 5001:5432 -e POSTGRES_U
 ## 其他的 docker 命令
 
 - `docker ps -a` 查看所有的容器（Containers）
-- `docker kill [id]` 关闭对应的容器
-- `docker restart [id]` 重启关闭的容器
-- `docer rm [id]` 删除对应的容器
+- `docker kill <id|name>` 关闭对应的容器
+- `docker restart <id|name>` 重启关闭的容器
+- `docer rm <id|name>` 删除对应的容器
 - `docker container prune` 删除无用的容器，以节省空间
 
 # 准备数据库
@@ -87,15 +87,15 @@ bin/rials db:create
 
 ```bash
 # 进入虚拟机并运行 bash：
-docker exec -it [容器名] bash
+docker exec -it <容器名> bash
 # 登录
-psql -U [用户名]
+psql -U <用户名>
 # 连接数据库
-\c [数据库名称]
+\c <数据库名称>
 # display tables
 \dt
 # 查看某一个表的内容
-select * from [表名称] limit 10;
+select * from <表名称> limit 10;
 ```
 
 # Hello Rails
@@ -409,6 +409,7 @@ bin/rails generate mailer UserMailer
 
 通过 `dotenv-rails` 和 `.env` `.env.local` 文件来抽出环境变量，注意 `.env.local` 需要被加入 `.gitignore` 中，防止将密码提交到 Git 记录中。
 
+
 # 登录功能
 
 ## 第一步：配置路由
@@ -547,6 +548,17 @@ end
 
 将 session 中对应 id 的值删掉即可。
 
+
 # 单元测试
 
-使用 RSpec 进行单元测试
+使用 RSpec 进行单元测试，详情查看 [RSpec For Rails 文档](https://github.com/rspec/rspec-rails)。
+
+详细请看 [相关 commit](https://github.com/Hyuain/ruby-demo/commits/master)
+
+- Model 需要测试：validation 和 public 方法
+- Controller 需要测试：响应体和响应头（status、body、cookie），一般要测试正反两种情况（成功和不成功）
+
+## 其他技巧
+
+1. 可以在 `rspec_helper.rb` 中定义一些常用的工具函数
+2. 可以使用 `rspec_api_documentation` 直接生成 API 文档
