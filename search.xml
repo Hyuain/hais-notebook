@@ -1,6 +1,197 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>数据库基本知识 2</title>
+    <url>/hais-notebook/2021/03/20/DataBase-Base/</url>
+    <content><![CDATA[<p>范式、表设计、缓存字段、事务、存储引擎</p>
+<a id="more"></a>
+
+<h1 id="关系型数据库的范式"><a href="#关系型数据库的范式" class="headerlink" title="关系型数据库的范式"></a>关系型数据库的范式</h1><h2 id="第一范式-1NF"><a href="#第一范式-1NF" class="headerlink" title="第一范式 1NF"></a>第一范式 1NF</h2><blockquote>
+<p><strong>字段不可再分</strong>。</p>
+</blockquote>
+<p>比如我们需要存储体检者的双眼视力，那么左右眼视力应该分别存在两个字段中。</p>
+<h2 id="第二范式-2NF"><a href="#第二范式-2NF" class="headerlink" title="第二范式 2NF"></a>第二范式 2NF</h2><blockquote>
+<p>在第一范式的基础上，要有 <strong>键</strong>（键可由多个字段组合）。<br>所有字段分别 <strong>完全依赖</strong> 于键。<br>如果键是多个字段的组合，则 <strong>不允许部分依赖</strong> 于该键。</p>
+</blockquote>
+<blockquote>
+<p>依赖关系：给出键，就能确定唯一字段的值。</p>
+</blockquote>
+<p>比如给出“学号”，就能唯一确定“姓名”，反之则不行，则称“姓名”依赖于“学号”。</p>
+<p>比如有一个表中有“学号”“姓名”“课名”“分数”，分数依赖于“学号+课名”，因此将“学号+课名”作为键，但字段“姓名”不依赖于“课名”却依赖于“学号”（“姓名”部分依赖于“学号+课名”）这就不满足第二范式。</p>
+<h2 id="第三范式-3NF"><a href="#第三范式-3NF" class="headerlink" title="第三范式 3NF"></a>第三范式 3NF</h2><blockquote>
+<p>一个表里面不能有两层依赖。</p>
+</blockquote>
+<p>比如一个表中有“学号”“姓名”“系名”“系主任”，“姓名”依赖于“学号”，而“系主任”依赖于“系名”，这就不满足第三范式。</p>
+<h2 id="BC范式"><a href="#BC范式" class="headerlink" title="BC范式"></a>BC范式</h2><blockquote>
+<p>键中的属性也不存在间接依赖。</p>
+</blockquote>
+<h1 id="数据库设计经验"><a href="#数据库设计经验" class="headerlink" title="数据库设计经验"></a>数据库设计经验</h1><blockquote>
+<p>高内聚、低耦合。</p>
+</blockquote>
+<h2 id="高内聚"><a href="#高内聚" class="headerlink" title="高内聚"></a>高内聚</h2><p>把相关的字段放到一起，不相关的字段分开建表。</p>
+<p>如果两个字段能单独建表，那就单独建表。</p>
+<h2 id="低耦合"><a href="#低耦合" class="headerlink" title="低耦合"></a>低耦合</h2><p>如果两个表中有弱关系，采取低耦合</p>
+<h3 id="一对一"><a href="#一对一" class="headerlink" title="一对一"></a>一对一</h3><p>假设一个学生只能加入一个班级，一个班级里面只能有一个学生。</p>
+<ul>
+<li><p>可以把班级放在学生表里面：<br>学生表：学生 id、学生姓名、班级 id<br>班级表：班级 id、班级名称</p>
+</li>
+<li><p>也可以单独建立关联表：<br>学生表：学生 id、学生姓名<br>关联表：学生 id、班级 id<br>班级表：班级 id、班级名称</p>
+</li>
+</ul>
+<h3 id="一对多"><a href="#一对多" class="headerlink" title="一对多"></a>一对多</h3><p>假设一个作者可以写多本数。</p>
+<p>若 DBMS 支持数组，可以存两个 id 到一个字段：作者 id、姓名、书（书的 id 数组）</p>
+<p>但一般推荐单独建立关系表：</p>
+<p>作者表：id、姓名<br>关联表：作者 id、书 id<br>书表：id、书名</p>
+<h3 id="多对多"><a href="#多对多" class="headerlink" title="多对多"></a>多对多</h3><p>假设一个学生可以加入多个班级，一个班级也可以有多个学生。</p>
+<p>仍然推荐建立关联表：</p>
+<p>学生表：学生 id、学生姓名<br>关联表：学生 id、班级 id、有效期<br>班级表：班级 id、班级名称</p>
+<h3 id="什么时候建立关联表"><a href="#什么时候建立关联表" class="headerlink" title="什么时候建立关联表"></a>什么时候建立关联表</h3><p>当关联自身存在属性时，比如上表的有效期。或者管理多对多这种比较复杂的关系的时候也推荐建立关联表。</p>
+<h1 id="用-JOIN-将表连接起来"><a href="#用-JOIN-将表连接起来" class="headerlink" title="用 JOIN 将表连接起来"></a>用 JOIN 将表连接起来</h1><p>有时候我们需要拆表、建立关联表等，这时候怎样将数据连起来查询呢？使用 JOIN。</p>
+<p><img src="https://www.runoob.com/wp-content/uploads/2019/01/sql-join.png" alt="JOIN"></p>
+<h2 id="INNER-JOIN-JOIN"><a href="#INNER-JOIN-JOIN" class="headerlink" title="INNER JOIN (JOIN)"></a>INNER JOIN (JOIN)</h2><p>借助两个表中含义相同的列（table 1 中的 columnA、table2 中的 columnB），将两个表关联起来，但是只显示 columnA、columnB 两列中有交集的部分。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> column_name(s)</span><br><span class="line"><span class="keyword">FROM</span> table1</span><br><span class="line"><span class="keyword">INNER</span> <span class="keyword">JOIN</span> table2</span><br><span class="line"><span class="keyword">ON</span> table1.columnA=table2.columnB;</span><br></pre></td></tr></table></figure>
+
+<p>例子可以看<a href="https://www.runoob.com/sql/sql-join-inner.html" target="_blank" rel="noopener">这里</a></p>
+<h2 id="LEFT-JOIN-LEFT-OUTER-JOIN"><a href="#LEFT-JOIN-LEFT-OUTER-JOIN" class="headerlink" title="LEFT JOIN (LEFT OUTER JOIN)"></a>LEFT JOIN (LEFT OUTER JOIN)</h2><p>借助两个表中含义相同的列（table 1 中的 columnA、table2 中的 columnB），将两个表关联起来，保证左边的表（table1，或者说 columnA）数据显示完整，不存在的记录设为 NULL。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> column_name(s)</span><br><span class="line"><span class="keyword">FROM</span> table1</span><br><span class="line"><span class="keyword">LEFT</span> <span class="keyword">JOIN</span> table2</span><br><span class="line"><span class="keyword">ON</span> table1.columnA=table2.columnB;</span><br></pre></td></tr></table></figure>
+
+<p>例子可以看<a href="https://www.runoob.com/sql/sql-join-left.html" target="_blank" rel="noopener">这里</a></p>
+<h2 id="RIGHT-JOIN-RIGHT-OUTER-JOIN"><a href="#RIGHT-JOIN-RIGHT-OUTER-JOIN" class="headerlink" title="RIGHT JOIN (RIGHT OUTER JOIN)"></a>RIGHT JOIN (RIGHT OUTER JOIN)</h2><p>借助两个表中含义相同的列（table 1 中的 columnA、table2 中的 columnB），将两个表关联起来，保证右边的表（table2，或者说 columnB）数据显示完整，不存在的记录设为 NULL。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> column_name(s)</span><br><span class="line"><span class="keyword">FROM</span> table1</span><br><span class="line"><span class="keyword">RIGHT</span> <span class="keyword">JOIN</span> table2</span><br><span class="line"><span class="keyword">ON</span> table1.columnA=table2.columnB;</span><br></pre></td></tr></table></figure>
+
+<p>例子可以看<a href="https://www.runoob.com/sql/sql-join-right.html" target="_blank" rel="noopener">这里</a></p>
+<h2 id="FULL-JOIN-FULL-OUTER-JOIN"><a href="#FULL-JOIN-FULL-OUTER-JOIN" class="headerlink" title="FULL JOIN (FULL OUTER JOIN)"></a>FULL JOIN (FULL OUTER JOIN)</h2><blockquote>
+<p>MySQL 中不支持 FULL OUTER JOIN</p>
+</blockquote>
+<p>借助两个表中含义相同的列（table 1 中的 columnA、table2 中的 columnB），将两个表关联起来，保证两边的数据都完整，不存在的记录设为 NULL。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> column_name(s)</span><br><span class="line"><span class="keyword">FROM</span> table1</span><br><span class="line"><span class="keyword">FULL</span> <span class="keyword">OUTER</span> <span class="keyword">JOIN</span> table2</span><br><span class="line"><span class="keyword">ON</span> table1.columnA=table2.columnB;</span><br></pre></td></tr></table></figure>
+
+<p>例子可以看<a href="https://www.runoob.com/sql/sql-join-full.html" target="_blank" rel="noopener">这里</a></p>
+<h1 id="一些小技巧"><a href="#一些小技巧" class="headerlink" title="一些小技巧"></a>一些小技巧</h1><h2 id="缓存字段"><a href="#缓存字段" class="headerlink" title="缓存字段"></a>缓存字段</h2><p>一个例子：一个 blog 包含多个 comments，如何获取博客的评论数？</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">COUNT</span>(<span class="keyword">id</span>) <span class="keyword">FROM</span> comments <span class="keyword">WHERE</span> blog_id=<span class="number">8</span></span><br></pre></td></tr></table></figure>
+
+<p>这样会比较慢，可以在 blog 表上加一个 comment_count 字段，每次添加 comment 就 +1，删除就 -1</p>
+<h2 id="事务-Transaction"><a href="#事务-Transaction" class="headerlink" title="事务 Transaction"></a>事务 Transaction</h2><p>在上述例子的解决办法中有个问题，用户的评论操作产生了两件事：1. comments 表新增记录；2. blog 表的 comment_count 字段 +1。</p>
+<p>这样不能保证两边的数据同步，因为有可能其中一步失败了，这就需要用到事务。如果其中有一条语句失败了，则全部不执行。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">START</span> <span class="keyword">TRANSACTION</span>;</span><br><span class="line">语句1; 2; 3;</span><br><span class="line"><span class="keyword">COMMIT</span>;</span><br></pre></td></tr></table></figure>
+
+<p>可以看<a href="https://www.runoob.com/mysql/mysql-transaction.html" target="_blank" rel="noopener">这个教程</a></p>
+<h2 id="MySQL-存储引擎"><a href="#MySQL-存储引擎" class="headerlink" title="MySQL 存储引擎"></a>MySQL 存储引擎</h2><p>可以通过 <code>show engines</code> 查看 MySQL 支持的存储引擎。</p>
+<ul>
+<li>InnoDB，默认，一般认为是事务性数据库的首选</li>
+<li>MyISAM，拥有较高的插入、查询速度，但不支持事务</li>
+<li>Memory，内存中快速访问数据</li>
+<li>Archive，只支持 insert 和 select</li>
+</ul>
+<h2 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h2><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">UNIQUE</span> <span class="keyword">INDEX</span> index_name</span><br><span class="line"><span class="keyword">ON</span> table_name (column_name(<span class="keyword">length</span>))</span><br></pre></td></tr></table></figure>
+
+<p>可以看<a href="https://www.runoob.com/sql/sql-create-index.html" target="_blank" rel="noopener">这个教程</a></p>
+<p>索引可以提高查询数据的效率，但更新一个包含索引的表需要比更新一个没有索引的表花费更多的时间，这是由于索引本身也需要更新。</p>
+<p>因此，理想的做法是仅仅在常常被搜索的列（以及表）上面创建索引。</p>
+]]></content>
+      <categories>
+        <category>全栈</category>
+        <category>数据库</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>数据库基本知识</title>
+    <url>/hais-notebook/2021/03/14/DataBase-Docker/</url>
+    <content><![CDATA[<p>数据库的基本知识以及用 Docker 来安装数据库。</p>
+<a id="more"></a>
+
+<h1 id="用-Docker-来安装数据库"><a href="#用-Docker-来安装数据库" class="headerlink" title="用 Docker 来安装数据库"></a>用 Docker 来安装数据库</h1><h2 id="安装-Docker"><a href="#安装-Docker" class="headerlink" title="安装 Docker"></a>安装 Docker</h2><ul>
+<li>进入 <a href="https://hub.docker.com/" target="_blank" rel="noopener">Docker Hub 官方网站</a> 注册并下载</li>
+<li>确保 <code>docker --version</code> 返回版本号</li>
+<li>在 Docker Engine 中设置国内镜像，<a href="http://guide.daocloud.io/dcs/daocloud-9153151.html" target="_blank" rel="noopener">可以点这里查看教程</a><figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"registry-mirrors"</span>: [</span><br><span class="line">    <span class="string">"https://docker.mirrors.ustc.edu.cn"</span></span><br><span class="line">  ],</span><br><span class="line">  <span class="attr">"insecure-registries"</span>: []</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="Docker-安装-MySQL"><a href="#Docker-安装-MySQL" class="headerlink" title="Docker 安装 MySQL"></a>Docker 安装 MySQL</h2><ul>
+<li>进入 Docker 上面 <a href="https://hub.docker.com/_/mysql" target="_blank" rel="noopener">MySQL 的主页</a></li>
+<li>运行命令创建容器：<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:tag</span><br><span class="line"><span class="comment"># -d 表示守护进程形式，不会随意关掉</span></span><br><span class="line"><span class="comment"># -p 用来设置端口映射 本机端口号:虚拟机端口号</span></span><br><span class="line">docker run --name mysql-demo1 -e MYSQL_ROOT_PASSWORD=123456 -p 3306:3306 -d mysql:latest</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>常见的 docker 命令：</p>
+<ul>
+<li><code>docker run</code> 启动新容器</li>
+<li><code>docker ps -a</code> 查看所有的容器（Containers）</li>
+<li><code>docker kill &lt;id|name&gt;</code> 关闭对应的容器</li>
+<li><code>docker restart &lt;id|name&gt;</code> 重启关闭的容器</li>
+<li><code>docer rm &lt;id|name&gt;</code> 删除对应的容器</li>
+<li><code>docker container prune</code> 删除无用的容器，以节省空间</li>
+</ul>
+<p>注意：用 docker 运行的容器，默认不会持久化，容器被删掉，数据也就没了</p>
+<h2 id="Docker-连接-MySQL"><a href="#Docker-连接-MySQL" class="headerlink" title="Docker 连接 MySQL"></a>Docker 连接 MySQL</h2><ol>
+<li>进入 Docker 容器，相当于一个 Linux 虚拟机：<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker <span class="built_in">exec</span> -it mysql-demo1 bash</span><br></pre></td></tr></table></figure></li>
+<li>使用 MySQL 命令进入数据库<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># -u root：以 ROOT 用户进入</span></span><br><span class="line"><span class="comment"># -p 直接回车，然后输入密码</span></span><br><span class="line">mysql -u root -p</span><br></pre></td></tr></table></figure></li>
+<li>使用 SQL 语句操作<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 查看有哪些数据库</span></span><br><span class="line"><span class="keyword">show</span> <span class="keyword">databases</span>;</span><br><span class="line"><span class="comment"># 进入其中一个数据库</span></span><br><span class="line"><span class="keyword">use</span> &lt;数据库名称&gt;;</span><br><span class="line"><span class="comment"># 看有哪些表</span></span><br><span class="line"><span class="keyword">show</span> <span class="keyword">tables</span>;</span><br><span class="line"><span class="comment"># 查看表内容</span></span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> &lt;表名称&gt;;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h1 id="数据库的基本知识"><a href="#数据库的基本知识" class="headerlink" title="数据库的基本知识"></a>数据库的基本知识</h1><h2 id="什么是数据库"><a href="#什么是数据库" class="headerlink" title="什么是数据库"></a>什么是数据库</h2><h3 id="数据库-Database"><a href="#数据库-Database" class="headerlink" title="数据库 Database"></a>数据库 Database</h3><blockquote>
+<p>将大量数据保存起来，通过计算机加工而成的可以进行高效访问的数据集合称为数据库</p>
+</blockquote>
+<p>根据数据保存的格式不同，数据库一般被分为：</p>
+<ul>
+<li>关系型数据库</li>
+<li>面向对象数据库、XML 数据库、键值存储系统（Redis）、层次数据库</li>
+</ul>
+<h3 id="数据库管理系统-DBMS"><a href="#数据库管理系统-DBMS" class="headerlink" title="数据库管理系统 DBMS"></a>数据库管理系统 DBMS</h3><blockquote>
+<p>用来管理数据库的系统被称为数据库管理系统</p>
+</blockquote>
+<ul>
+<li>比如 MySQL、PostgreSQL、SQL Server、DB2、Oracle</li>
+</ul>
+<p>DBMS 大概结构如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">数据库（硬盘&#x2F;内存中存数据的地方）</span><br><span class="line">           ↑ 读&#x2F;写</span><br><span class="line">Server 服务端（数据提供者）</span><br><span class="line"> 请求的数据 ↓ ↑ SQL语句 </span><br><span class="line">Client 客户端（数据使用者）</span><br></pre></td></tr></table></figure>
+
+<p>我们使用的 MySQL 命令，就是一个客户端，MySQL 背后其实还有一个 Server 在 24 小时不间断运行着</p>
+<h1 id="用-Node-js-连接数据库"><a href="#用-Node-js-连接数据库" class="headerlink" title="用 Node.js 连接数据库"></a>用 Node.js 连接数据库</h1><p>可以使用 <a href="https://github.com/mysqljs/mysql" target="_blank" rel="noopener">mysqljs 库</a></p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> mysql = <span class="built_in">require</span>(<span class="string">"mysql"</span>)</span><br><span class="line"><span class="keyword">const</span> connection = mysql.createConnection(&#123;</span><br><span class="line">  host: <span class="string">"localhost"</span>,</span><br><span class="line">  user: <span class="string">"root"</span>,</span><br><span class="line">  password: <span class="string">"123456"</span>,</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">connection.connect()</span><br><span class="line"></span><br><span class="line">connection.query(<span class="string">"CREATE DATABASE IF NOT EXISTS harvey DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;"</span>, <span class="function"><span class="keyword">function</span> (<span class="params">error, results, fields</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (error) <span class="keyword">throw</span> error</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">"创建数据库"</span>, results)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">connection.query(<span class="string">"USE harvey;"</span>)</span><br><span class="line"></span><br><span class="line">connection.query(<span class="string">`CREATE TABLE IF NOT EXISTS user(</span></span><br><span class="line"><span class="string">  name text,</span></span><br><span class="line"><span class="string">  age int</span></span><br><span class="line"><span class="string">);`</span>, <span class="function"><span class="keyword">function</span> (<span class="params">error, results, fields</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (error) <span class="keyword">throw</span> error</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">"创建表"</span>, results)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">connection.end()</span><br></pre></td></tr></table></figure>
+
+<h1 id="常见的-SQL-命令"><a href="#常见的-SQL-命令" class="headerlink" title="常见的 SQL 命令"></a>常见的 SQL 命令</h1><h2 id="操作-database-table"><a href="#操作-database-table" class="headerlink" title="操作 database/table"></a>操作 database/table</h2><ul>
+<li>增：<code>CREATE DATABASE IF NOT EXISTS harvey DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;</code> （MySQL 才需要使用 utf8mb4，并且在后面写 COLLATE）</li>
+<li>删：<code>DROP DATABSE;</code></li>
+</ul>
+<h2 id="操作记录"><a href="#操作记录" class="headerlink" title="操作记录"></a>操作记录</h2><ul>
+<li>增：<code>INSERT INTO user (name, age) VALUES (&#39;harvey&#39;, 20);</code></li>
+<li>删：<code>DELETE FROM user WHERE name=&#39;harvey&#39;;</code></li>
+<li>改：<code>UPDATE user SET age=24 WHERE name=&#39;harvey&#39;;</code></li>
+<li>查：<code>SELECT * FROM user LIMIT 10;</code></li>
+</ul>
+<h1 id="MySQL-的数据类型"><a href="#MySQL-的数据类型" class="headerlink" title="MySQL 的数据类型"></a>MySQL 的数据类型</h1><p>五大类：数字、字符串、时间和日期、JSON（5.7.8 以上）、其他特殊类型</p>
+<h2 id="数字类型"><a href="#数字类型" class="headerlink" title="数字类型"></a>数字类型</h2><ul>
+<li><p>bit、tinyint、bool/boolean、smallint、mediumint、int、bigint、decimal、float、double</p>
+</li>
+<li><p>serial：一个自增长的非负大整数（BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE）</p>
+</li>
+</ul>
+<p><a href="https://dev.mysql.com/doc/refman/8.0/en/numeric-type-syntax.html" target="_blank" rel="noopener">官方文档</a></p>
+<h2 id="字符串类型"><a href="#字符串类型" class="headerlink" title="字符串类型"></a>字符串类型</h2><ul>
+<li>char(100)、varchar(100)、binary(1024)、varbinary(1024)、blob、text、enum(‘v1’,’v2’)、set(‘v1’,’v2’)</li>
+</ul>
+<p>varchar 长度可变，可以节省空间</p>
+<p><a href="https://dev.mysql.com/doc/refman/8.0/en/string-type-syntax.html" target="_blank" rel="noopener">官方文档</a></p>
+<h2 id="时间和日期"><a href="#时间和日期" class="headerlink" title="时间和日期"></a>时间和日期</h2><ul>
+<li>date、time、datetime、timestamp、year</li>
+</ul>
+<p><a href="https://dev.mysql.com/doc/refman/8.0/en/date-and-time-type-syntax.html" target="_blank" rel="noopener">官方文档</a></p>
+<p>一般传给前端需要转换为 ISO 8601 格式</p>
+<h1 id="Sequelize-js"><a href="#Sequelize-js" class="headerlink" title="Sequelize.js"></a>Sequelize.js</h1>]]></content>
+      <categories>
+        <category>全栈</category>
+        <category>数据库</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Webpack 核心原理</title>
     <url>/hais-notebook/2021/03/03/Webpack-Core/</url>
     <content><![CDATA[<p>Webpack 的核心原理及一些前置知识。</p>
@@ -34,7 +225,14 @@
 <li>兼容策略 1：把代码全部放在 <code>&lt;script type=module&gt;</code> 中，这样会导致 IE 不兼容，并且会导致文件请求过多，因为每个被依赖的文件都需要被单独发出请求</li>
 <li>兼容策略 2：把关键字转译为普通的代码，并且把所有的文件打包成一个文件</li>
 </ul>
-]]></content>
+<h2 id="babel-core-帮助我们转义-import-和-export"><a href="#babel-core-帮助我们转义-import-和-export" class="headerlink" title="@babel/core 帮助我们转义 import 和 export"></a>@babel/core 帮助我们转义 import 和 export</h2><p>babel 会帮助我们将 ESModule 的语法按照 CommonJS 的规则书写：import 关键字会变成 require 函数，export 关键字会变成 exports 对象</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> * <span class="keyword">as</span> babel <span class="keyword">from</span> <span class="string">"@babel/core"</span></span><br><span class="line"><span class="keyword">const</span> es5Code = babel.transform(code, &#123;</span><br><span class="line">  presets: [<span class="string">'@babel/preset-env'</span>]</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 原始代码</span></span><br><span class="line"><span class="keyword">import</span> b <span class="keyword">from</span> <span class="string">'./b.js'</span></span><br><span class="line"><span class="keyword">const</span> a = &#123;</span><br><span class="line">  getB: <span class="function"><span class="params">()</span> =&gt;</span> b.value,</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> a</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// babel 转译之后的 es5 代码</span></span><br><span class="line"><span class="comment">// 使用严格模式</span></span><br><span class="line"><span class="meta">"use strict"</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">Object</span>.defineProperty(exports, <span class="string">"__esModule"</span>, &#123; <span class="attr">value</span>: <span class="literal">true</span> &#125;); <span class="comment">// 给当前模块添加 __esModule 属性，方便与 CommonJS 分开</span></span><br><span class="line">exports[<span class="string">"default"</span>] = <span class="keyword">void</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> _b = _interopRequireDefault(<span class="built_in">require</span>(<span class="string">"./b.js"</span>));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 其实是为了给这个模块增加 default，因为 CommonJS 模块没有默认导出，这样是方便兼容，大部分 _interop 开头的代码都是为了兼容旧代码</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_interopRequireDefault</span>(<span class="params">obj</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> obj &amp;&amp; obj.__esModule ? obj : &#123; <span class="string">"default"</span>: obj &#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> a = &#123;</span><br><span class="line">  getB: <span class="function"><span class="keyword">function</span> <span class="title">getB</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> _b[<span class="string">"default"</span>].value;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">var</span> _default = a;</span><br><span class="line">exports[<span class="string">"default"</span>] = _default;</span><br></pre></td></tr></table></figure>
+
+<h2 id="将所有文件打包成一个文件"><a href="#将所有文件打包成一个文件" class="headerlink" title="将所有文件打包成一个文件"></a>将所有文件打包成一个文件</h2>]]></content>
       <categories>
         <category>前端</category>
         <category>浏览器</category>
@@ -63,9 +261,9 @@
 <p>如果速度太慢，需要使用镜像，按照 <a href="http://guide.daocloud.io/dcs/daocloud-9153151.html" target="_blank" rel="noopener">此教程</a> 进行配置。<br>可将镜像地址配置为中科大镜像地址：<a href="https://docker.mirrors.ustc.edu.cn" target="_blank" rel="noopener">https://docker.mirrors.ustc.edu.cn</a></p>
 <h2 id="其他的-docker-命令"><a href="#其他的-docker-命令" class="headerlink" title="其他的 docker 命令"></a>其他的 docker 命令</h2><ul>
 <li><code>docker ps -a</code> 查看所有的容器（Containers）</li>
-<li><code>docker kill [id]</code> 关闭对应的容器</li>
-<li><code>docker restart [id]</code> 重启关闭的容器</li>
-<li><code>docer rm [id]</code> 删除对应的容器</li>
+<li><code>docker kill &lt;id|name&gt;</code> 关闭对应的容器</li>
+<li><code>docker restart &lt;id|name&gt;</code> 重启关闭的容器</li>
+<li><code>docer rm &lt;id|name&gt;</code> 删除对应的容器</li>
 <li><code>docker container prune</code> 删除无用的容器，以节省空间</li>
 </ul>
 <h1 id="准备数据库"><a href="#准备数据库" class="headerlink" title="准备数据库"></a>准备数据库</h1><h2 id="配置数据库"><a href="#配置数据库" class="headerlink" title="配置数据库"></a>配置数据库</h2><p>数据库需要在 <code>config/database.yml</code> 中进行配置。</p>
@@ -73,7 +271,7 @@
 
 <h2 id="创建数据库"><a href="#创建数据库" class="headerlink" title="创建数据库"></a>创建数据库</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">bin/rials db:create</span><br></pre></td></tr></table></figure>
 
-<h2 id="查看数据库"><a href="#查看数据库" class="headerlink" title="查看数据库"></a>查看数据库</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 进入虚拟机并运行 bash：</span></span><br><span class="line">docker <span class="built_in">exec</span> -it [容器名] bash</span><br><span class="line"><span class="comment"># 登录</span></span><br><span class="line">psql -U [用户名]</span><br><span class="line"><span class="comment"># 连接数据库</span></span><br><span class="line">\c [数据库名称]</span><br><span class="line"><span class="comment"># display tables</span></span><br><span class="line">\dt</span><br><span class="line"><span class="comment"># 查看某一个表的内容</span></span><br><span class="line">select * from [表名称] <span class="built_in">limit</span> 10;</span><br></pre></td></tr></table></figure>
+<h2 id="查看数据库"><a href="#查看数据库" class="headerlink" title="查看数据库"></a>查看数据库</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 进入虚拟机并运行 bash：</span></span><br><span class="line">docker <span class="built_in">exec</span> -it &lt;容器名&gt; bash</span><br><span class="line"><span class="comment"># 登录</span></span><br><span class="line">psql -U &lt;用户名&gt;</span><br><span class="line"><span class="comment"># 连接数据库</span></span><br><span class="line">\c &lt;数据库名称&gt;</span><br><span class="line"><span class="comment"># display tables</span></span><br><span class="line">\dt</span><br><span class="line"><span class="comment"># 查看某一个表的内容</span></span><br><span class="line">select * from &lt;表名称&gt; <span class="built_in">limit</span> 10;</span><br></pre></td></tr></table></figure>
 
 <h1 id="Hello-Rails"><a href="#Hello-Rails" class="headerlink" title="Hello Rails"></a>Hello Rails</h1><h2 id="Routes"><a href="#Routes" class="headerlink" title="Routes"></a>Routes</h2><p>路由需要在 <code>config/routes.rb</code> 中进行配置。</p>
 <figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">Rails.application.routes.draw <span class="keyword">do</span></span><br><span class="line">  get <span class="string">'/hello'</span>, <span class="symbol">to:</span> <span class="string">'first#hello'</span> <span class="comment"># get 请求路径 /hello 的时候，会去找 FirstController 上的 hello 方法 </span></span><br><span class="line">  get <span class="string">'/hi'</span>, <span class="symbol">to:</span> <span class="string">'first#hi'</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
@@ -182,7 +380,16 @@
 <h2 id="第七步：注销登录"><a href="#第七步：注销登录" class="headerlink" title="第七步：注销登录"></a>第七步：注销登录</h2><figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SessionsController</span> &lt; ApplicationController</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">destroy</span></span></span><br><span class="line">    session[<span class="symbol">:current_user_id</span>] = <span class="literal">nil</span></span><br><span class="line">    head <span class="symbol">:ok</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
 
 <p>将 session 中对应 id 的值删掉即可。</p>
-<h1 id="单元测试"><a href="#单元测试" class="headerlink" title="单元测试"></a>单元测试</h1><p>使用 RSpec 进行单元测试</p>
+<h1 id="单元测试"><a href="#单元测试" class="headerlink" title="单元测试"></a>单元测试</h1><p>使用 RSpec 进行单元测试，详情查看 <a href="https://github.com/rspec/rspec-rails" target="_blank" rel="noopener">RSpec For Rails 文档</a>。</p>
+<p>详细请看 <a href="https://github.com/Hyuain/ruby-demo/commits/master" target="_blank" rel="noopener">相关 commit</a></p>
+<ul>
+<li>Model 需要测试：validation 和 public 方法</li>
+<li>Controller 需要测试：响应体和响应头（status、body、cookie），一般要测试正反两种情况（成功和不成功）</li>
+</ul>
+<h2 id="其他技巧"><a href="#其他技巧" class="headerlink" title="其他技巧"></a>其他技巧</h2><ol>
+<li>可以在 <code>rspec_helper.rb</code> 中定义一些常用的工具函数</li>
+<li>可以使用 <code>rspec_api_documentation</code> 直接生成 API 文档</li>
+</ol>
 ]]></content>
       <categories>
         <category>全栈</category>
@@ -510,6 +717,87 @@
       <tags>
         <tag>入门</tag>
         <tag>文档</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>NodeJS</title>
+    <url>/hais-notebook/2020/03/09/Node-JS/</url>
+    <content><![CDATA[<p>关于 NodeJS 的一些东西。</p>
+<a id="more"></a>
+
+<h1 id="一些有用的工具"><a href="#一些有用的工具" class="headerlink" title="一些有用的工具"></a>一些有用的工具</h1><ul>
+<li>commander：可以很方便地写出命令行，有多种语言的版本。</li>
+<li>node-dev：文件更新时自动重启的 node，不宜在生产环境使用。</li>
+<li>ts-node：让 node 支持直接运行 TypeScript 代码，不宜在生产环境使用。</li>
+<li>ts-node-dev：node-dev + ts-node，不宜在生产环境使用。</li>
+<li>注意用 ts 开发时，需要安装 @types/node</li>
+</ul>
+<h1 id="Node-js-简介"><a href="#Node-js-简介" class="headerlink" title="Node.js 简介"></a>Node.js 简介</h1><h2 id="Node-js-是什么"><a href="#Node-js-是什么" class="headerlink" title="Node.js 是什么"></a>Node.js 是什么</h2><ul>
+<li>不是 web 框架，不能把 Node.js 与 Flask 或 Spring 对比</li>
+<li>不是编程语言，不能与 Python 或 PHP 对比</li>
+<li>是一个平台，将多种技术组合起来，让 JavaScript 也能调用系统接口、开发后端应用<ul>
+<li>V8 引擎</li>
+<li>libuv</li>
+<li>C/C++ 实现的 c-ares、http-parser、OpenSSL、zlib 等</li>
+</ul>
+</li>
+</ul>
+<h2 id="Node-js-技术架构"><a href="#Node-js-技术架构" class="headerlink" title="Node.js 技术架构"></a>Node.js 技术架构</h2><h3 id="第三层：Node-js-API"><a href="#第三层：Node-js-API" class="headerlink" title="第三层：Node.js API"></a>第三层：Node.js API</h3><h3 id="第二层：Node-js-bindings、C-C-插件"><a href="#第二层：Node-js-bindings、C-C-插件" class="headerlink" title="第二层：Node.js bindings、C/C++ 插件"></a>第二层：Node.js bindings、C/C++ 插件</h3><h4 id="bindings"><a href="#bindings" class="headerlink" title="bindings"></a>bindings</h4><p>沟通 Node.js 与 C/C++，比如 C/C++ 实现了 http-parsers 库，bindings 帮助我们调用这个库，比如将 C++ 编译成 .node，然后 JS require 他。</p>
+<h4 id="C-C-插件"><a href="#C-C-插件" class="headerlink" title="C/C++ 插件"></a>C/C++ 插件</h4><p>自己写其他能力。</p>
+<h3 id="第一层：V8、libuv、c-ares、OpenSSL、zlib、http-parser、zlib-等"><a href="#第一层：V8、libuv、c-ares、OpenSSL、zlib、http-parser、zlib-等" class="headerlink" title="第一层：V8、libuv、c-ares、OpenSSL、zlib、http-parser、zlib 等"></a>第一层：V8、libuv、c-ares、OpenSSL、zlib、http-parser、zlib 等</h3><h4 id="libuv"><a href="#libuv" class="headerlink" title="libuv"></a>libuv</h4><ul>
+<li>每个操作系统上有不同的异步处理模块，比如 FreeBSD 上的 kqueue、Linux 上的 epoll、Windows 上的 IOCP</li>
+<li>libuv 是一个跨平台的异步 I/O 库，他会根据系统选择合适的方案</li>
+<li>可以用于 TCP/UDP/DNS/文件 等异步操作</li>
+</ul>
+<h3 id="V8"><a href="#V8" class="headerlink" title="V8"></a>V8</h3><ul>
+<li>将 JS 源代码变成本地代码（机器代码）执行</li>
+<li>维护调用栈</li>
+<li>内存管理</li>
+<li>垃圾回收，重复利用无用的内存</li>
+<li>实现 JS 的标准库</li>
+</ul>
+<p>注意：</p>
+<ul>
+<li>V8 不提供 DOM API，DOM API 是浏览器提供的</li>
+<li>V8 是多线程的，比如垃圾回收为单独的线程，但执行 JS 是单线程的</li>
+<li>可以开启两个线程来执行 JS，但这两个线程之间没什么关系</li>
+<li>V8 自带 event loop，但 Node.js 基于 libuv 自己做了一个 event loop</li>
+</ul>
+<h4 id="Event-Loop"><a href="#Event-Loop" class="headerlink" title="Event Loop"></a>Event Loop</h4><ul>
+<li>Event：包括内部事件（计时器到期了）、外部事件（文件可以读取了、socket 有内容了）</li>
+<li>Loop：事件是有优先级的，处理顺序是有先后的，Node.js 要按顺序轮询每种事件，这种轮询往往都是循环的</li>
+</ul>
+<p><a href="https://nodejs.org/zh-cn/docs/guides/event-loop-timers-and-nexttick/" target="_blank" rel="noopener">官方文档</a></p>
+<p>重点阶段：</p>
+<ul>
+<li>timers 检查计时器</li>
+<li>poll 轮询，大部分时间会停留在这个阶段，大部分事件将在 poll 得到处理，比如文件读取、网络请求</li>
+<li>check 检查 setImmediate 回调</li>
+</ul>
+<blockquote>
+<p>setTimout 与 setImmediate 谁先执行？<br>不确定，大多数情况是 setImmediate 先执行，但有时刚进入的时候，会先执行 setTimout </p>
+</blockquote>
+<h1 id="文件模块"><a href="#文件模块" class="headerlink" title="文件模块"></a>文件模块</h1><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">"fs"</span>)</span><br><span class="line"><span class="keyword">const</span> p = <span class="built_in">require</span>(<span class="string">"path"</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> defaultDbPath = p.join(__dirname, <span class="string">".todo"</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  read(path = defaultDbPath) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">      fs.readFile(path, &#123;</span><br><span class="line">        flag: <span class="string">"a+"</span></span><br><span class="line">      &#125;, (error, data) =&gt; &#123;</span><br><span class="line">        <span class="keyword">if</span> (error) &#123;</span><br><span class="line">          <span class="keyword">return</span> reject(error)</span><br><span class="line">        &#125;</span><br><span class="line">        resolve(data)</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;,</span><br><span class="line">  write(content = <span class="string">"defaultContent"</span>, path = defaultDbPath) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">      fs.writeFile(path, content, (error) =&gt; &#123;</span><br><span class="line">        <span class="keyword">if</span> (error) &#123;</span><br><span class="line">          <span class="keyword">return</span> reject(error)</span><br><span class="line">        &#125;</span><br><span class="line">        resolve()</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="HTTP-模块"><a href="#HTTP-模块" class="headerlink" title="HTTP 模块"></a>HTTP 模块</h1><p>一个最简单的服务器：</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> * <span class="keyword">as</span> http <span class="keyword">from</span> <span class="string">"http"</span></span><br><span class="line"><span class="keyword">import</span> &#123; IncomingMessage, ServerResponse &#125; <span class="keyword">from</span> <span class="string">"http"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> server = http.createServer()</span><br><span class="line"></span><br><span class="line">server.on(<span class="string">"request"</span>, <span class="function">(<span class="params">request: IncomingMessage, response: ServerResponse</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">"request.method"</span>, request.method)</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">"request.url"</span>, request.url)</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">"request.headers"</span>, request.headers)</span><br><span class="line">  <span class="comment">// 监听 data 事件才能拿到 post 的请求体，用户每上传一点内容，就会触发一次 data 事件</span></span><br><span class="line">  <span class="keyword">const</span> array = []</span><br><span class="line">  request.on(<span class="string">"data"</span>, <span class="function">(<span class="params">chunk</span>) =&gt;</span> &#123;</span><br><span class="line">    array.push(chunk)</span><br><span class="line">  &#125;)</span><br><span class="line">  <span class="comment">// 当流中没有数据了，会触发 end 事件</span></span><br><span class="line">  request.on(<span class="string">"end"</span>, <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> body = Buffer.concat(array)</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"body"</span>, body.toString())</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 设置 response</span></span><br><span class="line">    response.statusCode = <span class="number">400</span></span><br><span class="line">    response.setHeader(<span class="string">"x-harvey"</span>, <span class="string">"WOW"</span>)</span><br><span class="line">    response.write(<span class="string">"1\n"</span>)</span><br><span class="line">    response.write(<span class="string">"2\n"</span>)</span><br><span class="line">    response.end(<span class="string">"request end"</span>)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">server.listen(<span class="number">8888</span>)</span><br></pre></td></tr></table></figure>
+
+<p>可以配合 <a href="https://nodejs.org/api/http.html#http_event_request" target="_blank" rel="noopener">文档</a> 食用</p>
+<h2 id="根据-url-返回不同的文件"><a href="#根据-url-返回不同的文件" class="headerlink" title="根据 url 返回不同的文件"></a>根据 url 返回不同的文件</h2><figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> * <span class="keyword">as</span> http <span class="keyword">from</span> <span class="string">"http"</span></span><br><span class="line"><span class="keyword">import</span> &#123; IncomingMessage, ServerResponse &#125; <span class="keyword">from</span> <span class="string">"http"</span></span><br><span class="line"><span class="keyword">import</span> * <span class="keyword">as</span> fs <span class="keyword">from</span> <span class="string">"fs"</span></span><br><span class="line"><span class="keyword">import</span> * <span class="keyword">as</span> p <span class="keyword">from</span> <span class="string">"path"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> server = http.createServer()</span><br><span class="line"><span class="keyword">const</span> publicDir = p.resolve(__dirname, <span class="string">"public"</span>)</span><br><span class="line"></span><br><span class="line">server.on(<span class="string">"request"</span>, <span class="function">(<span class="params">request: IncomingMessage, response: ServerResponse</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> &#123; method, url, headers &#125; = request</span><br><span class="line">  <span class="keyword">switch</span> (url) &#123;</span><br><span class="line">  <span class="keyword">case</span> <span class="string">"/index.html"</span>:</span><br><span class="line">    fs.readFile(p.resolve(publicDir, <span class="string">"index.html"</span>), <span class="function">(<span class="params">(<span class="params">err, data</span>) =&gt; &#123;</span></span></span><br><span class="line"><span class="function"><span class="params">      <span class="keyword">if</span> (<span class="params">err</span>) &#123; <span class="keyword">throw</span> err &#125;</span></span></span><br><span class="line"><span class="function"><span class="params">      response.end(<span class="params">data.toString(<span class="params"></span>)</span>)</span></span></span><br><span class="line"><span class="function"><span class="params">    &#125;</span>))</span></span><br><span class="line"><span class="function">    <span class="params">break</span></span></span><br><span class="line"><span class="function">  <span class="params">case</span> "/<span class="params">style</span>.<span class="params">css</span>":</span></span><br><span class="line"><span class="function">    <span class="params">response</span>.<span class="params">setHeader</span>(<span class="params">"Content-Type", "text/css; charset=utf-8"</span>)</span></span><br><span class="line"><span class="function">    <span class="params">fs</span>.<span class="params">readFile</span>(<span class="params">p.resolve(<span class="params">publicDir, "style.css"</span>), (<span class="params">(<span class="params">err, data</span>) =&gt; &#123;</span></span></span></span><br><span class="line"><span class="function"><span class="params"><span class="params">      <span class="keyword">if</span> (<span class="params">err</span>) &#123; <span class="keyword">throw</span> err &#125;</span></span></span></span><br><span class="line"><span class="function"><span class="params"><span class="params">      response.end(<span class="params">data.toString(<span class="params"></span>)</span>)</span></span></span></span><br><span class="line"><span class="function"><span class="params"><span class="params">    &#125;</span>)</span>)</span></span><br><span class="line"><span class="function">    <span class="params">break</span></span></span><br><span class="line"><span class="function">  <span class="params">case</span> "/<span class="params">index</span>.<span class="params">js</span>":</span></span><br><span class="line"><span class="function">    <span class="params">response</span>.<span class="params">setHeader</span>(<span class="params">"Content-Type", "text/javascript; charset=utf-8"</span>)</span></span><br><span class="line"><span class="function">    <span class="params">fs</span>.<span class="params">readFile</span>(<span class="params">p.resolve(<span class="params">publicDir, "index.js"</span>), (<span class="params">(<span class="params">err, data</span>) =&gt; &#123;</span></span></span></span><br><span class="line"><span class="function"><span class="params"><span class="params">      <span class="keyword">if</span> (<span class="params">err</span>) &#123; <span class="keyword">throw</span> err &#125;</span></span></span></span><br><span class="line"><span class="function"><span class="params"><span class="params">      response.end(<span class="params">data.toString(<span class="params"></span>)</span>)</span></span></span></span><br><span class="line"><span class="function"><span class="params"><span class="params">    &#125;</span>)</span>)</span></span><br><span class="line"><span class="function">    <span class="params">break</span></span></span><br><span class="line"><span class="function">  &#125;</span></span><br><span class="line"><span class="function">&#125;)</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="params">server</span>.<span class="params">listen</span>(<span class="params">8888</span>)</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="处理查询参数"><a href="#处理查询参数" class="headerlink" title="处理查询参数"></a>处理查询参数</h2><figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; pathname, searchParams &#125; = <span class="keyword">new</span> URL(requestUrl, <span class="string">"http://localhost:8888"</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="匹配任意文件"><a href="#匹配任意文件" class="headerlink" title="匹配任意文件"></a>匹配任意文件</h2><figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line">server.on(<span class="string">"request"</span>, <span class="function">(<span class="params">request: IncomingMessage, response: ServerResponse</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> &#123; method, url: requestUrl, headers &#125; = request</span><br><span class="line">  <span class="keyword">const</span> &#123; pathname &#125; = <span class="keyword">new</span> URL(requestUrl, <span class="string">"http://localhost:8888"</span>)</span><br><span class="line">  <span class="keyword">const</span> filename = pathname.substr(<span class="number">1</span>) || <span class="string">"index.html"</span></span><br><span class="line">  fs.readFile(p.resolve(publicDir, filename), <span class="function">(<span class="params">err, data</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (err) &#123;</span><br><span class="line">      <span class="keyword">if</span> (err.errno === <span class="number">-4058</span>) &#123;</span><br><span class="line">        response.statusCode = <span class="number">404</span></span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        response.statusCode = <span class="number">500</span></span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> response.end()</span><br><span class="line">    &#125;</span><br><span class="line">    response.end(data)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="处理非-get-请求"><a href="#处理非-get-请求" class="headerlink" title="处理非 get 请求"></a>处理非 get 请求</h2><figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (method !== <span class="string">"GET"</span>) &#123;</span><br><span class="line">  response.statusCode = <span class="number">405</span></span><br><span class="line">  <span class="keyword">return</span> response.end()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="添加缓存"><a href="#添加缓存" class="headerlink" title="添加缓存"></a>添加缓存</h2><figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line">response.setHeader(<span class="string">"Cache-Control"</span>, <span class="string">`public, max-age=<span class="subst">$&#123;cacheAge&#125;</span>`</span>)</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>全栈</category>
+        <category>NodeJS</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
       </tags>
   </entry>
   <entry>
@@ -3009,80 +3297,6 @@
       </tags>
   </entry>
   <entry>
-    <title>React Props &amp; State</title>
-    <url>/hais-notebook/2020/02/02/React-PropsState/</url>
-    <content><![CDATA[<p>主要记录了 React 的 Props 和 State。</p>
-<a id="more"></a>
-
-<h1 id="Props"><a href="#Props" class="headerlink" title="Props"></a>Props</h1><p>可以查看<a href="https://codesandbox.io/s/billowing-wind-d8kzw" target="_blank" rel="noopener">CodeSandbox 上的这个例子</a></p>
-<h1 id="State"><a href="#State" class="headerlink" title="State"></a>State</h1><p>可以查看<a href="https://codesandbox.io/s/silly-diffie-9yk38" target="_blank" rel="noopener">CodeSandbox 上的这个例子</a></p>
-<h2 id="setState-的注意事项"><a href="#setState-的注意事项" class="headerlink" title="setState 的注意事项"></a>setState 的注意事项</h2><ul>
-<li><code>this.state.n += 1</code> 无效，UI 不会自动更新，需要用 <code>setState</code></li>
-<li><code>setState</code> 不会马上改变 <code>state</code>，是异步更新的，推荐使用 <code>setState(函数)</code></li>
-<li>不推荐 <code>this.setState(this.state)</code>，因为 React 不推荐我们修改旧的 <code>state</code>（不可变数据）</li>
-</ul>
-<h2 id="复杂-state"><a href="#复杂-state" class="headerlink" title="复杂 state"></a>复杂 state</h2><ul>
-<li>类组件的 <code>setState</code> 会自动合并第一层，建议使用 <code>Object.assign</code> 或者 <code>...sate</code></li>
-<li>函数组件不会自动合并，建议分开写</li>
-</ul>
-<h1 id="Vue-和-React-的区别"><a href="#Vue-和-React-的区别" class="headerlink" title="Vue 和 React 的区别"></a>Vue 和 React 的区别</h1><p>共同点：</p>
-<ul>
-<li>都是对视图的封装，React 是用类和函数表示一个组件，Vue 是用构造选项表示一个组件</li>
-<li>都提供了 <code>creatElement</code> 的 XML 简写，React 是 JSX，Vue 是 template</li>
-</ul>
-<p>不同点：</p>
-<ol>
-<li>监听数据变化的实现原理不同<ul>
-<li>Vue 通过 getter/setter 和代理等方式进行劫持，能够精确知道数据的变化，不需要特别的优化</li>
-<li>React 默认是通过比较引用的方式来进行的，可能会造成不必要的 vDOM 重新渲染，需要用诸如 PureComponent/shouldComponentUpdate 等方式来进行优化</li>
-</ul>
-</li>
-<li>数据流不同<ul>
-<li>Vue 在 1.0 的时候 <strong>父子组件</strong> props 可以双向绑定，还有 v-model 可以实现 <strong>组件与 DOM</strong> 双向绑定</li>
-<li>Vue 2 的时候 <strong>父子组件</strong> 不能双向绑定了（虽然仍然提供了 .sync 语法糖），并且还有 v-model</li>
-<li>React 中是单向数据流，并且组件与 DOM 之间也需要使用 onChange/setState。</li>
-</ul>
-</li>
-<li>HoC 和 mixins<ul>
-<li>Vue 中使用不同功能的组合是通过 mixins 实现的</li>
-<li>React 中则使用 HoC</li>
-</ul>
-</li>
-<li>组件间的通信<ul>
-<li>都有 props，也都可以跨层级通信，比如 Vue 的 provide/inject、React 的 context</li>
-<li>React 本身不支持自定义事件，因此 Vue 里面一般使用事件，React 中一般使用父组件传来的回调函数</li>
-</ul>
-</li>
-<li>更新视图<ul>
-<li>Vue 中一个对象，对应一个虚拟 DOM，当对象的属性改变时，把属性相关的 DOM 节点全部更新</li>
-<li>React 一个对象，对应一个虚拟 DOM，另一个对象对应另一个虚拟 DOM，对比两个更新，用 DOM Diff 算法找不同，然后局部更新 DOM</li>
-</ul>
-</li>
-<li>写法不同<ul>
-<li>Vue 是 JS in HTML</li>
-<li>React 是 HTML in JS</li>
-</ul>
-</li>
-<li>Vuex 和 Redux 的区别<ul>
-<li>Vue 中的 $store 直接注入到了组件实例中，可以直接用 dispatch、commit、mapState、this.$store 等；React 中需要用 connect 把 props 和 dispatch、state 连接起来</li>
-<li>Vue 中可以用 dispatch action、commit mutation；React 中只能使用 dispatch，不能直接操作 reduce</li>
-<li>Redux 中的使用的是不可变数据，每次都要用新的 State 替换旧的，而 Vue 中是直接修改的</li>
-</ul>
-</li>
-</ol>
-]]></content>
-      <categories>
-        <category>前端</category>
-        <category>JavaScript</category>
-        <category>框架</category>
-        <category>React</category>
-      </categories>
-      <tags>
-        <tag>入门</tag>
-        <tag>文档</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>React Advanced</title>
     <url>/hais-notebook/2020/02/02/React-Advanced/</url>
     <content><![CDATA[<p>主要抄了一下 React 文档。</p>
@@ -3262,6 +3476,80 @@
 <figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line">&lt;Mouse&gt;</span><br><span class="line">  &#123;mouse =&gt; (</span><br><span class="line">    &lt;Cat mouse=&#123;mouse&#125;/&gt;</span><br><span class="line">  )&#125;</span><br><span class="line">&lt;<span class="regexp">/Mouse&gt;</span></span><br></pre></td></tr></table></figure>
 
 <p>需要注意的是，使用 render prop 会导致 <code>React.PureComponent</code> 失效，因为外层组件更新的时候，render prop 的函数总是新的，除非你把它写成一个实例方法</p>
+]]></content>
+      <categories>
+        <category>前端</category>
+        <category>JavaScript</category>
+        <category>框架</category>
+        <category>React</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>文档</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>React Props &amp; State</title>
+    <url>/hais-notebook/2020/02/02/React-PropsState/</url>
+    <content><![CDATA[<p>主要记录了 React 的 Props 和 State。</p>
+<a id="more"></a>
+
+<h1 id="Props"><a href="#Props" class="headerlink" title="Props"></a>Props</h1><p>可以查看<a href="https://codesandbox.io/s/billowing-wind-d8kzw" target="_blank" rel="noopener">CodeSandbox 上的这个例子</a></p>
+<h1 id="State"><a href="#State" class="headerlink" title="State"></a>State</h1><p>可以查看<a href="https://codesandbox.io/s/silly-diffie-9yk38" target="_blank" rel="noopener">CodeSandbox 上的这个例子</a></p>
+<h2 id="setState-的注意事项"><a href="#setState-的注意事项" class="headerlink" title="setState 的注意事项"></a>setState 的注意事项</h2><ul>
+<li><code>this.state.n += 1</code> 无效，UI 不会自动更新，需要用 <code>setState</code></li>
+<li><code>setState</code> 不会马上改变 <code>state</code>，是异步更新的，推荐使用 <code>setState(函数)</code></li>
+<li>不推荐 <code>this.setState(this.state)</code>，因为 React 不推荐我们修改旧的 <code>state</code>（不可变数据）</li>
+</ul>
+<h2 id="复杂-state"><a href="#复杂-state" class="headerlink" title="复杂 state"></a>复杂 state</h2><ul>
+<li>类组件的 <code>setState</code> 会自动合并第一层，建议使用 <code>Object.assign</code> 或者 <code>...sate</code></li>
+<li>函数组件不会自动合并，建议分开写</li>
+</ul>
+<h1 id="Vue-和-React-的区别"><a href="#Vue-和-React-的区别" class="headerlink" title="Vue 和 React 的区别"></a>Vue 和 React 的区别</h1><p>共同点：</p>
+<ul>
+<li>都是对视图的封装，React 是用类和函数表示一个组件，Vue 是用构造选项表示一个组件</li>
+<li>都提供了 <code>creatElement</code> 的 XML 简写，React 是 JSX，Vue 是 template</li>
+</ul>
+<p>不同点：</p>
+<ol>
+<li>监听数据变化的实现原理不同<ul>
+<li>Vue 通过 getter/setter 和代理等方式进行劫持，能够精确知道数据的变化，不需要特别的优化</li>
+<li>React 默认是通过比较引用的方式来进行的，可能会造成不必要的 vDOM 重新渲染，需要用诸如 PureComponent/shouldComponentUpdate 等方式来进行优化</li>
+</ul>
+</li>
+<li>数据流不同<ul>
+<li>Vue 在 1.0 的时候 <strong>父子组件</strong> props 可以双向绑定，还有 v-model 可以实现 <strong>组件与 DOM</strong> 双向绑定</li>
+<li>Vue 2 的时候 <strong>父子组件</strong> 不能双向绑定了（虽然仍然提供了 .sync 语法糖），并且还有 v-model</li>
+<li>React 中是单向数据流，并且组件与 DOM 之间也需要使用 onChange/setState。</li>
+</ul>
+</li>
+<li>HoC 和 mixins<ul>
+<li>Vue 中使用不同功能的组合是通过 mixins 实现的</li>
+<li>React 中则使用 HoC</li>
+</ul>
+</li>
+<li>组件间的通信<ul>
+<li>都有 props，也都可以跨层级通信，比如 Vue 的 provide/inject、React 的 context</li>
+<li>React 本身不支持自定义事件，因此 Vue 里面一般使用事件，React 中一般使用父组件传来的回调函数</li>
+</ul>
+</li>
+<li>更新视图<ul>
+<li>Vue 中一个对象，对应一个虚拟 DOM，当对象的属性改变时，把属性相关的 DOM 节点全部更新</li>
+<li>React 一个对象，对应一个虚拟 DOM，另一个对象对应另一个虚拟 DOM，对比两个更新，用 DOM Diff 算法找不同，然后局部更新 DOM</li>
+</ul>
+</li>
+<li>写法不同<ul>
+<li>Vue 是 JS in HTML</li>
+<li>React 是 HTML in JS</li>
+</ul>
+</li>
+<li>Vuex 和 Redux 的区别<ul>
+<li>Vue 中的 $store 直接注入到了组件实例中，可以直接用 dispatch、commit、mapState、this.$store 等；React 中需要用 connect 把 props 和 dispatch、state 连接起来</li>
+<li>Vue 中可以用 dispatch action、commit mutation；React 中只能使用 dispatch，不能直接操作 reduce</li>
+<li>Redux 中的使用的是不可变数据，每次都要用新的 State 替换旧的，而 Vue 中是直接修改的</li>
+</ul>
+</li>
+</ol>
 ]]></content>
       <categories>
         <category>前端</category>

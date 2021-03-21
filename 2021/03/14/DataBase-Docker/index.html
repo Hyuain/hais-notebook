@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/hais-notebook/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/hais-notebook/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/hais-notebook/images/favicon-16x16.png">
+
+<link rel="stylesheet" href="/hais-notebook/css/main.css">
+
+
+<link rel="stylesheet" href="/hais-notebook/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('https://hyuain.github.io/hais-notebook').hostname,
+    root: '/hais-notebook/',
+    scheme: 'Gemini',
+    version: '7.7.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: 'W0QZQNNH7N',
+      apiKey: '00189c8d102508ea71e94422b5f129fd',
+      indexName: 'hais-notebook',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="数据库的基本知识以及用 Docker 来安装数据库。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据库基本知识">
+<meta property="og:url" content="https://hyuain.github.io/hais-notebook/2021/03/14/DataBase-Docker/index.html">
+<meta property="og:site_name" content="Hais Notebook">
+<meta property="og:description" content="数据库的基本知识以及用 Docker 来安装数据库。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-03-14T10:49:35.000Z">
+<meta property="article:modified_time" content="2021-03-21T04:00:24.161Z">
+<meta property="article:author" content="Harvey Zhang">
+<meta property="article:tag" content="入门">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://hyuain.github.io/hais-notebook/2021/03/14/DataBase-Docker/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>数据库基本知识 | Hais Notebook</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/hais-notebook/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hais Notebook</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/hais-notebook/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/hais-notebook/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/hais-notebook/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/hais-notebook/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2021/03/14/DataBase-Docker/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
+      <meta itemprop="name" content="Harvey Zhang">
+      <meta itemprop="description" content="小海的笔记本">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hais Notebook">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          数据库基本知识
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-03-14 10:49:35" itemprop="dateCreated datePublished" datetime="2021-03-14T10:49:35+00:00">2021-03-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-21 04:00:24" itemprop="dateModified" datetime="2021-03-21T04:00:24+00:00">2021-03-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hais-notebook/categories/%E5%85%A8%E6%A0%88/" itemprop="url" rel="index">
+                    <span itemprop="name">全栈</span>
+                  </a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hais-notebook/categories/%E5%85%A8%E6%A0%88/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index">
+                    <span itemprop="name">数据库</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>数据库的基本知识以及用 Docker 来安装数据库。</p>
+<a id="more"></a>
+
+<h1 id="用-Docker-来安装数据库"><a href="#用-Docker-来安装数据库" class="headerlink" title="用 Docker 来安装数据库"></a>用 Docker 来安装数据库</h1><h2 id="安装-Docker"><a href="#安装-Docker" class="headerlink" title="安装 Docker"></a>安装 Docker</h2><ul>
+<li>进入 <a href="https://hub.docker.com/" target="_blank" rel="noopener">Docker Hub 官方网站</a> 注册并下载</li>
+<li>确保 <code>docker --version</code> 返回版本号</li>
+<li>在 Docker Engine 中设置国内镜像，<a href="http://guide.daocloud.io/dcs/daocloud-9153151.html" target="_blank" rel="noopener">可以点这里查看教程</a><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"registry-mirrors"</span>: [</span><br><span class="line">    <span class="string">"https://docker.mirrors.ustc.edu.cn"</span></span><br><span class="line">  ],</span><br><span class="line">  <span class="attr">"insecure-registries"</span>: []</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="Docker-安装-MySQL"><a href="#Docker-安装-MySQL" class="headerlink" title="Docker 安装 MySQL"></a>Docker 安装 MySQL</h2><ul>
+<li>进入 Docker 上面 <a href="https://hub.docker.com/_/mysql" target="_blank" rel="noopener">MySQL 的主页</a></li>
+<li>运行命令创建容器：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:tag</span><br><span class="line"><span class="comment"># -d 表示守护进程形式，不会随意关掉</span></span><br><span class="line"><span class="comment"># -p 用来设置端口映射 本机端口号:虚拟机端口号</span></span><br><span class="line">docker run --name mysql-demo1 -e MYSQL_ROOT_PASSWORD=123456 -p 3306:3306 -d mysql:latest</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>常见的 docker 命令：</p>
+<ul>
+<li><code>docker run</code> 启动新容器</li>
+<li><code>docker ps -a</code> 查看所有的容器（Containers）</li>
+<li><code>docker kill &lt;id|name&gt;</code> 关闭对应的容器</li>
+<li><code>docker restart &lt;id|name&gt;</code> 重启关闭的容器</li>
+<li><code>docer rm &lt;id|name&gt;</code> 删除对应的容器</li>
+<li><code>docker container prune</code> 删除无用的容器，以节省空间</li>
+</ul>
+<p>注意：用 docker 运行的容器，默认不会持久化，容器被删掉，数据也就没了</p>
+<h2 id="Docker-连接-MySQL"><a href="#Docker-连接-MySQL" class="headerlink" title="Docker 连接 MySQL"></a>Docker 连接 MySQL</h2><ol>
+<li>进入 Docker 容器，相当于一个 Linux 虚拟机：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="built_in">exec</span> -it mysql-demo1 bash</span><br></pre></td></tr></table></figure></li>
+<li>使用 MySQL 命令进入数据库<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -u root：以 ROOT 用户进入</span></span><br><span class="line"><span class="comment"># -p 直接回车，然后输入密码</span></span><br><span class="line">mysql -u root -p</span><br></pre></td></tr></table></figure></li>
+<li>使用 SQL 语句操作<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看有哪些数据库</span></span><br><span class="line"><span class="keyword">show</span> <span class="keyword">databases</span>;</span><br><span class="line"><span class="comment"># 进入其中一个数据库</span></span><br><span class="line"><span class="keyword">use</span> &lt;数据库名称&gt;;</span><br><span class="line"><span class="comment"># 看有哪些表</span></span><br><span class="line"><span class="keyword">show</span> <span class="keyword">tables</span>;</span><br><span class="line"><span class="comment"># 查看表内容</span></span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> &lt;表名称&gt;;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h1 id="数据库的基本知识"><a href="#数据库的基本知识" class="headerlink" title="数据库的基本知识"></a>数据库的基本知识</h1><h2 id="什么是数据库"><a href="#什么是数据库" class="headerlink" title="什么是数据库"></a>什么是数据库</h2><h3 id="数据库-Database"><a href="#数据库-Database" class="headerlink" title="数据库 Database"></a>数据库 Database</h3><blockquote>
+<p>将大量数据保存起来，通过计算机加工而成的可以进行高效访问的数据集合称为数据库</p>
+</blockquote>
+<p>根据数据保存的格式不同，数据库一般被分为：</p>
+<ul>
+<li>关系型数据库</li>
+<li>面向对象数据库、XML 数据库、键值存储系统（Redis）、层次数据库</li>
+</ul>
+<h3 id="数据库管理系统-DBMS"><a href="#数据库管理系统-DBMS" class="headerlink" title="数据库管理系统 DBMS"></a>数据库管理系统 DBMS</h3><blockquote>
+<p>用来管理数据库的系统被称为数据库管理系统</p>
+</blockquote>
+<ul>
+<li>比如 MySQL、PostgreSQL、SQL Server、DB2、Oracle</li>
+</ul>
+<p>DBMS 大概结构如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">数据库（硬盘&#x2F;内存中存数据的地方）</span><br><span class="line">           ↑ 读&#x2F;写</span><br><span class="line">Server 服务端（数据提供者）</span><br><span class="line"> 请求的数据 ↓ ↑ SQL语句 </span><br><span class="line">Client 客户端（数据使用者）</span><br></pre></td></tr></table></figure>
+
+<p>我们使用的 MySQL 命令，就是一个客户端，MySQL 背后其实还有一个 Server 在 24 小时不间断运行着</p>
+<h1 id="用-Node-js-连接数据库"><a href="#用-Node-js-连接数据库" class="headerlink" title="用 Node.js 连接数据库"></a>用 Node.js 连接数据库</h1><p>可以使用 <a href="https://github.com/mysqljs/mysql" target="_blank" rel="noopener">mysqljs 库</a></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> mysql = <span class="built_in">require</span>(<span class="string">"mysql"</span>)</span><br><span class="line"><span class="keyword">const</span> connection = mysql.createConnection(&#123;</span><br><span class="line">  host: <span class="string">"localhost"</span>,</span><br><span class="line">  user: <span class="string">"root"</span>,</span><br><span class="line">  password: <span class="string">"123456"</span>,</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">connection.connect()</span><br><span class="line"></span><br><span class="line">connection.query(<span class="string">"CREATE DATABASE IF NOT EXISTS harvey DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;"</span>, <span class="function"><span class="keyword">function</span> (<span class="params">error, results, fields</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (error) <span class="keyword">throw</span> error</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">"创建数据库"</span>, results)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">connection.query(<span class="string">"USE harvey;"</span>)</span><br><span class="line"></span><br><span class="line">connection.query(<span class="string">`CREATE TABLE IF NOT EXISTS user(</span></span><br><span class="line"><span class="string">  name text,</span></span><br><span class="line"><span class="string">  age int</span></span><br><span class="line"><span class="string">);`</span>, <span class="function"><span class="keyword">function</span> (<span class="params">error, results, fields</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (error) <span class="keyword">throw</span> error</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">"创建表"</span>, results)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">connection.end()</span><br></pre></td></tr></table></figure>
+
+<h1 id="常见的-SQL-命令"><a href="#常见的-SQL-命令" class="headerlink" title="常见的 SQL 命令"></a>常见的 SQL 命令</h1><h2 id="操作-database-table"><a href="#操作-database-table" class="headerlink" title="操作 database/table"></a>操作 database/table</h2><ul>
+<li>增：<code>CREATE DATABASE IF NOT EXISTS harvey DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;</code> （MySQL 才需要使用 utf8mb4，并且在后面写 COLLATE）</li>
+<li>删：<code>DROP DATABSE;</code></li>
+</ul>
+<h2 id="操作记录"><a href="#操作记录" class="headerlink" title="操作记录"></a>操作记录</h2><ul>
+<li>增：<code>INSERT INTO user (name, age) VALUES (&#39;harvey&#39;, 20);</code></li>
+<li>删：<code>DELETE FROM user WHERE name=&#39;harvey&#39;;</code></li>
+<li>改：<code>UPDATE user SET age=24 WHERE name=&#39;harvey&#39;;</code></li>
+<li>查：<code>SELECT * FROM user LIMIT 10;</code></li>
+</ul>
+<h1 id="MySQL-的数据类型"><a href="#MySQL-的数据类型" class="headerlink" title="MySQL 的数据类型"></a>MySQL 的数据类型</h1><p>五大类：数字、字符串、时间和日期、JSON（5.7.8 以上）、其他特殊类型</p>
+<h2 id="数字类型"><a href="#数字类型" class="headerlink" title="数字类型"></a>数字类型</h2><ul>
+<li><p>bit、tinyint、bool/boolean、smallint、mediumint、int、bigint、decimal、float、double</p>
+</li>
+<li><p>serial：一个自增长的非负大整数（BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE）</p>
+</li>
+</ul>
+<p><a href="https://dev.mysql.com/doc/refman/8.0/en/numeric-type-syntax.html" target="_blank" rel="noopener">官方文档</a></p>
+<h2 id="字符串类型"><a href="#字符串类型" class="headerlink" title="字符串类型"></a>字符串类型</h2><ul>
+<li>char(100)、varchar(100)、binary(1024)、varbinary(1024)、blob、text、enum(‘v1’,’v2’)、set(‘v1’,’v2’)</li>
+</ul>
+<p>varchar 长度可变，可以节省空间</p>
+<p><a href="https://dev.mysql.com/doc/refman/8.0/en/string-type-syntax.html" target="_blank" rel="noopener">官方文档</a></p>
+<h2 id="时间和日期"><a href="#时间和日期" class="headerlink" title="时间和日期"></a>时间和日期</h2><ul>
+<li>date、time、datetime、timestamp、year</li>
+</ul>
+<p><a href="https://dev.mysql.com/doc/refman/8.0/en/date-and-time-type-syntax.html" target="_blank" rel="noopener">官方文档</a></p>
+<p>一般传给前端需要转换为 ISO 8601 格式</p>
+<h1 id="Sequelize-js"><a href="#Sequelize-js" class="headerlink" title="Sequelize.js"></a>Sequelize.js</h1>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/hais-notebook/tags/%E5%85%A5%E9%97%A8/" rel="tag"># 入门</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/hais-notebook/2021/03/03/Webpack-Core/" rel="prev" title="Webpack 核心原理">
+      <i class="fa fa-chevron-left"></i> Webpack 核心原理
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/hais-notebook/2021/03/20/DataBase-Base/" rel="next" title="数据库基本知识 2">
+      数据库基本知识 2 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#用-Docker-来安装数据库"><span class="nav-number">1.</span> <span class="nav-text">用 Docker 来安装数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装-Docker"><span class="nav-number">1.1.</span> <span class="nav-text">安装 Docker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker-安装-MySQL"><span class="nav-number">1.2.</span> <span class="nav-text">Docker 安装 MySQL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker-连接-MySQL"><span class="nav-number">1.3.</span> <span class="nav-text">Docker 连接 MySQL</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数据库的基本知识"><span class="nav-number">2.</span> <span class="nav-text">数据库的基本知识</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是数据库"><span class="nav-number">2.1.</span> <span class="nav-text">什么是数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#数据库-Database"><span class="nav-number">2.1.1.</span> <span class="nav-text">数据库 Database</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据库管理系统-DBMS"><span class="nav-number">2.1.2.</span> <span class="nav-text">数据库管理系统 DBMS</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#用-Node-js-连接数据库"><span class="nav-number">3.</span> <span class="nav-text">用 Node.js 连接数据库</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#常见的-SQL-命令"><span class="nav-number">4.</span> <span class="nav-text">常见的 SQL 命令</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#操作-database-table"><span class="nav-number">4.1.</span> <span class="nav-text">操作 database&#x2F;table</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#操作记录"><span class="nav-number">4.2.</span> <span class="nav-text">操作记录</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MySQL-的数据类型"><span class="nav-number">5.</span> <span class="nav-text">MySQL 的数据类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#数字类型"><span class="nav-number">5.1.</span> <span class="nav-text">数字类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字符串类型"><span class="nav-number">5.2.</span> <span class="nav-text">字符串类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#时间和日期"><span class="nav-number">5.3.</span> <span class="nav-text">时间和日期</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Sequelize-js"><span class="nav-number">6.</span> <span class="nav-text">Sequelize.js</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Harvey Zhang</p>
+  <div class="site-description" itemprop="description">小海的笔记本</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/hais-notebook/archives/">
+        
+          <span class="site-state-item-count">67</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/hais-notebook/categories/">
+          
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/hais-notebook/tags/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Harvey Zhang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/hais-notebook/lib/anime.min.js"></script>
+  <script src="/hais-notebook/lib/velocity/velocity.min.js"></script>
+  <script src="/hais-notebook/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/hais-notebook/js/utils.js"></script>
+
+<script src="/hais-notebook/js/motion.js"></script>
+
+
+<script src="/hais-notebook/js/schemes/pisces.js"></script>
+
+
+<script src="/hais-notebook/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/hais-notebook/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
