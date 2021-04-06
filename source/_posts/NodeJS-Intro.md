@@ -18,6 +18,7 @@ categories:
 - ts-node：让 node 支持直接运行 TypeScript 代码，不宜在生产环境使用。
 - ts-node-dev：node-dev + ts-node，不宜在生产环境使用。
 - 注意用 ts 开发时，需要安装 @types/node
+- tsc --init 命令会自动创建 `tsconfig.json` 文件
 
 # Node.js 简介
 
