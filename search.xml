@@ -1,6 +1,156 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Express</title>
+    <url>/hais-notebook/2021/03/27/NodeJS-Express/</url>
+    <content><![CDATA[<p>NodeJS WEB 框架之 Express</p>
+<a id="more"></a>
+
+<h1 id="Express-Generator"><a href="#Express-Generator" class="headerlink" title="Express Generator"></a>Express Generator</h1><p>express 脚手架。</p>
+<h1 id="use"><a href="#use" class="headerlink" title="use"></a>use</h1><figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> express <span class="keyword">from</span> <span class="string">"express"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> app = express()</span><br><span class="line"><span class="keyword">const</span> port = <span class="number">3000</span></span><br><span class="line"></span><br><span class="line">app.use(<span class="function">(<span class="params">request, response, next</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(request.url)</span><br><span class="line">  response.write(<span class="string">"first hi\n"</span>)</span><br><span class="line">  <span class="comment">// 为了让他执行下一个 use，需要调用 next()，否则他不会执行下一个 use</span></span><br><span class="line">  next()</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">app.use(<span class="function">(<span class="params">request, response, next</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">"2"</span>)</span><br><span class="line">  response.write(<span class="string">"second hi\n"</span>)</span><br><span class="line">  next()</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">app.use(<span class="function">(<span class="params">request, response, next</span>) =&gt;</span> &#123;</span><br><span class="line">  response.end()</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">app.listen(port, <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">`Example app listening at http://localhost:<span class="subst">$&#123;port&#125;</span>`</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>express 就是这样通过一个个 <code>use</code> 的函数，最终到达结束程序。每一个函数可以读取 request、写入 response、调用 next()。</p>
+<h1 id="中间件"><a href="#中间件" class="headerlink" title="中间件"></a>中间件</h1><p><code>use</code> 的那些函数就被称为 <strong>中间件</strong>。<br>可以看一下 <code>express-generator</code> 为我们创建的 <code>app.js</code> 文件的其中一部分。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">app.use(logger(<span class="string">"dev"</span>))</span><br><span class="line">app.use(express.json())</span><br><span class="line">app.use(express.urlencoded(&#123; <span class="attr">extended</span>: <span class="literal">false</span> &#125;))</span><br><span class="line">app.use(cookieParser())</span><br><span class="line">app.use(express.static(path.join(__dirname, <span class="string">"public"</span>)))</span><br></pre></td></tr></table></figure>
+
+<p>Express 这样的编程模型的优点就是模块化：每个功能都能通过一个函数实现，然后通过 app.use 将函数们整合起来。如果这些函数放到不同的文件或者 npm 包里，就实现了模块化。</p>
+<h1 id="路由"><a href="#路由" class="headerlink" title="路由"></a>路由</h1><p>用 use 也可以很方便地实现路由：</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line">app.use(<span class="function">(<span class="params">request, response, next</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (request.path === <span class="string">"/"</span> &amp;&amp; request.method === <span class="string">"get"</span>) &#123;</span><br><span class="line">    response.send(<span class="string">"ROOT"</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  next()</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>由此衍生除了一些 API 糖：</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line">app.use(<span class="string">"/xxx"</span>, fn)</span><br><span class="line">app.get(<span class="string">"/xxx"</span>, fn)</span><br><span class="line">app.post(<span class="string">"/xxx"</span>, fn)</span><br><span class="line">app.route(<span class="string">"/xxx"</span>).all(f1).get(f2).post(f3)</span><br></pre></td></tr></table></figure>
+
+<h1 id="错误处理"><a href="#错误处理" class="headerlink" title="错误处理"></a>错误处理</h1><p><code>next()</code> 可以传入一个错误/字符串，就会进入错误处理函数：</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line">app.use(<span class="function">(<span class="params">request, response, next</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (hasError) &#123;</span><br><span class="line">    <span class="comment">// 传给 next 一个错误，就会直接进入 errorHandler</span></span><br><span class="line">    <span class="keyword">return</span> next(<span class="string">"出错了！"</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  next()</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">app.use(<span class="function">(<span class="params">request, response, next</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">"如果没有错误，这里才会执行"</span>)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">app.use(<span class="function">(<span class="params">error, request, response, next</span>) =&gt;</span> &#123;</span><br><span class="line">  response.write(error)</span><br><span class="line">  response.end()</span><br><span class="line">  next()</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h1 id="子应用与挂载点"><a href="#子应用与挂载点" class="headerlink" title="子应用与挂载点"></a>子应用与挂载点</h1><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> app = express()</span><br><span class="line"><span class="keyword">const</span> admin = express()</span><br><span class="line"></span><br><span class="line">app.use(<span class="string">"/admin"</span>, admin) <span class="comment">// admin 是子应用，/admin 是 admin 的挂载点</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="Express-APIs"><a href="#Express-APIs" class="headerlink" title="Express APIs"></a>Express APIs</h1><h2 id="express-xxx"><a href="#express-xxx" class="headerlink" title="express.xxx"></a>express.xxx</h2><ul>
+<li><code>express.static()</code> 指定静态资源文件夹路径</li>
+<li><code>express.json()</code> 解析 Content-Type 为 application/json（或类似）的内容</li>
+<li><code>express.urlencoded()</code> 解析 Content-Type 为 application/x-www-form-urlencoded（或类似）的内容</li>
+<li><code>express.text()</code> 解析 Content-Type 为 text/plain（或类似）的内容</li>
+<li><code>express.raw()</code> 解析 Content-Type 为 application/octet-stream （或类似）的内容</li>
+</ul>
+<h2 id="app-xxx"><a href="#app-xxx" class="headerlink" title="app.xxx"></a>app.xxx</h2><ul>
+<li><code>app.set()</code> set 一个值，不过有一些特殊值，比如 <code>case sensitive routing</code> <code>env</code> <code>views</code> <code>view engine</code>，而且一般这些特殊值放在所有的中间件之前才会生效</li>
+<li><code>app.get()</code> 可以获取到你 set 的东西</li>
+<li><code>app.get()</code> <code>app.post()</code> <code>app.put()</code> <code>app.delete()</code> <code>app.patch()</code> <code>app.all()</code> 这些都是 <code>app.use()</code> 的 API 糖 </li>
+<li><code>app.locals</code> 设置一些局部变量，比如 <code>app.locals.title = &quot;My Title&quot;</code>，然后就可以在其他地方进行读取</li>
+<li><code>app.mountpath</code> 挂载路径</li>
+</ul>
+<h2 id="request-xxx"><a href="#request-xxx" class="headerlink" title="request.xxx"></a>request.xxx</h2><ul>
+<li><code>request.app</code> 获取到全局的 app</li>
+<li><code>request.get()</code> 获取请求头</li>
+<li><code>request.param()</code> 获取某个参数</li>
+<li><code>request.range()</code><ol>
+<li>用 HEAD 请求某个资源，如果资源支持分片下载，就可以得到类似于 <code>Accept-Ranges: bytes</code>（支持以字节为分片下载） 的响应头。<a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Range_requests" target="_blank" rel="noopener">可以参阅这里</a></li>
+<li>然后用请求头 <code>Range</code> 就可以设置分片下载</li>
+<li><code>request.range</code> 则是用于解析 <code>Range</code> 这个请求头的</li>
+</ol>
+</li>
+</ul>
+<h2 id="response-xxx"><a href="#response-xxx" class="headerlink" title="response.xxx"></a>response.xxx</h2><ul>
+<li><code>response.app</code> 获取到全局的 app</li>
+<li><code>response.headersSent</code> 是否已经发送响应头</li>
+<li><code>response.set()</code> 设置响应头（覆盖之前的）</li>
+<li><code>response.append()</code> 设置请求头（不覆盖之前的）</li>
+<li><code>response.status()</code> 设置状态码</li>
+<li><code>repoonse.cookie()</code> 设置 cookie</li>
+<li><code>response.download()</code> 提供下载</li>
+<li><code>response.format()</code> 根据请求的不同 <code>Accept</code> 值返回不同的类型</li>
+<li><code>response.json()</code> 类似于 <code>JSON.stringify()</code></li>
+<li><code>response.location()</code> 一般用于 301/302/307 跳转，设置响应头 <code>Location</code></li>
+<li><code>response.redirect()</code> 相当于 <code>response.location()</code> + <code>response.status()</code></li>
+<li><code>response.write()</code> 写入消息体（流式操作）</li>
+<li><code>response.end()</code> 写入消息体（一次性），不能跟 <code>response.write</code> 同时使用</li>
+</ul>
+<h2 id="router-xxx"><a href="#router-xxx" class="headerlink" title="router.xxx"></a>router.xxx</h2><p><code>router</code> 相当于一个小型的 <code>app</code>，是一个单独的用于路由的实例，需要这样声明：</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> userRouter = express.Router()</span><br><span class="line"><span class="keyword">const</span> app = express()</span><br><span class="line"></span><br><span class="line">userRouter.get(<span class="string">"/:id"</span>, <span class="function">(<span class="params">request, response, next</span>) =&gt;</span> &#123;&#125;)</span><br><span class="line">app.use(<span class="string">"/users"</span>, userRouter) <span class="comment">// 将 userRouter 挂载到 app 上</span></span><br></pre></td></tr></table></figure>
+
+<p><code>router</code> 有这些 API，基本被 <code>app</code> 包含。</p>
+<ul>
+<li><code>router.all()</code></li>
+<li><code>router.METHOD()</code></li>
+<li><code>router.param()</code></li>
+<li><code>router.route()</code></li>
+<li><code>router.use()</code></li>
+</ul>
+]]></content>
+      <categories>
+        <category>全栈</category>
+        <category>NodeJS</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Child Process</title>
+    <url>/hais-notebook/2021/03/26/NodeJS-ChildProcess/</url>
+    <content><![CDATA[<p>进程、线程，进程控制与线程控制。</p>
+<a id="more"></a>
+
+<h1 id="进程-Process"><a href="#进程-Process" class="headerlink" title="进程 Process"></a>进程 Process</h1><p><strong>进程</strong>是<strong>程序</strong>（比如 exe）的执行实例。<strong>程序</strong>在CPU上执行的活动叫做<strong>进程</strong>。</p>
+<p>一个进程可以创建另一个进程（父进程与子进程）。</p>
+<h2 id="多程序并发执行"><a href="#多程序并发执行" class="headerlink" title="多程序并发执行"></a>多程序并发执行</h2><p>单核 CPU 在一个时刻，只能做一件事情，为了让用户在同一时刻可以做多件事，就需要在不同进程中快速切换。</p>
+<p>也就是“多程序并发执行”——多个程序在宏观上并行，微观上串行。多个进程之间会出现抢资源（比如打印机就很明显）的现象。</p>
+<h2 id="进程的两个状态"><a href="#进程的两个状态" class="headerlink" title="进程的两个状态"></a>进程的两个状态</h2><p>进程有 <strong>非运行态</strong> 与 <strong>运行态</strong>。分派程序将 CPU 分配给非运行态的进程，进程从而进入运行态；过一段时间之后进程暂停，又进入非运行态。</p>
+<h2 id="阻塞"><a href="#阻塞" class="headerlink" title="阻塞"></a>阻塞</h2><p>在进程队列中等待执行的进程都处于 <strong>非运行态</strong>，一些进程(A)在等待 CPU 资源，一些进程(B)在等待 I/O 完成（比如文件读取）。如果这时候把 CPU 分配给 B 进程，B 进程并不会使用 CPU，而是继续等 I/O——我们把 B 称为 <strong>阻塞进程</strong>。为了避免资源的浪费，分派程序只会把 CPU 分配给 <strong>非阻塞进程</strong>。</p>
+<h1 id="线程-Thread"><a href="#线程-Thread" class="headerlink" title="线程 Thread"></a>线程 Thread</h1><p>早期的面向进程设计的操作系统中，进程是程序的基本执行实体。现在的面向线程设计的系统中，进程本身不是基本运行单位，而是线程的容器。</p>
+<p>进程是执行的基本实体，也是资源分配的基本实体——这就导致进程的创建、切换、销毁太消耗 CPU 的时间了。因此引入线程，线程作为执行的基本实体，而进程作为资源分配的基本实体。</p>
+<h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><ul>
+<li>CPU 调度和执行的最小单元</li>
+<li>一个进程中可以有一个或多个线程</li>
+<li>一个进程中的线程共享该进程的所有资源</li>
+<li>进程的第一个线程叫做初始化线程</li>
+<li>线程的调度可以由操作系统负责，也可以由用户自己负责</li>
+</ul>
+<h1 id="使用-NodeJS-操作进程"><a href="#使用-NodeJS-操作进程" class="headerlink" title="使用 NodeJS 操作进程"></a>使用 NodeJS 操作进程</h1><p>使用 <code>child_process</code> 模块可以创建子进程。<br>子进程的运行结果存在系统缓存之中（最大 200kb），等到子进程结束之后，主进程再用回调函数读取子进程的运行结果。</p>
+<h2 id="exec"><a href="#exec" class="headerlink" title="exec"></a>exec</h2><p><code>exec(command[, options][, callback])</code></p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> child_process = <span class="built_in">require</span>(<span class="string">"child_process"</span>)</span><br><span class="line"><span class="keyword">const</span> &#123; exec &#125; = child_process</span><br><span class="line"></span><br><span class="line"><span class="comment">// exec 可以执行命令行命令，从而开启一个子进程，子进程如果有输出，会存在缓存之中，等子进程结束之后输出给 stdout</span></span><br><span class="line">exec(<span class="string">"ls ../"</span>, (error, stdout, stderr) =&gt; &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(error, stdout, stderr)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>上面这段简单的代码表示使用 exec 可以执行命令行命令，使用命令行我们就可以开启一个子进程。</p>
+<p>exec 也会返回一个包含流的对象：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> child_process = <span class="built_in">require</span>(<span class="string">"child_process"</span>)</span><br><span class="line"><span class="keyword">const</span> &#123; exec &#125; = child_process</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> streams = exec(<span class="string">"ls ../"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// streams.stdout 是一个流</span></span><br><span class="line">streams.stdout.on(<span class="string">"data"</span>, (chunk) =&gt; &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">"getData"</span>, chunk)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// stream.stderror 也是一个流</span></span><br><span class="line">streams.stderr.on(<span class="string">"data"</span>, (chunk) =&gt; &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">"getError"</span>, chunk)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>此外，还可以用 <code>util.promisify</code> 将其包裹为一个 Promise，避免回调地狱：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> child_process = <span class="built_in">require</span>(<span class="string">"child_process"</span>)</span><br><span class="line"><span class="keyword">const</span> &#123; exec &#125; = child_process</span><br><span class="line"><span class="keyword">const</span> util = <span class="built_in">require</span>(<span class="string">"util"</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> promisifiedExec = util.promisify(exec)</span><br><span class="line"></span><br><span class="line">promisifiedExec(<span class="string">"ls ../"</span>)</span><br><span class="line">  .then(<span class="function">(<span class="params">data</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"success"</span>, data.stdout)</span><br><span class="line">  &#125;)</span><br></pre></td></tr></table></figure>
+
+<p>注意！如果 <code>exec</code> 执行的命令行命令可以被用户指定，就会存在注入的风险，所以通常我们不使用 <code>exec</code>。</p>
+<h2 id="execFile"><a href="#execFile" class="headerlink" title="execFile"></a>execFile</h2><p><code>execFile(file[, args][, options][, callback])</code></p>
+<p>跟 exec 用法基本相同，也可以以流的方式使用，但命令行参数需要用数组的形式传入，无法注入。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> child_process = <span class="built_in">require</span>(<span class="string">"child_process"</span>)</span><br><span class="line"><span class="keyword">const</span> &#123; execFile &#125; = child_process</span><br><span class="line"></span><br><span class="line">execFile(<span class="string">"ls"</span>, [<span class="string">"-la"</span>, <span class="string">"."</span>], (error, stdout) =&gt; &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(error)</span><br><span class="line">  <span class="built_in">console</span>.log(stdout)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h3 id="options"><a href="#options" class="headerlink" title="options"></a>options</h3><p>options 可传可不传，他有一些比较重要的参数：</p>
+<ul>
+<li>cwd: 在哪个目录执行，默认是当前目录</li>
+<li>env: 环境变量，默认是 process.env</li>
+<li>maxBuffer: 用于暂存 stdout 和 stderr 的最大缓存区大小，默认 1024 * 1024 Byte</li>
+<li>shell: 指定运行的 shell</li>
+</ul>
+<h2 id="spawn"><a href="#spawn" class="headerlink" title="spawn"></a>spawn</h2><p>用法跟 execFile 基本一样，但没有回调函数，只能通过流事件来获取结果，也没有最大的缓存限制（因为是流，并没有暂存 stdout 和 stderr）。</p>
+<p>一般用 spawn，不用 execFile，因为流比较方便，且不会占用太多内存</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> child_process = <span class="built_in">require</span>(<span class="string">"child_process"</span>)</span><br><span class="line"><span class="keyword">const</span> &#123; spawn &#125; = child_process</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> streams = spawn(<span class="string">"ls"</span>, [<span class="string">"-la"</span>, <span class="string">"."</span>])</span><br><span class="line"></span><br><span class="line">streams.stdout.on(<span class="string">"data"</span>, (chunk) =&gt; &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(chunk.toString())</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="fork"><a href="#fork" class="headerlink" title="fork"></a>fork</h2><p>创建一个执行 Node 脚本的子进程，可以监听他的 message 事件。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">/** main.js */</span></span><br><span class="line"><span class="keyword">const</span> child_process = <span class="built_in">require</span>(<span class="string">"child_process"</span>)</span><br><span class="line"><span class="keyword">const</span> &#123; fork &#125; = child_process</span><br><span class="line"></span><br><span class="line"><span class="comment">// 其实类似于 execFile("node", ["./child.js"])</span></span><br><span class="line"><span class="keyword">const</span> childProcess = fork(<span class="string">"./child.js"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 父进程监听子进程传来的消息</span></span><br><span class="line">childProcess.on(<span class="string">"message"</span>, (message) =&gt; &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">"父进程得到 message"</span>, message)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">childProcess.send(&#123; <span class="attr">age</span>: <span class="number">20</span> &#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">/** child.js */</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"This is child.js"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 子进程监听父进程传来的消息</span></span><br><span class="line">process.on(<span class="string">"message"</span>, (message) =&gt; &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">"子进程得到 message"</span>, message)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  process.send(&#123; <span class="attr">name</span>: <span class="string">"harvey"</span> &#125;)</span><br><span class="line">  <span class="comment">// 如果没有这句话，node 会因为父子进程相互监听而无法退出</span></span><br><span class="line">  process.exit()</span><br><span class="line">&#125;, <span class="number">2000</span>)</span><br></pre></td></tr></table></figure>
+
+<h1 id="使用-NodeJS-操作线程"><a href="#使用-NodeJS-操作线程" class="headerlink" title="使用 NodeJS 操作线程"></a>使用 NodeJS 操作线程</h1><p>操作线程需要使用 <code>new Worker</code>，而这个 API 非常新，在 v10.5.0 才加入，并且在 v11.7.0 之前使用都需要 <code>--experimental-worker</code> 来开启，因此用得会比较少，并且效率也不高。</p>
+<blockquote>
+<p>Workers (threads) are useful for performing CPU-intensive JavaScript operations. They do not help much with I/O-intensive work. The Node.js built-in asynchronous I/O operations are more efficient than Workers can be.</p>
+</blockquote>
+<p>具体内容可以参考 <a href="https://nodejs.org/api/worker_threads.html" target="_blank" rel="noopener">官方文档</a></p>
+]]></content>
+      <categories>
+        <category>全栈</category>
+        <category>NodeJS</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Stream</title>
     <url>/hais-notebook/2021/03/21/NodeJS-Stream/</url>
     <content><![CDATA[<p>数据流叫 Stream，每次写的小数据叫 chunk，产生数据的一段叫 source，得到数据的一段叫 sink。</p>
@@ -825,6 +975,7 @@
 <li>ts-node：让 node 支持直接运行 TypeScript 代码，不宜在生产环境使用。</li>
 <li>ts-node-dev：node-dev + ts-node，不宜在生产环境使用。</li>
 <li>注意用 ts 开发时，需要安装 @types/node</li>
+<li>tsc –init 命令会自动创建 <code>tsconfig.json</code> 文件</li>
 </ul>
 <h1 id="Node-js-简介"><a href="#Node-js-简介" class="headerlink" title="Node.js 简介"></a>Node.js 简介</h1><h2 id="Node-js-是什么"><a href="#Node-js-是什么" class="headerlink" title="Node.js 是什么"></a>Node.js 是什么</h2><ul>
 <li>不是 web 框架，不能把 Node.js 与 Flask 或 Spring 对比</li>
@@ -3391,6 +3542,80 @@
       </tags>
   </entry>
   <entry>
+    <title>React Props &amp; State</title>
+    <url>/hais-notebook/2020/02/02/React-PropsState/</url>
+    <content><![CDATA[<p>主要记录了 React 的 Props 和 State。</p>
+<a id="more"></a>
+
+<h1 id="Props"><a href="#Props" class="headerlink" title="Props"></a>Props</h1><p>可以查看<a href="https://codesandbox.io/s/billowing-wind-d8kzw" target="_blank" rel="noopener">CodeSandbox 上的这个例子</a></p>
+<h1 id="State"><a href="#State" class="headerlink" title="State"></a>State</h1><p>可以查看<a href="https://codesandbox.io/s/silly-diffie-9yk38" target="_blank" rel="noopener">CodeSandbox 上的这个例子</a></p>
+<h2 id="setState-的注意事项"><a href="#setState-的注意事项" class="headerlink" title="setState 的注意事项"></a>setState 的注意事项</h2><ul>
+<li><code>this.state.n += 1</code> 无效，UI 不会自动更新，需要用 <code>setState</code></li>
+<li><code>setState</code> 不会马上改变 <code>state</code>，是异步更新的，推荐使用 <code>setState(函数)</code></li>
+<li>不推荐 <code>this.setState(this.state)</code>，因为 React 不推荐我们修改旧的 <code>state</code>（不可变数据）</li>
+</ul>
+<h2 id="复杂-state"><a href="#复杂-state" class="headerlink" title="复杂 state"></a>复杂 state</h2><ul>
+<li>类组件的 <code>setState</code> 会自动合并第一层，建议使用 <code>Object.assign</code> 或者 <code>...sate</code></li>
+<li>函数组件不会自动合并，建议分开写</li>
+</ul>
+<h1 id="Vue-和-React-的区别"><a href="#Vue-和-React-的区别" class="headerlink" title="Vue 和 React 的区别"></a>Vue 和 React 的区别</h1><p>共同点：</p>
+<ul>
+<li>都是对视图的封装，React 是用类和函数表示一个组件，Vue 是用构造选项表示一个组件</li>
+<li>都提供了 <code>creatElement</code> 的 XML 简写，React 是 JSX，Vue 是 template</li>
+</ul>
+<p>不同点：</p>
+<ol>
+<li>监听数据变化的实现原理不同<ul>
+<li>Vue 通过 getter/setter 和代理等方式进行劫持，能够精确知道数据的变化，不需要特别的优化</li>
+<li>React 默认是通过比较引用的方式来进行的，可能会造成不必要的 vDOM 重新渲染，需要用诸如 PureComponent/shouldComponentUpdate 等方式来进行优化</li>
+</ul>
+</li>
+<li>数据流不同<ul>
+<li>Vue 在 1.0 的时候 <strong>父子组件</strong> props 可以双向绑定，还有 v-model 可以实现 <strong>组件与 DOM</strong> 双向绑定</li>
+<li>Vue 2 的时候 <strong>父子组件</strong> 不能双向绑定了（虽然仍然提供了 .sync 语法糖），并且还有 v-model</li>
+<li>React 中是单向数据流，并且组件与 DOM 之间也需要使用 onChange/setState。</li>
+</ul>
+</li>
+<li>HoC 和 mixins<ul>
+<li>Vue 中使用不同功能的组合是通过 mixins 实现的</li>
+<li>React 中则使用 HoC</li>
+</ul>
+</li>
+<li>组件间的通信<ul>
+<li>都有 props，也都可以跨层级通信，比如 Vue 的 provide/inject、React 的 context</li>
+<li>React 本身不支持自定义事件，因此 Vue 里面一般使用事件，React 中一般使用父组件传来的回调函数</li>
+</ul>
+</li>
+<li>更新视图<ul>
+<li>Vue 中一个对象，对应一个虚拟 DOM，当对象的属性改变时，把属性相关的 DOM 节点全部更新</li>
+<li>React 一个对象，对应一个虚拟 DOM，另一个对象对应另一个虚拟 DOM，对比两个更新，用 DOM Diff 算法找不同，然后局部更新 DOM</li>
+</ul>
+</li>
+<li>写法不同<ul>
+<li>Vue 是 JS in HTML</li>
+<li>React 是 HTML in JS</li>
+</ul>
+</li>
+<li>Vuex 和 Redux 的区别<ul>
+<li>Vue 中的 $store 直接注入到了组件实例中，可以直接用 dispatch、commit、mapState、this.$store 等；React 中需要用 connect 把 props 和 dispatch、state 连接起来</li>
+<li>Vue 中可以用 dispatch action、commit mutation；React 中只能使用 dispatch，不能直接操作 reduce</li>
+<li>Redux 中的使用的是不可变数据，每次都要用新的 State 替换旧的，而 Vue 中是直接修改的</li>
+</ul>
+</li>
+</ol>
+]]></content>
+      <categories>
+        <category>前端</category>
+        <category>JavaScript</category>
+        <category>框架</category>
+        <category>React</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>文档</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>React Advanced</title>
     <url>/hais-notebook/2020/02/02/React-Advanced/</url>
     <content><![CDATA[<p>主要抄了一下 React 文档。</p>
@@ -3570,80 +3795,6 @@
 <figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line">&lt;Mouse&gt;</span><br><span class="line">  &#123;mouse =&gt; (</span><br><span class="line">    &lt;Cat mouse=&#123;mouse&#125;/&gt;</span><br><span class="line">  )&#125;</span><br><span class="line">&lt;<span class="regexp">/Mouse&gt;</span></span><br></pre></td></tr></table></figure>
 
 <p>需要注意的是，使用 render prop 会导致 <code>React.PureComponent</code> 失效，因为外层组件更新的时候，render prop 的函数总是新的，除非你把它写成一个实例方法</p>
-]]></content>
-      <categories>
-        <category>前端</category>
-        <category>JavaScript</category>
-        <category>框架</category>
-        <category>React</category>
-      </categories>
-      <tags>
-        <tag>入门</tag>
-        <tag>文档</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>React Props &amp; State</title>
-    <url>/hais-notebook/2020/02/02/React-PropsState/</url>
-    <content><![CDATA[<p>主要记录了 React 的 Props 和 State。</p>
-<a id="more"></a>
-
-<h1 id="Props"><a href="#Props" class="headerlink" title="Props"></a>Props</h1><p>可以查看<a href="https://codesandbox.io/s/billowing-wind-d8kzw" target="_blank" rel="noopener">CodeSandbox 上的这个例子</a></p>
-<h1 id="State"><a href="#State" class="headerlink" title="State"></a>State</h1><p>可以查看<a href="https://codesandbox.io/s/silly-diffie-9yk38" target="_blank" rel="noopener">CodeSandbox 上的这个例子</a></p>
-<h2 id="setState-的注意事项"><a href="#setState-的注意事项" class="headerlink" title="setState 的注意事项"></a>setState 的注意事项</h2><ul>
-<li><code>this.state.n += 1</code> 无效，UI 不会自动更新，需要用 <code>setState</code></li>
-<li><code>setState</code> 不会马上改变 <code>state</code>，是异步更新的，推荐使用 <code>setState(函数)</code></li>
-<li>不推荐 <code>this.setState(this.state)</code>，因为 React 不推荐我们修改旧的 <code>state</code>（不可变数据）</li>
-</ul>
-<h2 id="复杂-state"><a href="#复杂-state" class="headerlink" title="复杂 state"></a>复杂 state</h2><ul>
-<li>类组件的 <code>setState</code> 会自动合并第一层，建议使用 <code>Object.assign</code> 或者 <code>...sate</code></li>
-<li>函数组件不会自动合并，建议分开写</li>
-</ul>
-<h1 id="Vue-和-React-的区别"><a href="#Vue-和-React-的区别" class="headerlink" title="Vue 和 React 的区别"></a>Vue 和 React 的区别</h1><p>共同点：</p>
-<ul>
-<li>都是对视图的封装，React 是用类和函数表示一个组件，Vue 是用构造选项表示一个组件</li>
-<li>都提供了 <code>creatElement</code> 的 XML 简写，React 是 JSX，Vue 是 template</li>
-</ul>
-<p>不同点：</p>
-<ol>
-<li>监听数据变化的实现原理不同<ul>
-<li>Vue 通过 getter/setter 和代理等方式进行劫持，能够精确知道数据的变化，不需要特别的优化</li>
-<li>React 默认是通过比较引用的方式来进行的，可能会造成不必要的 vDOM 重新渲染，需要用诸如 PureComponent/shouldComponentUpdate 等方式来进行优化</li>
-</ul>
-</li>
-<li>数据流不同<ul>
-<li>Vue 在 1.0 的时候 <strong>父子组件</strong> props 可以双向绑定，还有 v-model 可以实现 <strong>组件与 DOM</strong> 双向绑定</li>
-<li>Vue 2 的时候 <strong>父子组件</strong> 不能双向绑定了（虽然仍然提供了 .sync 语法糖），并且还有 v-model</li>
-<li>React 中是单向数据流，并且组件与 DOM 之间也需要使用 onChange/setState。</li>
-</ul>
-</li>
-<li>HoC 和 mixins<ul>
-<li>Vue 中使用不同功能的组合是通过 mixins 实现的</li>
-<li>React 中则使用 HoC</li>
-</ul>
-</li>
-<li>组件间的通信<ul>
-<li>都有 props，也都可以跨层级通信，比如 Vue 的 provide/inject、React 的 context</li>
-<li>React 本身不支持自定义事件，因此 Vue 里面一般使用事件，React 中一般使用父组件传来的回调函数</li>
-</ul>
-</li>
-<li>更新视图<ul>
-<li>Vue 中一个对象，对应一个虚拟 DOM，当对象的属性改变时，把属性相关的 DOM 节点全部更新</li>
-<li>React 一个对象，对应一个虚拟 DOM，另一个对象对应另一个虚拟 DOM，对比两个更新，用 DOM Diff 算法找不同，然后局部更新 DOM</li>
-</ul>
-</li>
-<li>写法不同<ul>
-<li>Vue 是 JS in HTML</li>
-<li>React 是 HTML in JS</li>
-</ul>
-</li>
-<li>Vuex 和 Redux 的区别<ul>
-<li>Vue 中的 $store 直接注入到了组件实例中，可以直接用 dispatch、commit、mapState、this.$store 等；React 中需要用 connect 把 props 和 dispatch、state 连接起来</li>
-<li>Vue 中可以用 dispatch action、commit mutation；React 中只能使用 dispatch，不能直接操作 reduce</li>
-<li>Redux 中的使用的是不可变数据，每次都要用新的 State 替换旧的，而 Vue 中是直接修改的</li>
-</ul>
-</li>
-</ol>
 ]]></content>
       <categories>
         <category>前端</category>
