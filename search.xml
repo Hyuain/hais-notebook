@@ -1,6 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Koa</title>
+    <url>/hais-notebook/2021/04/06/NodeJS-Koa/</url>
+    <content><![CDATA[<p>NodeJS WEB 框架之 Koa</p>
+<a id="more"></a>
+
+<h1 id="Koa-与-Express-的区别"><a href="#Koa-与-Express-的区别" class="headerlink" title="Koa 与 Express 的区别"></a>Koa 与 Express 的区别</h1><ul>
+<li>中间件模型不同：Koa 是 U 型，Express 是线型</li>
+<li>语法特性不同，一般来说 NodeJS 7.6.0 之后才算完美支持 Koa</li>
+<li>Koa 没有内置中间件</li>
+</ul>
+<h1 id="Koa-的中间件模型：U-型-洋葱型"><a href="#Koa-的中间件模型：U-型-洋葱型" class="headerlink" title="Koa 的中间件模型：U 型/洋葱型"></a>Koa 的中间件模型：U 型/洋葱型</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">请求 -&gt; f1 -&gt; f2 -&gt; f3 -&gt; ...</span><br><span class="line">                           ↓</span><br><span class="line">响应 &lt;- f1 &lt;- f2 &lt;- f3 &lt;- ...</span><br></pre></td></tr></table></figure>
+
+<p>下面是一个简单的中间件使用示例，按照注释的顺序运行，可以看到一个以 <code>await next()</code> 为轴的 U 型：</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line">app.use(<span class="keyword">async</span> (ctx, next) =&gt; &#123;</span><br><span class="line">  <span class="comment">// 1. 什么也不做</span></span><br><span class="line">  <span class="keyword">await</span> next()</span><br><span class="line">  <span class="comment">// 5. 读取 X-Response-Time 中的时间，打印出来</span></span><br><span class="line">  <span class="keyword">const</span> time = ctx.response.get(<span class="string">"X-Response-Time"</span>)</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">`<span class="subst">$&#123;ctx.url&#125;</span> - <span class="subst">$&#123;time&#125;</span>`</span>)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">app.use(<span class="keyword">async</span> (ctx, next) =&gt; &#123;</span><br><span class="line">  <span class="comment">// 2. 记录开始时间</span></span><br><span class="line">  <span class="keyword">const</span> start = <span class="built_in">Date</span>.now()</span><br><span class="line">  <span class="keyword">await</span> next()</span><br><span class="line">  <span class="comment">// 4. 计算第三个中间件写 "Hello World" 的时间，并写入 X-Response-Time 响应头中</span></span><br><span class="line">  <span class="keyword">const</span> time = <span class="built_in">Date</span>.now() - start</span><br><span class="line">  ctx.set(<span class="string">"X-Response-Time"</span>, <span class="string">`<span class="subst">$&#123;time&#125;</span>ms`</span>)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">app.use(<span class="keyword">async</span> (ctx, next) =&gt; &#123;</span><br><span class="line">  <span class="comment">// 3. body = "Hello World"</span></span><br><span class="line">  ctx.body = <span class="string">"Hello World"</span></span><br><span class="line">  <span class="comment">// 最后一个中间件可以不写 await next()</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="await-next"><a href="#await-next" class="headerlink" title="await next()"></a><code>await next()</code></h2><p><code>next()</code> 表示进入下一个函数，并返回一个 Promise，当下一个函数执行完成之后，会将 Promise 置为成功，然后 await 继续执行剩下的代码</p>
+<p>实际上相当于：</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line">app.use(<span class="function">(<span class="params">ctx, next</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> start = <span class="built_in">Date</span>.now()</span><br><span class="line">  <span class="comment">// 中间件需要返回一个 Promise 对象，使用 async 的写法将会自动 return 一个 Promise 对象</span></span><br><span class="line">  <span class="keyword">return</span> next().then(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> time = <span class="built_in">Date</span>.now() - start</span><br><span class="line">    ctx.set(<span class="string">"X-Response-Time"</span>, <span class="string">`<span class="subst">$&#123;time&#125;</span>ms`</span>)</span><br><span class="line">  &#125;, <span class="function">(<span class="params">err</span>) =&gt;</span> &#123; &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h1 id="Koa-APIs"><a href="#Koa-APIs" class="headerlink" title="Koa APIs"></a>Koa APIs</h1><h2 id="app-xxx"><a href="#app-xxx" class="headerlink" title="app.xxx"></a>app.xxx</h2><ul>
+<li><code>app.env</code> 获取环境变量</li>
+<li><code>app.listen()</code></li>
+<li><code>app.use()</code> 插入中间件</li>
+<li><code>app.on(&quot;error&quot;, fn)</code> 错误处理</li>
+<li><code>app.emit()</code> 触发事件</li>
+</ul>
+<h2 id="ctx-xxx"><a href="#ctx-xxx" class="headerlink" title="ctx.xxx"></a>ctx.xxx</h2><ul>
+<li><code>ctx.req</code> NodeJS 封装的请求</li>
+<li><code>ctx.request</code> Koa 封装的请求</li>
+<li><code>ctx.res</code></li>
+<li><code>ctx.response</code></li>
+<li><code>ctx.state</code> 跨中间件分享数据</li>
+<li><code>ctx.cookies.get</code> <code>ctx.cookies.set</code></li>
+<li><code>ctx.throw</code></li>
+<li><code>ctx.assert</code></li>
+</ul>
+<h3 id="Request-和-Response-委托"><a href="#Request-和-Response-委托" class="headerlink" title="Request 和 Response 委托"></a>Request 和 Response 委托</h3><p><code>ctx</code> 是 Request 和 Response 的委托，比如写 <code>ctx.body =</code> 相当于写 <code>ctx.response.body =</code>。<br>如果要自己实现委托操作的话，可以这样实现：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Object</span>.defineProperty(ctx, <span class="string">"body"</span>, &#123;</span><br><span class="line">  <span class="keyword">get</span>: () =&gt; &#123;</span><br><span class="line">    <span class="keyword">return</span> ctx.response.body</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="keyword">set</span>: (value) =&gt; &#123;</span><br><span class="line">    ctx.response.body = value</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h3 id="ctx-request-xxx-ctx-response-xxx"><a href="#ctx-request-xxx-ctx-response-xxx" class="headerlink" title="ctx.request.xxx ctx.response.xxx"></a><code>ctx.request.xxx</code> <code>ctx.response.xxx</code></h3><p>可以直接查看 <a href="https://koa.bootcss.com/" target="_blank" rel="noopener">相关文档</a></p>
+]]></content>
+      <categories>
+        <category>全栈</category>
+        <category>NodeJS</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Express</title>
     <url>/hais-notebook/2021/03/27/NodeJS-Express/</url>
     <content><![CDATA[<p>NodeJS WEB 框架之 Express</p>
