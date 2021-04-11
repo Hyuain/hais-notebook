@@ -1,6 +1,145 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Next</title>
+    <url>/hais-notebook/2021/04/07/NodeJS-Next/</url>
+    <content><![CDATA[<p>NodeJS WEB 框架之 Next</p>
+<a id="more"></a>
+
+<h1 id="开始一个-Next-js-项目"><a href="#开始一个-Next-js-项目" class="headerlink" title="开始一个 Next.js 项目"></a>开始一个 Next.js 项目</h1><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npx create-next-app next-demo</span><br></pre></td></tr></table></figure>
+
+<h1 id="Next-的一些特性"><a href="#Next-的一些特性" class="headerlink" title="Next 的一些特性"></a>Next 的一些特性</h1><h2 id="使用-Link-快速导航"><a href="#使用-Link-快速导航" class="headerlink" title="使用 Link 快速导航"></a>使用 Link 快速导航</h2><figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 原来这样写</span></span><br><span class="line">&lt;a href=<span class="string">"xxx"</span>&gt;点击跳转&lt;<span class="regexp">/a&gt;</span></span><br><span class="line"><span class="regexp">/</span><span class="regexp">/ 现在这样写</span></span><br><span class="line"><span class="regexp">&lt;Link href="xxx"&gt;&lt;a&gt;点击跳转&lt;/</span>a&gt;<span class="xml"><span class="tag">&lt;/<span class="name">Link</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>页面不会刷新，用 AJAX 请求新页面的内容</li>
+<li>不会请求重复的 HTML、CSS、JS</li>
+<li>自动在页面插入新内容、删除旧内容</li>
+<li>省去了很多请求和解析的过程、速度极快</li>
+</ul>
+<h2 id="同构代码"><a href="#同构代码" class="headerlink" title="同构代码"></a>同构代码</h2><p>同一份代码，在浏览器和 Node 两端都执行了，比如在组件里面写一个 console.log，会发现 Node 控制台和 Chrome 中都会有 log。</p>
+<p>但：</p>
+<ul>
+<li>不是所有的代码都会在两端运行，比如需要用户触发的操作，就不会在 Node 中运行</li>
+<li>不是所有的 API 都能用，比如 <code>window</code> 就会报错，因为在 Node 中不存在</li>
+</ul>
+<h2 id="lt-Head-gt"><a href="#lt-Head-gt" class="headerlink" title="&lt;Head&gt;"></a><code>&lt;Head&gt;</code></h2><p>可以用 <code>&lt;Head&gt;</code> 标签书写 <code>title</code> <code>meta:viewport</code> 等。</p>
+<figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line">&lt;Head&gt;</span><br><span class="line">  &lt;title&gt;My Blog&lt;<span class="regexp">/title&gt;</span></span><br><span class="line"><span class="regexp">  &lt;link rel="icon" href="/</span>favicon.ico<span class="string">" /&gt;</span></span><br><span class="line"><span class="string">  &lt;meta name="</span>viewport<span class="string">" content="</span>width=device-width,initial-scale=<span class="number">1</span>,minimum-scale=<span class="number">1</span>,maximum-scale=<span class="number">1</span>,user-scalable=no,viewport-fit=cover<span class="string">" /&gt;</span></span><br><span class="line"><span class="string">&lt;/Head&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>也可以在 <code>pages/_app.js</code> 中进行全局配置：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">MyApp</span>(<span class="params">&#123; Component, pageProps &#125;</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    &lt;&gt;</span><br><span class="line">      &lt;Head&gt;</span><br><span class="line">        &lt;title&gt;My Blog&lt;<span class="regexp">/title&gt;</span></span><br><span class="line"><span class="regexp">      &lt;/</span>Head&gt;</span><br><span class="line">      &lt;Component &#123;...pageProps&#125; /&gt;</span><br><span class="line">    &lt;<span class="regexp">/&gt;</span></span><br><span class="line"><span class="regexp">  )</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">export default MyApp</span></span><br></pre></td></tr></table></figure>
+
+<p>切换页面的时候 MyApp 不会被销毁，MyApp 里面的代码会重新执行，但是里面的状态会保留。</p>
+<h2 id="Style"><a href="#Style" class="headerlink" title="Style"></a>Style</h2><p>在 <code>_app.js</code> 中还可以用 <code>import</code> 直接引入全局生效的 <code>global.css</code> 文件</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">'../styles/globals.css'</span></span><br></pre></td></tr></table></figure>
+
+<p>默认情况下都是相对路径引入，用配置指定根目录，可以参考 <a href="https://nextjs.org/docs/advanced-features/module-path-aliases" target="_blank" rel="noopener">这篇文档</a></p>
+<p>也可以在组件中书写局部的 `<style></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;style jsx&gt;&#123;<span class="string">`</span></span><br><span class="line"><span class="string">  h1 &#123; </span></span><br><span class="line"><span class="string">    color: red;</span></span><br><span class="line"><span class="string">  &#125;</span></span><br><span class="line"><span class="string">`</span>&#125;&lt;<span class="regexp">/style&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="静态资源"><a href="#静态资源" class="headerlink" title="静态资源"></a>静态资源</h2><p>官方推荐静态资源放在 public 中，但在这里面的资源不能加 hash。 因此不推荐这样用，可以另外新建 <code>asstes/images</code> 文件夹来存放图片静态资源。<br>但直接这样就需要自己配置 file-loader，也就是自定义 webpack 配置：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// next.config.js</span></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  webpack: <span class="function">(<span class="params">config, options</span>) =&gt;</span> &#123;</span><br><span class="line">    config.module.rules.push(&#123;</span><br><span class="line">      test: <span class="regexp">/\.(png|jpg|jpeg|gif|svg)$/</span>,</span><br><span class="line">      use: [&#123;</span><br><span class="line">        loader: <span class="string">"file-loader"</span>,</span><br><span class="line">        options: &#123;</span><br><span class="line">          name: <span class="string">"[name].[contenthash].[ext]"</span>,</span><br><span class="line">          outputPath: <span class="string">"static"</span>,</span><br><span class="line">          publicPath: <span class="string">"_next/static"</span>,</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;]</span><br><span class="line">    &#125;)</span><br><span class="line">    <span class="keyword">return</span> config</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>也可以使用 <a href="https://github.com/twopluszero/next-images#readme" target="_blank" rel="noopener">next-images 插件</a> 来引入图片</p>
+<h1 id="Next-js-API-模式"><a href="#Next-js-API-模式" class="headerlink" title="Next.js API 模式"></a>Next.js API 模式</h1><p>在 api 目录下创建文件 <code>v1/post.tsx</code></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import &#123; NextApiHandler &#125; from &quot;next&quot;</span><br><span class="line">import p from &quot;path&quot;</span><br><span class="line">import fs, &#123; promises as fsPromise &#125; from &quot;fs&quot;</span><br><span class="line">import matter from &quot;gray-matter&quot;</span><br><span class="line"></span><br><span class="line">export const getPosts &#x3D; async () &#x3D;&gt; &#123;</span><br><span class="line">  const markdownDir &#x3D; p.join(process.cwd(), &quot;markdown&quot;)</span><br><span class="line">  const fileNames &#x3D; await fsPromise.readdir(markdownDir)</span><br><span class="line">  const posts &#x3D; fileNames.map((name) &#x3D;&gt; &#123;</span><br><span class="line">    const id &#x3D; name.replace(&quot;&#x2F;.md$&#x2F;&quot;, &quot;&quot;)</span><br><span class="line">    const filePath &#x3D; p.join(markdownDir, name)</span><br><span class="line">    const text &#x3D; fs.readFileSync(filePath, &quot;utf-8&quot;)</span><br><span class="line">    const &#123; data: &#123; title, date &#125;, content &#125; &#x3D; matter(text)</span><br><span class="line">    return &#123;</span><br><span class="line">      id, title, date,</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">  return posts</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 注意这里跟 express 和 koa 不同，没有将 next 直接暴露给我们，但是由于 next 基于 express，他其实也支持 express 类似的中间件，具体请查阅文档</span><br><span class="line">const Posts: NextApiHandler &#x3D; async (request, response) &#x3D;&gt; &#123;</span><br><span class="line">  const posts &#x3D; await getPosts()</span><br><span class="line">  response.statusCode &#x3D; 200</span><br><span class="line">  response.setHeader(&quot;Content-Type&quot;, &quot;application&#x2F;json&quot;)</span><br><span class="line">  response.write(JSON.stringify(posts))</span><br><span class="line">  response.end()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">export default Posts</span><br></pre></td></tr></table></figure>
+
+<p>可以试着访问 <code>/api/v1/posts</code>，这段代码只会运行在 node，不会运行在浏览器中</p>
+<h1 id="Next-js-三种渲染方式"><a href="#Next-js-三种渲染方式" class="headerlink" title="Next.js 三种渲染方式"></a>Next.js 三种渲染方式</h1><h2 id="客户端渲染（BSR）"><a href="#客户端渲染（BSR）" class="headerlink" title="客户端渲染（BSR）"></a>客户端渲染（BSR）</h2><p>在浏览器上执行的渲染（Browser Side Render），类似用 JS（Vue、React）去创建 HTML</p>
+<p>缺点：</p>
+<ul>
+<li>白屏，而且在拿到响应之前都需要显示 loading 状态</li>
+<li>SEO 不友好，搜索引擎拿不到具体的数据；搜索引擎也不会执行 JS，因此看到的 HTML 信息量极少</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; pages&#x2F;posts&#x2F;index.tsx</span><br><span class="line">import &#123; NextPage &#125; from &quot;next&quot;</span><br><span class="line">import axios from &quot;axios&quot;</span><br><span class="line">import &#123; useCallback, useEffect, useState &#125; from &quot;react&quot;</span><br><span class="line"></span><br><span class="line">type Post &#x3D; &#123;</span><br><span class="line">  id: string</span><br><span class="line">  date: string</span><br><span class="line">  title: string</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">const PostsIndex: NextPage &#x3D; () &#x3D;&gt; &#123;</span><br><span class="line">  const [posts, setPosts] &#x3D; useState&lt;Post[]&gt;([])</span><br><span class="line"></span><br><span class="line">  useEffect(() &#x3D;&gt; &#123;</span><br><span class="line">    axios.get(&quot;&#x2F;api&#x2F;v1&#x2F;posts&quot;).then((res) &#x3D;&gt; &#123;</span><br><span class="line">      setPosts(res.data)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;, [])</span><br><span class="line"></span><br><span class="line">  const handleClick &#x3D; useCallback(() &#x3D;&gt; &#123;</span><br><span class="line">    console.log(&quot;clicked&quot;)</span><br><span class="line">  &#125;, [])</span><br><span class="line"></span><br><span class="line">  return (</span><br><span class="line">    &lt;div&gt;</span><br><span class="line">      &#123;&#x2F;* 静态内容 *&#x2F;&#125;</span><br><span class="line">      &lt;h1 onClick&#x3D;&#123;handleClick&#125;&gt;文章列表&lt;&#x2F;h1&gt;</span><br><span class="line">      &#123;&#x2F;* 动态内容 *&#x2F;&#125;</span><br><span class="line">      &#123;</span><br><span class="line">        posts.map((item) &#x3D;&gt; &lt;div key&#x3D;&#123;item.id&#125;&gt;&#123;item.title&#125;&lt;&#x2F;div&gt;)</span><br><span class="line">      &#125;</span><br><span class="line">    &lt;&#x2F;div&gt;</span><br><span class="line">  )</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">export default PostsIndex</span><br></pre></td></tr></table></figure>
+
+<p>实际上上述的静态内容是先由服务器渲染出来，然后再在浏览器上增加事件绑定的，可以看 <a href="https://zh-hans.reactjs.org/docs/react-dom-server.html#rendertostring" target="_blank" rel="noopener">这篇文档</a>：</p>
+<p>服务端调用 <code>ReactDOMServer.renderToString(element)</code>，将 React 元素渲染为初始 HTML。<br>再在前端调用 <code>ReactDOM.hydrate()</code>，会在标记过的节点上绑定事件。</p>
+<p>但事实上，前端也会渲染一次，检查一下前端跟服务端渲染的内容是否一致（前端渲染的目的是为了检查一致性，而不是为了替换）。<br>如果我们在函数组件最开始打一个 debugger，然后趁 debugger 的时间在页面上把服务端渲染出来的 HTML 改一下，再继续执行，会发现报错：</p>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/next-1.png" alt="如果前后端渲染不一致，会报错"></p>
+<h2 id="静态页面生成（SSG）"><a href="#静态页面生成（SSG）" class="headerlink" title="静态页面生成（SSG）"></a>静态页面生成（SSG）</h2><p>静态页面生成（Static Site Generation）是预渲染（Pre-rendering）的一种，类似于把 PHP 提前渲染成 HTML。</p>
+<p>时机：</p>
+<ul>
+<li>生产环境中，静态化是在 <code>yarn build</code> 的时候实现的<br>优点：</li>
+<li>能解决白屏问题</li>
+<li>解决 SEO 问题</li>
+<li>前端重复渲染相同内容的问题（可以将动态内容静态化，将需要客户端渲染的动态内容提前由服务端渲染好，然后作为静态内容发给前端）<br>缺点： </li>
+<li>无法生成用户相关内容（每个人看到的都是一样的）</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import &#123; GetStaticProps, NextPage &#125; from &quot;next&quot;</span><br><span class="line">import axios from &quot;axios&quot;</span><br><span class="line">import &#123; useCallback, useEffect, useState &#125; from &quot;react&quot;</span><br><span class="line">import &#123; getPosts &#125; from &quot;..&#x2F;..&#x2F;lib&#x2F;posts&quot;</span><br><span class="line"></span><br><span class="line">type Post &#x3D; &#123;</span><br><span class="line">  id: string</span><br><span class="line">  date: string</span><br><span class="line">  title: string</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">type Props &#x3D; &#123;</span><br><span class="line">  posts: Post[]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">const PostsIndex: NextPage&lt;Props&gt; &#x3D; (props) &#x3D;&gt; &#123;</span><br><span class="line">  &#x2F;&#x2F; 这个 props 其实前后端都能拿到</span><br><span class="line">  const &#123; posts &#125; &#x3D; props</span><br><span class="line">  return (</span><br><span class="line">    &lt;div&gt;</span><br><span class="line">      &lt;h1&gt;文章列表&lt;&#x2F;h1&gt;</span><br><span class="line">      &#123;</span><br><span class="line">        posts.map((item) &#x3D;&gt; &lt;div key&#x3D;&#123;item.id&#125;&gt;&#123;item.title&#125;&lt;&#x2F;div&gt;)</span><br><span class="line">      &#125;</span><br><span class="line">    &lt;&#x2F;div&gt;</span><br><span class="line">  )</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 注意这里不要忘了 export，如果不写的话，这段代码会被前端执行，会报错</span><br><span class="line">&#x2F;&#x2F; 在生产环境中，是在 build 的时候执行的</span><br><span class="line">export const getStaticProps: GetStaticProps &#x3D; async () &#x3D;&gt; &#123;</span><br><span class="line">  &#x2F;&#x2F; 服务端显然没必要通过 AJAX 去拿数据，直接去文件系统或者数据库拿</span><br><span class="line">  const posts &#x3D; await getPosts()</span><br><span class="line">  return &#123;</span><br><span class="line">    props: &#123;</span><br><span class="line">      posts: JSON.parse(JSON.stringify(posts)),</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">export default PostsIndex</span><br></pre></td></tr></table></figure>
+
+<p>前端也能拿到 props，因为 Next 会将这些数据放在 HTML 中给前端：</p>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/next-2.png" alt="Next 会将数据放在 HTML 中给前端"></p>
+<h3 id="同构代码的好处"><a href="#同构代码的好处" class="headerlink" title="同构代码的好处"></a>同构代码的好处</h3><p>将数据放在 HTML 中之后，前端也能很方便地使用了，其实其他后端语言也能做到，但 Next.js 更加方便，因为：</p>
+<ul>
+<li>Next 支持 jsx，写出来的代码可以与 React 无缝对接，可以只写一份代码</li>
+<li>Next 写出来的对象都是 JavaScript 对象，无需类型转换，如果是其他语言就需要进行额外的类型转换</li>
+</ul>
+<h3 id="yarn-build"><a href="#yarn-build" class="headerlink" title="yarn build"></a>yarn build</h3><p><code>yarn build</code> 的时候会提示你页面的类型：</p>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/next-3.png" alt=""></p>
+<p>比如空心圆代表静态页面，而实心圆代表使用了 getStaticProps 进行静态化。</p>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/next-3.png" alt=""></p>
+<p>可以看到编译之后，一个 SSG 页面（实心圆）变成了三个文件：</p>
+<ul>
+<li>html 是用户拿到的静态页面</li>
+<li>js 里面也含有静态内容，是快速导航（Link）需要用到的，因为快速导航实际上是使用 js + json 做的，而不是再去请求一次 html</li>
+<li>json 是 getStaticProps 得到的数据，为了方便 js 接入不同的数据，因此 js 和 json 需要分开</li>
+</ul>
+<h3 id="根据路径创建静态页面"><a href="#根据路径创建静态页面" class="headerlink" title="根据路径创建静态页面"></a>根据路径创建静态页面</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; pages&#x2F;posts&#x2F;index.tsx</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; pages&#x2F;posts&#x2F;[id].tsx</span><br><span class="line">import &#123; getPost, getPostIds &#125; from &quot;..&#x2F;..&#x2F;lib&#x2F;posts&quot;</span><br><span class="line">import &#123; GetStaticPaths, GetStaticProps, NextPage &#125; from &quot;next&quot;</span><br><span class="line"></span><br><span class="line">type Props &#x3D; &#123;</span><br><span class="line">  post: Post</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">type Params &#x3D; &#123;</span><br><span class="line">  id: string</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">const PostShow: NextPage&lt;Props&gt; &#x3D; (props) &#x3D;&gt; &#123;</span><br><span class="line">  const &#123; post &#125; &#x3D; props</span><br><span class="line">  return (</span><br><span class="line">    &lt;div&gt;</span><br><span class="line">      &lt;h1&gt;&#123;post.title&#125;&lt;&#x2F;h1&gt;</span><br><span class="line">      &lt;article&gt;</span><br><span class="line">        &#123;post.content&#125;</span><br><span class="line">      &lt;&#x2F;article&gt;</span><br><span class="line">    &lt;&#x2F;div&gt;</span><br><span class="line">  )</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">export default PostShow</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 声明路由：用这个来穷举静态页面的不同路径</span><br><span class="line">export const getStaticPaths: GetStaticPaths &#x3D; async () &#x3D;&gt; &#123;</span><br><span class="line">  const idList &#x3D; await getPostIds()</span><br><span class="line">  const paths &#x3D; idList.map((id) &#x3D;&gt; &#123;</span><br><span class="line">    return &#123;</span><br><span class="line">      params: &#123; id &#125;,</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">  return &#123;</span><br><span class="line">    paths,</span><br><span class="line">    &#x2F;&#x2F; false：当请求的 id 不再 path 里面，直接返回 404</span><br><span class="line">    &#x2F;&#x2F; true：若不存在，则依然渲染页面</span><br><span class="line">    fallback: false,</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 通过 context 中的 params 拿到上一个函数穷举出的路径，也就是我们的 id，然后借由 id 去获取内容并生成静态文件</span><br><span class="line">export const getStaticProps: GetStaticProps&lt;Props, Params&gt; &#x3D; async (context) &#x3D;&gt; &#123;</span><br><span class="line">  const id &#x3D; context.params!.id</span><br><span class="line">  const post &#x3D; await getPost(id)</span><br><span class="line">  return &#123;</span><br><span class="line">    props: &#123;</span><br><span class="line">      post,</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/next-5.png" alt=""></p>
+<p>可以看到生成来的文件中只有一个 JS，但是有两个 JSON 和两个 HTML 文件，这就是根据不同路由的到的不同页面和数据。</p>
+<h2 id="服务端渲染（SSR）"><a href="#服务端渲染（SSR）" class="headerlink" title="服务端渲染（SSR）"></a>服务端渲染（SSR）</h2><p>服务端渲染（Server Side Render）也是预渲染的一种，类似于 PHP、Python、Ruby、Java 后台的基本功能。<br>比如当需要通过不同的用户 id 等渲染不同的内容，这时候就较难提前做静态化，这个时候就可以使用 SSR，由服务端渲染好首屏，再下拉刷新。</p>
+<p>时机：</p>
+<ul>
+<li>无论是在开发环境还是生产环境，都是每次请求来到之后运行的<br>优点：</li>
+<li>能解决白屏问题</li>
+<li>解决 SEO 问题</li>
+<li>可以生成跟用户有关系的内容<br>缺点：</li>
+<li>无法获取客户端信息，比如浏览器窗口大小等</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import &#123; GetServerSideProps, NextPage &#125; from &quot;next&quot;</span><br><span class="line">import &#123; IBrowser, UAParser &#125; from &quot;ua-parser-js&quot;</span><br><span class="line">import &#123; useEffect, useState &#125; from &quot;react&quot;</span><br><span class="line"></span><br><span class="line">type Props &#x3D; &#123;</span><br><span class="line">  browser: IBrowser</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">const Home: NextPage&lt;Props&gt; &#x3D; (props) &#x3D;&gt; &#123;</span><br><span class="line">  const &#123; browser &#125; &#x3D; props</span><br><span class="line">  const [clientWidth, setClientWidth] &#x3D; useState(0)</span><br><span class="line">  &#x2F;&#x2F; 如果想要获取浏览器窗口的大小，不能使用 SSR，只能使用客户端渲染，这样的写法保证了下面的代码只会在浏览器中运行，防止 node 报错</span><br><span class="line">  useEffect(() &#x3D;&gt; &#123;</span><br><span class="line">    setClientWidth(document.documentElement.clientWidth)</span><br><span class="line">  &#125;, [])</span><br><span class="line">  return (</span><br><span class="line">    &lt;&gt;</span><br><span class="line">      &lt;h1&gt;你的浏览器是 &#123;browser.name&#125;&lt;&#x2F;h1&gt;</span><br><span class="line">      &lt;h1&gt;你的窗口宽度是 &#123;clientWidth&#125;&lt;&#x2F;h1&gt;</span><br><span class="line">    &lt;&#x2F;&gt;</span><br><span class="line">  )</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">export default Home</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 每次请求的时候才会执行</span><br><span class="line">export const getServerSideProps: GetServerSideProps &#x3D; async (context) &#x3D;&gt; &#123;</span><br><span class="line">  &#x2F;&#x2F; context 中有 req 和 res，一般只需要 req</span><br><span class="line">  const ua &#x3D; context.req.headers[&quot;user-agent&quot;]</span><br><span class="line">  const result &#x3D; new UAParser(ua).getResult()</span><br><span class="line">  return &#123;</span><br><span class="line">    props: &#123;</span><br><span class="line">      browser: result.browser,</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="三种渲染应该如何选择"><a href="#三种渲染应该如何选择" class="headerlink" title="三种渲染应该如何选择"></a>三种渲染应该如何选择</h2><ol>
+<li>有动态内容吗？<ul>
+<li>有，跳到 2</li>
+<li>没有，直接写 HTML 即可</li>
+</ul>
+</li>
+<li>跟客户端相关（比如获取窗口大小等）吗？<ul>
+<li>相关，BSR</li>
+<li>无关，跳到 3</li>
+</ul>
+</li>
+<li>我的响应跟用户或请求相关吗？<ul>
+<li>相关，SSR（getServerSideProps）或 BSR</li>
+<li>无关，SSG（getStaticProps） 或 SSR 或 BSR</li>
+</ul>
+</li>
+</ol>
+]]></content>
+      <categories>
+        <category>全栈</category>
+        <category>NodeJS</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Cypress</title>
+    <url>/hais-notebook/2021/04/07/NodeJS-Cypress/</url>
+    <content><![CDATA[<p>使用 Cypress 进行自动化测试</p>
+<a id="more"></a>
+]]></content>
+      <categories>
+        <category>全栈</category>
+        <category>NodeJS</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Koa</title>
     <url>/hais-notebook/2021/04/06/NodeJS-Koa/</url>
     <content><![CDATA[<p>NodeJS WEB 框架之 Koa</p>
@@ -3592,80 +3731,6 @@
       </tags>
   </entry>
   <entry>
-    <title>React Props &amp; State</title>
-    <url>/hais-notebook/2020/02/02/React-PropsState/</url>
-    <content><![CDATA[<p>主要记录了 React 的 Props 和 State。</p>
-<a id="more"></a>
-
-<h1 id="Props"><a href="#Props" class="headerlink" title="Props"></a>Props</h1><p>可以查看<a href="https://codesandbox.io/s/billowing-wind-d8kzw" target="_blank" rel="noopener">CodeSandbox 上的这个例子</a></p>
-<h1 id="State"><a href="#State" class="headerlink" title="State"></a>State</h1><p>可以查看<a href="https://codesandbox.io/s/silly-diffie-9yk38" target="_blank" rel="noopener">CodeSandbox 上的这个例子</a></p>
-<h2 id="setState-的注意事项"><a href="#setState-的注意事项" class="headerlink" title="setState 的注意事项"></a>setState 的注意事项</h2><ul>
-<li><code>this.state.n += 1</code> 无效，UI 不会自动更新，需要用 <code>setState</code></li>
-<li><code>setState</code> 不会马上改变 <code>state</code>，是异步更新的，推荐使用 <code>setState(函数)</code></li>
-<li>不推荐 <code>this.setState(this.state)</code>，因为 React 不推荐我们修改旧的 <code>state</code>（不可变数据）</li>
-</ul>
-<h2 id="复杂-state"><a href="#复杂-state" class="headerlink" title="复杂 state"></a>复杂 state</h2><ul>
-<li>类组件的 <code>setState</code> 会自动合并第一层，建议使用 <code>Object.assign</code> 或者 <code>...sate</code></li>
-<li>函数组件不会自动合并，建议分开写</li>
-</ul>
-<h1 id="Vue-和-React-的区别"><a href="#Vue-和-React-的区别" class="headerlink" title="Vue 和 React 的区别"></a>Vue 和 React 的区别</h1><p>共同点：</p>
-<ul>
-<li>都是对视图的封装，React 是用类和函数表示一个组件，Vue 是用构造选项表示一个组件</li>
-<li>都提供了 <code>creatElement</code> 的 XML 简写，React 是 JSX，Vue 是 template</li>
-</ul>
-<p>不同点：</p>
-<ol>
-<li>监听数据变化的实现原理不同<ul>
-<li>Vue 通过 getter/setter 和代理等方式进行劫持，能够精确知道数据的变化，不需要特别的优化</li>
-<li>React 默认是通过比较引用的方式来进行的，可能会造成不必要的 vDOM 重新渲染，需要用诸如 PureComponent/shouldComponentUpdate 等方式来进行优化</li>
-</ul>
-</li>
-<li>数据流不同<ul>
-<li>Vue 在 1.0 的时候 <strong>父子组件</strong> props 可以双向绑定，还有 v-model 可以实现 <strong>组件与 DOM</strong> 双向绑定</li>
-<li>Vue 2 的时候 <strong>父子组件</strong> 不能双向绑定了（虽然仍然提供了 .sync 语法糖），并且还有 v-model</li>
-<li>React 中是单向数据流，并且组件与 DOM 之间也需要使用 onChange/setState。</li>
-</ul>
-</li>
-<li>HoC 和 mixins<ul>
-<li>Vue 中使用不同功能的组合是通过 mixins 实现的</li>
-<li>React 中则使用 HoC</li>
-</ul>
-</li>
-<li>组件间的通信<ul>
-<li>都有 props，也都可以跨层级通信，比如 Vue 的 provide/inject、React 的 context</li>
-<li>React 本身不支持自定义事件，因此 Vue 里面一般使用事件，React 中一般使用父组件传来的回调函数</li>
-</ul>
-</li>
-<li>更新视图<ul>
-<li>Vue 中一个对象，对应一个虚拟 DOM，当对象的属性改变时，把属性相关的 DOM 节点全部更新</li>
-<li>React 一个对象，对应一个虚拟 DOM，另一个对象对应另一个虚拟 DOM，对比两个更新，用 DOM Diff 算法找不同，然后局部更新 DOM</li>
-</ul>
-</li>
-<li>写法不同<ul>
-<li>Vue 是 JS in HTML</li>
-<li>React 是 HTML in JS</li>
-</ul>
-</li>
-<li>Vuex 和 Redux 的区别<ul>
-<li>Vue 中的 $store 直接注入到了组件实例中，可以直接用 dispatch、commit、mapState、this.$store 等；React 中需要用 connect 把 props 和 dispatch、state 连接起来</li>
-<li>Vue 中可以用 dispatch action、commit mutation；React 中只能使用 dispatch，不能直接操作 reduce</li>
-<li>Redux 中的使用的是不可变数据，每次都要用新的 State 替换旧的，而 Vue 中是直接修改的</li>
-</ul>
-</li>
-</ol>
-]]></content>
-      <categories>
-        <category>前端</category>
-        <category>JavaScript</category>
-        <category>框架</category>
-        <category>React</category>
-      </categories>
-      <tags>
-        <tag>入门</tag>
-        <tag>文档</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>React Advanced</title>
     <url>/hais-notebook/2020/02/02/React-Advanced/</url>
     <content><![CDATA[<p>主要抄了一下 React 文档。</p>
@@ -3845,6 +3910,80 @@
 <figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line">&lt;Mouse&gt;</span><br><span class="line">  &#123;mouse =&gt; (</span><br><span class="line">    &lt;Cat mouse=&#123;mouse&#125;/&gt;</span><br><span class="line">  )&#125;</span><br><span class="line">&lt;<span class="regexp">/Mouse&gt;</span></span><br></pre></td></tr></table></figure>
 
 <p>需要注意的是，使用 render prop 会导致 <code>React.PureComponent</code> 失效，因为外层组件更新的时候，render prop 的函数总是新的，除非你把它写成一个实例方法</p>
+]]></content>
+      <categories>
+        <category>前端</category>
+        <category>JavaScript</category>
+        <category>框架</category>
+        <category>React</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>文档</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>React Props &amp; State</title>
+    <url>/hais-notebook/2020/02/02/React-PropsState/</url>
+    <content><![CDATA[<p>主要记录了 React 的 Props 和 State。</p>
+<a id="more"></a>
+
+<h1 id="Props"><a href="#Props" class="headerlink" title="Props"></a>Props</h1><p>可以查看<a href="https://codesandbox.io/s/billowing-wind-d8kzw" target="_blank" rel="noopener">CodeSandbox 上的这个例子</a></p>
+<h1 id="State"><a href="#State" class="headerlink" title="State"></a>State</h1><p>可以查看<a href="https://codesandbox.io/s/silly-diffie-9yk38" target="_blank" rel="noopener">CodeSandbox 上的这个例子</a></p>
+<h2 id="setState-的注意事项"><a href="#setState-的注意事项" class="headerlink" title="setState 的注意事项"></a>setState 的注意事项</h2><ul>
+<li><code>this.state.n += 1</code> 无效，UI 不会自动更新，需要用 <code>setState</code></li>
+<li><code>setState</code> 不会马上改变 <code>state</code>，是异步更新的，推荐使用 <code>setState(函数)</code></li>
+<li>不推荐 <code>this.setState(this.state)</code>，因为 React 不推荐我们修改旧的 <code>state</code>（不可变数据）</li>
+</ul>
+<h2 id="复杂-state"><a href="#复杂-state" class="headerlink" title="复杂 state"></a>复杂 state</h2><ul>
+<li>类组件的 <code>setState</code> 会自动合并第一层，建议使用 <code>Object.assign</code> 或者 <code>...sate</code></li>
+<li>函数组件不会自动合并，建议分开写</li>
+</ul>
+<h1 id="Vue-和-React-的区别"><a href="#Vue-和-React-的区别" class="headerlink" title="Vue 和 React 的区别"></a>Vue 和 React 的区别</h1><p>共同点：</p>
+<ul>
+<li>都是对视图的封装，React 是用类和函数表示一个组件，Vue 是用构造选项表示一个组件</li>
+<li>都提供了 <code>creatElement</code> 的 XML 简写，React 是 JSX，Vue 是 template</li>
+</ul>
+<p>不同点：</p>
+<ol>
+<li>监听数据变化的实现原理不同<ul>
+<li>Vue 通过 getter/setter 和代理等方式进行劫持，能够精确知道数据的变化，不需要特别的优化</li>
+<li>React 默认是通过比较引用的方式来进行的，可能会造成不必要的 vDOM 重新渲染，需要用诸如 PureComponent/shouldComponentUpdate 等方式来进行优化</li>
+</ul>
+</li>
+<li>数据流不同<ul>
+<li>Vue 在 1.0 的时候 <strong>父子组件</strong> props 可以双向绑定，还有 v-model 可以实现 <strong>组件与 DOM</strong> 双向绑定</li>
+<li>Vue 2 的时候 <strong>父子组件</strong> 不能双向绑定了（虽然仍然提供了 .sync 语法糖），并且还有 v-model</li>
+<li>React 中是单向数据流，并且组件与 DOM 之间也需要使用 onChange/setState。</li>
+</ul>
+</li>
+<li>HoC 和 mixins<ul>
+<li>Vue 中使用不同功能的组合是通过 mixins 实现的</li>
+<li>React 中则使用 HoC</li>
+</ul>
+</li>
+<li>组件间的通信<ul>
+<li>都有 props，也都可以跨层级通信，比如 Vue 的 provide/inject、React 的 context</li>
+<li>React 本身不支持自定义事件，因此 Vue 里面一般使用事件，React 中一般使用父组件传来的回调函数</li>
+</ul>
+</li>
+<li>更新视图<ul>
+<li>Vue 中一个对象，对应一个虚拟 DOM，当对象的属性改变时，把属性相关的 DOM 节点全部更新</li>
+<li>React 一个对象，对应一个虚拟 DOM，另一个对象对应另一个虚拟 DOM，对比两个更新，用 DOM Diff 算法找不同，然后局部更新 DOM</li>
+</ul>
+</li>
+<li>写法不同<ul>
+<li>Vue 是 JS in HTML</li>
+<li>React 是 HTML in JS</li>
+</ul>
+</li>
+<li>Vuex 和 Redux 的区别<ul>
+<li>Vue 中的 $store 直接注入到了组件实例中，可以直接用 dispatch、commit、mapState、this.$store 等；React 中需要用 connect 把 props 和 dispatch、state 连接起来</li>
+<li>Vue 中可以用 dispatch action、commit mutation；React 中只能使用 dispatch，不能直接操作 reduce</li>
+<li>Redux 中的使用的是不可变数据，每次都要用新的 State 替换旧的，而 Vue 中是直接修改的</li>
+</ul>
+</li>
+</ol>
 ]]></content>
       <categories>
         <category>前端</category>
