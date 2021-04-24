@@ -45,7 +45,7 @@ npx create-next-app next-demo
 
 可以用 `<Head>` 标签书写 `title` `meta:viewport` 等。
 
-```jsx
+```html
 <Head>
   <title>My Blog</title>
   <link rel="icon" href="/favicon.ico" />
@@ -55,7 +55,7 @@ npx create-next-app next-demo
 
 也可以在 `pages/_app.js` 中进行全局配置：
 
-```js
+```jsx
 function MyApp({ Component, pageProps }) {
   return (
     <>
@@ -82,9 +82,9 @@ import '../styles/globals.css'
 
 默认情况下都是相对路径引入，用配置指定根目录，可以参考 [这篇文档](https://nextjs.org/docs/advanced-features/module-path-aliases)
 
-也可以在组件中书写局部的 `<style>
+也可以在组件中书写局部的 `<style>`
 
-```js
+```jsx
 <style jsx>{`
   h1 { 
     color: red;
@@ -118,8 +118,6 @@ module.exports = {
 ```
 
 也可以使用 [next-images 插件](https://github.com/twopluszero/next-images#readme) 来引入图片
-
-
 
 # Next.js API 模式
 
