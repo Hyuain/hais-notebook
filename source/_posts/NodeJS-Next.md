@@ -307,13 +307,9 @@ export default PostsIndex
 ### 根据路径创建静态页面
 
 ```tsx
-// pages/posts/index.tsx
-
-
 // pages/posts/[id].tsx
 import { getPost, getPostIds } from "../../lib/posts"
 import { GetStaticPaths, GetStaticProps, NextPage } from "next"
-
 type Props = {
   post: Post
 }
