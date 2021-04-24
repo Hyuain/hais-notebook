@@ -1,6 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Flutter 简单上手</title>
+    <url>/hais-notebook/2021/04/24/Flutter-Intro/</url>
+    <content><![CDATA[<p>这几天简单了解了一下 Flutter，以下笔记是阅读文档的笔记。</p>
+<a id="more"></a>
+
+<h1 id="UI"><a href="#UI" class="headerlink" title="UI"></a>UI</h1><h2 id="Widget"><a href="#Widget" class="headerlink" title="Widget"></a>Widget</h2><p>Widget 像其他 Web 框架的 Component、Template、DOM，用来描述 UI。</p>
+<blockquote>
+<p>当 widget 的状态改变时，它会重新构建其描述（展示的 UI），框架则会对比前后变化的不同，以确定底层渲染树从一个状态转换到下一个状态所需的最小更改。</p>
+</blockquote>
+<h3 id="Root-Widget"><a href="#Root-Widget" class="headerlink" title="Root Widget"></a>Root Widget</h3><p>往 <code>runApp()</code> 里面传入一个 Widget 就可构建一个最小的 Flutter 应用，传入的这个 Widget 叫做 <code>Root Widegt</code></p>
+<figure class="highlight dart"><table><tr><td class="code"><pre><span class="line"><span class="keyword">void</span> main() &#123;</span><br><span class="line">  runApp(</span><br><span class="line">    Center(</span><br><span class="line">      child: Text(</span><br><span class="line">        <span class="string">'Hello, world!'</span>,</span><br><span class="line">        textDirection: TextDirection.ltr,</span><br><span class="line">      ),</span><br><span class="line">    ),</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>跨端</category>
+        <category>Flutter</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>TypeORM</title>
+    <url>/hais-notebook/2021/04/11/NodeJS-TypeORM/</url>
+    <content><![CDATA[<p>TypeORM 是一个 Node 中对 TypeScript 支持比较好的关系对象映射，支持关联、事务、数据库迁移，同类产品还有 Sequelize。</p>
+<a id="more"></a>
+
+<h1 id="启动-Postgresql-数据库"><a href="#启动-Postgresql-数据库" class="headerlink" title="启动 Postgresql 数据库"></a>启动 Postgresql 数据库</h1><p>在项目目录里面新增 <code>blog-data</code> 目录，并将其添加进 <code>.gitignore</code> 中。</p>
+<p>然后启动 postgresql：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker run -v <span class="string">"<span class="variable">$PWD</span>/blog-data"</span>:/var/lib/postgresql/data -p 5432:5432 -e POSTGRES_USER=blog -e POSTGRES_HOST_AUTH_METHOD=trust -d postgres</span><br></pre></td></tr></table></figure>
+
+<p>将上述命令的 <code>-e POSTGRES_HOST_AUTH_METHOD=trust</code> 替换成 <code>-e POSTGRES_PASSWORD=123456</code> 就可以设置密码</p>
+<p>然后可以这样进入 postgresql：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker <span class="built_in">exec</span> -it id bash</span><br><span class="line">psql -U username -W</span><br></pre></td></tr></table></figure>
+
+<p>然后可以执行 psql 的命令：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">\l <span class="comment"># list databases</span></span><br><span class="line">\c <span class="comment"># connect to a databases</span></span><br><span class="line">\dt <span class="comment"># display tables</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="创建-database"><a href="#创建-database" class="headerlink" title="创建 database"></a>创建 database</h1><p>由于 TypeORM 没有为我们提供单纯创建数据库的 API，我们需要进入数据库用 SQL 语句来进行创建：</p>
+<figure class="highlight postgresql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">DATABASE</span> xxx <span class="keyword">ENCODING</span> <span class="string">'UTF8'</span> LC_COLLATE <span class="string">'en_US.utf8'</span> LC_CTYPE <span class="string">'en_US.utf8'</span>;</span><br></pre></td></tr></table></figure>
+
+<p>一般来说需要创建三个数据库：development、test、production</p>
+<h1 id="安装-TypeORM"><a href="#安装-TypeORM" class="headerlink" title="安装 TypeORM"></a>安装 TypeORM</h1><p><a href="https://typeorm.io/#/" target="_blank" rel="noopener">官方文档在这里</a>。</p>
+<p>注意！当按照官方文档操作，运行命令 <code>typeorm init --database postgres</code> 之后，<code>.gitignore</code> 、 <code>package.json</code> 和 <code>tsconfig.json</code> 将会被更改，这时需要检查他的更改并酌情处理！</p>
+<p>比如当我们在使用 Next 搭配 TypeORM 的时候，会遇到问题是 Next 使用 Babel 处理 TypeScript，而 TypeORM 会安装 ts-node 依赖，这样就冲突了：</p>
+<ol>
+<li>先从 <code>package.json</code> 中删除命令擅自添加的 <code>ts-node</code></li>
+<li>TypeORM 想要我们直接运行 <code>src/index.ts</code>，但是没有 <code>ts-node</code> 我们应该如何运行这个文件呢？</li>
+</ol>
+]]></content>
+      <categories>
+        <category>全栈</category>
+        <category>NodeJS</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Next</title>
     <url>/hais-notebook/2021/04/07/NodeJS-Next/</url>
     <content><![CDATA[<p>NodeJS WEB 框架之 Next</p>
@@ -84,7 +143,7 @@
 <li>js 里面也含有静态内容，是快速导航（Link）需要用到的，因为快速导航实际上是使用 js + json 做的，而不是再去请求一次 html</li>
 <li>json 是 getStaticProps 得到的数据，为了方便 js 接入不同的数据，因此 js 和 json 需要分开</li>
 </ul>
-<h3 id="根据路径创建静态页面"><a href="#根据路径创建静态页面" class="headerlink" title="根据路径创建静态页面"></a>根据路径创建静态页面</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; pages&#x2F;posts&#x2F;index.tsx</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; pages&#x2F;posts&#x2F;[id].tsx</span><br><span class="line">import &#123; getPost, getPostIds &#125; from &quot;..&#x2F;..&#x2F;lib&#x2F;posts&quot;</span><br><span class="line">import &#123; GetStaticPaths, GetStaticProps, NextPage &#125; from &quot;next&quot;</span><br><span class="line"></span><br><span class="line">type Props &#x3D; &#123;</span><br><span class="line">  post: Post</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">type Params &#x3D; &#123;</span><br><span class="line">  id: string</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">const PostShow: NextPage&lt;Props&gt; &#x3D; (props) &#x3D;&gt; &#123;</span><br><span class="line">  const &#123; post &#125; &#x3D; props</span><br><span class="line">  return (</span><br><span class="line">    &lt;div&gt;</span><br><span class="line">      &lt;h1&gt;&#123;post.title&#125;&lt;&#x2F;h1&gt;</span><br><span class="line">      &lt;article&gt;</span><br><span class="line">        &#123;post.content&#125;</span><br><span class="line">      &lt;&#x2F;article&gt;</span><br><span class="line">    &lt;&#x2F;div&gt;</span><br><span class="line">  )</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">export default PostShow</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 声明路由：用这个来穷举静态页面的不同路径</span><br><span class="line">export const getStaticPaths: GetStaticPaths &#x3D; async () &#x3D;&gt; &#123;</span><br><span class="line">  const idList &#x3D; await getPostIds()</span><br><span class="line">  const paths &#x3D; idList.map((id) &#x3D;&gt; &#123;</span><br><span class="line">    return &#123;</span><br><span class="line">      params: &#123; id &#125;,</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">  return &#123;</span><br><span class="line">    paths,</span><br><span class="line">    &#x2F;&#x2F; false：当请求的 id 不再 path 里面，直接返回 404</span><br><span class="line">    &#x2F;&#x2F; true：若不存在，则依然渲染页面</span><br><span class="line">    fallback: false,</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 通过 context 中的 params 拿到上一个函数穷举出的路径，也就是我们的 id，然后借由 id 去获取内容并生成静态文件</span><br><span class="line">export const getStaticProps: GetStaticProps&lt;Props, Params&gt; &#x3D; async (context) &#x3D;&gt; &#123;</span><br><span class="line">  const id &#x3D; context.params!.id</span><br><span class="line">  const post &#x3D; await getPost(id)</span><br><span class="line">  return &#123;</span><br><span class="line">    props: &#123;</span><br><span class="line">      post,</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="根据路径创建静态页面"><a href="#根据路径创建静态页面" class="headerlink" title="根据路径创建静态页面"></a>根据路径创建静态页面</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; pages&#x2F;posts&#x2F;[id].tsx</span><br><span class="line">import &#123; getPost, getPostIds &#125; from &quot;..&#x2F;..&#x2F;lib&#x2F;posts&quot;</span><br><span class="line">import &#123; GetStaticPaths, GetStaticProps, NextPage &#125; from &quot;next&quot;</span><br><span class="line">type Props &#x3D; &#123;</span><br><span class="line">  post: Post</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">type Params &#x3D; &#123;</span><br><span class="line">  id: string</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">const PostShow: NextPage&lt;Props&gt; &#x3D; (props) &#x3D;&gt; &#123;</span><br><span class="line">  const &#123; post &#125; &#x3D; props</span><br><span class="line">  return (</span><br><span class="line">    &lt;div&gt;</span><br><span class="line">      &lt;h1&gt;&#123;post.title&#125;&lt;&#x2F;h1&gt;</span><br><span class="line">      &lt;article&gt;</span><br><span class="line">        &#123;post.content&#125;</span><br><span class="line">      &lt;&#x2F;article&gt;</span><br><span class="line">    &lt;&#x2F;div&gt;</span><br><span class="line">  )</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">export default PostShow</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 声明路由：用这个来穷举静态页面的不同路径</span><br><span class="line">export const getStaticPaths: GetStaticPaths &#x3D; async () &#x3D;&gt; &#123;</span><br><span class="line">  const idList &#x3D; await getPostIds()</span><br><span class="line">  const paths &#x3D; idList.map((id) &#x3D;&gt; &#123;</span><br><span class="line">    return &#123;</span><br><span class="line">      params: &#123; id &#125;,</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">  return &#123;</span><br><span class="line">    paths,</span><br><span class="line">    &#x2F;&#x2F; false：当请求的 id 不再 path 里面，直接返回 404</span><br><span class="line">    &#x2F;&#x2F; true：若不存在，则依然渲染页面</span><br><span class="line">    fallback: false,</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 通过 context 中的 params 拿到上一个函数穷举出的路径，也就是我们的 id，然后借由 id 去获取内容并生成静态文件</span><br><span class="line">export const getStaticProps: GetStaticProps&lt;Props, Params&gt; &#x3D; async (context) &#x3D;&gt; &#123;</span><br><span class="line">  const id &#x3D; context.params!.id</span><br><span class="line">  const post &#x3D; await getPost(id)</span><br><span class="line">  return &#123;</span><br><span class="line">    props: &#123;</span><br><span class="line">      post,</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/next-5.png" alt=""></p>
 <p>可以看到生成来的文件中只有一个 JS，但是有两个 JSON 和两个 HTML 文件，这就是根据不同路由的到的不同页面和数据。</p>
