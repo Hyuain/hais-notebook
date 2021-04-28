@@ -3,7 +3,6 @@ title: React Event
 date: 2020-02-04 09:27:59
 tags:
   - 入门
-  - 饥人谷
   - 文档
 categories:
   - [前端, JavaScript, 框架, React]

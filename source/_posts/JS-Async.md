@@ -3,7 +3,6 @@ title: JavaScript 异步
 date: 2020-01-30 08:49:54
 tags:
   - 入门
-  - 饥人谷
 categories:
   - [前端, JavaScript, 原生 JavaScript]
 ---

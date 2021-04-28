@@ -3,7 +3,6 @@ title: JavaScript DOM API
 date: 2020-01-29 20:04:41
 tags:
   - 入门
-  - 饥人谷
 categories:
   - [前端, JavaScript, 原生 JavaScript]
 ---

@@ -3,7 +3,6 @@ title: Vue 开始
 date: 2020-01-30 10:31:34
 tags:
   - 入门
-  - 饥人谷
   - 文档
 categories:
   - [前端, JavaScript, 框架, Vue]

@@ -3,7 +3,6 @@ title: JavaScript Object
 date: 2020-01-29 16:00:51
 tags:
   - 入门
-  - 饥人谷
 categories:
   - [前端, JavaScript, 原生 JavaScript]
 ---

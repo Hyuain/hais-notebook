@@ -3,7 +3,6 @@ title: Vue 组件
 date: 2020-02-09 20:17:46
 tags:
   - 入门
-  - 饥人谷
   - 文档
 categories:
   - [前端, JavaScript, 框架, Vue]
