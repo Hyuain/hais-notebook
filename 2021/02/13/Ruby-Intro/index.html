@@ -53,7 +53,7 @@
 <meta property="og:description" content="Ruby 的介绍与基础。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-02-13T10:05:22.000Z">
-<meta property="article:modified_time" content="2021-05-09T08:29:18.796Z">
+<meta property="article:modified_time" content="2021-05-09T09:08:47.840Z">
 <meta property="article:author" content="Harvey Zhang">
 <meta property="article:tag" content="入门">
 <meta name="twitter:card" content="summary">
@@ -234,7 +234,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-09 08:29:18" itemprop="dateModified" datetime="2021-05-09T08:29:18+00:00">2021-05-09</time>
+                <time title="修改时间：2021-05-09 09:08:47" itemprop="dateModified" datetime="2021-05-09T09:08:47+00:00">2021-05-09</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -267,7 +267,6 @@
       
         <p>Ruby 的介绍与基础。</p>
 <a id="more"></a>
-
 <h1 id="基本"><a href="#基本" class="headerlink" title="基本"></a>基本</h1><h2 id="运行-Ruby-的方式"><a href="#运行-Ruby-的方式" class="headerlink" title="运行 Ruby 的方式"></a>运行 Ruby 的方式</h2><ul>
 <li><code>irb</code> 可交互式命令行</li>
 <li><code>ruby</code> + 文件路径</li>
@@ -295,7 +294,6 @@
 <li>多行字符串</li>
 </ul>
 <figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">s = &lt;&lt;eos</span><br><span class="line">dfa123</span><br><span class="line">fad</span><br><span class="line">eos</span><br></pre></td></tr></table></figure>
-
 <h2 id="log"><a href="#log" class="headerlink" title="log"></a>log</h2><ul>
 <li><code>print</code></li>
 <li><code>puts</code> put string</li>
@@ -306,31 +304,20 @@
 <li>多行注释</li>
 </ul>
 <figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">=begin</span></span><br><span class="line"><span class="comment">注释</span></span><br><span class="line"><span class="comment">=end</span></span><br></pre></td></tr></table></figure>
-
 <h1 id="控制语句"><a href="#控制语句" class="headerlink" title="控制语句"></a>控制语句</h1><h2 id="if"><a href="#if" class="headerlink" title="if"></a>if</h2><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> a &gt; <span class="number">3</span> <span class="keyword">then</span> p <span class="string">'大'</span> <span class="keyword">end</span></span><br><span class="line"><span class="keyword">if</span> a &gt; <span class="number">3</span> <span class="keyword">then</span> p <span class="string">'大'</span> <span class="keyword">else</span> p <span class="string">'小'</span> <span class="keyword">end</span></span><br><span class="line">p(<span class="keyword">if</span> a &gt; <span class="number">3</span> <span class="keyword">then</span> <span class="string">'大'</span> <span class="keyword">else</span> <span class="string">'小'</span> <span class="keyword">end</span>)</span><br><span class="line">p(<span class="keyword">if</span> a &gt; <span class="number">4</span></span><br><span class="line">  <span class="string">'大'</span></span><br><span class="line">  elseif a &gt; <span class="number">2</span></span><br><span class="line">  <span class="string">'中'</span></span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">  <span class="string">'小'</span></span><br><span class="line">  <span class="keyword">end</span>)</span><br></pre></td></tr></table></figure>
-
 <figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> <span class="keyword">if</span> error</span><br><span class="line"><span class="keyword">return</span> <span class="keyword">if</span> <span class="keyword">not</span> success</span><br><span class="line"><span class="keyword">return</span> <span class="keyword">unless</span> success</span><br></pre></td></tr></table></figure>
-
 <h2 id="case"><a href="#case" class="headerlink" title="case"></a>case</h2><p>类似 <code>switch-case</code> 单不需要 <code>break</code></p>
 <figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">x = <span class="keyword">case</span> a</span><br><span class="line"><span class="keyword">when</span> <span class="number">1</span></span><br><span class="line">  <span class="string">'1'</span></span><br><span class="line"><span class="keyword">when</span> <span class="number">2</span></span><br><span class="line">  <span class="string">'2'</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">  <span class="string">'others'</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
-
 <h1 id="循环语句"><a href="#循环语句" class="headerlink" title="循环语句"></a>循环语句</h1><h2 id="times"><a href="#times" class="headerlink" title="times"></a>times</h2><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">7</span>.times <span class="keyword">do</span></span><br><span class="line">  p <span class="string">'哈哈'</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="number">7</span>.times &#123; p <span class="string">'哈哈'</span> &#125;</span><br></pre></td></tr></table></figure>
-
 <p><code>times</code> 是函数，<code>do end</code> 和 <code>{}</code> 是代码块，作为 <code>times</code> 函数的最后的参数，一般多行用 <code>do end</code>，单行用 <code>{}</code></p>
 <figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">7</span>.times <span class="keyword">do</span> <span class="params">|i|</span> p <span class="string">"<span class="subst">#&#123;i&#125;</span> time"</span> <span class="keyword">end</span></span><br></pre></td></tr></table></figure>
-
 <p><code>|i|</code> 相当于给你的参数，表示第几次</p>
 <h2 id="each"><a href="#each" class="headerlink" title="each"></a>each</h2><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>].each <span class="keyword">do</span> <span class="params">|item|</span> p item <span class="keyword">end</span></span><br></pre></td></tr></table></figure>
-
 <figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="number">1</span>..<span class="number">7</span>).each <span class="keyword">do</span> <span class="params">|n|</span> p n <span class="keyword">end</span></span><br></pre></td></tr></table></figure>
-
 <h2 id="for"><a href="#for" class="headerlink" title="for"></a>for</h2><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">1</span>..<span class="number">7</span> <span class="keyword">do</span> p i <span class="keyword">end</span></span><br></pre></td></tr></table></figure>
-
 <h2 id="while-until"><a href="#while-until" class="headerlink" title="while/until"></a>while/until</h2><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">i = <span class="number">1</span></span><br><span class="line"><span class="keyword">while</span> <span class="number">1</span> &lt; <span class="number">3</span></span><br><span class="line">  p i</span><br><span class="line">  i += <span class="number">1</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">j = <span class="number">1</span></span><br><span class="line"><span class="keyword">until</span> j &gt;= <span class="number">3</span></span><br><span class="line">  p j</span><br><span class="line">  j += <span class="number">3</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
-
 <h2 id="loop"><a href="#loop" class="headerlink" title="loop"></a>loop</h2><p>一直循环</p>
 <figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">loop</span><br><span class="line">  p <span class="string">'ruby'</span></span><br><span class="line">  <span class="keyword">if</span> x &gt; <span class="number">10</span> <span class="keyword">then</span> <span class="keyword">break</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
-
 <h2 id="break-continue"><a href="#break-continue" class="headerlink" title="break continue"></a>break continue</h2><p><code>break</code> 和 <code>next</code> 对应 <code>break</code> 和 <code>continue</code></p>
 <h1 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h1><p>ruby 中只有对象，可以用 <code>.class</code> 查看类</p>
 <ul>
@@ -348,14 +335,11 @@
 <p>每个对象都有唯一的 <code>object_id</code> 属性</p>
 <h2 id="Array"><a href="#Array" class="headerlink" title="Array"></a>Array</h2><p><code>arr.methods</code> 可以看到有什么 api</p>
 <h2 id="Hash"><a href="#Hash" class="headerlink" title="Hash"></a>Hash</h2><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">me = &#123; <span class="symbol">name:</span> <span class="string">'Harvey'</span>, <span class="symbol">age:</span> <span class="number">20</span> &#125;</span><br></pre></td></tr></table></figure>
-
 <p>上面的 <code>name</code> 和 <code>age</code> 不是字符串，是 symbol，相当于</p>
 <figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">me = &#123; <span class="symbol">:name</span> =&gt; <span class="string">'Harvey'</span>, <span class="symbol">:age</span> =&gt; <span class="number">20</span> &#125;</span><br></pre></td></tr></table></figure>
-
 <p>最初的写法相当于上面写法的在 ruby 2 以后的语法糖</p>
 <p>symbol 相当于轻量的字符串，功能更少，可以通过 <code>.to_s</code> 得到字符串，通过 <code>.to_sym</code> 得到 symbol</p>
 <h3 id="散列的遍历"><a href="#散列的遍历" class="headerlink" title="散列的遍历"></a>散列的遍历</h3><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">me.each <span class="keyword">do</span> <span class="params">|key, value|</span> p key, value <span class="keyword">end</span></span><br></pre></td></tr></table></figure>
-
 <h3 id="与-JS-对象的区别"><a href="#与-JS-对象的区别" class="headerlink" title="与 JS 对象的区别"></a>与 JS 对象的区别</h3><ul>
 <li>不能用 <code>me.name</code> 拿到属性，要用 <code>me[:name]</code><ul>
 <li><code>&#39;name&#39;</code> 和 <code>:name</code> 是不一样的</li>

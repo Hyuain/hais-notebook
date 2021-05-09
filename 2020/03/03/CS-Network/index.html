@@ -89,7 +89,7 @@
 <meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/TCP-Send-Window-2.png">
 <meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/TCP-Receive-Window.png">
 <meta property="article:published_time" content="2020-03-03T21:37:30.000Z">
-<meta property="article:modified_time" content="2021-05-09T08:29:18.792Z">
+<meta property="article:modified_time" content="2021-05-09T09:08:47.840Z">
 <meta property="article:author" content="Harvey Zhang">
 <meta property="article:tag" content="入门">
 <meta name="twitter:card" content="summary">
@@ -271,7 +271,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-09 08:29:18" itemprop="dateModified" datetime="2021-05-09T08:29:18+00:00">2021-05-09</time>
+                <time title="修改时间：2021-05-09 09:08:47" itemprop="dateModified" datetime="2021-05-09T09:08:47+00:00">2021-05-09</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -304,7 +304,6 @@
       
         <p>主要是关于计算机网络基础的一些东西。</p>
 <a id="more"></a>
-
 <h1 id="HTTP"><a href="#HTTP" class="headerlink" title="HTTP"></a>HTTP</h1><h2 id="HTTP-基本介绍"><a href="#HTTP-基本介绍" class="headerlink" title="HTTP 基本介绍"></a>HTTP 基本介绍</h2><h3 id="HTTP-历史"><a href="#HTTP-历史" class="headerlink" title="HTTP 历史"></a>HTTP 历史</h3><ul>
 <li>HTTP 0.9：1991，只有 GET、只能传HTML，没有 CSS、JS，每个HTTP请求都是短连接</li>
 <li>HTTP 1.0：1996，有了 POST、HEAD……</li>
@@ -357,22 +356,16 @@
 </ul>
 </blockquote>
 <h3 id="HTTP-报文结构"><a href="#HTTP-报文结构" class="headerlink" title="HTTP 报文结构"></a>HTTP 报文结构</h3><h4 id="请求报文"><a href="#请求报文" class="headerlink" title="请求报文"></a>请求报文</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">【请求行】POST（请求方法） &#x2F;webTours&#x2F;login.pl（请求 URI） HTTP&#x2F;1.1（HTTP 协议及版本）</span><br><span class="line">【请求头】用键值对来传递参数，包括 Host、Accept、Content-Type 等</span><br><span class="line"></span><br><span class="line">【请求体】</span><br></pre></td></tr></table></figure>
-
 <p>可以用 curl 构造请求：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">curl -X -POST <span class="comment"># 设置请求动词</span></span><br><span class="line">curl -H <span class="string">'Accept: text/html'</span> <span class="comment"># -H 也可以写成 --header</span></span><br><span class="line">curl -H <span class="string">'Content-Type: text/plain;charset=utf-8'</span> -d <span class="string">'请求体内容'</span> <span class="comment"># -d 也可以写成 --data</span></span><br></pre></td></tr></table></figure>
-
 <p>可以用 Node.js 读取请求：</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">request.method</span><br><span class="line">request.url <span class="comment">// 路径，带参数</span></span><br><span class="line">request.path <span class="comment">// 纯路径</span></span><br><span class="line">request.query <span class="comment">// 只有查询参数</span></span><br><span class="line">request.headers[<span class="string">'Accept'</span>]</span><br></pre></td></tr></table></figure>
-
 <h4 id="响应报文"><a href="#响应报文" class="headerlink" title="响应报文"></a>响应报文</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">【响应行】HTTP&#x2F;1.1（报文协议及版本） 200 Ok（状态码及状态描述）</span><br><span class="line">【响应头】</span><br><span class="line"></span><br><span class="line">【响应体】</span><br></pre></td></tr></table></figure>
-
 <p>可以用 Node.js 设置响应：</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">response.statusCode = <span class="number">200</span></span><br><span class="line">response.setHeader(<span class="string">'Content-Type'</span>, <span class="string">'text/html'</span>)</span><br><span class="line">response.write(<span class="string">'内容'</span>) <span class="comment">// 内容可以追加</span></span><br></pre></td></tr></table></figure>
-
 <div class="note warning">
             <p>注意 <code>path</code> 都是以 <code>/</code> 开头的</p>
           </div>
-
 <h4 id="报文头"><a href="#报文头" class="headerlink" title="报文头"></a>报文头</h4><ul>
 <li><strong>Accept</strong>：浏览器端可以接收的媒体类型<ul>
 <li><strong>Accept: text/html</strong>，代表浏览器可以接收服务器回发的类型为 text/html 类型的数据，如果服务器无法返回此类型，应该返回一个 406 错误（Non Acceptable）</li>
@@ -540,7 +533,8 @@
 <li>第一次请求，CDN 和 浏览器同时缓存</li>
 <li>浏览器缓存过期后，找 CDN 进行对比，CDN 看自己的过期没有，若自己没过期，就给发给浏览器</li>
 </ol>
-<h4 id="浏览器操作对-HTTP-缓存的影响"><a href="#浏览器操作对-HTTP-缓存的影响" class="headerlink" title="浏览器操作对 HTTP 缓存的影响"></a>浏览器操作对 HTTP 缓存的影响</h4><table>
+<h4 id="浏览器操作对-HTTP-缓存的影响"><a href="#浏览器操作对-HTTP-缓存的影响" class="headerlink" title="浏览器操作对 HTTP 缓存的影响"></a>浏览器操作对 HTTP 缓存的影响</h4><div class="table-container">
+<table>
 <thead>
 <tr>
 <th>用户操作</th>
@@ -548,7 +542,8 @@
 <th>Last-Modified/Etag</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>地址栏回车</td>
 <td>有效</td>
 <td>有效</td>
@@ -578,7 +573,9 @@
 <td><em>无效</em></td>
 <td><em>无效</em></td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
+</div>
 <h3 id="HTTP-内容协商机制"><a href="#HTTP-内容协商机制" class="headerlink" title="HTTP 内容协商机制"></a>HTTP 内容协商机制</h3><blockquote>
 <p>指客户端和服务端就响应的资源内容进行交涉，然后提供给客户端最为适合的资源。内容协商会以相应资源的语言、字符集、编码方式等作为判断的基准</p>
 </blockquote>
@@ -597,10 +594,8 @@
 <h3 id="HTTP-断点续传和多线程下载"><a href="#HTTP-断点续传和多线程下载" class="headerlink" title="HTTP 断点续传和多线程下载"></a>HTTP 断点续传和多线程下载</h3><p>主要是通过请求头中的 <strong>Range</strong> 和响应头中的 <strong>Content-Range</strong> 实现的，并且若使用断点续传模式返回的状态码都是 206 Partial Content</p>
 <h4 id="Range"><a href="#Range" class="headerlink" title="Range"></a>Range</h4><p>用于请求头中，指定第一个字节的位置和最后一个字节的位置：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Range:(unit&#x3D;first byte pos)-[last byte pos]</span><br><span class="line">Range:bytes&#x3D;0-499</span><br><span class="line">Range:bytes&#x3D;-500</span><br><span class="line">Range:bytes&#x3D;500-</span><br><span class="line">Range:bytes&#x3D;500-600,601-999</span><br></pre></td></tr></table></figure>
-
 <h4 id="Content-Range"><a href="#Content-Range" class="headerlink" title="Content-Range"></a>Content-Range</h4><p>用于响应头中，返回当前接受的范围和文件总大小：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Content-Range:bytes(unit first byte pos)-[last byte pos]&#x2F;[entity length]</span><br></pre></td></tr></table></figure>
-
 <h2 id="HTTPS"><a href="#HTTPS" class="headerlink" title="HTTPS"></a>HTTPS</h2><h3 id="数字证书"><a href="#数字证书" class="headerlink" title="数字证书"></a>数字证书</h3><h4 id="对称加密与非对称加密"><a href="#对称加密与非对称加密" class="headerlink" title="对称加密与非对称加密"></a>对称加密与非对称加密</h4><p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Encryption.png" alt="对称加密"></p>
 <p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/AsymEncryption.png" alt="非对称加密"></p>
 <p>对称加密效率高，但在密钥分发时存在安全隐患，容易被截获；非对称加密安全性高，但性能低下；因此我们可以先用非对称加密传输对称加密的密钥，之后再用对称加密来传输数据</p>
@@ -612,8 +607,11 @@
 <p>HTTPS 可以认为是 HTTP + TLS，TLS 是传输层加密协议，他的前身是 SSL 协议</p>
 </blockquote>
 <p>可以认为 TLS 建立在传输层和应用层之间（会话层），目前常用的版本有 TLS/1.0、1.1、1.2、1.3 和 SSL/3.0，但是 SSL/3.0 可能会存在 ‎POODLE 攻击，TSL/1.0 也存在一些漏洞</p>
-<p>HTTPS 功能：<br>    - <strong>内容加密</strong>（非对称加密协商密钥 + 对称加密传输数据）<br>    - <strong>数据完整性</strong>（数字签名）<br>    - <strong>身份认证</strong>（数字证书）</p>
-<h3 id="HTTPS-使用成本"><a href="#HTTPS-使用成本" class="headerlink" title="HTTPS 使用成本"></a>HTTPS 使用成本</h3><ul>
+<p>HTTPS 功能：</p>
+<pre><code>- **内容加密**（非对称加密协商密钥 + 对称加密传输数据）
+- **数据完整性**（数字签名）
+- **身份认证**（数字证书）
+</code></pre><h3 id="HTTPS-使用成本"><a href="#HTTPS-使用成本" class="headerlink" title="HTTPS 使用成本"></a>HTTPS 使用成本</h3><ul>
 <li>证书费用以及更新维护</li>
 <li>降低用户的访问速度</li>
 <li>消耗 CPU 资源</li>
@@ -634,7 +632,6 @@
 <div class="note warning">
             <p>HTTPS 并不能解决所有的劫持问题</p>
           </div>
-
 <h2 id="基于-HTTP-的功能追加协议"><a href="#基于-HTTP-的功能追加协议" class="headerlink" title="基于 HTTP 的功能追加协议"></a>基于 HTTP 的功能追加协议</h2><h3 id="HTTP-协议的瓶颈"><a href="#HTTP-协议的瓶颈" class="headerlink" title="HTTP 协议的瓶颈"></a>HTTP 协议的瓶颈</h3><ul>
 <li>单路连接、请求低效，一条连接上只可发送 <strong>一个</strong> 请求，并且严格先入先出（非关键资源阻塞问题）</li>
 <li>请求只能 <strong>从客户端开始</strong>，客户端不可以接受除了响应以外的指令，没办法让服务器一更新，客户端就立即更新</li>
@@ -649,7 +646,6 @@
 <p>WebSocket 是持久化协议，</p>
 <p>一个典型的 WebSocket 握手：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">GET &#x2F;chat HTTP&#x2F;1.1</span><br><span class="line">Host: server.example.com</span><br><span class="line">Upgrade: websocket</span><br><span class="line">Connection: Upgrade</span><br><span class="line">Sec-WebSocket-Key: x3JJHMbDL1EzLkh9GBhXDw&#x3D;&#x3D;   浏览器随机生成的 Base64</span><br><span class="line">Sec-WebSocket-Protocol: chat, superchat  用来区分同一个 URL 下不同的服务所需要的协议 </span><br><span class="line">Sec-WebSocket-Version: 13</span><br><span class="line">Origin: http:&#x2F;&#x2F;example.com</span><br></pre></td></tr></table></figure>
-
 <p>传统的轮询方式：</p>
 <ul>
 <li>AJAX 轮询：浏览器每隔几秒发一次请求，询问服务器有没有新消息</li>
@@ -865,14 +861,11 @@
 </ol>
 <h3 id="几种常见的攻击类型"><a href="#几种常见的攻击类型" class="headerlink" title="几种常见的攻击类型"></a>几种常见的攻击类型</h3><h4 id="GET-类型的-CSRF"><a href="#GET-类型的-CSRF" class="headerlink" title="GET 类型的 CSRF"></a>GET 类型的 CSRF</h4><p>这个类型非常简单，一般只需要一个 HTTP 请求：</p>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"http://bank.example/withraw?amount=10000&amp;for=hacker"</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
 <p>在受害者访问有这个 img 的页面之后，浏览器会自动向 <code>http://bank.example/withraw?amount=10000&amp;for=hacker</code> 发送请求</p>
 <h4 id="POST-类型的-CSRF"><a href="#POST-类型的-CSRF" class="headerlink" title="POST 类型的 CSRF"></a>POST 类型的 CSRF</h4><p>这类攻击通常是使用一个自动提交的表单：</p>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">"http://bank.example/withdraw"</span> <span class="attr">method</span>=<span class="string">"POST"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"hidden"</span> <span class="attr">name</span>=<span class="string">"account"</span> <span class="attr">value</span>=<span class="string">"xiaoming"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"hidden"</span> <span class="attr">name</span>=<span class="string">"amount"</span> <span class="attr">value</span>=<span class="string">"10000"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"hidden"</span> <span class="attr">name</span>=<span class="string">"for"</span> <span class="attr">value</span>=<span class="string">"hacker"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">  <span class="built_in">document</span>.forms[<span class="number">0</span>].submit()</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
 <h4 id="链接类型的-CSRF"><a href="#链接类型的-CSRF" class="headerlink" title="链接类型的 CSRF"></a>链接类型的 CSRF</h4><p>需要用户点击链接才会触发：</p>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"http://bank.example/withraw?amount=10000&amp;for=hacker"</span> <span class="attr">target</span>=<span class="string">"_blank"</span>&gt;</span></span><br><span class="line">重磅消息！！</span><br><span class="line"><span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
 <h3 id="CSRF-的特点"><a href="#CSRF-的特点" class="headerlink" title="CSRF 的特点"></a>CSRF 的特点</h3><ul>
 <li>攻击一般发起在 <strong>第三方网站</strong>，而不是被攻击的网站（通常是 <strong>跨域</strong> 的），因此被攻击的网站无法防止攻击的发生</li>
 <li>攻击者利用受害者的登陆凭证，而不是直接盗取数据</li>
@@ -979,7 +972,6 @@
 </ul>
 <h5 id="Timestamp"><a href="#Timestamp" class="headerlink" title="Timestamp"></a>Timestamp</h5><p>Timestamp 一共占 10 个字节：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kind(1 Byte) + length(1 Byte) + info(8 Bytes)</span><br></pre></td></tr></table></figure>
-
 <p>其中 <code>kind=8</code> <code>length=10</code>，<code>info</code> 由 <code>timestamp</code> 和 <code>timestamp echo</code> 两部分构成，各占四个字节</p>
 <p>TCP 的时间戳主要解决两个问题：</p>
 <ul>
@@ -1011,10 +1003,8 @@
 <p>平滑往返时间（SRTT, Smoothed Round-Trip Time）是根据 RTT 和之前的 SRTT 计算出来的一个值：</p>
 </blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SRTT &#x3D; (α * SRTT) + ((1 - α) * RTT)</span><br><span class="line">初始的 SRTT 为 0</span><br></pre></td></tr></table></figure>
-
 <p>α 即为 <strong>平滑因子</strong>，建议值是 0.8，范围是 0.8 ~ 0.9</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">RTO &#x3D; min(ubound, max(lbound, β * SRTT))</span><br></pre></td></tr></table></figure>
-
 <p>其中，β 是 <strong>加权因子</strong>，一般为 1.3 ~ 2.0，<strong>lbound 是 下界</strong>，<strong>ubound 是上界</strong></p>
 <p>在 RTT 变化较大的地方不太适用，因为 RTT 对 RTO 影响太小</p>
 <h4 id="标准方法"><a href="#标准方法" class="headerlink" title="标准方法"></a>标准方法</h4><p>又称 Jacobson / Karels 算法</p>
@@ -1022,19 +1012,16 @@
 <li><strong>计算 SRTT</strong>：</li>
 </ol>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SRTT &#x3D; (α * SRTT) + ((1 - α) * RTT)</span><br></pre></td></tr></table></figure>
-
 <p>α 的建议值是 <strong>0.125</strong></p>
-<ol start="2">
+<ol>
 <li>**计算中间变量 RTTVAR（Round-Trip Time Variation）</li>
 </ol>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">RTTVAR &#x3D; (1 - β) * RTTVAR + β * (|RTT - SRTT|)</span><br></pre></td></tr></table></figure>
-
 <p>β 的建议值是 <em>0.25*</em></p>
-<ol start="3">
+<ol>
 <li>计算 RTO</li>
 </ol>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">RTO &#x3D; µ * SRTT + ∂ * RTTVAR</span><br></pre></td></tr></table></figure>
-
 <p>µ 建议值取 1, ∂ 建议值取 4</p>
 <h3 id="TCP-流量控制"><a href="#TCP-流量控制" class="headerlink" title="TCP 流量控制"></a>TCP 流量控制</h3><p>TCP 会把需要发送的数据放到 <strong>发送缓存区</strong>，需要接收的数据放到 <strong>接收缓存区</strong></p>
 <p>流量控制则是通过 <strong>控制接收缓存区的大小</strong>，来控制发送端的发送，如果接收方的接收缓存区满了，就不能再发送了</p>
@@ -1060,7 +1047,6 @@
 <h4 id="拥塞窗口"><a href="#拥塞窗口" class="headerlink" title="拥塞窗口"></a>拥塞窗口</h4><p>指的是目前自己还能传输的数据量大小，与上面的接收窗口不同，是 <strong>发送端</strong> 的限制</p>
 <p>发送窗口最终的大小取 <strong>接收窗口</strong> 和 <strong>拥塞窗口</strong> 中的小值</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">发送窗口大小 &#x3D; min(RWND, CWND)</span><br></pre></td></tr></table></figure>
-
 <h3 id="慢启动"><a href="#慢启动" class="headerlink" title="慢启动"></a>慢启动</h3><p>由于刚接入网络传输数据的时候，并不知道网络的状态，所以不能操之过急，拥塞控制会采用保守的算法来慢慢适应网络</p>
 <ul>
 <li>首先，三次握手，双方宣告自己 <strong>接收窗口（RWND）</strong> 的大小</li>

@@ -53,7 +53,7 @@
 <meta property="og:description" content="介绍 Canvas。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-03-05T17:26:02.000Z">
-<meta property="article:modified_time" content="2021-05-09T08:29:18.792Z">
+<meta property="article:modified_time" content="2021-05-09T09:08:47.840Z">
 <meta property="article:author" content="Harvey Zhang">
 <meta property="article:tag" content="入门">
 <meta name="twitter:card" content="summary">
@@ -234,7 +234,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-09 08:29:18" itemprop="dateModified" datetime="2021-05-09T08:29:18+00:00">2021-05-09</time>
+                <time title="修改时间：2021-05-09 09:08:47" itemprop="dateModified" datetime="2021-05-09T09:08:47+00:00">2021-05-09</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -273,7 +273,6 @@
       
         <p>介绍 Canvas。</p>
 <a id="more"></a>
-
 <h1 id="什么是-Canvas"><a href="#什么是-Canvas" class="headerlink" title="什么是 Canvas"></a>什么是 Canvas</h1><blockquote>
 <p><code>&lt;canvas&gt;</code> 是 HTML 5 新增的元素，可用于通过使用 JavaScript 的脚本来绘制图形。例如，他可以用于绘制图形、制作照片、创建动画，甚至可以进行实时视频处理和渲染</p>
 </blockquote>
@@ -282,6 +281,7 @@
 <p>SVG（Scalable Vector Graphics）是基于 XML，用于描述二维矢量图形的一种图片格式，由 W3C 指定，是一个开放标准</p>
 </blockquote>
 <p>Canvas 在绘制结束之后不能被保存到内存中，每次都需要重新绘制，是实时绘制的；svg 则在绘制完之后会被保存在内存中，当需要修改这个对象信息的时候，直接修改就可以了</p>
+<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -289,7 +289,8 @@
 <th>SVG</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>依赖分辨率（位图）</td>
 <td>不依赖分辨率（矢量图）</td>
 </tr>
@@ -313,7 +314,9 @@
 <td>图面较小，对象数量较大时（&gt;10k）性能最佳</td>
 <td>对象数量较小（&lt;10k）、图面更大时性能更佳</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
+</div>
 <h1 id="Canvas-的应用场景"><a href="#Canvas-的应用场景" class="headerlink" title="Canvas 的应用场景"></a>Canvas 的应用场景</h1><ol>
 <li><strong>绘制图表</strong>，比如 EChats 之类的数据可视化库都是使用 Canvas 实现的</li>
 <li><strong>小游戏</strong>，基本上所有的 HTML 5 游戏都是基于 Canvas 开发的，因为不需要借助其他任何插件</li>
@@ -322,21 +325,22 @@
 </ol>
 <h1 id="Canvas-API"><a href="#Canvas-API" class="headerlink" title="Canvas API"></a>Canvas API</h1><h2 id="设置宽高"><a href="#设置宽高" class="headerlink" title="设置宽高"></a>设置宽高</h2><p>可以通过 HTML 或 JS 来设置，不能通过 CSS 设置，这会导致不可预料的缩放</p>
 <h2 id="获取-Canvas-对象"><a href="#获取-Canvas-对象" class="headerlink" title="获取 Canvas 对象"></a>获取 Canvas 对象</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">canvas.getContext(contextType, contextAttributes)</span><br></pre></td></tr></table></figure>
-
 <p><code>contextType</code> 是上下文类型，有这样几种：</p>
 <ul>
 <li><code>2d</code>：代表一个二维渲染上下文</li>
 <li><code>webgl</code> 或 <code>experimental-webgl</code>：代表一个三维渲染上下文</li>
 <li><code>webgl2</code> 或 <code>experimental-webgl2</code>：代表一个三维渲染上下文，并且只能在浏览器中实现 WebGL 版本 2（OpenGL ES 3.0）</li>
 </ul>
-<h2 id="绘制路径"><a href="#绘制路径" class="headerlink" title="绘制路径"></a>绘制路径</h2><table>
+<h2 id="绘制路径"><a href="#绘制路径" class="headerlink" title="绘制路径"></a>绘制路径</h2><div class="table-container">
+<table>
 <thead>
 <tr>
 <th>方法</th>
 <th>描述</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td><code>fill()</code></td>
 <td>填充路径</td>
 </tr>
@@ -400,17 +404,17 @@
 <td><code>isPointInPath()</code></td>
 <td>如果指定的点位于当前路径中，则返回 true，否则返回 false</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
+</div>
 <h3 id="绘制曲线"><a href="#绘制曲线" class="headerlink" title="绘制曲线"></a>绘制曲线</h3><h4 id="arc"><a href="#arc" class="headerlink" title="arc()"></a>arc()</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">context.arc(x, y, sAngle, eAangle, counterCloseWise)</span><br></pre></td></tr></table></figure>
-
 <p><code>x</code> 和 <code>y</code> 指定了圆心坐标，<code>sAngle</code> 和 <code>eAngle</code> 分别为起始角和结束角，<code>counterCloseWise</code> 设置为 <code>true</code> 表示逆时针绘制</p>
 <h3 id="绘制直线"><a href="#绘制直线" class="headerlink" title="绘制直线"></a>绘制直线</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">moveTo(x, y) <span class="comment">// 把路径移动到画布中的指定点，不创建线条</span></span><br><span class="line">lineTo(x, y) <span class="comment">// 添加一个新点，然后在画布中创建从该点到最后指定点的线条</span></span><br></pre></td></tr></table></figure>
-
 <div class="note warning">
             <p>如果没有 <code>moveTo</code>，那么第一次 <code>lineTo</code> 就视为 <code>moveTo</code></p>
           </div>
-
 <p>可以给绘制的直线添加样式：</p>
+<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -418,7 +422,8 @@
 <th>描述</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td><code>lineCap</code></td>
 <td>设置或返回线条的结束端点样式</td>
 </tr>
@@ -434,10 +439,12 @@
 <td><code>miterLimit</code></td>
 <td>设置或返回最大斜接长度</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
+</div>
 <h3 id="绘制矩形"><a href="#绘制矩形" class="headerlink" title="绘制矩形"></a>绘制矩形</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">fillRect(x, y, width, height) <span class="comment">// 绘制一个实心矩形</span></span><br><span class="line">strokeRect(x, y, width, height) <span class="comment">// 绘制一个空心矩形</span></span><br></pre></td></tr></table></figure>
-
 <h3 id="颜色、样式和阴影"><a href="#颜色、样式和阴影" class="headerlink" title="颜色、样式和阴影"></a>颜色、样式和阴影</h3><p>创建路径之后，可以设置样式属性，再使用 <code>fill()</code> 和 <code>stroke()</code> 进行填充或描边</p>
+<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -445,7 +452,8 @@
 <th>描述</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>fillStyle</td>
 <td>设置或返回用于填充绘画的颜色、渐变或模式</td>
 </tr>
@@ -469,8 +477,11 @@
 <td>shadowOffsetY</td>
 <td>设置或返回阴影距形状的垂直距离</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
+</div>
 <h3 id="设置渐变"><a href="#设置渐变" class="headerlink" title="设置渐变"></a>设置渐变</h3><p>有这样几个方法可以设置渐变：</p>
+<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -478,7 +489,8 @@
 <th>描述</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>createLinearGradient()</td>
 <td>创建线性渐变（用在画布内容上）</td>
 </tr>
@@ -494,18 +506,21 @@
 <td>addColorStop()</td>
 <td>规定渐变对象中的颜色和停止位置</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
+</div>
 <p>主要使用到下面这个方法</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> grd = context.createLinerGradient(x0, y0, x1, y1)</span><br><span class="line">grd.addColorStop(stop, color) <span class="comment">// stop 是介于 0.0 ~ 1.0 之间的值</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="图形转换"><a href="#图形转换" class="headerlink" title="图形转换"></a>图形转换</h3><table>
+<h3 id="图形转换"><a href="#图形转换" class="headerlink" title="图形转换"></a>图形转换</h3><div class="table-container">
+<table>
 <thead>
 <tr>
 <th>方法</th>
 <th>描述</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>scale()</td>
 <td>缩放当前绘图至更大或更小</td>
 </tr>
@@ -525,10 +540,11 @@
 <td>setTransform()</td>
 <td>将当前转换重置为单位矩阵，然后运行 transform()</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
+</div>
 <p>注意旋转实际上是对画布旋转，旋转之后所有的都会旋转</p>
 <h3 id="图形绘制"><a href="#图形绘制" class="headerlink" title="图形绘制"></a>图形绘制</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">drawImage(img, sx, sy, swidth, sheight, x, y, width, height)</span><br></pre></td></tr></table></figure>
-
 <ul>
 <li><code>img</code>：规定要使用的图像、画布或视频</li>
 <li><code>sx</code>：可选。开始剪切的 x 坐标位置</li>
