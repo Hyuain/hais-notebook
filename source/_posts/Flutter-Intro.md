@@ -5,7 +5,6 @@ tags:
   - 入门
 categories:
   - [跨端, Flutter]
-mathjax: true
 ---
 
 这几天简单了解了一下 Flutter，以下笔记是阅读文档的笔记。
