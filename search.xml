@@ -30,7 +30,12 @@ A_{n}^{m} = \frac{n!}{(n-m)!}</script><p>n 个元素中，r 个相同排成一�
 <script type="math/tex; mode=display">
 \frac{n!}{r!}</script><h3 id="组合"><a href="#组合" class="headerlink" title="组合"></a>组合</h3><p>n 个不同元素，选 m 个并成一组（与顺序无关）：</p>
 <script type="math/tex; mode=display">
-\tbinom{n}{m} = C_{n}^{m} = \frac{n!}{m!(n-m)!}</script>]]></content>
+\tbinom{n}{m} = C_{n}^{m} = \frac{n!}{m!(n-m)!}</script><h3 id="概率"><a href="#概率" class="headerlink" title="概率"></a>概率</h3><ul>
+<li>独立事件：两个事件的结果不会相互影响，概率相乘</li>
+<li>互斥事件：两个事件结果不能同时发生，概率相加</li>
+<li>对立事件：两个互斥事件概率涵盖所有可能的结果，概率之和为 1</li>
+</ul>
+]]></content>
       <categories>
         <category>读书笔记</category>
         <category>计算机</category>
@@ -752,8 +757,8 @@ A_{n}^{m} = \frac{n!}{(n-m)!}</script><p>n 个元素中，r 个相同排成一�
   </entry>
   <entry>
     <title>Webpack 核心原理</title>
-    <url>/hais-notebook/2021/03/03/Webpack-Core/</url>
-    <content><![CDATA[<p>Webpack 的核心原理及一些前置知识。</p>
+    <url>/hais-notebook/2021/03/03/Tools-Webpack-Core/</url>
+    <content><![CDATA[<p>我们可以通过 Babel 提供的 Parser、Traverse、Generator 转换代码、分析依赖。<br>Webpack 的核心就是通过 Babel 将 ESModule 的语法转变为 CommonJS，使得浏览器支持，并将所有的文件打包成一个 js。</p>
 <a id="more"></a>
 <h1 id="Babel"><a href="#Babel" class="headerlink" title="Babel"></a>Babel</h1><h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><ol>
 <li><strong>Parse</strong>(<code>@babel/parser</code>): 把代码变成 AST</li>
@@ -785,8 +790,8 @@ A_{n}^{m} = \frac{n!}{(n-m)!}</script><p>n 个元素中，r 个相同排成一�
 <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// babel 转译之后的 es5 代码</span></span><br><span class="line"><span class="comment">// 使用严格模式</span></span><br><span class="line"><span class="meta">"use strict"</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">Object</span>.defineProperty(exports, <span class="string">"__esModule"</span>, &#123; <span class="attr">value</span>: <span class="literal">true</span> &#125;); <span class="comment">// 给当前模块添加 __esModule 属性，方便与 CommonJS 分开</span></span><br><span class="line">exports[<span class="string">"default"</span>] = <span class="keyword">void</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> _b = _interopRequireDefault(<span class="built_in">require</span>(<span class="string">"./b.js"</span>));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 其实是为了给这个模块增加 default，因为 CommonJS 模块没有默认导出，这样是方便兼容，大部分 _interop 开头的代码都是为了兼容旧代码</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_interopRequireDefault</span>(<span class="params">obj</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> obj &amp;&amp; obj.__esModule ? obj : &#123; <span class="string">"default"</span>: obj &#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> a = &#123;</span><br><span class="line">  getB: <span class="function"><span class="keyword">function</span> <span class="title">getB</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> _b[<span class="string">"default"</span>].value;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">var</span> _default = a;</span><br><span class="line">exports[<span class="string">"default"</span>] = _default;</span><br></pre></td></tr></table></figure>
 <h2 id="将所有文件打包成一个文件"><a href="#将所有文件打包成一个文件" class="headerlink" title="将所有文件打包成一个文件"></a>将所有文件打包成一个文件</h2>]]></content>
       <categories>
-        <category>前端</category>
-        <category>浏览器</category>
+        <category>工具</category>
+        <category>Webpack</category>
       </categories>
       <tags>
         <tag>入门</tag>
@@ -3941,8 +3946,8 @@ A_{n}^{m} = \frac{n!}{(n-m)!}</script><p>n 个元素中，r 个相同排成一�
       </tags>
   </entry>
   <entry>
-    <title>webpack</title>
-    <url>/hais-notebook/2020/02/02/Tools-webpack/</url>
+    <title>Webpack 入门尝试</title>
+    <url>/hais-notebook/2020/02/02/Tools-Webpack-Basic/</url>
     <content><![CDATA[<p>webpack 的基础使用及问题。</p>
 <a id="more"></a>
 <div class="note warning">
@@ -4010,6 +4015,7 @@ A_{n}^{m} = \frac{n!}{(n-m)!}</script><p>n 个元素中，r 个相同排成一�
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm run build: &amp;&amp;</span><br><span class="line">git checkout gh-pages &amp;&amp;</span><br><span class="line">rm -rf *.html *.js *.css *.png &amp;&amp;</span><br><span class="line">mv ./dist/* ./ &amp;&amp;</span><br><span class="line">rm -rf dist</span><br><span class="line">git add . &amp;&amp;</span><br><span class="line">git commit -m <span class="string">'update'</span> &amp;&amp;</span><br><span class="line">git push &amp;&amp;</span><br><span class="line">git checkout -</span><br></pre></td></tr></table></figure>]]></content>
       <categories>
         <category>工具</category>
+        <category>Webpack</category>
       </categories>
       <tags>
         <tag>入门</tag>
