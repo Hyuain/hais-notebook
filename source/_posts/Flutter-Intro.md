@@ -16,14 +16,6 @@ mathjax: true
 
 ## Widget
 
-这是公式：`$ x_i^2 $`
-这是公式2：
-
-$$
-x_i^2
-$$
-
-
 Widget 像其他 Web 框架的 Component、Template、DOM，用来描述 UI。
 
 > 当 widget 的状态改变时，它会重新构建其描述（展示的 UI），框架则会对比前后变化的不同，以确定底层渲染树从一个状态转换到下一个状态所需的最小更改。
