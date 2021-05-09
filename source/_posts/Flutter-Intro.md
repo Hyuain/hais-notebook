@@ -5,6 +5,7 @@ tags:
   - 入门
 categories:
   - [跨端, Flutter]
+mathjax: true
 ---
 
 这几天简单了解了一下 Flutter，以下笔记是阅读文档的笔记。
@@ -15,8 +16,13 @@ categories:
 
 ## Widget
 
-这是公式：$ x_i^2 $
-这是公式2：$x_i^2$
+这是公式：`$ x_i^2 $`
+这是公式2：
+
+$$
+x_i^2
+$$
+
 
 Widget 像其他 Web 框架的 Component、Template、DOM，用来描述 UI。
 
