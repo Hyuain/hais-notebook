@@ -10,7 +10,7 @@ categories:
 这几天简单了解了一下 Flutter，以下笔记是阅读文档的笔记。
 
 <!-- more -->
-
+$ x_i^2 $
 # UI
 
 ## Widget
