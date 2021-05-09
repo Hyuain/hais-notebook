@@ -1,5 +1,5 @@
 ---
-title: webpack
+title: Webpack 入门尝试
 date: 2020-02-02 15:37:40
 tags:
   - 入门
@@ -7,7 +7,7 @@ tags:
   - 收集
   - 踩坑
 categories:
-  - [工具]
+  - [工具, Webpack]
 ---
 
 webpack 的基础使用及问题。

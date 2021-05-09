@@ -4,10 +4,11 @@ date: 2021-03-03 22:47:21
 tags:
   - 入门
 categories:
-  - [前端, 浏览器]
+  - [工具, Webpack]
 ---
 
-Webpack 的核心原理及一些前置知识。
+我们可以通过 Babel 提供的 Parser、Traverse、Generator 转换代码、分析依赖。
+Webpack 的核心就是通过 Babel 将 ESModule 的语法转变为 CommonJS，使得浏览器支持，并将所有的文件打包成一个 js。
 
 <!-- more -->
 
