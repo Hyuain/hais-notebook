@@ -223,7 +223,48 @@ A_{n}^{m} = \frac{n!}{(n-m)!}</script><p>n 个元素中，r 个相同排成一�
 <li>互斥事件：两个事件结果不能同时发生，概率相加</li>
 <li>对立事件：两个互斥事件概率涵盖所有可能的结果，概率之和为 1</li>
 </ul>
-]]></content>
+<h1 id="第二章：复杂度"><a href="#第二章：复杂度" class="headerlink" title="第二章：复杂度"></a>第二章：复杂度</h1><h2 id="时间复杂度的计算"><a href="#时间复杂度的计算" class="headerlink" title="时间复杂度的计算"></a>时间复杂度的计算</h2><p>例：选择排序</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">selectionSort</span>(<span class="params">list</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 外层循环执行 n-1 次，每次执行赋值、交换两项操作，共 2n-2 次</span></span><br><span class="line">  <span class="keyword">for</span> (current = <span class="number">1</span> ... list.length <span class="number">-1</span>) &#123;</span><br><span class="line">    smallest = current</span><br><span class="line">    <span class="comment">// 内层循环执行 n-1（外层第一次）、n-2（外层第二次）、n-3 次，共计 (n*n-n)/2 次赋值与交换操作，也就是 n*n-n 次操作 </span></span><br><span class="line">    <span class="keyword">for</span> (i = current + <span class="number">1</span> ... list.length) &#123;</span><br><span class="line">      <span class="keyword">if</span> (list[i] &lt; list[current]) &#123;</span><br><span class="line">        smallest = i</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    list.swap_items(current, smallest)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>因此上述选择排序算法总计进行了 $T(n) = n^2 + n - 2$ 次操作</p>
+<h2 id="大-O-符号"><a href="#大-O-符号" class="headerlink" title="大 O 符号"></a>大 O 符号</h2><p>表示最坏情况下算法成本函数的主项，比如选择排序的时间复杂度可记为 $O(n^2)$</p>
+<h2 id="空间复杂度的计算"><a href="#空间复杂度的计算" class="headerlink" title="空间复杂度的计算"></a>空间复杂度的计算</h2><p>比如对于选择排序，只需要一组固定的变量作为存储空间，因此空间复杂度可以记为 $O(1)$</p>
+<h1 id="第三章：策略"><a href="#第三章：策略" class="headerlink" title="第三章：策略"></a>第三章：策略</h1><p>本章主要讲解这几种策略：</p>
+<ul>
+<li>通过 <strong>迭代</strong> 处理 <em>重复性</em> 任务</li>
+<li>通过 <strong>递归</strong> 进行优雅地 <em>迭代</em></li>
+<li>资源允许时使用 <strong>蛮力法</strong></li>
+<li>测试不可行的选择并 <strong>回溯</strong></li>
+<li>采用 <strong>启发法</strong> 合理缩短求解的时间</li>
+<li>采用 <strong>分治法</strong> 求解难题</li>
+<li><strong>动态地</strong> 识别重复问题，避免浪费资源</li>
+<li>对问题 <strong>定界</strong> 缩小求解范围</li>
+</ul>
+<h2 id="迭代"><a href="#迭代" class="headerlink" title="迭代"></a>迭代</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">   ┌──────┐循环(每一步操作就被称为迭代)</span><br><span class="line">   │      │                           满足条件 </span><br><span class="line">求解过程 ────────────────────────────────────────────&gt; 目标</span><br><span class="line">   ↑      │</span><br><span class="line">   └──────┘</span><br></pre></td></tr></table></figure>
+<p>例：合并两个排好序的数组</p>
+<p>比如将 <code>[1, 3, 5, 7]</code> 与 <code>[2, 4, 6, 8]</code> 合并为 <code>[1, 2, 3, 4, 5, 6, 7, 8]</code></p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">merge</span>(<span class="params">list1, list2</span>) </span>&#123;</span><br><span class="line">  result = []</span><br><span class="line">  <span class="keyword">while</span> (list1.has_item || list2.has_item) &#123;</span><br><span class="line">    <span class="keyword">if</span> (list1.top_item &gt; list2.top_item) &#123;</span><br><span class="line">      temp = list1.remove_top_item</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      temp = list2.remove_top_item</span><br><span class="line">    &#125;</span><br><span class="line">    result.push(fish)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>例：嵌套循环与幂集</p>
+<blockquote>
+<p>对于给定对象 S 的集合，其幂集是 S 的全部子集构成的集合</p>
+</blockquote>
+<p>比如有几种花，花可以调配香水，我们需要求出能调配的所有可能的香水。</p>
+<p>使用迭代的思维：</p>
+<ul>
+<li>若没有花，一种无味的香水，记做0。</li>
+<li>若有一种花：0、A</li>
+<li>若有两种花：0、A、0+B、A+B</li>
+<li>若有三种花：0、A、0+B、A+B、0+C、A+C、0+B+C、A+B+C</li>
+</ul>
+<p>不难发现，多加一种花，就是把之前的复制一遍，再给复制之后的每种香水加上新的花。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">powerSet</span>(<span class="params">flowers</span>) </span>&#123;</span><br><span class="line">  fragrances = <span class="built_in">Set</span>.new</span><br><span class="line">  fragrances.add(<span class="built_in">Set</span>.new)</span><br><span class="line">  <span class="keyword">for</span> (flower <span class="keyword">in</span> flowers) &#123;</span><br><span class="line">    <span class="comment">// 复制已有的香水</span></span><br><span class="line">    new_fragrances = copy(fragrances)</span><br><span class="line">    <span class="keyword">for</span> (fragrance <span class="keyword">in</span> new_fragrances) &#123;</span><br><span class="line">      <span class="comment">// 给复制之后的香水加上新的花</span></span><br><span class="line">      fragrance.add(flower)</span><br><span class="line">    &#125;</span><br><span class="line">    fragrances = fragrances + new_fragrances</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> fragrances</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这种构建幂集的方式时间复杂度为 $O(n^2)$，每增加一次循环，时间将会增加一倍。这种方法也可以用于构建真值表，每种花是否加入用布尔值进行表示。</p>
+<h2 id="递归"><a href="#递归" class="headerlink" title="递归"></a>递归</h2><blockquote>
+<p>函数自己调用自己</p>
+</blockquote>
+<p>例：判断回文字符串</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">isPalindrome</span>(<span class="params">word</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (word.length &lt;= <span class="number">1</span>) <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">  <span class="keyword">if</span> (word.first_char != word.last_char) <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">  w = word.remove_first_and_last_char</span><br><span class="line">  <span class="keyword">return</span> isPalindrome(w)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>递归与迭代：递归算法通常更短，但由于其执行时大量调用自身，从而引入计算开销。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">迭代：</span><br><span class="line">START &#x3D;&gt; 1 &#x3D;&gt; 2 &#x3D;&gt; 3 &#x3D;&gt; END</span><br><span class="line"></span><br><span class="line">递归：</span><br><span class="line">START &#x3D;&gt; 1 &#x3D;&gt; 2 &#x3D;&gt; 3</span><br><span class="line">                   ↓</span><br><span class="line">  END &lt;&#x3D; 1 &lt;&#x3D; 2 &lt;&#x3D; 3</span><br></pre></td></tr></table></figure>]]></content>
       <categories>
         <category>读书笔记</category>
         <category>计算机</category>
@@ -983,7 +1024,29 @@ A_{n}^{m} = \frac{n!}{(n-m)!}</script><p>n 个元素中，r 个相同排成一�
 <h3 id="问题二：如何将文件中的-code-变为一个函数方便我们执行？"><a href="#问题二：如何将文件中的-code-变为一个函数方便我们执行？" class="headerlink" title="问题二：如何将文件中的 code 变为一个函数方便我们执行？"></a>问题二：如何将文件中的 code 变为一个函数方便我们执行？</h3><p>我们可以这样将文件里面的 code 变为函数：</p>
 <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">code = <span class="string">`</span></span><br><span class="line"><span class="string">  var b = require("./b.js")</span></span><br><span class="line"><span class="string">  exports.default = "a"</span></span><br><span class="line"><span class="string">`</span></span><br><span class="line"><span class="comment">// require、module、exports 是 commonJS 2 规范所定</span></span><br><span class="line">code2 = <span class="string">`function(require, module, exports) &#123;</span></span><br><span class="line"><span class="string">  <span class="subst">$&#123;code&#125;</span></span></span><br><span class="line"><span class="string">&#125;`</span></span><br><span class="line"><span class="comment">// 这样做最后写到文件中之后就是函数了</span></span><br></pre></td></tr></table></figure>
 <h3 id="问题三：execute-函数应该怎么写？"><a href="#问题三：execute-函数应该怎么写？" class="headerlink" title="问题三：execute 函数应该怎么写？"></a>问题三：execute 函数应该怎么写？</h3><p>下面是基本实现思路：</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> modules = &#123;&#125; <span class="comment">// modules 用于缓存所有模块</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">execute</span>(<span class="params">key</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (modules[key]) &#123; <span class="keyword">return</span> modules[key] &#125;</span><br><span class="line">  <span class="keyword">var</span> item = depRelation.find(<span class="function"><span class="params">i</span> =&gt;</span> i.key === key)</span><br><span class="line">  <span class="comment">// require 其实就是 excute，区别在于 require 后面接的是一个路径，我们需要把它转成 key</span></span><br><span class="line">  <span class="keyword">var</span> <span class="built_in">require</span> = <span class="function">(<span class="params">path</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> execute(pathToKey(path))</span><br><span class="line">  &#125;</span><br><span class="line">  modules[key] = &#123; <span class="attr">__esModule</span>: <span class="literal">true</span> &#125;</span><br><span class="line">  <span class="keyword">var</span> <span class="built_in">module</span> = &#123; <span class="attr">exports</span>: modules[key] &#125;</span><br><span class="line">  <span class="comment">// 为了这个 item.code 在执行完成之后把自己的导出挂在 module.exports 上</span></span><br><span class="line">  item.code(<span class="built_in">require</span>, <span class="built_in">module</span>, <span class="built_in">module</span>.exports)</span><br><span class="line">  <span class="keyword">return</span> modules[key] <span class="comment">// 其实就是 module.exports</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> modules = &#123;&#125; <span class="comment">// modules 用于缓存所有模块</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">execute</span>(<span class="params">key</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (modules[key]) &#123; <span class="keyword">return</span> modules[key] &#125;</span><br><span class="line">  <span class="keyword">var</span> item = depRelation.find(<span class="function"><span class="params">i</span> =&gt;</span> i.key === key)</span><br><span class="line">  <span class="comment">// require 其实就是 excute，区别在于 require 后面接的是一个路径，我们需要把它转成 key</span></span><br><span class="line">  <span class="keyword">var</span> <span class="built_in">require</span> = <span class="function">(<span class="params">path</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> execute(pathToKey(path))</span><br><span class="line">  &#125;</span><br><span class="line">  modules[key] = &#123; <span class="attr">__esModule</span>: <span class="literal">true</span> &#125;</span><br><span class="line">  <span class="keyword">var</span> <span class="built_in">module</span> = &#123; <span class="attr">exports</span>: modules[key] &#125;</span><br><span class="line">  <span class="comment">// 为了这个 item.code 在执行完成之后把自己的导出挂在 module.exports 上</span></span><br><span class="line">  item.code(<span class="built_in">require</span>, <span class="built_in">module</span>, <span class="built_in">module</span>.exports)</span><br><span class="line">  <span class="keyword">return</span> modules[key] <span class="comment">// 其实就是 module.exports</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="一个简易的打包器"><a href="#一个简易的打包器" class="headerlink" title="一个简易的打包器"></a>一个简易的打包器</h2><p>copy 过来的代码，仅供自己学习使用。</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 请确保你的 Node 版本大于等于 14</span></span><br><span class="line"><span class="comment">// 请先运行 yarn 或 npm i 来安装依赖</span></span><br><span class="line"><span class="comment">// 然后使用 node -r ts-node/register 文件路径 来运行，</span></span><br><span class="line"><span class="comment">// 如果需要调试，可以加一个选项 --inspect-brk，再打开 Chrome 开发者工具，点击 Node 图标即可调试</span></span><br><span class="line"><span class="keyword">import</span> &#123; parse &#125; <span class="keyword">from</span> <span class="string">"@babel/parser"</span></span><br><span class="line"><span class="keyword">import</span> traverse <span class="keyword">from</span> <span class="string">"@babel/traverse"</span></span><br><span class="line"><span class="keyword">import</span> &#123; writeFileSync, readFileSync &#125; <span class="keyword">from</span> <span class="string">'fs'</span></span><br><span class="line"><span class="keyword">import</span> &#123; resolve, relative, dirname &#125; <span class="keyword">from</span> <span class="string">'path'</span>;</span><br><span class="line"><span class="keyword">import</span> * <span class="keyword">as</span> babel <span class="keyword">from</span> <span class="string">'@babel/core'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置根目录</span></span><br><span class="line"><span class="keyword">const</span> projectRoot = resolve(__dirname, <span class="string">'project_1'</span>)</span><br><span class="line"><span class="comment">// 类型声明</span></span><br><span class="line"><span class="keyword">type</span> DepRelation = &#123; key: <span class="built_in">string</span>, deps: <span class="built_in">string</span>[], code: <span class="built_in">string</span> &#125;[]</span><br><span class="line"><span class="comment">// 初始化一个空的 depRelation，用于收集依赖</span></span><br><span class="line"><span class="keyword">const</span> depRelation: DepRelation = [] <span class="comment">// 数组！</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 将入口文件的绝对路径传入函数，如 D:\demo\fixture_1\index.js</span></span><br><span class="line">collectCodeAndDeps(resolve(projectRoot, <span class="string">'index.js'</span>))</span><br><span class="line"></span><br><span class="line">writeFileSync(<span class="string">'dist_3.js'</span>, generateCode())</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'done'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">generateCode</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> code = <span class="string">''</span></span><br><span class="line">  code += <span class="string">'var depRelation = ['</span> + depRelation.map(<span class="function"><span class="params">item</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> &#123; key, deps, code &#125; = item</span><br><span class="line">    <span class="keyword">return</span> <span class="string">`&#123;</span></span><br><span class="line"><span class="string">      key: <span class="subst">$&#123;<span class="built_in">JSON</span>.stringify(key)&#125;</span>, </span></span><br><span class="line"><span class="string">      deps: <span class="subst">$&#123;<span class="built_in">JSON</span>.stringify(deps)&#125;</span>,</span></span><br><span class="line"><span class="string">      code: function(require, module, exports)&#123;</span></span><br><span class="line"><span class="string">        <span class="subst">$&#123;code&#125;</span></span></span><br><span class="line"><span class="string">      &#125;</span></span><br><span class="line"><span class="string">    &#125;`</span></span><br><span class="line">  &#125;).join(<span class="string">','</span>) + <span class="string">'];\n'</span></span><br><span class="line">  code += <span class="string">'var modules = &#123;&#125;;\n'</span></span><br><span class="line">  code += <span class="string">`execute(depRelation[0].key)\n`</span></span><br><span class="line">  code += <span class="string">`</span></span><br><span class="line"><span class="string">  function execute(key) &#123;</span></span><br><span class="line"><span class="string">    if (modules[key]) &#123; return modules[key] &#125;</span></span><br><span class="line"><span class="string">    var item = depRelation.find(i =&gt; i.key === key)</span></span><br><span class="line"><span class="string">    if (!item) &#123; throw new Error(\`\$&#123;item&#125; is not found\`) &#125;</span></span><br><span class="line"><span class="string">    var pathToKey = (path) =&gt; &#123;</span></span><br><span class="line"><span class="string">      var dirname = key.substring(0, key.lastIndexOf('/') + 1)</span></span><br><span class="line"><span class="string">      var projectPath = (dirname + path).replace(\/\\.\\\/\/g, '').replace(\/\\\/\\\/\/, '/')</span></span><br><span class="line"><span class="string">      return projectPath</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">    var require = (path) =&gt; &#123;</span></span><br><span class="line"><span class="string">      return execute(pathToKey(path))</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">    modules[key] = &#123; __esModule: true &#125;</span></span><br><span class="line"><span class="string">    var module = &#123; exports: modules[key] &#125;</span></span><br><span class="line"><span class="string">    item.code(require, module, module.exports)</span></span><br><span class="line"><span class="string">    return modules[key]</span></span><br><span class="line"><span class="string">  &#125;</span></span><br><span class="line"><span class="string">  `</span></span><br><span class="line">  <span class="keyword">return</span> code</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">collectCodeAndDeps</span>(<span class="params">filepath: <span class="built_in">string</span></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> key = getProjectPath(filepath) <span class="comment">// 文件的项目路径，如 index.js</span></span><br><span class="line">  <span class="keyword">if</span> (depRelation.find(<span class="function"><span class="params">i</span> =&gt;</span> i.key === key)) &#123;</span><br><span class="line">    <span class="comment">// 注意，重复依赖不一定是循环依赖</span></span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 获取文件内容，将内容放至 depRelation</span></span><br><span class="line">  <span class="keyword">const</span> code = readFileSync(filepath).toString()</span><br><span class="line">  <span class="keyword">const</span> &#123; code: es5Code &#125; = babel.transform(code, &#123;</span><br><span class="line">    presets: [<span class="string">'@babel/preset-env'</span>]</span><br><span class="line">  &#125;)</span><br><span class="line">  <span class="comment">// 初始化 depRelation[key]</span></span><br><span class="line">  <span class="keyword">const</span> item = &#123; key, deps: [], code: es5Code &#125;</span><br><span class="line">  depRelation.push(item)</span><br><span class="line">  <span class="comment">// 将代码转为 AST</span></span><br><span class="line">  <span class="keyword">const</span> ast = parse(code, &#123; sourceType: <span class="string">'module'</span> &#125;)</span><br><span class="line">  <span class="comment">// 分析文件依赖，将内容放至 depRelation</span></span><br><span class="line">  traverse(ast, &#123;</span><br><span class="line">    enter: <span class="function"><span class="params">path</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (path.node.type === <span class="string">'ImportDeclaration'</span>) &#123;</span><br><span class="line">        <span class="comment">// path.node.source.value 往往是一个相对路径，如 ./a.js，需要先把它转为一个绝对路径</span></span><br><span class="line">        <span class="keyword">const</span> depAbsolutePath = resolve(dirname(filepath), path.node.source.value)</span><br><span class="line">        <span class="comment">// 然后转为项目路径</span></span><br><span class="line">        <span class="keyword">const</span> depProjectPath = getProjectPath(depAbsolutePath)</span><br><span class="line">        <span class="comment">// 把依赖写进 depRelation</span></span><br><span class="line">        item.deps.push(depProjectPath)</span><br><span class="line">        collectCodeAndDeps(depAbsolutePath)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 获取文件相对于根目录的相对路径</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getProjectPath</span>(<span class="params">path: <span class="built_in">string</span></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> relative(projectRoot, path).replace(<span class="regexp">/\\/g</span>, <span class="string">'/'</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="Webpack-Loader-原理"><a href="#Webpack-Loader-原理" class="headerlink" title="Webpack Loader 原理"></a>Webpack Loader 原理</h1><h2 id="加载-CSS"><a href="#加载-CSS" class="headerlink" title="加载 CSS"></a>加载 CSS</h2><p>思路：</p>
+<ol>
+<li>我们的打包器只能加载 JS</li>
+<li>我们想要加载 CSS</li>
+<li>如果能把 CSS 变成 JS，就能加载 CSS 了</li>
+</ol>
+<p>在获取文件内容的时候，可以通过文件路径来判断是否是 css 文件，并稍作处理加载进 JS 中：</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> code = readFileSync(filePath).toString()</span><br><span class="line"><span class="keyword">if</span> (<span class="regexp">/\.css$/</span>.test(filePath)) &#123;</span><br><span class="line">  code = <span class="string">`</span></span><br><span class="line"><span class="string">    const str = <span class="subst">$&#123;<span class="built_in">JSON</span>.stringify(code)&#125;</span></span></span><br><span class="line"><span class="string">    if (document) &#123;</span></span><br><span class="line"><span class="string">      const style = document.createElment('style')</span></span><br><span class="line"><span class="string">      style.innerHTML = str</span></span><br><span class="line"><span class="string">      document.head.appendChild(style)</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">    export default str</span></span><br><span class="line"><span class="string">  `</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="CSS-Loader"><a href="#CSS-Loader" class="headerlink" title="CSS Loader"></a>CSS Loader</h2><p>可以将上述代码变为 loader 的形式</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// css-loader.ts</span></span><br><span class="line"><span class="keyword">const</span> transform = <span class="function">(<span class="params">code</span>) =&gt;</span> <span class="string">`</span></span><br><span class="line"><span class="string">    const str = <span class="subst">$&#123;<span class="built_in">JSON</span>.stringify(code)&#125;</span></span></span><br><span class="line"><span class="string">    if (document) &#123;</span></span><br><span class="line"><span class="string">      const style = document.createElment('style')</span></span><br><span class="line"><span class="string">      style.innerHTML = str</span></span><br><span class="line"><span class="string">      document.head.appendChild(style)</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">    export default str</span></span><br><span class="line"><span class="string">  `</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> transform</span><br></pre></td></tr></table></figure>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// bundler.ts</span></span><br><span class="line"><span class="keyword">let</span> code = readFileSync(filePath).toString()</span><br><span class="line"><span class="keyword">if</span> (<span class="regexp">/\.css$/</span>.test(filePath)) &#123;</span><br><span class="line">  code = <span class="built_in">require</span>(<span class="string">'css-loader'</span>)(code)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="尝试对-CSS-Loader-进行优化"><a href="#尝试对-CSS-Loader-进行优化" class="headerlink" title="尝试对 CSS Loader 进行优化"></a>尝试对 CSS Loader 进行优化</h2><blockquote class="blockquote-center"><p>单一职责原则：每个 Loader 只做一件事情</p>
+</blockquote>
+<p>我们的 Loader 做了两件事情，第一是将 CSS 变为 JS 字符串，第二是将 JS 字符串放到了 style 标签里面，现在要对其进行拆分。</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// css-loader.ts</span></span><br><span class="line"><span class="keyword">const</span> transform = <span class="function">(<span class="params">code</span>) =&gt;</span> <span class="string">`</span></span><br><span class="line"><span class="string">    const str = <span class="subst">$&#123;<span class="built_in">JSON</span>.stringify(code)&#125;</span></span></span><br><span class="line"><span class="string">    export default str</span></span><br><span class="line"><span class="string">  `</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> transform</span><br></pre></td></tr></table></figure>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// style-loader.ts</span></span><br><span class="line"><span class="keyword">const</span> transform = <span class="function">(<span class="params">code</span>) =&gt;</span> <span class="string">`</span></span><br><span class="line"><span class="string">    if (document) &#123;</span></span><br><span class="line"><span class="string">      const style = document.createElment('style')</span></span><br><span class="line"><span class="string">      style.innerHTML = <span class="subst">$&#123;<span class="built_in">JSON</span>.stringify(code)&#125;</span></span></span><br><span class="line"><span class="string">      document.head.appendChild(style)</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">  `</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> transform</span><br></pre></td></tr></table></figure>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// bunlder.ts</span></span><br><span class="line"><span class="keyword">let</span> code = readFileSync(filePath).toString()</span><br><span class="line"><span class="keyword">if</span> (<span class="regexp">/\.css$/</span>.test(filePath)) &#123;</span><br><span class="line">  code = <span class="built_in">require</span>(<span class="string">'css-loader'</span>)(code)</span><br><span class="line">  code = <span class="built_in">require</span>(<span class="string">'style-loader'</span>)(code)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上述代码是有问题的。最终得到的文件将不是我们想要的文件。</p>
+<p>Loader 有不同的类型，像 sass-loader、less-loader 是将代码从一种语言转译为另外一种，这样的 loader 可以直接连接起来。但 style-loader 是插入代码而不是转译，所以需要寻找恰当的插入时机和位置——比如 css-loader 拿到结果之后。</p>
+]]></content>
       <categories>
         <category>工具</category>
         <category>Webpack</category>
@@ -4107,79 +4170,6 @@ A_{n}^{m} = \frac{n!}{(n-m)!}</script><p>n 个元素中，r 个相同排成一�
       </tags>
   </entry>
   <entry>
-    <title>React Props &amp; State</title>
-    <url>/hais-notebook/2020/02/02/React-PropsState/</url>
-    <content><![CDATA[<p>主要记录了 React 的 Props 和 State。</p>
-<a id="more"></a>
-<h1 id="Props"><a href="#Props" class="headerlink" title="Props"></a>Props</h1><p>可以查看<a href="https://codesandbox.io/s/billowing-wind-d8kzw" target="_blank" rel="noopener">CodeSandbox 上的这个例子</a></p>
-<h1 id="State"><a href="#State" class="headerlink" title="State"></a>State</h1><p>可以查看<a href="https://codesandbox.io/s/silly-diffie-9yk38" target="_blank" rel="noopener">CodeSandbox 上的这个例子</a></p>
-<h2 id="setState-的注意事项"><a href="#setState-的注意事项" class="headerlink" title="setState 的注意事项"></a>setState 的注意事项</h2><ul>
-<li><code>this.state.n += 1</code> 无效，UI 不会自动更新，需要用 <code>setState</code></li>
-<li><code>setState</code> 不会马上改变 <code>state</code>，是异步更新的，推荐使用 <code>setState(函数)</code></li>
-<li>不推荐 <code>this.setState(this.state)</code>，因为 React 不推荐我们修改旧的 <code>state</code>（不可变数据）</li>
-</ul>
-<h2 id="复杂-state"><a href="#复杂-state" class="headerlink" title="复杂 state"></a>复杂 state</h2><ul>
-<li>类组件的 <code>setState</code> 会自动合并第一层，建议使用 <code>Object.assign</code> 或者 <code>...sate</code></li>
-<li>函数组件不会自动合并，建议分开写</li>
-</ul>
-<h1 id="Vue-和-React-的区别"><a href="#Vue-和-React-的区别" class="headerlink" title="Vue 和 React 的区别"></a>Vue 和 React 的区别</h1><p>共同点：</p>
-<ul>
-<li>都是对视图的封装，React 是用类和函数表示一个组件，Vue 是用构造选项表示一个组件</li>
-<li>都提供了 <code>creatElement</code> 的 XML 简写，React 是 JSX，Vue 是 template</li>
-</ul>
-<p>不同点：</p>
-<ol>
-<li>监听数据变化的实现原理不同<ul>
-<li>Vue 通过 getter/setter 和代理等方式进行劫持，能够精确知道数据的变化，不需要特别的优化</li>
-<li>React 默认是通过比较引用的方式来进行的，可能会造成不必要的 vDOM 重新渲染，需要用诸如 PureComponent/shouldComponentUpdate 等方式来进行优化</li>
-</ul>
-</li>
-<li>数据流不同<ul>
-<li>Vue 在 1.0 的时候 <strong>父子组件</strong> props 可以双向绑定，还有 v-model 可以实现 <strong>组件与 DOM</strong> 双向绑定</li>
-<li>Vue 2 的时候 <strong>父子组件</strong> 不能双向绑定了（虽然仍然提供了 .sync 语法糖），并且还有 v-model</li>
-<li>React 中是单向数据流，并且组件与 DOM 之间也需要使用 onChange/setState。</li>
-</ul>
-</li>
-<li>HoC 和 mixins<ul>
-<li>Vue 中使用不同功能的组合是通过 mixins 实现的</li>
-<li>React 中则使用 HoC</li>
-</ul>
-</li>
-<li>组件间的通信<ul>
-<li>都有 props，也都可以跨层级通信，比如 Vue 的 provide/inject、React 的 context</li>
-<li>React 本身不支持自定义事件，因此 Vue 里面一般使用事件，React 中一般使用父组件传来的回调函数</li>
-</ul>
-</li>
-<li>更新视图<ul>
-<li>Vue 中一个对象，对应一个虚拟 DOM，当对象的属性改变时，把属性相关的 DOM 节点全部更新</li>
-<li>React 一个对象，对应一个虚拟 DOM，另一个对象对应另一个虚拟 DOM，对比两个更新，用 DOM Diff 算法找不同，然后局部更新 DOM</li>
-</ul>
-</li>
-<li>写法不同<ul>
-<li>Vue 是 JS in HTML</li>
-<li>React 是 HTML in JS</li>
-</ul>
-</li>
-<li>Vuex 和 Redux 的区别<ul>
-<li>Vue 中的 $store 直接注入到了组件实例中，可以直接用 dispatch、commit、mapState、this.$store 等；React 中需要用 connect 把 props 和 dispatch、state 连接起来</li>
-<li>Vue 中可以用 dispatch action、commit mutation；React 中只能使用 dispatch，不能直接操作 reduce</li>
-<li>Redux 中的使用的是不可变数据，每次都要用新的 State 替换旧的，而 Vue 中是直接修改的</li>
-</ul>
-</li>
-</ol>
-]]></content>
-      <categories>
-        <category>前端</category>
-        <category>JavaScript</category>
-        <category>框架</category>
-        <category>React</category>
-      </categories>
-      <tags>
-        <tag>入门</tag>
-        <tag>文档</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>React Advanced</title>
     <url>/hais-notebook/2020/02/02/React-Advanced/</url>
     <content><![CDATA[<p>主要抄了一下 React 文档。</p>
@@ -4313,6 +4303,79 @@ A_{n}^{m} = \frac{n!}{(n-m)!}</script><p>n 个元素中，r 个相同排成一�
 <p>类似的功能也可以通过在 <code>&lt;Mouse&gt;</code> 中使用 <code>props.children</code>，然后直接使用类似于这样的写法：</p>
 <figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line">&lt;Mouse&gt;</span><br><span class="line">  &#123;mouse =&gt; (</span><br><span class="line">    &lt;Cat mouse=&#123;mouse&#125;/&gt;</span><br><span class="line">  )&#125;</span><br><span class="line">&lt;<span class="regexp">/Mouse&gt;</span></span><br></pre></td></tr></table></figure>
 <p>需要注意的是，使用 render prop 会导致 <code>React.PureComponent</code> 失效，因为外层组件更新的时候，render prop 的函数总是新的，除非你把它写成一个实例方法</p>
+]]></content>
+      <categories>
+        <category>前端</category>
+        <category>JavaScript</category>
+        <category>框架</category>
+        <category>React</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>文档</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>React Props &amp; State</title>
+    <url>/hais-notebook/2020/02/02/React-PropsState/</url>
+    <content><![CDATA[<p>主要记录了 React 的 Props 和 State。</p>
+<a id="more"></a>
+<h1 id="Props"><a href="#Props" class="headerlink" title="Props"></a>Props</h1><p>可以查看<a href="https://codesandbox.io/s/billowing-wind-d8kzw" target="_blank" rel="noopener">CodeSandbox 上的这个例子</a></p>
+<h1 id="State"><a href="#State" class="headerlink" title="State"></a>State</h1><p>可以查看<a href="https://codesandbox.io/s/silly-diffie-9yk38" target="_blank" rel="noopener">CodeSandbox 上的这个例子</a></p>
+<h2 id="setState-的注意事项"><a href="#setState-的注意事项" class="headerlink" title="setState 的注意事项"></a>setState 的注意事项</h2><ul>
+<li><code>this.state.n += 1</code> 无效，UI 不会自动更新，需要用 <code>setState</code></li>
+<li><code>setState</code> 不会马上改变 <code>state</code>，是异步更新的，推荐使用 <code>setState(函数)</code></li>
+<li>不推荐 <code>this.setState(this.state)</code>，因为 React 不推荐我们修改旧的 <code>state</code>（不可变数据）</li>
+</ul>
+<h2 id="复杂-state"><a href="#复杂-state" class="headerlink" title="复杂 state"></a>复杂 state</h2><ul>
+<li>类组件的 <code>setState</code> 会自动合并第一层，建议使用 <code>Object.assign</code> 或者 <code>...sate</code></li>
+<li>函数组件不会自动合并，建议分开写</li>
+</ul>
+<h1 id="Vue-和-React-的区别"><a href="#Vue-和-React-的区别" class="headerlink" title="Vue 和 React 的区别"></a>Vue 和 React 的区别</h1><p>共同点：</p>
+<ul>
+<li>都是对视图的封装，React 是用类和函数表示一个组件，Vue 是用构造选项表示一个组件</li>
+<li>都提供了 <code>creatElement</code> 的 XML 简写，React 是 JSX，Vue 是 template</li>
+</ul>
+<p>不同点：</p>
+<ol>
+<li>监听数据变化的实现原理不同<ul>
+<li>Vue 通过 getter/setter 和代理等方式进行劫持，能够精确知道数据的变化，不需要特别的优化</li>
+<li>React 默认是通过比较引用的方式来进行的，可能会造成不必要的 vDOM 重新渲染，需要用诸如 PureComponent/shouldComponentUpdate 等方式来进行优化</li>
+</ul>
+</li>
+<li>数据流不同<ul>
+<li>Vue 在 1.0 的时候 <strong>父子组件</strong> props 可以双向绑定，还有 v-model 可以实现 <strong>组件与 DOM</strong> 双向绑定</li>
+<li>Vue 2 的时候 <strong>父子组件</strong> 不能双向绑定了（虽然仍然提供了 .sync 语法糖），并且还有 v-model</li>
+<li>React 中是单向数据流，并且组件与 DOM 之间也需要使用 onChange/setState。</li>
+</ul>
+</li>
+<li>HoC 和 mixins<ul>
+<li>Vue 中使用不同功能的组合是通过 mixins 实现的</li>
+<li>React 中则使用 HoC</li>
+</ul>
+</li>
+<li>组件间的通信<ul>
+<li>都有 props，也都可以跨层级通信，比如 Vue 的 provide/inject、React 的 context</li>
+<li>React 本身不支持自定义事件，因此 Vue 里面一般使用事件，React 中一般使用父组件传来的回调函数</li>
+</ul>
+</li>
+<li>更新视图<ul>
+<li>Vue 中一个对象，对应一个虚拟 DOM，当对象的属性改变时，把属性相关的 DOM 节点全部更新</li>
+<li>React 一个对象，对应一个虚拟 DOM，另一个对象对应另一个虚拟 DOM，对比两个更新，用 DOM Diff 算法找不同，然后局部更新 DOM</li>
+</ul>
+</li>
+<li>写法不同<ul>
+<li>Vue 是 JS in HTML</li>
+<li>React 是 HTML in JS</li>
+</ul>
+</li>
+<li>Vuex 和 Redux 的区别<ul>
+<li>Vue 中的 $store 直接注入到了组件实例中，可以直接用 dispatch、commit、mapState、this.$store 等；React 中需要用 connect 把 props 和 dispatch、state 连接起来</li>
+<li>Vue 中可以用 dispatch action、commit mutation；React 中只能使用 dispatch，不能直接操作 reduce</li>
+<li>Redux 中的使用的是不可变数据，每次都要用新的 State 替换旧的，而 Vue 中是直接修改的</li>
+</ul>
+</li>
+</ol>
 ]]></content>
       <categories>
         <category>前端</category>
