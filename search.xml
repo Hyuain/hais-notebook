@@ -1,6 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>读书笔记：《程序是怎么跑起来的》</title>
+    <url>/hais-notebook/2021/05/13/Book-HowProgramWorks/</url>
+    <content><![CDATA[<p>将之前的读书笔记腾挪至此。</p>
+<a id="more"></a>
+<h1 id="CPU"><a href="#CPU" class="headerlink" title="CPU"></a>CPU</h1><p>简单来讲，CPU 由寄存器、控制器、运算器和时钟组成（也可以认为时钟位于 CPU 的外部）</p>
+<h2 id="寄存器"><a href="#寄存器" class="headerlink" title="寄存器"></a>寄存器</h2><p>程序是把寄存器作为对象来描述的，寄存器可以用于存放 <strong>指令</strong> 或者 <strong>数据</strong>，通过地址将这，其中 <strong>数据</strong> 又分为 “用于运算的值” 和 “表示内存地址的值”，这又对应了多种不同的寄存器</p>
+<h3 id="程序计数器"><a href="#程序计数器" class="headerlink" title="程序计数器"></a>程序计数器</h3><p>程序计数器决定程序的流程，存的实际上是当前执行的指令的地址</p>
+<h4 id="顺序执行"><a href="#顺序执行" class="headerlink" title="顺序执行"></a>顺序执行</h4><p>由于指令可能占据多个内存地址，每次执行时程序计数器的值只需要增加与指令长度相当的数值就可以了</p>
+<h4 id="条件分支和循环"><a href="#条件分支和循环" class="headerlink" title="条件分支和循环"></a>条件分支和循环</h4><p>使用跳转指令（jump）可以让程序计数器的值设定为任意值</p>
+<h3 id="函数的调用"><a href="#函数的调用" class="headerlink" title="函数的调用"></a>函数的调用</h3><ul>
+<li><p>函数在调用（call）的时候实际上就是将程序计数器的值设定为函数所在的地址，执行完成之后再跳回（return）到调用原点的地址</p>
+</li>
+<li><p>call 指令会把调用函数后需要执行的命令地址存在 “栈” 内</p>
+</li>
+<li><p>return 指令会把保存在 “栈” 中的地址再设定回程序计数器中</p>
+</li>
+</ul>
+<h3 id="标志寄存器"><a href="#标志寄存器" class="headerlink" title="标志寄存器"></a>标志寄存器</h3><p>在进行运算的时候，标志寄存器负责用标志的形式存储计算结果，这些计算结果在执行判断的时候可以用上，比如对于32位的寄存器，他的第 0、1、2 位为 1 时分别表示“运算结果为正、运算结果为 0 、运算结果为负”</p>
+<p>在 CPU 中的大小比较实际上是做减法运算，然后将结果的正负保存在标志寄存器中</p>
+<h3 id="基址寄存器和变址寄存器"><a href="#基址寄存器和变址寄存器" class="headerlink" title="基址寄存器和变址寄存器"></a>基址寄存器和变址寄存器</h3><p>基址寄存器的值不变化，而变址寄存器的值变化（相当于数组索引的数值），可以综合使用这两个寄存器来表示数组，比如：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"> 实际地址 &#x3D; 基址寄存器的值 + 变址寄存器的值</span><br><span class="line">    ↓           ↓             ↓</span><br><span class="line">10000000  &#x3D;  10000000  +  00000000</span><br><span class="line">10000001  &#x3D;            +  00000001</span><br><span class="line">10000002  &#x3D;            +  00000002</span><br><span class="line">  ....                      ....</span><br><span class="line">1000FFFF  &#x3D;            +  0000FFFF</span><br></pre></td></tr></table></figure>
+<h1 id="二进制"><a href="#二进制" class="headerlink" title="二进制"></a>二进制</h1><h2 id="移位运算"><a href="#移位运算" class="headerlink" title="移位运算"></a>移位运算</h2><ul>
+<li><p>左移运算，高位溢出丢弃，低位补 <code>0</code></p>
+</li>
+<li><p>右移运算，低位溢出丢弃，高位补 <code>0</code> 或 <code>1</code></p>
+</li>
+</ul>
+<h3 id="补码"><a href="#补码" class="headerlink" title="补码"></a>补码</h3><p>二进制最高位其实是符号位，为 <code>0</code> 时表示整数，为 <code>1</code> 时表示负数，但是需要注意的是：<code>1</code> 是 <code>00000001</code>，但 <code>-1</code> 并不是 <code>10000001</code>，而是 <code>11111111</code></p>
+<h4 id="补码的计算"><a href="#补码的计算" class="headerlink" title="补码的计算"></a>补码的计算</h4><p>按位取反，再 +1：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">-1  -&gt;  00000001  -&gt;  11111110  -&gt;  11111111</span><br></pre></td></tr></table></figure>
+<h4 id="补码的作用"><a href="#补码的作用" class="headerlink" title="补码的作用"></a>补码的作用</h4><p>计算机内的减法运算其实都是用加法运算实现的，这也是使用二进制补码来表示负数的重要原因之一，比如对于运算 <code>1 - 1</code>（也就是 <code>1 + (- 1)</code>），答案应该为 <code>0</code> ；但若用 <code>10000001</code> 表示 <code>-1</code>，则运算结果为 <code>10000010</code>，是不正确的</p>
+<p>如果使用补码来表示 -1，即 <code>11111111</code>，则运算结果为正确的 <code>00000000</code>，最高位的 <code>1</code> 溢出舍弃</p>
+<p>有一个重要的结论：<strong>二进制按位取反后加 <code>1</code> 的结果，与原来的正值相加，结果为 <code>0</code></strong></p>
+<p>因为，按位取反与原数相加，必得 <code>11111111</code>，加 <code>1</code> 之后，最高位溢出，答案为 <code>0</code></p>
+<h3 id="逻辑右移和算术右移"><a href="#逻辑右移和算术右移" class="headerlink" title="逻辑右移和算术右移"></a>逻辑右移和算术右移</h3><h4 id="逻辑右移"><a href="#逻辑右移" class="headerlink" title="逻辑右移"></a>逻辑右移</h4><p>当二进制数的值表示 <strong>图形模式</strong> 而非 <strong>数值</strong> 时，移位后需要在最高位补 0</p>
+<h4 id="算术右移"><a href="#算术右移" class="headerlink" title="算术右移"></a>算术右移</h4><p>考虑到符号位的存在，移位后需要在高位重新填充符号位的值，这就是算术右移：</p>
+<p><code>-4</code> （<code>11111100</code>）算术右移之后为 <code>-1</code> (<code>11111111</code>)，空出来的高位由符号位 <code>1</code> 填充</p>
+<h4 id="符号扩充"><a href="#符号扩充" class="headerlink" title="符号扩充"></a>符号扩充</h4><p>如果将 8 位二进制数转换为 16 位或 32 位等，多出来的高位，依旧用符号位的值填充即可</p>
+<h2 id="逻辑运算"><a href="#逻辑运算" class="headerlink" title="逻辑运算"></a>逻辑运算</h2><p>将二进制数表示的信息作为四则运算的数值来处理，就是 <strong>算术运算</strong>；而单纯像图形一样处理 <code>0</code> 和 <code>1</code> 的罗列，就是 <strong>逻辑运算</strong></p>
+<p>逻辑运算有四种：非（NOT）、与（AND）、或（OR）、异或（XOR/EOR）</p>
+<h2 id="二进制小数"><a href="#二进制小数" class="headerlink" title="二进制小数"></a>二进制小数</h2><p>二进制小数存在精度问题，因为二进制位只能表示以 1/2、1/4、1/8、1/16 等位权组合而成的小数，这导致很多十进制小数是没办法用有限的二进制小数表示的</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0.0000  -&gt;  0</span><br><span class="line">0.0001  -&gt;  0.0625</span><br><span class="line">0.0010  -&gt;  0.125</span><br><span class="line">0.0011  -&gt;  0.1875</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<h3 id="浮点数"><a href="#浮点数" class="headerlink" title="浮点数"></a>浮点数</h3><p>计算机内部无法直接使用像 <code>1011.0011</code> 这样的带小数点的表现形式，通常的编程语言提供了两种表示小数的数据类型：<strong>单精度浮点数</strong> 和 <strong>双精度浮点数</strong>，前者用 32 位，后者用 64 位来表示全体小数</p>
+<p>浮点数用 <strong>符号</strong>、<strong>尾数</strong>、<strong>基数</strong> 和 <strong>指数</strong> 这四部分来表示小数：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"> ±    m  ×  n   ^   e</span><br><span class="line"> ↓    ↓     ↓       ↓</span><br><span class="line">符号  尾数  基数     指数</span><br></pre></td></tr></table></figure>
+<p>其中符号部分占 1 位，指数部分占 8/11 位，尾数部分占 23/52 位（IEEE 规定）</p>
+<h4 id="正则表达式和-EXCESS-系统"><a href="#正则表达式和-EXCESS-系统" class="headerlink" title="正则表达式和 EXCESS 系统"></a>正则表达式和 EXCESS 系统</h4><p>尾数部分使用 <strong>正则表达式</strong> 来表示，二进制数规定尾数部分一定满足 “<strong>小数点前面的值固定为 1</strong>”，这样我们就可以不保存小数点前面的值了</p>
+<p>指数部分使用 <strong>EXCESS 系统</strong> 来表示，因为有可能有负值，因此将所有可以表示的数分为两半，中间为 0，比如单精度浮点数用 <code>01111111</code> 表示 0，<code>10000000</code> 表示 <code>1</code>，<code>01111110</code> 表示 <code>-1</code></p>
+<h1 id="内存"><a href="#内存" class="headerlink" title="内存"></a>内存</h1><h2 id="内存的物理工作机制"><a href="#内存的物理工作机制" class="headerlink" title="内存的物理工作机制"></a>内存的物理工作机制</h2><p>比如对于某个内存 IC，它有数个引脚：</p>
+<ul>
+<li><p>VCC、GND：电源</p>
+</li>
+<li><p>D0 ~ D7：数据信号，一共 8 个引脚，代表一次可以输出 8 位（1 Byte）的数据</p>
+</li>
+<li><p>A0 ~ A9：地址信号，一共 10 个引脚，代表可以有 2 ^ 10 个地址，可以存储 2 ^ 10 Byte，即 1 KB 的数据</p>
+</li>
+<li><p>RD、WR：控制信号，表示是读数据还是写数据</p>
+</li>
+</ul>
+<p>比如要写数据，WR 为 1，然后通过地址信号指定写入地址，数据信号指定写入值即可</p>
+<h2 id="内存的逻辑模型"><a href="#内存的逻辑模型" class="headerlink" title="内存的逻辑模型"></a>内存的逻辑模型</h2><p>内存就像一幢楼房，每楼代表一个地址，地址是连续的。编程语言通过指定 <strong>数据类型</strong> 来指定占用的楼层数（内存大小）</p>
+<h2 id="指针"><a href="#指针" class="headerlink" title="指针"></a>指针</h2><p>在某些变成语言中会有指针，比如 C。简单的来讲，<strong>指针</strong> 也是一种变量，他存储着数据的内存地址</p>
+<h2 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h2><p>数组是多个同样的数据类型在内存中连续排列的形式，每个元素通过连续的编号（索引）被区分来开，需要注意的是 JS 的数组并不是这种严格意义上的数组</p>
+<h3 id="栈、队列以及环形缓冲区"><a href="#栈、队列以及环形缓冲区" class="headerlink" title="栈、队列以及环形缓冲区"></a>栈、队列以及环形缓冲区</h3><p>栈和队列都可以不通过指定地址和索引来读写数组的元素，其中栈用的是 LIFO 的方式，而队列则是 FIFO</p>
+<p>队列一般是以环状缓冲区（ring buffer）的方式来实现的</p>
+<h3 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h3><p>在数组的各个元素中，除了数据的值以外，给其附带上下一个元素的索引，即可实现链表，通过链表可以高效地追加或删除数据</p>
+<h3 id="二叉树"><a href="#二叉树" class="headerlink" title="二叉树"></a>二叉树</h3><p>在链表的基础上往数组增加元素的时候，考虑到数据的大小关系，将其分为左右两个方向，这样可以增加查找的效率</p>
+<h1 id="磁盘"><a href="#磁盘" class="headerlink" title="磁盘"></a>磁盘</h1><h2 id="磁盘缓存"><a href="#磁盘缓存" class="headerlink" title="磁盘缓存"></a>磁盘缓存</h2><p>磁盘缓存是将磁盘中读取出来的数据存储到内存空间的方式，可以大大提高磁盘数据的访问速度</p>
+<h2 id="磁盘的物理结构"><a href="#磁盘的物理结构" class="headerlink" title="磁盘的物理结构"></a>磁盘的物理结构</h2><p>磁盘将其物理表面划分成多个空间来使用，划分的方式有 <strong>扇区方式</strong> 和 <strong>可变长方式</strong>；前者是固定空间，而后者则将磁盘划分为长度可变的空间</p>
+<p>在 Windows 中，一般就采取扇区方式：将磁盘表面分成若干个同心圆的空间（<strong>磁道</strong>），再把磁道按照固定大小划分成（<strong>扇区</strong>）</p>
+<p>此外，在 Windows 中，在逻辑层面读写磁盘的单位是扇区的整数倍<strong>簇</strong>，根据磁盘容量不同，1 簇可以是 512 B、1 KB、2 KB 等。<strong>不同的文件是不能存储在同一簇中的</strong>，但需要注意的时候，程序可以在逻辑上以字节为单位对内容进行读写</p>
+<h1 id="数据压缩"><a href="#数据压缩" class="headerlink" title="数据压缩"></a>数据压缩</h1><h2 id="RLE-算法"><a href="#RLE-算法" class="headerlink" title="RLE 算法"></a>RLE 算法</h2><p>简单来说就是将文件内容用 “数据 × 重复次数” 的形式来表示，比如用 <code>A3B2C9</code> 表示 <code>AAABBCCCCCCCCC</code></p>
+<p>该算法的主要缺点是不适合文本文件的压缩，而比较适合经常连续出现的图像、文件等</p>
+<h2 id="哈夫曼算法"><a href="#哈夫曼算法" class="headerlink" title="哈夫曼算法"></a>哈夫曼算法</h2><p>简单来说就是将出现频率很高的字符用更短的位数来表示（比如小于 8 位），出现频率低的字符用长编码来表示</p>
+<p>比如摩尔斯编码就是将在文本中出现频率比较高的字符用短编码来表示，但是需要注意的是文件在存储的时候仍然是以 8 位的字节为单位的</p>
+<p>可以用二叉树来实现哈夫曼编码</p>
+<h2 id="可逆压缩与非可逆压缩"><a href="#可逆压缩与非可逆压缩" class="headerlink" title="可逆压缩与非可逆压缩"></a>可逆压缩与非可逆压缩</h2><p>比如对 EXE 文件、文本文件，他们的每个字符、数值都有具体的含义，因此必须要还原到和压缩前同样的内容，因此称为 <strong>可逆压缩</strong>；</p>
+<p>而图片压缩之后有一些模糊也可以接受，不必使用同样的算法，有的算法是无法还原到之前相同的内容的，称为 <strong>非可逆压缩</strong></p>
+<h1 id="汇编语言"><a href="#汇编语言" class="headerlink" title="汇编语言"></a>汇编语言</h1><ul>
+<li><p>汇编语言 = 本地代码（机器语言） + 助记符</p>
+<ul>
+<li>汇编语言     —汇编器进行汇编—&gt;    本地代码</li>
+<li>汇编语言  &lt;—反汇编程序进行反汇编—  本地代码</li>
+</ul>
+</li>
+</ul>
+<h1 id="硬件控制"><a href="#硬件控制" class="headerlink" title="硬件控制"></a>硬件控制</h1><h2 id="IN-与-OUT-指令"><a href="#IN-与-OUT-指令" class="headerlink" title="IN 与 OUT 指令"></a>IN 与 OUT 指令</h2><p>Windows 控制硬件借助的是输入和输出指令，比较具有代表性的就是 IN 和 OUT 指令：<strong>IN 指令</strong> 通过指定的端口号输入数据，并存储在 CPU 内部的寄存器中；<strong>OUT 指令</strong> 则把 CPU 寄存器中存储的数据，输出到指定的端口</p>
+<p><strong>I/O 控制器</strong> 用来是用来交换计算机主机通外围设备电流特性的 IC，他内部有用于临时保存输入输出数据的内存（端口）</p>
+<p>I/O 端口号是所有的外围设备都必需的</p>
+<h2 id="IRQ"><a href="#IRQ" class="headerlink" title="IRQ"></a>IRQ</h2><p>IRQ（Interrupt Request）是 <strong>中断请求</strong>，用来暂停当前正在运行的程序，并跳转到其他程序运行，这种机制被称为 <strong>中断处理</strong></p>
+<p>实施中断请求的是连接外围设备的 I/O 控制器，实施中断处理程序的是 CPU，外围设备的中断请求会使用 <strong>中断编号</strong> 进行标记，操作系统和 BIOS 会提供响应中断编号的中断处理程序</p>
+<p>IRQ 只对于需要中断处理的外围设备是必需的</p>
+<h2 id="DMA"><a href="#DMA" class="headerlink" title="DMA"></a>DMA</h2><p>DMA（Direct Memory Access）是指在不通过 CPU 的情况下，外围设备直接和主内存进行数据传送。磁盘等通过利用 DMA 可以让大量的数据在短时间内传送到主内存，节省了 CPU 作为中介的时间</p>
+<p>DMA 只对于需要 DMA 机制的外围设备是必需的</p>
+<h2 id="文字及图片的显示机制"><a href="#文字及图片的显示机制" class="headerlink" title="文字及图片的显示机制"></a>文字及图片的显示机制</h2><p>显示器中显示的信息一直都存在 VRAM（Video RAM）中，只要往 VRAM 中写入数据，该数据就会在显示器中显示出来——这是由操作系统或者 BIOS 听的，并借助中断来进行处理的</p>
+<p>现在的计算机中，显卡等硬件中一般都有与主内存像独立的 VRAM 和 GPU（Graphics Processing Unit）</p>
+]]></content>
+      <categories>
+        <category>读书笔记</category>
+        <category>计算机</category>
+      </categories>
+      <tags>
+        <tag>读书笔记</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>读书笔记：《计算机科学精粹》</title>
     <url>/hais-notebook/2021/05/09/Book-ComputerScienceDistilled/</url>
     <content><![CDATA[<p>有幸得贵人赠书《计算机科学精粹》，将纸质版读书笔记提炼誊抄至此。</p>
@@ -41,9 +147,7 @@ A_{n}^{m} = \frac{n!}{(n-m)!}</script><p>n 个元素中，r 个相同排成一�
         <category>计算机</category>
       </categories>
       <tags>
-        <tag>入门</tag>
-        <tag>慕课网</tag>
-        <tag>FAQ</tag>
+        <tag>读书笔记</tag>
       </tags>
   </entry>
   <entry>
@@ -1049,9 +1153,177 @@ A_{n}^{m} = \frac{n!}{(n-m)!}</script><p>n 个元素中，r 个相同排成一�
       </tags>
   </entry>
   <entry>
+    <title>Angular：Observables</title>
+    <url>/hais-notebook/2020/03/25/Angular-Observables/</url>
+    <content><![CDATA[<ul>
+<li>提供了 publishers 和 subscribers 之间传递数据的方式</li>
+<li>在 subscribe 的时候才会执行，而不是 define 的时候</li>
+<li>可以传递多个任意类型的数据</li>
+</ul>
+<a id="more"></a>
+<h1 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h1><figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 创建一个 Observable 实例，他定义了一个 subscriber 函数</span></span><br><span class="line"><span class="comment">// 这个函数在 subscribe() 的时候才会执行</span></span><br><span class="line"><span class="comment">// 这个函数定义了如何获取数据、生成 values 和 messages</span></span><br><span class="line"><span class="keyword">const</span> locations = <span class="keyword">new</span> Observable(<span class="function">(<span class="params">observer</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">let</span> watchId: <span class="built_in">number</span>;</span><br><span class="line">  <span class="keyword">if</span> (<span class="string">'geolocation'</span> <span class="keyword">in</span> navigator) &#123;</span><br><span class="line">    watchId = navigator.geolocation.watchPosition(<span class="function">(<span class="params">position: Position</span>) =&gt;</span> &#123;</span><br><span class="line">      observer.next(position);</span><br><span class="line">    &#125;, <span class="function">(<span class="params">error: PositionError</span>) =&gt;</span> &#123;</span><br><span class="line">      observer.error(error);</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    observer.error(<span class="string">'Geolocation not available'</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    unsubscribe() &#123;</span><br><span class="line">      navigator.geolocation.clearWatch(watchId);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 调用 subscribe() 方法之后</span></span><br><span class="line"><span class="comment">// 并传入一个定义了 handler（next、error、complete，其中 next 是必须的）的对象（observer）</span></span><br><span class="line"><span class="comment">// 返回一个 Subscription 对象，其中有一个 unsubscribe() 方法</span></span><br><span class="line"><span class="keyword">const</span> locationSubscription = locations.subscribe(&#123;</span><br><span class="line">  next(position) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'Current Position: '</span>, position);</span><br><span class="line">  &#125;,</span><br><span class="line">  error(message) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'Error Getting Location: '</span>, message);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  locationSubscription.unsubscribe();</span><br><span class="line">&#125;, <span class="number">10000</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="stream"><a href="#stream" class="headerlink" title="stream"></a>stream</h2><p>observable 可以表示任意数据类型，我们将 observable 发布（publish）出来的数据称为流（stream）</p>
+<h2 id="custom-fromEvent-function"><a href="#custom-fromEvent-function" class="headerlink" title="custom fromEvent function"></a>custom fromEvent function</h2><figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fromEvent</span>(<span class="params">target, eventName</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> Observable(<span class="function">(<span class="params">observer</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> handler = <span class="function">(<span class="params">e</span>) =&gt;</span> observer.next(e);</span><br><span class="line">    target.addEventListener(eventName, handler);  </span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      target.removeEventListener(eventName, handler);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> ESC_KEY = <span class="number">27</span>;</span><br><span class="line"><span class="keyword">const</span> nameInput = <span class="built_in">document</span>.getElementById(<span class="string">'name'</span>) <span class="keyword">as</span> HTMLInputElement;</span><br><span class="line"><span class="keyword">const</span> subscription = fromEvent(nameInput, <span class="string">'keydown'</span>)</span><br><span class="line">  .subscribe(<span class="function">(<span class="params">e: KeyboardEvent</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (e.keyCode === ESC_KEY) &#123;</span><br><span class="line">      nameInput.value = <span class="string">''</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="Multicasting"><a href="#Multicasting" class="headerlink" title="Multicasting"></a>Multicasting</h2><p>通常一个 observable 会为每一个调用了 subscribe() 的 observer 创建一次新的、独立的执行。当 observer 调用 subscribe() 的时候，observable 会连接上一个 event handler 并将值传递给 observer。</p>
+<p>但是在有的时候，我们可能会想要每个 subscription 都拿到同样的值，这就叫 multicasting。下面是一个例子：</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sequenceSubscriber</span>(<span class="params">observer</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> seq = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line">  <span class="keyword">let</span> timeoutId;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">doSequence</span>(<span class="params">arr, idx</span>) </span>&#123;</span><br><span class="line">    timeoutId = setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      observer.next(arr[idx]);</span><br><span class="line">      <span class="keyword">if</span> (idx === arr.length - <span class="number">1</span>) &#123;</span><br><span class="line">        observer.complete();</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        doSequence(arr, ++idx);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;, <span class="number">1000</span>);</span><br><span class="line">  &#125;</span><br><span class="line"> </span><br><span class="line">  doSequence(seq, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    unsubscribe() &#123;</span><br><span class="line">      clearTimeout(timeoutId);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> sequence = <span class="keyword">new</span> Observable(sequenceSubscriber);</span><br><span class="line"></span><br><span class="line">sequence.subscribe(&#123;</span><br><span class="line">  next(num) &#123; <span class="built_in">console</span>.log(<span class="string">'1st subscribe'</span> + num); &#125;,</span><br><span class="line">  complete() &#123; <span class="built_in">console</span>.log(<span class="string">'1st sequence finished.'</span>); &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 如果 subscribe 两次，那么就会产生两个不同的 stream</span></span><br><span class="line"></span><br><span class="line">setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  sequence.subscribe(&#123;</span><br><span class="line">    next(num) &#123; <span class="built_in">console</span>.log(<span class="string">'2nd subscribe'</span> + num); &#125;,</span><br><span class="line">    complete() &#123; <span class="built_in">console</span>.log(<span class="string">'2nd sequence finished.'</span>); &#125;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;, <span class="number">500</span>);</span><br></pre></td></tr></table></figure>
+<p>输出如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">(at 1 second): 1st subscribe: 1</span><br><span class="line">(at 1.5 seconds): 2nd subscribe: 1</span><br><span class="line">(at 2 seconds): 1st subscribe: 2</span><br><span class="line">(at 2.5 seconds): 2nd subscribe: 2</span><br><span class="line">(at 3 seconds): 1st subscribe: 3</span><br><span class="line">(at 3 seconds): 1st sequence finished</span><br><span class="line">(at 3.5 seconds): 2nd subscribe: 3</span><br><span class="line">(at 3.5 seconds): 2nd sequence finished</span><br></pre></td></tr></table></figure>
+<p>将其转换为 multicasting observer：</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">multicastSequenceSubscriber</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> seq = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line">  <span class="keyword">const</span> observers = [];</span><br><span class="line">  <span class="comment">// 只会产生一组值，被广播给每个 subscriber，因此只有一个 timerId</span></span><br><span class="line">  <span class="keyword">let</span> timeoutId;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 返回 subscriber function，当执行 subscribe() 的之后被调用</span></span><br><span class="line">  <span class="keyword">return</span> <span class="function">(<span class="params">observer</span>) =&gt;</span> &#123;</span><br><span class="line">    observers.push(observer);</span><br><span class="line">    <span class="comment">// 如果是第一个 subscription，开始这个 sequence</span></span><br><span class="line">    <span class="keyword">if</span> (observers.length === <span class="number">1</span>) &#123;</span><br><span class="line">      timeoutId = doSequence(&#123;</span><br><span class="line">        next(val) &#123;</span><br><span class="line">          <span class="comment">// 遍历所有的 observers 并通知所有的 subscriptions</span></span><br><span class="line">          observers.forEach(<span class="function"><span class="params">obs</span> =&gt;</span> obs.next(val));</span><br><span class="line">        &#125;,</span><br><span class="line">        complete() &#123;</span><br><span class="line">          observers.slice(<span class="number">0</span>).forEach(<span class="function"><span class="params">obs</span> =&gt;</span> obs.complete());</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;, seq, <span class="number">0</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      unsubscribe() &#123;</span><br><span class="line">        observers.splice(observers.indexOf(observer), <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">if</span> (observers.length === <span class="number">0</span>) &#123;</span><br><span class="line">          clearTimeout(timeoutId);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">doSequence</span>(<span class="params">observer, arr, idx</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    observer.next(arr[idx]);</span><br><span class="line">    <span class="keyword">if</span> (idx === arr.length - <span class="number">1</span>) &#123;</span><br><span class="line">      observer.complete()</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      doSequence(observer, arr, ++idx)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;, <span class="number">1000</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> multicastSequence = <span class="keyword">new</span> Observable(multicastSequenceSubscriber());</span><br><span class="line"></span><br><span class="line">multicastSequence.subscribe(&#123;</span><br><span class="line">  next(num) &#123; <span class="built_in">console</span>.log(<span class="string">'1st subscribe: '</span> + num); &#125;,</span><br><span class="line">  complete() &#123; <span class="built_in">console</span>.log(<span class="string">'1st sequence finished.'</span>); &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 1.5s 后再次 subscribe，不会发送第一个值</span></span><br><span class="line">setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  multicastSequence.subscribe(&#123;</span><br><span class="line">    next(num) &#123; <span class="built_in">console</span>.log(<span class="string">'2nd subscribe: '</span> + num); &#125;,</span><br><span class="line">    complete() &#123; <span class="built_in">console</span>.log(<span class="string">'2nd sequence finished.'</span>); &#125;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;, <span class="number">1500</span>);</span><br></pre></td></tr></table></figure>
+<h1 id="RxJS"><a href="#RxJS" class="headerlink" title="RxJS"></a>RxJS</h1><p>RxJS ( Reactive Extensions for JavaScript ) 是一个响应式编程（一种考虑异步数据流和数据变化）库</p>
+<h2 id="Create-Observable"><a href="#Create-Observable" class="headerlink" title="Create Observable"></a>Create Observable</h2><p>RxJS 提供多种函数，可以通过多种方法从事件、Promise、计时器等创建 observable：</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// from</span></span><br><span class="line"><span class="keyword">const</span> data = <span class="keyword">from</span>(fetch(<span class="string">'/api/endpoint'</span>));</span><br><span class="line">data.subscribe(&#123;</span><br><span class="line">  next(response) &#123; <span class="built_in">console</span>.log(response); &#125;,</span><br><span class="line">  error(err) &#123; <span class="built_in">console</span>.error(<span class="string">'Error: '</span> + err); &#125;,</span><br><span class="line">  complete() &#123; <span class="built_in">console</span>.log(<span class="string">'Completed'</span>); &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// interval</span></span><br><span class="line"><span class="keyword">const</span> secondsCounter = interval(<span class="number">1000</span>);</span><br><span class="line">secondsCounter.subscribe(<span class="function"><span class="params">n</span> =&gt;</span> <span class="built_in">console</span>.log(<span class="string">`It's been <span class="subst">$&#123;n&#125;</span> seconds since subscribing!`</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment">// fromEvent</span></span><br><span class="line"><span class="keyword">const</span> el = <span class="built_in">document</span>.getElementById(<span class="string">'my-element'</span>);</span><br><span class="line"><span class="keyword">const</span> mouseMoves = fromEvent(el, <span class="string">'mousemove'</span>);</span><br><span class="line"><span class="keyword">const</span> subscription = mouseMoves.subscribe(<span class="function">(<span class="params">event: MouseEvent</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">`Coords: <span class="subst">$&#123;event.clientX&#125;</span> X <span class="subst">$&#123;event.clientY&#125;</span>`</span>);</span><br><span class="line">  <span class="keyword">if</span> (event.clientX &lt; <span class="number">40</span> &amp;&amp; event.clientY &lt; <span class="number">40</span>) &#123;</span><br><span class="line">    subscription.unsubscribe();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// ajax</span></span><br><span class="line"><span class="keyword">import</span> &#123; ajax &#125; <span class="keyword">from</span> <span class="string">'rxjs/ajax'</span>;</span><br><span class="line"><span class="keyword">const</span> apiData = ajax(<span class="string">'/api/data'</span>);</span><br><span class="line">apiData.subscribe(<span class="function"><span class="params">res</span> =&gt;</span> <span class="built_in">console</span>.log(res.status, res.response));</span><br></pre></td></tr></table></figure>
+<h2 id="Operators"><a href="#Operators" class="headerlink" title="Operators"></a>Operators</h2><p>操作符执行操作，转换原来的 observable 值，并且返回一个包含转换后的值的 observable：</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> nums = of(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> squareValues = map(<span class="function">(<span class="params">val: <span class="built_in">number</span></span>) =&gt;</span> val * val);</span><br><span class="line"><span class="keyword">const</span> squareNums = squareValues(nums);</span><br><span class="line"></span><br><span class="line">squareNums.subscribe(<span class="built_in">console</span>.log)</span><br></pre></td></tr></table></figure>
+<p>可以使用 <code>pipe</code> 将操作符连接在一起，我们将一组被应用在 observable 上的操作符称为一个 recipe，需要调用 <code>subscribe()</code> 来生成这个 recipe 操作之后的结果。</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> nums = of(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> squareOddVals = pipe(</span><br><span class="line">  filter(<span class="function">(<span class="params">n: <span class="built_in">number</span></span>) =&gt;</span> n % <span class="number">2</span> !== <span class="number">0</span>),</span><br><span class="line">  map(<span class="function"><span class="params">n</span> =&gt;</span> n * n)</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> squareOdd = squareOddVals(nums);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 也可以这样写：</span></span><br><span class="line"><span class="comment">// const squareOdd = nums.pipe(</span></span><br><span class="line"><span class="comment">//   filter((n: number) =&gt; n % 2 !== 0),</span></span><br><span class="line"><span class="comment">//   map(n =&gt; n * n)</span></span><br><span class="line"><span class="comment">// );</span></span><br><span class="line"></span><br><span class="line">squareOdd.subscribe(<span class="built_in">console</span>.log)</span><br></pre></td></tr></table></figure>
+<h2 id="Error-Handling"><a href="#Error-Handling" class="headerlink" title="Error Handling"></a>Error Handling</h2><p>除了 subscription 中的 error handler 之外，还可以使用 <code>catchError</code> 操作符来处理错误，通过这个操作符可以提供一个备用的解决方案，并且不中断运行。</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> apiData = ajax(<span class="string">'/api/data'</span>).pipe(</span><br><span class="line">  map(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (!res.response) &#123;</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'Value expected!'</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res.response;</span><br><span class="line">  &#125;),</span><br><span class="line">  catchError(<span class="function"><span class="params">err</span> =&gt;</span> of([]))</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">apiData.subscribe(&#123;</span><br><span class="line">  next(x) &#123; <span class="built_in">console</span>.log(<span class="string">'data: '</span>, x); &#125;,</span><br><span class="line">  error(err) &#123; <span class="built_in">console</span>.log(<span class="string">'errors already caught and this will not run'</span>); &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p><code>catchError</code> 可以让错误快速恢复，搭配 <code>retry</code> 还可以进行多次重试：</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> apiData = ajax(<span class="string">'/api/data'</span>).pipe(</span><br><span class="line">  retry(<span class="number">3</span>),</span><br><span class="line">  map(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (!res.response) &#123;</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'Value expected!'</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res.response;</span><br><span class="line">  &#125;),</span><br><span class="line">  catchError(<span class="function"><span class="params">err</span> =&gt;</span> of([]))</span><br><span class="line">);</span><br><span class="line"><span class="string">``</span><span class="string">` </span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"># Angular 中的 Observables</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">## 组件间传值</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Angular 提供了 `</span>EventEmitter<span class="string">` API，通过 `</span><span class="meta">@Output</span>()<span class="string">` 就可以发布数据，`</span>EventEmitter<span class="string">` 就是基于 RxJS Subject 的。</span></span><br><span class="line"><span class="string">当 `</span>emit()<span class="string">` 的时候，他会将值传递给任意订阅了的 observer 的 `</span>next()<span class="string">` 方法。下面是一个例子：</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">`</span><span class="string">``</span>html</span><br><span class="line">&lt;!-- 在父组件监听自定义的 open 和 close 事件 --&gt;</span><br><span class="line">&lt;zippy (open)=<span class="string">"onOpen($event)"</span> (close)=<span class="string">"onClose($event)"</span>&gt;&lt;<span class="regexp">/zippy&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 在子组件 emit 这两个自定义事件，并传递值</span></span><br><span class="line"><span class="meta">@Component</span>(&#123;</span><br><span class="line">  selector: <span class="string">'zippy'</span>,</span><br><span class="line">  template: <span class="string">`</span></span><br><span class="line"><span class="string">  &lt;div class="zippy"&gt;</span></span><br><span class="line"><span class="string">    &lt;div (click)="toggle()"&gt;Toggle&lt;/div&gt;</span></span><br><span class="line"><span class="string">    &lt;div [hidden]="!visible"&gt;</span></span><br><span class="line"><span class="string">      &lt;ng-content&gt;&lt;/ng-content&gt;</span></span><br><span class="line"><span class="string">    &lt;/div&gt;</span></span><br><span class="line"><span class="string">  &lt;/div&gt;`</span>&#125;)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> ZippyComponent &#123;</span><br><span class="line">  visible = <span class="literal">true</span>;</span><br><span class="line">  <span class="meta">@Output</span>() open = <span class="keyword">new</span> EventEmmiter&lt;<span class="built_in">any</span>&gt;();</span><br><span class="line">  <span class="meta">@Output</span>() close = <span class="keyword">new</span> EventEmmiter&lt;<span class="built_in">any</span>&gt;();</span><br><span class="line"></span><br><span class="line">  toggle() &#123;</span><br><span class="line">    <span class="keyword">this</span>.visible = !<span class="keyword">this</span>.visible;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.visible) &#123;</span><br><span class="line">      <span class="keyword">this</span>.open.emit(<span class="literal">null</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">this</span>.close.emit(<span class="literal">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="HTTP"><a href="#HTTP" class="headerlink" title="HTTP"></a>HTTP</h2><p>Angular 的 <code>HttpClient</code> API 也将会返回 observables，这有一些优点：</p>
+<ul>
+<li>Observables 不会修改从服务端获取的数据</li>
+<li>可以通过 <code>unsubscribe()</code> 方法取消请求</li>
+<li>可以配制请求</li>
+</ul>
+<h2 id="Async-pipe"><a href="#Async-pipe" class="headerlink" title="Async pipe"></a>Async pipe</h2><p>AsyncPipe 会 subscribe 一个 observable 或 promise，并且返回他发出的最新值</p>
+<h2 id="Router"><a href="#Router" class="headerlink" title="Router"></a>Router</h2><p><code>Router.events</code> 也是以 observables 的形式提供事件的：</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; Router, NavigationStart &#125; <span class="keyword">from</span> <span class="string">'@angular/router'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; filter &#125; <span class="keyword">from</span> <span class="string">'rxjs/operators'</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Component</span>(&#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> RoutableComponent <span class="keyword">implements</span> OnInit &#123;</span><br><span class="line">  navStart: Observable&lt;NavigationStart&gt;;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">constructor</span>(<span class="params"><span class="keyword">private</span> router: Router</span>) &#123;</span><br><span class="line">    <span class="keyword">this</span>.navStart = router.events.pipe(</span><br><span class="line">      filter(<span class="function"><span class="params">event</span> =&gt;</span> event <span class="keyword">instanceof</span> NavigationStart)</span><br><span class="line">    ) <span class="keyword">as</span> Observable&lt;NavigationStart&gt;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  ngOnInit() &#123;</span><br><span class="line">    <span class="keyword">this</span>.navStart.subscribe(<span class="function"><span class="params">event</span> =&gt;</span> <span class="built_in">console</span>.log(<span class="string">'Navigation Started!'</span>));</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="区分-Observables-和其他技术"><a href="#区分-Observables-和其他技术" class="headerlink" title="区分 Observables 和其他技术"></a>区分 Observables 和其他技术</h1><h2 id="Observables-和-Promises"><a href="#Observables-和-Promises" class="headerlink" title="Observables 和 Promises"></a>Observables 和 Promises</h2><ul>
+<li>Observables 是 declarative，当调用 <code>subscribe()</code> 的时候才会执行，而 Promise 在定义后会马上执行</li>
+<li>Observables 提供多个值，而 Promises 值提供一个值</li>
+<li>Observables 有链式调用和 subscribe()</li>
+</ul>
+<h3 id="创建与订阅"><a href="#创建与订阅" class="headerlink" title="创建与订阅"></a>创建与订阅</h3><ul>
+<li>Observables 在 consumer subscribe 的时候才会执行，并且每个 subscription 都拥有自己独立的计算</li>
+<li>Promises 在创建的时候执行，并且在创建的时候就已经开始计算结果了，每个 then 分享同样的结果，并且不能中断或者重启</li>
+</ul>
+<h3 id="链式调用"><a href="#链式调用" class="headerlink" title="链式调用"></a>链式调用</h3><ul>
+<li>Observables 将转换数据与最终获取（订阅）的过程分开了，只有订阅（subscription）才会让 subscriber 函数开始计算结果</li>
+<li>Promises 并不会区分中间与最后的 then</li>
+</ul>
+<h3 id="取消"><a href="#取消" class="headerlink" title="取消"></a>取消</h3><ul>
+<li>Observables 可以在 subscriber 函数中返回 unsubscribe 方法，并可使用 <code>subscription.unsubscribe()</code> 进行调用</li>
+<li>Promises 则无法取消</li>
+</ul>
+<h3 id="错误处理"><a href="#错误处理" class="headerlink" title="错误处理"></a>错误处理</h3><ul>
+<li>Observables 会将错误传递给 subscriber 的 error handler（在调用 <code>subscribe()</code> 的时候定义）</li>
+<li>Promises 将错误传递给子 Promises</li>
+</ul>
+<h2 id="Observables-与-EventHandlers"><a href="#Observables-与-EventHandlers" class="headerlink" title="Observables 与 EventHandlers"></a>Observables 与 EventHandlers</h2><ul>
+<li>都定义了通知处理方法（notification handlers），并且通过他们来随着时间变化的处理多个值</li>
+<li>subscribe 一个 observables 相当于添加一个事件监听，不同在于 observables 可以在传递给 handler 之前对数据进行转换和处理</li>
+<li>可以在比如 HTTP 请求之类的异步操作中使用 Observables 来处理事件，这样可以增加上下文的紧密度</li>
+</ul>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">   都需要定义 handlers</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">handler</span>(<span class="params">e</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'Clicked'</span>, e);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">   Events API</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="comment">// 创建并开始监听</span></span><br><span class="line">buttonEl.addEventListener(<span class="string">'click'</span>, handler);</span><br><span class="line"><span class="comment">// 取消监听</span></span><br><span class="line">buttonEl.removeEventListener(<span class="string">'click'</span>, handler);</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">   Observable</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="comment">// 创建</span></span><br><span class="line"><span class="keyword">const</span> clicks$ = fromEvent(buttonEl, <span class="string">'click'</span>);</span><br><span class="line"><span class="comment">// 开始监听</span></span><br><span class="line"><span class="keyword">const</span> subscription = clicks$.subscribe(handler)</span><br><span class="line"><span class="comment">// 取消监听</span></span><br><span class="line">subscription.unsubscribe()</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>前端</category>
+        <category>JavaScript</category>
+        <category>Angular</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>文档</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Angular：HttpClient</title>
+    <url>/hais-notebook/2020/03/25/Angular-HttpClient/</url>
+    <content><![CDATA[<p>HttpClient 是 Angular 用来与服务器通过 HTTP 交流的装置。</p>
+<a id="more"></a>
+<h1 id="引入-HttpClient"><a href="#引入-HttpClient" class="headerlink" title="引入 HttpClient"></a>引入 HttpClient</h1><p>可以在 <code>app.module.ts</code> 中引入</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; HttpClientModule &#125; <span class="keyword">from</span> <span class="string">'@angular/common/http'</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">@NgModule</span>(&#123;</span><br><span class="line">  imports: [</span><br><span class="line">    HttpClientModule,</span><br><span class="line">  ],</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>然后在需要使用的 service 中注入</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; Injectable &#125; <span class="keyword">from</span> <span class="string">'@angular/core'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; HttpClient, HttpHeaders &#125; <span class="keyword">from</span> <span class="string">'@angular/common/http'</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@Injectable</span>(&#123;</span><br><span class="line">  providedIn: <span class="string">'root'</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> HeroService &#123;</span><br><span class="line">  <span class="keyword">constructor</span>(<span class="params"></span></span><br><span class="line"><span class="params">    <span class="keyword">private</span> http: HttpClient </span></span><br><span class="line"><span class="params">  </span>) &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h1><h2 id="获取数据"><a href="#获取数据" class="headerlink" title="获取数据"></a>获取数据</h2><figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line">getHeroes(): Observable&lt;Hero[]&gt; &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">this</span>.http.get&lt;Hero[]&gt;(<span class="string">'/someurl'</span>) <span class="comment">// 他会返回一个 Observable 对象，里面具体的类型是 Hero[]</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>前端</category>
+        <category>JavaScript</category>
+        <category>Angular</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>文档</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Angular：Routing</title>
+    <url>/hais-notebook/2020/03/25/Angular-Routing/</url>
+    <content><![CDATA[<p>抄一下 Angular 的文档。</p>
+<a id="more"></a>
+<h1 id="AppRoutingModule"><a href="#AppRoutingModule" class="headerlink" title="AppRoutingModule"></a>AppRoutingModule</h1><p>在 Angular 中，我们通过一个分离的、顶级的模块来用于导航，通常我们将其命名为 <code>AppRoutingModule</code>，他通常在 <code>src/app</code> 文件夹的 <code>app-routing.module.ts</code> 中。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ng generate module app-routing --flat --module=app</span><br><span class="line"><span class="comment"># --flat 是他不会再在 src/app 中新建其他的文件夹</span></span><br><span class="line"><span class="comment"># --module=app 则使得其被写在 AppModule 的 imports 中</span></span><br></pre></td></tr></table></figure>
+<p>通常我们需要将这个文件改造成这个样子：</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; NgModule &#125; <span class="keyword">from</span> <span class="string">'@angular/core'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; RouterModule, Routes &#125; <span class="keyword">from</span> <span class="string">'@angular/router'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; HeroesComponent &#125; <span class="keyword">from</span> <span class="string">'./heroes/heroes.component'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; DashboardComponent &#125; <span class="keyword">from</span> <span class="string">'./dashboard/dashboard.component'</span></span><br><span class="line"><span class="keyword">import</span> &#123; HeroDetailComponent &#125; <span class="keyword">from</span> <span class="string">'./hero-detail/hero-detail.component'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> routes: Routes = [</span><br><span class="line">  &#123; path: <span class="string">''</span>, redirectTo: <span class="string">'/dashboard'</span>, pathMatch: <span class="string">'full'</span> &#125;,</span><br><span class="line">  &#123; path: <span class="string">'dashboard'</span>, component: DashboardComponent &#125;,</span><br><span class="line">  &#123; path: <span class="string">'detail/:id'</span>, component: HeroDetailComponent &#125;,</span><br><span class="line">  &#123; path: <span class="string">'heroes'</span>, component: HeroesComponent &#125;</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line"><span class="meta">@NgModule</span>(&#123;</span><br><span class="line">  imports: [RouterModule.forRoot(routes)],</span><br><span class="line">  <span class="comment">// 由于我们是在应用的 root level 定义路由，因此需要使用 forRoot</span></span><br><span class="line">  <span class="comment">// forRoot 方法提供了路由中需要的 service providers 和 directives</span></span><br><span class="line">  exports: [RouterModule]</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>然后需要在 html 模板中这样写：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">nav</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">a</span> <span class="attr">routerLink</span>=<span class="string">"/dashboard"</span>&gt;</span>Dashboard<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">a</span> <span class="attr">routerLink</span>=<span class="string">"/heroes"</span>&gt;</span>Heroes<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">nav</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">router-outlet</span>&gt;</span><span class="tag">&lt;/<span class="name">router-outlet</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>我们可以通过 <code>+this.route.snapshot.paramMap.get(&#39;id&#39;)</code> 这样的方法来从当前的地址中获取到 params</p>
+]]></content>
+      <categories>
+        <category>前端</category>
+        <category>JavaScript</category>
+        <category>Angular</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>文档</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Angular：Basic</title>
+    <url>/hais-notebook/2020/03/24/Angular-Basic/</url>
+    <content><![CDATA[<p>抄一下 Angular 的文档。</p>
+<a id="more"></a>
+<h1 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h1><h2 id="Modules"><a href="#Modules" class="headerlink" title="Modules"></a>Modules</h2><p>Angular 里面有自己的模块化系统，也就是 NgModule，他与 ES6 的模块系统不同，又互为补充。每个 Angular 应用中都有一个 <strong>根模块（AppModule）</strong>，并且位于 <code>app.module.ts</code> 中，可以通过引导这个模块来启动整个应用</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; NgModule &#125;      <span class="keyword">from</span> <span class="string">'@angular/core'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; BrowserModule &#125; <span class="keyword">from</span> <span class="string">'@angular/platform-browser'</span>;</span><br><span class="line"><span class="meta">@NgModule</span>(&#123;</span><br><span class="line">  imports:      [ BrowserModule ], <span class="comment">// 这个模块中的 component templates 需要使用到的模块</span></span><br><span class="line">  providers:    [ Logger ],        <span class="comment">// 这个模块中全局 services 的 creators</span></span><br><span class="line">  declarations: [ AppComponent ],  <span class="comment">// 包括了这个 NgModule 下的 components、directives、pipes</span></span><br><span class="line">  exports:      [ AppComponent ],  <span class="comment">// 包括了可能在其他模块使用的东西</span></span><br><span class="line">  bootstrap:    [ AppComponent ]   <span class="comment">// 应用的主视图，也就是 root component，只有根模块才有这个属性</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> AppModule &#123; &#125;</span><br></pre></td></tr></table></figure>
+<p>模块可以为其中的组件提供一个编译上下文环境（compilation context），根模块一定会有一个根视图</p>
+<h2 id="Components"><a href="#Components" class="headerlink" title="Components"></a>Components</h2><p>每个应用都至少一个组件，也就是 root component，Angular 的组件一般长这个样子：</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Component</span>(&#123; <span class="comment">// @Component 装饰器指出接下来的这个类是个组件类，并且指定元数据，组件的元数据将告诉 Angular 怎样将模板与组件关联起来并构成视图</span></span><br><span class="line">  selector:    <span class="string">'app-hero-list'</span>, <span class="comment">// 一个 CSS 选择器，告诉 Angular 在哪个标签插入组件实例</span></span><br><span class="line">  templateUrl: <span class="string">'./hero-list.component.html'</span>, <span class="comment">// 该组件 HTML 模板文件相对于这个组件文件的地址</span></span><br><span class="line">  providers:  [ HeroService ] <span class="comment">// 当前组件所需的 services 的 providers</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> HeroListComponent <span class="keyword">implements</span> OnInit &#123;</span><br><span class="line"><span class="comment">/* . . . */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="模板语法"><a href="#模板语法" class="headerlink" title="模板语法"></a>模板语法</h3><p>Angular 采用形如这样的模板语法：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">h2</span>&gt;</span>Hero List<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span><span class="tag">&lt;<span class="name">i</span>&gt;</span>Pick a hero from the list<span class="tag">&lt;/<span class="name">i</span>&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">li</span> *<span class="attr">ngFor</span>=<span class="string">"let hero of heroes"</span> (<span class="attr">click</span>)=<span class="string">"selectHero(hero)"</span>&gt;</span></span><br><span class="line">    &#123;&#123;hero.name&#125;&#125;</span><br><span class="line">  <span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">app-hero-detail</span> *<span class="attr">ngIf</span>=<span class="string">"selectedHero"</span> [<span class="attr">hero</span>]=<span class="string">"selectedHero"</span>&gt;</span><span class="tag">&lt;/<span class="name">app-hero-detail</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><code>@Component</code> 元数据会告诉 Angular 模板从哪里找：</p>
+<ul>
+<li>可以直接将模板写在 <code>@Component</code> 元数据的 <code>template</code> 中</li>
+<li>可以将模板文件的地址告诉 <code>@Component</code> 元数据的 <code>template</code> </li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 默认将模板文件单独放置</span></span><br><span class="line">ng generate component hero</span><br><span class="line"><span class="comment"># -t 是 inlineTemplate=true 的简写</span></span><br><span class="line">ng generate component hero -t</span><br></pre></td></tr></table></figure>
+<h4 id="数据绑定"><a href="#数据绑定" class="headerlink" title="数据绑定"></a>数据绑定</h4><p>与 Vue 比较类似，Angular 这样几种数据绑定方式：</p>
+<ul>
+<li>从组件到 DOM <code></code> <code>[property]=&quot;value&quot;</code> <code>bind-property=&quot;value&quot;</code></li>
+<li>从 DOM 到组件 <code>(event)=&quot;handler&quot;</code> <code>on-event=&quot;value&quot;</code></li>
+<li>双向数据绑定 <code>[(ng-model)]=&quot;property&quot;</code> <code>bindon-target=&quot;expression&quot;</code></li>
+</ul>
+<p><img src="https://angular.cn/generated/images/guide/architecture/component-databinding.png" alt="Angular 的数据绑定1"></p>
+<p>在父子组件中也是如此：</p>
+<p><img src="https://angular.cn/generated/images/guide/architecture/parent-child-binding.png" alt="Angular 的数据绑定2"></p>
+<p>其插值语法、表达式、<code>on</code>、<code>bind</code>、<code>bindon</code> 等于 Vue 类似</p>
+<h4 id="管道"><a href="#管道" class="headerlink" title="管道"></a>管道</h4><p>Angular 自带了一些管道，可以帮助我们将输入值转换为对应的输出值，<code>|</code> 被称为 <strong>管道操作符</strong>：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- Default format: output 'Jun 15, 2015'--&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span>Today is &#123;&#123;today | date&#125;&#125;<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- fullDate format: output 'Monday, June 15, 2015'--&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span>The date is &#123;&#123;today | date:'fullDate'&#125;&#125;<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- shortTime format: output '9:43 AM'--&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span>The time is &#123;&#123;today | date:'shortTime'&#125;&#125;<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h4 id="指令"><a href="#指令" class="headerlink" title="指令"></a>指令</h4><p>Angular 自带了一些指令，比如：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 结构型指令 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">li</span> *<span class="attr">ngFor</span>=<span class="string">"let hero of heroes"</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">app-hero-detail</span> *<span class="attr">ngIf</span>=<span class="string">"selectedHero"</span>&gt;</span><span class="tag">&lt;/<span class="name">app-hero-detail</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 属性型指令 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> [(<span class="attr">ngModel</span>)]=<span class="string">"hero.name"</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="Service-and-Dependency-Injection"><a href="#Service-and-Dependency-Injection" class="headerlink" title="Service and Dependency Injection"></a>Service and Dependency Injection</h2><p>组件可以把诸如获取数据、验证用户输入、往控制台写日志等等委托给各种服务，可以在需要时将服务 <strong>注入</strong> 到组件中</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> Logger &#123;</span><br><span class="line">  log(msg: <span class="built_in">any</span>)   &#123; <span class="built_in">console</span>.log(msg); &#125;</span><br><span class="line">  error(msg: <span class="built_in">any</span>) &#123; <span class="built_in">console</span>.error(msg); &#125;</span><br><span class="line">  warn(msg: <span class="built_in">any</span>)  &#123; <span class="built_in">console</span>.warn(msg); &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> HeroService &#123;</span><br><span class="line">  <span class="keyword">private</span> heroes: Hero[] = [];</span><br><span class="line"></span><br><span class="line">  <span class="keyword">constructor</span>(<span class="params"></span></span><br><span class="line"><span class="params">    <span class="keyword">private</span> backend: BackendService,</span></span><br><span class="line"><span class="params">    <span class="keyword">private</span> logger: Logger</span>) &#123; &#125;</span><br><span class="line"></span><br><span class="line">  getHeroes() &#123;</span><br><span class="line">    <span class="keyword">this</span>.backend.getAll(Hero).then( <span class="function">(<span class="params">heroes: Hero[]</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">this</span>.logger.log(<span class="string">`Fetched <span class="subst">$&#123;heroes.length&#125;</span> heroes.`</span>);</span><br><span class="line">      <span class="keyword">this</span>.heroes.push(...heroes); <span class="comment">// fill cache</span></span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.heroes;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>前端</category>
+        <category>JavaScript</category>
+        <category>Angular</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>文档</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>TypeScript：进阶</title>
     <url>/hais-notebook/2020/03/21/TS-Advanced/</url>
-    <content><![CDATA[<p>TypeScript 的高级类型以及其他的用法</p>
+    <content><![CDATA[<p>TypeScript 的高级类型以及其他的用法。</p>
 <a id="more"></a>
 <h1 id="高级类型"><a href="#高级类型" class="headerlink" title="高级类型"></a>高级类型</h1><h2 id="交叉类型"><a href="#交叉类型" class="headerlink" title="交叉类型"></a>交叉类型</h2><p>交叉类型是将多个类型合并为一个类型，比较常见的是用在 JavaScript 的混入模式（从两个对象中刚创建一个新对象）中：</p>
 <figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">interface</span> IAnyObject &#123;</span><br><span class="line">  [prop: <span class="built_in">string</span>]: <span class="built_in">any</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">mixin</span>&lt;<span class="title">T</span> <span class="title">extends</span> <span class="title">IAnyObject</span>, <span class="title">U</span> <span class="title">extends</span> <span class="title">IAnyObject</span>&gt;(<span class="params">first: T, second: U</span>): <span class="title">T</span> &amp; <span class="title">U</span> </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> result = &lt;T &amp; U&gt;&#123;&#125;;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> id <span class="keyword">in</span> first) &#123;</span><br><span class="line">    (&lt;T&gt;result)[id] = first[id];</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> id <span class="keyword">in</span> second) &#123;</span><br><span class="line">    <span class="keyword">if</span> (!result.hasOwnProperty(id)) &#123;</span><br><span class="line">      (&lt;U&gt;result)[id] = second[id];</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; </span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> x = mixin(&#123;a: <span class="string">'hello'</span>&#125;, &#123;b: <span class="number">42</span>&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> a = x.a;</span><br><span class="line"><span class="keyword">const</span> b = x.b;</span><br></pre></td></tr></table></figure>
@@ -1125,7 +1397,8 @@ A_{n}^{m} = \frac{n!}{(n-m)!}</script><p>n 个元素中，r 个相同排成一�
 <h1 id="可调用类型注解"><a href="#可调用类型注解" class="headerlink" title="可调用类型注解"></a>可调用类型注解</h1><p>想让一个 interface 被注解为可执行的、可实例化的：</p>
 <figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">interface</span> ToString &#123;</span><br><span class="line">  </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">declare</span> <span class="keyword">const</span> somethingToString: ToString;</span><br><span class="line"></span><br><span class="line">somethingToString();</span><br><span class="line"></span><br><span class="line"><span class="comment">// This expression is not callable.</span></span><br><span class="line"><span class="comment">//    Type 'ToString' has no call signatures.</span></span><br></pre></td></tr></table></figure>
 <p>可以这样修改：</p>
-<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">interface</span> ToString1 &#123;</span><br><span class="line">  (): <span class="built_in">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">declare</span> <span class="keyword">const</span> somethingToString1: ToString1;</span><br><span class="line"></span><br><span class="line">somethingToString1();</span><br><span class="line"></span><br><span class="line"><span class="comment">// OR</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">interface</span> ToString2 &#123;</span><br><span class="line">  <span class="keyword">new</span> (): <span class="built_in">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">declare</span> <span class="keyword">const</span> somethingToString2: ToString2;</span><br><span class="line"></span><br><span class="line"><span class="keyword">new</span> somethingToString2();</span><br></pre></td></tr></table></figure>]]></content>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">interface</span> ToString1 &#123;</span><br><span class="line">  (): <span class="built_in">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">declare</span> <span class="keyword">const</span> somethingToString1: ToString1;</span><br><span class="line"></span><br><span class="line">somethingToString1();</span><br><span class="line"></span><br><span class="line"><span class="comment">// OR</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">interface</span> ToString2 &#123;</span><br><span class="line">  <span class="keyword">new</span> (): <span class="built_in">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">declare</span> <span class="keyword">const</span> somethingToString2: ToString2;</span><br><span class="line"></span><br><span class="line"><span class="keyword">new</span> somethingToString2();</span><br></pre></td></tr></table></figure>
+]]></content>
       <categories>
         <category>前端</category>
         <category>TypeScript</category>
@@ -3531,79 +3804,6 @@ A_{n}^{m} = \frac{n!}{(n-m)!}</script><p>n 个元素中，r 个相同排成一�
       </tags>
   </entry>
   <entry>
-    <title>React Props &amp; State</title>
-    <url>/hais-notebook/2020/02/02/React-PropsState/</url>
-    <content><![CDATA[<p>主要记录了 React 的 Props 和 State。</p>
-<a id="more"></a>
-<h1 id="Props"><a href="#Props" class="headerlink" title="Props"></a>Props</h1><p>可以查看<a href="https://codesandbox.io/s/billowing-wind-d8kzw" target="_blank" rel="noopener">CodeSandbox 上的这个例子</a></p>
-<h1 id="State"><a href="#State" class="headerlink" title="State"></a>State</h1><p>可以查看<a href="https://codesandbox.io/s/silly-diffie-9yk38" target="_blank" rel="noopener">CodeSandbox 上的这个例子</a></p>
-<h2 id="setState-的注意事项"><a href="#setState-的注意事项" class="headerlink" title="setState 的注意事项"></a>setState 的注意事项</h2><ul>
-<li><code>this.state.n += 1</code> 无效，UI 不会自动更新，需要用 <code>setState</code></li>
-<li><code>setState</code> 不会马上改变 <code>state</code>，是异步更新的，推荐使用 <code>setState(函数)</code></li>
-<li>不推荐 <code>this.setState(this.state)</code>，因为 React 不推荐我们修改旧的 <code>state</code>（不可变数据）</li>
-</ul>
-<h2 id="复杂-state"><a href="#复杂-state" class="headerlink" title="复杂 state"></a>复杂 state</h2><ul>
-<li>类组件的 <code>setState</code> 会自动合并第一层，建议使用 <code>Object.assign</code> 或者 <code>...sate</code></li>
-<li>函数组件不会自动合并，建议分开写</li>
-</ul>
-<h1 id="Vue-和-React-的区别"><a href="#Vue-和-React-的区别" class="headerlink" title="Vue 和 React 的区别"></a>Vue 和 React 的区别</h1><p>共同点：</p>
-<ul>
-<li>都是对视图的封装，React 是用类和函数表示一个组件，Vue 是用构造选项表示一个组件</li>
-<li>都提供了 <code>creatElement</code> 的 XML 简写，React 是 JSX，Vue 是 template</li>
-</ul>
-<p>不同点：</p>
-<ol>
-<li>监听数据变化的实现原理不同<ul>
-<li>Vue 通过 getter/setter 和代理等方式进行劫持，能够精确知道数据的变化，不需要特别的优化</li>
-<li>React 默认是通过比较引用的方式来进行的，可能会造成不必要的 vDOM 重新渲染，需要用诸如 PureComponent/shouldComponentUpdate 等方式来进行优化</li>
-</ul>
-</li>
-<li>数据流不同<ul>
-<li>Vue 在 1.0 的时候 <strong>父子组件</strong> props 可以双向绑定，还有 v-model 可以实现 <strong>组件与 DOM</strong> 双向绑定</li>
-<li>Vue 2 的时候 <strong>父子组件</strong> 不能双向绑定了（虽然仍然提供了 .sync 语法糖），并且还有 v-model</li>
-<li>React 中是单向数据流，并且组件与 DOM 之间也需要使用 onChange/setState。</li>
-</ul>
-</li>
-<li>HoC 和 mixins<ul>
-<li>Vue 中使用不同功能的组合是通过 mixins 实现的</li>
-<li>React 中则使用 HoC</li>
-</ul>
-</li>
-<li>组件间的通信<ul>
-<li>都有 props，也都可以跨层级通信，比如 Vue 的 provide/inject、React 的 context</li>
-<li>React 本身不支持自定义事件，因此 Vue 里面一般使用事件，React 中一般使用父组件传来的回调函数</li>
-</ul>
-</li>
-<li>更新视图<ul>
-<li>Vue 中一个对象，对应一个虚拟 DOM，当对象的属性改变时，把属性相关的 DOM 节点全部更新</li>
-<li>React 一个对象，对应一个虚拟 DOM，另一个对象对应另一个虚拟 DOM，对比两个更新，用 DOM Diff 算法找不同，然后局部更新 DOM</li>
-</ul>
-</li>
-<li>写法不同<ul>
-<li>Vue 是 JS in HTML</li>
-<li>React 是 HTML in JS</li>
-</ul>
-</li>
-<li>Vuex 和 Redux 的区别<ul>
-<li>Vue 中的 $store 直接注入到了组件实例中，可以直接用 dispatch、commit、mapState、this.$store 等；React 中需要用 connect 把 props 和 dispatch、state 连接起来</li>
-<li>Vue 中可以用 dispatch action、commit mutation；React 中只能使用 dispatch，不能直接操作 reduce</li>
-<li>Redux 中的使用的是不可变数据，每次都要用新的 State 替换旧的，而 Vue 中是直接修改的</li>
-</ul>
-</li>
-</ol>
-]]></content>
-      <categories>
-        <category>前端</category>
-        <category>JavaScript</category>
-        <category>框架</category>
-        <category>React</category>
-      </categories>
-      <tags>
-        <tag>入门</tag>
-        <tag>文档</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>React Advanced</title>
     <url>/hais-notebook/2020/02/02/React-Advanced/</url>
     <content><![CDATA[<p>主要抄了一下 React 文档。</p>
@@ -3737,6 +3937,79 @@ A_{n}^{m} = \frac{n!}{(n-m)!}</script><p>n 个元素中，r 个相同排成一�
 <p>类似的功能也可以通过在 <code>&lt;Mouse&gt;</code> 中使用 <code>props.children</code>，然后直接使用类似于这样的写法：</p>
 <figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line">&lt;Mouse&gt;</span><br><span class="line">  &#123;mouse =&gt; (</span><br><span class="line">    &lt;Cat mouse=&#123;mouse&#125;/&gt;</span><br><span class="line">  )&#125;</span><br><span class="line">&lt;<span class="regexp">/Mouse&gt;</span></span><br></pre></td></tr></table></figure>
 <p>需要注意的是，使用 render prop 会导致 <code>React.PureComponent</code> 失效，因为外层组件更新的时候，render prop 的函数总是新的，除非你把它写成一个实例方法</p>
+]]></content>
+      <categories>
+        <category>前端</category>
+        <category>JavaScript</category>
+        <category>框架</category>
+        <category>React</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>文档</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>React Props &amp; State</title>
+    <url>/hais-notebook/2020/02/02/React-PropsState/</url>
+    <content><![CDATA[<p>主要记录了 React 的 Props 和 State。</p>
+<a id="more"></a>
+<h1 id="Props"><a href="#Props" class="headerlink" title="Props"></a>Props</h1><p>可以查看<a href="https://codesandbox.io/s/billowing-wind-d8kzw" target="_blank" rel="noopener">CodeSandbox 上的这个例子</a></p>
+<h1 id="State"><a href="#State" class="headerlink" title="State"></a>State</h1><p>可以查看<a href="https://codesandbox.io/s/silly-diffie-9yk38" target="_blank" rel="noopener">CodeSandbox 上的这个例子</a></p>
+<h2 id="setState-的注意事项"><a href="#setState-的注意事项" class="headerlink" title="setState 的注意事项"></a>setState 的注意事项</h2><ul>
+<li><code>this.state.n += 1</code> 无效，UI 不会自动更新，需要用 <code>setState</code></li>
+<li><code>setState</code> 不会马上改变 <code>state</code>，是异步更新的，推荐使用 <code>setState(函数)</code></li>
+<li>不推荐 <code>this.setState(this.state)</code>，因为 React 不推荐我们修改旧的 <code>state</code>（不可变数据）</li>
+</ul>
+<h2 id="复杂-state"><a href="#复杂-state" class="headerlink" title="复杂 state"></a>复杂 state</h2><ul>
+<li>类组件的 <code>setState</code> 会自动合并第一层，建议使用 <code>Object.assign</code> 或者 <code>...sate</code></li>
+<li>函数组件不会自动合并，建议分开写</li>
+</ul>
+<h1 id="Vue-和-React-的区别"><a href="#Vue-和-React-的区别" class="headerlink" title="Vue 和 React 的区别"></a>Vue 和 React 的区别</h1><p>共同点：</p>
+<ul>
+<li>都是对视图的封装，React 是用类和函数表示一个组件，Vue 是用构造选项表示一个组件</li>
+<li>都提供了 <code>creatElement</code> 的 XML 简写，React 是 JSX，Vue 是 template</li>
+</ul>
+<p>不同点：</p>
+<ol>
+<li>监听数据变化的实现原理不同<ul>
+<li>Vue 通过 getter/setter 和代理等方式进行劫持，能够精确知道数据的变化，不需要特别的优化</li>
+<li>React 默认是通过比较引用的方式来进行的，可能会造成不必要的 vDOM 重新渲染，需要用诸如 PureComponent/shouldComponentUpdate 等方式来进行优化</li>
+</ul>
+</li>
+<li>数据流不同<ul>
+<li>Vue 在 1.0 的时候 <strong>父子组件</strong> props 可以双向绑定，还有 v-model 可以实现 <strong>组件与 DOM</strong> 双向绑定</li>
+<li>Vue 2 的时候 <strong>父子组件</strong> 不能双向绑定了（虽然仍然提供了 .sync 语法糖），并且还有 v-model</li>
+<li>React 中是单向数据流，并且组件与 DOM 之间也需要使用 onChange/setState。</li>
+</ul>
+</li>
+<li>HoC 和 mixins<ul>
+<li>Vue 中使用不同功能的组合是通过 mixins 实现的</li>
+<li>React 中则使用 HoC</li>
+</ul>
+</li>
+<li>组件间的通信<ul>
+<li>都有 props，也都可以跨层级通信，比如 Vue 的 provide/inject、React 的 context</li>
+<li>React 本身不支持自定义事件，因此 Vue 里面一般使用事件，React 中一般使用父组件传来的回调函数</li>
+</ul>
+</li>
+<li>更新视图<ul>
+<li>Vue 中一个对象，对应一个虚拟 DOM，当对象的属性改变时，把属性相关的 DOM 节点全部更新</li>
+<li>React 一个对象，对应一个虚拟 DOM，另一个对象对应另一个虚拟 DOM，对比两个更新，用 DOM Diff 算法找不同，然后局部更新 DOM</li>
+</ul>
+</li>
+<li>写法不同<ul>
+<li>Vue 是 JS in HTML</li>
+<li>React 是 HTML in JS</li>
+</ul>
+</li>
+<li>Vuex 和 Redux 的区别<ul>
+<li>Vue 中的 $store 直接注入到了组件实例中，可以直接用 dispatch、commit、mapState、this.$store 等；React 中需要用 connect 把 props 和 dispatch、state 连接起来</li>
+<li>Vue 中可以用 dispatch action、commit mutation；React 中只能使用 dispatch，不能直接操作 reduce</li>
+<li>Redux 中的使用的是不可变数据，每次都要用新的 State 替换旧的，而 Vue 中是直接修改的</li>
+</ul>
+</li>
+</ol>
 ]]></content>
       <categories>
         <category>前端</category>

@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/hais-notebook/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/hais-notebook/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/hais-notebook/images/favicon-16x16.png">
+
+<link rel="stylesheet" href="/hais-notebook/css/main.css">
+
+
+<link rel="stylesheet" href="/hais-notebook/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('https://hyuain.github.io/hais-notebook').hostname,
+    root: '/hais-notebook/',
+    scheme: 'Gemini',
+    version: '7.7.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: 'W0QZQNNH7N',
+      apiKey: '00189c8d102508ea71e94422b5f129fd',
+      indexName: 'hais-notebook',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="提供了 publishers 和 subscribers 之间传递数据的方式 在 subscribe 的时候才会执行，而不是 define 的时候 可以传递多个任意类型的数据">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Angular：Observables">
+<meta property="og:url" content="https://hyuain.github.io/hais-notebook/2020/03/25/Angular-Observables/index.html">
+<meta property="og:site_name" content="Hais Notebook">
+<meta property="og:description" content="提供了 publishers 和 subscribers 之间传递数据的方式 在 subscribe 的时候才会执行，而不是 define 的时候 可以传递多个任意类型的数据">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-03-25T11:29:15.000Z">
+<meta property="article:modified_time" content="2021-05-13T02:09:38.756Z">
+<meta property="article:author" content="Harvey Zhang">
+<meta property="article:tag" content="入门">
+<meta property="article:tag" content="文档">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://hyuain.github.io/hais-notebook/2020/03/25/Angular-Observables/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>Angular：Observables | Hais Notebook</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/hais-notebook/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hais Notebook</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/hais-notebook/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/hais-notebook/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/hais-notebook/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/hais-notebook/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2020/03/25/Angular-Observables/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
+      <meta itemprop="name" content="Harvey Zhang">
+      <meta itemprop="description" content="小海的笔记本">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hais Notebook">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Angular：Observables
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-25 11:29:15" itemprop="dateCreated datePublished" datetime="2020-03-25T11:29:15+00:00">2020-03-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-13 02:09:38" itemprop="dateModified" datetime="2021-05-13T02:09:38+00:00">2021-05-13</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hais-notebook/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index">
+                    <span itemprop="name">前端</span>
+                  </a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hais-notebook/categories/%E5%89%8D%E7%AB%AF/JavaScript/" itemprop="url" rel="index">
+                    <span itemprop="name">JavaScript</span>
+                  </a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hais-notebook/categories/%E5%89%8D%E7%AB%AF/JavaScript/Angular/" itemprop="url" rel="index">
+                    <span itemprop="name">Angular</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <ul>
+<li>提供了 publishers 和 subscribers 之间传递数据的方式</li>
+<li>在 subscribe 的时候才会执行，而不是 define 的时候</li>
+<li>可以传递多个任意类型的数据</li>
+</ul>
+<a id="more"></a>
+<h1 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h1><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建一个 Observable 实例，他定义了一个 subscriber 函数</span></span><br><span class="line"><span class="comment">// 这个函数在 subscribe() 的时候才会执行</span></span><br><span class="line"><span class="comment">// 这个函数定义了如何获取数据、生成 values 和 messages</span></span><br><span class="line"><span class="keyword">const</span> locations = <span class="keyword">new</span> Observable(<span class="function">(<span class="params">observer</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">let</span> watchId: <span class="built_in">number</span>;</span><br><span class="line">  <span class="keyword">if</span> (<span class="string">'geolocation'</span> <span class="keyword">in</span> navigator) &#123;</span><br><span class="line">    watchId = navigator.geolocation.watchPosition(<span class="function">(<span class="params">position: Position</span>) =&gt;</span> &#123;</span><br><span class="line">      observer.next(position);</span><br><span class="line">    &#125;, <span class="function">(<span class="params">error: PositionError</span>) =&gt;</span> &#123;</span><br><span class="line">      observer.error(error);</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    observer.error(<span class="string">'Geolocation not available'</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    unsubscribe() &#123;</span><br><span class="line">      navigator.geolocation.clearWatch(watchId);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 调用 subscribe() 方法之后</span></span><br><span class="line"><span class="comment">// 并传入一个定义了 handler（next、error、complete，其中 next 是必须的）的对象（observer）</span></span><br><span class="line"><span class="comment">// 返回一个 Subscription 对象，其中有一个 unsubscribe() 方法</span></span><br><span class="line"><span class="keyword">const</span> locationSubscription = locations.subscribe(&#123;</span><br><span class="line">  next(position) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'Current Position: '</span>, position);</span><br><span class="line">  &#125;,</span><br><span class="line">  error(message) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'Error Getting Location: '</span>, message);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  locationSubscription.unsubscribe();</span><br><span class="line">&#125;, <span class="number">10000</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="stream"><a href="#stream" class="headerlink" title="stream"></a>stream</h2><p>observable 可以表示任意数据类型，我们将 observable 发布（publish）出来的数据称为流（stream）</p>
+<h2 id="custom-fromEvent-function"><a href="#custom-fromEvent-function" class="headerlink" title="custom fromEvent function"></a>custom fromEvent function</h2><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fromEvent</span>(<span class="params">target, eventName</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> Observable(<span class="function">(<span class="params">observer</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> handler = <span class="function">(<span class="params">e</span>) =&gt;</span> observer.next(e);</span><br><span class="line">    target.addEventListener(eventName, handler);  </span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      target.removeEventListener(eventName, handler);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> ESC_KEY = <span class="number">27</span>;</span><br><span class="line"><span class="keyword">const</span> nameInput = <span class="built_in">document</span>.getElementById(<span class="string">'name'</span>) <span class="keyword">as</span> HTMLInputElement;</span><br><span class="line"><span class="keyword">const</span> subscription = fromEvent(nameInput, <span class="string">'keydown'</span>)</span><br><span class="line">  .subscribe(<span class="function">(<span class="params">e: KeyboardEvent</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (e.keyCode === ESC_KEY) &#123;</span><br><span class="line">      nameInput.value = <span class="string">''</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="Multicasting"><a href="#Multicasting" class="headerlink" title="Multicasting"></a>Multicasting</h2><p>通常一个 observable 会为每一个调用了 subscribe() 的 observer 创建一次新的、独立的执行。当 observer 调用 subscribe() 的时候，observable 会连接上一个 event handler 并将值传递给 observer。</p>
+<p>但是在有的时候，我们可能会想要每个 subscription 都拿到同样的值，这就叫 multicasting。下面是一个例子：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sequenceSubscriber</span>(<span class="params">observer</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> seq = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line">  <span class="keyword">let</span> timeoutId;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">doSequence</span>(<span class="params">arr, idx</span>) </span>&#123;</span><br><span class="line">    timeoutId = setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      observer.next(arr[idx]);</span><br><span class="line">      <span class="keyword">if</span> (idx === arr.length - <span class="number">1</span>) &#123;</span><br><span class="line">        observer.complete();</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        doSequence(arr, ++idx);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;, <span class="number">1000</span>);</span><br><span class="line">  &#125;</span><br><span class="line"> </span><br><span class="line">  doSequence(seq, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    unsubscribe() &#123;</span><br><span class="line">      clearTimeout(timeoutId);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> sequence = <span class="keyword">new</span> Observable(sequenceSubscriber);</span><br><span class="line"></span><br><span class="line">sequence.subscribe(&#123;</span><br><span class="line">  next(num) &#123; <span class="built_in">console</span>.log(<span class="string">'1st subscribe'</span> + num); &#125;,</span><br><span class="line">  complete() &#123; <span class="built_in">console</span>.log(<span class="string">'1st sequence finished.'</span>); &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 如果 subscribe 两次，那么就会产生两个不同的 stream</span></span><br><span class="line"></span><br><span class="line">setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  sequence.subscribe(&#123;</span><br><span class="line">    next(num) &#123; <span class="built_in">console</span>.log(<span class="string">'2nd subscribe'</span> + num); &#125;,</span><br><span class="line">    complete() &#123; <span class="built_in">console</span>.log(<span class="string">'2nd sequence finished.'</span>); &#125;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;, <span class="number">500</span>);</span><br></pre></td></tr></table></figure>
+<p>输出如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">(at 1 second): 1st subscribe: 1</span><br><span class="line">(at 1.5 seconds): 2nd subscribe: 1</span><br><span class="line">(at 2 seconds): 1st subscribe: 2</span><br><span class="line">(at 2.5 seconds): 2nd subscribe: 2</span><br><span class="line">(at 3 seconds): 1st subscribe: 3</span><br><span class="line">(at 3 seconds): 1st sequence finished</span><br><span class="line">(at 3.5 seconds): 2nd subscribe: 3</span><br><span class="line">(at 3.5 seconds): 2nd sequence finished</span><br></pre></td></tr></table></figure>
+<p>将其转换为 multicasting observer：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">multicastSequenceSubscriber</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> seq = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line">  <span class="keyword">const</span> observers = [];</span><br><span class="line">  <span class="comment">// 只会产生一组值，被广播给每个 subscriber，因此只有一个 timerId</span></span><br><span class="line">  <span class="keyword">let</span> timeoutId;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 返回 subscriber function，当执行 subscribe() 的之后被调用</span></span><br><span class="line">  <span class="keyword">return</span> <span class="function">(<span class="params">observer</span>) =&gt;</span> &#123;</span><br><span class="line">    observers.push(observer);</span><br><span class="line">    <span class="comment">// 如果是第一个 subscription，开始这个 sequence</span></span><br><span class="line">    <span class="keyword">if</span> (observers.length === <span class="number">1</span>) &#123;</span><br><span class="line">      timeoutId = doSequence(&#123;</span><br><span class="line">        next(val) &#123;</span><br><span class="line">          <span class="comment">// 遍历所有的 observers 并通知所有的 subscriptions</span></span><br><span class="line">          observers.forEach(<span class="function"><span class="params">obs</span> =&gt;</span> obs.next(val));</span><br><span class="line">        &#125;,</span><br><span class="line">        complete() &#123;</span><br><span class="line">          observers.slice(<span class="number">0</span>).forEach(<span class="function"><span class="params">obs</span> =&gt;</span> obs.complete());</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;, seq, <span class="number">0</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      unsubscribe() &#123;</span><br><span class="line">        observers.splice(observers.indexOf(observer), <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">if</span> (observers.length === <span class="number">0</span>) &#123;</span><br><span class="line">          clearTimeout(timeoutId);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">doSequence</span>(<span class="params">observer, arr, idx</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    observer.next(arr[idx]);</span><br><span class="line">    <span class="keyword">if</span> (idx === arr.length - <span class="number">1</span>) &#123;</span><br><span class="line">      observer.complete()</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      doSequence(observer, arr, ++idx)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;, <span class="number">1000</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> multicastSequence = <span class="keyword">new</span> Observable(multicastSequenceSubscriber());</span><br><span class="line"></span><br><span class="line">multicastSequence.subscribe(&#123;</span><br><span class="line">  next(num) &#123; <span class="built_in">console</span>.log(<span class="string">'1st subscribe: '</span> + num); &#125;,</span><br><span class="line">  complete() &#123; <span class="built_in">console</span>.log(<span class="string">'1st sequence finished.'</span>); &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 1.5s 后再次 subscribe，不会发送第一个值</span></span><br><span class="line">setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  multicastSequence.subscribe(&#123;</span><br><span class="line">    next(num) &#123; <span class="built_in">console</span>.log(<span class="string">'2nd subscribe: '</span> + num); &#125;,</span><br><span class="line">    complete() &#123; <span class="built_in">console</span>.log(<span class="string">'2nd sequence finished.'</span>); &#125;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;, <span class="number">1500</span>);</span><br></pre></td></tr></table></figure>
+<h1 id="RxJS"><a href="#RxJS" class="headerlink" title="RxJS"></a>RxJS</h1><p>RxJS ( Reactive Extensions for JavaScript ) 是一个响应式编程（一种考虑异步数据流和数据变化）库</p>
+<h2 id="Create-Observable"><a href="#Create-Observable" class="headerlink" title="Create Observable"></a>Create Observable</h2><p>RxJS 提供多种函数，可以通过多种方法从事件、Promise、计时器等创建 observable：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// from</span></span><br><span class="line"><span class="keyword">const</span> data = <span class="keyword">from</span>(fetch(<span class="string">'/api/endpoint'</span>));</span><br><span class="line">data.subscribe(&#123;</span><br><span class="line">  next(response) &#123; <span class="built_in">console</span>.log(response); &#125;,</span><br><span class="line">  error(err) &#123; <span class="built_in">console</span>.error(<span class="string">'Error: '</span> + err); &#125;,</span><br><span class="line">  complete() &#123; <span class="built_in">console</span>.log(<span class="string">'Completed'</span>); &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// interval</span></span><br><span class="line"><span class="keyword">const</span> secondsCounter = interval(<span class="number">1000</span>);</span><br><span class="line">secondsCounter.subscribe(<span class="function"><span class="params">n</span> =&gt;</span> <span class="built_in">console</span>.log(<span class="string">`It's been <span class="subst">$&#123;n&#125;</span> seconds since subscribing!`</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment">// fromEvent</span></span><br><span class="line"><span class="keyword">const</span> el = <span class="built_in">document</span>.getElementById(<span class="string">'my-element'</span>);</span><br><span class="line"><span class="keyword">const</span> mouseMoves = fromEvent(el, <span class="string">'mousemove'</span>);</span><br><span class="line"><span class="keyword">const</span> subscription = mouseMoves.subscribe(<span class="function">(<span class="params">event: MouseEvent</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">`Coords: <span class="subst">$&#123;event.clientX&#125;</span> X <span class="subst">$&#123;event.clientY&#125;</span>`</span>);</span><br><span class="line">  <span class="keyword">if</span> (event.clientX &lt; <span class="number">40</span> &amp;&amp; event.clientY &lt; <span class="number">40</span>) &#123;</span><br><span class="line">    subscription.unsubscribe();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// ajax</span></span><br><span class="line"><span class="keyword">import</span> &#123; ajax &#125; <span class="keyword">from</span> <span class="string">'rxjs/ajax'</span>;</span><br><span class="line"><span class="keyword">const</span> apiData = ajax(<span class="string">'/api/data'</span>);</span><br><span class="line">apiData.subscribe(<span class="function"><span class="params">res</span> =&gt;</span> <span class="built_in">console</span>.log(res.status, res.response));</span><br></pre></td></tr></table></figure>
+<h2 id="Operators"><a href="#Operators" class="headerlink" title="Operators"></a>Operators</h2><p>操作符执行操作，转换原来的 observable 值，并且返回一个包含转换后的值的 observable：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> nums = of(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> squareValues = map(<span class="function">(<span class="params">val: <span class="built_in">number</span></span>) =&gt;</span> val * val);</span><br><span class="line"><span class="keyword">const</span> squareNums = squareValues(nums);</span><br><span class="line"></span><br><span class="line">squareNums.subscribe(<span class="built_in">console</span>.log)</span><br></pre></td></tr></table></figure>
+<p>可以使用 <code>pipe</code> 将操作符连接在一起，我们将一组被应用在 observable 上的操作符称为一个 recipe，需要调用 <code>subscribe()</code> 来生成这个 recipe 操作之后的结果。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> nums = of(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> squareOddVals = pipe(</span><br><span class="line">  filter(<span class="function">(<span class="params">n: <span class="built_in">number</span></span>) =&gt;</span> n % <span class="number">2</span> !== <span class="number">0</span>),</span><br><span class="line">  map(<span class="function"><span class="params">n</span> =&gt;</span> n * n)</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> squareOdd = squareOddVals(nums);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 也可以这样写：</span></span><br><span class="line"><span class="comment">// const squareOdd = nums.pipe(</span></span><br><span class="line"><span class="comment">//   filter((n: number) =&gt; n % 2 !== 0),</span></span><br><span class="line"><span class="comment">//   map(n =&gt; n * n)</span></span><br><span class="line"><span class="comment">// );</span></span><br><span class="line"></span><br><span class="line">squareOdd.subscribe(<span class="built_in">console</span>.log)</span><br></pre></td></tr></table></figure>
+<h2 id="Error-Handling"><a href="#Error-Handling" class="headerlink" title="Error Handling"></a>Error Handling</h2><p>除了 subscription 中的 error handler 之外，还可以使用 <code>catchError</code> 操作符来处理错误，通过这个操作符可以提供一个备用的解决方案，并且不中断运行。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> apiData = ajax(<span class="string">'/api/data'</span>).pipe(</span><br><span class="line">  map(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (!res.response) &#123;</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'Value expected!'</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res.response;</span><br><span class="line">  &#125;),</span><br><span class="line">  catchError(<span class="function"><span class="params">err</span> =&gt;</span> of([]))</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">apiData.subscribe(&#123;</span><br><span class="line">  next(x) &#123; <span class="built_in">console</span>.log(<span class="string">'data: '</span>, x); &#125;,</span><br><span class="line">  error(err) &#123; <span class="built_in">console</span>.log(<span class="string">'errors already caught and this will not run'</span>); &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p><code>catchError</code> 可以让错误快速恢复，搭配 <code>retry</code> 还可以进行多次重试：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> apiData = ajax(<span class="string">'/api/data'</span>).pipe(</span><br><span class="line">  retry(<span class="number">3</span>),</span><br><span class="line">  map(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (!res.response) &#123;</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'Value expected!'</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res.response;</span><br><span class="line">  &#125;),</span><br><span class="line">  catchError(<span class="function"><span class="params">err</span> =&gt;</span> of([]))</span><br><span class="line">);</span><br><span class="line"><span class="string">``</span><span class="string">` </span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"># Angular 中的 Observables</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">## 组件间传值</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Angular 提供了 `</span>EventEmitter<span class="string">` API，通过 `</span><span class="meta">@Output</span>()<span class="string">` 就可以发布数据，`</span>EventEmitter<span class="string">` 就是基于 RxJS Subject 的。</span></span><br><span class="line"><span class="string">当 `</span>emit()<span class="string">` 的时候，他会将值传递给任意订阅了的 observer 的 `</span>next()<span class="string">` 方法。下面是一个例子：</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">`</span><span class="string">``</span>html</span><br><span class="line">&lt;!-- 在父组件监听自定义的 open 和 close 事件 --&gt;</span><br><span class="line">&lt;zippy (open)=<span class="string">"onOpen($event)"</span> (close)=<span class="string">"onClose($event)"</span>&gt;&lt;<span class="regexp">/zippy&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 在子组件 emit 这两个自定义事件，并传递值</span></span><br><span class="line"><span class="meta">@Component</span>(&#123;</span><br><span class="line">  selector: <span class="string">'zippy'</span>,</span><br><span class="line">  template: <span class="string">`</span></span><br><span class="line"><span class="string">  &lt;div class="zippy"&gt;</span></span><br><span class="line"><span class="string">    &lt;div (click)="toggle()"&gt;Toggle&lt;/div&gt;</span></span><br><span class="line"><span class="string">    &lt;div [hidden]="!visible"&gt;</span></span><br><span class="line"><span class="string">      &lt;ng-content&gt;&lt;/ng-content&gt;</span></span><br><span class="line"><span class="string">    &lt;/div&gt;</span></span><br><span class="line"><span class="string">  &lt;/div&gt;`</span>&#125;)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> ZippyComponent &#123;</span><br><span class="line">  visible = <span class="literal">true</span>;</span><br><span class="line">  <span class="meta">@Output</span>() open = <span class="keyword">new</span> EventEmmiter&lt;<span class="built_in">any</span>&gt;();</span><br><span class="line">  <span class="meta">@Output</span>() close = <span class="keyword">new</span> EventEmmiter&lt;<span class="built_in">any</span>&gt;();</span><br><span class="line"></span><br><span class="line">  toggle() &#123;</span><br><span class="line">    <span class="keyword">this</span>.visible = !<span class="keyword">this</span>.visible;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.visible) &#123;</span><br><span class="line">      <span class="keyword">this</span>.open.emit(<span class="literal">null</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">this</span>.close.emit(<span class="literal">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="HTTP"><a href="#HTTP" class="headerlink" title="HTTP"></a>HTTP</h2><p>Angular 的 <code>HttpClient</code> API 也将会返回 observables，这有一些优点：</p>
+<ul>
+<li>Observables 不会修改从服务端获取的数据</li>
+<li>可以通过 <code>unsubscribe()</code> 方法取消请求</li>
+<li>可以配制请求</li>
+</ul>
+<h2 id="Async-pipe"><a href="#Async-pipe" class="headerlink" title="Async pipe"></a>Async pipe</h2><p>AsyncPipe 会 subscribe 一个 observable 或 promise，并且返回他发出的最新值</p>
+<h2 id="Router"><a href="#Router" class="headerlink" title="Router"></a>Router</h2><p><code>Router.events</code> 也是以 observables 的形式提供事件的：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; Router, NavigationStart &#125; <span class="keyword">from</span> <span class="string">'@angular/router'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; filter &#125; <span class="keyword">from</span> <span class="string">'rxjs/operators'</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Component</span>(&#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> RoutableComponent <span class="keyword">implements</span> OnInit &#123;</span><br><span class="line">  navStart: Observable&lt;NavigationStart&gt;;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">constructor</span>(<span class="params"><span class="keyword">private</span> router: Router</span>) &#123;</span><br><span class="line">    <span class="keyword">this</span>.navStart = router.events.pipe(</span><br><span class="line">      filter(<span class="function"><span class="params">event</span> =&gt;</span> event <span class="keyword">instanceof</span> NavigationStart)</span><br><span class="line">    ) <span class="keyword">as</span> Observable&lt;NavigationStart&gt;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  ngOnInit() &#123;</span><br><span class="line">    <span class="keyword">this</span>.navStart.subscribe(<span class="function"><span class="params">event</span> =&gt;</span> <span class="built_in">console</span>.log(<span class="string">'Navigation Started!'</span>));</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="区分-Observables-和其他技术"><a href="#区分-Observables-和其他技术" class="headerlink" title="区分 Observables 和其他技术"></a>区分 Observables 和其他技术</h1><h2 id="Observables-和-Promises"><a href="#Observables-和-Promises" class="headerlink" title="Observables 和 Promises"></a>Observables 和 Promises</h2><ul>
+<li>Observables 是 declarative，当调用 <code>subscribe()</code> 的时候才会执行，而 Promise 在定义后会马上执行</li>
+<li>Observables 提供多个值，而 Promises 值提供一个值</li>
+<li>Observables 有链式调用和 subscribe()</li>
+</ul>
+<h3 id="创建与订阅"><a href="#创建与订阅" class="headerlink" title="创建与订阅"></a>创建与订阅</h3><ul>
+<li>Observables 在 consumer subscribe 的时候才会执行，并且每个 subscription 都拥有自己独立的计算</li>
+<li>Promises 在创建的时候执行，并且在创建的时候就已经开始计算结果了，每个 then 分享同样的结果，并且不能中断或者重启</li>
+</ul>
+<h3 id="链式调用"><a href="#链式调用" class="headerlink" title="链式调用"></a>链式调用</h3><ul>
+<li>Observables 将转换数据与最终获取（订阅）的过程分开了，只有订阅（subscription）才会让 subscriber 函数开始计算结果</li>
+<li>Promises 并不会区分中间与最后的 then</li>
+</ul>
+<h3 id="取消"><a href="#取消" class="headerlink" title="取消"></a>取消</h3><ul>
+<li>Observables 可以在 subscriber 函数中返回 unsubscribe 方法，并可使用 <code>subscription.unsubscribe()</code> 进行调用</li>
+<li>Promises 则无法取消</li>
+</ul>
+<h3 id="错误处理"><a href="#错误处理" class="headerlink" title="错误处理"></a>错误处理</h3><ul>
+<li>Observables 会将错误传递给 subscriber 的 error handler（在调用 <code>subscribe()</code> 的时候定义）</li>
+<li>Promises 将错误传递给子 Promises</li>
+</ul>
+<h2 id="Observables-与-EventHandlers"><a href="#Observables-与-EventHandlers" class="headerlink" title="Observables 与 EventHandlers"></a>Observables 与 EventHandlers</h2><ul>
+<li>都定义了通知处理方法（notification handlers），并且通过他们来随着时间变化的处理多个值</li>
+<li>subscribe 一个 observables 相当于添加一个事件监听，不同在于 observables 可以在传递给 handler 之前对数据进行转换和处理</li>
+<li>可以在比如 HTTP 请求之类的异步操作中使用 Observables 来处理事件，这样可以增加上下文的紧密度</li>
+</ul>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">   都需要定义 handlers</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">handler</span>(<span class="params">e</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'Clicked'</span>, e);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">   Events API</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="comment">// 创建并开始监听</span></span><br><span class="line">buttonEl.addEventListener(<span class="string">'click'</span>, handler);</span><br><span class="line"><span class="comment">// 取消监听</span></span><br><span class="line">buttonEl.removeEventListener(<span class="string">'click'</span>, handler);</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">   Observable</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="comment">// 创建</span></span><br><span class="line"><span class="keyword">const</span> clicks$ = fromEvent(buttonEl, <span class="string">'click'</span>);</span><br><span class="line"><span class="comment">// 开始监听</span></span><br><span class="line"><span class="keyword">const</span> subscription = clicks$.subscribe(handler)</span><br><span class="line"><span class="comment">// 取消监听</span></span><br><span class="line">subscription.unsubscribe()</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/hais-notebook/tags/%E5%85%A5%E9%97%A8/" rel="tag"># 入门</a>
+              <a href="/hais-notebook/tags/%E6%96%87%E6%A1%A3/" rel="tag"># 文档</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/hais-notebook/2020/03/25/Angular-HttpClient/" rel="prev" title="Angular：HttpClient">
+      <i class="fa fa-chevron-left"></i> Angular：HttpClient
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/hais-notebook/2021/02/13/Ruby-Intro/" rel="next" title="Ruby 基础">
+      Ruby 基础 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#基本使用"><span class="nav-number">1.</span> <span class="nav-text">基本使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#stream"><span class="nav-number">1.1.</span> <span class="nav-text">stream</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#custom-fromEvent-function"><span class="nav-number">1.2.</span> <span class="nav-text">custom fromEvent function</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Multicasting"><span class="nav-number">1.3.</span> <span class="nav-text">Multicasting</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#RxJS"><span class="nav-number">2.</span> <span class="nav-text">RxJS</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Create-Observable"><span class="nav-number">2.1.</span> <span class="nav-text">Create Observable</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Operators"><span class="nav-number">2.2.</span> <span class="nav-text">Operators</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Error-Handling"><span class="nav-number">2.3.</span> <span class="nav-text">Error Handling</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HTTP"><span class="nav-number">2.4.</span> <span class="nav-text">HTTP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Async-pipe"><span class="nav-number">2.5.</span> <span class="nav-text">Async pipe</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Router"><span class="nav-number">2.6.</span> <span class="nav-text">Router</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#区分-Observables-和其他技术"><span class="nav-number">3.</span> <span class="nav-text">区分 Observables 和其他技术</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Observables-和-Promises"><span class="nav-number">3.1.</span> <span class="nav-text">Observables 和 Promises</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建与订阅"><span class="nav-number">3.1.1.</span> <span class="nav-text">创建与订阅</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#链式调用"><span class="nav-number">3.1.2.</span> <span class="nav-text">链式调用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#取消"><span class="nav-number">3.1.3.</span> <span class="nav-text">取消</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#错误处理"><span class="nav-number">3.1.4.</span> <span class="nav-text">错误处理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Observables-与-EventHandlers"><span class="nav-number">3.2.</span> <span class="nav-text">Observables 与 EventHandlers</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Harvey Zhang</p>
+  <div class="site-description" itemprop="description">小海的笔记本</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/hais-notebook/archives/">
+        
+          <span class="site-state-item-count">81</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/hais-notebook/categories/">
+          
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/hais-notebook/tags/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Harvey Zhang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/hais-notebook/lib/anime.min.js"></script>
+  <script src="/hais-notebook/lib/velocity/velocity.min.js"></script>
+  <script src="/hais-notebook/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/hais-notebook/js/utils.js"></script>
+
+<script src="/hais-notebook/js/motion.js"></script>
+
+
+<script src="/hais-notebook/js/schemes/pisces.js"></script>
+
+
+<script src="/hais-notebook/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/hais-notebook/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
