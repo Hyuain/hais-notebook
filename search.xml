@@ -1,6 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>RxJS Overview</title>
+    <url>/hais-notebook/2021/05/13/Tools-RxJS-Overview/</url>
+    <content><![CDATA[<p>One Core Type: Observable.<br>Satellite Types: Observer, Schedulers, Subjects.<br>Operators: map, filter, reduce, every, etc.</p>
+<a id="more"></a>
+<h1 id="Observable"><a href="#Observable" class="headerlink" title="Observable"></a>Observable</h1><div class="table-container">
+<table>
+<thead>
+<tr>
+<th></th>
+<th>SINGLE</th>
+<th>MULTIPLE</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pull</td>
+<td>Function</td>
+<td>Iterator</td>
+</tr>
+<tr>
+<td>Push</td>
+<td>Promise</td>
+<td>Observable</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>一个例子：</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; Observable &#125; <span class="keyword">from</span> <span class="string">'rxjs'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> observable = <span class="keyword">new</span> Observable(<span class="function"><span class="params">subscriber</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// 注意：当 subscribed 的时候，Observable push 1, 2, 3 的过程是同步执行的！ </span></span><br><span class="line">  subscriber.next(<span class="number">1</span>);</span><br><span class="line">  subscriber.next(<span class="number">2</span>);</span><br><span class="line">  subscriber.next(<span class="number">3</span>);</span><br><span class="line">  setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    subscriber.next(<span class="number">4</span>);</span><br><span class="line">    subscriber.complete();</span><br><span class="line">  &#125;, <span class="number">1000</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'just before subscribe'</span>);</span><br><span class="line">observable.subscribe(&#123;</span><br><span class="line">  next(x) &#123; <span class="built_in">console</span>.log(<span class="string">'got value '</span> + x); &#125;,</span><br><span class="line">  error(err) &#123; <span class="built_in">console</span>.error(<span class="string">'something wrong occurred: '</span> + err); &#125;,</span><br><span class="line">  complete() &#123; <span class="built_in">console</span>.log(<span class="string">'done'</span>); &#125;</span><br><span class="line">&#125;);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'just after subscribe'</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">just before subscribe</span><br><span class="line">got value 1</span><br><span class="line">got value 2</span><br><span class="line">got value 3</span><br><span class="line">just after subscribe</span><br><span class="line">got value 4</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+<h2 id="Pull-和-Push"><a href="#Pull-和-Push" class="headerlink" title="Pull 和 Push"></a>Pull 和 Push</h2><p>在描述 <strong>数据生产者(Producer)</strong> 和 <strong>数据消费者(Consumer)</strong> 之间的沟通时，有 <strong>Pull</strong> 和 <strong>Push</strong> 两种不同的方案。</p>
+<h3 id="Pull"><a href="#Pull" class="headerlink" title="Pull"></a>Pull</h3><p>消费者决定了何时从生产者那里拿数据。</p>
+<p>比如每个 JS 函数就是一个 Pull System：函数是数据的生产者，调用函数的地方从函数那里 pull <strong>一个</strong> 返回值。<br>ES6 引入的 generator 函数和迭代器也是一种 Pull System：消费者调用 <code>iterator.next()</code>，从迭代器那里 pull <strong>多个</strong> 值。</p>
+<h3 id="Push"><a href="#Push" class="headerlink" title="Push"></a>Push</h3><p>生产者决定了何时发送数据给消费者。</p>
+<p>比如 Promise(生产者) 给 回调函数(消费者) 传输数据，Promise 掌控了 push 数据的时机。<br>Observable(生产者) 给 Observer(消费者) 传输数据。</p>
+<h2 id="Observable-与函数"><a href="#Observable-与函数" class="headerlink" title="Observable 与函数"></a>Observable 与函数</h2><blockquote class="blockquote-center"><ul>
+<li>function.call() 表示 <em>同步地给我一个值</em></li>
+<li>observable.subscribe() 表示 <em>同步或异步地给我一堆值</em></li>
+</ul>
+</blockquote>
+<h3 id="Observable-与函数的相同点"><a href="#Observable-与函数的相同点" class="headerlink" title="Observable 与函数的相同点"></a>Observable 与函数的相同点</h3><h4 id="懒执行"><a href="#懒执行" class="headerlink" title="懒执行"></a>懒执行</h4><p>如果不 call Function，那么函数就不会执行；<br>如果不 subscribe Observable，那么 Observable 中注册的回调函数也不会执行。</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'Hello'</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">42</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> x = foo.call();</span><br><span class="line"><span class="built_in">console</span>.log(x);</span><br><span class="line"><span class="keyword">const</span> y = foo.call();</span><br><span class="line"><span class="built_in">console</span>.log(y);</span><br></pre></td></tr></table></figure>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> foo = <span class="keyword">new</span> Observable(<span class="function"><span class="params">subscriber</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'Hello'</span>);</span><br><span class="line">  subscriber.next(<span class="number">42</span>);</span><br><span class="line">&#125;);</span><br><span class="line"> </span><br><span class="line">foo.subscribe(<span class="function"><span class="params">x</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(x);</span><br><span class="line">&#125;);</span><br><span class="line">foo.subscribe(<span class="function"><span class="params">y</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(y);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>运行上面两段代码的结果是一样的：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&quot;Hello&quot;</span><br><span class="line">42</span><br><span class="line">&quot;Hello&quot;</span><br><span class="line">42</span><br></pre></td></tr></table></figure>
+<h4 id="每个-subscribing-都是独立的"><a href="#每个-subscribing-都是独立的" class="headerlink" title="每个 subscribing 都是独立的"></a>每个 subscribing 都是独立的</h4><p>就像每次 Function calling 都是独立的一样，每次 Observable subscribing 也是独立的，他们之间的副作用互不干扰——这与 EventEmitter 不同。</p>
+<h4 id="Observable-可同步可异步"><a href="#Observable-可同步可异步" class="headerlink" title="Observable 可同步可异步"></a>Observable 可同步可异步</h4><p>Observable 并不是都是异步的，如果没有引入其他异步数据源，他其实是同步的，这跟 Function 也是类似的。</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">'before'</span>);</span><br><span class="line"><span class="built_in">console</span>.log(foo.call());</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'after'</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">'before'</span>);</span><br><span class="line">foo.subscribe(<span class="function"><span class="params">x</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(x);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'after'</span>);</span><br></pre></td></tr></table></figure>
+<p>以上两段代码运行的结果也是一样的：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&quot;before&quot;</span><br><span class="line">&quot;Hello&quot;</span><br><span class="line">42</span><br><span class="line">&quot;after&quot;</span><br></pre></td></tr></table></figure>
+<h3 id="Observable-与函数的不同点"><a href="#Observable-与函数的不同点" class="headerlink" title="Observable 与函数的不同点"></a>Observable 与函数的不同点</h3><h4 id="Observable-可以发出多个值"><a href="#Observable-可以发出多个值" class="headerlink" title="Observable 可以发出多个值"></a>Observable 可以发出多个值</h4><p>在函数中，我们不能这样写：</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'Hello'</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">42</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">100</span>; <span class="comment">// dead code. will never happen</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>但是在 Observable 却可以这样写：</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> foo = <span class="keyword">new</span> Observable(<span class="function"><span class="params">subscriber</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'Hello'</span>);</span><br><span class="line">  subscriber.next(<span class="number">42</span>);</span><br><span class="line">  subscriber.next(<span class="number">100</span>); <span class="comment">// "return" another value</span></span><br><span class="line">  subscriber.next(<span class="number">200</span>); <span class="comment">// "return" yet another</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'before'</span>);</span><br><span class="line">foo.subscribe(<span class="function"><span class="params">x</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(x);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'after'</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&quot;before&quot;</span><br><span class="line">&quot;Hello&quot;</span><br><span class="line">42</span><br><span class="line">100</span><br><span class="line">200</span><br><span class="line">&quot;after&quot;</span><br></pre></td></tr></table></figure>
+<h4 id="Observable-可以异步发出值"><a href="#Observable-可以异步发出值" class="headerlink" title="Observable 可以异步发出值"></a>Observable 可以异步发出值</h4><figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> foo = <span class="keyword">new</span> Observable(<span class="function"><span class="params">subscriber</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'Hello'</span>);</span><br><span class="line">  subscriber.next(<span class="number">42</span>);</span><br><span class="line">  subscriber.next(<span class="number">100</span>);</span><br><span class="line">  subscriber.next(<span class="number">200</span>);</span><br><span class="line">  setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    subscriber.next(<span class="number">300</span>); <span class="comment">// happens asynchronously</span></span><br><span class="line">  &#125;, <span class="number">1000</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'before'</span>);</span><br><span class="line">foo.subscribe(<span class="function"><span class="params">x</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(x);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'after'</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&quot;before&quot;</span><br><span class="line">&quot;Hello&quot;</span><br><span class="line">42</span><br><span class="line">100</span><br><span class="line">200</span><br><span class="line">&quot;after&quot;</span><br><span class="line">300</span><br></pre></td></tr></table></figure>
+<h2 id="Creating-Observable"><a href="#Creating-Observable" class="headerlink" title="Creating Observable"></a>Creating Observable</h2><p>Observable 构造函数只需要一个参数：subscribe 函数</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 创建一个 Observable，他会给一个 subscriber 每秒钟都发出 "hi"</span></span><br><span class="line"><span class="keyword">const</span> observable = <span class="keyword">new</span> Observable(<span class="function"><span class="keyword">function</span> <span class="title">subscribe</span>(<span class="params">subscriber</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> id = setInterval(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    subscriber.next(<span class="string">'hi'</span>)</span><br><span class="line">  &#125;, <span class="number">1000</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="Subscribing-Observable"><a href="#Subscribing-Observable" class="headerlink" title="Subscribing Observable"></a>Subscribing Observable</h2><figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line">observable.subscribe(<span class="function"><span class="params">x</span> =&gt;</span> <span class="built_in">console</span>.log(x));</span><br></pre></td></tr></table></figure>
+<p>当调用 <code>observable.subscribe</code> 的时候，subscribe 函数会用给定的 subscriber 运行，并且每次调用都是独立的。<br>与 <code>addEventListener</code> 这种 API 不一样，Observer 并没有注册为一个 listener，Observable 里面也没有维护 Observer 的列表。</p>
+<h2 id="Executing-Observable"><a href="#Executing-Observable" class="headerlink" title="Executing Observable"></a>Executing Observable</h2><p>在 <code>new Observable(function subscribe(subscriber) {...})</code> 中的代码表示一个 Observable execution，这个 execution 会随着时间通过 Next 发出多个值。但当发出 Error 或者 Complete 之后，就不会再发出值了。</p>
+<h2 id="Disposing-Observable-Executions"><a href="#Disposing-Observable-Executions" class="headerlink" title="Disposing Observable Executions"></a>Disposing Observable Executions</h2><p>当调用 <code>observable.subscribe</code> 之后，Observer 会跟一个新创建的 Observable execution 绑定。并且返回一个 <code>Subscription</code>：</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> subscription = observable.subscribe(<span class="function"><span class="params">x</span> =&gt;</span> <span class="built_in">console</span>.log(x));</span><br></pre></td></tr></table></figure>
+<p>Subscription 就代表了正在执行的 execution。</p>
+<ul>
+<li>可以通过 <code>subscription.unsubscribe()</code> 来取消正在执行的 execution。</li>
+<li>Complete 或 Error 也会取消 execution。</li>
+</ul>
+<p>我们有时候需要自定义一个 <code>unsubscribe</code> 函数来在取消 execution 的时候释放资源。</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> observable = <span class="keyword">new</span> Observable(<span class="function"><span class="keyword">function</span> <span class="title">subscribe</span>(<span class="params">subscriber</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> intervalId = setInterval(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    subscriber.next(<span class="string">'hi'</span>);</span><br><span class="line">  &#125;, <span class="number">1000</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 这个函数会在 unsubscribe 的时候执行，清除掉 interval</span></span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> <span class="title">unsubscribe</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    clearInterval(intervalId);</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>工具</category>
+        <category>RxJS</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>读书笔记：《程序是怎么跑起来的》</title>
     <url>/hais-notebook/2021/05/13/Book-HowProgramWorks/</url>
     <content><![CDATA[<p>将之前的读书笔记腾挪至此。</p>
@@ -4025,6 +4107,79 @@ A_{n}^{m} = \frac{n!}{(n-m)!}</script><p>n 个元素中，r 个相同排成一�
       </tags>
   </entry>
   <entry>
+    <title>React Props &amp; State</title>
+    <url>/hais-notebook/2020/02/02/React-PropsState/</url>
+    <content><![CDATA[<p>主要记录了 React 的 Props 和 State。</p>
+<a id="more"></a>
+<h1 id="Props"><a href="#Props" class="headerlink" title="Props"></a>Props</h1><p>可以查看<a href="https://codesandbox.io/s/billowing-wind-d8kzw" target="_blank" rel="noopener">CodeSandbox 上的这个例子</a></p>
+<h1 id="State"><a href="#State" class="headerlink" title="State"></a>State</h1><p>可以查看<a href="https://codesandbox.io/s/silly-diffie-9yk38" target="_blank" rel="noopener">CodeSandbox 上的这个例子</a></p>
+<h2 id="setState-的注意事项"><a href="#setState-的注意事项" class="headerlink" title="setState 的注意事项"></a>setState 的注意事项</h2><ul>
+<li><code>this.state.n += 1</code> 无效，UI 不会自动更新，需要用 <code>setState</code></li>
+<li><code>setState</code> 不会马上改变 <code>state</code>，是异步更新的，推荐使用 <code>setState(函数)</code></li>
+<li>不推荐 <code>this.setState(this.state)</code>，因为 React 不推荐我们修改旧的 <code>state</code>（不可变数据）</li>
+</ul>
+<h2 id="复杂-state"><a href="#复杂-state" class="headerlink" title="复杂 state"></a>复杂 state</h2><ul>
+<li>类组件的 <code>setState</code> 会自动合并第一层，建议使用 <code>Object.assign</code> 或者 <code>...sate</code></li>
+<li>函数组件不会自动合并，建议分开写</li>
+</ul>
+<h1 id="Vue-和-React-的区别"><a href="#Vue-和-React-的区别" class="headerlink" title="Vue 和 React 的区别"></a>Vue 和 React 的区别</h1><p>共同点：</p>
+<ul>
+<li>都是对视图的封装，React 是用类和函数表示一个组件，Vue 是用构造选项表示一个组件</li>
+<li>都提供了 <code>creatElement</code> 的 XML 简写，React 是 JSX，Vue 是 template</li>
+</ul>
+<p>不同点：</p>
+<ol>
+<li>监听数据变化的实现原理不同<ul>
+<li>Vue 通过 getter/setter 和代理等方式进行劫持，能够精确知道数据的变化，不需要特别的优化</li>
+<li>React 默认是通过比较引用的方式来进行的，可能会造成不必要的 vDOM 重新渲染，需要用诸如 PureComponent/shouldComponentUpdate 等方式来进行优化</li>
+</ul>
+</li>
+<li>数据流不同<ul>
+<li>Vue 在 1.0 的时候 <strong>父子组件</strong> props 可以双向绑定，还有 v-model 可以实现 <strong>组件与 DOM</strong> 双向绑定</li>
+<li>Vue 2 的时候 <strong>父子组件</strong> 不能双向绑定了（虽然仍然提供了 .sync 语法糖），并且还有 v-model</li>
+<li>React 中是单向数据流，并且组件与 DOM 之间也需要使用 onChange/setState。</li>
+</ul>
+</li>
+<li>HoC 和 mixins<ul>
+<li>Vue 中使用不同功能的组合是通过 mixins 实现的</li>
+<li>React 中则使用 HoC</li>
+</ul>
+</li>
+<li>组件间的通信<ul>
+<li>都有 props，也都可以跨层级通信，比如 Vue 的 provide/inject、React 的 context</li>
+<li>React 本身不支持自定义事件，因此 Vue 里面一般使用事件，React 中一般使用父组件传来的回调函数</li>
+</ul>
+</li>
+<li>更新视图<ul>
+<li>Vue 中一个对象，对应一个虚拟 DOM，当对象的属性改变时，把属性相关的 DOM 节点全部更新</li>
+<li>React 一个对象，对应一个虚拟 DOM，另一个对象对应另一个虚拟 DOM，对比两个更新，用 DOM Diff 算法找不同，然后局部更新 DOM</li>
+</ul>
+</li>
+<li>写法不同<ul>
+<li>Vue 是 JS in HTML</li>
+<li>React 是 HTML in JS</li>
+</ul>
+</li>
+<li>Vuex 和 Redux 的区别<ul>
+<li>Vue 中的 $store 直接注入到了组件实例中，可以直接用 dispatch、commit、mapState、this.$store 等；React 中需要用 connect 把 props 和 dispatch、state 连接起来</li>
+<li>Vue 中可以用 dispatch action、commit mutation；React 中只能使用 dispatch，不能直接操作 reduce</li>
+<li>Redux 中的使用的是不可变数据，每次都要用新的 State 替换旧的，而 Vue 中是直接修改的</li>
+</ul>
+</li>
+</ol>
+]]></content>
+      <categories>
+        <category>前端</category>
+        <category>JavaScript</category>
+        <category>框架</category>
+        <category>React</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>文档</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>React Advanced</title>
     <url>/hais-notebook/2020/02/02/React-Advanced/</url>
     <content><![CDATA[<p>主要抄了一下 React 文档。</p>
@@ -4158,79 +4313,6 @@ A_{n}^{m} = \frac{n!}{(n-m)!}</script><p>n 个元素中，r 个相同排成一�
 <p>类似的功能也可以通过在 <code>&lt;Mouse&gt;</code> 中使用 <code>props.children</code>，然后直接使用类似于这样的写法：</p>
 <figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line">&lt;Mouse&gt;</span><br><span class="line">  &#123;mouse =&gt; (</span><br><span class="line">    &lt;Cat mouse=&#123;mouse&#125;/&gt;</span><br><span class="line">  )&#125;</span><br><span class="line">&lt;<span class="regexp">/Mouse&gt;</span></span><br></pre></td></tr></table></figure>
 <p>需要注意的是，使用 render prop 会导致 <code>React.PureComponent</code> 失效，因为外层组件更新的时候，render prop 的函数总是新的，除非你把它写成一个实例方法</p>
-]]></content>
-      <categories>
-        <category>前端</category>
-        <category>JavaScript</category>
-        <category>框架</category>
-        <category>React</category>
-      </categories>
-      <tags>
-        <tag>入门</tag>
-        <tag>文档</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>React Props &amp; State</title>
-    <url>/hais-notebook/2020/02/02/React-PropsState/</url>
-    <content><![CDATA[<p>主要记录了 React 的 Props 和 State。</p>
-<a id="more"></a>
-<h1 id="Props"><a href="#Props" class="headerlink" title="Props"></a>Props</h1><p>可以查看<a href="https://codesandbox.io/s/billowing-wind-d8kzw" target="_blank" rel="noopener">CodeSandbox 上的这个例子</a></p>
-<h1 id="State"><a href="#State" class="headerlink" title="State"></a>State</h1><p>可以查看<a href="https://codesandbox.io/s/silly-diffie-9yk38" target="_blank" rel="noopener">CodeSandbox 上的这个例子</a></p>
-<h2 id="setState-的注意事项"><a href="#setState-的注意事项" class="headerlink" title="setState 的注意事项"></a>setState 的注意事项</h2><ul>
-<li><code>this.state.n += 1</code> 无效，UI 不会自动更新，需要用 <code>setState</code></li>
-<li><code>setState</code> 不会马上改变 <code>state</code>，是异步更新的，推荐使用 <code>setState(函数)</code></li>
-<li>不推荐 <code>this.setState(this.state)</code>，因为 React 不推荐我们修改旧的 <code>state</code>（不可变数据）</li>
-</ul>
-<h2 id="复杂-state"><a href="#复杂-state" class="headerlink" title="复杂 state"></a>复杂 state</h2><ul>
-<li>类组件的 <code>setState</code> 会自动合并第一层，建议使用 <code>Object.assign</code> 或者 <code>...sate</code></li>
-<li>函数组件不会自动合并，建议分开写</li>
-</ul>
-<h1 id="Vue-和-React-的区别"><a href="#Vue-和-React-的区别" class="headerlink" title="Vue 和 React 的区别"></a>Vue 和 React 的区别</h1><p>共同点：</p>
-<ul>
-<li>都是对视图的封装，React 是用类和函数表示一个组件，Vue 是用构造选项表示一个组件</li>
-<li>都提供了 <code>creatElement</code> 的 XML 简写，React 是 JSX，Vue 是 template</li>
-</ul>
-<p>不同点：</p>
-<ol>
-<li>监听数据变化的实现原理不同<ul>
-<li>Vue 通过 getter/setter 和代理等方式进行劫持，能够精确知道数据的变化，不需要特别的优化</li>
-<li>React 默认是通过比较引用的方式来进行的，可能会造成不必要的 vDOM 重新渲染，需要用诸如 PureComponent/shouldComponentUpdate 等方式来进行优化</li>
-</ul>
-</li>
-<li>数据流不同<ul>
-<li>Vue 在 1.0 的时候 <strong>父子组件</strong> props 可以双向绑定，还有 v-model 可以实现 <strong>组件与 DOM</strong> 双向绑定</li>
-<li>Vue 2 的时候 <strong>父子组件</strong> 不能双向绑定了（虽然仍然提供了 .sync 语法糖），并且还有 v-model</li>
-<li>React 中是单向数据流，并且组件与 DOM 之间也需要使用 onChange/setState。</li>
-</ul>
-</li>
-<li>HoC 和 mixins<ul>
-<li>Vue 中使用不同功能的组合是通过 mixins 实现的</li>
-<li>React 中则使用 HoC</li>
-</ul>
-</li>
-<li>组件间的通信<ul>
-<li>都有 props，也都可以跨层级通信，比如 Vue 的 provide/inject、React 的 context</li>
-<li>React 本身不支持自定义事件，因此 Vue 里面一般使用事件，React 中一般使用父组件传来的回调函数</li>
-</ul>
-</li>
-<li>更新视图<ul>
-<li>Vue 中一个对象，对应一个虚拟 DOM，当对象的属性改变时，把属性相关的 DOM 节点全部更新</li>
-<li>React 一个对象，对应一个虚拟 DOM，另一个对象对应另一个虚拟 DOM，对比两个更新，用 DOM Diff 算法找不同，然后局部更新 DOM</li>
-</ul>
-</li>
-<li>写法不同<ul>
-<li>Vue 是 JS in HTML</li>
-<li>React 是 HTML in JS</li>
-</ul>
-</li>
-<li>Vuex 和 Redux 的区别<ul>
-<li>Vue 中的 $store 直接注入到了组件实例中，可以直接用 dispatch、commit、mapState、this.$store 等；React 中需要用 connect 把 props 和 dispatch、state 连接起来</li>
-<li>Vue 中可以用 dispatch action、commit mutation；React 中只能使用 dispatch，不能直接操作 reduce</li>
-<li>Redux 中的使用的是不可变数据，每次都要用新的 State 替换旧的，而 Vue 中是直接修改的</li>
-</ul>
-</li>
-</ol>
 ]]></content>
       <categories>
         <category>前端</category>
