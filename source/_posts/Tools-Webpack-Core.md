@@ -197,3 +197,196 @@ function execute(key) {
   return modules[key] // 其实就是 module.exports
 }
 ```
+
+## 一个简易的打包器
+
+copy 过来的代码，仅供自己学习使用。
+
+```typescript
+// 请确保你的 Node 版本大于等于 14
+// 请先运行 yarn 或 npm i 来安装依赖
+// 然后使用 node -r ts-node/register 文件路径 来运行，
+// 如果需要调试，可以加一个选项 --inspect-brk，再打开 Chrome 开发者工具，点击 Node 图标即可调试
+import { parse } from "@babel/parser"
+import traverse from "@babel/traverse"
+import { writeFileSync, readFileSync } from 'fs'
+import { resolve, relative, dirname } from 'path';
+import * as babel from '@babel/core'
+
+// 设置根目录
+const projectRoot = resolve(__dirname, 'project_1')
+// 类型声明
+type DepRelation = { key: string, deps: string[], code: string }[]
+// 初始化一个空的 depRelation，用于收集依赖
+const depRelation: DepRelation = [] // 数组！
+
+// 将入口文件的绝对路径传入函数，如 D:\demo\fixture_1\index.js
+collectCodeAndDeps(resolve(projectRoot, 'index.js'))
+
+writeFileSync('dist_3.js', generateCode())
+console.log('done')
+
+function generateCode() {
+  let code = ''
+  code += 'var depRelation = [' + depRelation.map(item => {
+    const { key, deps, code } = item
+    return `{
+      key: ${JSON.stringify(key)}, 
+      deps: ${JSON.stringify(deps)},
+      code: function(require, module, exports){
+        ${code}
+      }
+    }`
+  }).join(',') + '];\n'
+  code += 'var modules = {};\n'
+  code += `execute(depRelation[0].key)\n`
+  code += `
+  function execute(key) {
+    if (modules[key]) { return modules[key] }
+    var item = depRelation.find(i => i.key === key)
+    if (!item) { throw new Error(\`\${item} is not found\`) }
+    var pathToKey = (path) => {
+      var dirname = key.substring(0, key.lastIndexOf('/') + 1)
+      var projectPath = (dirname + path).replace(\/\\.\\\/\/g, '').replace(\/\\\/\\\/\/, '/')
+      return projectPath
+    }
+    var require = (path) => {
+      return execute(pathToKey(path))
+    }
+    modules[key] = { __esModule: true }
+    var module = { exports: modules[key] }
+    item.code(require, module, module.exports)
+    return modules[key]
+  }
+  `
+  return code
+}
+
+function collectCodeAndDeps(filepath: string) {
+  const key = getProjectPath(filepath) // 文件的项目路径，如 index.js
+  if (depRelation.find(i => i.key === key)) {
+    // 注意，重复依赖不一定是循环依赖
+    return
+  }
+  // 获取文件内容，将内容放至 depRelation
+  const code = readFileSync(filepath).toString()
+  const { code: es5Code } = babel.transform(code, {
+    presets: ['@babel/preset-env']
+  })
+  // 初始化 depRelation[key]
+  const item = { key, deps: [], code: es5Code }
+  depRelation.push(item)
+  // 将代码转为 AST
+  const ast = parse(code, { sourceType: 'module' })
+  // 分析文件依赖，将内容放至 depRelation
+  traverse(ast, {
+    enter: path => {
+      if (path.node.type === 'ImportDeclaration') {
+        // path.node.source.value 往往是一个相对路径，如 ./a.js，需要先把它转为一个绝对路径
+        const depAbsolutePath = resolve(dirname(filepath), path.node.source.value)
+        // 然后转为项目路径
+        const depProjectPath = getProjectPath(depAbsolutePath)
+        // 把依赖写进 depRelation
+        item.deps.push(depProjectPath)
+        collectCodeAndDeps(depAbsolutePath)
+      }
+    }
+  })
+}
+// 获取文件相对于根目录的相对路径
+function getProjectPath(path: string) {
+  return relative(projectRoot, path).replace(/\\/g, '/')
+}
+```
+
+# Webpack Loader 原理
+
+## 加载 CSS
+
+思路：
+1. 我们的打包器只能加载 JS
+2. 我们想要加载 CSS
+3. 如果能把 CSS 变成 JS，就能加载 CSS 了
+
+在获取文件内容的时候，可以通过文件路径来判断是否是 css 文件，并稍作处理加载进 JS 中：
+
+```typescript
+let code = readFileSync(filePath).toString()
+if (/\.css$/.test(filePath)) {
+  code = `
+    const str = ${JSON.stringify(code)}
+    if (document) {
+      const style = document.createElment('style')
+      style.innerHTML = str
+      document.head.appendChild(style)
+    }
+    export default str
+  `
+}
+```
+
+## CSS Loader
+
+可以将上述代码变为 loader 的形式
+
+```typescript
+// css-loader.ts
+const transform = (code) => `
+    const str = ${JSON.stringify(code)}
+    if (document) {
+      const style = document.createElment('style')
+      style.innerHTML = str
+      document.head.appendChild(style)
+    }
+    export default str
+  `
+export default transform
+```
+
+```typescript
+// bundler.ts
+let code = readFileSync(filePath).toString()
+if (/\.css$/.test(filePath)) {
+  code = require('css-loader')(code)
+}
+```
+
+## 尝试对 CSS Loader 进行优化
+
+{% cq %}
+单一职责原则：每个 Loader 只做一件事情
+{% endcq %}
+
+我们的 Loader 做了两件事情，第一是将 CSS 变为 JS 字符串，第二是将 JS 字符串放到了 style 标签里面，现在要对其进行拆分。
+
+```typescript
+// css-loader.ts
+const transform = (code) => `
+    const str = ${JSON.stringify(code)}
+    export default str
+  `
+export default transform
+```
+```typescript
+// style-loader.ts
+const transform = (code) => `
+    if (document) {
+      const style = document.createElment('style')
+      style.innerHTML = ${JSON.stringify(code)}
+      document.head.appendChild(style)
+    }
+  `
+export default transform
+```
+```typescript
+// bunlder.ts
+let code = readFileSync(filePath).toString()
+if (/\.css$/.test(filePath)) {
+  code = require('css-loader')(code)
+  code = require('style-loader')(code)
+}
+```
+
+上述代码是有问题的。最终得到的文件将不是我们想要的文件。
+
+Loader 有不同的类型，像 sass-loader、less-loader 是将代码从一种语言转译为另外一种，这样的 loader 可以直接连接起来。但 style-loader 是插入代码而不是转译，所以需要寻找恰当的插入时机和位置——比如 css-loader 拿到结果之后。
