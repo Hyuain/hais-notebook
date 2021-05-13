@@ -3,8 +3,8 @@ title: 翻译：RxJS 中的错误处理
 date: 2021-03-03 22:47:21
 tags:
 - 入门
-  categories:
-- [工具, Webpack]
+categories:
+- [工具, RxJS]
 ---
 
 本文是 [RxJS Error Handling](https://blog.angular-university.io/rxjs-error-handling/) 的翻译。
