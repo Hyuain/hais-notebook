@@ -4,10 +4,11 @@ date: 2021-03-03 22:47:21
 tags:
   - 入门
 categories:
-  - [前端, 浏览器]
+  - [工具, Webpack]
 ---
 
-Webpack 的核心原理及一些前置知识。
+我们可以通过 Babel 提供的 Parser、Traverse、Generator 转换代码、分析依赖。
+Webpack 的核心就是通过 Babel 将 ESModule 的语法转变为 CommonJS，使得浏览器支持，并将所有的文件打包成一个 js。
 
 <!-- more -->
 
@@ -32,7 +33,7 @@ import traverse from "@babel/traverse"
 import generate from "@babel/generator"
 
 const code = `let a = "let"; let b = 2`
-const ast = parse(code, { sourceType: 'module' })
+const ast = parse(code, { sourceType: "module" })
 traverse(ast, {
   // 进入时执行的钩子
   enter: item => {
@@ -88,7 +89,7 @@ traverse(ast, {
 
 根据 [MDN 上的描述](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Statements/import)，在浏览器中，import 语句只能在声明了 type="module" 的 script 的标签中使用。并且 IE 是不支持这个特性的。
 
-- 兼容策略 1：把代码全部放在 `<script type=module>` 中，这样会导致 IE 不兼容，并且会导致文件请求过多，因为每个被依赖的文件都需要被单独发出请求
+- 兼容策略 1：把代码全部放在 `<script type="module">` 中，这样会导致 IE 不兼容，并且会导致文件请求过多，因为每个被依赖的文件都需要被单独发出请求
 - 兼容策略 2：把关键字转译为普通的代码，并且把所有的文件打包成一个文件
 
 ## @babel/core 帮助我们转义 import 和 export
@@ -136,3 +137,63 @@ exports["default"] = _default;
 ```
 
 ## 将所有文件打包成一个文件
+
+> 这个文件**包含**了所有的模块，并且能**执行**所有的模块
+
+思路：
+
+```javascript
+// 最终文件应该长这个样子
+var depRelation = [
+  { key: "index.js", deps: ["a.js", "b.js"], code: function(){ } },
+  { key: "a.js", deps: ["c.js"], code: function(){ } },
+  { key: "b.js", deps: ["d.js"], code: function(){ } },
+] // 这样一个 depRelation 数组存放了依赖关系，他的第一项就是入口文件
+// 通过 execute 执行第一个文件，这样就会自动执行依赖中的其他文件
+excute(depRelation[0].key)
+function execute(key) {
+  var item = depRelation.find(i => i.key === key)
+  item.code() // 我们要执行依赖中的代码，因此上面的 code 最好是一个函数
+}
+```
+
+### 问题一：如何收集依赖？
+
+这个问题在上面已经讨论过了，可以借助 AST 来分析依赖
+
+### 问题二：如何将文件中的 code 变为一个函数方便我们执行？
+
+我们可以这样将文件里面的 code 变为函数：
+
+```javascript
+code = `
+  var b = require("./b.js")
+  exports.default = "a"
+`
+// require、module、exports 是 commonJS 2 规范所定
+code2 = `function(require, module, exports) {
+  ${code}
+}`
+// 这样做最后写到文件中之后就是函数了
+```
+
+### 问题三：execute 函数应该怎么写？
+
+下面是基本实现思路：
+
+```javascript
+const modules = {} // modules 用于缓存所有模块
+function execute(key) {
+  if (modules[key]) { return modules[key] }
+  var item = depRelation.find(i => i.key === key)
+  // require 其实就是 excute，区别在于 require 后面接的是一个路径，我们需要把它转成 key
+  var require = (path) => {
+    return execute(pathToKey(path))
+  }
+  modules[key] = { __esModule: true }
+  var module = { exports: modules[key] }
+  // 为了这个 item.code 在执行完成之后把自己的导出挂在 module.exports 上
+  item.code(require, module, module.exports)
+  return modules[key] // 其实就是 module.exports
+}
+```
