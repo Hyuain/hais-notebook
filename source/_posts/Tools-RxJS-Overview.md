@@ -407,3 +407,74 @@ setTimeout(() => {
 // subscribe2 1
 // after
 ```
+
+## ReplaySubject
+
+他跟 `BehaviorSubject` 很像，不同的是 `BehaviourSubject` 只会保存最后一个值，而 `ReplaySubject` 会保存很多个值。
+
+```typescript
+const subject = new ReplaySubject(3, 500); // 会缓存 3 个最新的值，最久保存 500ms
+ 
+subject.subscribe({
+  next: (v) => console.log(`observerA: ${v}`)
+});
+ 
+subject.next(1);
+subject.next(2);
+subject.next(3);
+subject.next(4);
+ 
+subject.subscribe({
+  next: (v) => console.log(`observerB: ${v}`)
+});
+ 
+subject.next(5);
+ 
+// Logs:
+// observerA: 1
+// observerA: 2
+// observerA: 3
+// observerA: 4
+// observerB: 2
+// observerB: 3
+// observerB: 4
+// observerA: 5
+// observerB: 5
+```
+
+## AsyncSubject
+
+当 Observable execution complete 的时候才会发出值，并且只会发出最后一个值——这跟 `last()` 操作符差不多。
+
+```typescript
+const subject = new AsyncSubject();
+
+subject.subscribe({
+  next: (v) => console.log(`observerA: ${v}`)
+});
+
+subject.next(1);
+subject.next(2);
+subject.next(3);
+subject.next(4);
+
+subject.subscribe({
+  next: (v) => console.log(`observerB: ${v}`)
+});
+
+subject.next(5);
+subject.complete();
+
+// Logs:
+// observerA: 5
+// observerB: 5
+```
+
+## Void Subject
+
+简单来说，Subject 可以发出空值：
+
+```typescript
+const subject = new Subject<void>();
+setTimeout(() => subject.next(), 1000);
+```
