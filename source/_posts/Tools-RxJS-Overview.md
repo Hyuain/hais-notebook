@@ -76,8 +76,8 @@ Observable(生产者) 给 Observer(消费者) 传输数据。
 ## Observable 与函数
 
 {% cq %}
-- function.call() 表示 *同步地给我一个值*
-- observable.subscribe() 表示 *同步或异步地给我一堆值*
+function.call() 表示 *同步地给我一个值*
+observable.subscribe() 表示 *同步或异步地给我一堆值*
 {% endcq %}
 
 ### Observable 与函数的相同点
@@ -219,7 +219,7 @@ console.log('after');
 300
 ```
 
-## Creating Observable
+## 创建 Observable：Creating
 
 Observable 构造函数只需要一个参数：subscribe 函数
 
@@ -232,7 +232,7 @@ const observable = new Observable(function subscribe(subscriber) {
 });
 ```
 
-## Subscribing Observable
+## 订阅 Observable：Subscribing
 
 ```typescript
 observable.subscribe(x => console.log(x));
@@ -241,11 +241,18 @@ observable.subscribe(x => console.log(x));
 当调用 `observable.subscribe` 的时候，subscribe 函数会用给定的 subscriber 运行，并且每次调用都是独立的。
 与 `addEventListener` 这种 API 不一样，Observer 并没有注册为一个 listener，Observable 里面也没有维护 Observer 的列表。
 
-## Executing Observable
+## 执行 Observable：Executing
 
-在 `new Observable(function subscribe(subscriber) {...})` 中的代码表示一个 Observable execution，这个 execution 会随着时间通过 Next 发出多个值。但当发出 Error 或者 Complete 之后，就不会再发出值了。
+在 `new Observable(function subscribe(subscriber) {...})` 中的代码表示一个 Observable execution。
 
-## Disposing Observable Executions
+Observable Execution 可以发出三种类型的值：
+- "Next" 通知：会伴随一个 Number、String、Object 等类型的值
+- "Error" 通知：会伴随一个 JS Error 或者异常
+- "Complete" 通知：不会伴随任何值
+
+通常来说，Execution 会随着时间通过 Next 通知发出多个值。但当发出 Error 或者 Complete 通知之后，就不会再发出值了。
+
+## 释放 Executions：Disposing Executions
 
 当调用 `observable.subscribe` 之后，Observer 会跟一个新创建的 Observable execution 绑定。并且返回一个 `Subscription`：
 
@@ -270,4 +277,133 @@ const observable = new Observable(function subscribe(subscriber) {
     clearInterval(intervalId);
   };
 });
+```
+
+# Observer
+
+Observer 是 Observable 发出数据的消费者，其实就是一个对象，对象包含了三个分别用于处理 Observable 三种通知类型的回调函数。
+
+```typescript
+const observer = {
+  next: x => console.log('Observer got a next value: ' + x),
+  error: err => console.error('Observer got an error: ' + err),
+  complete: () => console.log('Observer got a complete notification'),
+};
+
+observable.subscribe(observer)
+
+// 当然也可以直接将回调函数作为参数传进去，他会自动帮我们创建 Observer 对象
+observable.subscribe(() => console.log('Observer got a next value: ' + x))
+```
+
+# Operators
+
+Operator 就是函数。有两种类型的 Operator：
+- Pipeable Operator：不会改变原来的 Observable 实例，他接受一个 Observable 作为参数，然后再返回一个 Observable
+- Creation Operator：会创建一个新的 Observable
+
+## 高阶 Observable
+
+可以这样构造一个高阶 Observable，用 map 返回一个 Observable：
+
+```typescript
+const clicks = fromEvent(document, 'click');
+const higherOrder = clicks.pipe(map(ev => of(ev)));
+```
+
+这时候就需要用例如 concatAll 等操作符将其拍平。
+
+# Subscription
+
+Subscription 通常是一个 Observable 的 Execution，主要是用来调用释放资源 API `unsubscribe`。
+
+```typescript
+const subscription = interval(400).subscribe(x => console.log('first: ' + x));
+const childSubscription = interval(300).subscribe(x => console.log('second: ' + x));
+
+subscription.add(childSubscription);
+
+setTimeout(() => {
+  // 同时 unsubscribe subcription 和 childSubscription
+  subscription.unsubscribe();
+}, 1000);
+```
+
+# Subject
+
+Subject 是一种特殊的 Observable，他可以向多个 Observer 以多播的形式发出值——而普通的 Observable 是单播，每个订阅的 Observer 对这个 Observable 都有自己独立的 Execution。
+
+- **每个 Subject 都是 Observable**。你可以 `subscribe` 一个 Subject。对于 Subject 来说，`subscribe` 并不会产生一个新的 Execution，他会将这个 Observer 注册到一个 ObserverList，就像 `addListner` 一样
+- **每个 Subject 都是 Observer**。他有 `next()` `error()` `complete()` 方法。只需要调用 `next()`，就会广播给所有已经注册了的 Observer。
+
+```typescript
+const subject = new Subject<number>();
+
+// 每个 Subject 都是 Observable：可以 subscribe 他
+subject.subscribe({
+  next: (v) => console.log(`observerA: ${v}`)
+});
+subject.subscribe({
+  next: (v) => console.log(`observerB: ${v}`)
+});
+```
+```typescript
+// 每个 Subject 都是 Observer：调用他的 next() 方法，就会广播给所有已经注册的 Observer
+subject.next(1);
+subject.next(2);
+
+// Logs:
+// observerA: 1
+// observerB: 1
+// observerA: 2
+// observerB: 2
+```
+```typescript
+// 每个 Subject 都是 Observer：可以把他传给 subscribe 函数
+from([1, 2, 3]).subscribe(subject);
+ 
+// Logs:
+// observerA: 1
+// observerB: 1
+// observerA: 2
+// observerB: 2
+// observerA: 3
+// observerB: 3
+```
+
+## 多播 Observable
+
+注意！在 RxJS 7 已经将多播 API 进行了调整！[文档](https://rxjs.dev/guide/subject#multicasted-observables)中的 `multicast` 操作符将不再适用。详情请查看 [这篇文档](https://rxjs.dev/deprecations/multicasting)。
+
+## BehaviorSubject
+
+他会保存发给消费者的最后一个值，并且当一个新的 Observer subscribe 的时候，他会从 `BehaviorSubject` 那里立即接收到这个值。
+
+> BehaviorSubject 非常适合用于表示 “随着时间发出值”。比如表示 “生日” 事件的流是 Subject，但表示 “年龄” 的流是 BehaviourSubject。
+
+```typescript
+// 这里 0 表示初始值
+const subject = new BehaviorSubject<number>(0);
+
+subject.subscribe(res => {
+  console.log('subscribe1', res);
+});
+
+subject.next(1);
+
+setTimeout(() => {
+  console.log('before');
+  subject.subscribe(res => {
+    console.log('subscribe2', res);
+  });
+  console.log('after');
+}, 1000);
+
+// Logs:
+// subscribe1 0
+// next!
+// subscribe1 1
+// before
+// subscribe2 1
+// after
 ```
