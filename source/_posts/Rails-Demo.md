@@ -1,5 +1,5 @@
 ---
-title: Rails 的项目搭建
+title: Rails 的项目搭建 1
 date: 2021-02-13 11:48:41
 tags:
   - 入门
@@ -207,7 +207,7 @@ erb 可以使用 `<% %>` 来包裹语句：
 
 # 注册功能
 
-### 第一步：创建 Model 与数据表
+## 第一步：创建 Model 与数据表
 
 ```bash
 bin/rails g model User
@@ -240,7 +240,7 @@ bin/rails db:migrate
 
 然后可以在 rubyMine 中查看数据库、User 表。
 
-### 第二步：配置路由
+## 第二步：配置路由
 
 ```ruby
 Rails.application.routes.draw do
@@ -258,7 +258,7 @@ end
 resources :users
 ```
 
-### 第三步：在 Rails Console 中尝试进行增删改查
+## 第三步：在 Rails Console 中尝试进行增删改查
 
 可以在 Rails Console 中先体验一下增删改查是如何进行的：
 
@@ -281,7 +281,7 @@ u.save
 
 输入 `exit` 或者按 `Ctrl`+`D` 可以退出 Rails Console。
 
-### 第四步：存储密码
+## 第四步：存储密码
 
 我们平时的 User 表中不会存储密码的明文，而是存储一个 `password_digest` 字段，这可以通过 has_secure_password 来实现。
 
@@ -313,7 +313,7 @@ u.save
 u.authenticate('123')
 ```
 
-### 第五步：创建与配置 Controller
+## 第五步：创建与配置 Controller
 
 我们可以通过如下命令创建 Controller，得到 `app/controllers/users_controller.rb`：
 
@@ -345,13 +345,13 @@ class UsersController < ApplicationController
 end
 ```
 
-#### 模拟请求进行调试
+### 模拟请求进行调试
 
-##### 使用 RubyMine 中的 HTTP Client
+#### 使用 RubyMine 中的 HTTP Client
 
 `Double Shift` - `HTTP Client`，然后可以通过 examples 看看如何使用。
 
-##### 使用 Postman 测试
+#### 使用 Postman 测试
 
 ### 第六步：在 Model 中进行数据校验
 
@@ -397,7 +397,7 @@ zh-CN:
               confirmation: 两次密码不匹配
 ```
 
-### 第八步：发送邮件
+## 第八步：发送邮件
 
 可以通过 `mailer` 来发送邮件，点击 [这里查看官方文档](https://ruby-china.github.io/rails-guides/action_mailer_basics.html)。
 
@@ -408,7 +408,6 @@ bin/rails generate mailer UserMailer
 这个命令会创建文件 `app/mailers/user_mailer`，详细请看 [相关 commit](https://github.com/Hyuain/ruby-demo/commits/master)
 
 通过 `dotenv-rails` 和 `.env` `.env.local` 文件来抽出环境变量，注意 `.env.local` 需要被加入 `.gitignore` 中，防止将密码提交到 Git 记录中。
-
 
 # 登录功能
 
@@ -547,7 +546,6 @@ end
 ```
 
 将 session 中对应 id 的值删掉即可。
-
 
 # 单元测试
 

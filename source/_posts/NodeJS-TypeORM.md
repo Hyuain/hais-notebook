@@ -44,7 +44,7 @@ psql -U username -W
 由于 TypeORM 没有为我们提供单纯创建数据库的 API，我们需要进入数据库用 SQL 语句来进行创建：
 
 ```postgresql
-CREATE DATABASE xxx ENCODING 'UTF8' LC_COLLATE 'en_US.utf8' LC_CTYPE 'en_US.utf8';
+CREATE DATABASE blog_production ENCODING 'UTF8' LC_COLLATE 'en_US.utf8' LC_CTYPE 'en_US.utf8';
 ```
 
 一般来说需要创建三个数据库：development、test、production
@@ -171,3 +171,16 @@ export class Post {
 
 也叫数据填充，我们可以通过 seed 脚本来构造数据。
 
+# 创建数据表关联
+
+可以参考 [这篇文档](https://typeorm.io/#/relations)
+
+```typescript
+@Entity()
+export class User {
+  //... 其他字段
+  
+  @OneToMany(type => Post, post => post.author)
+  posts: Post[]
+}
+```

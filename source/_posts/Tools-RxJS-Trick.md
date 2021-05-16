@@ -3,7 +3,7 @@ title: RxJS 小技巧
 date: 2021-05-14 18:51:12
 tags:
 - 小技巧
-  categories:
+categories:
 - [工具, RxJS]
 ---
 

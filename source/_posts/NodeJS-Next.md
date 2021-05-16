@@ -7,7 +7,10 @@ categories:
   - [全栈, NodeJS]
 ---
 
-NodeJS WEB 框架之 Next
+NodeJS WEB 框架之 Next。
+Tip：如何保存密码？
+1. 存在环境变量中：用 `export xxx=` 设置环境变量，用 `process.env.xxx` 使用环境变量
+2. 或者参考 [这篇文章](https://nextjs.org/docs/basic-features/environment-variables)
 
 <!-- more -->
 
