@@ -1314,16 +1314,13 @@ A_{n}^{m} = \frac{n!}{(n-m)!}</script><p>n 个元素中，r 个相同排成一�
       </tags>
   </entry>
   <entry>
-    <title>Rails 的项目搭建 1</title>
+    <title>Rails 的项目搭建</title>
     <url>/hais-notebook/2021/02/13/Rails-Demo/</url>
     <content><![CDATA[<p>Rails 的一个项目是如何搭建起来的。</p>
 <a id="more"></a>
 <h1 id="Gem-和-Bundle"><a href="#Gem-和-Bundle" class="headerlink" title="Gem 和 Bundle"></a>Gem 和 Bundle</h1><p>类似于 npm，gem 用于全局安装依赖，bundle 用于局部安装依赖。</p>
 <p>如果 <code>gem install</code> 安装很慢，按照 <a href="https://gems.ruby-china.com/" target="_blank" rel="noopener">RubyChina</a> 的方法进行操作。</p>
-<h1 id="创建-Rails-项目"><a href="#创建-Rails-项目" class="headerlink" title="创建 Rails 项目"></a>创建 Rails 项目</h1><ul>
-<li><code>gem install rails</code><br>-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">rails new [ProjectName] --database=postgresql --skip-action-mailbox --skip-action-text --skip-sprockets --skip-javascript --skip-turbolinks --skip-system-test --skip-test --api --skip-webpack-install</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
+<h1 id="创建-Rails-项目"><a href="#创建-Rails-项目" class="headerlink" title="创建 Rails 项目"></a>创建 Rails 项目</h1><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">gem install rails</span><br><span class="line">rails new [ProjectName] --database=postgresql --skip-action-mailbox --skip-action-text --skip-sprockets --skip-javascript --skip-turbolinks --skip-system-test --skip-test --api --skip-webpack-install</span><br></pre></td></tr></table></figure>
 <p>然后使用 <code>bin/rails server</code> 命令启动服务器，但是这时会报错，因为我们还没有数据库。</p>
 <h1 id="创建-docker-容器"><a href="#创建-docker-容器" class="headerlink" title="创建 docker 容器"></a>创建 docker 容器</h1><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker run -v [容器路径]:/var/lib/postgresql/data -p 5001:5432 -e POSTGRES_USER=[用户名] -e POSTGRES_PASSWORD=[密码] -d postgres:[版本号 也可以不指定]</span><br></pre></td></tr></table></figure>
 <p>如果速度太慢，需要使用镜像，按照 <a href="http://guide.daocloud.io/dcs/daocloud-9153151.html" target="_blank" rel="noopener">此教程</a> 进行配置。<br>可将镜像地址配置为中科大镜像地址：<a href="https://docker.mirrors.ustc.edu.cn" target="_blank" rel="noopener">https://docker.mirrors.ustc.edu.cn</a></p>
