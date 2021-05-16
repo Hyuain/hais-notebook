@@ -1,5 +1,5 @@
 ---
-title: Rails 的项目搭建 1
+title: Rails 的项目搭建
 date: 2021-02-13 11:48:41
 tags:
   - 入门
@@ -19,9 +19,8 @@ Rails 的一个项目是如何搭建起来的。
 
 # 创建 Rails 项目
 
-- `gem install rails`
--
 ```bash
+gem install rails
 rails new [ProjectName] --database=postgresql --skip-action-mailbox --skip-action-text --skip-sprockets --skip-javascript --skip-turbolinks --skip-system-test --skip-test --api --skip-webpack-install
 ```
 
