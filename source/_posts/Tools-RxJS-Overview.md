@@ -375,6 +375,11 @@ from([1, 2, 3]).subscribe(subject);
 
 注意！在 RxJS 7 已经将多播 API 进行了调整！[文档](https://rxjs.dev/guide/subject#multicasted-observables)中的 `multicast` 操作符将不再适用。详情请查看 [这篇文档](https://rxjs.dev/deprecations/multicasting)。
 
+### connectable
+
+可以通过 connectable 创建一个可以多播的 Observable：
+
+
 ## BehaviorSubject
 
 他会保存发给消费者的最后一个值，并且当一个新的 Observer subscribe 的时候，他会从 `BehaviorSubject` 那里立即接收到这个值。
@@ -478,3 +483,81 @@ subject.complete();
 const subject = new Subject<void>();
 setTimeout(() => subject.next(), 1000);
 ```
+
+# Scheduler
+
+Scheduler 可以控制 subscription 开始和发出值的时间：
+
+- **Scheduler 是一个数据结构**：他知道如何存储数据，并可以基于优先级来管理任务队列
+- **Scheduler 是一个执行上下文**：他代表了任务在何时、何地执行（比如立即、或在某个回调中）
+- **Scheduler 有一个虚拟时钟**：他提供了 `noew()` 函数来表示时间，由 Scheduler 管理的任务都依附于这个时间。
+
+```typescript
+import { Observable, asyncScheduler } from 'rxjs';
+import { observeOn } from 'rxjs/operators';
+
+// 这里的 proxyObserver 实际上是由 observeOn(asyncScheduler) 根据 finalObserver 创建的
+const observable = new Observable((proxyObserver) => {
+  proxyObserver.next(1);
+  proxyObserver.next(2);
+  proxyObserver.next(3);
+  proxyObserver.complete();
+}).pipe(
+  observeOn(asyncScheduler)
+);
+
+const finalObserver = {
+  next(x) {
+    console.log('got value ' + x)
+  },
+  error(err) {
+    console.error('something wrong occurred: ' + err);
+  },
+  complete() {
+     console.log('done');
+  }
+};
+
+console.log('just before subscribe');
+observable.subscribe(finalObserver);
+console.log('just after subscribe');
+
+// LOGS:
+// just before subscribe
+// just after subscribe
+// got value 1
+// got value 2
+// got value 3
+// done
+```
+
+一个 `observeOn(asyncScheduler)` 创建的 `proxyObserver` 可以近似理解为：
+
+```typescript
+const proxyObserver = {
+  next(val) {
+    asyncSheduler.shedule(
+      (x) => finalObserserver.next(x),
+      0, // 延迟
+      val, // 会传给上面的 x
+    )
+  }
+}
+```
+
+异步的 Scheduler 是通过 `setTimeout` 或 `setInterval` 操作，因此就算延迟是 0，也是异步操作。
+
+## Scheduler 的类型
+
+| SCHEDULER | 目的 |
+| --- | --- |
+| null | 通知都是同步地、递归地发出的，用于正常时间的操作和尾递归 |
+| queueScheduler | 以队列的形式在当前事件帧安排，用于迭代操作 |
+| asapScheduler | 在同 promise 一样的微任务队列中安排，用于异步会话 |
+| asyncScheduler | 使用 `setInterval`，用于基于时间的操作 |
+| animationFrameScheduler | 任务会在浏览器下一次重绘（repaint）之前进行，用于创建流畅的浏览器动画 |
+
+## 使用 Scheduler
+
+以后用到再翻译，先看[文档](https://rxjs.dev/guide/scheduler)
+
