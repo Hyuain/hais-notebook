@@ -115,6 +115,7 @@
 <figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 每个 Subject 都是 Observer：调用他的 next() 方法，就会广播给所有已经注册的 Observer</span></span><br><span class="line">subject.next(<span class="number">1</span>);</span><br><span class="line">subject.next(<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Logs:</span></span><br><span class="line"><span class="comment">// observerA: 1</span></span><br><span class="line"><span class="comment">// observerB: 1</span></span><br><span class="line"><span class="comment">// observerA: 2</span></span><br><span class="line"><span class="comment">// observerB: 2</span></span><br></pre></td></tr></table></figure>
 <figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 每个 Subject 都是 Observer：可以把他传给 subscribe 函数</span></span><br><span class="line"><span class="keyword">from</span>([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]).subscribe(subject);</span><br><span class="line"> </span><br><span class="line"><span class="comment">// Logs:</span></span><br><span class="line"><span class="comment">// observerA: 1</span></span><br><span class="line"><span class="comment">// observerB: 1</span></span><br><span class="line"><span class="comment">// observerA: 2</span></span><br><span class="line"><span class="comment">// observerB: 2</span></span><br><span class="line"><span class="comment">// observerA: 3</span></span><br><span class="line"><span class="comment">// observerB: 3</span></span><br></pre></td></tr></table></figure>
 <h2 id="多播-Observable"><a href="#多播-Observable" class="headerlink" title="多播 Observable"></a>多播 Observable</h2><p>注意！在 RxJS 7 已经将多播 API 进行了调整！<a href="https://rxjs.dev/guide/subject#multicasted-observables" target="_blank" rel="noopener">文档</a>中的 <code>multicast</code> 操作符将不再适用。详情请查看 <a href="https://rxjs.dev/deprecations/multicasting" target="_blank" rel="noopener">这篇文档</a>。</p>
+<h3 id="connectable"><a href="#connectable" class="headerlink" title="connectable"></a>connectable</h3><p>可以通过 connectable 创建一个可以多播的 Observable：</p>
 <h2 id="BehaviorSubject"><a href="#BehaviorSubject" class="headerlink" title="BehaviorSubject"></a>BehaviorSubject</h2><p>他会保存发给消费者的最后一个值，并且当一个新的 Observer subscribe 的时候，他会从 <code>BehaviorSubject</code> 那里立即接收到这个值。</p>
 <blockquote>
 <p>BehaviorSubject 非常适合用于表示 “随着时间发出值”。比如表示 “生日” 事件的流是 Subject，但表示 “年龄” 的流是 BehaviourSubject。</p>
@@ -126,6 +127,49 @@
 <figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> subject = <span class="keyword">new</span> AsyncSubject();</span><br><span class="line"></span><br><span class="line">subject.subscribe(&#123;</span><br><span class="line">  next: <span class="function">(<span class="params">v</span>) =&gt;</span> <span class="built_in">console</span>.log(<span class="string">`observerA: <span class="subst">$&#123;v&#125;</span>`</span>)</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">subject.next(<span class="number">1</span>);</span><br><span class="line">subject.next(<span class="number">2</span>);</span><br><span class="line">subject.next(<span class="number">3</span>);</span><br><span class="line">subject.next(<span class="number">4</span>);</span><br><span class="line"></span><br><span class="line">subject.subscribe(&#123;</span><br><span class="line">  next: <span class="function">(<span class="params">v</span>) =&gt;</span> <span class="built_in">console</span>.log(<span class="string">`observerB: <span class="subst">$&#123;v&#125;</span>`</span>)</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">subject.next(<span class="number">5</span>);</span><br><span class="line">subject.complete();</span><br><span class="line"></span><br><span class="line"><span class="comment">// Logs:</span></span><br><span class="line"><span class="comment">// observerA: 5</span></span><br><span class="line"><span class="comment">// observerB: 5</span></span><br></pre></td></tr></table></figure>
 <h2 id="Void-Subject"><a href="#Void-Subject" class="headerlink" title="Void Subject"></a>Void Subject</h2><p>简单来说，Subject 可以发出空值：</p>
 <figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> subject = <span class="keyword">new</span> Subject&lt;<span class="built_in">void</span>&gt;();</span><br><span class="line">setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> subject.next(), <span class="number">1000</span>);</span><br></pre></td></tr></table></figure>
+<h1 id="Scheduler"><a href="#Scheduler" class="headerlink" title="Scheduler"></a>Scheduler</h1><p>Scheduler 可以控制 subscription 开始和发出值的时间：</p>
+<ul>
+<li><strong>Scheduler 是一个数据结构</strong>：他知道如何存储数据，并可以基于优先级来管理任务队列</li>
+<li><strong>Scheduler 是一个执行上下文</strong>：他代表了任务在何时、何地执行（比如立即、或在某个回调中）</li>
+<li><strong>Scheduler 有一个虚拟时钟</strong>：他提供了 <code>noew()</code> 函数来表示时间，由 Scheduler 管理的任务都依附于这个时间。</li>
+</ul>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; Observable, asyncScheduler &#125; <span class="keyword">from</span> <span class="string">'rxjs'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; observeOn &#125; <span class="keyword">from</span> <span class="string">'rxjs/operators'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 这里的 proxyObserver 实际上是由 observeOn(asyncScheduler) 根据 finalObserver 创建的</span></span><br><span class="line"><span class="keyword">const</span> observable = <span class="keyword">new</span> Observable(<span class="function">(<span class="params">proxyObserver</span>) =&gt;</span> &#123;</span><br><span class="line">  proxyObserver.next(<span class="number">1</span>);</span><br><span class="line">  proxyObserver.next(<span class="number">2</span>);</span><br><span class="line">  proxyObserver.next(<span class="number">3</span>);</span><br><span class="line">  proxyObserver.complete();</span><br><span class="line">&#125;).pipe(</span><br><span class="line">  observeOn(asyncScheduler)</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> finalObserver = &#123;</span><br><span class="line">  next(x) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'got value '</span> + x)</span><br><span class="line">  &#125;,</span><br><span class="line">  error(err) &#123;</span><br><span class="line">    <span class="built_in">console</span>.error(<span class="string">'something wrong occurred: '</span> + err);</span><br><span class="line">  &#125;,</span><br><span class="line">  complete() &#123;</span><br><span class="line">     <span class="built_in">console</span>.log(<span class="string">'done'</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'just before subscribe'</span>);</span><br><span class="line">observable.subscribe(finalObserver);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'just after subscribe'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// LOGS:</span></span><br><span class="line"><span class="comment">// just before subscribe</span></span><br><span class="line"><span class="comment">// just after subscribe</span></span><br><span class="line"><span class="comment">// got value 1</span></span><br><span class="line"><span class="comment">// got value 2</span></span><br><span class="line"><span class="comment">// got value 3</span></span><br><span class="line"><span class="comment">// done</span></span><br></pre></td></tr></table></figure>
+<p>一个 <code>observeOn(asyncScheduler)</code> 创建的 <code>proxyObserver</code> 可以近似理解为：</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> proxyObserver = &#123;</span><br><span class="line">  next(val) &#123;</span><br><span class="line">    asyncSheduler.shedule(</span><br><span class="line">      (x) =&gt; finalObserserver.next(x),</span><br><span class="line">      <span class="number">0</span>, <span class="comment">// 延迟</span></span><br><span class="line">      val, <span class="comment">// 会传给上面的 x</span></span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>异步的 Scheduler 是通过 <code>setTimeout</code> 或 <code>setInterval</code> 操作，因此就算延迟是 0，也是异步操作。</p>
+<h2 id="Scheduler-的类型"><a href="#Scheduler-的类型" class="headerlink" title="Scheduler 的类型"></a>Scheduler 的类型</h2><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>SCHEDULER</th>
+<th>目的</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>null</td>
+<td>通知都是同步地、递归地发出的，用于正常时间的操作和尾递归</td>
+</tr>
+<tr>
+<td>queueScheduler</td>
+<td>以队列的形式在当前事件帧安排，用于迭代操作</td>
+</tr>
+<tr>
+<td>asapScheduler</td>
+<td>在同 promise 一样的微任务队列中安排，用于异步会话</td>
+</tr>
+<tr>
+<td>asyncScheduler</td>
+<td>使用 <code>setInterval</code>，用于基于时间的操作</td>
+</tr>
+<tr>
+<td>animationFrameScheduler</td>
+<td>任务会在浏览器下一次重绘（repaint）之前进行，用于创建流畅的浏览器动画</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="使用-Scheduler"><a href="#使用-Scheduler" class="headerlink" title="使用 Scheduler"></a>使用 Scheduler</h2><p>以后用到再翻译，先看<a href="https://rxjs.dev/guide/scheduler" target="_blank" rel="noopener">文档</a></p>
 ]]></content>
       <categories>
         <category>工具</category>
