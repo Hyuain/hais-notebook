@@ -25,8 +25,6 @@ categories:
 
 如果想要了解更多关于 OnPush 变化检查机制，请查阅 [这篇文章](https://blog.angular-university.io/onpush-change-detection-how-it-works)
 
-# 变化检查是如何进行的
+# 变化检查是如何实现的
 
 当组件的数据变化的时候，Angular 可以探测到，并重新渲染视图来相应这次变化。为了理解工作原理，我们需要首先意识到 JavaScript 中整个运行时都是可重写的。我们可以重写类似于 `String` 或 `Number` 等方法。
-
-

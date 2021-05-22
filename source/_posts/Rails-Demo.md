@@ -546,7 +546,7 @@ end
 
 将 session 中对应 id 的值删掉即可。
 
-# 单元测试
+## 单元测试
 
 使用 RSpec 进行单元测试，详情查看 [RSpec For Rails 文档](https://github.com/rspec/rspec-rails)。
 
@@ -569,6 +569,82 @@ start doc/api/index.html
 1. 可以在 `rspec_helper.rb` 中定义一些常用的工具函数
 2. 可以使用 `rspec_api_documentation` 直接生成 API 文档
 
-# Rails 极速开发（以记账条目 Record 为例）
+# 后端分页
 
-先写测试，再写代码。测试不通过，改BUG，测试通过，写文档。
+使用 `kaminari` gem
+
+# 使用中间表关联两个表
+
+比如我们需要建立 tagging 来关联 record 和 tag
+
+## 创建 Model
+
+```bash
+bin/rails g model tagging
+```
+
+```ruby
+class CreateTaggings < ActiveRecord::Migration[6.1]
+  def change
+    create_table :taggings do |t|
+      t.references :tag, null: false
+      t.references :record, null: false
+
+      t.timestamps
+    end
+  end
+end
+```
+
+由于我们加了 `reference`，可以看到在 `schema.rb` 中多了一些东西：
+
+```ruby
+create_table "taggings", force: :cascade do |t|
+  t.bigint "tag_id", null: false # 多了这一行
+  t.bigint "record_id", null: false # 多了这一行
+  t.datetime "created_at", precision: 6, null: false
+  t.datetime "updated_at", precision: 6, null: false
+  t.index ["record_id"], name: "index_taggings_on_record_id" # 多了这一行
+  t.index ["tag_id"], name: "index_taggings_on_tag_id" # 多了这一行
+end
+```
+
+然后需要调整 `model/tagging.rb` `model/record.rb` `model/tag.rb`
+
+```ruby
+class Tagging < ApplicationRecord
+  belongs_to :record
+  belongs_to :tag
+end
+```
+```ruby
+class Tag < ApplicationRecord
+  has_many :taggings
+  has_many :records, through: :taggings
+end
+```
+```ruby
+class Record < ApplicationRecord
+  has_many :taggings
+  has_many :tags, through: :taggings
+end
+```
+
+# 使用 Factory Bot 加速测试
+
+可以使用 [factory-bot](https://github.com/thoughtbot/factory_bot) 来帮助我们自动化一些流程，比如：
+
+```ruby
+# spec/factories/user_factory.rb
+FactoryBot.define do
+  factory :user do
+    email { "test_email@qq.com" }
+    password { "123456" }
+    password_confirmation { "123456" }
+  end
+end
+```
+```ruby
+# spec/requests/record.rb
+user = create(:user)
+```
