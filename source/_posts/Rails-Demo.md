@@ -555,7 +555,20 @@ end
 - Model 需要测试：validation 和 public 方法
 - Controller 需要测试：响应体和响应头（status、body、cookie），一般要测试正反两种情况（成功和不成功）
 
+## 自动生成文档
+
+使用 `rspec_api_documentation` 可以直接通过单元测试生成 API 文档，详细内容可以 [查看这里](https://github.com/zipmark/rspec_api_documentation)
+
+```bash
+rake docs:generate
+start doc/api/index.html
+```
+
 ## 其他技巧
 
 1. 可以在 `rspec_helper.rb` 中定义一些常用的工具函数
 2. 可以使用 `rspec_api_documentation` 直接生成 API 文档
+
+# Rails 极速开发（以记账条目 Record 为例）
+
+先写测试，再写代码。测试不通过，改BUG，测试通过，写文档。
