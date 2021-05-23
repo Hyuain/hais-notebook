@@ -183,6 +183,6 @@ fn.call( {name:'hai'} ) // window
 只想要一个局部变量，而不想要一个函数
 
 ```js
-+/-/1*/! function (){ var a = 2; console.log(a) } ()
++/-/1*/! function (){ var a = 2; console.log(a) } ()
 // 声明了一个全局函数，立即调用
 ```

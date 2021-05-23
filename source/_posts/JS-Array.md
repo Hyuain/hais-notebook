@@ -7,7 +7,7 @@ categories:
   - [前端, JavaScript, 原生 JavaScript]
 ---
 
-JS 的数组不是典型的数组，而是一个对象；**元素的数据类型可以不同，内存不一定连续，是通过字符串下标（而不是数字下标）获取元素**。
+JS 的数组不是典型的数组，而是一个对象；**元素的数据类型可以不同，内存不一定连续，是通过字符串下标（而不是数字下标）获取元素**。
 
 <!-- more -->
 
@@ -119,8 +119,8 @@ arr.forEach(function(item, index, array) {
 })
 
 // 以上两种基本没有区别
-// 但 for 关键字有 continue 和 break，forEach 没有
-// for 是块级作用域，forEach 是函数作用域
+// 但 for 关键字有 continue 和 break，forEach 没有
+// for 是块级作用域，forEach 是函数作用域
 ```
 
 ## 查找单个元素

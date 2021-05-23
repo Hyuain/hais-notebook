@@ -45,7 +45,7 @@ var a = 1
 
 ```js
 window.f1 && console.log('f1 存在')
-console && console.log && console.log('hi') // 因为 IE 没有 console.log，所以可以这样写防止出错
+console && console.log && console.log('hi') // 因为 IE 没有 console.log，所以可以这样写防止出错
 ```
 
 ## ||
@@ -53,7 +53,7 @@ console && console.log && console.log('hi') // 因为 IE 没有 console.log，�
 如果前面是 **假的**，就执行后面的
 
 ```js
-a = a || 100 // 可以用于设置保底值
+a = a || 100 // 可以用于设置保底值
 ```
 
 ## for

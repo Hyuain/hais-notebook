@@ -79,22 +79,22 @@ transform: scaleX(<number>) | scaleY(<number>) | scale(<number>, <number>?)
 
 ## 旋转
 
-一般用来做 360 度旋转的 loading 或者按钮的交互
+一般用来做 360 度旋转的 loading 或者按钮的交互
 
 ```css
-transform: rotate([<angle>|<zero>]) | rotateZ([<angle>|<zero>]) | rotateX([<angle>|<zero>])
+transform: rotate([<angle>|<zero>]) | rotateZ([<angle>|<zero>]) | rotateX([<angle>|<zero>])
 ```
 
 ## 扭曲
 
 ```css
-transform: skewX(<angle>|<zero>) | skewY(<angle>|<zero>) | skew(<angle>|<zero>, <angle>|<zero>?)
+transform: skewX(<angle>|<zero>) | skewY(<angle>|<zero>) | skew(<angle>|<zero>, <angle>|<zero>?)
 ```
 
 # `transition`
 
 ```css
-transition: 属性名(可以写all) 时长 过渡方式( linear | ease | ease-in | ease-in-out | cubic-bezier | step-start | step-end | steps ) 延迟
+transition: 属性名(可以写all) 时长 过渡方式( linear | ease | ease-in | ease-in-out | cubic-bezier | step-start | step-end | steps ) 延迟
 transition: width 2s linear 3s
 ```
 
@@ -117,5 +117,5 @@ transition: width 2s linear 3s
 }
 
 /* 添加动画 */
-animation: 时长 过渡方式 延迟 次数( infinite ) 方向( reverse | alternate | alternate-reverse ) 填充模式( none | forwards | backwards | both) 是否暂停( paused )  动画名
+animation: 时长 过渡方式 延迟 次数( infinite ) 方向( reverse | alternate | alternate-reverse ) 填充模式( none | forwards | backwards | both) 是否暂停( paused )  动画名
 ```

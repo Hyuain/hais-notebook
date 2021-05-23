@@ -61,8 +61,8 @@ categories:
 
 ## Container
 
-- 让一个元素变成 flex 容器：`display: flex | inline-flex`
-- 改变 items 的流动方向（主轴）：`flex-direction: row | row-reverse | column | column-reverse`
+- 让一个元素变成 flex 容器：`display: flex | inline-flex`
+- 改变 items 的流动方向（主轴）：`flex-direction: row | row-reverse | column | column-reverse`
 - 改变折行：`flex-wrap: nowrap | wrap | wrap-revers`
 - 主轴的对齐方式：`justify-content: flex-start | flex-end | center | space-between | space-around | space-evenly`
 - 次轴对齐：`align-items: flex-start | flex-end | center | stretch(默认)`
@@ -82,7 +82,7 @@ categories:
 
 经验：
 
-- 永远不要把 `width` 和 `height` 写死
+- 永远不要把 `width` 和 `height` 写死
 - 尽量使用 `min-width` | `max-width` 等来写
 - `margin-xxx: auto`，有奇效，类似于 `between`
 
@@ -94,10 +94,10 @@ categories:
 
 ## Container
 
-- 让一个元素变成 grid 容器：`display: grid | inline-grid`
+- 让一个元素变成 grid 容器：`display: grid | inline-grid`
 - 行和列：
-    - `grid-template-columns`: 每一列的宽度，可以写 `auto`
-    - `grid-template-rows`: 每一行的高度，可以写 `auto`
+    - `grid-template-columns`: 每一列的宽度，可以写 `auto`
+    - `grid-template-rows`: 每一行的高度，可以写 `auto`
     -
 ```css
 grid-template-areas:

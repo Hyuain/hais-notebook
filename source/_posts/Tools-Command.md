@@ -20,7 +20,7 @@ categories:
 | `cd ~` | ~ 表示用户目录 |
 | `pwd` | Print Work Directory，展示当前的绝对路径 |
 | `ls` |  List，查看当前目录文件内容（默认不显示以 `.` 开头的文件） |
-| `ls [file path]` | 查看文件路径内容 |
+| `ls [file path]` | 查看文件路径内容 |
 | `ls -l` | 查看更新时间 |
 | `cat` | Concatenate，打印文件内容 |
 | `head` | 展示前 10 行文件，或者 `-n [数字]` |
@@ -33,12 +33,12 @@ categories:
 | --- | --- |
 | `touch` | 创建空文件，可以同时创建多个文件；或者修改文件的更新时间 |
 | `echo` | 返回你 `echo` 的东西 |
-| `echo [content] > 4.txt` | 创建有内容的文件，会覆盖之前的内容 |
-| `echo [content] >> 4.txt` | 追加内容 |
+| `echo [content] > 4.txt` | 创建有内容的文件，会覆盖之前的内容 |
+| `echo [content] >> 4.txt` | 追加内容 |
 | `echo -e "[content]\n" >> 4.txt` | 有换行的内容 |
 | `mkdir` | 创建目录，可以同时创建多个目录 |
 | `mkdir -p a/b/c/d` | 创建多级目录 |
-| `cp [filename] [new filename]` | 复制文件 |
+| `cp [filename] [new filename]` | 复制文件 |
 | `cp -r [dir] [new dir]` | 复制目录 |
 
 ## 删
@@ -55,8 +55,8 @@ categories:
 | --- | --- |
 | `code` | 使用 VSCode 打开 |
 | `start` | 使用默认程序打开 |
-| `mv [filename] .` | 移动到当前目录 |
-| `mv [filename] [new filename]` | 重命名文件 |
+| `mv [filename] .` | 移动到当前目录 |
+| `mv [filename] [new filename]` | 重命名文件 |
 
 ## 命令的组合
 
@@ -66,7 +66,7 @@ categories:
 
 ## 把命令变成文件
 
-- MAC上需要执行：`chmod +x [filename]`，赋予执行权限
+- MAC上需要执行：`chmod +x [filename]`，赋予执行权限
 - 执行命令：`./[filename]` 或者 `sh [filename]`
 - 如果加入 `PATH`，就可以不用输入文件路径，也不用输入 `./`，输入文件名就能执行
 - 命令行的本质就是可执行文件

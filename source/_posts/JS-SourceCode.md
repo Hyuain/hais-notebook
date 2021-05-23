@@ -671,7 +671,7 @@ if (!Function.proptotype.bind) {
 
 1. 自动创建空对象
 2. 自动为空对象关联原型，原型的地址为 `构造函数.prototype`
-3. 自动将空对象作为 `this` 关键字运行构造函数
+3. 自动将空对象作为 `this` 关键字运行构造函数
 4. 自动 `return this`（也就是说可以接着写 `new X().getName()`）
 
 ```js

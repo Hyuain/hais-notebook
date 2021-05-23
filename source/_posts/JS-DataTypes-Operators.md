@@ -37,7 +37,7 @@ JavaScript 有 7 种数据类型，3 种变量声明的方式，以及一些奇�
 
 ![JSNumber的存储](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/JS-Number-Range.png)
 
-范围：`Number.MAX_VALUE` 到 `Number.MIN_VALUE`
+范围：`Number.MAX_VALUE` 到 `Number.MIN_VALUE`
 精度：大概是 15 个十进制有效数字
 
 ## String
@@ -50,7 +50,7 @@ JavaScript 有 7 种数据类型，3 种变量声明的方式，以及一些奇�
 
 ### 转义
 
-`\r` 表示回车， `\uFFFF` 表示对应的 Unicode 字符， `\xFF` 表示前256个 Unicode 字符
+`\r` 表示回车， `\uFFFF` 表示对应的 Unicode 字符， `\xFF` 表示前256个 Unicode 字符
 
 ### 字符串的属性
 
@@ -58,11 +58,11 @@ JavaScript 有 7 种数据类型，3 种变量声明的方式，以及一些奇�
 
 - 长度： `s.length`
 - 下标： `s[0]`
-- base64 转码： `window.btoa` 编码， `window.atob` 反编码
+- base64 转码： `window.btoa` 编码， `window.atob` 反编码
 
 ## Boolean
 
-> 否定运算、相等运算、比较运算可以得到 bool 值
+> 否定运算、相等运算、比较运算可以得到 bool 值
 
 {% note warning %}
 **5 个 falsy 值**
@@ -120,8 +120,8 @@ null 通常表示即该处不应该有值，undefined 通常表示"缺少值"，
 - 不能重复声明
 - 可以赋值，也可以不赋值
 - 必须先声明再使用
-- 全局声明的 `let` 变量不会再变成 `window` 的属性
-- `let` 配合 `for` 循环有奇效
+- 全局声明的 `let` 变量不会再变成 `window` 的属性
+- `let` 配合 `for` 循环有奇效
 
 ## const 
 
@@ -137,7 +137,7 @@ null 通常表示即该处不应该有值，undefined 通常表示"缺少值"，
 
 ### Number
 
-- 余数 `-x % 7` 为 `-(x % 7)`
+- 余数 `-x % 7` 为 `-(x % 7)`
 - 指数 `x ** 3`
 - 自增 `a++` 表达式的值是 `a` 加之前的值， `++a` 表达式的值是 `a` 加之后的值
 - 求值运算符 `+`，附属运算符 `-`
@@ -156,7 +156,7 @@ null 通常表示即该处不应该有值，undefined 通常表示"缺少值"，
 ### ==
 
 - 模糊相等，发生自动类型转换，别用两个等于
-- JavaScript 三位一体
+- JavaScript 三位一体
 
 ### ===
 
@@ -185,7 +185,7 @@ function add(n = 0) {
 ```js
 (0b1111 | 0b1010).toString(2) // 1111
 (0b1111 & 0b1010).toString(2) // 1010
-(~0b1010).toString // 涉及到补码，留坑
+(~0b1010).toString // 涉及到补码，留坑
 ```
 
 ### 异或
@@ -230,7 +230,7 @@ function add(n = 0) {
 6.83 >>> 0
 ```
 
-### 使用 `^` 来交换 `a` `b` 的值
+### 使用 `^` 来交换 `a` `b` 的值
 
 ```js
 a ^= b
@@ -246,7 +246,7 @@ a ^= b
 ### 点运算符
 
 ```js
-对象.属性名 = 属性值
+对象.属性名 = 属性值
 ```
 
 如果不是对象，JS会创建一个对象，用完之后再自动删除
@@ -258,7 +258,7 @@ a.xxx // undefiend
 
 ### void 运算符
 
-> 求表达式的值或执行语句，然后 `void` 的值总为 `undefined`
+> 求表达式的值或执行语句，然后 `void` 的值总为 `undefined`
 
 ```js
 void 表达式或语句
@@ -279,11 +279,11 @@ void 表达式或语句
 > 表示取后面的值
 
 ```js
-var a = (1, 2) // a 为 2
+var a = (1, 2) // a 为 2
 
 let f = x => { console.log('hi'); return x + 1 }
 let f = x => (console.log('hi'), x + 1)
-// 跟上面是一样的，先执行 console.log，再让 return 为x + 1
+// 跟上面是一样的，先执行 console.log，再让 return 为x + 1
 ```
 
 ## 优先级

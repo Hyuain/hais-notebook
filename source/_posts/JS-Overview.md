@@ -60,6 +60,6 @@ JavaScript 的历史和评价的简单介绍。
 
 # 评价
 
-- JS 是历史的选择，最开始浏览器支持 Java、Flash、VBScript，只有 JS 活到了最后
-- JS 低开高走，一开始是一个玩具语言，但每次都走对了风口（ECMA 标准、Gmail、移动端、Node.js）
+- JS 是历史的选择，最开始浏览器支持 Java、Flash、VBScript，只有 JS 活到了最后
+- JS 低开高走，一开始是一个玩具语言，但每次都走对了风口（ECMA 标准、Gmail、移动端、Node.js）
 - 对于初学者，目前可以忽略与 IE 相关的知识
