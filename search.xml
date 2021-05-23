@@ -3,7 +3,7 @@
   <entry>
     <title>翻译：Angular 如何检查变化</title>
     <url>/hais-notebook/2021/05/17/Angular-ChangeDetection/</url>
-    <content><![CDATA[<p>翻译文章 <a href="https://blog.angular-university.io/how-does-angular-2-change-detection-really-work/" target="_blank" rel="noopener">Angular Change Detection - How Does It Really Work?</a>。</p>
+    <content><![CDATA[<p>翻译文章 <a href="https://blog.angular-university.io/how-does-angular-2-change-detection-really-work/" target="_blank" rel="noopener">Angular Change Detection - How Does It Really Work?</a> 。</p>
 <a id="more"></a>
 <h1 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h1><ul>
 <li>变化检查是如何进行的？</li>
@@ -15,8 +15,49 @@
 <li>使用 Immutable.js 来简化 Angular 应用的构建</li>
 <li>总结</li>
 </ul>
-<p>如果想要了解更多关于 OnPush 变化检查机制，请查阅 <a href="https://blog.angular-university.io/onpush-change-detection-how-it-works" target="_blank" rel="noopener">这篇文章</a></p>
-<h1 id="变化检查是如何实现的"><a href="#变化检查是如何实现的" class="headerlink" title="变化检查是如何实现的"></a>变化检查是如何实现的</h1><p>当组件的数据变化的时候，Angular 可以探测到，并重新渲染视图来相应这次变化。为了理解工作原理，我们需要首先意识到 JavaScript 中整个运行时都是可重写的。我们可以重写类似于 <code>String</code> 或 <code>Number</code> 等方法。</p>
+<p>如果想要了解更多关于 OnPush 变化检查机制，请查阅 <a href="https://blog.angular-university.io/onpush-change-detection-how-it-works" target="_blank" rel="noopener">这篇文章</a> 。</p>
+<h1 id="变化检查是如何实现的？"><a href="#变化检查是如何实现的？" class="headerlink" title="变化检查是如何实现的？"></a>变化检查是如何实现的？</h1><p>当组件的数据变化的时候，Angular 可以探测到，并重新渲染视图来相应这次变化。为了理解工作原理，我们需要首先意识到 JavaScript 中整个运行时都是可重写的。我们可以重写类似于 <code>String</code> 或 <code>Number</code> 等方法。</p>
+<h1 id="重写浏览器的默认机制"><a href="#重写浏览器的默认机制" class="headerlink" title="重写浏览器的默认机制"></a>重写浏览器的默认机制</h1><p>Angular 启动的时候，将一些底层的的浏览器 API（比如浏览器用来注册事件的 <code>addEventListener</code>）替换掉，就像这样：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 这是新版的 addEventListener</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">addEventListener</span>(<span class="params">eventName, callback</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 调用原生的 addEventListener</span></span><br><span class="line">  callRealAddEventListener(eventName, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 先调用原生的 callback</span></span><br><span class="line">    callback(...)</span><br><span class="line">    <span class="comment">// 再运行 Angular 添加的功能</span></span><br><span class="line">    <span class="keyword">var</span> changed = angular.runChangeDetection()</span><br><span class="line">    <span class="keyword">if</span> (changed) &#123;</span><br><span class="line">      angular.reRenderUIPart()</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>新版的 <code>addEventListener</code> 会给事件处理器添加更多的功能：除了调用回调函数之外，还让 Angular 可以检测到变化并更新视图。</p>
+<h1 id="这个底层的运行时替换是怎样工作的？"><a href="#这个底层的运行时替换是怎样工作的？" class="headerlink" title="这个底层的运行时替换是怎样工作的？"></a>这个底层的运行时替换是怎样工作的？</h1><p>一个叫 <a href="https://github.com/angular/zone.js/" target="_blank" rel="noopener">Zone.js</a> 的 Angular 自带的库完成了这个工作。</p>
+<p>Zone 其实就是一个在多个 JavaScript 虚拟机执行回合之中幸存下来的执行上下文——这是一个可以用来为浏览器增加更多功能的很普遍的机制。Angular 内部使用 Zones 来触发变化检查，但 Zone 也可以用来做应用分析（比如内存占用、程序复杂度等）、跨越不同的 JavaScript 虚拟机回合进行长堆栈跟踪。</p>
+<h1 id="浏览器异步-API-支持"><a href="#浏览器异步-API-支持" class="headerlink" title="浏览器异步 API 支持"></a>浏览器异步 API 支持</h1><p>为了支持变化检查，下面这些常用的浏览器机制也被修改了：</p>
+<ul>
+<li>所有的浏览器事件（click、mouseover、keyup 等）</li>
+<li><code>setTimeout()</code> 和 <code>setInterval()</code></li>
+<li>Ajax HTTP 请求</li>
+</ul>
+<p>事实上，为了无感知地触发 Angular 变化检查，Zone.js 也修改了很多别的浏览器 API，比如 Websocket。可以看看 Zone.js 的 <a href="https://github.com/angular/zone.js/tree/master/test/patch" target="_blank" rel="noopener">一段测试代码</a> 看看现在支持了哪些 API。</p>
+<p>这个机制的局限性在于：如果出于某些原因，Zone.js 不支持某个浏览器的异步 API，那么变化检查就不会被触发。比如 IndexedDB 的回调。</p>
+<p>上面解释了变化检查是怎样触发的，但是触发之后他到底是怎样运作的呢？</p>
+<h1 id="变化检查树"><a href="#变化检查树" class="headerlink" title="变化检查树"></a>变化检查树</h1><p>在应用的启动阶段，每个 Angular 组件都与一个变化检查器建立关联。比如下面的 <code>TodoItem</code> 组件：</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Component</span>(&#123;</span><br><span class="line">  selector: <span class="string">'todo-item'</span>,</span><br><span class="line">  template: <span class="string">`</span></span><br><span class="line"><span class="string">    &lt;span (click)="onToggle()" class="todo noselect"&gt;</span></span><br><span class="line"><span class="string">      &#123;&#123;todo.owner.firstName&#125;&#125; - &#123;&#123;todo.description&#125;&#125; - completed: &#123;&#123;todo.completed&#125;&#125;</span></span><br><span class="line"><span class="string">    &lt;/span&gt;</span></span><br><span class="line"><span class="string">  `</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> TodoItem &#123;</span><br><span class="line">  <span class="meta">@Input</span>()</span><br><span class="line">  todo: Todo</span><br><span class="line">  </span><br><span class="line">  <span class="meta">@Output</span>()</span><br><span class="line">  toggle = <span class="keyword">new</span> EventEmitter&lt;<span class="built_in">Object</span>&gt;()</span><br><span class="line">  </span><br><span class="line">  onToggle() &#123;</span><br><span class="line">    <span class="keyword">this</span>.toggle.emit(<span class="keyword">this</span>.todo)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个组件会接受一个 <code>Todo</code> 对象作为输入，并且当 todo 状态发生改变的时候发出一个事件。来搞点花样，<a href="https://github.com/jhades/blog.angular-university.io/blob/master/ng2-change-detection/src/todo.ts#L11" target="_blank" rel="noopener">Todo class</a> 里面还嵌套了一个对象：</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> Todo &#123;</span><br><span class="line">  <span class="keyword">constructor</span>(<span class="params"></span></span><br><span class="line"><span class="params">    <span class="keyword">public</span> id: <span class="built_in">number</span>,</span></span><br><span class="line"><span class="params">    <span class="keyword">public</span> description: <span class="built_in">string</span>,</span></span><br><span class="line"><span class="params">    <span class="keyword">public</span> completed: <span class="built_in">boolean</span>,</span></span><br><span class="line"><span class="params">    <span class="keyword">public</span> owner: Owner <span class="comment">// 嵌套了 Owner 对象</span></span></span><br><span class="line"><span class="params">  </span>) &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>Todo</code> 有一个属性 <code>owner</code>，<code>owner</code> 也是一个对象（有属性 <code>firstName</code> 和 <code>lastName</code>）。</p>
+<h1 id="TodoItem-的变化检查器长什么样子？"><a href="#TodoItem-的变化检查器长什么样子？" class="headerlink" title="TodoItem 的变化检查器长什么样子？"></a>TodoItem 的变化检查器长什么样子？</h1><p>事实上，我们可以在运行时看到变化检查器长什么样子！我们只需要在 Todo class 里面加一些代码来在访问他的属性的时候 <a href="https://github.com/jhades/blog.angular-university.io/blob/master/ng2-change-detection/src/todo.ts#L11" target="_blank" rel="noopener">打一个断点</a> 。</p>
+<p>到达断点的时候，我们可以跟着调用栈看到变化检查：</p>
+<p><img src="https://blog.angular-university.io/how-does-angular-2-change-detection-really-work/" alt=""></p>
+<p>别担心，你不需要去 debug 这些代码。这里也没有引入什么魔法，他只是一个在应用的启动阶段创建的简单的 Javascript 方法。但是他到底做了什么呢？</p>
+<h1 id="默认的变化检查机制是怎么工作的？"><a href="#默认的变化检查机制是怎么工作的？" class="headerlink" title="默认的变化检查机制是怎么工作的？"></a>默认的变化检查机制是怎么工作的？</h1><p>这个方法最开始看起来可能非常奇怪，还有一些奇怪名字的变量。但是我们来仔细看看，可以注意到他在做一些非常简单的事情：他会比较每个表达式中使用的属性现在和之前的值，如果一个属性现在和之前的值不一样，他会将 <code>isChanged</code> 设为 <code>true</code>。</p>
+<p>它使用了 <code>looseNotIdentical()</code> 来比较两个值，<a href="https://github.com/angular/angular/blob/50548fb5655bca742d1056ea91217a3b8460db08/modules/angular2/src/facade/lang.ts#L367" target="_blank" rel="noopener">这个方法</a> 使用了 <code>===</code> 运算符，并且对 <code>NaN</code> 进行了一些特殊处理。</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">looseIdentical</span>(<span class="params">a, b</span>): <span class="title">boolean</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> a === b || <span class="keyword">typeof</span> a === <span class="string">"number"</span> &amp;&amp; <span class="keyword">typeof</span> b === <span class="string">"number"</span> &amp;&amp; <span class="built_in">isNaN</span>(a) &amp;&amp; <span class="built_in">isNaN</span>(b)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="对于嵌套对象-owner-又怎么样呢？"><a href="#对于嵌套对象-owner-又怎么样呢？" class="headerlink" title="对于嵌套对象 owner 又怎么样呢？"></a>对于嵌套对象 <code>owner</code> 又怎么样呢？</h1><p>我们可以看到在变化检查器的代码中，<code>owner</code> 中的对象也被检查了，但是只检查了 <code>firstName</code>，并没有检查 <code>lastName</code>。</p>
+<p>这是因为 <code>lastName</code> 并没有被 template 使用！——同样地，Todo 中的 <code>id</code> 属性也没有被检查。</p>
+<p>对此，我们可以说：</p>
+<blockquote>
+<p>默认情况下，Angular 变化检查是检查 template 表达式中的值是否变化。他会检查所有的组件。</p>
+</blockquote>
+<p>我们也可以总结一下：</p>
+<blockquote>
+<p>默认情况下，Angular 不会做对象的深比较来检查便捷化，他只会关心在 template 中使用的属性。</p>
+</blockquote>
+<h1 id="为什么变化检查默认这样工作？"><a href="#为什么变化检查默认这样工作？" class="headerlink" title="为什么变化检查默认这样工作？"></a>为什么变化检查默认这样工作？</h1><p>Angular 的主要目标之一就是变得更透明和易用，因此框架的使用者不需要为了更有效率地使用它而去进行很冗长的 debug 或者了解他的内部机制。</p>
+<p>如果你熟悉 AngularJs，想一下 <code>$digest()</code> 和 <code>$apply()</code> 以及所有使用/不使用他们的时候的坑。Angular 的主要目标之一就是避免他们。</p>
+<h1 id="那通过引用比较又是怎样的呢？"><a href="#那通过引用比较又是怎样的呢？" class="headerlink" title="那通过引用比较又是怎样的呢？"></a>那通过引用比较又是怎样的呢？</h1><p>事实上，Javascript 的对象都是可变的，Angular 想要对此给予全力的支持。</p>
+<p>想象一下如果 Angular 默认变化检查机制给予组件输入的引用的比较（而不是默认的机制）。这样的话即便是像 TODO 这样简单的应用都需要一些技巧来创建：开发者需要非常小心地来创建一个新的 Todo，而不是只是更新属性。</p>
+<p>但就像我们将要看到的那样，如果有必要的话，也可以自定义 Angular 的变化检查。</p>
 ]]></content>
       <categories>
         <category>前端</category>
