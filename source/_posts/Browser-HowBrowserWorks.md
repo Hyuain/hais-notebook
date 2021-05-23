@@ -6,10 +6,10 @@ tags:
   - 这一秒是你的，下一秒就是我的
   - FAQ
 categories:
-  - [前端, 收集]
+  - [前端, 浏览器]
 ---
 
-看一些文章做的笔记，备忘。
+笔记，备忘。
 原文：[浏览器的工作原理](https://github.com/yacan8/blog/issues/28) 
 
 <!-- more -->
