@@ -1,6 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>浏览器的工作原理</title>
+    <url>/hais-notebook/2021/05/23/Collections-Browser/</url>
+    <content><![CDATA[<p>看一些文章做的笔记，备忘。<br>原文：<a href="https://github.com/yacan8/blog/issues/28" target="_blank" rel="noopener">浏览器的工作原理</a> </p>
+<a id="more"></a>
+<h1 id="浏览器架构"><a href="#浏览器架构" class="headerlink" title="浏览器架构"></a>浏览器架构</h1><h2 id="浏览器的多进程架构"><a href="#浏览器的多进程架构" class="headerlink" title="浏览器的多进程架构"></a>浏览器的多进程架构</h2><h3 id="Chrome-的多进程架构"><a href="#Chrome-的多进程架构" class="headerlink" title="Chrome 的多进程架构"></a>Chrome 的多进程架构</h3><p>浏览器可以是单进程的，也可以是多进程的（不同的进程间可以通过IPC通信），不同的浏览器使用不同的架构，比如对于 Chrome：</p>
+<ul>
+<li><strong>浏览器进程 Browser Process</strong>：负责浏览器 Tab 的前进、后退、地址栏、书签栏、网络请求、文件访问等</li>
+<li><strong>渲染进程 Renderer Process</strong>：负责一个 Tab 内的显示相关工作</li>
+<li><strong>插件进程 Plugin Process</strong>：负责控制插件</li>
+<li><strong>GPU 进程 GPU Process</strong>：负责处理 GPU 任务</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/2.png" alt=""></p>
+<p>当我们在浏览器地址栏输入 URL 后：</p>
+<ol>
+<li><strong>Browser Process</strong> 会向 URL 发请求，获取 HTML 内容，将 HTML 交给 <strong>Renderer Process</strong></li>
+<li><strong>Renderer Process</strong> 解析 HTML 内容，如果遇到网络请求就又返回给 <strong>Browser Process</strong> 进行加载；同时通知 <strong>Browser Process</strong> 需要 <strong>Plugin Process</strong> 加载插件资源</li>
+<li>解析完成后，<strong>Renderer Process</strong> 计算得到图像帧，并将其交给 <strong>GPU Process</strong></li>
+<li><strong>GPU Process</strong> 将图像帧转化为图像显示在屏幕上</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/3.png" alt=""></p>
+<h3 id="多进程架构的好处"><a href="#多进程架构的好处" class="headerlink" title="多进程架构的好处"></a>多进程架构的好处</h3><p><img src="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/4.png" alt=""></p>
+<ol>
+<li>容错性。防止崩溃传染</li>
+<li>安全性。浏览器针对不同的进程限制了不同的权限，并为其提供沙盒运行环境，使其更加安全可靠</li>
+<li>更高的响应速度。避免各个任务抢占 CPU 资源</li>
+</ol>
+<h3 id="多进程架构优化"><a href="#多进程架构优化" class="headerlink" title="多进程架构优化"></a>多进程架构优化</h3><p>一个 Tab 对应一个 <strong>Renderer Process</strong>，进程之间的内存无法共享，而不同的进程内存常常有相同的内容，此时需要优化。</p>
+<h4 id="浏览器的进程模式"><a href="#浏览器的进程模式" class="headerlink" title="浏览器的进程模式"></a>浏览器的进程模式</h4><p>Chrome 提供了四种进程模式（Process Models），不同的进程会对 Tab 进程做不同的处理。</p>
+<ul>
+<li><strong>Process-per-site-instance</strong> (default)：同一个 site-instance 使用一个进程</li>
+<li><strong>Process-per-site</strong>：同一个 site 使用一个进程</li>
+<li><strong>Process-per-tab</strong>：同一个 tab 使用一个进程</li>
+<li><strong>Single Process</strong>：所有 tab 共用一个进程</li>
+</ul>
+<p>其中：</p>
+<ul>
+<li><strong>site</strong> 指的是相同的 domain name(比如 google.com) 和 scheme(比如 <a href="https://)。比如" target="_blank" rel="noopener">https://)。比如</a> a.baidu.com 和 b.baidu.com 就可以理解为一个 site（这与同源策略不同，同源策略还涉及子域名和端口）</li>
+<li><strong>site-instance</strong> 指的是一组 connected pages from the same site。connected 即 can obtain references to each other in script code。比如满足下面两种情况，并打开的新页面和旧页面就属于同一个 site，那么他们就属于一个 site-instance：<ul>
+<li>用户通过 <code>&lt;a&gt;</code> 标签打开的页面</li>
+<li>通过 Javascript 代码打开的新页面（比如 <code>window.open</code>）</li>
+</ul>
+</li>
+</ul>
+<p>举个栗子：若使用 <strong>Process-per-site-instance</strong> 模式，当打开一个 tab 访问 a.baidu.com，再打开一个 tab 访问 b.baidu.com，就是两个进程；若在 a.baidu.com 中，通过 Javascript 代码打开了 b.baidu.com，就会使用同一个进程。</p>
+<p>因此实际上这是介于 <strong>Process-per-site</strong> 和 <strong>Process-per-tab</strong> 之间的一种模式。</p>
+<h1 id="导航过程"><a href="#导航过程" class="headerlink" title="导航过程"></a>导航过程</h1><h2 id="网页加载过程"><a href="#网页加载过程" class="headerlink" title="网页加载过程"></a>网页加载过程</h2><p><strong>Browser Process</strong> 又划分为不同的工作线程：</p>
+<ul>
+<li><strong>UI Thread</strong>：控制浏览器上的按钮和输入框</li>
+<li><strong>Network Thread</strong>：处理网络请求（Chrome 72以后，已将network thread单独摘成network service process，当然也可以通过 chrome://flags/#network-service-in-process修改配置，将其其作为线程运行在Browser Process中 的提出）</li>
+<li><strong>Storage Thread</strong>：控制文件的访问</li>
+</ul>
+<h3 id="第一步：处理输入"><a href="#第一步：处理输入" class="headerlink" title="第一步：处理输入"></a>第一步：处理输入</h3><p>在浏览器地址栏输入内容，按下回车之后 <strong>UI Thread</strong> 会判断输入的内容是搜索关键词还是 URL，然后跳转至搜索引擎或请求 URL。</p>
+<h3 id="第二步：开始导航"><a href="#第二步：开始导航" class="headerlink" title="第二步：开始导航"></a>第二步：开始导航</h3><p><strong>UI Thread</strong> 会将 URL 交给网络进程，并显示一个 Loading 图标。然后网络进程会进行诸如 DNS 寻址、建立 TLS 等连接进行资源请求。如果收到服务器的301重定向响应，它就会告知UI线程进行重定向然后它会再次发起一个新的网络请求。</p>
+<h3 id="第三步：读取响应"><a href="#第三步：读取响应" class="headerlink" title="第三步：读取响应"></a>第三步：读取响应</h3><p>网络进程收到响应之后会开始解析 HTTP 响应报文，然后根据 <code>Content-Type</code> 字段确定媒体类型（MIME Type）：如果媒体类型是 HTML 文件，则会交给渲染进程进行下一步工作；如果是 Zip 或者其他文件，会把相关数据交给下载管理器。</p>
+<p>与此同时，浏览器会进行 <a href="https://safebrowsing.google.com/" target="_blank" rel="noopener">Safe Browsing</a> 安全检查，有可能会展示一个警告页。除此之外，还会做 <a href="https://www.chromium.org/Home/chromium-security/corb-for-developers" target="_blank" rel="noopener">CORB</a> 检查来确定敏感的跨站数据不会发送到渲染进程。</p>
+<h3 id="第四步：查找渲染进程"><a href="#第四步：查找渲染进程" class="headerlink" title="第四步：查找渲染进程"></a>第四步：查找渲染进程</h3><p>检查完毕之后，网络线程会通知UI线程，说数据已经准备好了。UI线程会查找到一个渲染进程进行网页渲染。</p>
+<h3 id="第五步：提交导航"><a href="#第五步：提交导航" class="headerlink" title="第五步：提交导航"></a>第五步：提交导航</h3><p>此时，数据和渲染进程都已经准备好了，浏览器进程会向渲染进程发送 IPC 消息来确认导航。渲染进程接收到数据后，会告诉浏览器进程导航已经提交了，页面开始加载。</p>
+<p>这时导航栏会更新，安全指示符更新，访问历史列表更新。</p>
+<h3 id="第六步：初始化加载完成"><a href="#第六步：初始化加载完成" class="headerlink" title="第六步：初始化加载完成"></a>第六步：初始化加载完成</h3><p>渲染进程渲染完毕之后（页面及内部的 iframe 都触发了 onload 事件），会向浏览器进程发送 IPC 消息，告知浏览器进程。UI 线程就会取消 Loading 状态。</p>
+<h2 id="网页渲染原理"><a href="#网页渲染原理" class="headerlink" title="网页渲染原理"></a>网页渲染原理</h2><p>渲染进程其实主要就是渲染 HTML + CSS + JS，将其转化为用户可交互的 Web 页面。他包含这几个线程：</p>
+<ul>
+<li><strong>Main Thread</strong>：一个主线程</li>
+<li><strong>Work Thread</strong>：多个工作线程</li>
+<li><strong>Compositor Thread</strong>：一个合成器线程</li>
+<li><strong>Raster Thread</strong>：多个光栅化线程</li>
+</ul>
+<h3 id="构建-DOM"><a href="#构建-DOM" class="headerlink" title="构建 DOM"></a>构建 DOM</h3><p>当渲染进程收到导航的确认信息之后，开始接受来自浏览器进程的数据。此时，主线程会转化为 DOM 对象。</p>
+<h3 id="子资源加载"><a href="#子资源加载" class="headerlink" title="子资源加载"></a>子资源加载</h3><p>在构建 DOM 的过程中，会解析到图片、CSS、Javascript 等资源，这些资源需要从网络或者缓存中获取，主线程在构建 DOM 过程中如果遇到了这些资源，逐一发起请求去获取。而为了提升效率，浏览器也会运行预加载扫描程序，如果 HTML 中存在 <code>img</code> <code>link</code> 等，预加载扫描程序会把这些请求传递给网络线程进行资源下载。</p>
+<h3 id="Javascript-的加载与执行"><a href="#Javascript-的加载与执行" class="headerlink" title="Javascript 的加载与执行"></a>Javascript 的加载与执行</h3><p>构建 DOM 的过程中，如果遇到 <code>&lt;script&gt;</code> 标签，会停止对 HTML 的解析，去加载执行 Javascript 代码，因为 Javascript 代码可能会改变 DOM 的结构。</p>
+<p>但我们也可以在 <code>&lt;script&gt;</code> 上添加 <code>async</code> <code>defer</code> 等属性，让浏览器不要阻塞。</p>
+<blockquote>
+<p>defer 仅适用于外部脚本。并且 defer 会保证脚本之间的<strong>执行</strong>的相对顺序，前面的脚本先执行，且一定会在 DOMContentLoaded 之前执行。<br>async 不会保证脚本的相对顺序，谁先下载好谁先执行，且与 DOMContentLoaded 执行顺序无关。</p>
+</blockquote>
+<h3 id="样式计算：Style-Calculation"><a href="#样式计算：Style-Calculation" class="headerlink" title="样式计算：Style Calculation"></a>样式计算：Style Calculation</h3><p>主线程在解析页面时，遇到 <code>&lt;style&gt;</code> 或 <code>&lt;link&gt;</code> 标签的 CSS 资源，会加载 CSS 代码，并以此确定每个 DOM 节点的 <strong>计算样式（Computed Style）</strong>。</p>
+<h3 id="布局：Layout"><a href="#布局：Layout" class="headerlink" title="布局：Layout"></a>布局：Layout</h3><p>主线程会遍历 <strong>DOM</strong> 及相关元素的 <strong>计算样式</strong>，构建出包含每个元素的页面 <strong>坐标信息</strong> 及 <strong>盒子模型大小</strong> 的布局树（Render Tree）。遍历过程中，会跳过隐藏的元素（display: none）；另外，伪元素虽然在 DOM 上不可见，但是在布局树上是可见的。</p>
+<h3 id="绘制：Paint"><a href="#绘制：Paint" class="headerlink" title="绘制：Paint"></a>绘制：Paint</h3><p>主线程会遍历布局树（Layout Tree），生成一系列的绘画记录（Paint Records）。绘画记录可以看做是记录各元素绘制先后顺序的笔记。</p>
+<blockquote>
+<p>关于他们与 CSS 动画的关系，看这篇笔记：<a href="/hais-notebook/2020/02/02/CSS-Animation/" title="CSS 动画">CSS 动画</a></p>
+</blockquote>
+<h3 id="合成：Compositing"><a href="#合成：Compositing" class="headerlink" title="合成：Compositing"></a>合成：Compositing</h3><p>将 文档结构、元素的样式、元素的几何关系、绘画顺序 这些信息转化为显示器中的像素的过程，叫做 <strong>光栅化(Rasterizing)</strong>。</p>
+]]></content>
+      <categories>
+        <category>前端</category>
+        <category>收集</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>FAQ</tag>
+        <tag>这一秒是你的，下一秒就是我的</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>翻译：Angular 如何检查变化</title>
     <url>/hais-notebook/2021/05/17/Angular-ChangeDetection/</url>
     <content><![CDATA[<p>翻译文章 <a href="https://blog.angular-university.io/how-does-angular-2-change-detection-really-work/" target="_blank" rel="noopener">Angular Change Detection - How Does It Really Work?</a> 。</p>
@@ -3501,7 +3593,7 @@ A_{n}^{m} = \frac{n!}{(n-m)!}</script><p>n 个元素中，r 个相同排成一�
 <h1 id="电话号码的组合（公式运算）"><a href="#电话号码的组合（公式运算）" class="headerlink" title="电话号码的组合（公式运算）"></a>电话号码的组合（公式运算）</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">给定一个仅包含数字 2-9 的字符串，返回所有它能表示的字母组合。</span><br><span class="line">给出数字到字母的映射如下（与电话按键相同）。注意 1 不对应任何字母。</span><br><span class="line"></span><br><span class="line">示例:</span><br><span class="line">输入：&quot;23&quot;</span><br><span class="line">输出：[&quot;ad&quot;, &quot;ae&quot;, &quot;af&quot;, &quot;bd&quot;, &quot;be&quot;, &quot;bf&quot;, &quot;cd&quot;, &quot;ce&quot;, &quot;cf&quot;].</span><br><span class="line"></span><br><span class="line">说明:</span><br><span class="line">尽管上面的答案是按字典序排列的，但是你可以任意选择答案输出的顺序。</span><br></pre></td></tr></table></figure>
 <p><a href="https://leetcode-cn.com/problems/letter-combinations-of-a-phone-number/" target="_blank" rel="noopener">LeetCode 原题链接</a></p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> telComb = <span class="function">(<span class="params">str</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> map = [<span class="string">''</span>, <span class="number">1</span>, <span class="string">'abc'</span>, <span class="string">'def'</span>, <span class="string">'ghi'</span>, <span class="string">'jkl'</span>, <span class="string">'mno'</span>, <span class="string">'pqrs'</span>, <span class="string">'tuv'</span>, <span class="string">'wxyz'</span>]</span><br><span class="line">  <span class="keyword">const</span> num = str.split(<span class="string">''</span>)</span><br><span class="line">  <span class="comment">// 保存键盘映射后的字母内容，比如 23 =&gt; ['abc', 'def']</span></span><br><span class="line">  <span class="keyword">const</span> code = []</span><br><span class="line">  num.forEach(<span class="function"><span class="params">item</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (map[item]) &#123;</span><br><span class="line">      code.push(map[item])</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">  <span class="keyword">const</span> combine = <span class="function">(<span class="params">arr</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> result = []</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; arr[<span class="number">0</span>].length; i++) &#123;</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">let</span> j = <span class="number">0</span>; j &lt; arr[<span class="number">1</span>].length; j++) &#123;</span><br><span class="line">        result.push(<span class="string">`<span class="subst">$&#123;arr[<span class="number">0</span>][i]&#125;</span><span class="subst">$&#123;arr[<span class="number">1</span>][j]&#125;</span>`</span>)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 递归的精髓，用临时结果 result 替换掉前面两项</span></span><br><span class="line">    arr.splice(<span class="number">0</span>, <span class="number">2</span>, result)</span><br><span class="line">    <span class="keyword">if</span> (arr.length &gt; <span class="number">1</span>) &#123;</span><br><span class="line">      combine(arr)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> result</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> arr[<span class="number">0</span>]</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> combine(code)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h1 id="卡牌分组-（归类运算）"><a href="#卡牌分组-（归类运算）" class="headerlink" title="卡牌分组 （归类运算）"></a>卡牌分组 （归类运算）</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">给定一副牌，每张牌上都写着一个整数。</span><br><span class="line">此时，你需要选定一个数字 X，使我们可以将整副牌按下述规则分成 1 组或更多组：</span><br><span class="line">每组都有 X 张牌。</span><br><span class="line">组内所有的牌上都写着相同的整数。</span><br><span class="line">仅当你可选的 X &gt;&#x3D; 2 时返回 true。</span><br><span class="line"></span><br><span class="line">示例 1：</span><br><span class="line">输入：[1,2,3,4,4,3,2,1]</span><br><span class="line">输出：true</span><br><span class="line">解释：可行的分组是 [1,1]，[2,2]，[3,3]，[4,4]</span><br><span class="line"></span><br><span class="line">示例 2：</span><br><span class="line">输入：[1,1,1,2,2,2,3,3]</span><br><span class="line">输出：false</span><br><span class="line">解释：没有满足要求的分组。</span><br><span class="line"></span><br><span class="line">示例 3：</span><br><span class="line">输入：[1]</span><br><span class="line">输出：false</span><br><span class="line">解释：没有满足要求的分组。</span><br><span class="line"></span><br><span class="line">示例 4：</span><br><span class="line">输入：[1,1]</span><br><span class="line">输出：true</span><br><span class="line">解释：可行的分组是 [1,1]</span><br><span class="line"></span><br><span class="line">示例 5：</span><br><span class="line">输入：[1,1,2,2,2,2]</span><br><span class="line">输出：true</span><br><span class="line">解释：可行的分组是 [1,1]，[2,2]，[2,2]</span><br><span class="line"></span><br><span class="line">提示：</span><br><span class="line">1 &lt;&#x3D; deck.length &lt;&#x3D; 10000</span><br><span class="line">0 &lt;&#x3D; deck[i] &lt; 10000</span><br></pre></td></tr></table></figure>
+<h1 id="卡牌分组-（归类运算）"><a href="#卡牌分组-（归类运算）" class="headerlink" title="卡牌分组 （归类运算）"></a>卡牌分组 （归类运算）</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">给定一副牌，每张牌上都写着一个整数。</span><br><span class="line">此时，你需要选定一个数字 X，使我们可以将整副牌按下述规则分成 1 组或更多组：</span><br><span class="line">每组都有 X 张牌。</span><br><span class="line">组内所有的牌上都写着相同的整数。</span><br><span class="line">仅当你可选的 X &gt;&#x3D; 2 时返回 true。</span><br><span class="line"></span><br><span class="line">示例 1：</span><br><span class="line">输入：[1,2,3,4,4,3,2,1]</span><br><span class="line">输出：true</span><br><span class="line">解释：可行的分组是 [1,1]，[2,2]，[3,3]，[4,4]</span><br><span class="line"></span><br><span class="line">示例 2：</span><br><span class="line">输入：[1,1,1,2,2,2,3,3]</span><br><span class="line">输出：false</span><br><span class="line">解释：没有满足要求的分组。</span><br><span class="line"></span><br><span class="line">示例 3：</span><br><span class="line">输入：[1]</span><br><span class="line">输出：false</span><br><span class="line">解释：没有满足要求的分组。</span><br><span class="line"></span><br><span class="line">示例 4：</span><br><span class="line">输入：[1,1]</span><br><span class="line">输出：true</span><br><span class="line">解释：可行的分组是 [1,1]</span><br><span class="line"></span><br><span class="line">示例 5：</span><br><span class="line">输入：[1,1,2,2,2,2]</span><br><span class="line">输出：true</span><br><span class="line">解释：可行的分组是 [1,1]，[2,2]，[2,2]</span><br><span class="line"></span><br><span class="line">提示：</span><br><span class="line">1 &lt;&#x3D; deck.length &lt;&#x3D; 10000</span><br><span class="line">0 &lt;&#x3D; deck[i] &lt; 10000</span><br></pre></td></tr></table></figure>
 <p><a href="https://leetcode-cn.com/problems/x-of-a-kind-in-a-deck-of-cards" target="_blank" rel="noopener">LeetCode 原题链接</a></p>
 <p>问题的核心是求最大公约数：</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">辗转相除： gcd(a, b) &#x3D; gcd(b, a % b)</span><br><span class="line">更相减损： gcd(a, b) &#x3D; a &gt; b ? gcd(a - b, b) : gcd(a, b - a)</span><br></pre></td></tr></table></figure>
@@ -3743,10 +3835,10 @@ A_{n}^{m} = \frac{n!}{(n-m)!}</script><p>n 个元素中，r 个相同排成一�
     <url>/hais-notebook/2020/02/04/CS-Algorithm-String/</url>
     <content><![CDATA[<p>一些字符串中涉及到的算法的题解。</p>
 <a id="more"></a>
-<h1 id="反转字符串中的单词"><a href="#反转字符串中的单词" class="headerlink" title="反转字符串中的单词"></a>反转字符串中的单词</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">给定一个字符串，你需要反转字符串中每个单词的字符顺序，同时仍保留空格和单词的初始顺序。</span><br><span class="line"></span><br><span class="line">示例 1:</span><br><span class="line">输入: &quot;Let&#39;s take LeetCode contest&quot;</span><br><span class="line">输出: &quot;s&#39;teL ekat edoCteeL tsetnoc&quot; </span><br><span class="line"></span><br><span class="line">注意：在字符串中，每个单词由单个空格分隔，并且字符串中不会有任何额外的空格。</span><br></pre></td></tr></table></figure>
+<h1 id="反转字符串中的单词"><a href="#反转字符串中的单词" class="headerlink" title="反转字符串中的单词"></a>反转字符串中的单词</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">给定一个字符串，你需要反转字符串中每个单词的字符顺序，同时仍保留空格和单词的初始顺序。</span><br><span class="line"></span><br><span class="line">示例 1:</span><br><span class="line">输入: &quot;Let&#39;s take LeetCode contest&quot;</span><br><span class="line">输出: &quot;s&#39;teL ekat edoCteeL tsetnoc&quot; </span><br><span class="line"></span><br><span class="line">注意：在字符串中，每个单词由单个空格分隔，并且字符串中不会有任何额外的空格。</span><br></pre></td></tr></table></figure>
 <p><a href="https://leetcode-cn.com/problems/reverse-words-in-a-string-iii" target="_blank" rel="noopener">LeetCode 原题链接</a></p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> reverse = <span class="function">(<span class="params">str</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> array = str.split(<span class="string">' '</span>)</span><br><span class="line">  <span class="keyword">const</span> result = array.map(<span class="function"><span class="params">item</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> item.split(<span class="string">''</span>).reverse().join(<span class="string">''</span>)</span><br><span class="line">  &#125;)</span><br><span class="line">  <span class="keyword">return</span> result.join(<span class="string">' '</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 更优雅的写法</span></span><br><span class="line"><span class="keyword">const</span> reverse = <span class="function">(<span class="params">str</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> str</span><br><span class="line">          .split(<span class="string">' '</span>)</span><br><span class="line">          .map(<span class="function"><span class="params">item</span> =&gt;</span> item.split(<span class="string">''</span>).reverse().join(<span class="string">''</span>))</span><br><span class="line">          .join(<span class="string">' '</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用正则表达式</span></span><br><span class="line"><span class="keyword">const</span> reverse = <span class="function">(<span class="params">str</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> str</span><br><span class="line">          .split(<span class="regexp">/\s/g</span>)</span><br><span class="line">          .map(<span class="function"><span class="params">item</span> =&gt;</span> item.split(<span class="string">''</span>).reverse().join(<span class="string">''</span>))</span><br><span class="line">          .join(<span class="string">' '</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用 match API</span></span><br><span class="line"><span class="keyword">const</span> reverse = <span class="function">(<span class="params">str</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> str</span><br><span class="line">          .match(<span class="regexp">/[\w']+/g</span>)</span><br><span class="line">          .map(<span class="function"><span class="params">item</span> =&gt;</span> item.split(<span class="string">''</span>).reverse().join(<span class="string">''</span>))</span><br><span class="line">          .join(<span class="string">' '</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h1 id="计数二进制子串"><a href="#计数二进制子串" class="headerlink" title="计数二进制子串"></a>计数二进制子串</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">给定一个字符串 s，计算具有相同数量0和1的非空(连续)子字符串的数量，并且这些子字符串中的所有0和所有1都是组合在一起的。</span><br><span class="line"></span><br><span class="line">重复出现的子串要计算它们出现的次数。</span><br><span class="line"></span><br><span class="line">示例 1 :</span><br><span class="line">输入: &quot;00110011&quot;</span><br><span class="line">输出: 6</span><br><span class="line">解释: 有6个子串具有相同数量的连续1和0：“0011”，“01”，“1100”，“10”，“0011” 和 “01”。</span><br><span class="line"></span><br><span class="line">请注意，一些重复出现的子串要计算它们出现的次数。</span><br><span class="line">另外，“00110011”不是有效的子串，因为所有的0（和1）没有组合在一起。</span><br><span class="line"></span><br><span class="line">示例 2 :</span><br><span class="line">输入: &quot;10101&quot;</span><br><span class="line">输出: 4</span><br><span class="line">解释: 有4个子串：“10”，“01”，“10”，“01”，它们具有相同数量的连续1和0。</span><br><span class="line"></span><br><span class="line">注意：</span><br><span class="line">s.length 在1到50,000之间。</span><br><span class="line">s 只包含“0”或“1”字符。</span><br></pre></td></tr></table></figure>
+<h1 id="计数二进制子串"><a href="#计数二进制子串" class="headerlink" title="计数二进制子串"></a>计数二进制子串</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">给定一个字符串 s，计算具有相同数量0和1的非空(连续)子字符串的数量，并且这些子字符串中的所有0和所有1都是组合在一起的。</span><br><span class="line"></span><br><span class="line">重复出现的子串要计算它们出现的次数。</span><br><span class="line"></span><br><span class="line">示例 1 :</span><br><span class="line">输入: &quot;00110011&quot;</span><br><span class="line">输出: 6</span><br><span class="line">解释: 有6个子串具有相同数量的连续1和0：“0011”，“01”，“1100”，“10”，“0011” 和 “01”。</span><br><span class="line"></span><br><span class="line">请注意，一些重复出现的子串要计算它们出现的次数。</span><br><span class="line">另外，“00110011”不是有效的子串，因为所有的0（和1）没有组合在一起。</span><br><span class="line"></span><br><span class="line">示例 2 :</span><br><span class="line">输入: &quot;10101&quot;</span><br><span class="line">输出: 4</span><br><span class="line">解释: 有4个子串：“10”，“01”，“10”，“01”，它们具有相同数量的连续1和0。</span><br><span class="line"></span><br><span class="line">注意：</span><br><span class="line">s.length 在1到50,000之间。</span><br><span class="line">s 只包含“0”或“1”字符。</span><br></pre></td></tr></table></figure>
 <p><a href="https://leetcode-cn.com/problems/count-binary-substrings" target="_blank" rel="noopener">LeetCode 原题链接</a></p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> count = <span class="function">(<span class="params">str</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// 建立数据结构，堆栈、保存数据</span></span><br><span class="line">  <span class="keyword">const</span> result = []</span><br><span class="line">  <span class="comment">// 给定任意子输入都返回第一个符合条件的字符串</span></span><br><span class="line">  <span class="keyword">const</span> match = <span class="function">(<span class="params">str</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> j = str.match(<span class="regexp">/^(0+|1+)/</span>)[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">const</span> o = (j[<span class="number">0</span>] ^ <span class="number">1</span>).toString().repeat(j.length)</span><br><span class="line">    <span class="keyword">const</span> reg = <span class="keyword">new</span> <span class="built_in">RegExp</span>(<span class="string">`<span class="subst">$&#123;j&#125;</span><span class="subst">$&#123;o&#125;</span>`</span>)</span><br><span class="line">    <span class="keyword">if</span> (reg.test(str)) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="built_in">RegExp</span>.$<span class="number">1</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="string">''</span></span><br><span class="line">    &#125;   </span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 通过 for 循环控制程序运行流程</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>, len = str.length - <span class="number">1</span>; i &lt; len; i++) &#123;</span><br><span class="line">    <span class="keyword">const</span> sub = match(str.slice(i))</span><br><span class="line">    <span class="keyword">if</span>(sub)&#123;</span><br><span class="line">      result.push(sub)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
       <categories>
@@ -4352,79 +4444,6 @@ A_{n}^{m} = \frac{n!}{(n-m)!}</script><p>n 个元素中，r 个相同排成一�
       </tags>
   </entry>
   <entry>
-    <title>React Props &amp; State</title>
-    <url>/hais-notebook/2020/02/02/React-PropsState/</url>
-    <content><![CDATA[<p>主要记录了 React 的 Props 和 State。</p>
-<a id="more"></a>
-<h1 id="Props"><a href="#Props" class="headerlink" title="Props"></a>Props</h1><p>可以查看<a href="https://codesandbox.io/s/billowing-wind-d8kzw" target="_blank" rel="noopener">CodeSandbox 上的这个例子</a></p>
-<h1 id="State"><a href="#State" class="headerlink" title="State"></a>State</h1><p>可以查看<a href="https://codesandbox.io/s/silly-diffie-9yk38" target="_blank" rel="noopener">CodeSandbox 上的这个例子</a></p>
-<h2 id="setState-的注意事项"><a href="#setState-的注意事项" class="headerlink" title="setState 的注意事项"></a>setState 的注意事项</h2><ul>
-<li><code>this.state.n += 1</code> 无效，UI 不会自动更新，需要用 <code>setState</code></li>
-<li><code>setState</code> 不会马上改变 <code>state</code>，是异步更新的，推荐使用 <code>setState(函数)</code></li>
-<li>不推荐 <code>this.setState(this.state)</code>，因为 React 不推荐我们修改旧的 <code>state</code>（不可变数据）</li>
-</ul>
-<h2 id="复杂-state"><a href="#复杂-state" class="headerlink" title="复杂 state"></a>复杂 state</h2><ul>
-<li>类组件的 <code>setState</code> 会自动合并第一层，建议使用 <code>Object.assign</code> 或者 <code>...sate</code></li>
-<li>函数组件不会自动合并，建议分开写</li>
-</ul>
-<h1 id="Vue-和-React-的区别"><a href="#Vue-和-React-的区别" class="headerlink" title="Vue 和 React 的区别"></a>Vue 和 React 的区别</h1><p>共同点：</p>
-<ul>
-<li>都是对视图的封装，React 是用类和函数表示一个组件，Vue 是用构造选项表示一个组件</li>
-<li>都提供了 <code>creatElement</code> 的 XML 简写，React 是 JSX，Vue 是 template</li>
-</ul>
-<p>不同点：</p>
-<ol>
-<li>监听数据变化的实现原理不同<ul>
-<li>Vue 通过 getter/setter 和代理等方式进行劫持，能够精确知道数据的变化，不需要特别的优化</li>
-<li>React 默认是通过比较引用的方式来进行的，可能会造成不必要的 vDOM 重新渲染，需要用诸如 PureComponent/shouldComponentUpdate 等方式来进行优化</li>
-</ul>
-</li>
-<li>数据流不同<ul>
-<li>Vue 在 1.0 的时候 <strong>父子组件</strong> props 可以双向绑定，还有 v-model 可以实现 <strong>组件与 DOM</strong> 双向绑定</li>
-<li>Vue 2 的时候 <strong>父子组件</strong> 不能双向绑定了（虽然仍然提供了 .sync 语法糖），并且还有 v-model</li>
-<li>React 中是单向数据流，并且组件与 DOM 之间也需要使用 onChange/setState。</li>
-</ul>
-</li>
-<li>HoC 和 mixins<ul>
-<li>Vue 中使用不同功能的组合是通过 mixins 实现的</li>
-<li>React 中则使用 HoC</li>
-</ul>
-</li>
-<li>组件间的通信<ul>
-<li>都有 props，也都可以跨层级通信，比如 Vue 的 provide/inject、React 的 context</li>
-<li>React 本身不支持自定义事件，因此 Vue 里面一般使用事件，React 中一般使用父组件传来的回调函数</li>
-</ul>
-</li>
-<li>更新视图<ul>
-<li>Vue 中一个对象，对应一个虚拟 DOM，当对象的属性改变时，把属性相关的 DOM 节点全部更新</li>
-<li>React 一个对象，对应一个虚拟 DOM，另一个对象对应另一个虚拟 DOM，对比两个更新，用 DOM Diff 算法找不同，然后局部更新 DOM</li>
-</ul>
-</li>
-<li>写法不同<ul>
-<li>Vue 是 JS in HTML</li>
-<li>React 是 HTML in JS</li>
-</ul>
-</li>
-<li>Vuex 和 Redux 的区别<ul>
-<li>Vue 中的 $store 直接注入到了组件实例中，可以直接用 dispatch、commit、mapState、this.$store 等；React 中需要用 connect 把 props 和 dispatch、state 连接起来</li>
-<li>Vue 中可以用 dispatch action、commit mutation；React 中只能使用 dispatch，不能直接操作 reduce</li>
-<li>Redux 中的使用的是不可变数据，每次都要用新的 State 替换旧的，而 Vue 中是直接修改的</li>
-</ul>
-</li>
-</ol>
-]]></content>
-      <categories>
-        <category>前端</category>
-        <category>JavaScript</category>
-        <category>框架</category>
-        <category>React</category>
-      </categories>
-      <tags>
-        <tag>入门</tag>
-        <tag>文档</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>React Advanced</title>
     <url>/hais-notebook/2020/02/02/React-Advanced/</url>
     <content><![CDATA[<p>主要抄了一下 React 文档。</p>
@@ -4558,6 +4577,79 @@ A_{n}^{m} = \frac{n!}{(n-m)!}</script><p>n 个元素中，r 个相同排成一�
 <p>类似的功能也可以通过在 <code>&lt;Mouse&gt;</code> 中使用 <code>props.children</code>，然后直接使用类似于这样的写法：</p>
 <figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line">&lt;Mouse&gt;</span><br><span class="line">  &#123;mouse =&gt; (</span><br><span class="line">    &lt;Cat mouse=&#123;mouse&#125;/&gt;</span><br><span class="line">  )&#125;</span><br><span class="line">&lt;<span class="regexp">/Mouse&gt;</span></span><br></pre></td></tr></table></figure>
 <p>需要注意的是，使用 render prop 会导致 <code>React.PureComponent</code> 失效，因为外层组件更新的时候，render prop 的函数总是新的，除非你把它写成一个实例方法</p>
+]]></content>
+      <categories>
+        <category>前端</category>
+        <category>JavaScript</category>
+        <category>框架</category>
+        <category>React</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>文档</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>React Props &amp; State</title>
+    <url>/hais-notebook/2020/02/02/React-PropsState/</url>
+    <content><![CDATA[<p>主要记录了 React 的 Props 和 State。</p>
+<a id="more"></a>
+<h1 id="Props"><a href="#Props" class="headerlink" title="Props"></a>Props</h1><p>可以查看<a href="https://codesandbox.io/s/billowing-wind-d8kzw" target="_blank" rel="noopener">CodeSandbox 上的这个例子</a></p>
+<h1 id="State"><a href="#State" class="headerlink" title="State"></a>State</h1><p>可以查看<a href="https://codesandbox.io/s/silly-diffie-9yk38" target="_blank" rel="noopener">CodeSandbox 上的这个例子</a></p>
+<h2 id="setState-的注意事项"><a href="#setState-的注意事项" class="headerlink" title="setState 的注意事项"></a>setState 的注意事项</h2><ul>
+<li><code>this.state.n += 1</code> 无效，UI 不会自动更新，需要用 <code>setState</code></li>
+<li><code>setState</code> 不会马上改变 <code>state</code>，是异步更新的，推荐使用 <code>setState(函数)</code></li>
+<li>不推荐 <code>this.setState(this.state)</code>，因为 React 不推荐我们修改旧的 <code>state</code>（不可变数据）</li>
+</ul>
+<h2 id="复杂-state"><a href="#复杂-state" class="headerlink" title="复杂 state"></a>复杂 state</h2><ul>
+<li>类组件的 <code>setState</code> 会自动合并第一层，建议使用 <code>Object.assign</code> 或者 <code>...sate</code></li>
+<li>函数组件不会自动合并，建议分开写</li>
+</ul>
+<h1 id="Vue-和-React-的区别"><a href="#Vue-和-React-的区别" class="headerlink" title="Vue 和 React 的区别"></a>Vue 和 React 的区别</h1><p>共同点：</p>
+<ul>
+<li>都是对视图的封装，React 是用类和函数表示一个组件，Vue 是用构造选项表示一个组件</li>
+<li>都提供了 <code>creatElement</code> 的 XML 简写，React 是 JSX，Vue 是 template</li>
+</ul>
+<p>不同点：</p>
+<ol>
+<li>监听数据变化的实现原理不同<ul>
+<li>Vue 通过 getter/setter 和代理等方式进行劫持，能够精确知道数据的变化，不需要特别的优化</li>
+<li>React 默认是通过比较引用的方式来进行的，可能会造成不必要的 vDOM 重新渲染，需要用诸如 PureComponent/shouldComponentUpdate 等方式来进行优化</li>
+</ul>
+</li>
+<li>数据流不同<ul>
+<li>Vue 在 1.0 的时候 <strong>父子组件</strong> props 可以双向绑定，还有 v-model 可以实现 <strong>组件与 DOM</strong> 双向绑定</li>
+<li>Vue 2 的时候 <strong>父子组件</strong> 不能双向绑定了（虽然仍然提供了 .sync 语法糖），并且还有 v-model</li>
+<li>React 中是单向数据流，并且组件与 DOM 之间也需要使用 onChange/setState。</li>
+</ul>
+</li>
+<li>HoC 和 mixins<ul>
+<li>Vue 中使用不同功能的组合是通过 mixins 实现的</li>
+<li>React 中则使用 HoC</li>
+</ul>
+</li>
+<li>组件间的通信<ul>
+<li>都有 props，也都可以跨层级通信，比如 Vue 的 provide/inject、React 的 context</li>
+<li>React 本身不支持自定义事件，因此 Vue 里面一般使用事件，React 中一般使用父组件传来的回调函数</li>
+</ul>
+</li>
+<li>更新视图<ul>
+<li>Vue 中一个对象，对应一个虚拟 DOM，当对象的属性改变时，把属性相关的 DOM 节点全部更新</li>
+<li>React 一个对象，对应一个虚拟 DOM，另一个对象对应另一个虚拟 DOM，对比两个更新，用 DOM Diff 算法找不同，然后局部更新 DOM</li>
+</ul>
+</li>
+<li>写法不同<ul>
+<li>Vue 是 JS in HTML</li>
+<li>React 是 HTML in JS</li>
+</ul>
+</li>
+<li>Vuex 和 Redux 的区别<ul>
+<li>Vue 中的 $store 直接注入到了组件实例中，可以直接用 dispatch、commit、mapState、this.$store 等；React 中需要用 connect 把 props 和 dispatch、state 连接起来</li>
+<li>Vue 中可以用 dispatch action、commit mutation；React 中只能使用 dispatch，不能直接操作 reduce</li>
+<li>Redux 中的使用的是不可变数据，每次都要用新的 State 替换旧的，而 Vue 中是直接修改的</li>
+</ul>
+</li>
+</ol>
 ]]></content>
       <categories>
         <category>前端</category>
@@ -5205,13 +5297,13 @@ A_{n}^{m} = \frac{n!}{(n-m)!}</script><p>n 个元素中，r 个相同排成一�
 <h2 id="缩放"><a href="#缩放" class="headerlink" title="缩放"></a>缩放</h2><p>border 也会一起变</p>
 <figure class="highlight"><table><tr><td class="code"><pre><span class="line">transform: scaleX(&lt;number&gt;) | scaleY(&lt;number&gt;) | scale(&lt;number&gt;, &lt;number&gt;?)</span><br></pre></td></tr></table></figure>
 <h2 id="旋转"><a href="#旋转" class="headerlink" title="旋转"></a>旋转</h2><p>一般用来做 360 度旋转的 loading 或者按钮的交互</p>
-<figure class="highlight"><table><tr><td class="code"><pre><span class="line">transform: rotate([&lt;angle&gt;|&lt;zero&gt;]) | rotateZ([&lt;angle&gt;|&lt;zero&gt;]) | rotateX([&lt;angle&gt;|&lt;zero&gt;])</span><br></pre></td></tr></table></figure>
-<h2 id="扭曲"><a href="#扭曲" class="headerlink" title="扭曲"></a>扭曲</h2><figure class="highlight"><table><tr><td class="code"><pre><span class="line">transform: skewX(&lt;angle&gt;|&lt;zero&gt;) | skewY(&lt;angle&gt;|&lt;zero&gt;) | skew(&lt;angle&gt;|&lt;zero&gt;, &lt;angle&gt;|&lt;zero&gt;?)</span><br></pre></td></tr></table></figure>
-<h1 id="transition"><a href="#transition" class="headerlink" title="transition"></a><code>transition</code></h1><figure class="highlight css"><table><tr><td class="code"><pre><span class="line">transition: 属性名(可以写all) 时长 过渡方式( linear | ease | ease-in | ease-in-out | cubic-bezier | step-start | step-end | steps ) 延迟</span><br><span class="line"><span class="selector-tag">transition</span>: <span class="selector-tag">width</span> 2<span class="selector-tag">s</span> <span class="selector-tag">linear</span> 3<span class="selector-tag">s</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">transform: rotate([&lt;angle&gt;|&lt;zero&gt;]) | rotateZ([&lt;angle&gt;|&lt;zero&gt;]) | rotateX([&lt;angle&gt;|&lt;zero&gt;])</span><br></pre></td></tr></table></figure>
+<h2 id="扭曲"><a href="#扭曲" class="headerlink" title="扭曲"></a>扭曲</h2><figure class="highlight"><table><tr><td class="code"><pre><span class="line">transform: skewX(&lt;angle&gt;|&lt;zero&gt;) | skewY(&lt;angle&gt;|&lt;zero&gt;) | skew(&lt;angle&gt;|&lt;zero&gt;, &lt;angle&gt;|&lt;zero&gt;?)</span><br></pre></td></tr></table></figure>
+<h1 id="transition"><a href="#transition" class="headerlink" title="transition"></a><code>transition</code></h1><figure class="highlight css"><table><tr><td class="code"><pre><span class="line">transition: 属性名(可以写all) 时长 过渡方式( linear | ease | ease-in | ease-in-out | cubic-bezier | step-start | step-end | steps ) 延迟</span><br><span class="line"><span class="selector-tag">transition</span>: <span class="selector-tag">width</span> 2<span class="selector-tag">s</span> <span class="selector-tag">linear</span> 3<span class="selector-tag">s</span></span><br></pre></td></tr></table></figure>
 <div class="note warning">
             <p>不是所有属性都有过渡<br><code>display: none =&gt; block</code>，一般改成 <code>visibility: hidden =&gt; visible</code></p>
           </div>
-<h1 id="animation"><a href="#animation" class="headerlink" title="animation"></a><code>animation</code></h1><figure class="highlight"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* 声明关键帧 */</span></span><br><span class="line"><span class="keyword">@keyframes</span> xxx &#123;</span><br><span class="line">  0% &#123;</span><br><span class="line">    <span class="attribute">transform</span>: none;</span><br><span class="line">  &#125;</span><br><span class="line">  66<span class="selector-class">.66</span>% &#123;</span><br><span class="line">  <span class="attribute">transform</span>: <span class="built_in">translateX</span>(<span class="number">200px</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 添加动画 */</span></span><br><span class="line">animation: 时长 过渡方式 延迟 次数( infinite ) 方向( reverse | alternate | alternate-reverse ) 填充模式( none | forwards | backwards | both) 是否暂停( paused )  动画名</span><br></pre></td></tr></table></figure>]]></content>
+<h1 id="animation"><a href="#animation" class="headerlink" title="animation"></a><code>animation</code></h1><figure class="highlight"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* 声明关键帧 */</span></span><br><span class="line"><span class="keyword">@keyframes</span> xxx &#123;</span><br><span class="line">  0% &#123;</span><br><span class="line">    <span class="attribute">transform</span>: none;</span><br><span class="line">  &#125;</span><br><span class="line">  66<span class="selector-class">.66</span>% &#123;</span><br><span class="line">  <span class="attribute">transform</span>: <span class="built_in">translateX</span>(<span class="number">200px</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 添加动画 */</span></span><br><span class="line">animation: 时长 过渡方式 延迟 次数( infinite ) 方向( reverse | alternate | alternate-reverse ) 填充模式( none | forwards | backwards | both) 是否暂停( paused )  动画名</span><br></pre></td></tr></table></figure>]]></content>
       <categories>
         <category>前端</category>
         <category>CSS</category>
@@ -6743,7 +6835,7 @@ A_{n}^{m} = \frac{n!}{(n-m)!}</script><p>n 个元素中，r 个相同排成一�
 <h3 id="箭头函数-1"><a href="#箭头函数-1" class="headerlink" title="箭头函数"></a>箭头函数</h3><p>没有 <code>arguments</code> 和 <code>this</code>，里面的 <code>this</code> 就是外面的 <code>this</code>，就算加 <code>call</code> 也没有</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="keyword">this</span>) <span class="comment">// window</span></span><br><span class="line"><span class="keyword">let</span> fn = <span class="function"><span class="params">()</span> =&gt;</span> <span class="built_in">console</span>.log(<span class="keyword">this</span>)</span><br><span class="line">fn() <span class="comment">// window</span></span><br><span class="line">fn.call( &#123;<span class="attr">name</span>:<span class="string">'hai'</span>&#125; ) <span class="comment">// window</span></span><br></pre></td></tr></table></figure>
 <h3 id="立即执行函数"><a href="#立即执行函数" class="headerlink" title="立即执行函数"></a>立即执行函数</h3><p>只想要一个局部变量，而不想要一个函数</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">+<span class="regexp">/-/</span><span class="number">1</span>*<span class="regexp">/! function ()&#123; var a = 2; console.log(a) &#125; ()</span></span><br><span class="line"><span class="regexp">/</span><span class="regexp">/ 声明了一个全局函数，立即调用</span></span><br></pre></td></tr></table></figure>]]></content>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">+<span class="regexp">/-/</span><span class="number">1</span>*<span class="regexp">/! function ()&#123; var a = 2; console.log(a) &#125; ()</span></span><br><span class="line"><span class="regexp">/</span><span class="regexp">/ 声明了一个全局函数，立即调用</span></span><br></pre></td></tr></table></figure>]]></content>
       <categories>
         <category>前端</category>
         <category>JavaScript</category>
@@ -6769,7 +6861,7 @@ A_{n}^{m} = \frac{n!}{(n-m)!}</script><p>n 个元素中，r 个相同排成一�
 <h2 id="截取数组"><a href="#截取数组" class="headerlink" title="截取数组"></a>截取数组</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> arr2 = arr1.slice(<span class="number">2</span>) <span class="comment">// 生成新数组，原数组不变</span></span><br></pre></td></tr></table></figure>
 <h2 id="复制数组"><a href="#复制数组" class="headerlink" title="复制数组"></a>复制数组</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> arr2 = arr1.slice(<span class="number">0</span>) <span class="comment">// 生成新数组，原数组不变</span></span><br></pre></td></tr></table></figure>
 <h1 id="删除元素"><a href="#删除元素" class="headerlink" title="删除元素"></a>删除元素</h1><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">arr = [<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>];  <span class="keyword">delete</span> arr[<span class="string">'0'</span>]</span><br><span class="line"><span class="comment">// arr 为 [ empty, 'b', 'c']，如果3个都是 empty，称为稀疏数组，不推荐</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 改 length 也可以删除数组的元素，不推荐</span></span><br><span class="line"></span><br><span class="line">arr.shift()</span><br><span class="line"><span class="comment">// 删除最开始的元素，并返回他，arr 被修改</span></span><br><span class="line"></span><br><span class="line">arr.pop()</span><br><span class="line"><span class="comment">// 删除最后一个元素，并返回他，arr 被修改</span></span><br><span class="line"> </span><br><span class="line">arr.splice(<span class="number">2</span>, <span class="number">3</span>)</span><br><span class="line"><span class="comment">// 从 2 开始，删除 3 个，并返回删除的部分，arr 被修改</span></span><br><span class="line"></span><br><span class="line">arr.splice(<span class="number">2</span>, <span class="number">3</span>, <span class="string">'x'</span>, <span class="string">'y'</span>)</span><br><span class="line"><span class="comment">// 从 2 开始，删除 3 个，增加 'x' 和 'y'</span></span><br><span class="line"><span class="comment">// 并返回删除的部分，arr 被修改</span></span><br></pre></td></tr></table></figure>
-<h1 id="查找元素"><a href="#查找元素" class="headerlink" title="查找元素"></a>查找元素</h1><h2 id="遍历元素"><a href="#遍历元素" class="headerlink" title="遍历元素"></a>遍历元素</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Object</span>.keys(arr) <span class="comment">// 不推荐</span></span><br><span class="line"><span class="built_in">Object</span>.values(arr) <span class="comment">// 不推荐</span></span><br><span class="line"><span class="keyword">for</span> <span class="keyword">in</span> <span class="comment">// 不推荐</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; arr.length; i++) &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">`<span class="subst">$&#123;i&#125;</span> : <span class="subst">$&#123;arr[i]&#125;</span>`</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">arr.forEach(<span class="function"><span class="keyword">function</span>(<span class="params">item, index, array</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">`$(index) : $(item)`</span>)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 以上两种基本没有区别</span></span><br><span class="line"><span class="comment">// 但 for 关键字有 continue 和 break，forEach 没有</span></span><br><span class="line"><span class="comment">// for 是块级作用域，forEach 是函数作用域</span></span><br></pre></td></tr></table></figure>
+<h1 id="查找元素"><a href="#查找元素" class="headerlink" title="查找元素"></a>查找元素</h1><h2 id="遍历元素"><a href="#遍历元素" class="headerlink" title="遍历元素"></a>遍历元素</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Object</span>.keys(arr) <span class="comment">// 不推荐</span></span><br><span class="line"><span class="built_in">Object</span>.values(arr) <span class="comment">// 不推荐</span></span><br><span class="line"><span class="keyword">for</span> <span class="keyword">in</span> <span class="comment">// 不推荐</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; arr.length; i++) &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">`<span class="subst">$&#123;i&#125;</span> : <span class="subst">$&#123;arr[i]&#125;</span>`</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">arr.forEach(<span class="function"><span class="keyword">function</span>(<span class="params">item, index, array</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">`$(index) : $(item)`</span>)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 以上两种基本没有区别</span></span><br><span class="line"><span class="comment">// 但 for 关键字有 continue 和 break，forEach 没有</span></span><br><span class="line"><span class="comment">// for 是块级作用域，forEach 是函数作用域</span></span><br></pre></td></tr></table></figure>
 <h2 id="查找单个元素"><a href="#查找单个元素" class="headerlink" title="查找单个元素"></a>查找单个元素</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">arr.indexOf(item) <span class="comment">// 有就会返回 index，没有就会返回 -1</span></span><br><span class="line"></span><br><span class="line">arr.find(<span class="function"><span class="params">item</span> =&gt;</span> item % <span class="number">2</span> === <span class="number">0</span>) </span><br><span class="line"><span class="comment">// 会返回第一个符合条件的元素</span></span><br><span class="line">arr.findIndex(<span class="function"><span class="params">item</span> =&gt;</span> item % <span class="number">2</span> === <span class="number">0</span>)</span><br><span class="line"><span class="comment">// 会返回第一个符合条件的元素对应的索引</span></span><br></pre></td></tr></table></figure>
 <div class="note warning">
             <p><strong>索引越界</strong></p><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">arr[arr.length] === <span class="literal">undefined</span></span><br><span class="line">a[<span class="number">-1</span>] === <span class="literal">undefined</span></span><br></pre></td></tr></table></figure>
@@ -6852,7 +6944,7 @@ A_{n}^{m} = \frac{n!}{(n-m)!}</script><p>n 个元素中，r 个相同排成一�
 <li>所有构造函数首字母大写，被构造出来的对象首字母小写</li>
 <li><code>new</code> 后面的函数使用名词；其他的函数一般用动词开头</li>
 </ul>
-<h2 id="如何确定一个对象的原型？"><a href="#如何确定一个对象的原型？" class="headerlink" title="如何确定一个对象的原型？"></a>如何确定一个对象的原型？</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">对象.__proto__ === 其构造函数.prototype</span><br></pre></td></tr></table></figure>
+<h2 id="如何确定一个对象的原型？"><a href="#如何确定一个对象的原型？" class="headerlink" title="如何确定一个对象的原型？"></a>如何确定一个对象的原型？</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">对象.__proto__ === 其构造函数.prototype</span><br></pre></td></tr></table></figure>
 <h2 id="数据类型与对象的分类"><a href="#数据类型与对象的分类" class="headerlink" title="数据类型与对象的分类"></a>数据类型与对象的分类</h2><blockquote>
 <p> 数据类型是 JavaScript 数据的类型，一共有 7 种；<br> 对象的分类则有无数种，常见的有 Array、Function、Date、RegExp 等</p>
 </blockquote>
@@ -6976,7 +7068,7 @@ A_{n}^{m} = \frac{n!}{(n-m)!}</script><p>n 个元素中，r 个相同排成一�
 <li><code>NaN !== NaN</code></li>
 </ul>
 <h2 id="布尔运算符"><a href="#布尔运算符" class="headerlink" title="布尔运算符"></a>布尔运算符</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">console</span> &amp;&amp; <span class="built_in">console</span>.log &amp;&amp; <span class="built_in">console</span>.log(<span class="string">'hi'</span>) <span class="comment">// 防止 console.log 报错（防御性编程）</span></span><br><span class="line">a = a || <span class="number">100</span> <span class="comment">// 但是五个 falsy 值都会让 a 为假，因此有 bug</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 可以用函数来赋初值</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params">n = <span class="number">0</span></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> n + <span class="number">1</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="二进制运算符"><a href="#二进制运算符" class="headerlink" title="二进制运算符"></a>二进制运算符</h2><h3 id="或与否"><a href="#或与否" class="headerlink" title="或与否"></a>或与否</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">(<span class="number">0b1111</span> | <span class="number">0b1010</span>).toString(<span class="number">2</span>) <span class="comment">// 1111</span></span><br><span class="line">(<span class="number">0b1111</span> &amp; <span class="number">0b1010</span>).toString(<span class="number">2</span>) <span class="comment">// 1010</span></span><br><span class="line">(~<span class="number">0b1010</span>).toString <span class="comment">// 涉及到补码，留坑</span></span><br></pre></td></tr></table></figure>
+<h2 id="二进制运算符"><a href="#二进制运算符" class="headerlink" title="二进制运算符"></a>二进制运算符</h2><h3 id="或与否"><a href="#或与否" class="headerlink" title="或与否"></a>或与否</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">(<span class="number">0b1111</span> | <span class="number">0b1010</span>).toString(<span class="number">2</span>) <span class="comment">// 1111</span></span><br><span class="line">(<span class="number">0b1111</span> &amp; <span class="number">0b1010</span>).toString(<span class="number">2</span>) <span class="comment">// 1010</span></span><br><span class="line">(~<span class="number">0b1010</span>).toString <span class="comment">// 涉及到补码，留坑</span></span><br></pre></td></tr></table></figure>
 <h3 id="异或"><a href="#异或" class="headerlink" title="异或"></a>异或</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">(<span class="number">0b1111</span> ^ <span class="number">0b1010</span>).toString(<span class="number">2</span>) <span class="comment">// 101</span></span><br></pre></td></tr></table></figure>
 <div class="note warning">
             <p>按位取反可以用 <code>^1</code></p>
@@ -6989,7 +7081,7 @@ A_{n}^{m} = \frac{n!}{(n-m)!}</script><p>n 个元素中，r 个相同排成一�
 </blockquote>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">~~ <span class="number">6.83</span> <span class="comment">// 6</span></span><br><span class="line"><span class="number">6.83</span> &gt;&gt; <span class="number">0</span></span><br><span class="line"><span class="number">6.83</span> &lt;&lt; <span class="number">0</span></span><br><span class="line"><span class="number">6.83</span> | <span class="number">0</span></span><br><span class="line"><span class="number">6.83</span> &gt;&gt;&gt; <span class="number">0</span></span><br></pre></td></tr></table></figure>
 <h3 id="使用-来交换-a-b-的值"><a href="#使用-来交换-a-b-的值" class="headerlink" title="使用 ^ 来交换 a b 的值"></a>使用 <code>^</code> 来交换 <code>a</code> <code>b</code> 的值</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">a ^= b</span><br><span class="line">b ^= a</span><br><span class="line">a ^= b</span><br><span class="line"></span><br><span class="line"><span class="comment">// 新版语法</span></span><br><span class="line">[a, b] = [b, a]</span><br></pre></td></tr></table></figure>
-<h2 id="其他运算符"><a href="#其他运算符" class="headerlink" title="其他运算符"></a>其他运算符</h2><h3 id="点运算符"><a href="#点运算符" class="headerlink" title="点运算符"></a>点运算符</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">对象.属性名 = 属性值</span><br></pre></td></tr></table></figure>
+<h2 id="其他运算符"><a href="#其他运算符" class="headerlink" title="其他运算符"></a>其他运算符</h2><h3 id="点运算符"><a href="#点运算符" class="headerlink" title="点运算符"></a>点运算符</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">对象.属性名 = 属性值</span><br></pre></td></tr></table></figure>
 <p>如果不是对象，JS会创建一个对象，用完之后再自动删除</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">a.xxx = <span class="string">'harvey'</span> <span class="comment">// 'harvey'</span></span><br><span class="line">a.xxx <span class="comment">// undefiend</span></span><br></pre></td></tr></table></figure>
 <h3 id="void-运算符"><a href="#void-运算符" class="headerlink" title="void 运算符"></a>void 运算符</h3><blockquote>
@@ -7000,7 +7092,7 @@ A_{n}^{m} = \frac{n!}{(n-m)!}</script><p>n 个元素中，r 个相同排成一�
 <h3 id="逗号运算符"><a href="#逗号运算符" class="headerlink" title="逗号运算符"></a>逗号运算符</h3><blockquote>
 <p>表示取后面的值</p>
 </blockquote>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> a = (<span class="number">1</span>, <span class="number">2</span>) <span class="comment">// a 为 2</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> f = <span class="function"><span class="params">x</span> =&gt;</span> &#123; <span class="built_in">console</span>.log(<span class="string">'hi'</span>); <span class="keyword">return</span> x + <span class="number">1</span> &#125;</span><br><span class="line"><span class="keyword">let</span> f = <span class="function"><span class="params">x</span> =&gt;</span> (<span class="built_in">console</span>.log(<span class="string">'hi'</span>), x + <span class="number">1</span>)</span><br><span class="line"><span class="comment">// 跟上面是一样的，先执行 console.log，再让 return 为x + 1</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> a = (<span class="number">1</span>, <span class="number">2</span>) <span class="comment">// a 为 2</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> f = <span class="function"><span class="params">x</span> =&gt;</span> &#123; <span class="built_in">console</span>.log(<span class="string">'hi'</span>); <span class="keyword">return</span> x + <span class="number">1</span> &#125;</span><br><span class="line"><span class="keyword">let</span> f = <span class="function"><span class="params">x</span> =&gt;</span> (<span class="built_in">console</span>.log(<span class="string">'hi'</span>), x + <span class="number">1</span>)</span><br><span class="line"><span class="comment">// 跟上面是一样的，先执行 console.log，再让 return 为x + 1</span></span><br></pre></td></tr></table></figure>
 <h2 id="优先级"><a href="#优先级" class="headerlink" title="优先级"></a>优先级</h2><p>圆括号的优先级最高</p>
 <h1 id="数据类型检测"><a href="#数据类型检测" class="headerlink" title="数据类型检测"></a>数据类型检测</h1><h2 id="typeof-instanceof-toString-的比较"><a href="#typeof-instanceof-toString-的比较" class="headerlink" title="typeof instanceof toString 的比较"></a><code>typeof</code> <code>instanceof</code> <code>toString</code> 的比较</h2><table>
   <tr>
@@ -7199,9 +7291,9 @@ A_{n}^{m} = \frac{n!}{(n-m)!}</script><p>n 个元素中，r 个相同排成一�
 <h2 id="标识符"><a href="#标识符" class="headerlink" title="标识符"></a>标识符</h2><p>在 JavaScript 中，标识符只能包含字母或数字或下划线（“_”）或美元符号（“$”），且不能以数字开头。（有时候也可以用其他的 Unicode 字符，比如中文，比如 Emoji）</p>
 <h2 id="代码区块-block"><a href="#代码区块-block" class="headerlink" title="代码区块 block"></a>代码区块 block</h2><p>简单来说就是把代码用大括号包在一起</p>
 <h2 id="amp-amp"><a href="#amp-amp" class="headerlink" title="&amp;&amp;"></a>&amp;&amp;</h2><p>如果前面是 <strong>真的</strong>，就执行后面的（若前面是假的，表达式的值为前面；若前面是真的，表达式的值为后面）</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">window</span>.f1 &amp;&amp; <span class="built_in">console</span>.log(<span class="string">'f1 存在'</span>)</span><br><span class="line"><span class="built_in">console</span> &amp;&amp; <span class="built_in">console</span>.log &amp;&amp; <span class="built_in">console</span>.log(<span class="string">'hi'</span>) <span class="comment">// 因为 IE 没有 console.log，所以可以这样写防止出错</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">window</span>.f1 &amp;&amp; <span class="built_in">console</span>.log(<span class="string">'f1 存在'</span>)</span><br><span class="line"><span class="built_in">console</span> &amp;&amp; <span class="built_in">console</span>.log &amp;&amp; <span class="built_in">console</span>.log(<span class="string">'hi'</span>) <span class="comment">// 因为 IE 没有 console.log，所以可以这样写防止出错</span></span><br></pre></td></tr></table></figure>
 <h2 id=""><a href="#" class="headerlink" title="||"></a>||</h2><p>如果前面是 <strong>假的</strong>，就执行后面的</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">a = a || <span class="number">100</span> <span class="comment">// 可以用于设置保底值</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">a = a || <span class="number">100</span> <span class="comment">// 可以用于设置保底值</span></span><br></pre></td></tr></table></figure>
 <h2 id="for"><a href="#for" class="headerlink" title="for"></a>for</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++)&#123;</span><br><span class="line">  setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> <span class="built_in">console</span>.log(i))</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 5 5 5 5 5</span></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++)&#123;</span><br><span class="line">  setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> <span class="built_in">console</span>.log(i))</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 0 1 2 3 4</span></span><br></pre></td></tr></table></figure>
 <h2 id="label"><a href="#label" class="headerlink" title="label"></a>label</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123; <span class="attr">a</span>:<span class="number">1</span> &#125; <span class="comment">// a 是一个 label，值是 1</span></span><br></pre></td></tr></table></figure>]]></content>
       <categories>

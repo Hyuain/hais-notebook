@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/hais-notebook/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/hais-notebook/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/hais-notebook/images/favicon-16x16.png">
+
+<link rel="stylesheet" href="/hais-notebook/css/main.css">
+
+
+<link rel="stylesheet" href="/hais-notebook/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('https://hyuain.github.io/hais-notebook').hostname,
+    root: '/hais-notebook/',
+    scheme: 'Gemini',
+    version: '7.7.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: 'W0QZQNNH7N',
+      apiKey: '00189c8d102508ea71e94422b5f129fd',
+      indexName: 'hais-notebook',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="看一些文章做的笔记，备忘。原文：浏览器的工作原理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浏览器的工作原理">
+<meta property="og:url" content="https://hyuain.github.io/hais-notebook/2021/05/23/Collections-Browser/index.html">
+<meta property="og:site_name" content="Hais Notebook">
+<meta property="og:description" content="看一些文章做的笔记，备忘。原文：浏览器的工作原理">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/2.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/3.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/4.png">
+<meta property="article:published_time" content="2021-05-23T11:10:48.000Z">
+<meta property="article:modified_time" content="2021-05-23T07:59:05.400Z">
+<meta property="article:author" content="Harvey Zhang">
+<meta property="article:tag" content="入门">
+<meta property="article:tag" content="FAQ">
+<meta property="article:tag" content="这一秒是你的，下一秒就是我的">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/2.png">
+
+<link rel="canonical" href="https://hyuain.github.io/hais-notebook/2021/05/23/Collections-Browser/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>浏览器的工作原理 | Hais Notebook</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/hais-notebook/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hais Notebook</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/hais-notebook/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/hais-notebook/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/hais-notebook/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/hais-notebook/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2021/05/23/Collections-Browser/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
+      <meta itemprop="name" content="Harvey Zhang">
+      <meta itemprop="description" content="小海的笔记本">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hais Notebook">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          浏览器的工作原理
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-05-23 11:10:48 / 修改时间：07:59:05" itemprop="dateCreated datePublished" datetime="2021-05-23T11:10:48+00:00">2021-05-23</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hais-notebook/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index">
+                    <span itemprop="name">前端</span>
+                  </a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hais-notebook/categories/%E5%89%8D%E7%AB%AF/%E6%94%B6%E9%9B%86/" itemprop="url" rel="index">
+                    <span itemprop="name">收集</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>看一些文章做的笔记，备忘。<br>原文：<a href="https://github.com/yacan8/blog/issues/28" target="_blank" rel="noopener">浏览器的工作原理</a> </p>
+<a id="more"></a>
+<h1 id="浏览器架构"><a href="#浏览器架构" class="headerlink" title="浏览器架构"></a>浏览器架构</h1><h2 id="浏览器的多进程架构"><a href="#浏览器的多进程架构" class="headerlink" title="浏览器的多进程架构"></a>浏览器的多进程架构</h2><h3 id="Chrome-的多进程架构"><a href="#Chrome-的多进程架构" class="headerlink" title="Chrome 的多进程架构"></a>Chrome 的多进程架构</h3><p>浏览器可以是单进程的，也可以是多进程的（不同的进程间可以通过IPC通信），不同的浏览器使用不同的架构，比如对于 Chrome：</p>
+<ul>
+<li><strong>浏览器进程 Browser Process</strong>：负责浏览器 Tab 的前进、后退、地址栏、书签栏、网络请求、文件访问等</li>
+<li><strong>渲染进程 Renderer Process</strong>：负责一个 Tab 内的显示相关工作</li>
+<li><strong>插件进程 Plugin Process</strong>：负责控制插件</li>
+<li><strong>GPU 进程 GPU Process</strong>：负责处理 GPU 任务</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/2.png" alt=""></p>
+<p>当我们在浏览器地址栏输入 URL 后：</p>
+<ol>
+<li><strong>Browser Process</strong> 会向 URL 发请求，获取 HTML 内容，将 HTML 交给 <strong>Renderer Process</strong></li>
+<li><strong>Renderer Process</strong> 解析 HTML 内容，如果遇到网络请求就又返回给 <strong>Browser Process</strong> 进行加载；同时通知 <strong>Browser Process</strong> 需要 <strong>Plugin Process</strong> 加载插件资源</li>
+<li>解析完成后，<strong>Renderer Process</strong> 计算得到图像帧，并将其交给 <strong>GPU Process</strong></li>
+<li><strong>GPU Process</strong> 将图像帧转化为图像显示在屏幕上</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/3.png" alt=""></p>
+<h3 id="多进程架构的好处"><a href="#多进程架构的好处" class="headerlink" title="多进程架构的好处"></a>多进程架构的好处</h3><p><img src="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/4.png" alt=""></p>
+<ol>
+<li>容错性。防止崩溃传染</li>
+<li>安全性。浏览器针对不同的进程限制了不同的权限，并为其提供沙盒运行环境，使其更加安全可靠</li>
+<li>更高的响应速度。避免各个任务抢占 CPU 资源</li>
+</ol>
+<h3 id="多进程架构优化"><a href="#多进程架构优化" class="headerlink" title="多进程架构优化"></a>多进程架构优化</h3><p>一个 Tab 对应一个 <strong>Renderer Process</strong>，进程之间的内存无法共享，而不同的进程内存常常有相同的内容，此时需要优化。</p>
+<h4 id="浏览器的进程模式"><a href="#浏览器的进程模式" class="headerlink" title="浏览器的进程模式"></a>浏览器的进程模式</h4><p>Chrome 提供了四种进程模式（Process Models），不同的进程会对 Tab 进程做不同的处理。</p>
+<ul>
+<li><strong>Process-per-site-instance</strong> (default)：同一个 site-instance 使用一个进程</li>
+<li><strong>Process-per-site</strong>：同一个 site 使用一个进程</li>
+<li><strong>Process-per-tab</strong>：同一个 tab 使用一个进程</li>
+<li><strong>Single Process</strong>：所有 tab 共用一个进程</li>
+</ul>
+<p>其中：</p>
+<ul>
+<li><strong>site</strong> 指的是相同的 domain name(比如 google.com) 和 scheme(比如 <a href="https://)。比如" target="_blank" rel="noopener">https://)。比如</a> a.baidu.com 和 b.baidu.com 就可以理解为一个 site（这与同源策略不同，同源策略还涉及子域名和端口）</li>
+<li><strong>site-instance</strong> 指的是一组 connected pages from the same site。connected 即 can obtain references to each other in script code。比如满足下面两种情况，并打开的新页面和旧页面就属于同一个 site，那么他们就属于一个 site-instance：<ul>
+<li>用户通过 <code>&lt;a&gt;</code> 标签打开的页面</li>
+<li>通过 Javascript 代码打开的新页面（比如 <code>window.open</code>）</li>
+</ul>
+</li>
+</ul>
+<p>举个栗子：若使用 <strong>Process-per-site-instance</strong> 模式，当打开一个 tab 访问 a.baidu.com，再打开一个 tab 访问 b.baidu.com，就是两个进程；若在 a.baidu.com 中，通过 Javascript 代码打开了 b.baidu.com，就会使用同一个进程。</p>
+<p>因此实际上这是介于 <strong>Process-per-site</strong> 和 <strong>Process-per-tab</strong> 之间的一种模式。</p>
+<h1 id="导航过程"><a href="#导航过程" class="headerlink" title="导航过程"></a>导航过程</h1><h2 id="网页加载过程"><a href="#网页加载过程" class="headerlink" title="网页加载过程"></a>网页加载过程</h2><p><strong>Browser Process</strong> 又划分为不同的工作线程：</p>
+<ul>
+<li><strong>UI Thread</strong>：控制浏览器上的按钮和输入框</li>
+<li><strong>Network Thread</strong>：处理网络请求（Chrome 72以后，已将network thread单独摘成network service process，当然也可以通过 chrome://flags/#network-service-in-process修改配置，将其其作为线程运行在Browser Process中 的提出）</li>
+<li><strong>Storage Thread</strong>：控制文件的访问</li>
+</ul>
+<h3 id="第一步：处理输入"><a href="#第一步：处理输入" class="headerlink" title="第一步：处理输入"></a>第一步：处理输入</h3><p>在浏览器地址栏输入内容，按下回车之后 <strong>UI Thread</strong> 会判断输入的内容是搜索关键词还是 URL，然后跳转至搜索引擎或请求 URL。</p>
+<h3 id="第二步：开始导航"><a href="#第二步：开始导航" class="headerlink" title="第二步：开始导航"></a>第二步：开始导航</h3><p><strong>UI Thread</strong> 会将 URL 交给网络进程，并显示一个 Loading 图标。然后网络进程会进行诸如 DNS 寻址、建立 TLS 等连接进行资源请求。如果收到服务器的301重定向响应，它就会告知UI线程进行重定向然后它会再次发起一个新的网络请求。</p>
+<h3 id="第三步：读取响应"><a href="#第三步：读取响应" class="headerlink" title="第三步：读取响应"></a>第三步：读取响应</h3><p>网络进程收到响应之后会开始解析 HTTP 响应报文，然后根据 <code>Content-Type</code> 字段确定媒体类型（MIME Type）：如果媒体类型是 HTML 文件，则会交给渲染进程进行下一步工作；如果是 Zip 或者其他文件，会把相关数据交给下载管理器。</p>
+<p>与此同时，浏览器会进行 <a href="https://safebrowsing.google.com/" target="_blank" rel="noopener">Safe Browsing</a> 安全检查，有可能会展示一个警告页。除此之外，还会做 <a href="https://www.chromium.org/Home/chromium-security/corb-for-developers" target="_blank" rel="noopener">CORB</a> 检查来确定敏感的跨站数据不会发送到渲染进程。</p>
+<h3 id="第四步：查找渲染进程"><a href="#第四步：查找渲染进程" class="headerlink" title="第四步：查找渲染进程"></a>第四步：查找渲染进程</h3><p>检查完毕之后，网络线程会通知UI线程，说数据已经准备好了。UI线程会查找到一个渲染进程进行网页渲染。</p>
+<h3 id="第五步：提交导航"><a href="#第五步：提交导航" class="headerlink" title="第五步：提交导航"></a>第五步：提交导航</h3><p>此时，数据和渲染进程都已经准备好了，浏览器进程会向渲染进程发送 IPC 消息来确认导航。渲染进程接收到数据后，会告诉浏览器进程导航已经提交了，页面开始加载。</p>
+<p>这时导航栏会更新，安全指示符更新，访问历史列表更新。</p>
+<h3 id="第六步：初始化加载完成"><a href="#第六步：初始化加载完成" class="headerlink" title="第六步：初始化加载完成"></a>第六步：初始化加载完成</h3><p>渲染进程渲染完毕之后（页面及内部的 iframe 都触发了 onload 事件），会向浏览器进程发送 IPC 消息，告知浏览器进程。UI 线程就会取消 Loading 状态。</p>
+<h2 id="网页渲染原理"><a href="#网页渲染原理" class="headerlink" title="网页渲染原理"></a>网页渲染原理</h2><p>渲染进程其实主要就是渲染 HTML + CSS + JS，将其转化为用户可交互的 Web 页面。他包含这几个线程：</p>
+<ul>
+<li><strong>Main Thread</strong>：一个主线程</li>
+<li><strong>Work Thread</strong>：多个工作线程</li>
+<li><strong>Compositor Thread</strong>：一个合成器线程</li>
+<li><strong>Raster Thread</strong>：多个光栅化线程</li>
+</ul>
+<h3 id="构建-DOM"><a href="#构建-DOM" class="headerlink" title="构建 DOM"></a>构建 DOM</h3><p>当渲染进程收到导航的确认信息之后，开始接受来自浏览器进程的数据。此时，主线程会转化为 DOM 对象。</p>
+<h3 id="子资源加载"><a href="#子资源加载" class="headerlink" title="子资源加载"></a>子资源加载</h3><p>在构建 DOM 的过程中，会解析到图片、CSS、Javascript 等资源，这些资源需要从网络或者缓存中获取，主线程在构建 DOM 过程中如果遇到了这些资源，逐一发起请求去获取。而为了提升效率，浏览器也会运行预加载扫描程序，如果 HTML 中存在 <code>img</code> <code>link</code> 等，预加载扫描程序会把这些请求传递给网络线程进行资源下载。</p>
+<h3 id="Javascript-的加载与执行"><a href="#Javascript-的加载与执行" class="headerlink" title="Javascript 的加载与执行"></a>Javascript 的加载与执行</h3><p>构建 DOM 的过程中，如果遇到 <code>&lt;script&gt;</code> 标签，会停止对 HTML 的解析，去加载执行 Javascript 代码，因为 Javascript 代码可能会改变 DOM 的结构。</p>
+<p>但我们也可以在 <code>&lt;script&gt;</code> 上添加 <code>async</code> <code>defer</code> 等属性，让浏览器不要阻塞。</p>
+<blockquote>
+<p>defer 仅适用于外部脚本。并且 defer 会保证脚本之间的<strong>执行</strong>的相对顺序，前面的脚本先执行，且一定会在 DOMContentLoaded 之前执行。<br>async 不会保证脚本的相对顺序，谁先下载好谁先执行，且与 DOMContentLoaded 执行顺序无关。</p>
+</blockquote>
+<h3 id="样式计算：Style-Calculation"><a href="#样式计算：Style-Calculation" class="headerlink" title="样式计算：Style Calculation"></a>样式计算：Style Calculation</h3><p>主线程在解析页面时，遇到 <code>&lt;style&gt;</code> 或 <code>&lt;link&gt;</code> 标签的 CSS 资源，会加载 CSS 代码，并以此确定每个 DOM 节点的 <strong>计算样式（Computed Style）</strong>。</p>
+<h3 id="布局：Layout"><a href="#布局：Layout" class="headerlink" title="布局：Layout"></a>布局：Layout</h3><p>主线程会遍历 <strong>DOM</strong> 及相关元素的 <strong>计算样式</strong>，构建出包含每个元素的页面 <strong>坐标信息</strong> 及 <strong>盒子模型大小</strong> 的布局树（Render Tree）。遍历过程中，会跳过隐藏的元素（display: none）；另外，伪元素虽然在 DOM 上不可见，但是在布局树上是可见的。</p>
+<h3 id="绘制：Paint"><a href="#绘制：Paint" class="headerlink" title="绘制：Paint"></a>绘制：Paint</h3><p>主线程会遍历布局树（Layout Tree），生成一系列的绘画记录（Paint Records）。绘画记录可以看做是记录各元素绘制先后顺序的笔记。</p>
+<blockquote>
+<p>关于他们与 CSS 动画的关系，看这篇笔记：<a href="/hais-notebook/2020/02/02/CSS-Animation/" title="CSS 动画">CSS 动画</a></p>
+</blockquote>
+<h3 id="合成：Compositing"><a href="#合成：Compositing" class="headerlink" title="合成：Compositing"></a>合成：Compositing</h3><p>将 文档结构、元素的样式、元素的几何关系、绘画顺序 这些信息转化为显示器中的像素的过程，叫做 <strong>光栅化(Rasterizing)</strong>。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/hais-notebook/tags/%E5%85%A5%E9%97%A8/" rel="tag"># 入门</a>
+              <a href="/hais-notebook/tags/FAQ/" rel="tag"># FAQ</a>
+              <a href="/hais-notebook/tags/%E8%BF%99%E4%B8%80%E7%A7%92%E6%98%AF%E4%BD%A0%E7%9A%84%EF%BC%8C%E4%B8%8B%E4%B8%80%E7%A7%92%E5%B0%B1%E6%98%AF%E6%88%91%E7%9A%84/" rel="tag"># 这一秒是你的，下一秒就是我的</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/hais-notebook/2021/05/17/Angular-ChangeDetection/" rel="prev" title="翻译：Angular 如何检查变化">
+      <i class="fa fa-chevron-left"></i> 翻译：Angular 如何检查变化
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#浏览器架构"><span class="nav-number">1.</span> <span class="nav-text">浏览器架构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#浏览器的多进程架构"><span class="nav-number">1.1.</span> <span class="nav-text">浏览器的多进程架构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Chrome-的多进程架构"><span class="nav-number">1.1.1.</span> <span class="nav-text">Chrome 的多进程架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多进程架构的好处"><span class="nav-number">1.1.2.</span> <span class="nav-text">多进程架构的好处</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多进程架构优化"><span class="nav-number">1.1.3.</span> <span class="nav-text">多进程架构优化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#浏览器的进程模式"><span class="nav-number">1.1.3.1.</span> <span class="nav-text">浏览器的进程模式</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#导航过程"><span class="nav-number">2.</span> <span class="nav-text">导航过程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#网页加载过程"><span class="nav-number">2.1.</span> <span class="nav-text">网页加载过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#第一步：处理输入"><span class="nav-number">2.1.1.</span> <span class="nav-text">第一步：处理输入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第二步：开始导航"><span class="nav-number">2.1.2.</span> <span class="nav-text">第二步：开始导航</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第三步：读取响应"><span class="nav-number">2.1.3.</span> <span class="nav-text">第三步：读取响应</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第四步：查找渲染进程"><span class="nav-number">2.1.4.</span> <span class="nav-text">第四步：查找渲染进程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第五步：提交导航"><span class="nav-number">2.1.5.</span> <span class="nav-text">第五步：提交导航</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第六步：初始化加载完成"><span class="nav-number">2.1.6.</span> <span class="nav-text">第六步：初始化加载完成</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网页渲染原理"><span class="nav-number">2.2.</span> <span class="nav-text">网页渲染原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#构建-DOM"><span class="nav-number">2.2.1.</span> <span class="nav-text">构建 DOM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#子资源加载"><span class="nav-number">2.2.2.</span> <span class="nav-text">子资源加载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Javascript-的加载与执行"><span class="nav-number">2.2.3.</span> <span class="nav-text">Javascript 的加载与执行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#样式计算：Style-Calculation"><span class="nav-number">2.2.4.</span> <span class="nav-text">样式计算：Style Calculation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#布局：Layout"><span class="nav-number">2.2.5.</span> <span class="nav-text">布局：Layout</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#绘制：Paint"><span class="nav-number">2.2.6.</span> <span class="nav-text">绘制：Paint</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#合成：Compositing"><span class="nav-number">2.2.7.</span> <span class="nav-text">合成：Compositing</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Harvey Zhang</p>
+  <div class="site-description" itemprop="description">小海的笔记本</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/hais-notebook/archives/">
+        
+          <span class="site-state-item-count">87</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/hais-notebook/categories/">
+          
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/hais-notebook/tags/">
+          
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Harvey Zhang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/hais-notebook/lib/anime.min.js"></script>
+  <script src="/hais-notebook/lib/velocity/velocity.min.js"></script>
+  <script src="/hais-notebook/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/hais-notebook/js/utils.js"></script>
+
+<script src="/hais-notebook/js/motion.js"></script>
+
+
+<script src="/hais-notebook/js/schemes/pisces.js"></script>
+
+
+<script src="/hais-notebook/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/hais-notebook/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
