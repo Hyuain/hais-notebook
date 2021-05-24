@@ -2,15 +2,13 @@ sudo: true
 language: node_js
 node_js:
   - 14 # use nodejs v14 LTS
-cache:
-  - npm
-  - apt
-install:
-  - sudo apt-get install pandoc
+cache: npm
 branches:
   only:
     - master # build master branch only
 script:
+  - dpkg -i pandoc.deb
+  - hexo clean
   - hexo generate # generate static files
 deploy:
   provider: pages
