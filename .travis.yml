@@ -1,4 +1,4 @@
-sudo: false
+sudo: true
 language: node_js
 node_js:
   - 14 # use nodejs v14 LTS
@@ -7,6 +7,7 @@ branches:
   only:
     - master # build master branch only
 script:
+  - dpkg -i pandoc.deb
   - hexo clean
   - hexo generate # generate static files
 deploy:
