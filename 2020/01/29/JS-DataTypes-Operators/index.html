@@ -4,48 +4,22 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
+
+
   <link rel="apple-touch-icon" sizes="180x180" href="/hais-notebook/images/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/hais-notebook/images/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/hais-notebook/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/hais-notebook/images/logo.svg" color="#222">
 
 <link rel="stylesheet" href="/hais-notebook/css/main.css">
 
 
-<link rel="stylesheet" href="/hais-notebook/lib/font-awesome/css/font-awesome.min.css">
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
 
-<script id="hexo-configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    hostname: new URL('https://hyuain.github.io/hais-notebook').hostname,
-    root: '/hais-notebook/',
-    scheme: 'Gemini',
-    version: '7.7.0',
-    exturl: false,
-    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
-    copycode: {"enable":false,"show_result":false,"style":null},
-    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
-    bookmark: {"enable":false,"color":"#222","save":"auto"},
-    fancybox: false,
-    mediumzoom: false,
-    lazyload: false,
-    pangu: false,
-    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
-    algolia: {
-      appID: 'W0QZQNNH7N',
-      apiKey: '00189c8d102508ea71e94422b5f129fd',
-      indexName: 'hais-notebook',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    },
-    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
-    path: 'search.xml',
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
-  };
-</script>
-
-  <meta name="description" content="JavaScript 有 7 种数据类型，3 种变量声明的方式，以及一些奇怪的运算符。">
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;hyuain.github.io&quot;,&quot;root&quot;:&quot;&#x2F;hais-notebook&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;hais-notebook&#x2F;images&quot;,&quot;scheme&quot;:&quot;Gemini&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:true,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:false,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;搜索...&quot;,&quot;empty&quot;:&quot;没有找到任何搜索结果：${query}&quot;,&quot;hits_time&quot;:&quot;找到 ${hits} 个搜索结果（用时 ${time} 毫秒）&quot;,&quot;hits&quot;:&quot;找到 ${hits} 个搜索结果&quot;},&quot;path&quot;:&quot;&#x2F;hais-notebook&#x2F;search.xml&quot;,&quot;localsearch&quot;:{&quot;enable&quot;:true,&quot;trigger&quot;:&quot;auto&quot;,&quot;top_n_per_article&quot;:1,&quot;unescape&quot;:false,&quot;preload&quot;:false}}</script>
+<meta name="description" content="JavaScript 有 7 种数据类型，3 种变量声明的方式，以及一些奇怪的运算符。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="JavaScript 数据类型与运算符">
 <meta property="og:url" content="https://hyuain.github.io/hais-notebook/2020/01/29/JS-DataTypes-Operators/index.html">
@@ -54,583 +28,114 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/JS-Number-Range.png">
 <meta property="article:published_time" content="2020-01-29T14:55:42.000Z">
-<meta property="article:modified_time" content="2021-05-24T13:39:43.273Z">
+<meta property="article:modified_time" content="2020-01-29T14:55:42.000Z">
 <meta property="article:author" content="Harvey Zhang">
 <meta property="article:tag" content="入门">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/JS-Number-Range.png">
 
+
 <link rel="canonical" href="https://hyuain.github.io/hais-notebook/2020/01/29/JS-DataTypes-Operators/">
 
 
-<script id="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome: false,
-    isPost: true
-  };
-</script>
 
-  <title>JavaScript 数据类型与运算符 | Hais Notebook</title>
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;zh-CN&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;https:&#x2F;&#x2F;hyuain.github.io&#x2F;hais-notebook&#x2F;2020&#x2F;01&#x2F;29&#x2F;JS-DataTypes-Operators&#x2F;&quot;,&quot;path&quot;:&quot;2020&#x2F;01&#x2F;29&#x2F;JS-DataTypes-Operators&#x2F;&quot;,&quot;title&quot;:&quot;JavaScript 数据类型与运算符&quot;}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>JavaScript 数据类型与运算符 | Hais Notebook</title><script src="/hais-notebook/js/config.js"></script>
   
-
-
 
 
 
 
   <noscript>
-  <style>
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header { opacity: initial; }
-
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
-
+    <link rel="stylesheet" href="/hais-notebook/css/noscript.css">
+  </noscript>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
-    <div class="headband"></div>
+  <div class="headband"></div>
 
+  <main class="main">
     <header class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-container">
-  <div class="site-meta">
-
-    <div>
-      <a href="/hais-notebook/" class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">Hais Notebook</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
     </div>
   </div>
 
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
-      <span class="toggle-line toggle-line-first"></span>
-      <span class="toggle-line toggle-line-middle"></span>
-      <span class="toggle-line toggle-line-last"></span>
+  <div class="site-meta">
+
+    <a href="/hais-notebook/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Hais Notebook</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
 
 
+
 <nav class="site-nav">
-  
-  <ul id="menu" class="menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/hais-notebook/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
-
-  </li>
-        <li class="menu-item menu-item-tags">
-
-    <a href="/hais-notebook/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
-
-  </li>
-        <li class="menu-item menu-item-categories">
-
-    <a href="/hais-notebook/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
-
-  </li>
-        <li class="menu-item menu-item-archives">
-
-    <a href="/hais-notebook/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
-
-  </li>
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/hais-notebook/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-tags"><a href="/hais-notebook/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/hais-notebook/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/hais-notebook/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
       </li>
   </ul>
-
 </nav>
-  <div class="site-search">
-    <div class="popup search-popup">
-    <div class="search-header">
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
   <span class="search-icon">
     <i class="fa fa-search"></i>
   </span>
   <div class="search-input-container">
-    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
            placeholder="搜索..." spellcheck="false"
-           type="text" id="search-input">
+           type="search" class="search-input">
   </div>
-  <span class="popup-btn-close">
+  <span class="popup-btn-close" role="button">
     <i class="fa fa-times-circle"></i>
   </span>
 </div>
-<div id="search-result"></div>
-
-</div>
-<div class="search-pop-overlay"></div>
-
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
   </div>
 </div>
-    </header>
-
-    
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-
-
-    <main class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-
-          <div class="content">
-            
-
-  <div class="posts-expand">
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2020/01/29/JS-DataTypes-Operators/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
-      <meta itemprop="name" content="Harvey Zhang">
-      <meta itemprop="description" content="小海的笔记本">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hais Notebook">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          JavaScript 数据类型与运算符
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-01-29 14:55:42" itemprop="dateCreated datePublished" datetime="2020-01-29T14:55:42+00:00">2020-01-29</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-24 13:39:43" itemprop="dateModified" datetime="2021-05-24T13:39:43+00:00">2021-05-24</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hais-notebook/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index">
-                    <span itemprop="name">前端</span>
-                  </a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hais-notebook/categories/%E5%89%8D%E7%AB%AF/JavaScript/" itemprop="url" rel="index">
-                    <span itemprop="name">JavaScript</span>
-                  </a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hais-notebook/categories/%E5%89%8D%E7%AB%AF/JavaScript/%E5%8E%9F%E7%94%9F-JavaScript/" itemprop="url" rel="index">
-                    <span itemprop="name">原生 JavaScript</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-        <p>JavaScript 有 7 种数据类型，3 种变量声明的方式，以及一些奇怪的运算符。</p>
-<a id="more"></a>
-<h1 id="字符存储"><a href="#字符存储" class="headerlink" title="字符存储"></a>字符存储</h1><ul>
-<li>如何存数字？十进制转二进制，用十六进制（HEX）表示二进制</li>
-<li>如何存字符？转换为数字，48 号表示 0，65 号表示 A，97 号表示 a</li>
-<li>如何表示汉字（GB、GBK）？0000~FFFF，16 位，2 字节</li>
-<li>Unicode 已收录 13 万字符（大于 16 位），全世界通用，以后还会继续扩充；缺点：两个字节不够用了，至少要三个字节</li>
-<li>UTF-8：通过变长的存法，减小容量</li>
-</ul>
-<h1 id="7-种数据类型"><a href="#7-种数据类型" class="headerlink" title="7 种数据类型"></a>7 种数据类型</h1><blockquote>
-<p>4 基 2 空 1 对象</p>
-</blockquote>
-<h2 id="Number"><a href="#Number" class="headerlink" title="Number"></a>Number</h2><blockquote>
-<p>64 位浮点数组成</p>
-</blockquote>
-<h3 id="特殊值"><a href="#特殊值" class="headerlink" title="特殊值"></a>特殊值</h3><p><code>0</code> <code>+0</code> <code>-0</code><br><code>Infinity</code> <code>+Infinity</code> (1/0) <code>-Infinity</code> (1/-0)<br><code>NaN</code>（0/0，但他还是一个数字，NaN不等于NaN）</p>
-<h3 id="范围和精度"><a href="#范围和精度" class="headerlink" title="范围和精度"></a>范围和精度</h3><p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/JS-Number-Range.png" alt="JSNumber的存储"></p>
-<p>范围：<code>Number.MAX_VALUE</code> 到 <code>Number.MIN_VALUE</code><br>精度：大概是 15 个十进制有效数字</p>
-<h2 id="String"><a href="#String" class="headerlink" title="String"></a>String</h2><blockquote>
-<p>每个字符两个字节（阉割版 UTF-8，两个字符定长）</p>
-</blockquote>
-<h3 id="写法"><a href="#写法" class="headerlink" title="写法"></a>写法</h3><p>单引号、双引号、反引号，引号不是字符串的一部分</p>
-<h3 id="转义"><a href="#转义" class="headerlink" title="转义"></a>转义</h3><p><code>\r</code> 表示回车， <code>\uFFFF</code> 表示对应的 Unicode 字符， <code>\xFF</code> 表示前256个 Unicode 字符</p>
-<h3 id="字符串的属性"><a href="#字符串的属性" class="headerlink" title="字符串的属性"></a>字符串的属性</h3><p>字符串本来不应该有属性，只有对象才有属性，但是这个有渊源</p>
-<ul>
-<li>长度： <code>s.length</code></li>
-<li>下标： <code>s[0]</code></li>
-<li>base64 转码： <code>window.btoa</code> 编码， <code>window.atob</code> 反编码</li>
-</ul>
-<h2 id="Boolean"><a href="#Boolean" class="headerlink" title="Boolean"></a>Boolean</h2><blockquote>
-<p>否定运算、相等运算、比较运算可以得到 bool 值</p>
-</blockquote>
-<div class="note warning">
-            <p><strong>5 个 falsy 值</strong><br><code>undefined</code> <code>null</code> <code>0</code> <code>NaN</code> <code>&#39;&#39;</code></p>
-          </div>
-<h2 id="Symbol"><a href="#Symbol" class="headerlink" title="Symbol"></a>Symbol</h2><blockquote>
-<p>每个 Symbol 都不一样</p>
-</blockquote>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 没有参数的情况</span></span><br><span class="line"><span class="keyword">let</span> s1 = <span class="built_in">Symbol</span>();</span><br><span class="line"><span class="keyword">let</span> s2 = <span class="built_in">Symbol</span>();</span><br><span class="line"></span><br><span class="line">s1 === s2 <span class="comment">// false</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 有参数的情况</span></span><br><span class="line"><span class="keyword">let</span> s1 = <span class="built_in">Symbol</span>(<span class="string">'foo'</span>);</span><br><span class="line"><span class="keyword">let</span> s2 = <span class="built_in">Symbol</span>(<span class="string">'foo'</span>);</span><br><span class="line"></span><br><span class="line">s1 === s2 <span class="comment">// false</span></span><br></pre></td></tr></table></figure>
-<h2 id="undefined"><a href="#undefined" class="headerlink" title="undefined"></a>undefined</h2><p>如果声明了没有赋值，默认是 <code>undefined</code><br>如果函数没有写 <code>return</code>，默认是 <code>undefined</code></p>
-<h2 id="null"><a href="#null" class="headerlink" title="null"></a>null</h2><p>习惯上把非对象空值写成 undefined，对象空值写成 null；<br>null 通常表示即该处不应该有值，undefined 通常表示”缺少值”，就是此处应该有一个值，但是还没有定义。</p>
-<h2 id="Object"><a href="#Object" class="headerlink" title="Object"></a>Object</h2><div class="note warning">
-            <p>数组、函数、日期都是 Object，不是单独的数据类型，但是使用 <code>typeof</code> 的时候，可以分辨出 function</p>
-          </div>
-<h1 id="3-种变量声明的方式"><a href="#3-种变量声明的方式" class="headerlink" title="3 种变量声明的方式"></a>3 种变量声明的方式</h1><h2 id="var"><a href="#var" class="headerlink" title="var"></a>var</h2><ul>
-<li>过时的，不好的</li>
-<li>函数作用域</li>
-<li>可以重复声明</li>
-<li>可以先使用再声明</li>
-<li>全局声明的 <code>var</code> 变量会变成 <code>window</code> 的属性</li>
-</ul>
-<h2 id="let"><a href="#let" class="headerlink" title="let"></a>let</h2><ul>
-<li>新的，更合理的</li>
-<li>遵循块作用域</li>
-<li>不能重复声明</li>
-<li>可以赋值，也可以不赋值</li>
-<li>必须先声明再使用</li>
-<li>全局声明的 <code>let</code> 变量不会再变成 <code>window</code> 的属性</li>
-<li><code>let</code> 配合 <code>for</code> 循环有奇效</li>
-</ul>
-<h2 id="const"><a href="#const" class="headerlink" title="const"></a>const</h2><p>跟 <code>let</code> 几乎一样，但声明时必须赋值，且不能再更改</p>
-<div class="note warning">
-            <p>变量声明指定值的时候同时也指定了类型，但是 <strong>值和类型都可以随意变化</strong></p>
-          </div>
-<h1 id="运算符"><a href="#运算符" class="headerlink" title="运算符"></a>运算符</h1><h2 id="算术运算符"><a href="#算术运算符" class="headerlink" title="算术运算符"></a>算术运算符</h2><h3 id="Number-1"><a href="#Number-1" class="headerlink" title="Number"></a>Number</h3><ul>
-<li>余数 <code>-x % 7</code> 为 <code>-(x % 7)</code></li>
-<li>指数 <code>x ** 3</code></li>
-<li>自增 <code>a++</code> 表达式的值是 <code>a</code> 加之前的值， <code>++a</code> 表达式的值是 <code>a</code> 加之后的值</li>
-<li>求值运算符 <code>+</code>，附属运算符 <code>-</code></li>
-</ul>
-<h3 id="String-1"><a href="#String-1" class="headerlink" title="String"></a>String</h3><ul>
-<li>连接运算 <code>+</code></li>
-</ul>
-<div class="note warning">
-            <p><code>number + string</code>，变成字符串<br><code>string - number</code>，变成数字</p>
-          </div>
-<h2 id="比较运算符"><a href="#比较运算符" class="headerlink" title="比较运算符"></a>比较运算符</h2><h3 id=""><a href="#" class="headerlink" title="=="></a>==</h3><ul>
-<li>模糊相等，发生自动类型转换，别用两个等于</li>
-<li>JavaScript 三位一体</li>
-</ul>
-<h3 id="-1"><a href="#-1" class="headerlink" title="==="></a>===</h3><p>全等，基本类型看值是否相等，对象看地址是否相等</p>
-<ul>
-<li><code>[] !== []</code></li>
-<li><code>{} !== {}</code></li>
-<li><code>NaN !== NaN</code></li>
-</ul>
-<h2 id="布尔运算符"><a href="#布尔运算符" class="headerlink" title="布尔运算符"></a>布尔运算符</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span> &amp;&amp; <span class="built_in">console</span>.log &amp;&amp; <span class="built_in">console</span>.log(<span class="string">'hi'</span>) <span class="comment">// 防止 console.log 报错（防御性编程）</span></span><br><span class="line">a = a || <span class="number">100</span> <span class="comment">// 但是五个 falsy 值都会让 a 为假，因此有 bug</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 可以用函数来赋初值</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params">n = <span class="number">0</span></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> n + <span class="number">1</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="二进制运算符"><a href="#二进制运算符" class="headerlink" title="二进制运算符"></a>二进制运算符</h2><h3 id="或与否"><a href="#或与否" class="headerlink" title="或与否"></a>或与否</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(<span class="number">0b1111</span> | <span class="number">0b1010</span>).toString(<span class="number">2</span>) <span class="comment">// 1111</span></span><br><span class="line">(<span class="number">0b1111</span> &amp; <span class="number">0b1010</span>).toString(<span class="number">2</span>) <span class="comment">// 1010</span></span><br><span class="line">(~<span class="number">0b1010</span>).toString <span class="comment">// 涉及到补码，留坑</span></span><br></pre></td></tr></table></figure>
-<h3 id="异或"><a href="#异或" class="headerlink" title="异或"></a>异或</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="number">0b1111</span> ^ <span class="number">0b1010</span>).toString(<span class="number">2</span>) <span class="comment">// 101</span></span><br></pre></td></tr></table></figure>
-<div class="note warning">
-            <p>按位取反可以用 <code>^1</code></p>
-          </div>
-<h3 id="左移和右移"><a href="#左移和右移" class="headerlink" title="左移和右移"></a>左移和右移</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(<span class="number">0b0011</span> &gt;&gt; <span class="number">1</span>).toString(<span class="number">2</span>) <span class="comment">// 1</span></span><br><span class="line">(<span class="number">0b0010</span> &lt;&lt; <span class="number">1</span>).toString(<span class="number">2</span>) <span class="comment">// 100</span></span><br></pre></td></tr></table></figure>
-<h3 id="头部补零的右移运算符"><a href="#头部补零的右移运算符" class="headerlink" title="头部补零的右移运算符"></a>头部补零的右移运算符</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="number">0b0011</span> &gt;&gt;&gt; <span class="number">1</span>).toString(<span class="number">2</span>) <span class="comment">// 1</span></span><br></pre></td></tr></table></figure>
-<h3 id="如何使用运算符判断奇偶？"><a href="#如何使用运算符判断奇偶？" class="headerlink" title="如何使用运算符判断奇偶？"></a>如何使用运算符判断奇偶？</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">偶数 &amp; <span class="number">1</span> === <span class="number">0</span></span><br><span class="line">奇数 &amp; <span class="number">1</span> === <span class="number">1</span></span><br></pre></td></tr></table></figure>
-<h3 id="使用-gt-gt-lt-lt-gt-gt-gt-来取整"><a href="#使用-gt-gt-lt-lt-gt-gt-gt-来取整" class="headerlink" title="使用 ~ &gt;&gt; &lt;&lt; &gt;&gt;&gt; | 来取整"></a>使用 <code>~</code> <code>&gt;&gt;</code> <code>&lt;&lt;</code> <code>&gt;&gt;&gt;</code> <code>|</code> 来取整</h3><blockquote>
-<p>位运算不支持小数，会自动抹去</p>
-</blockquote>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">~~ <span class="number">6.83</span> <span class="comment">// 6</span></span><br><span class="line"><span class="number">6.83</span> &gt;&gt; <span class="number">0</span></span><br><span class="line"><span class="number">6.83</span> &lt;&lt; <span class="number">0</span></span><br><span class="line"><span class="number">6.83</span> | <span class="number">0</span></span><br><span class="line"><span class="number">6.83</span> &gt;&gt;&gt; <span class="number">0</span></span><br></pre></td></tr></table></figure>
-<h3 id="使用-来交换-a-b-的值"><a href="#使用-来交换-a-b-的值" class="headerlink" title="使用 ^ 来交换 a b 的值"></a>使用 <code>^</code> 来交换 <code>a</code> <code>b</code> 的值</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">a ^= b</span><br><span class="line">b ^= a</span><br><span class="line">a ^= b</span><br><span class="line"></span><br><span class="line"><span class="comment">// 新版语法</span></span><br><span class="line">[a, b] = [b, a]</span><br></pre></td></tr></table></figure>
-<h2 id="其他运算符"><a href="#其他运算符" class="headerlink" title="其他运算符"></a>其他运算符</h2><h3 id="点运算符"><a href="#点运算符" class="headerlink" title="点运算符"></a>点运算符</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">对象.属性名 = 属性值</span><br></pre></td></tr></table></figure>
-<p>如果不是对象，JS会创建一个对象，用完之后再自动删除</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">a.xxx = <span class="string">'harvey'</span> <span class="comment">// 'harvey'</span></span><br><span class="line">a.xxx <span class="comment">// undefiend</span></span><br></pre></td></tr></table></figure>
-<h3 id="void-运算符"><a href="#void-运算符" class="headerlink" title="void 运算符"></a>void 运算符</h3><blockquote>
-<p>求表达式的值或执行语句，然后 <code>void</code> 的值总为 <code>undefined</code></p>
-</blockquote>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> 表达式或语句</span><br></pre></td></tr></table></figure>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 防止假动作 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"example.com"</span> <span class="attr">onclick</span>=<span class="string">"console.log(hi); return false;"</span>&gt;</span>点击<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 也可以用 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"javascript:void(console.log('hi'))"</span>&gt;</span>点击<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 或者 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"javascript:;"</span>&gt;</span>点击<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<h3 id="逗号运算符"><a href="#逗号运算符" class="headerlink" title="逗号运算符"></a>逗号运算符</h3><blockquote>
-<p>表示取后面的值</p>
-</blockquote>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = (<span class="number">1</span>, <span class="number">2</span>) <span class="comment">// a 为 2</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> f = <span class="function"><span class="params">x</span> =&gt;</span> &#123; <span class="built_in">console</span>.log(<span class="string">'hi'</span>); <span class="keyword">return</span> x + <span class="number">1</span> &#125;</span><br><span class="line"><span class="keyword">let</span> f = <span class="function"><span class="params">x</span> =&gt;</span> (<span class="built_in">console</span>.log(<span class="string">'hi'</span>), x + <span class="number">1</span>)</span><br><span class="line"><span class="comment">// 跟上面是一样的，先执行 console.log，再让 return 为x + 1</span></span><br></pre></td></tr></table></figure>
-<h2 id="优先级"><a href="#优先级" class="headerlink" title="优先级"></a>优先级</h2><p>圆括号的优先级最高</p>
-<h1 id="数据类型检测"><a href="#数据类型检测" class="headerlink" title="数据类型检测"></a>数据类型检测</h1><h2 id="typeof-instanceof-toString-的比较"><a href="#typeof-instanceof-toString-的比较" class="headerlink" title="typeof instanceof toString 的比较"></a><code>typeof</code> <code>instanceof</code> <code>toString</code> 的比较</h2><table>
-  <tr>
-    <td colspan="2">类型</td>
-    <td>举例</td>
-    <td colspan="2">typeof</td>
-    <td colspan="2">instanceof</td>
-    <td colspan="2">Object.prototype.toString.call()</td>
-  </tr>
-  <tr>
-    <td rowspan="4">基本类型</td>
-    <td>Number</td>
-    <td>1</td>
-    <td>number</td>
-    <td>√</td>
-    <td>false*</td>
-    <td>○</td>
-    <td>[object Number]</td>
-    <td>√</td>
-  </tr>
-  <tr>
-    <td>String</td>
-    <td>hello'</td>
-    <td>string</td>
-    <td>√</td>
-    <td>false*</td>
-    <td>○</td>
-    <td>[object String]</td>
-    <td>√</td>
-  </tr>
-  <tr>
-    <td>Boolean</td>
-    <td>true</td>
-    <td>boolean</td>
-    <td>√</td>
-    <td>false*</td>
-    <td>○</td>
-    <td>[object Boolean]</td>
-    <td>√</td>
-  </tr>
-  <tr>
-    <td>Symbol / new Symbol()</td>
-    <td>new Symbol()</td>
-    <td>symbol</td>
-    <td>√</td>
-    <td>false*</td>
-    <td>○</td>
-    <td>[object Symbol]</td>
-    <td>√</td>
-  </tr>
-  <tr>
-    <td rowspan="3">new 基本类型</td>
-    <td>new Number()</td>
-    <td>new Number(1)</td>
-    <td>object</td>
-    <td>○</td>
-    <td>true</td>
-    <td>√</td>
-    <td>[object Number]**</td>
-    <td>√</td>
-  </tr>
-  <tr>
-    <td>new String()</td>
-    <td>new String('hello')</td>
-    <td>object</td>
-    <td>○</td>
-    <td>true</td>
-    <td>√</td>
-    <td>[object String]**</td>
-    <td>√</td>
-  </tr>
-  <tr>
-    <td>new Boolean()</td>
-    <td>new Boolean('false')</td>
-    <td>object</td>
-    <td>○</td>
-    <td>true</td>
-    <td>√</td>
-    <td>[object Boolean]**</td>
-    <td>√</td>
-  </tr>
-  <tr>
-    <td rowspan="2">空值</td>
-    <td>null</td>
-    <td>null</td>
-    <td>object</td>
-    <td>×</td>
-    <td>false*</td>
-    <td>○</td>
-    <td>[object Null]</td>
-    <td>√</td>
-  </tr>
-  <tr>
-    <td>undefined</td>
-    <td>undefined</td>
-    <td>undefined</td>
-    <td>√</td>
-    <td>false*</td>
-    <td>○</td>
-    <td>[object Undefined]</td>
-    <td>√</td>
-  </tr>
-  <tr>
-    <td rowspan="6">对象类型</td>
-    <td>普通对象</td>
-    <td>{a: '1', b: '2'}</td>
-    <td>object</td>
-    <td>√</td>
-    <td>true</td>
-    <td>√</td>
-    <td>[object Object]</td>
-    <td>√</td>
-  </tr>
-  <tr>
-    <td>Array</td>
-    <td>[1, 2, 3]</td>
-    <td>object</td>
-    <td>○</td>
-    <td>true</td>
-    <td>√</td>
-    <td>[object Array]</td>
-    <td>√</td>
-  </tr>
-  <tr>
-    <td>Function</td>
-    <td>function() {}</td>
-    <td>function</td>
-    <td>√</td>
-    <td>true</td>
-    <td>√</td>
-    <td>[object Function]</td>
-    <td>√</td>
-  </tr>
-  <tr>
-    <td>Error</td>
-    <td>new Error()</td>
-    <td>object</td>
-    <td>○</td>
-    <td>true</td>
-    <td>√</td>
-    <td>[object Error]</td>
-    <td>√</td>
-  </tr>
-  <tr>
-    <td>Date</td>
-    <td>new Date()</td>
-    <td>object</td>
-    <td>○</td>
-    <td>true</td>
-    <td>√</td>
-    <td>[object Date]</td>
-    <td>√</td>
-  </tr>
-  <tr>
-    <td>RegExp</td>
-    <td>new RegExp()</td>
-    <td>object</td>
-    <td>○</td>
-    <td>true</td>
-    <td>√</td>
-    <td>[object RegExp]</td>
-    <td>√</td>
-  </tr>
-</table>
-
-<p>*尽管我们直接使用 <code>1 instanceof Number</code> 会出现错误，但是我们可以自定义 <code>instanceof</code> 方法，让他可以判断基本类型：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PrimitiveNumber</span> </span>&#123;</span><br><span class="line">  <span class="keyword">static</span> [<span class="built_in">Symbol</span>.hasInstance](instance) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">typeof</span> instance === <span class="string">'number'</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="number">1</span> <span class="keyword">instanceof</span> PrimitiveNumber <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
-<p>**基本类型与用 <code>new Constructor</code> 构造的用对象包裹的基本类型实际上是不一样的，特别是在 <code>Boolean</code> 上，这点需要注意：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> boolean = <span class="literal">false</span></span><br><span class="line">!!boolean <span class="comment">// false</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> newBoolean = <span class="keyword">new</span> <span class="built_in">Boolean</span>(<span class="literal">false</span>)</span><br><span class="line">!!newBoolean <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
-<h2 id="自己实现一个-instanceof"><a href="#自己实现一个-instanceof" class="headerlink" title="自己实现一个 instanceof"></a>自己实现一个 <code>instanceof</code></h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">myInstanceof</span>(<span class="params">left, right</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> left !== <span class="string">'object'</span> || left === <span class="literal">null</span>) <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">  <span class="keyword">let</span> proto = <span class="built_in">Object</span>.getPrototypeOf(left) <span class="comment">// 相当于 left.__proto__</span></span><br><span class="line">  <span class="keyword">while</span>(<span class="literal">true</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span>(proto === <span class="literal">null</span>) <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">    <span class="keyword">if</span>(proto === right.prototype) <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">    proto = <span class="built_in">Object</span>.getPrototypeOf(proto)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="Object-is-和"><a href="#Object-is-和" class="headerlink" title="Object.is 和 ==="></a><code>Object.is</code> 和 <code>===</code></h2><p><code>Object.is</code> 修复了 <code>===</code> 的一些失误：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">is</span>(<span class="params">x, y</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (x === y) &#123;</span><br><span class="line">    <span class="comment">// 修复 +0 和 -0 相等的问题</span></span><br><span class="line">    <span class="keyword">return</span> x !== <span class="number">0</span> || y !== <span class="number">0</span> || <span class="number">1</span> / x === <span class="number">1</span> / y</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// 修复 NaN 和 NaN 不相等的问题</span></span><br><span class="line">    <span class="keyword">return</span> x !== x &amp;&amp; y !== y</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
     </div>
-
-    
-    
-    
-
-      <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/hais-notebook/tags/%E5%85%A5%E9%97%A8/" rel="tag"># 入门</a>
-          </div>
-
-        
-
-
-        
-    <div class="post-nav">
-      <div class="post-nav-item">
-    <a href="/hais-notebook/2020/01/29/JS-Expressions/" rel="prev" title="JavaScript 表达式与语句">
-      <i class="fa fa-chevron-left"></i> JavaScript 表达式与语句
-    </a></div>
-      <div class="post-nav-item">
-    <a href="/hais-notebook/2020/01/29/JS-Object/" rel="next" title="JavaScript Object">
-      JavaScript Object <i class="fa fa-chevron-right"></i>
-    </a></div>
-    </div>
-      </footer>
-    
-  </article>
-  
-  
-  
-
   </div>
 
-
-          </div>
-          
-
-<script>
-  window.addEventListener('tabs:register', () => {
-    let activeClass = CONFIG.comments.activeClass;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
-      }
-    }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      let commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
-</script>
-
-        </div>
-          
+</div>
+        
   
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line toggle-line-first"></span>
-    <span class="toggle-line toggle-line-middle"></span>
-    <span class="toggle-line toggle-line-last"></span>
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
   </div>
 
   <aside class="sidebar">
-    <div class="sidebar-inner">
 
-      <ul class="sidebar-nav motion-element">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
         </li>
@@ -639,18 +144,19 @@
         </li>
       </ul>
 
-      <!--noindex-->
-      <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#字符存储"><span class="nav-number">1.</span> <span class="nav-text">字符存储</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7-种数据类型"><span class="nav-number">2.</span> <span class="nav-text">7 种数据类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Number"><span class="nav-number">2.1.</span> <span class="nav-text">Number</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#特殊值"><span class="nav-number">2.1.1.</span> <span class="nav-text">特殊值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#范围和精度"><span class="nav-number">2.1.2.</span> <span class="nav-text">范围和精度</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#String"><span class="nav-number">2.2.</span> <span class="nav-text">String</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#写法"><span class="nav-number">2.2.1.</span> <span class="nav-text">写法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#转义"><span class="nav-number">2.2.2.</span> <span class="nav-text">转义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#字符串的属性"><span class="nav-number">2.2.3.</span> <span class="nav-text">字符串的属性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Boolean"><span class="nav-number">2.3.</span> <span class="nav-text">Boolean</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Symbol"><span class="nav-number">2.4.</span> <span class="nav-text">Symbol</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">2.5.</span> <span class="nav-text">undefined</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#null"><span class="nav-number">2.6.</span> <span class="nav-text">null</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Object"><span class="nav-number">2.7.</span> <span class="nav-text">Object</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-种变量声明的方式"><span class="nav-number">3.</span> <span class="nav-text">3 种变量声明的方式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#var"><span class="nav-number">3.1.</span> <span class="nav-text">var</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#let"><span class="nav-number">3.2.</span> <span class="nav-text">let</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#const"><span class="nav-number">3.3.</span> <span class="nav-text">const</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#运算符"><span class="nav-number">4.</span> <span class="nav-text">运算符</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#算术运算符"><span class="nav-number">4.1.</span> <span class="nav-text">算术运算符</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Number-1"><span class="nav-number">4.1.1.</span> <span class="nav-text">Number</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#String-1"><span class="nav-number">4.1.2.</span> <span class="nav-text">String</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#比较运算符"><span class="nav-number">4.2.</span> <span class="nav-text">比较运算符</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#null"><span class="nav-number">4.2.1.</span> <span class="nav-text">&#x3D;&#x3D;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#-1"><span class="nav-number">4.2.2.</span> <span class="nav-text">&#x3D;&#x3D;&#x3D;</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#布尔运算符"><span class="nav-number">4.3.</span> <span class="nav-text">布尔运算符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二进制运算符"><span class="nav-number">4.4.</span> <span class="nav-text">二进制运算符</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#或与否"><span class="nav-number">4.4.1.</span> <span class="nav-text">或与否</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#异或"><span class="nav-number">4.4.2.</span> <span class="nav-text">异或</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#左移和右移"><span class="nav-number">4.4.3.</span> <span class="nav-text">左移和右移</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#头部补零的右移运算符"><span class="nav-number">4.4.4.</span> <span class="nav-text">头部补零的右移运算符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何使用运算符判断奇偶？"><span class="nav-number">4.4.5.</span> <span class="nav-text">如何使用运算符判断奇偶？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用-gt-gt-lt-lt-gt-gt-gt-来取整"><span class="nav-number">4.4.6.</span> <span class="nav-text">使用 ~ &gt;&gt; &lt;&lt; &gt;&gt;&gt; | 来取整</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用-来交换-a-b-的值"><span class="nav-number">4.4.7.</span> <span class="nav-text">使用 ^ 来交换 a b 的值</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他运算符"><span class="nav-number">4.5.</span> <span class="nav-text">其他运算符</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#点运算符"><span class="nav-number">4.5.1.</span> <span class="nav-text">点运算符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#void-运算符"><span class="nav-number">4.5.2.</span> <span class="nav-text">void 运算符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#逗号运算符"><span class="nav-number">4.5.3.</span> <span class="nav-text">逗号运算符</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优先级"><span class="nav-number">4.6.</span> <span class="nav-text">优先级</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数据类型检测"><span class="nav-number">5.</span> <span class="nav-text">数据类型检测</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#typeof-instanceof-toString-的比较"><span class="nav-number">5.1.</span> <span class="nav-text">typeof instanceof toString 的比较</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自己实现一个-instanceof"><span class="nav-number">5.2.</span> <span class="nav-text">自己实现一个 instanceof</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Object-is-和"><span class="nav-number">5.3.</span> <span class="nav-text">Object.is 和 &#x3D;&#x3D;&#x3D;</span></a></li></ol></li></ol></div>
-      </div>
-      <!--/noindex-->
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E5%AD%98%E5%82%A8"><span class="nav-number">1.</span> <span class="nav-text">字符存储</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%A7%8D%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.</span> <span class="nav-text">7 种数据类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#number"><span class="nav-number">2.1.</span> <span class="nav-text">Number</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%B9%E6%AE%8A%E5%80%BC"><span class="nav-number">2.1.1.</span> <span class="nav-text">特殊值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8C%83%E5%9B%B4%E5%92%8C%E7%B2%BE%E5%BA%A6"><span class="nav-number">2.1.2.</span> <span class="nav-text">范围和精度</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#string"><span class="nav-number">2.2.</span> <span class="nav-text">String</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%99%E6%B3%95"><span class="nav-number">2.2.1.</span> <span class="nav-text">写法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AC%E4%B9%89"><span class="nav-number">2.2.2.</span> <span class="nav-text">转义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E5%B1%9E%E6%80%A7"><span class="nav-number">2.2.3.</span> <span class="nav-text">字符串的属性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#boolean"><span class="nav-number">2.3.</span> <span class="nav-text">Boolean</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#symbol"><span class="nav-number">2.4.</span> <span class="nav-text">Symbol</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">2.5.</span> <span class="nav-text">undefined</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#null"><span class="nav-number">2.6.</span> <span class="nav-text">null</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#object"><span class="nav-number">2.7.</span> <span class="nav-text">Object</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%A7%8D%E5%8F%98%E9%87%8F%E5%A3%B0%E6%98%8E%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="nav-number">3.</span> <span class="nav-text">3 种变量声明的方式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#var"><span class="nav-number">3.1.</span> <span class="nav-text">var</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#let"><span class="nav-number">3.2.</span> <span class="nav-text">let</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#const"><span class="nav-number">3.3.</span> <span class="nav-text">const</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">4.</span> <span class="nav-text">运算符</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%97%E6%9C%AF%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">4.1.</span> <span class="nav-text">算术运算符</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#number-1"><span class="nav-number">4.1.1.</span> <span class="nav-text">Number</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#string-1"><span class="nav-number">4.1.2.</span> <span class="nav-text">String</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AF%94%E8%BE%83%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">4.2.</span> <span class="nav-text">比较运算符</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#section"><span class="nav-number">4.2.1.</span> <span class="nav-text">&#x3D;&#x3D;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#section-1"><span class="nav-number">4.2.2.</span> <span class="nav-text">&#x3D;&#x3D;&#x3D;</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%83%E5%B0%94%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">4.3.</span> <span class="nav-text">布尔运算符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E8%BF%9B%E5%88%B6%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">4.4.</span> <span class="nav-text">二进制运算符</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%88%96%E4%B8%8E%E5%90%A6"><span class="nav-number">4.4.1.</span> <span class="nav-text">或与否</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%82%E6%88%96"><span class="nav-number">4.4.2.</span> <span class="nav-text">异或</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%A6%E7%A7%BB%E5%92%8C%E5%8F%B3%E7%A7%BB"><span class="nav-number">4.4.3.</span> <span class="nav-text">左移和右移</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%B4%E9%83%A8%E8%A1%A5%E9%9B%B6%E7%9A%84%E5%8F%B3%E7%A7%BB%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">4.4.4.</span> <span class="nav-text">头部补零的右移运算符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E8%BF%90%E7%AE%97%E7%AC%A6%E5%88%A4%E6%96%AD%E5%A5%87%E5%81%B6"><span class="nav-number">4.4.5.</span> <span class="nav-text">如何使用运算符判断奇偶？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-%E6%9D%A5%E5%8F%96%E6%95%B4"><span class="nav-number">4.4.6.</span> <span class="nav-text">使用 ~ &gt;&gt; &lt;&lt; &gt;&gt;&gt; | 来取整</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-%E6%9D%A5%E4%BA%A4%E6%8D%A2-a-b-%E7%9A%84%E5%80%BC"><span class="nav-number">4.4.7.</span> <span class="nav-text">使用 ^ 来交换 a b 的值</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">4.5.</span> <span class="nav-text">其他运算符</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%82%B9%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">4.5.1.</span> <span class="nav-text">点运算符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#void-%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">4.5.2.</span> <span class="nav-text">void 运算符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%97%E5%8F%B7%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">4.5.3.</span> <span class="nav-text">逗号运算符</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%98%E5%85%88%E7%BA%A7"><span class="nav-number">4.6.</span> <span class="nav-text">优先级</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E6%A3%80%E6%B5%8B"><span class="nav-number">5.</span> <span class="nav-text">数据类型检测</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#typeof-instanceof-tostring-%E7%9A%84%E6%AF%94%E8%BE%83"><span class="nav-number">5.1.</span> <span class="nav-text">typeof instanceof toString 的比较</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%B7%B1%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA-instanceof"><span class="nav-number">5.2.</span> <span class="nav-text">自己实现一个 instanceof</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#object.is-%E5%92%8C"><span class="nav-number">5.3.</span> <span class="nav-text">Object.is 和 &#x3D;&#x3D;&#x3D;</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
 
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
   <p class="site-author-name" itemprop="name">Harvey Zhang</p>
   <div class="site-description" itemprop="description">小海的笔记本</div>
 </div>
-<div class="site-state-wrap motion-element">
+<div class="site-state-wrap site-overview-item animated">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/hais-notebook/archives/">
@@ -676,62 +182,736 @@
 
 
 
+        </div>
       </div>
-
     </div>
   </aside>
-  <div id="sidebar-dimmer"></div>
+  <div class="sidebar-dimmer"></div>
 
 
-      </div>
-    </main>
+    </header>
 
-    <footer class="footer">
-      <div class="footer-inner">
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2020/01/29/JS-DataTypes-Operators/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
+      <meta itemprop="name" content="Harvey Zhang">
+      <meta itemprop="description" content="小海的笔记本">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hais Notebook">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JavaScript 数据类型与运算符
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-01-29 14:55:42" itemprop="dateCreated datePublished" datetime="2020-01-29T14:55:42+00:00">2020-01-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">前端</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E5%89%8D%E7%AB%AF/JavaScript/" itemprop="url" rel="index"><span itemprop="name">JavaScript</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E5%89%8D%E7%AB%AF/JavaScript/%E5%8E%9F%E7%94%9F-JavaScript/" itemprop="url" rel="index"><span itemprop="name">原生 JavaScript</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>JavaScript 有 7 种数据类型，3 种变量声明的方式，以及一些奇怪的运算符。</p>
+<span id="more"></span>
+<h1 id="字符存储">字符存储</h1>
+<ul>
+<li>如何存数字？十进制转二进制，用十六进制（HEX）表示二进制</li>
+<li>如何存字符？转换为数字，48 号表示 0，65 号表示 A，97 号表示 a</li>
+<li>如何表示汉字（GB、GBK）？0000~FFFF，16 位，2 字节</li>
+<li>Unicode 已收录 13 万字符（大于 16 位），全世界通用，以后还会继续扩充；缺点：两个字节不够用了，至少要三个字节</li>
+<li>UTF-8：通过变长的存法，减小容量</li>
+</ul>
+<h1 id="种数据类型">7 种数据类型</h1>
+<blockquote>
+<p>4 基 2 空 1 对象</p>
+</blockquote>
+<h2 id="number">Number</h2>
+<blockquote>
+<p>64 位浮点数组成</p>
+</blockquote>
+<h3 id="特殊值">特殊值</h3>
+<p><code>0</code> <code>+0</code> <code>-0</code> <code>Infinity</code> <code>+Infinity</code> (1/0) <code>-Infinity</code> (1/-0) <code>NaN</code>（0/0，但他还是一个数字，NaN不等于NaN）</p>
+<h3 id="范围和精度">范围和精度</h3>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/JS-Number-Range.png" alt="JSNumber的存储" /><figcaption aria-hidden="true">JSNumber的存储</figcaption>
+</figure>
+<p>范围：<code>Number.MAX_VALUE</code> 到 <code>Number.MIN_VALUE</code> 精度：大概是 15 个十进制有效数字</p>
+<h2 id="string">String</h2>
+<blockquote>
+<p>每个字符两个字节（阉割版 UTF-8，两个字符定长）</p>
+</blockquote>
+<h3 id="写法">写法</h3>
+<p>单引号、双引号、反引号，引号不是字符串的一部分</p>
+<h3 id="转义">转义</h3>
+<p><code>\r</code> 表示回车， <code>\uFFFF</code> 表示对应的 Unicode 字符， <code>\xFF</code> 表示前256个 Unicode 字符</p>
+<h3 id="字符串的属性">字符串的属性</h3>
+<p>字符串本来不应该有属性，只有对象才有属性，但是这个有渊源</p>
+<ul>
+<li>长度： <code>s.length</code></li>
+<li>下标： <code>s[0]</code></li>
+<li>base64 转码： <code>window.btoa</code> 编码， <code>window.atob</code> 反编码</li>
+</ul>
+<h2 id="boolean">Boolean</h2>
+<blockquote>
+<p>否定运算、相等运算、比较运算可以得到 bool 值</p>
+</blockquote>
+<div class="note warning"><p><strong>5 个 falsy 值</strong> <code>undefined</code> <code>null</code> <code>0</code> <code>NaN</code> <code>''</code></p>
+</div>
+<h2 id="symbol">Symbol</h2>
+<blockquote>
+<p>每个 Symbol 都不一样</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 没有参数的情况</span></span><br><span class="line"><span class="keyword">let</span> s1 = <span class="built_in">Symbol</span>();</span><br><span class="line"><span class="keyword">let</span> s2 = <span class="built_in">Symbol</span>();</span><br><span class="line"></span><br><span class="line">s1 === s2 <span class="comment">// false</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 有参数的情况</span></span><br><span class="line"><span class="keyword">let</span> s1 = <span class="built_in">Symbol</span>(<span class="string">&#x27;foo&#x27;</span>);</span><br><span class="line"><span class="keyword">let</span> s2 = <span class="built_in">Symbol</span>(<span class="string">&#x27;foo&#x27;</span>);</span><br><span class="line"></span><br><span class="line">s1 === s2 <span class="comment">// false</span></span><br></pre></td></tr></table></figure>
+<h2 id="undefined">undefined</h2>
+<p>如果声明了没有赋值，默认是 <code>undefined</code> 如果函数没有写 <code>return</code>，默认是 <code>undefined</code></p>
+<h2 id="null">null</h2>
+<p>习惯上把非对象空值写成 undefined，对象空值写成 null； null 通常表示即该处不应该有值，undefined 通常表示"缺少值"，就是此处应该有一个值，但是还没有定义。</p>
+<h2 id="object">Object</h2>
+<div class="note warning"><p>数组、函数、日期都是 Object，不是单独的数据类型，但是使用 <code>typeof</code> 的时候，可以分辨出 function</p>
+</div>
+<h1 id="种变量声明的方式">3 种变量声明的方式</h1>
+<h2 id="var">var</h2>
+<ul>
+<li>过时的，不好的</li>
+<li>函数作用域</li>
+<li>可以重复声明</li>
+<li>可以先使用再声明</li>
+<li>全局声明的 <code>var</code> 变量会变成 <code>window</code> 的属性</li>
+</ul>
+<h2 id="let">let</h2>
+<ul>
+<li>新的，更合理的</li>
+<li>遵循块作用域</li>
+<li>不能重复声明</li>
+<li>可以赋值，也可以不赋值</li>
+<li>必须先声明再使用</li>
+<li>全局声明的 <code>let</code> 变量不会再变成 <code>window</code> 的属性</li>
+<li><code>let</code> 配合 <code>for</code> 循环有奇效</li>
+</ul>
+<h2 id="const">const</h2>
+<p>跟 <code>let</code> 几乎一样，但声明时必须赋值，且不能再更改</p>
+<div class="note warning"><p>变量声明指定值的时候同时也指定了类型，但是 <strong>值和类型都可以随意变化</strong></p>
+</div>
+<h1 id="运算符">运算符</h1>
+<h2 id="算术运算符">算术运算符</h2>
+<h3 id="number-1">Number</h3>
+<ul>
+<li>余数 <code>-x % 7</code> 为 <code>-(x % 7)</code></li>
+<li>指数 <code>x ** 3</code></li>
+<li>自增 <code>a++</code> 表达式的值是 <code>a</code> 加之前的值， <code>++a</code> 表达式的值是 <code>a</code> 加之后的值</li>
+<li>求值运算符 <code>+</code>，附属运算符 <code>-</code></li>
+</ul>
+<h3 id="string-1">String</h3>
+<ul>
+<li>连接运算 <code>+</code></li>
+</ul>
+<div class="note warning"><p><code>number + string</code>，变成字符串 <code>string - number</code>，变成数字</p>
+</div>
+<h2 id="比较运算符">比较运算符</h2>
+<h3 id="section">==</h3>
+<ul>
+<li>模糊相等，发生自动类型转换，别用两个等于</li>
+<li>JavaScript 三位一体</li>
+</ul>
+<h3 id="section-1">===</h3>
+<p>全等，基本类型看值是否相等，对象看地址是否相等</p>
+<ul>
+<li><code>[] !== []</code></li>
+<li><code>&#123;&#125; !== &#123;&#125;</code></li>
+<li><code>NaN !== NaN</code></li>
+</ul>
+<h2 id="布尔运算符">布尔运算符</h2>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span> &amp;&amp; <span class="built_in">console</span>.log &amp;&amp; <span class="built_in">console</span>.log(<span class="string">&#x27;hi&#x27;</span>) <span class="comment">// 防止 console.log 报错（防御性编程）</span></span><br><span class="line">a = a || <span class="number">100</span> <span class="comment">// 但是五个 falsy 值都会让 a 为假，因此有 bug</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 可以用函数来赋初值</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params">n = <span class="number">0</span></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> n + <span class="number">1</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="二进制运算符">二进制运算符</h2>
+<h3 id="或与否">或与否</h3>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(<span class="number">0b1111</span> | <span class="number">0b1010</span>).toString(<span class="number">2</span>) <span class="comment">// 1111</span></span><br><span class="line">(<span class="number">0b1111</span> &amp; <span class="number">0b1010</span>).toString(<span class="number">2</span>) <span class="comment">// 1010</span></span><br><span class="line">(~<span class="number">0b1010</span>).toString <span class="comment">// 涉及到补码，留坑</span></span><br></pre></td></tr></table></figure>
+<h3 id="异或">异或</h3>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="number">0b1111</span> ^ <span class="number">0b1010</span>).toString(<span class="number">2</span>) <span class="comment">// 101</span></span><br></pre></td></tr></table></figure>
+<div class="note warning"><p>按位取反可以用 <code>^1</code></p>
+</div>
+<h3 id="左移和右移">左移和右移</h3>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(<span class="number">0b0011</span> &gt;&gt; <span class="number">1</span>).toString(<span class="number">2</span>) <span class="comment">// 1</span></span><br><span class="line">(<span class="number">0b0010</span> &lt;&lt; <span class="number">1</span>).toString(<span class="number">2</span>) <span class="comment">// 100</span></span><br></pre></td></tr></table></figure>
+<h3 id="头部补零的右移运算符">头部补零的右移运算符</h3>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="number">0b0011</span> &gt;&gt;&gt; <span class="number">1</span>).toString(<span class="number">2</span>) <span class="comment">// 1</span></span><br></pre></td></tr></table></figure>
+<h3 id="如何使用运算符判断奇偶">如何使用运算符判断奇偶？</h3>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">偶数 &amp; <span class="number">1</span> === <span class="number">0</span></span><br><span class="line">奇数 &amp; <span class="number">1</span> === <span class="number">1</span></span><br></pre></td></tr></table></figure>
+<h3 id="使用-来取整">使用 <code>~</code> <code>&gt;&gt;</code> <code>&lt;&lt;</code> <code>&gt;&gt;&gt;</code> <code>|</code> 来取整</h3>
+<blockquote>
+<p>位运算不支持小数，会自动抹去</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">~~ <span class="number">6.83</span> <span class="comment">// 6</span></span><br><span class="line"><span class="number">6.83</span> &gt;&gt; <span class="number">0</span></span><br><span class="line"><span class="number">6.83</span> &lt;&lt; <span class="number">0</span></span><br><span class="line"><span class="number">6.83</span> | <span class="number">0</span></span><br><span class="line"><span class="number">6.83</span> &gt;&gt;&gt; <span class="number">0</span></span><br></pre></td></tr></table></figure>
+<h3 id="使用-来交换-a-b-的值">使用 <code>^</code> 来交换 <code>a</code> <code>b</code> 的值</h3>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">a ^= b</span><br><span class="line">b ^= a</span><br><span class="line">a ^= b</span><br><span class="line"></span><br><span class="line"><span class="comment">// 新版语法</span></span><br><span class="line">[a, b] = [b, a]</span><br></pre></td></tr></table></figure>
+<h2 id="其他运算符">其他运算符</h2>
+<h3 id="点运算符">点运算符</h3>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">对象.属性名 = 属性值</span><br></pre></td></tr></table></figure>
+<p>如果不是对象，JS会创建一个对象，用完之后再自动删除</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">a.xxx = <span class="string">&#x27;harvey&#x27;</span> <span class="comment">// &#x27;harvey&#x27;</span></span><br><span class="line">a.xxx <span class="comment">// undefiend</span></span><br></pre></td></tr></table></figure>
+<h3 id="void-运算符">void 运算符</h3>
+<blockquote>
+<p>求表达式的值或执行语句，然后 <code>void</code> 的值总为 <code>undefined</code></p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> 表达式或语句</span><br></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 防止假动作 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;example.com&quot;</span> <span class="attr">onclick</span>=<span class="string">&quot;console.log(hi); return false;&quot;</span>&gt;</span>点击<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 也可以用 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;javascript:void(console.log(&#x27;hi&#x27;))&quot;</span>&gt;</span>点击<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 或者 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;javascript:;&quot;</span>&gt;</span>点击<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="逗号运算符">逗号运算符</h3>
+<blockquote>
+<p>表示取后面的值</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = (<span class="number">1</span>, <span class="number">2</span>) <span class="comment">// a 为 2</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> f = <span class="function"><span class="params">x</span> =&gt;</span> &#123; <span class="built_in">console</span>.log(<span class="string">&#x27;hi&#x27;</span>); <span class="keyword">return</span> x + <span class="number">1</span> &#125;</span><br><span class="line"><span class="keyword">let</span> f = <span class="function"><span class="params">x</span> =&gt;</span> (<span class="built_in">console</span>.log(<span class="string">&#x27;hi&#x27;</span>), x + <span class="number">1</span>)</span><br><span class="line"><span class="comment">// 跟上面是一样的，先执行 console.log，再让 return 为x + 1</span></span><br></pre></td></tr></table></figure>
+<h2 id="优先级">优先级</h2>
+<p>圆括号的优先级最高</p>
+<h1 id="数据类型检测">数据类型检测</h1>
+<h2 id="typeof-instanceof-tostring-的比较"><code>typeof</code> <code>instanceof</code> <code>toString</code> 的比较</h2>
+<table>
+<tr>
+<td colspan="2">
+类型
+</td>
+<td>
+举例
+</td>
+<td colspan="2">
+typeof
+</td>
+<td colspan="2">
+instanceof
+</td>
+<td colspan="2">
+Object.prototype.toString.call()
+</td>
+</tr>
+<tr>
+<td rowspan="4">
+基本类型
+</td>
+<td>
+Number
+</td>
+<td>
+1
+</td>
+<td>
+number
+</td>
+<td>
+√
+</td>
+<td>
+false*
+</td>
+<td>
+○
+</td>
+<td>
+[object Number]
+</td>
+<td>
+√
+</td>
+</tr>
+<tr>
+<td>
+String
+</td>
+<td>
+hello'
+</td>
+<td>
+string
+</td>
+<td>
+√
+</td>
+<td>
+false*
+</td>
+<td>
+○
+</td>
+<td>
+[object String]
+</td>
+<td>
+√
+</td>
+</tr>
+<tr>
+<td>
+Boolean
+</td>
+<td>
+true
+</td>
+<td>
+boolean
+</td>
+<td>
+√
+</td>
+<td>
+false*
+</td>
+<td>
+○
+</td>
+<td>
+[object Boolean]
+</td>
+<td>
+√
+</td>
+</tr>
+<tr>
+<td>
+Symbol / new Symbol()
+</td>
+<td>
+new Symbol()
+</td>
+<td>
+symbol
+</td>
+<td>
+√
+</td>
+<td>
+false*
+</td>
+<td>
+○
+</td>
+<td>
+[object Symbol]
+</td>
+<td>
+√
+</td>
+</tr>
+<tr>
+<td rowspan="3">
+new 基本类型
+</td>
+<td>
+new Number()
+</td>
+<td>
+new Number(1)
+</td>
+<td>
+object
+</td>
+<td>
+○
+</td>
+<td>
+true
+</td>
+<td>
+√
+</td>
+<td>
+[object Number]**
+</td>
+<td>
+√
+</td>
+</tr>
+<tr>
+<td>
+new String()
+</td>
+<td>
+new String('hello')
+</td>
+<td>
+object
+</td>
+<td>
+○
+</td>
+<td>
+true
+</td>
+<td>
+√
+</td>
+<td>
+[object String]**
+</td>
+<td>
+√
+</td>
+</tr>
+<tr>
+<td>
+new Boolean()
+</td>
+<td>
+new Boolean('false')
+</td>
+<td>
+object
+</td>
+<td>
+○
+</td>
+<td>
+true
+</td>
+<td>
+√
+</td>
+<td>
+[object Boolean]**
+</td>
+<td>
+√
+</td>
+</tr>
+<tr>
+<td rowspan="2">
+空值
+</td>
+<td>
+null
+</td>
+<td>
+null
+</td>
+<td>
+object
+</td>
+<td>
+×
+</td>
+<td>
+false*
+</td>
+<td>
+○
+</td>
+<td>
+[object Null]
+</td>
+<td>
+√
+</td>
+</tr>
+<tr>
+<td>
+undefined
+</td>
+<td>
+undefined
+</td>
+<td>
+undefined
+</td>
+<td>
+√
+</td>
+<td>
+false*
+</td>
+<td>
+○
+</td>
+<td>
+[object Undefined]
+</td>
+<td>
+√
+</td>
+</tr>
+<tr>
+<td rowspan="6">
+对象类型
+</td>
+<td>
+普通对象
+</td>
+<td>
+{a: '1', b: '2'}
+</td>
+<td>
+object
+</td>
+<td>
+√
+</td>
+<td>
+true
+</td>
+<td>
+√
+</td>
+<td>
+[object Object]
+</td>
+<td>
+√
+</td>
+</tr>
+<tr>
+<td>
+Array
+</td>
+<td>
+[1, 2, 3]
+</td>
+<td>
+object
+</td>
+<td>
+○
+</td>
+<td>
+true
+</td>
+<td>
+√
+</td>
+<td>
+[object Array]
+</td>
+<td>
+√
+</td>
+</tr>
+<tr>
+<td>
+Function
+</td>
+<td>
+function() {}
+</td>
+<td>
+function
+</td>
+<td>
+√
+</td>
+<td>
+true
+</td>
+<td>
+√
+</td>
+<td>
+[object Function]
+</td>
+<td>
+√
+</td>
+</tr>
+<tr>
+<td>
+Error
+</td>
+<td>
+new Error()
+</td>
+<td>
+object
+</td>
+<td>
+○
+</td>
+<td>
+true
+</td>
+<td>
+√
+</td>
+<td>
+[object Error]
+</td>
+<td>
+√
+</td>
+</tr>
+<tr>
+<td>
+Date
+</td>
+<td>
+new Date()
+</td>
+<td>
+object
+</td>
+<td>
+○
+</td>
+<td>
+true
+</td>
+<td>
+√
+</td>
+<td>
+[object Date]
+</td>
+<td>
+√
+</td>
+</tr>
+<tr>
+<td>
+RegExp
+</td>
+<td>
+new RegExp()
+</td>
+<td>
+object
+</td>
+<td>
+○
+</td>
+<td>
+true
+</td>
+<td>
+√
+</td>
+<td>
+[object RegExp]
+</td>
+<td>
+√
+</td>
+</tr>
+</table>
+<p>*尽管我们直接使用 <code>1 instanceof Number</code> 会出现错误，但是我们可以自定义 <code>instanceof</code> 方法，让他可以判断基本类型：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PrimitiveNumber</span> </span>&#123;</span><br><span class="line">  <span class="keyword">static</span> [<span class="built_in">Symbol</span>.hasInstance](instance) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">typeof</span> instance === <span class="string">&#x27;number&#x27;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="number">1</span> <span class="keyword">instanceof</span> PrimitiveNumber <span class="comment">// true </span></span><br></pre></td></tr></table></figure>
+<p>**基本类型与用 <code>new Constructor</code> 构造的用对象包裹的基本类型实际上是不一样的，特别是在 <code>Boolean</code> 上，这点需要注意：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> boolean = <span class="literal">false</span></span><br><span class="line">!!boolean <span class="comment">// false</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> newBoolean = <span class="keyword">new</span> <span class="built_in">Boolean</span>(<span class="literal">false</span>)</span><br><span class="line">!!newBoolean <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+<h2 id="自己实现一个-instanceof">自己实现一个 <code>instanceof</code></h2>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">myInstanceof</span>(<span class="params">left, right</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> left !== <span class="string">&#x27;object&#x27;</span> || left === <span class="literal">null</span>) <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">  <span class="keyword">let</span> proto = <span class="built_in">Object</span>.getPrototypeOf(left) <span class="comment">// 相当于 left.__proto__</span></span><br><span class="line">  <span class="keyword">while</span>(<span class="literal">true</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span>(proto === <span class="literal">null</span>) <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">    <span class="keyword">if</span>(proto === right.prototype) <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">    proto = <span class="built_in">Object</span>.getPrototypeOf(proto)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="object.is-和"><code>Object.is</code> 和 <code>===</code></h2>
+<p><code>Object.is</code> 修复了 <code>===</code> 的一些失误：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">is</span>(<span class="params">x, y</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (x === y) &#123;</span><br><span class="line">    <span class="comment">// 修复 +0 和 -0 相等的问题</span></span><br><span class="line">    <span class="keyword">return</span> x !== <span class="number">0</span> || y !== <span class="number">0</span> || <span class="number">1</span> / x === <span class="number">1</span> / y</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// 修复 NaN 和 NaN 不相等的问题</span></span><br><span class="line">    <span class="keyword">return</span> x !== x &amp;&amp; y !== y</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/hais-notebook/tags/%E5%85%A5%E9%97%A8/" rel="tag"># 入门</a>
+          </div>
+
         
 
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2020/01/29/JS-Expressions/" rel="prev" title="JavaScript 表达式与语句">
+                  <i class="fa fa-chevron-left"></i> JavaScript 表达式与语句
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2020/01/29/JS-Object/" rel="next" title="JavaScript Object">
+                  JavaScript Object <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/hais-notebook/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
 <div class="copyright">
-  
   &copy; 
   <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Harvey Zhang</span>
 </div>
-  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
-  </div>
-  <span class="post-meta-divider">|</span>
-  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.0
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>
 
-        
-
-
-
-
-
-
-
-
-      </div>
-    </footer>
-  </div>
+    </div>
+  </footer>
 
   
-  <script src="/hais-notebook/lib/anime.min.js"></script>
-  <script src="/hais-notebook/lib/velocity/velocity.min.js"></script>
-  <script src="/hais-notebook/lib/velocity/velocity.ui.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/hais-notebook/js/utils.js"></script><script src="/hais-notebook/js/next-boot.js"></script>
 
-<script src="/hais-notebook/js/utils.js"></script>
-
-<script src="/hais-notebook/js/motion.js"></script>
+  
+<script src="/hais-notebook/js/third-party/search/local-search.js"></script>
 
 
-<script src="/hais-notebook/js/schemes/pisces.js"></script>
-
-
-<script src="/hais-notebook/js/next-boot.js"></script>
 
 
 
@@ -742,25 +922,11 @@
 
 
   
-<script src="/hais-notebook/js/local-search.js"></script>
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{&quot;enable&quot;:true,&quot;tags&quot;:&quot;none&quot;,&quot;js&quot;:{&quot;url&quot;:&quot;https:&#x2F;&#x2F;cdn.jsdelivr.net&#x2F;npm&#x2F;mathjax@3.1.4&#x2F;es5&#x2F;tex-mml-chtml.js&quot;,&quot;integrity&quot;:&quot;sha256-ncNI9OXOS5Ek4tzVYiOMmN&#x2F;KKCPZ6V0Cpv2P&#x2F;zHntiA&#x3D;&quot;}}</script>
+<script src="/hais-notebook/js/third-party/math/mathjax.js"></script>
 
 
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  
-
-  
 
 </body>
 </html>

@@ -4,48 +4,22 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
+
+
   <link rel="apple-touch-icon" sizes="180x180" href="/hais-notebook/images/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/hais-notebook/images/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/hais-notebook/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/hais-notebook/images/logo.svg" color="#222">
 
 <link rel="stylesheet" href="/hais-notebook/css/main.css">
 
 
-<link rel="stylesheet" href="/hais-notebook/lib/font-awesome/css/font-awesome.min.css">
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
 
-<script id="hexo-configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    hostname: new URL('https://hyuain.github.io/hais-notebook').hostname,
-    root: '/hais-notebook/',
-    scheme: 'Gemini',
-    version: '7.7.0',
-    exturl: false,
-    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
-    copycode: {"enable":false,"show_result":false,"style":null},
-    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
-    bookmark: {"enable":false,"color":"#222","save":"auto"},
-    fancybox: false,
-    mediumzoom: false,
-    lazyload: false,
-    pangu: false,
-    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
-    algolia: {
-      appID: 'W0QZQNNH7N',
-      apiKey: '00189c8d102508ea71e94422b5f129fd',
-      indexName: 'hais-notebook',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    },
-    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
-    path: 'search.xml',
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
-  };
-</script>
-
-  <meta name="description" content="进程、线程，进程控制与线程控制。">
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;hyuain.github.io&quot;,&quot;root&quot;:&quot;&#x2F;hais-notebook&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;hais-notebook&#x2F;images&quot;,&quot;scheme&quot;:&quot;Gemini&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:true,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:false,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;搜索...&quot;,&quot;empty&quot;:&quot;没有找到任何搜索结果：${query}&quot;,&quot;hits_time&quot;:&quot;找到 ${hits} 个搜索结果（用时 ${time} 毫秒）&quot;,&quot;hits&quot;:&quot;找到 ${hits} 个搜索结果&quot;},&quot;path&quot;:&quot;&#x2F;hais-notebook&#x2F;search.xml&quot;,&quot;localsearch&quot;:{&quot;enable&quot;:true,&quot;trigger&quot;:&quot;auto&quot;,&quot;top_n_per_article&quot;:1,&quot;unescape&quot;:false,&quot;preload&quot;:false}}</script>
+<meta name="description" content="进程、线程，进程控制与线程控制。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Child Process">
 <meta property="og:url" content="https://hyuain.github.io/hais-notebook/2021/03/26/NodeJS-ChildProcess/index.html">
@@ -53,338 +27,113 @@
 <meta property="og:description" content="进程、线程，进程控制与线程控制。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-03-26T22:59:12.000Z">
-<meta property="article:modified_time" content="2021-05-24T13:39:43.273Z">
+<meta property="article:modified_time" content="2021-03-26T22:59:12.000Z">
 <meta property="article:author" content="Harvey Zhang">
 <meta property="article:tag" content="入门">
 <meta name="twitter:card" content="summary">
 
+
 <link rel="canonical" href="https://hyuain.github.io/hais-notebook/2021/03/26/NodeJS-ChildProcess/">
 
 
-<script id="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome: false,
-    isPost: true
-  };
-</script>
 
-  <title>Child Process | Hais Notebook</title>
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;zh-CN&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;https:&#x2F;&#x2F;hyuain.github.io&#x2F;hais-notebook&#x2F;2021&#x2F;03&#x2F;26&#x2F;NodeJS-ChildProcess&#x2F;&quot;,&quot;path&quot;:&quot;2021&#x2F;03&#x2F;26&#x2F;NodeJS-ChildProcess&#x2F;&quot;,&quot;title&quot;:&quot;Child Process&quot;}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>Child Process | Hais Notebook</title><script src="/hais-notebook/js/config.js"></script>
   
-
-
 
 
 
 
   <noscript>
-  <style>
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header { opacity: initial; }
-
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
-
+    <link rel="stylesheet" href="/hais-notebook/css/noscript.css">
+  </noscript>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
-    <div class="headband"></div>
+  <div class="headband"></div>
 
+  <main class="main">
     <header class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-container">
-  <div class="site-meta">
-
-    <div>
-      <a href="/hais-notebook/" class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">Hais Notebook</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
     </div>
   </div>
 
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
-      <span class="toggle-line toggle-line-first"></span>
-      <span class="toggle-line toggle-line-middle"></span>
-      <span class="toggle-line toggle-line-last"></span>
+  <div class="site-meta">
+
+    <a href="/hais-notebook/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Hais Notebook</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
 
 
+
 <nav class="site-nav">
-  
-  <ul id="menu" class="menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/hais-notebook/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
-
-  </li>
-        <li class="menu-item menu-item-tags">
-
-    <a href="/hais-notebook/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
-
-  </li>
-        <li class="menu-item menu-item-categories">
-
-    <a href="/hais-notebook/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
-
-  </li>
-        <li class="menu-item menu-item-archives">
-
-    <a href="/hais-notebook/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
-
-  </li>
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/hais-notebook/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-tags"><a href="/hais-notebook/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/hais-notebook/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/hais-notebook/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
       </li>
   </ul>
-
 </nav>
-  <div class="site-search">
-    <div class="popup search-popup">
-    <div class="search-header">
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
   <span class="search-icon">
     <i class="fa fa-search"></i>
   </span>
   <div class="search-input-container">
-    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
            placeholder="搜索..." spellcheck="false"
-           type="text" id="search-input">
+           type="search" class="search-input">
   </div>
-  <span class="popup-btn-close">
+  <span class="popup-btn-close" role="button">
     <i class="fa fa-times-circle"></i>
   </span>
 </div>
-<div id="search-result"></div>
-
-</div>
-<div class="search-pop-overlay"></div>
-
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
   </div>
 </div>
-    </header>
-
-    
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-
-
-    <main class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-
-          <div class="content">
-            
-
-  <div class="posts-expand">
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2021/03/26/NodeJS-ChildProcess/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
-      <meta itemprop="name" content="Harvey Zhang">
-      <meta itemprop="description" content="小海的笔记本">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hais Notebook">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          Child Process
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-03-26 22:59:12" itemprop="dateCreated datePublished" datetime="2021-03-26T22:59:12+00:00">2021-03-26</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-24 13:39:43" itemprop="dateModified" datetime="2021-05-24T13:39:43+00:00">2021-05-24</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hais-notebook/categories/%E5%85%A8%E6%A0%88/" itemprop="url" rel="index">
-                    <span itemprop="name">全栈</span>
-                  </a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hais-notebook/categories/%E5%85%A8%E6%A0%88/NodeJS/" itemprop="url" rel="index">
-                    <span itemprop="name">NodeJS</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-        <p>进程、线程，进程控制与线程控制。</p>
-<a id="more"></a>
-<h1 id="进程-Process"><a href="#进程-Process" class="headerlink" title="进程 Process"></a>进程 Process</h1><p><strong>进程</strong>是<strong>程序</strong>（比如 exe）的执行实例。<strong>程序</strong>在CPU上执行的活动叫做<strong>进程</strong>。</p>
-<p>一个进程可以创建另一个进程（父进程与子进程）。</p>
-<h2 id="多程序并发执行"><a href="#多程序并发执行" class="headerlink" title="多程序并发执行"></a>多程序并发执行</h2><p>单核 CPU 在一个时刻，只能做一件事情，为了让用户在同一时刻可以做多件事，就需要在不同进程中快速切换。</p>
-<p>也就是“多程序并发执行”——多个程序在宏观上并行，微观上串行。多个进程之间会出现抢资源（比如打印机就很明显）的现象。</p>
-<h2 id="进程的两个状态"><a href="#进程的两个状态" class="headerlink" title="进程的两个状态"></a>进程的两个状态</h2><p>进程有 <strong>非运行态</strong> 与 <strong>运行态</strong>。分派程序将 CPU 分配给非运行态的进程，进程从而进入运行态；过一段时间之后进程暂停，又进入非运行态。</p>
-<h2 id="阻塞"><a href="#阻塞" class="headerlink" title="阻塞"></a>阻塞</h2><p>在进程队列中等待执行的进程都处于 <strong>非运行态</strong>，一些进程(A)在等待 CPU 资源，一些进程(B)在等待 I/O 完成（比如文件读取）。如果这时候把 CPU 分配给 B 进程，B 进程并不会使用 CPU，而是继续等 I/O——我们把 B 称为 <strong>阻塞进程</strong>。为了避免资源的浪费，分派程序只会把 CPU 分配给 <strong>非阻塞进程</strong>。</p>
-<h1 id="线程-Thread"><a href="#线程-Thread" class="headerlink" title="线程 Thread"></a>线程 Thread</h1><p>早期的面向进程设计的操作系统中，进程是程序的基本执行实体。现在的面向线程设计的系统中，进程本身不是基本运行单位，而是线程的容器。</p>
-<p>进程是执行的基本实体，也是资源分配的基本实体——这就导致进程的创建、切换、销毁太消耗 CPU 的时间了。因此引入线程，线程作为执行的基本实体，而进程作为资源分配的基本实体。</p>
-<h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><ul>
-<li>CPU 调度和执行的最小单元</li>
-<li>一个进程中可以有一个或多个线程</li>
-<li>一个进程中的线程共享该进程的所有资源</li>
-<li>进程的第一个线程叫做初始化线程</li>
-<li>线程的调度可以由操作系统负责，也可以由用户自己负责</li>
-</ul>
-<h1 id="使用-NodeJS-操作进程"><a href="#使用-NodeJS-操作进程" class="headerlink" title="使用 NodeJS 操作进程"></a>使用 NodeJS 操作进程</h1><p>使用 <code>child_process</code> 模块可以创建子进程。<br>子进程的运行结果存在系统缓存之中（最大 200kb），等到子进程结束之后，主进程再用回调函数读取子进程的运行结果。</p>
-<h2 id="exec"><a href="#exec" class="headerlink" title="exec"></a>exec</h2><p><code>exec(command[, options][, callback])</code></p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> child_process = <span class="built_in">require</span>(<span class="string">"child_process"</span>)</span><br><span class="line"><span class="keyword">const</span> &#123; exec &#125; = child_process</span><br><span class="line"></span><br><span class="line"><span class="comment">// exec 可以执行命令行命令，从而开启一个子进程，子进程如果有输出，会存在缓存之中，等子进程结束之后输出给 stdout</span></span><br><span class="line">exec(<span class="string">"ls ../"</span>, (error, stdout, stderr) =&gt; &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(error, stdout, stderr)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<p>上面这段简单的代码表示使用 exec 可以执行命令行命令，使用命令行我们就可以开启一个子进程。</p>
-<p>exec 也会返回一个包含流的对象：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> child_process = <span class="built_in">require</span>(<span class="string">"child_process"</span>)</span><br><span class="line"><span class="keyword">const</span> &#123; exec &#125; = child_process</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> streams = exec(<span class="string">"ls ../"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// streams.stdout 是一个流</span></span><br><span class="line">streams.stdout.on(<span class="string">"data"</span>, (chunk) =&gt; &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">"getData"</span>, chunk)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// stream.stderror 也是一个流</span></span><br><span class="line">streams.stderr.on(<span class="string">"data"</span>, (chunk) =&gt; &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">"getError"</span>, chunk)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<p>此外，还可以用 <code>util.promisify</code> 将其包裹为一个 Promise，避免回调地狱：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> child_process = <span class="built_in">require</span>(<span class="string">"child_process"</span>)</span><br><span class="line"><span class="keyword">const</span> &#123; exec &#125; = child_process</span><br><span class="line"><span class="keyword">const</span> util = <span class="built_in">require</span>(<span class="string">"util"</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> promisifiedExec = util.promisify(exec)</span><br><span class="line"></span><br><span class="line">promisifiedExec(<span class="string">"ls ../"</span>)</span><br><span class="line">  .then(<span class="function">(<span class="params">data</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"success"</span>, data.stdout)</span><br><span class="line">  &#125;)</span><br></pre></td></tr></table></figure>
-<p>注意！如果 <code>exec</code> 执行的命令行命令可以被用户指定，就会存在注入的风险，所以通常我们不使用 <code>exec</code>。</p>
-<h2 id="execFile"><a href="#execFile" class="headerlink" title="execFile"></a>execFile</h2><p><code>execFile(file[, args][, options][, callback])</code></p>
-<p>跟 exec 用法基本相同，也可以以流的方式使用，但命令行参数需要用数组的形式传入，无法注入。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> child_process = <span class="built_in">require</span>(<span class="string">"child_process"</span>)</span><br><span class="line"><span class="keyword">const</span> &#123; execFile &#125; = child_process</span><br><span class="line"></span><br><span class="line">execFile(<span class="string">"ls"</span>, [<span class="string">"-la"</span>, <span class="string">"."</span>], (error, stdout) =&gt; &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(error)</span><br><span class="line">  <span class="built_in">console</span>.log(stdout)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<h3 id="options"><a href="#options" class="headerlink" title="options"></a>options</h3><p>options 可传可不传，他有一些比较重要的参数：</p>
-<ul>
-<li>cwd: 在哪个目录执行，默认是当前目录</li>
-<li>env: 环境变量，默认是 process.env</li>
-<li>maxBuffer: 用于暂存 stdout 和 stderr 的最大缓存区大小，默认 1024 * 1024 Byte</li>
-<li>shell: 指定运行的 shell</li>
-</ul>
-<h2 id="spawn"><a href="#spawn" class="headerlink" title="spawn"></a>spawn</h2><p>用法跟 execFile 基本一样，但没有回调函数，只能通过流事件来获取结果，也没有最大的缓存限制（因为是流，并没有暂存 stdout 和 stderr）。</p>
-<p>一般用 spawn，不用 execFile，因为流比较方便，且不会占用太多内存</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> child_process = <span class="built_in">require</span>(<span class="string">"child_process"</span>)</span><br><span class="line"><span class="keyword">const</span> &#123; spawn &#125; = child_process</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> streams = spawn(<span class="string">"ls"</span>, [<span class="string">"-la"</span>, <span class="string">"."</span>])</span><br><span class="line"></span><br><span class="line">streams.stdout.on(<span class="string">"data"</span>, (chunk) =&gt; &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(chunk.toString())</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<h2 id="fork"><a href="#fork" class="headerlink" title="fork"></a>fork</h2><p>创建一个执行 Node 脚本的子进程，可以监听他的 message 事件。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** main.js */</span></span><br><span class="line"><span class="keyword">const</span> child_process = <span class="built_in">require</span>(<span class="string">"child_process"</span>)</span><br><span class="line"><span class="keyword">const</span> &#123; fork &#125; = child_process</span><br><span class="line"></span><br><span class="line"><span class="comment">// 其实类似于 execFile("node", ["./child.js"])</span></span><br><span class="line"><span class="keyword">const</span> childProcess = fork(<span class="string">"./child.js"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 父进程监听子进程传来的消息</span></span><br><span class="line">childProcess.on(<span class="string">"message"</span>, (message) =&gt; &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">"父进程得到 message"</span>, message)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">childProcess.send(&#123; <span class="attr">age</span>: <span class="number">20</span> &#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">/** child.js */</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"This is child.js"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 子进程监听父进程传来的消息</span></span><br><span class="line">process.on(<span class="string">"message"</span>, (message) =&gt; &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">"子进程得到 message"</span>, message)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  process.send(&#123; <span class="attr">name</span>: <span class="string">"harvey"</span> &#125;)</span><br><span class="line">  <span class="comment">// 如果没有这句话，node 会因为父子进程相互监听而无法退出</span></span><br><span class="line">  process.exit()</span><br><span class="line">&#125;, <span class="number">2000</span>)</span><br></pre></td></tr></table></figure>
-<h1 id="使用-NodeJS-操作线程"><a href="#使用-NodeJS-操作线程" class="headerlink" title="使用 NodeJS 操作线程"></a>使用 NodeJS 操作线程</h1><p>操作线程需要使用 <code>new Worker</code>，而这个 API 非常新，在 v10.5.0 才加入，并且在 v11.7.0 之前使用都需要 <code>--experimental-worker</code> 来开启，因此用得会比较少，并且效率也不高。</p>
-<blockquote>
-<p>Workers (threads) are useful for performing CPU-intensive JavaScript operations. They do not help much with I/O-intensive work. The Node.js built-in asynchronous I/O operations are more efficient than Workers can be.</p>
-</blockquote>
-<p>具体内容可以参考 <a href="https://nodejs.org/api/worker_threads.html" target="_blank" rel="noopener">官方文档</a></p>
 
     </div>
-
-    
-    
-    
-
-      <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/hais-notebook/tags/%E5%85%A5%E9%97%A8/" rel="tag"># 入门</a>
-          </div>
-
-        
-
-
-        
-    <div class="post-nav">
-      <div class="post-nav-item">
-    <a href="/hais-notebook/2021/03/26/Operations-RailsDemo/" rel="prev" title="部署到阿里云：以 Rails App 为例">
-      <i class="fa fa-chevron-left"></i> 部署到阿里云：以 Rails App 为例
-    </a></div>
-      <div class="post-nav-item">
-    <a href="/hais-notebook/2021/03/27/NodeJS-Express/" rel="next" title="Express">
-      Express <i class="fa fa-chevron-right"></i>
-    </a></div>
-    </div>
-      </footer>
-    
-  </article>
-  
-  
-  
-
   </div>
 
-
-          </div>
-          
-
-<script>
-  window.addEventListener('tabs:register', () => {
-    let activeClass = CONFIG.comments.activeClass;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
-      }
-    }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      let commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
-</script>
-
-        </div>
-          
+</div>
+        
   
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line toggle-line-first"></span>
-    <span class="toggle-line toggle-line-middle"></span>
-    <span class="toggle-line toggle-line-last"></span>
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
   </div>
 
   <aside class="sidebar">
-    <div class="sidebar-inner">
 
-      <ul class="sidebar-nav motion-element">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
         </li>
@@ -393,18 +142,19 @@
         </li>
       </ul>
 
-      <!--noindex-->
-      <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#进程-Process"><span class="nav-number">1.</span> <span class="nav-text">进程 Process</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#多程序并发执行"><span class="nav-number">1.1.</span> <span class="nav-text">多程序并发执行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#进程的两个状态"><span class="nav-number">1.2.</span> <span class="nav-text">进程的两个状态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#阻塞"><span class="nav-number">1.3.</span> <span class="nav-text">阻塞</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#线程-Thread"><span class="nav-number">2.</span> <span class="nav-text">线程 Thread</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#概念"><span class="nav-number">2.1.</span> <span class="nav-text">概念</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用-NodeJS-操作进程"><span class="nav-number">3.</span> <span class="nav-text">使用 NodeJS 操作进程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#exec"><span class="nav-number">3.1.</span> <span class="nav-text">exec</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#execFile"><span class="nav-number">3.2.</span> <span class="nav-text">execFile</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#options"><span class="nav-number">3.2.1.</span> <span class="nav-text">options</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#spawn"><span class="nav-number">3.3.</span> <span class="nav-text">spawn</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#fork"><span class="nav-number">3.4.</span> <span class="nav-text">fork</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用-NodeJS-操作线程"><span class="nav-number">4.</span> <span class="nav-text">使用 NodeJS 操作线程</span></a></li></ol></div>
-      </div>
-      <!--/noindex-->
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B-process"><span class="nav-number">1.</span> <span class="nav-text">进程 Process</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E7%A8%8B%E5%BA%8F%E5%B9%B6%E5%8F%91%E6%89%A7%E8%A1%8C"><span class="nav-number">1.1.</span> <span class="nav-text">多程序并发执行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E4%B8%A4%E4%B8%AA%E7%8A%B6%E6%80%81"><span class="nav-number">1.2.</span> <span class="nav-text">进程的两个状态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%BB%E5%A1%9E"><span class="nav-number">1.3.</span> <span class="nav-text">阻塞</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B-thread"><span class="nav-number">2.</span> <span class="nav-text">线程 Thread</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5"><span class="nav-number">2.1.</span> <span class="nav-text">概念</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-nodejs-%E6%93%8D%E4%BD%9C%E8%BF%9B%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text">使用 NodeJS 操作进程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#exec"><span class="nav-number">3.1.</span> <span class="nav-text">exec</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#execfile"><span class="nav-number">3.2.</span> <span class="nav-text">execFile</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#options"><span class="nav-number">3.2.1.</span> <span class="nav-text">options</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#spawn"><span class="nav-number">3.3.</span> <span class="nav-text">spawn</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#fork"><span class="nav-number">3.4.</span> <span class="nav-text">fork</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-nodejs-%E6%93%8D%E4%BD%9C%E7%BA%BF%E7%A8%8B"><span class="nav-number">4.</span> <span class="nav-text">使用 NodeJS 操作线程</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
 
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
   <p class="site-author-name" itemprop="name">Harvey Zhang</p>
   <div class="site-description" itemprop="description">小海的笔记本</div>
 </div>
-<div class="site-state-wrap motion-element">
+<div class="site-state-wrap site-overview-item animated">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/hais-notebook/archives/">
@@ -430,62 +180,210 @@
 
 
 
+        </div>
       </div>
-
     </div>
   </aside>
-  <div id="sidebar-dimmer"></div>
+  <div class="sidebar-dimmer"></div>
 
 
-      </div>
-    </main>
+    </header>
 
-    <footer class="footer">
-      <div class="footer-inner">
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2021/03/26/NodeJS-ChildProcess/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
+      <meta itemprop="name" content="Harvey Zhang">
+      <meta itemprop="description" content="小海的笔记本">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hais Notebook">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Child Process
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-03-26 22:59:12" itemprop="dateCreated datePublished" datetime="2021-03-26T22:59:12+00:00">2021-03-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E5%85%A8%E6%A0%88/" itemprop="url" rel="index"><span itemprop="name">全栈</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E5%85%A8%E6%A0%88/NodeJS/" itemprop="url" rel="index"><span itemprop="name">NodeJS</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>进程、线程，进程控制与线程控制。</p>
+<span id="more"></span>
+<h1 id="进程-process">进程 Process</h1>
+<p><strong>进程</strong>是<strong>程序</strong>（比如 exe）的执行实例。<strong>程序</strong>在CPU上执行的活动叫做<strong>进程</strong>。</p>
+<p>一个进程可以创建另一个进程（父进程与子进程）。</p>
+<h2 id="多程序并发执行">多程序并发执行</h2>
+<p>单核 CPU 在一个时刻，只能做一件事情，为了让用户在同一时刻可以做多件事，就需要在不同进程中快速切换。</p>
+<p>也就是“多程序并发执行”——多个程序在宏观上并行，微观上串行。多个进程之间会出现抢资源（比如打印机就很明显）的现象。</p>
+<h2 id="进程的两个状态">进程的两个状态</h2>
+<p>进程有 <strong>非运行态</strong> 与 <strong>运行态</strong>。分派程序将 CPU 分配给非运行态的进程，进程从而进入运行态；过一段时间之后进程暂停，又进入非运行态。</p>
+<h2 id="阻塞">阻塞</h2>
+<p>在进程队列中等待执行的进程都处于 <strong>非运行态</strong>，一些进程(A)在等待 CPU 资源，一些进程(B)在等待 I/O 完成（比如文件读取）。如果这时候把 CPU 分配给 B 进程，B 进程并不会使用 CPU，而是继续等 I/O——我们把 B 称为 <strong>阻塞进程</strong>。为了避免资源的浪费，分派程序只会把 CPU 分配给 <strong>非阻塞进程</strong>。</p>
+<h1 id="线程-thread">线程 Thread</h1>
+<p>早期的面向进程设计的操作系统中，进程是程序的基本执行实体。现在的面向线程设计的系统中，进程本身不是基本运行单位，而是线程的容器。</p>
+<p>进程是执行的基本实体，也是资源分配的基本实体——这就导致进程的创建、切换、销毁太消耗 CPU 的时间了。因此引入线程，线程作为执行的基本实体，而进程作为资源分配的基本实体。</p>
+<h2 id="概念">概念</h2>
+<ul>
+<li>CPU 调度和执行的最小单元</li>
+<li>一个进程中可以有一个或多个线程</li>
+<li>一个进程中的线程共享该进程的所有资源</li>
+<li>进程的第一个线程叫做初始化线程</li>
+<li>线程的调度可以由操作系统负责，也可以由用户自己负责</li>
+</ul>
+<h1 id="使用-nodejs-操作进程">使用 NodeJS 操作进程</h1>
+<p>使用 <code>child_process</code> 模块可以创建子进程。 子进程的运行结果存在系统缓存之中（最大 200kb），等到子进程结束之后，主进程再用回调函数读取子进程的运行结果。</p>
+<h2 id="exec">exec</h2>
+<p><code>exec(command[, options][, callback])</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> child_process = <span class="built_in">require</span>(<span class="string">&quot;child_process&quot;</span>)</span><br><span class="line"><span class="keyword">const</span> &#123; exec &#125; = child_process</span><br><span class="line"></span><br><span class="line"><span class="comment">// exec 可以执行命令行命令，从而开启一个子进程，子进程如果有输出，会存在缓存之中，等子进程结束之后输出给 stdout</span></span><br><span class="line">exec(<span class="string">&quot;ls ../&quot;</span>, <span class="function">(<span class="params">error, stdout, stderr</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(error, stdout, stderr)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>上面这段简单的代码表示使用 exec 可以执行命令行命令，使用命令行我们就可以开启一个子进程。</p>
+<p>exec 也会返回一个包含流的对象：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> child_process = <span class="built_in">require</span>(<span class="string">&quot;child_process&quot;</span>)</span><br><span class="line"><span class="keyword">const</span> &#123; exec &#125; = child_process</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> streams = exec(<span class="string">&quot;ls ../&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// streams.stdout 是一个流</span></span><br><span class="line">streams.stdout.on(<span class="string">&quot;data&quot;</span>, <span class="function">(<span class="params">chunk</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&quot;getData&quot;</span>, chunk)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// stream.stderror 也是一个流</span></span><br><span class="line">streams.stderr.on(<span class="string">&quot;data&quot;</span>, <span class="function">(<span class="params">chunk</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&quot;getError&quot;</span>, chunk)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>此外，还可以用 <code>util.promisify</code> 将其包裹为一个 Promise，避免回调地狱：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> child_process = <span class="built_in">require</span>(<span class="string">&quot;child_process&quot;</span>)</span><br><span class="line"><span class="keyword">const</span> &#123; exec &#125; = child_process</span><br><span class="line"><span class="keyword">const</span> util = <span class="built_in">require</span>(<span class="string">&quot;util&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> promisifiedExec = util.promisify(exec)</span><br><span class="line"></span><br><span class="line">promisifiedExec(<span class="string">&quot;ls ../&quot;</span>)</span><br><span class="line">  .then(<span class="function">(<span class="params">data</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&quot;success&quot;</span>, data.stdout)</span><br><span class="line">  &#125;)</span><br></pre></td></tr></table></figure>
+<p>注意！如果 <code>exec</code> 执行的命令行命令可以被用户指定，就会存在注入的风险，所以通常我们不使用 <code>exec</code>。</p>
+<h2 id="execfile">execFile</h2>
+<p><code>execFile(file[, args][, options][, callback])</code></p>
+<p>跟 exec 用法基本相同，也可以以流的方式使用，但命令行参数需要用数组的形式传入，无法注入。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> child_process = <span class="built_in">require</span>(<span class="string">&quot;child_process&quot;</span>)</span><br><span class="line"><span class="keyword">const</span> &#123; execFile &#125; = child_process</span><br><span class="line"></span><br><span class="line">execFile(<span class="string">&quot;ls&quot;</span>, [<span class="string">&quot;-la&quot;</span>, <span class="string">&quot;.&quot;</span>], <span class="function">(<span class="params">error, stdout</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(error)</span><br><span class="line">  <span class="built_in">console</span>.log(stdout)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="options">options</h3>
+<p>options 可传可不传，他有一些比较重要的参数：</p>
+<ul>
+<li>cwd: 在哪个目录执行，默认是当前目录</li>
+<li>env: 环境变量，默认是 process.env</li>
+<li>maxBuffer: 用于暂存 stdout 和 stderr 的最大缓存区大小，默认 1024 * 1024 Byte</li>
+<li>shell: 指定运行的 shell</li>
+</ul>
+<h2 id="spawn">spawn</h2>
+<p>用法跟 execFile 基本一样，但没有回调函数，只能通过流事件来获取结果，也没有最大的缓存限制（因为是流，并没有暂存 stdout 和 stderr）。</p>
+<p>一般用 spawn，不用 execFile，因为流比较方便，且不会占用太多内存</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> child_process = <span class="built_in">require</span>(<span class="string">&quot;child_process&quot;</span>)</span><br><span class="line"><span class="keyword">const</span> &#123; spawn &#125; = child_process</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> streams = spawn(<span class="string">&quot;ls&quot;</span>, [<span class="string">&quot;-la&quot;</span>, <span class="string">&quot;.&quot;</span>])</span><br><span class="line"></span><br><span class="line">streams.stdout.on(<span class="string">&quot;data&quot;</span>, <span class="function">(<span class="params">chunk</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(chunk.toString())</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h2 id="fork">fork</h2>
+<p>创建一个执行 Node 脚本的子进程，可以监听他的 message 事件。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** main.js */</span></span><br><span class="line"><span class="keyword">const</span> child_process = <span class="built_in">require</span>(<span class="string">&quot;child_process&quot;</span>)</span><br><span class="line"><span class="keyword">const</span> &#123; fork &#125; = child_process</span><br><span class="line"></span><br><span class="line"><span class="comment">// 其实类似于 execFile(&quot;node&quot;, [&quot;./child.js&quot;])</span></span><br><span class="line"><span class="keyword">const</span> childProcess = fork(<span class="string">&quot;./child.js&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 父进程监听子进程传来的消息</span></span><br><span class="line">childProcess.on(<span class="string">&quot;message&quot;</span>, <span class="function">(<span class="params">message</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&quot;父进程得到 message&quot;</span>, message)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">childProcess.send(&#123; <span class="attr">age</span>: <span class="number">20</span> &#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">/** child.js */</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">&quot;This is child.js&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 子进程监听父进程传来的消息</span></span><br><span class="line">process.on(<span class="string">&quot;message&quot;</span>, <span class="function">(<span class="params">message</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&quot;子进程得到 message&quot;</span>, message)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  process.send(&#123; <span class="attr">name</span>: <span class="string">&quot;harvey&quot;</span> &#125;)</span><br><span class="line">  <span class="comment">// 如果没有这句话，node 会因为父子进程相互监听而无法退出</span></span><br><span class="line">  process.exit()</span><br><span class="line">&#125;, <span class="number">2000</span>)</span><br></pre></td></tr></table></figure>
+<h1 id="使用-nodejs-操作线程">使用 NodeJS 操作线程</h1>
+<p>操作线程需要使用 <code>new Worker</code>，而这个 API 非常新，在 v10.5.0 才加入，并且在 v11.7.0 之前使用都需要 <code>--experimental-worker</code> 来开启，因此用得会比较少，并且效率也不高。</p>
+<blockquote>
+<p>Workers (threads) are useful for performing CPU-intensive JavaScript operations. They do not help much with I/O-intensive work. The Node.js built-in asynchronous I/O operations are more efficient than Workers can be.</p>
+</blockquote>
+<p>具体内容可以参考 <a target="_blank" rel="noopener" href="https://nodejs.org/api/worker_threads.html">官方文档</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/hais-notebook/tags/%E5%85%A5%E9%97%A8/" rel="tag"># 入门</a>
+          </div>
+
         
 
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2021/03/26/Operations-RailsDemo/" rel="prev" title="部署到阿里云：以 Rails App 为例">
+                  <i class="fa fa-chevron-left"></i> 部署到阿里云：以 Rails App 为例
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2021/03/27/NodeJS-Express/" rel="next" title="Express">
+                  Express <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/hais-notebook/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
 <div class="copyright">
-  
   &copy; 
   <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Harvey Zhang</span>
 </div>
-  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
-  </div>
-  <span class="post-meta-divider">|</span>
-  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.0
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>
 
-        
-
-
-
-
-
-
-
-
-      </div>
-    </footer>
-  </div>
+    </div>
+  </footer>
 
   
-  <script src="/hais-notebook/lib/anime.min.js"></script>
-  <script src="/hais-notebook/lib/velocity/velocity.min.js"></script>
-  <script src="/hais-notebook/lib/velocity/velocity.ui.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/hais-notebook/js/utils.js"></script><script src="/hais-notebook/js/next-boot.js"></script>
 
-<script src="/hais-notebook/js/utils.js"></script>
-
-<script src="/hais-notebook/js/motion.js"></script>
+  
+<script src="/hais-notebook/js/third-party/search/local-search.js"></script>
 
 
-<script src="/hais-notebook/js/schemes/pisces.js"></script>
-
-
-<script src="/hais-notebook/js/next-boot.js"></script>
 
 
 
@@ -496,25 +394,11 @@
 
 
   
-<script src="/hais-notebook/js/local-search.js"></script>
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{&quot;enable&quot;:true,&quot;tags&quot;:&quot;none&quot;,&quot;js&quot;:{&quot;url&quot;:&quot;https:&#x2F;&#x2F;cdn.jsdelivr.net&#x2F;npm&#x2F;mathjax@3.1.4&#x2F;es5&#x2F;tex-mml-chtml.js&quot;,&quot;integrity&quot;:&quot;sha256-ncNI9OXOS5Ek4tzVYiOMmN&#x2F;KKCPZ6V0Cpv2P&#x2F;zHntiA&#x3D;&quot;}}</script>
+<script src="/hais-notebook/js/third-party/math/mathjax.js"></script>
 
 
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  
-
-  
 
 </body>
 </html>

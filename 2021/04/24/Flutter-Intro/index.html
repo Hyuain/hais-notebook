@@ -4,48 +4,22 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
+
+
   <link rel="apple-touch-icon" sizes="180x180" href="/hais-notebook/images/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/hais-notebook/images/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/hais-notebook/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/hais-notebook/images/logo.svg" color="#222">
 
 <link rel="stylesheet" href="/hais-notebook/css/main.css">
 
 
-<link rel="stylesheet" href="/hais-notebook/lib/font-awesome/css/font-awesome.min.css">
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
 
-<script id="hexo-configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    hostname: new URL('https://hyuain.github.io/hais-notebook').hostname,
-    root: '/hais-notebook/',
-    scheme: 'Gemini',
-    version: '7.7.0',
-    exturl: false,
-    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
-    copycode: {"enable":false,"show_result":false,"style":null},
-    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
-    bookmark: {"enable":false,"color":"#222","save":"auto"},
-    fancybox: false,
-    mediumzoom: false,
-    lazyload: false,
-    pangu: false,
-    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
-    algolia: {
-      appID: 'W0QZQNNH7N',
-      apiKey: '00189c8d102508ea71e94422b5f129fd',
-      indexName: 'hais-notebook',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    },
-    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
-    path: 'search.xml',
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
-  };
-</script>
-
-  <meta name="description" content="这几天简单了解了一下 Flutter，以下笔记是阅读文档的笔记。">
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;hyuain.github.io&quot;,&quot;root&quot;:&quot;&#x2F;hais-notebook&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;hais-notebook&#x2F;images&quot;,&quot;scheme&quot;:&quot;Gemini&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:true,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:false,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;搜索...&quot;,&quot;empty&quot;:&quot;没有找到任何搜索结果：${query}&quot;,&quot;hits_time&quot;:&quot;找到 ${hits} 个搜索结果（用时 ${time} 毫秒）&quot;,&quot;hits&quot;:&quot;找到 ${hits} 个搜索结果&quot;},&quot;path&quot;:&quot;&#x2F;hais-notebook&#x2F;search.xml&quot;,&quot;localsearch&quot;:{&quot;enable&quot;:true,&quot;trigger&quot;:&quot;auto&quot;,&quot;top_n_per_article&quot;:1,&quot;unescape&quot;:false,&quot;preload&quot;:false}}</script>
+<meta name="description" content="这几天简单了解了一下 Flutter，以下笔记是阅读文档的笔记。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Flutter 简单上手">
 <meta property="og:url" content="https://hyuain.github.io/hais-notebook/2021/04/24/Flutter-Intro/index.html">
@@ -53,372 +27,113 @@
 <meta property="og:description" content="这几天简单了解了一下 Flutter，以下笔记是阅读文档的笔记。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-04-24T10:13:00.000Z">
-<meta property="article:modified_time" content="2021-05-24T13:39:43.273Z">
+<meta property="article:modified_time" content="2021-04-24T10:13:00.000Z">
 <meta property="article:author" content="Harvey Zhang">
 <meta property="article:tag" content="入门">
 <meta name="twitter:card" content="summary">
 
+
 <link rel="canonical" href="https://hyuain.github.io/hais-notebook/2021/04/24/Flutter-Intro/">
 
 
-<script id="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome: false,
-    isPost: true
-  };
-</script>
 
-  <title>Flutter 简单上手 | Hais Notebook</title>
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;zh-CN&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;https:&#x2F;&#x2F;hyuain.github.io&#x2F;hais-notebook&#x2F;2021&#x2F;04&#x2F;24&#x2F;Flutter-Intro&#x2F;&quot;,&quot;path&quot;:&quot;2021&#x2F;04&#x2F;24&#x2F;Flutter-Intro&#x2F;&quot;,&quot;title&quot;:&quot;Flutter 简单上手&quot;}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>Flutter 简单上手 | Hais Notebook</title><script src="/hais-notebook/js/config.js"></script>
   
-
-
 
 
 
 
   <noscript>
-  <style>
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header { opacity: initial; }
-
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
-
+    <link rel="stylesheet" href="/hais-notebook/css/noscript.css">
+  </noscript>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
-    <div class="headband"></div>
+  <div class="headband"></div>
 
+  <main class="main">
     <header class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-container">
-  <div class="site-meta">
-
-    <div>
-      <a href="/hais-notebook/" class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">Hais Notebook</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
     </div>
   </div>
 
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
-      <span class="toggle-line toggle-line-first"></span>
-      <span class="toggle-line toggle-line-middle"></span>
-      <span class="toggle-line toggle-line-last"></span>
+  <div class="site-meta">
+
+    <a href="/hais-notebook/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Hais Notebook</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
 
 
+
 <nav class="site-nav">
-  
-  <ul id="menu" class="menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/hais-notebook/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
-
-  </li>
-        <li class="menu-item menu-item-tags">
-
-    <a href="/hais-notebook/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
-
-  </li>
-        <li class="menu-item menu-item-categories">
-
-    <a href="/hais-notebook/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
-
-  </li>
-        <li class="menu-item menu-item-archives">
-
-    <a href="/hais-notebook/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
-
-  </li>
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/hais-notebook/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-tags"><a href="/hais-notebook/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/hais-notebook/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/hais-notebook/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
       </li>
   </ul>
-
 </nav>
-  <div class="site-search">
-    <div class="popup search-popup">
-    <div class="search-header">
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
   <span class="search-icon">
     <i class="fa fa-search"></i>
   </span>
   <div class="search-input-container">
-    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
            placeholder="搜索..." spellcheck="false"
-           type="text" id="search-input">
+           type="search" class="search-input">
   </div>
-  <span class="popup-btn-close">
+  <span class="popup-btn-close" role="button">
     <i class="fa fa-times-circle"></i>
   </span>
 </div>
-<div id="search-result"></div>
-
-</div>
-<div class="search-pop-overlay"></div>
-
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
   </div>
 </div>
-    </header>
 
-    
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
+    </div>
   </div>
 
-
-    <main class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-
-          <div class="content">
-            
-
-  <div class="posts-expand">
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2021/04/24/Flutter-Intro/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
-      <meta itemprop="name" content="Harvey Zhang">
-      <meta itemprop="description" content="小海的笔记本">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hais Notebook">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          Flutter 简单上手
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-04-24 10:13:00" itemprop="dateCreated datePublished" datetime="2021-04-24T10:13:00+00:00">2021-04-24</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-24 13:39:43" itemprop="dateModified" datetime="2021-05-24T13:39:43+00:00">2021-05-24</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hais-notebook/categories/%E8%B7%A8%E7%AB%AF/" itemprop="url" rel="index">
-                    <span itemprop="name">跨端</span>
-                  </a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hais-notebook/categories/%E8%B7%A8%E7%AB%AF/Flutter/" itemprop="url" rel="index">
-                    <span itemprop="name">Flutter</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-        <p>这几天简单了解了一下 Flutter，以下笔记是阅读文档的笔记。</p>
-<a id="more"></a>
-<h1 id="UI"><a href="#UI" class="headerlink" title="UI"></a>UI</h1><h2 id="Widget"><a href="#Widget" class="headerlink" title="Widget"></a>Widget</h2><p>Widget 像其他 Web 框架的 Component、Template、DOM，用来描述 UI。</p>
-<blockquote>
-<p>当 widget 的状态改变时，它会重新构建其描述（展示的 UI），框架则会对比前后变化的不同，以确定底层渲染树从一个状态转换到下一个状态所需的最小更改。</p>
-</blockquote>
-<h3 id="Root-Widget"><a href="#Root-Widget" class="headerlink" title="Root Widget"></a>Root Widget</h3><p>往 <code>runApp()</code> 里面传入一个 Widget 就可构建一个最小的 Flutter 应用，传入的这个 Widget 叫做 <code>Root Widegt</code></p>
-<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> main() &#123;</span><br><span class="line">  runApp(</span><br><span class="line">    Center(</span><br><span class="line">      child: Text(</span><br><span class="line">        <span class="string">'Hello, world!'</span>,</span><br><span class="line">        textDirection: TextDirection.ltr,</span><br><span class="line">      ),</span><br><span class="line">    ),</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<div class="note warning">
-            <p>Root Widget 会被强制指定铺满整个屏幕。</p>
-          </div>
-<h2 id="一些基础-Widget"><a href="#一些基础-Widget" class="headerlink" title="一些基础 Widget"></a>一些基础 Widget</h2><ul>
-<li><code>Text</code>：创建带样式的文本</li>
-<li><code>Row</code>, <code>Column</code>：用于在水平和垂直方向进行创建类似 flex box 的东西以进行布局</li>
-<li><code>Stack</code>：类似于 CSS 层叠上下文，是按照绘制顺序将 Widget 堆叠在一起。可以将 <code>Positioned</code> 作为 child，将其相对于 <code>Stack</code> 进行定位。</li>
-<li><code>Container</code>：类似于 <code>&lt;div&gt;&lt;/div&gt;</code> 创建一个矩形，可以用 <code>BoxDecoration</code> 来加背景、边框、阴影等，还可以指定 margin、padding、变换等。</li>
-<li><code>GestureDetector</code>：本身不可见，但是可以探测到内部组件的手势事件，比如点击、拖动、缩放。</li>
-</ul>
-<h2 id="创建一个自己的-Widget"><a href="#创建一个自己的-Widget" class="headerlink" title="创建一个自己的 Widget"></a>创建一个自己的 Widget</h2><p>可以创建一个 class，他继承了 <code>StatelessWidget</code>，这个 class 就是一个 Widget。</p>
-<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyAppBar</span> <span class="keyword">extends</span> <span class="title">StatelessWidget</span> </span>&#123;</span><br><span class="line">  MyAppBar(&#123;required <span class="keyword">this</span>.title&#125;);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Fields in a Widget subclass are always marked "final".</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">final</span> Widget title;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    <span class="keyword">return</span> Container(</span><br><span class="line">      height: <span class="number">56.0</span>, <span class="comment">// in logical pixels</span></span><br><span class="line">      padding: <span class="keyword">const</span> EdgeInsets.symmetric(horizontal: <span class="number">8.0</span>),</span><br><span class="line">      decoration: BoxDecoration(color: Colors.blue[<span class="number">500</span>]),</span><br><span class="line">      <span class="comment">// Row is a horizontal, linear layout.</span></span><br><span class="line">      child: Row(</span><br><span class="line">        <span class="comment">// &lt;Widget&gt; is the type of items in the list.</span></span><br><span class="line">        children: &lt;Widget&gt;[</span><br><span class="line">          IconButton(</span><br><span class="line">            icon: Icon(Icons.menu),</span><br><span class="line">            tooltip: <span class="string">'Navigation menu'</span>,</span><br><span class="line">            onPressed: <span class="keyword">null</span>, <span class="comment">// null disables the button</span></span><br><span class="line">          ),</span><br><span class="line">          <span class="comment">// Expanded expands its child</span></span><br><span class="line">          <span class="comment">// to fill the available space.</span></span><br><span class="line">          Expanded(</span><br><span class="line">            child: title,</span><br><span class="line">          ),</span><br><span class="line">          IconButton(</span><br><span class="line">            icon: Icon(Icons.search),</span><br><span class="line">            tooltip: <span class="string">'Search'</span>,</span><br><span class="line">            onPressed: <span class="keyword">null</span>,</span><br><span class="line">          ),</span><br><span class="line">        ],</span><br><span class="line">      ),</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="StatelessWidget-和-StatefulWidget"><a href="#StatelessWidget-和-StatefulWidget" class="headerlink" title="StatelessWidget 和 StatefulWidget"></a><code>StatelessWidget</code> 和 <code>StatefulWidget</code></h2><ul>
-<li><code>StatelessWidget</code>：无状态 widget。接收的参数来自于它的父 widget，这些参数被储存在 final 成员变量中。当 widget 需要被 build() 时，就是用这些存储的变量为创建的 widget 生成新的参数。</li>
-<li><code>StatefulWidget</code>：有状态 widget。他有一些自己管理的状态，可以自行做出一些响应用户操作的变化。</li>
-</ul>
-<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">'package:flutter/material.dart'</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Counter</span> <span class="keyword">extends</span> <span class="title">StatefulWidget</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 这个 class 是用来接收父级传过来的属性的（就像无状态 Widget 一样，他们通常被以 final 的形式存储）</span></span><br><span class="line">  <span class="comment">// 在这个例子中，这个 class 没有接收任何参数</span></span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  _CounterState createState() =&gt; _CounterState();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">_CounterState</span> <span class="keyword">extends</span> <span class="title">State</span>&lt;<span class="title">Counter</span>&gt; </span>&#123;</span><br><span class="line">  <span class="built_in">int</span> _counter = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">void</span> _increment() &#123;</span><br><span class="line">    setState(() &#123;</span><br><span class="line">      <span class="comment">// 调用 setState 会告诉 Flutter：State 发生了变化。</span></span><br><span class="line">      <span class="comment">// 这会调用下面的 build 函数来更新视图</span></span><br><span class="line">      <span class="comment">// 如果不调用 setState，视图将不会更新</span></span><br><span class="line">      _counter++;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    <span class="comment">// 每次 setState 的时候都会调用这个函数</span></span><br><span class="line">    <span class="comment">// Flutter 已经对 build 过程进行了优化，所以可以直接重新调用 build，而不必关心局部 Widget 的更新</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">"build"</span>);</span><br><span class="line">    <span class="keyword">return</span> Row(</span><br><span class="line">      mainAxisAlignment: MainAxisAlignment.center,</span><br><span class="line">      children: &lt;Widget&gt;[</span><br><span class="line">        ElevatedButton(</span><br><span class="line">          <span class="comment">// 点击按钮的时候调用 _increment</span></span><br><span class="line">          onPressed: _increment,</span><br><span class="line">          child: Text(<span class="string">'Increment'</span>),</span><br><span class="line">        ),</span><br><span class="line">        SizedBox(width: <span class="number">16</span>),</span><br><span class="line">        Text(<span class="string">'Count: <span class="subst">$_counter</span>'</span>),</span><br><span class="line">      ],</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="父子-Widget-的状态传递"><a href="#父子-Widget-的状态传递" class="headerlink" title="父子 Widget 的状态传递"></a>父子 Widget 的状态传递</h2><blockquote>
-<p>简单来说，就像 React。</p>
-</blockquote>
-<p>父 -&gt; 子：值<br>子 -&gt; 父：回调函数</p>
-<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 一个用于展示 count 的无状态组件</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CounterDisplay</span> <span class="keyword">extends</span> <span class="title">StatelessWidget</span> </span>&#123;</span><br><span class="line">  CounterDisplay(&#123;required <span class="keyword">this</span>.count&#125;);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">final</span> <span class="built_in">int</span> count;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    <span class="keyword">return</span> Text(<span class="string">'Count: <span class="subst">$count</span>'</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 一个用于增加 count 的无状态组件</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CounterIncrementor</span> <span class="keyword">extends</span> <span class="title">StatelessWidget</span> </span>&#123;</span><br><span class="line">  CounterIncrementor(&#123;required <span class="keyword">this</span>.onPressed&#125;);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">final</span> VoidCallback onPressed;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    <span class="keyword">return</span> ElevatedButton(</span><br><span class="line">      onPressed: onPressed,</span><br><span class="line">      child: Text(<span class="string">'Increment'</span>),</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 父组件</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Counter</span> <span class="keyword">extends</span> <span class="title">StatefulWidget</span> </span>&#123;</span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  _CounterState createState() =&gt; _CounterState();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 父组件的状态管理部分</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">_CounterState</span> <span class="keyword">extends</span> <span class="title">State</span>&lt;<span class="title">Counter</span>&gt; </span>&#123;</span><br><span class="line">  <span class="built_in">int</span> _counter = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">void</span> _increment() &#123;</span><br><span class="line">    setState(() &#123;</span><br><span class="line">      ++_counter;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    <span class="keyword">return</span> Row(</span><br><span class="line">      mainAxisAlignment: MainAxisAlignment.center,</span><br><span class="line">      children: &lt;Widget&gt;[</span><br><span class="line">        <span class="comment">// 这是刚刚定义的用于增加 count 的无状态组件，通过回调函数将事件发给父级控制</span></span><br><span class="line">        CounterIncrementor(onPressed: _increment),</span><br><span class="line">        SizedBox(width: <span class="number">16</span>),</span><br><span class="line">        <span class="comment">// 这是刚刚定义的用于显示 count 的无状态组件，传给他 _count，让他只负责显示</span></span><br><span class="line">        CounterDisplay(count: _counter),</span><br><span class="line">      ],</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>可以看 <a href="https://flutter.cn/docs/development/ui/widgets-intro#bringing-it-all-together" target="_blank" rel="noopener">官方文档的购物车例子</a></p>
-<h2 id="状态的生命周期"><a href="#状态的生命周期" class="headerlink" title="状态的生命周期"></a>状态的生命周期</h2><ul>
-<li><p><code>initState()</code>：在 StatefulWidget 上调用 createState() 之后，框架将新的状态对象插入到树中，然后在状态对象上调用 initState()。 State 的子类可以重写 initState 来完成只需要发生一次的工作。例如，重写 initState 来配置动画或订阅平台服务。实现 initState 需要调用父类的 super.initState 方法来开始。</p>
-</li>
-<li><p><code>dispose()</code>：当不再需要状态对象时，框架会调用状态对象上的 dispose() 方法。可以重写dispose 方法来清理状态。例如，重写 dispose 以取消计时器或取消订阅平台服务。实现 dispose 时通常通过调用 super.dispose 来结束。</p>
-</li>
-</ul>
-<h2 id="布局"><a href="#布局" class="headerlink" title="布局"></a>布局</h2><p>Flutter 中的布局也是使用 Widget 实现的。可以在 <a href="https://flutter.cn/docs/development/ui/widgets/layout" target="_blank" rel="noopener">Flutter 布局 Widget</a> 中找。</p>
-<h1 id="状态管理"><a href="#状态管理" class="headerlink" title="状态管理"></a>状态管理</h1><h2 id="声明式-UI"><a href="#声明式-UI" class="headerlink" title="声明式 UI"></a>声明式 UI</h2><ul>
-<li>命令式（比如 Web）：如果我们要操作 UI，通常需要通过 <code>getElementBuyId</code> 之类的 API 先获取 DOM 中元素的实例和操作权，然后再调用相关的方法来修改他的颜色等属性。</li>
-<li>声明式（Flutter）：视图本身（Widget）是不可变的，通常在配置好之后，我们不能改变 Widget，如果需要改变 UI，需要通过 <code>setState()</code> 之类的方法构建一个新的 Widget。</li>
-</ul>
-<h2 id="短时状态（Ephemeral-State）与应用状态（App-State）"><a href="#短时状态（Ephemeral-State）与应用状态（App-State）" class="headerlink" title="短时状态（Ephemeral State）与应用状态（App State）"></a>短时状态（Ephemeral State）与应用状态（App State）</h2><ul>
-<li>状态<ul>
-<li>广义：这个应用运行时存在于内存中的所有内容。包括应用中用到的资源，所有 Flutter 框架中有关用户界面、动画状态、纹理、字体以及其他等等的变量。</li>
-<li>狭义：是当任何时候需要<strong>重建你的用户界面</strong>时所需要的<strong>数据</strong>。因为很多广义的状态不需要我们管理（比如纹理），框架本身会替我们管理。</li>
-</ul>
-</li>
-<li>短时状态：有时也称 <em>用户界面(UI)状态</em> 或者 <em>局部状态</em>。是可以完全包含在 <strong>一个独立 widget</strong> 中的状态。<ul>
-<li>一个 PageView 组件中的当前页面</li>
-<li>一个复杂动画中当前进度</li>
-<li>一个 BottomNavigationBar 中当前被选中的 tab</li>
-</ul>
-</li>
-<li>应用状态：有时也称 <strong>共享状态</strong>。是指在应用的多个部分之间共享的一个非短时状态，并且在用户会话期间会保留这个状态。<ul>
-<li>用户选项</li>
-<li>登录信息</li>
-<li>一个社交应用中的通知</li>
-<li>一个电商应用中的购物车</li>
-<li>一个新闻应用中的文章已读/未读状态</li>
-</ul>
-</li>
-</ul>
-<blockquote>
-<p>简单来说。<br>短时状态：用 setState 管理，别人不需要关心你的状态，类似于 React 中的 setState。<br>应用状态：可以用状态管理框架（比如 Redux）来管理，多个部分会共享这个状态。</p>
-</blockquote>
-<h2 id="Provider"><a href="#Provider" class="headerlink" title="Provider"></a>Provider</h2><p>Provider 可以用于进行管理应用状态。</p>
-<h3 id="ChangeNotifier"><a href="#ChangeNotifier" class="headerlink" title="ChangeNotifier"></a>ChangeNotifier</h3><div class="note warning">
-            <p>ChangeNotifier 实际上是在 <code>flutter:foundation</code> 中的，不依赖其他的库，也不一定要与 Provider 一起使用。</p>
-          </div>
-<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// <span class="markdown">创建一个类，他继承 ChangeNotifier，负责管理状态</span></span></span><br><span class="line"><span class="comment">/// <span class="markdown">这里的例子是用来管理购物车中的商品</span></span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CartModel</span> <span class="keyword">extends</span> <span class="title">ChangeNotifier</span> </span>&#123;</span><br><span class="line">  <span class="comment">/// <span class="markdown">内部的私有变量，用来保存数据</span></span></span><br><span class="line">  <span class="keyword">final</span> <span class="built_in">List</span>&lt;Item&gt; _items = [];</span><br><span class="line"></span><br><span class="line">  <span class="comment">/// <span class="markdown">向外界暴露出一个不可更改的 ListView</span></span></span><br><span class="line">  UnmodifiableListView&lt;Item&gt; <span class="keyword">get</span> items =&gt; UnmodifiableListView(_items);</span><br><span class="line"></span><br><span class="line">  <span class="comment">/// <span class="markdown">向外界暴露出我们计算出的商品总价</span></span></span><br><span class="line">  <span class="built_in">int</span> <span class="keyword">get</span> totalPrice =&gt; _items.length * <span class="number">42</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/// <span class="markdown">暴露出 add 函数，用于往购物车增加商品</span></span></span><br><span class="line">  <span class="keyword">void</span> add(Item item) &#123;</span><br><span class="line">    _items.add(item);</span><br><span class="line">    <span class="comment">// 关键！调用 notifyListeners() 告诉正在监听这个 model 的 widget，让他们 rebuild</span></span><br><span class="line">    notifyListeners();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/// <span class="markdown">暴露出 removeAll 函数，用于清空所有商品</span></span></span><br><span class="line">  <span class="keyword">void</span> removeAll() &#123;</span><br><span class="line">    _items.clear();</span><br><span class="line">    <span class="comment">// 关键！调用 notifyListeners() 告诉正在监听这个 model 的 widget，让他们 rebuild</span></span><br><span class="line">    notifyListeners();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="ChangeNotifierProvider"><a href="#ChangeNotifierProvider" class="headerlink" title="ChangeNotifierProvider"></a>ChangeNotifierProvider</h3><p><code>ChangeNotifierProvider</code> widget 可以向其子孙节点暴露一个 <code>ChangeNotifier</code> 实例。它属于 provider package。</p>
-<p>需要将 <code>ChangeNotifierProvider</code> 放在所有需要访问他的 widget 之上。</p>
-<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> main() &#123;</span><br><span class="line">  runApp(</span><br><span class="line">    ChangeNotifierProvider(</span><br><span class="line">      <span class="comment">/// <span class="markdown">定义了一个 builder 来创建 CartModel 实例，ChangeNotifierProvider 不会重复实例化 CartModel</span></span></span><br><span class="line">      <span class="comment">/// <span class="markdown">如果该实例已经不会再被调用， ChangeNotifierProvider 也会自动调用 CartModel 的 dispose() 方法。</span></span></span><br><span class="line">      create: (context) =&gt; CartModel(),</span><br><span class="line">      child: MyApp(),</span><br><span class="line">    ),</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>可以使用 <code>MultiProvider</code> 来提供多个状态：</p>
-<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> main() &#123;</span><br><span class="line">  runApp(</span><br><span class="line">    MultiProvider(</span><br><span class="line">      providers: [</span><br><span class="line">        ChangeNotifierProvider(create: (context) =&gt; CartModel()),</span><br><span class="line">        Provider(create: (context) =&gt; SomeOtherClass()),</span><br><span class="line">      ],</span><br><span class="line">      child: MyApp(),</span><br><span class="line">    ),</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="Consumer"><a href="#Consumer" class="headerlink" title="Consumer"></a>Consumer</h3><p>可以通过 Consumer 来获取到数据</p>
-<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">Widget build(BuildContext context) &#123;</span><br><span class="line">  <span class="comment">// 通过 Consumer 来获取到数据</span></span><br><span class="line">  <span class="keyword">return</span> Consumer&lt;CartModel&gt;(</span><br><span class="line">  <span class="comment">/// <span class="markdown">当 ChangeNotifier 发生变化（调用 notifyListener()）的时候会调用 builder。</span></span></span><br><span class="line">  <span class="comment">/// <span class="markdown">builder 的第一个参数是 context，跟其他的 build 方法一样</span></span></span><br><span class="line">  <span class="comment">/// <span class="markdown">builder 的第二个参数是 ChangeNotifier 的实例，也就是 CartModel 的实例</span></span></span><br><span class="line">  <span class="comment">/// <span class="markdown">builder 的第三个参数是 child，用于优化目的。</span></span></span><br><span class="line">  <span class="comment">/// <span class="markdown">如果 Consumer 下面有一个庞大的子树（SomeExpensiveWidget），当 Model 发生改变的时候，该子树（SomeExpensiveWidget） 并不会 改变，那么你就可以仅仅创建它一次，然后通过 builder 获得该实例。</span></span></span><br><span class="line">    builder: (context, cart, child) =&gt; Stack(</span><br><span class="line">        children: [</span><br><span class="line">          <span class="comment">// 不需要每次都 rebuild 的庞大子树</span></span><br><span class="line">          child,</span><br><span class="line">          Text(<span class="string">"Total price: <span class="subst">$&#123;cart.totalPrice&#125;</span>"</span>),</span><br><span class="line">        ],</span><br><span class="line">      ),</span><br><span class="line">    <span class="comment">// 不需要每次都 rebuild 的庞大子树</span></span><br><span class="line">    child: SomeExpensiveWidget(),</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>一般来讲我们需要把 Consumer 放到尽可能低的位置，这样每次 Model 的变化就不会引起过量的 rebuild</p>
-<h3 id="Provider-of"><a href="#Provider-of" class="headerlink" title="Provider.of"></a>Provider.of</h3><p>有时候我们不需要页面更新，又想要用到新的数据，这时候就可以不用 <code>Consumer</code>，而是 <code>Provider.of</code>：</p>
-<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Widget build(BuildContext context) &#123;</span><br><span class="line">  <span class="comment">// 并且需要将 listen 设置为 false，这样当 notifyListeners 被调用的时候，并不会使 widget 被重构</span></span><br><span class="line">  Provider.of&lt;CartModel&gt;(context, listen: <span class="keyword">false</span>).removeAll();</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-    </div>
-
-    
-    
-    
-
-      <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/hais-notebook/tags/%E5%85%A5%E9%97%A8/" rel="tag"># 入门</a>
-          </div>
-
+</div>
         
-
-
-        
-    <div class="post-nav">
-      <div class="post-nav-item">
-    <a href="/hais-notebook/2021/04/11/NodeJS-TypeORM/" rel="prev" title="TypeORM">
-      <i class="fa fa-chevron-left"></i> TypeORM
-    </a></div>
-      <div class="post-nav-item">
-    <a href="/hais-notebook/2021/05/09/Book-ComputerScienceDistilled/" rel="next" title="读书笔记：《计算机科学精粹》">
-      读书笔记：《计算机科学精粹》 <i class="fa fa-chevron-right"></i>
-    </a></div>
-    </div>
-      </footer>
-    
-  </article>
   
-  
-  
-
-  </div>
-
-
-          </div>
-          
-
-<script>
-  window.addEventListener('tabs:register', () => {
-    let activeClass = CONFIG.comments.activeClass;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
-      }
-    }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      let commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
-</script>
-
-        </div>
-          
-  
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line toggle-line-first"></span>
-    <span class="toggle-line toggle-line-middle"></span>
-    <span class="toggle-line toggle-line-last"></span>
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
   </div>
 
   <aside class="sidebar">
-    <div class="sidebar-inner">
 
-      <ul class="sidebar-nav motion-element">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
         </li>
@@ -427,18 +142,19 @@
         </li>
       </ul>
 
-      <!--noindex-->
-      <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#UI"><span class="nav-number">1.</span> <span class="nav-text">UI</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Widget"><span class="nav-number">1.1.</span> <span class="nav-text">Widget</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Root-Widget"><span class="nav-number">1.1.1.</span> <span class="nav-text">Root Widget</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一些基础-Widget"><span class="nav-number">1.2.</span> <span class="nav-text">一些基础 Widget</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建一个自己的-Widget"><span class="nav-number">1.3.</span> <span class="nav-text">创建一个自己的 Widget</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#StatelessWidget-和-StatefulWidget"><span class="nav-number">1.4.</span> <span class="nav-text">StatelessWidget 和 StatefulWidget</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#父子-Widget-的状态传递"><span class="nav-number">1.5.</span> <span class="nav-text">父子 Widget 的状态传递</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#状态的生命周期"><span class="nav-number">1.6.</span> <span class="nav-text">状态的生命周期</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#布局"><span class="nav-number">1.7.</span> <span class="nav-text">布局</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#状态管理"><span class="nav-number">2.</span> <span class="nav-text">状态管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#声明式-UI"><span class="nav-number">2.1.</span> <span class="nav-text">声明式 UI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#短时状态（Ephemeral-State）与应用状态（App-State）"><span class="nav-number">2.2.</span> <span class="nav-text">短时状态（Ephemeral State）与应用状态（App State）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Provider"><span class="nav-number">2.3.</span> <span class="nav-text">Provider</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ChangeNotifier"><span class="nav-number">2.3.1.</span> <span class="nav-text">ChangeNotifier</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ChangeNotifierProvider"><span class="nav-number">2.3.2.</span> <span class="nav-text">ChangeNotifierProvider</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Consumer"><span class="nav-number">2.3.3.</span> <span class="nav-text">Consumer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Provider-of"><span class="nav-number">2.3.4.</span> <span class="nav-text">Provider.of</span></a></li></ol></li></ol></li></ol></div>
-      </div>
-      <!--/noindex-->
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ui"><span class="nav-number">1.</span> <span class="nav-text">UI</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#widget"><span class="nav-number">1.1.</span> <span class="nav-text">Widget</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#root-widget"><span class="nav-number">1.1.1.</span> <span class="nav-text">Root Widget</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E5%9F%BA%E7%A1%80-widget"><span class="nav-number">1.2.</span> <span class="nav-text">一些基础 Widget</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E8%87%AA%E5%B7%B1%E7%9A%84-widget"><span class="nav-number">1.3.</span> <span class="nav-text">创建一个自己的 Widget</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#statelesswidget-%E5%92%8C-statefulwidget"><span class="nav-number">1.4.</span> <span class="nav-text">StatelessWidget 和 StatefulWidget</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%88%B6%E5%AD%90-widget-%E7%9A%84%E7%8A%B6%E6%80%81%E4%BC%A0%E9%80%92"><span class="nav-number">1.5.</span> <span class="nav-text">父子 Widget 的状态传递</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8A%B6%E6%80%81%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="nav-number">1.6.</span> <span class="nav-text">状态的生命周期</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%83%E5%B1%80"><span class="nav-number">1.7.</span> <span class="nav-text">布局</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%8A%B6%E6%80%81%E7%AE%A1%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">状态管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A3%B0%E6%98%8E%E5%BC%8F-ui"><span class="nav-number">2.1.</span> <span class="nav-text">声明式 UI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9F%AD%E6%97%B6%E7%8A%B6%E6%80%81ephemeral-state%E4%B8%8E%E5%BA%94%E7%94%A8%E7%8A%B6%E6%80%81app-state"><span class="nav-number">2.2.</span> <span class="nav-text">短时状态（Ephemeral State）与应用状态（App State）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#provider"><span class="nav-number">2.3.</span> <span class="nav-text">Provider</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#changenotifier"><span class="nav-number">2.3.1.</span> <span class="nav-text">ChangeNotifier</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#changenotifierprovider"><span class="nav-number">2.3.2.</span> <span class="nav-text">ChangeNotifierProvider</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#consumer"><span class="nav-number">2.3.3.</span> <span class="nav-text">Consumer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#provider.of"><span class="nav-number">2.3.4.</span> <span class="nav-text">Provider.of</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
 
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
   <p class="site-author-name" itemprop="name">Harvey Zhang</p>
   <div class="site-description" itemprop="description">小海的笔记本</div>
 </div>
-<div class="site-state-wrap motion-element">
+<div class="site-state-wrap site-overview-item animated">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/hais-notebook/archives/">
@@ -464,62 +180,245 @@
 
 
 
+        </div>
       </div>
-
     </div>
   </aside>
-  <div id="sidebar-dimmer"></div>
+  <div class="sidebar-dimmer"></div>
 
 
-      </div>
-    </main>
+    </header>
 
-    <footer class="footer">
-      <div class="footer-inner">
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2021/04/24/Flutter-Intro/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
+      <meta itemprop="name" content="Harvey Zhang">
+      <meta itemprop="description" content="小海的笔记本">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hais Notebook">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Flutter 简单上手
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-04-24 10:13:00" itemprop="dateCreated datePublished" datetime="2021-04-24T10:13:00+00:00">2021-04-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E8%B7%A8%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">跨端</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E8%B7%A8%E7%AB%AF/Flutter/" itemprop="url" rel="index"><span itemprop="name">Flutter</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>这几天简单了解了一下 Flutter，以下笔记是阅读文档的笔记。</p>
+<span id="more"></span>
+<h1 id="ui">UI</h1>
+<h2 id="widget">Widget</h2>
+<p>Widget 像其他 Web 框架的 Component、Template、DOM，用来描述 UI。</p>
+<blockquote>
+<p>当 widget 的状态改变时，它会重新构建其描述（展示的 UI），框架则会对比前后变化的不同，以确定底层渲染树从一个状态转换到下一个状态所需的最小更改。</p>
+</blockquote>
+<h3 id="root-widget">Root Widget</h3>
+<p>往 <code>runApp()</code> 里面传入一个 Widget 就可构建一个最小的 Flutter 应用，传入的这个 Widget 叫做 <code>Root Widegt</code></p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> main() &#123;</span><br><span class="line">  runApp(</span><br><span class="line">    Center(</span><br><span class="line">      child: Text(</span><br><span class="line">        <span class="string">&#x27;Hello, world!&#x27;</span>,</span><br><span class="line">        textDirection: TextDirection.ltr,</span><br><span class="line">      ),</span><br><span class="line">    ),</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<div class="note warning"><p>Root Widget 会被强制指定铺满整个屏幕。</p>
+</div>
+<h2 id="一些基础-widget">一些基础 Widget</h2>
+<ul>
+<li><code>Text</code>：创建带样式的文本</li>
+<li><code>Row</code>, <code>Column</code>：用于在水平和垂直方向进行创建类似 flex box 的东西以进行布局</li>
+<li><code>Stack</code>：类似于 CSS 层叠上下文，是按照绘制顺序将 Widget 堆叠在一起。可以将 <code>Positioned</code> 作为 child，将其相对于 <code>Stack</code> 进行定位。</li>
+<li><code>Container</code>：类似于 <code>&lt;div&gt;&lt;/div&gt;</code> 创建一个矩形，可以用 <code>BoxDecoration</code> 来加背景、边框、阴影等，还可以指定 margin、padding、变换等。</li>
+<li><code>GestureDetector</code>：本身不可见，但是可以探测到内部组件的手势事件，比如点击、拖动、缩放。</li>
+</ul>
+<h2 id="创建一个自己的-widget">创建一个自己的 Widget</h2>
+<p>可以创建一个 class，他继承了 <code>StatelessWidget</code>，这个 class 就是一个 Widget。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyAppBar</span> <span class="keyword">extends</span> <span class="title">StatelessWidget</span> </span>&#123;</span><br><span class="line">  MyAppBar(&#123;<span class="keyword">required</span> <span class="keyword">this</span>.title&#125;);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Fields in a Widget subclass are always marked &quot;final&quot;.</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">final</span> Widget title;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    <span class="keyword">return</span> Container(</span><br><span class="line">      height: <span class="number">56.0</span>, <span class="comment">// in logical pixels</span></span><br><span class="line">      padding: <span class="keyword">const</span> EdgeInsets.symmetric(horizontal: <span class="number">8.0</span>),</span><br><span class="line">      decoration: BoxDecoration(color: Colors.blue[<span class="number">500</span>]),</span><br><span class="line">      <span class="comment">// Row is a horizontal, linear layout.</span></span><br><span class="line">      child: Row(</span><br><span class="line">        <span class="comment">// &lt;Widget&gt; is the type of items in the list.</span></span><br><span class="line">        children: &lt;Widget&gt;[</span><br><span class="line">          IconButton(</span><br><span class="line">            icon: Icon(Icons.menu),</span><br><span class="line">            tooltip: <span class="string">&#x27;Navigation menu&#x27;</span>,</span><br><span class="line">            onPressed: <span class="keyword">null</span>, <span class="comment">// null disables the button</span></span><br><span class="line">          ),</span><br><span class="line">          <span class="comment">// Expanded expands its child</span></span><br><span class="line">          <span class="comment">// to fill the available space.</span></span><br><span class="line">          Expanded(</span><br><span class="line">            child: title,</span><br><span class="line">          ),</span><br><span class="line">          IconButton(</span><br><span class="line">            icon: Icon(Icons.search),</span><br><span class="line">            tooltip: <span class="string">&#x27;Search&#x27;</span>,</span><br><span class="line">            onPressed: <span class="keyword">null</span>,</span><br><span class="line">          ),</span><br><span class="line">        ],</span><br><span class="line">      ),</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="statelesswidget-和-statefulwidget"><code>StatelessWidget</code> 和 <code>StatefulWidget</code></h2>
+<ul>
+<li><code>StatelessWidget</code>：无状态 widget。接收的参数来自于它的父 widget，这些参数被储存在 final 成员变量中。当 widget 需要被 build() 时，就是用这些存储的变量为创建的 widget 生成新的参数。</li>
+<li><code>StatefulWidget</code>：有状态 widget。他有一些自己管理的状态，可以自行做出一些响应用户操作的变化。</li>
+</ul>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&#x27;package:flutter/material.dart&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Counter</span> <span class="keyword">extends</span> <span class="title">StatefulWidget</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 这个 class 是用来接收父级传过来的属性的（就像无状态 Widget 一样，他们通常被以 final 的形式存储）</span></span><br><span class="line">  <span class="comment">// 在这个例子中，这个 class 没有接收任何参数</span></span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  _CounterState createState() =&gt; _CounterState();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">_CounterState</span> <span class="keyword">extends</span> <span class="title">State</span>&lt;<span class="title">Counter</span>&gt; </span>&#123;</span><br><span class="line">  <span class="built_in">int</span> _counter = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">void</span> _increment() &#123;</span><br><span class="line">    setState(() &#123;</span><br><span class="line">      <span class="comment">// 调用 setState 会告诉 Flutter：State 发生了变化。</span></span><br><span class="line">      <span class="comment">// 这会调用下面的 build 函数来更新视图</span></span><br><span class="line">      <span class="comment">// 如果不调用 setState，视图将不会更新</span></span><br><span class="line">      _counter++;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    <span class="comment">// 每次 setState 的时候都会调用这个函数</span></span><br><span class="line">    <span class="comment">// Flutter 已经对 build 过程进行了优化，所以可以直接重新调用 build，而不必关心局部 Widget 的更新</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;build&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> Row(</span><br><span class="line">      mainAxisAlignment: MainAxisAlignment.center,</span><br><span class="line">      children: &lt;Widget&gt;[</span><br><span class="line">        ElevatedButton(</span><br><span class="line">          <span class="comment">// 点击按钮的时候调用 _increment</span></span><br><span class="line">          onPressed: _increment,</span><br><span class="line">          child: Text(<span class="string">&#x27;Increment&#x27;</span>),</span><br><span class="line">        ),</span><br><span class="line">        SizedBox(width: <span class="number">16</span>),</span><br><span class="line">        Text(<span class="string">&#x27;Count: <span class="subst">$_counter</span>&#x27;</span>),</span><br><span class="line">      ],</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="父子-widget-的状态传递">父子 Widget 的状态传递</h2>
+<blockquote>
+<p>简单来说，就像 React。</p>
+</blockquote>
+<p>父 -&gt; 子：值 子 -&gt; 父：回调函数</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 一个用于展示 count 的无状态组件</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CounterDisplay</span> <span class="keyword">extends</span> <span class="title">StatelessWidget</span> </span>&#123;</span><br><span class="line">  CounterDisplay(&#123;<span class="keyword">required</span> <span class="keyword">this</span>.count&#125;);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">final</span> <span class="built_in">int</span> count;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    <span class="keyword">return</span> Text(<span class="string">&#x27;Count: <span class="subst">$count</span>&#x27;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 一个用于增加 count 的无状态组件</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CounterIncrementor</span> <span class="keyword">extends</span> <span class="title">StatelessWidget</span> </span>&#123;</span><br><span class="line">  CounterIncrementor(&#123;<span class="keyword">required</span> <span class="keyword">this</span>.onPressed&#125;);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">final</span> VoidCallback onPressed;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    <span class="keyword">return</span> ElevatedButton(</span><br><span class="line">      onPressed: onPressed,</span><br><span class="line">      child: Text(<span class="string">&#x27;Increment&#x27;</span>),</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 父组件</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Counter</span> <span class="keyword">extends</span> <span class="title">StatefulWidget</span> </span>&#123;</span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  _CounterState createState() =&gt; _CounterState();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 父组件的状态管理部分</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">_CounterState</span> <span class="keyword">extends</span> <span class="title">State</span>&lt;<span class="title">Counter</span>&gt; </span>&#123;</span><br><span class="line">  <span class="built_in">int</span> _counter = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">void</span> _increment() &#123;</span><br><span class="line">    setState(() &#123;</span><br><span class="line">      ++_counter;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    <span class="keyword">return</span> Row(</span><br><span class="line">      mainAxisAlignment: MainAxisAlignment.center,</span><br><span class="line">      children: &lt;Widget&gt;[</span><br><span class="line">        <span class="comment">// 这是刚刚定义的用于增加 count 的无状态组件，通过回调函数将事件发给父级控制</span></span><br><span class="line">        CounterIncrementor(onPressed: _increment),</span><br><span class="line">        SizedBox(width: <span class="number">16</span>),</span><br><span class="line">        <span class="comment">// 这是刚刚定义的用于显示 count 的无状态组件，传给他 _count，让他只负责显示</span></span><br><span class="line">        CounterDisplay(count: _counter),</span><br><span class="line">      ],</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看 <a target="_blank" rel="noopener" href="https://flutter.cn/docs/development/ui/widgets-intro#bringing-it-all-together">官方文档的购物车例子</a></p>
+<h2 id="状态的生命周期">状态的生命周期</h2>
+<ul>
+<li><p><code>initState()</code>：在 StatefulWidget 上调用 createState() 之后，框架将新的状态对象插入到树中，然后在状态对象上调用 initState()。 State 的子类可以重写 initState 来完成只需要发生一次的工作。例如，重写 initState 来配置动画或订阅平台服务。实现 initState 需要调用父类的 super.initState 方法来开始。</p></li>
+<li><p><code>dispose()</code>：当不再需要状态对象时，框架会调用状态对象上的 dispose() 方法。可以重写dispose 方法来清理状态。例如，重写 dispose 以取消计时器或取消订阅平台服务。实现 dispose 时通常通过调用 super.dispose 来结束。</p></li>
+</ul>
+<h2 id="布局">布局</h2>
+<p>Flutter 中的布局也是使用 Widget 实现的。可以在 <a target="_blank" rel="noopener" href="https://flutter.cn/docs/development/ui/widgets/layout">Flutter 布局 Widget</a> 中找。</p>
+<h1 id="状态管理">状态管理</h1>
+<h2 id="声明式-ui">声明式 UI</h2>
+<ul>
+<li>命令式（比如 Web）：如果我们要操作 UI，通常需要通过 <code>getElementBuyId</code> 之类的 API 先获取 DOM 中元素的实例和操作权，然后再调用相关的方法来修改他的颜色等属性。</li>
+<li>声明式（Flutter）：视图本身（Widget）是不可变的，通常在配置好之后，我们不能改变 Widget，如果需要改变 UI，需要通过 <code>setState()</code> 之类的方法构建一个新的 Widget。</li>
+</ul>
+<h2 id="短时状态ephemeral-state与应用状态app-state">短时状态（Ephemeral State）与应用状态（App State）</h2>
+<ul>
+<li>状态
+<ul>
+<li>广义：这个应用运行时存在于内存中的所有内容。包括应用中用到的资源，所有 Flutter 框架中有关用户界面、动画状态、纹理、字体以及其他等等的变量。</li>
+<li>狭义：是当任何时候需要<strong>重建你的用户界面</strong>时所需要的<strong>数据</strong>。因为很多广义的状态不需要我们管理（比如纹理），框架本身会替我们管理。</li>
+</ul></li>
+<li>短时状态：有时也称 <em>用户界面(UI)状态</em> 或者 <em>局部状态</em>。是可以完全包含在 <strong>一个独立 widget</strong> 中的状态。
+<ul>
+<li>一个 PageView 组件中的当前页面</li>
+<li>一个复杂动画中当前进度</li>
+<li>一个 BottomNavigationBar 中当前被选中的 tab</li>
+</ul></li>
+<li>应用状态：有时也称 <strong>共享状态</strong>。是指在应用的多个部分之间共享的一个非短时状态，并且在用户会话期间会保留这个状态。
+<ul>
+<li>用户选项</li>
+<li>登录信息</li>
+<li>一个社交应用中的通知</li>
+<li>一个电商应用中的购物车</li>
+<li>一个新闻应用中的文章已读/未读状态</li>
+</ul></li>
+</ul>
+<blockquote>
+<p>简单来说。 短时状态：用 setState 管理，别人不需要关心你的状态，类似于 React 中的 setState。 应用状态：可以用状态管理框架（比如 Redux）来管理，多个部分会共享这个状态。</p>
+</blockquote>
+<h2 id="provider">Provider</h2>
+<p>Provider 可以用于进行管理应用状态。</p>
+<h3 id="changenotifier">ChangeNotifier</h3>
+<div class="note warning"><p>ChangeNotifier 实际上是在 <code>flutter:foundation</code> 中的，不依赖其他的库，也不一定要与 Provider 一起使用。</p>
+</div>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// <span class="markdown">创建一个类，他继承 ChangeNotifier，负责管理状态</span></span></span><br><span class="line"><span class="comment">/// <span class="markdown">这里的例子是用来管理购物车中的商品</span></span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CartModel</span> <span class="keyword">extends</span> <span class="title">ChangeNotifier</span> </span>&#123;</span><br><span class="line">  <span class="comment">/// <span class="markdown">内部的私有变量，用来保存数据</span></span></span><br><span class="line">  <span class="keyword">final</span> <span class="built_in">List</span>&lt;Item&gt; _items = [];</span><br><span class="line"></span><br><span class="line">  <span class="comment">/// <span class="markdown">向外界暴露出一个不可更改的 ListView</span></span></span><br><span class="line">  UnmodifiableListView&lt;Item&gt; <span class="keyword">get</span> items =&gt; UnmodifiableListView(_items);</span><br><span class="line"></span><br><span class="line">  <span class="comment">/// <span class="markdown">向外界暴露出我们计算出的商品总价</span></span></span><br><span class="line">  <span class="built_in">int</span> <span class="keyword">get</span> totalPrice =&gt; _items.length * <span class="number">42</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/// <span class="markdown">暴露出 add 函数，用于往购物车增加商品</span></span></span><br><span class="line">  <span class="keyword">void</span> add(Item item) &#123;</span><br><span class="line">    _items.add(item);</span><br><span class="line">    <span class="comment">// 关键！调用 notifyListeners() 告诉正在监听这个 model 的 widget，让他们 rebuild</span></span><br><span class="line">    notifyListeners();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/// <span class="markdown">暴露出 removeAll 函数，用于清空所有商品</span></span></span><br><span class="line">  <span class="keyword">void</span> removeAll() &#123;</span><br><span class="line">    _items.clear();</span><br><span class="line">    <span class="comment">// 关键！调用 notifyListeners() 告诉正在监听这个 model 的 widget，让他们 rebuild</span></span><br><span class="line">    notifyListeners();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="changenotifierprovider">ChangeNotifierProvider</h3>
+<p><code>ChangeNotifierProvider</code> widget 可以向其子孙节点暴露一个 <code>ChangeNotifier</code> 实例。它属于 provider package。</p>
+<p>需要将 <code>ChangeNotifierProvider</code> 放在所有需要访问他的 widget 之上。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> main() &#123;</span><br><span class="line">  runApp(</span><br><span class="line">    ChangeNotifierProvider(</span><br><span class="line">      <span class="comment">/// <span class="markdown">定义了一个 builder 来创建 CartModel 实例，ChangeNotifierProvider 不会重复实例化 CartModel</span></span></span><br><span class="line">      <span class="comment">/// <span class="markdown">如果该实例已经不会再被调用， ChangeNotifierProvider 也会自动调用 CartModel 的 dispose() 方法。</span></span></span><br><span class="line">      create: (context) =&gt; CartModel(),</span><br><span class="line">      child: MyApp(),</span><br><span class="line">    ),</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以使用 <code>MultiProvider</code> 来提供多个状态：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> main() &#123;</span><br><span class="line">  runApp(</span><br><span class="line">    MultiProvider(</span><br><span class="line">      providers: [</span><br><span class="line">        ChangeNotifierProvider(create: (context) =&gt; CartModel()),</span><br><span class="line">        Provider(create: (context) =&gt; SomeOtherClass()),</span><br><span class="line">      ],</span><br><span class="line">      child: MyApp(),</span><br><span class="line">    ),</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="consumer">Consumer</h3>
+<p>可以通过 Consumer 来获取到数据</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">Widget build(BuildContext context) &#123;</span><br><span class="line">  <span class="comment">// 通过 Consumer 来获取到数据</span></span><br><span class="line">  <span class="keyword">return</span> Consumer&lt;CartModel&gt;(</span><br><span class="line">  <span class="comment">/// <span class="markdown">当 ChangeNotifier 发生变化（调用 notifyListener()）的时候会调用 builder。</span></span></span><br><span class="line">  <span class="comment">/// <span class="markdown">builder 的第一个参数是 context，跟其他的 build 方法一样</span></span></span><br><span class="line">  <span class="comment">/// <span class="markdown">builder 的第二个参数是 ChangeNotifier 的实例，也就是 CartModel 的实例</span></span></span><br><span class="line">  <span class="comment">/// <span class="markdown">builder 的第三个参数是 child，用于优化目的。</span></span></span><br><span class="line">  <span class="comment">/// <span class="markdown">如果 Consumer 下面有一个庞大的子树（SomeExpensiveWidget），当 Model 发生改变的时候，该子树（SomeExpensiveWidget） 并不会 改变，那么你就可以仅仅创建它一次，然后通过 builder 获得该实例。</span></span></span><br><span class="line">    builder: (context, cart, child) =&gt; Stack(</span><br><span class="line">        children: [</span><br><span class="line">          <span class="comment">// 不需要每次都 rebuild 的庞大子树</span></span><br><span class="line">          child,</span><br><span class="line">          Text(<span class="string">&quot;Total price: <span class="subst">$&#123;cart.totalPrice&#125;</span>&quot;</span>),</span><br><span class="line">        ],</span><br><span class="line">      ),</span><br><span class="line">    <span class="comment">// 不需要每次都 rebuild 的庞大子树</span></span><br><span class="line">    child: SomeExpensiveWidget(),</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>一般来讲我们需要把 Consumer 放到尽可能低的位置，这样每次 Model 的变化就不会引起过量的 rebuild</p>
+<h3 id="provider.of">Provider.of</h3>
+<p>有时候我们不需要页面更新，又想要用到新的数据，这时候就可以不用 <code>Consumer</code>，而是 <code>Provider.of</code>：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Widget build(BuildContext context) &#123;</span><br><span class="line">  <span class="comment">// 并且需要将 listen 设置为 false，这样当 notifyListeners 被调用的时候，并不会使 widget 被重构</span></span><br><span class="line">  Provider.of&lt;CartModel&gt;(context, listen: <span class="keyword">false</span>).removeAll();</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/hais-notebook/tags/%E5%85%A5%E9%97%A8/" rel="tag"># 入门</a>
+          </div>
+
         
 
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2021/04/11/NodeJS-TypeORM/" rel="prev" title="TypeORM">
+                  <i class="fa fa-chevron-left"></i> TypeORM
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2021/05/09/Book-ComputerScienceDistilled/" rel="next" title="读书笔记：《计算机科学精粹》">
+                  读书笔记：《计算机科学精粹》 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/hais-notebook/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
 <div class="copyright">
-  
   &copy; 
   <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Harvey Zhang</span>
 </div>
-  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
-  </div>
-  <span class="post-meta-divider">|</span>
-  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.0
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>
 
-        
-
-
-
-
-
-
-
-
-      </div>
-    </footer>
-  </div>
+    </div>
+  </footer>
 
   
-  <script src="/hais-notebook/lib/anime.min.js"></script>
-  <script src="/hais-notebook/lib/velocity/velocity.min.js"></script>
-  <script src="/hais-notebook/lib/velocity/velocity.ui.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/hais-notebook/js/utils.js"></script><script src="/hais-notebook/js/next-boot.js"></script>
 
-<script src="/hais-notebook/js/utils.js"></script>
-
-<script src="/hais-notebook/js/motion.js"></script>
+  
+<script src="/hais-notebook/js/third-party/search/local-search.js"></script>
 
 
-<script src="/hais-notebook/js/schemes/pisces.js"></script>
-
-
-<script src="/hais-notebook/js/next-boot.js"></script>
 
 
 
@@ -530,25 +429,11 @@
 
 
   
-<script src="/hais-notebook/js/local-search.js"></script>
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{&quot;enable&quot;:true,&quot;tags&quot;:&quot;none&quot;,&quot;js&quot;:{&quot;url&quot;:&quot;https:&#x2F;&#x2F;cdn.jsdelivr.net&#x2F;npm&#x2F;mathjax@3.1.4&#x2F;es5&#x2F;tex-mml-chtml.js&quot;,&quot;integrity&quot;:&quot;sha256-ncNI9OXOS5Ek4tzVYiOMmN&#x2F;KKCPZ6V0Cpv2P&#x2F;zHntiA&#x3D;&quot;}}</script>
+<script src="/hais-notebook/js/third-party/math/mathjax.js"></script>
 
 
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  
-
-  
 
 </body>
 </html>

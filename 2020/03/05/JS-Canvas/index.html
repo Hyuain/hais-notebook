@@ -4,48 +4,22 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
+
+
   <link rel="apple-touch-icon" sizes="180x180" href="/hais-notebook/images/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/hais-notebook/images/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/hais-notebook/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/hais-notebook/images/logo.svg" color="#222">
 
 <link rel="stylesheet" href="/hais-notebook/css/main.css">
 
 
-<link rel="stylesheet" href="/hais-notebook/lib/font-awesome/css/font-awesome.min.css">
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
 
-<script id="hexo-configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    hostname: new URL('https://hyuain.github.io/hais-notebook').hostname,
-    root: '/hais-notebook/',
-    scheme: 'Gemini',
-    version: '7.7.0',
-    exturl: false,
-    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
-    copycode: {"enable":false,"show_result":false,"style":null},
-    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
-    bookmark: {"enable":false,"color":"#222","save":"auto"},
-    fancybox: false,
-    mediumzoom: false,
-    lazyload: false,
-    pangu: false,
-    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
-    algolia: {
-      appID: 'W0QZQNNH7N',
-      apiKey: '00189c8d102508ea71e94422b5f129fd',
-      indexName: 'hais-notebook',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    },
-    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
-    path: 'search.xml',
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
-  };
-</script>
-
-  <meta name="description" content="介绍 Canvas。">
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;hyuain.github.io&quot;,&quot;root&quot;:&quot;&#x2F;hais-notebook&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;hais-notebook&#x2F;images&quot;,&quot;scheme&quot;:&quot;Gemini&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:true,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:false,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;搜索...&quot;,&quot;empty&quot;:&quot;没有找到任何搜索结果：${query}&quot;,&quot;hits_time&quot;:&quot;找到 ${hits} 个搜索结果（用时 ${time} 毫秒）&quot;,&quot;hits&quot;:&quot;找到 ${hits} 个搜索结果&quot;},&quot;path&quot;:&quot;&#x2F;hais-notebook&#x2F;search.xml&quot;,&quot;localsearch&quot;:{&quot;enable&quot;:true,&quot;trigger&quot;:&quot;auto&quot;,&quot;top_n_per_article&quot;:1,&quot;unescape&quot;:false,&quot;preload&quot;:false}}</script>
+<meta name="description" content="介绍 Canvas。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="JavaScript：Canvas">
 <meta property="og:url" content="https://hyuain.github.io/hais-notebook/2020/03/05/JS-Canvas/index.html">
@@ -53,583 +27,113 @@
 <meta property="og:description" content="介绍 Canvas。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-03-05T17:26:02.000Z">
-<meta property="article:modified_time" content="2021-05-24T13:39:43.273Z">
+<meta property="article:modified_time" content="2020-03-05T17:26:02.000Z">
 <meta property="article:author" content="Harvey Zhang">
 <meta property="article:tag" content="入门">
 <meta name="twitter:card" content="summary">
 
+
 <link rel="canonical" href="https://hyuain.github.io/hais-notebook/2020/03/05/JS-Canvas/">
 
 
-<script id="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome: false,
-    isPost: true
-  };
-</script>
 
-  <title>JavaScript：Canvas | Hais Notebook</title>
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;zh-CN&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;https:&#x2F;&#x2F;hyuain.github.io&#x2F;hais-notebook&#x2F;2020&#x2F;03&#x2F;05&#x2F;JS-Canvas&#x2F;&quot;,&quot;path&quot;:&quot;2020&#x2F;03&#x2F;05&#x2F;JS-Canvas&#x2F;&quot;,&quot;title&quot;:&quot;JavaScript：Canvas&quot;}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>JavaScript：Canvas | Hais Notebook</title><script src="/hais-notebook/js/config.js"></script>
   
-
-
 
 
 
 
   <noscript>
-  <style>
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header { opacity: initial; }
-
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
-
+    <link rel="stylesheet" href="/hais-notebook/css/noscript.css">
+  </noscript>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
-    <div class="headband"></div>
+  <div class="headband"></div>
 
+  <main class="main">
     <header class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-container">
-  <div class="site-meta">
-
-    <div>
-      <a href="/hais-notebook/" class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">Hais Notebook</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
     </div>
   </div>
 
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
-      <span class="toggle-line toggle-line-first"></span>
-      <span class="toggle-line toggle-line-middle"></span>
-      <span class="toggle-line toggle-line-last"></span>
+  <div class="site-meta">
+
+    <a href="/hais-notebook/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Hais Notebook</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
 
 
+
 <nav class="site-nav">
-  
-  <ul id="menu" class="menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/hais-notebook/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
-
-  </li>
-        <li class="menu-item menu-item-tags">
-
-    <a href="/hais-notebook/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
-
-  </li>
-        <li class="menu-item menu-item-categories">
-
-    <a href="/hais-notebook/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
-
-  </li>
-        <li class="menu-item menu-item-archives">
-
-    <a href="/hais-notebook/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
-
-  </li>
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/hais-notebook/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-tags"><a href="/hais-notebook/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/hais-notebook/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/hais-notebook/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
       </li>
   </ul>
-
 </nav>
-  <div class="site-search">
-    <div class="popup search-popup">
-    <div class="search-header">
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
   <span class="search-icon">
     <i class="fa fa-search"></i>
   </span>
   <div class="search-input-container">
-    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
            placeholder="搜索..." spellcheck="false"
-           type="text" id="search-input">
+           type="search" class="search-input">
   </div>
-  <span class="popup-btn-close">
+  <span class="popup-btn-close" role="button">
     <i class="fa fa-times-circle"></i>
   </span>
 </div>
-<div id="search-result"></div>
-
-</div>
-<div class="search-pop-overlay"></div>
-
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
   </div>
 </div>
-    </header>
-
-    
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-
-
-    <main class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-
-          <div class="content">
-            
-
-  <div class="posts-expand">
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2020/03/05/JS-Canvas/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
-      <meta itemprop="name" content="Harvey Zhang">
-      <meta itemprop="description" content="小海的笔记本">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hais Notebook">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          JavaScript：Canvas
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-03-05 17:26:02" itemprop="dateCreated datePublished" datetime="2020-03-05T17:26:02+00:00">2020-03-05</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-24 13:39:43" itemprop="dateModified" datetime="2021-05-24T13:39:43+00:00">2021-05-24</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hais-notebook/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index">
-                    <span itemprop="name">前端</span>
-                  </a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hais-notebook/categories/%E5%89%8D%E7%AB%AF/JavaScript/" itemprop="url" rel="index">
-                    <span itemprop="name">JavaScript</span>
-                  </a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hais-notebook/categories/%E5%89%8D%E7%AB%AF/JavaScript/%E5%8E%9F%E7%94%9F-JavaScript/" itemprop="url" rel="index">
-                    <span itemprop="name">原生 JavaScript</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-        <p>介绍 Canvas。</p>
-<a id="more"></a>
-<h1 id="什么是-Canvas"><a href="#什么是-Canvas" class="headerlink" title="什么是 Canvas"></a>什么是 Canvas</h1><blockquote>
-<p><code>&lt;canvas&gt;</code> 是 HTML 5 新增的元素，可用于通过使用 JavaScript 的脚本来绘制图形。例如，他可以用于绘制图形、制作照片、创建动画，甚至可以进行实时视频处理和渲染</p>
-</blockquote>
-<p>简单来说，<code>&lt;canvas&gt;</code> 提供了一块画布，在上面可以使用 JavaScript 动态渲染图像</p>
-<h2 id="Canvas-与-SVG"><a href="#Canvas-与-SVG" class="headerlink" title="Canvas 与 SVG"></a>Canvas 与 SVG</h2><blockquote>
-<p>SVG（Scalable Vector Graphics）是基于 XML，用于描述二维矢量图形的一种图片格式，由 W3C 指定，是一个开放标准</p>
-</blockquote>
-<p>Canvas 在绘制结束之后不能被保存到内存中，每次都需要重新绘制，是实时绘制的；svg 则在绘制完之后会被保存在内存中，当需要修改这个对象信息的时候，直接修改就可以了</p>
-<div class="table-container">
-<table>
-<thead>
-<tr>
-<th>Canvas</th>
-<th>SVG</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>依赖分辨率（位图）</td>
-<td>不依赖分辨率（矢量图）</td>
-</tr>
-<tr>
-<td>单个 HTML 元素</td>
-<td>每个图形都是一个 DOM 元素</td>
-</tr>
-<tr>
-<td>只能通过脚本语言绘制</td>
-<td>CSS、脚本语言都可以用来绘制</td>
-</tr>
-<tr>
-<td>不支持事件处理程序</td>
-<td>支持事件处理程序</td>
-</tr>
-<tr>
-<td>弱的文本渲染恩能够力</td>
-<td>最适合带有大型渲染区域的应用程序，比如谷歌地图</td>
-</tr>
-<tr>
-<td>图面较小，对象数量较大时（&gt;10k）性能最佳</td>
-<td>对象数量较小（&lt;10k）、图面更大时性能更佳</td>
-</tr>
-</tbody>
-</table>
-</div>
-<h1 id="Canvas-的应用场景"><a href="#Canvas-的应用场景" class="headerlink" title="Canvas 的应用场景"></a>Canvas 的应用场景</h1><ol>
-<li><strong>绘制图表</strong>，比如 EChats 之类的数据可视化库都是使用 Canvas 实现的</li>
-<li><strong>小游戏</strong>，基本上所有的 HTML 5 游戏都是基于 Canvas 开发的，因为不需要借助其他任何插件</li>
-<li><strong>活动页面</strong>，比如转转轮、刮奖</li>
-<li><strong>特效、背景</strong></li>
-</ol>
-<h1 id="Canvas-API"><a href="#Canvas-API" class="headerlink" title="Canvas API"></a>Canvas API</h1><h2 id="设置宽高"><a href="#设置宽高" class="headerlink" title="设置宽高"></a>设置宽高</h2><p>可以通过 HTML 或 JS 来设置，不能通过 CSS 设置，这会导致不可预料的缩放</p>
-<h2 id="获取-Canvas-对象"><a href="#获取-Canvas-对象" class="headerlink" title="获取 Canvas 对象"></a>获取 Canvas 对象</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">canvas.getContext(contextType, contextAttributes)</span><br></pre></td></tr></table></figure>
-<p><code>contextType</code> 是上下文类型，有这样几种：</p>
-<ul>
-<li><code>2d</code>：代表一个二维渲染上下文</li>
-<li><code>webgl</code> 或 <code>experimental-webgl</code>：代表一个三维渲染上下文</li>
-<li><code>webgl2</code> 或 <code>experimental-webgl2</code>：代表一个三维渲染上下文，并且只能在浏览器中实现 WebGL 版本 2（OpenGL ES 3.0）</li>
-</ul>
-<h2 id="绘制路径"><a href="#绘制路径" class="headerlink" title="绘制路径"></a>绘制路径</h2><div class="table-container">
-<table>
-<thead>
-<tr>
-<th>方法</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>fill()</code></td>
-<td>填充路径</td>
-</tr>
-<tr>
-<td><code>stroke()</code></td>
-<td>描边</td>
-</tr>
-<tr>
-<td><code>arc()</code></td>
-<td>创建圆弧</td>
-</tr>
-<tr>
-<td><code>rect()</code></td>
-<td>创建矩形</td>
-</tr>
-<tr>
-<td><code>fillRect()</code></td>
-<td>绘制矩形路径区域</td>
-</tr>
-<tr>
-<td><code>strokeRect()</code></td>
-<td>绘制矩形路径描边</td>
-</tr>
-<tr>
-<td><code>clearRect()</code></td>
-<td>在给定的矩形内清除指定的像素</td>
-</tr>
-<tr>
-<td><code>arcTo()</code></td>
-<td>创建两切线之间的弧/曲线</td>
-</tr>
-<tr>
-<td><code>beginPath()</code></td>
-<td>起始一条路径，或重置当前路径</td>
-</tr>
-<tr>
-<td><code>moveTo()</code></td>
-<td>把路径移动到画布中的指定点，不创建线条</td>
-</tr>
-<tr>
-<td><code>lineTo()</code></td>
-<td>添加一个新点，然后画布中创建从该点到最后指定点的线条</td>
-</tr>
-<tr>
-<td><code>closePath()</code></td>
-<td>创建从当前点回到起始点的路径</td>
-</tr>
-<tr>
-<td><code>clip()</code></td>
-<td>从原始画布剪切任意形状和尺寸的区域</td>
-</tr>
-<tr>
-<td><code>quadraticCurveTo()</code></td>
-<td>创建二次方贝塞尔曲线</td>
-</tr>
-<tr>
-<td><code>bezierCurveTo()</code></td>
-<td>创建三次方贝塞尔曲线</td>
-</tr>
-<tr>
-<td><code>isPointInPath()</code></td>
-<td>如果指定的点位于当前路径中，则返回 true，否则返回 false</td>
-</tr>
-</tbody>
-</table>
-</div>
-<h3 id="绘制曲线"><a href="#绘制曲线" class="headerlink" title="绘制曲线"></a>绘制曲线</h3><h4 id="arc"><a href="#arc" class="headerlink" title="arc()"></a>arc()</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">context.arc(x, y, sAngle, eAangle, counterCloseWise)</span><br></pre></td></tr></table></figure>
-<p><code>x</code> 和 <code>y</code> 指定了圆心坐标，<code>sAngle</code> 和 <code>eAngle</code> 分别为起始角和结束角，<code>counterCloseWise</code> 设置为 <code>true</code> 表示逆时针绘制</p>
-<h3 id="绘制直线"><a href="#绘制直线" class="headerlink" title="绘制直线"></a>绘制直线</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">moveTo(x, y) <span class="comment">// 把路径移动到画布中的指定点，不创建线条</span></span><br><span class="line">lineTo(x, y) <span class="comment">// 添加一个新点，然后在画布中创建从该点到最后指定点的线条</span></span><br></pre></td></tr></table></figure>
-<div class="note warning">
-            <p>如果没有 <code>moveTo</code>，那么第一次 <code>lineTo</code> 就视为 <code>moveTo</code></p>
-          </div>
-<p>可以给绘制的直线添加样式：</p>
-<div class="table-container">
-<table>
-<thead>
-<tr>
-<th>样式</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>lineCap</code></td>
-<td>设置或返回线条的结束端点样式</td>
-</tr>
-<tr>
-<td><code>lineJoin</code></td>
-<td>设置或返回两条线相交时，所创建的拐角类型</td>
-</tr>
-<tr>
-<td><code>lineWidth</code></td>
-<td>设置或返回当前的线条宽度</td>
-</tr>
-<tr>
-<td><code>miterLimit</code></td>
-<td>设置或返回最大斜接长度</td>
-</tr>
-</tbody>
-</table>
-</div>
-<h3 id="绘制矩形"><a href="#绘制矩形" class="headerlink" title="绘制矩形"></a>绘制矩形</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">fillRect(x, y, width, height) <span class="comment">// 绘制一个实心矩形</span></span><br><span class="line">strokeRect(x, y, width, height) <span class="comment">// 绘制一个空心矩形</span></span><br></pre></td></tr></table></figure>
-<h3 id="颜色、样式和阴影"><a href="#颜色、样式和阴影" class="headerlink" title="颜色、样式和阴影"></a>颜色、样式和阴影</h3><p>创建路径之后，可以设置样式属性，再使用 <code>fill()</code> 和 <code>stroke()</code> 进行填充或描边</p>
-<div class="table-container">
-<table>
-<thead>
-<tr>
-<th>属性</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>fillStyle</td>
-<td>设置或返回用于填充绘画的颜色、渐变或模式</td>
-</tr>
-<tr>
-<td>strokeStyle</td>
-<td>设置或返回用于笔触的颜色、渐变或模式</td>
-</tr>
-<tr>
-<td>shadowColor</td>
-<td>设置或返回用于阴影的颜色</td>
-</tr>
-<tr>
-<td>shadowBlur</td>
-<td>设置或返回用于阴影的模糊级别</td>
-</tr>
-<tr>
-<td>shadowOffsetX</td>
-<td>设置或返回阴影距形状的水平距离</td>
-</tr>
-<tr>
-<td>shadowOffsetY</td>
-<td>设置或返回阴影距形状的垂直距离</td>
-</tr>
-</tbody>
-</table>
-</div>
-<h3 id="设置渐变"><a href="#设置渐变" class="headerlink" title="设置渐变"></a>设置渐变</h3><p>有这样几个方法可以设置渐变：</p>
-<div class="table-container">
-<table>
-<thead>
-<tr>
-<th>方法</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>createLinearGradient()</td>
-<td>创建线性渐变（用在画布内容上）</td>
-</tr>
-<tr>
-<td>createPattern()</td>
-<td>在指定的方向上重复指定的元素</td>
-</tr>
-<tr>
-<td>createRadialGradient()</td>
-<td>环形的渐变（用在画布内容上）</td>
-</tr>
-<tr>
-<td>addColorStop()</td>
-<td>规定渐变对象中的颜色和停止位置</td>
-</tr>
-</tbody>
-</table>
-</div>
-<p>主要使用到下面这个方法</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> grd = context.createLinerGradient(x0, y0, x1, y1)</span><br><span class="line">grd.addColorStop(stop, color) <span class="comment">// stop 是介于 0.0 ~ 1.0 之间的值</span></span><br></pre></td></tr></table></figure>
-<h3 id="图形转换"><a href="#图形转换" class="headerlink" title="图形转换"></a>图形转换</h3><div class="table-container">
-<table>
-<thead>
-<tr>
-<th>方法</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>scale()</td>
-<td>缩放当前绘图至更大或更小</td>
-</tr>
-<tr>
-<td>rotate()</td>
-<td>旋转当前绘图</td>
-</tr>
-<tr>
-<td>translate()</td>
-<td>重新映射画布上的 (0,0) 位置</td>
-</tr>
-<tr>
-<td>transform()</td>
-<td>替换绘图的当前转换矩阵</td>
-</tr>
-<tr>
-<td>setTransform()</td>
-<td>将当前转换重置为单位矩阵，然后运行 transform()</td>
-</tr>
-</tbody>
-</table>
-</div>
-<p>注意旋转实际上是对画布旋转，旋转之后所有的都会旋转</p>
-<h3 id="图形绘制"><a href="#图形绘制" class="headerlink" title="图形绘制"></a>图形绘制</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">drawImage(img, sx, sy, swidth, sheight, x, y, width, height)</span><br></pre></td></tr></table></figure>
-<ul>
-<li><code>img</code>：规定要使用的图像、画布或视频</li>
-<li><code>sx</code>：可选。开始剪切的 x 坐标位置</li>
-<li><code>sy</code>：可选。开始剪切的 y 坐标位置</li>
-<li><code>swidth</code>：可选。被剪切图像的宽度</li>
-<li><code>sheight</code>：可选。被剪切图像的高度</li>
-<li><code>x</code>：在画布上放置图像的 x 坐标位置</li>
-<li><code>y</code>：在画布上放置图像的 y 坐标位置</li>
-<li><code>width</code>：可选。要使用的图像的宽度（伸展或缩小图像）</li>
-<li><code>height</code>：可选。要使用的图像的高度（伸展或缩小图像）</li>
-</ul>
 
     </div>
-
-    
-    
-    
-
-      <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/hais-notebook/tags/%E5%85%A5%E9%97%A8/" rel="tag"># 入门</a>
-          </div>
-
-        
-
-
-        
-    <div class="post-nav">
-      <div class="post-nav-item">
-    <a href="/hais-notebook/2020/03/03/CS-Network/" rel="prev" title="计算机网络基础">
-      <i class="fa fa-chevron-left"></i> 计算机网络基础
-    </a></div>
-      <div class="post-nav-item">
-    <a href="/hais-notebook/2020/03/09/NodeJS-Intro/" rel="next" title="NodeJS 入门">
-      NodeJS 入门 <i class="fa fa-chevron-right"></i>
-    </a></div>
-    </div>
-      </footer>
-    
-  </article>
-  
-  
-  
-
   </div>
 
-
-          </div>
-          
-
-<script>
-  window.addEventListener('tabs:register', () => {
-    let activeClass = CONFIG.comments.activeClass;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
-      }
-    }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      let commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
-</script>
-
-        </div>
-          
+</div>
+        
   
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line toggle-line-first"></span>
-    <span class="toggle-line toggle-line-middle"></span>
-    <span class="toggle-line toggle-line-last"></span>
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
   </div>
 
   <aside class="sidebar">
-    <div class="sidebar-inner">
 
-      <ul class="sidebar-nav motion-element">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
         </li>
@@ -638,18 +142,19 @@
         </li>
       </ul>
 
-      <!--noindex-->
-      <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是-Canvas"><span class="nav-number">1.</span> <span class="nav-text">什么是 Canvas</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Canvas-与-SVG"><span class="nav-number">1.1.</span> <span class="nav-text">Canvas 与 SVG</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Canvas-的应用场景"><span class="nav-number">2.</span> <span class="nav-text">Canvas 的应用场景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Canvas-API"><span class="nav-number">3.</span> <span class="nav-text">Canvas API</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#设置宽高"><span class="nav-number">3.1.</span> <span class="nav-text">设置宽高</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#获取-Canvas-对象"><span class="nav-number">3.2.</span> <span class="nav-text">获取 Canvas 对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#绘制路径"><span class="nav-number">3.3.</span> <span class="nav-text">绘制路径</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#绘制曲线"><span class="nav-number">3.3.1.</span> <span class="nav-text">绘制曲线</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#arc"><span class="nav-number">3.3.1.1.</span> <span class="nav-text">arc()</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#绘制直线"><span class="nav-number">3.3.2.</span> <span class="nav-text">绘制直线</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#绘制矩形"><span class="nav-number">3.3.3.</span> <span class="nav-text">绘制矩形</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#颜色、样式和阴影"><span class="nav-number">3.3.4.</span> <span class="nav-text">颜色、样式和阴影</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置渐变"><span class="nav-number">3.3.5.</span> <span class="nav-text">设置渐变</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#图形转换"><span class="nav-number">3.3.6.</span> <span class="nav-text">图形转换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#图形绘制"><span class="nav-number">3.3.7.</span> <span class="nav-text">图形绘制</span></a></li></ol></li></ol></li></ol></div>
-      </div>
-      <!--/noindex-->
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF-canvas"><span class="nav-number">1.</span> <span class="nav-text">什么是 Canvas</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#canvas-%E4%B8%8E-svg"><span class="nav-number">1.1.</span> <span class="nav-text">Canvas 与 SVG</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#canvas-%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">2.</span> <span class="nav-text">Canvas 的应用场景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#canvas-api"><span class="nav-number">3.</span> <span class="nav-text">Canvas API</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E5%AE%BD%E9%AB%98"><span class="nav-number">3.1.</span> <span class="nav-text">设置宽高</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96-canvas-%E5%AF%B9%E8%B1%A1"><span class="nav-number">3.2.</span> <span class="nav-text">获取 Canvas 对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%98%E5%88%B6%E8%B7%AF%E5%BE%84"><span class="nav-number">3.3.</span> <span class="nav-text">绘制路径</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%98%E5%88%B6%E6%9B%B2%E7%BA%BF"><span class="nav-number">3.3.1.</span> <span class="nav-text">绘制曲线</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#arc"><span class="nav-number">3.3.1.1.</span> <span class="nav-text">arc()</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%98%E5%88%B6%E7%9B%B4%E7%BA%BF"><span class="nav-number">3.3.2.</span> <span class="nav-text">绘制直线</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%98%E5%88%B6%E7%9F%A9%E5%BD%A2"><span class="nav-number">3.3.3.</span> <span class="nav-text">绘制矩形</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%9C%E8%89%B2%E6%A0%B7%E5%BC%8F%E5%92%8C%E9%98%B4%E5%BD%B1"><span class="nav-number">3.3.4.</span> <span class="nav-text">颜色、样式和阴影</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E6%B8%90%E5%8F%98"><span class="nav-number">3.3.5.</span> <span class="nav-text">设置渐变</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E5%BD%A2%E8%BD%AC%E6%8D%A2"><span class="nav-number">3.3.6.</span> <span class="nav-text">图形转换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E5%BD%A2%E7%BB%98%E5%88%B6"><span class="nav-number">3.3.7.</span> <span class="nav-text">图形绘制</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
 
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
   <p class="site-author-name" itemprop="name">Harvey Zhang</p>
   <div class="site-description" itemprop="description">小海的笔记本</div>
 </div>
-<div class="site-state-wrap motion-element">
+<div class="site-state-wrap site-overview-item animated">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/hais-notebook/archives/">
@@ -675,62 +180,437 @@
 
 
 
+        </div>
       </div>
-
     </div>
   </aside>
-  <div id="sidebar-dimmer"></div>
+  <div class="sidebar-dimmer"></div>
 
 
-      </div>
-    </main>
+    </header>
 
-    <footer class="footer">
-      <div class="footer-inner">
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2020/03/05/JS-Canvas/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
+      <meta itemprop="name" content="Harvey Zhang">
+      <meta itemprop="description" content="小海的笔记本">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hais Notebook">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JavaScript：Canvas
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-03-05 17:26:02" itemprop="dateCreated datePublished" datetime="2020-03-05T17:26:02+00:00">2020-03-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">前端</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E5%89%8D%E7%AB%AF/JavaScript/" itemprop="url" rel="index"><span itemprop="name">JavaScript</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E5%89%8D%E7%AB%AF/JavaScript/%E5%8E%9F%E7%94%9F-JavaScript/" itemprop="url" rel="index"><span itemprop="name">原生 JavaScript</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>介绍 Canvas。</p>
+<span id="more"></span>
+<h1 id="什么是-canvas">什么是 Canvas</h1>
+<blockquote>
+<p><code>&lt;canvas&gt;</code> 是 HTML 5 新增的元素，可用于通过使用 JavaScript 的脚本来绘制图形。例如，他可以用于绘制图形、制作照片、创建动画，甚至可以进行实时视频处理和渲染</p>
+</blockquote>
+<p>简单来说，<code>&lt;canvas&gt;</code> 提供了一块画布，在上面可以使用 JavaScript 动态渲染图像</p>
+<h2 id="canvas-与-svg">Canvas 与 SVG</h2>
+<blockquote>
+<p>SVG（Scalable Vector Graphics）是基于 XML，用于描述二维矢量图形的一种图片格式，由 W3C 指定，是一个开放标准</p>
+</blockquote>
+<p>Canvas 在绘制结束之后不能被保存到内存中，每次都需要重新绘制，是实时绘制的；svg 则在绘制完之后会被保存在内存中，当需要修改这个对象信息的时候，直接修改就可以了</p>
+<table>
+<thead>
+<tr class="header">
+<th>Canvas</th>
+<th>SVG</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>依赖分辨率（位图）</td>
+<td>不依赖分辨率（矢量图）</td>
+</tr>
+<tr class="even">
+<td>单个 HTML 元素</td>
+<td>每个图形都是一个 DOM 元素</td>
+</tr>
+<tr class="odd">
+<td>只能通过脚本语言绘制</td>
+<td>CSS、脚本语言都可以用来绘制</td>
+</tr>
+<tr class="even">
+<td>不支持事件处理程序</td>
+<td>支持事件处理程序</td>
+</tr>
+<tr class="odd">
+<td>弱的文本渲染恩能够力</td>
+<td>最适合带有大型渲染区域的应用程序，比如谷歌地图</td>
+</tr>
+<tr class="even">
+<td>图面较小，对象数量较大时（&gt;10k）性能最佳</td>
+<td>对象数量较小（&lt;10k）、图面更大时性能更佳</td>
+</tr>
+</tbody>
+</table>
+<h1 id="canvas-的应用场景">Canvas 的应用场景</h1>
+<ol type="1">
+<li><strong>绘制图表</strong>，比如 EChats 之类的数据可视化库都是使用 Canvas 实现的</li>
+<li><strong>小游戏</strong>，基本上所有的 HTML 5 游戏都是基于 Canvas 开发的，因为不需要借助其他任何插件</li>
+<li><strong>活动页面</strong>，比如转转轮、刮奖</li>
+<li><strong>特效、背景</strong></li>
+</ol>
+<h1 id="canvas-api">Canvas API</h1>
+<h2 id="设置宽高">设置宽高</h2>
+<p>可以通过 HTML 或 JS 来设置，不能通过 CSS 设置，这会导致不可预料的缩放</p>
+<h2 id="获取-canvas-对象">获取 Canvas 对象</h2>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">canvas.getContext(contextType, contextAttributes)</span><br></pre></td></tr></table></figure>
+<p><code>contextType</code> 是上下文类型，有这样几种： - <code>2d</code>：代表一个二维渲染上下文 - <code>webgl</code> 或 <code>experimental-webgl</code>：代表一个三维渲染上下文 - <code>webgl2</code> 或 <code>experimental-webgl2</code>：代表一个三维渲染上下文，并且只能在浏览器中实现 WebGL 版本 2（OpenGL ES 3.0）</p>
+<h2 id="绘制路径">绘制路径</h2>
+<table>
+<thead>
+<tr class="header">
+<th>方法</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>fill()</code></td>
+<td>填充路径</td>
+</tr>
+<tr class="even">
+<td><code>stroke()</code></td>
+<td>描边</td>
+</tr>
+<tr class="odd">
+<td><code>arc()</code></td>
+<td>创建圆弧</td>
+</tr>
+<tr class="even">
+<td><code>rect()</code></td>
+<td>创建矩形</td>
+</tr>
+<tr class="odd">
+<td><code>fillRect()</code></td>
+<td>绘制矩形路径区域</td>
+</tr>
+<tr class="even">
+<td><code>strokeRect()</code></td>
+<td>绘制矩形路径描边</td>
+</tr>
+<tr class="odd">
+<td><code>clearRect()</code></td>
+<td>在给定的矩形内清除指定的像素</td>
+</tr>
+<tr class="even">
+<td><code>arcTo()</code></td>
+<td>创建两切线之间的弧/曲线</td>
+</tr>
+<tr class="odd">
+<td><code>beginPath()</code></td>
+<td>起始一条路径，或重置当前路径</td>
+</tr>
+<tr class="even">
+<td><code>moveTo()</code></td>
+<td>把路径移动到画布中的指定点，不创建线条</td>
+</tr>
+<tr class="odd">
+<td><code>lineTo()</code></td>
+<td>添加一个新点，然后画布中创建从该点到最后指定点的线条</td>
+</tr>
+<tr class="even">
+<td><code>closePath()</code></td>
+<td>创建从当前点回到起始点的路径</td>
+</tr>
+<tr class="odd">
+<td><code>clip()</code></td>
+<td>从原始画布剪切任意形状和尺寸的区域</td>
+</tr>
+<tr class="even">
+<td><code>quadraticCurveTo()</code></td>
+<td>创建二次方贝塞尔曲线</td>
+</tr>
+<tr class="odd">
+<td><code>bezierCurveTo()</code></td>
+<td>创建三次方贝塞尔曲线</td>
+</tr>
+<tr class="even">
+<td><code>isPointInPath()</code></td>
+<td>如果指定的点位于当前路径中，则返回 true，否则返回 false</td>
+</tr>
+</tbody>
+</table>
+<h3 id="绘制曲线">绘制曲线</h3>
+<h4 id="arc">arc()</h4>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">context.arc(x, y, sAngle, eAangle, counterCloseWise)</span><br></pre></td></tr></table></figure>
+<p><code>x</code> 和 <code>y</code> 指定了圆心坐标，<code>sAngle</code> 和 <code>eAngle</code> 分别为起始角和结束角，<code>counterCloseWise</code> 设置为 <code>true</code> 表示逆时针绘制</p>
+<h3 id="绘制直线">绘制直线</h3>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">moveTo(x, y) <span class="comment">// 把路径移动到画布中的指定点，不创建线条</span></span><br><span class="line">lineTo(x, y) <span class="comment">// 添加一个新点，然后在画布中创建从该点到最后指定点的线条</span></span><br></pre></td></tr></table></figure>
+<div class="note warning"><p>如果没有 <code>moveTo</code>，那么第一次 <code>lineTo</code> 就视为 <code>moveTo</code></p>
+</div>
+<p>可以给绘制的直线添加样式：</p>
+<table>
+<thead>
+<tr class="header">
+<th>样式</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>lineCap</code></td>
+<td>设置或返回线条的结束端点样式</td>
+</tr>
+<tr class="even">
+<td><code>lineJoin</code></td>
+<td>设置或返回两条线相交时，所创建的拐角类型</td>
+</tr>
+<tr class="odd">
+<td><code>lineWidth</code></td>
+<td>设置或返回当前的线条宽度</td>
+</tr>
+<tr class="even">
+<td><code>miterLimit</code></td>
+<td>设置或返回最大斜接长度</td>
+</tr>
+</tbody>
+</table>
+<h3 id="绘制矩形">绘制矩形</h3>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">fillRect(x, y, width, height) <span class="comment">// 绘制一个实心矩形</span></span><br><span class="line">strokeRect(x, y, width, height) <span class="comment">// 绘制一个空心矩形</span></span><br></pre></td></tr></table></figure>
+<h3 id="颜色样式和阴影">颜色、样式和阴影</h3>
+<p>创建路径之后，可以设置样式属性，再使用 <code>fill()</code> 和 <code>stroke()</code> 进行填充或描边</p>
+<table>
+<thead>
+<tr class="header">
+<th>属性</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>fillStyle</td>
+<td>设置或返回用于填充绘画的颜色、渐变或模式</td>
+</tr>
+<tr class="even">
+<td>strokeStyle</td>
+<td>设置或返回用于笔触的颜色、渐变或模式</td>
+</tr>
+<tr class="odd">
+<td>shadowColor</td>
+<td>设置或返回用于阴影的颜色</td>
+</tr>
+<tr class="even">
+<td>shadowBlur</td>
+<td>设置或返回用于阴影的模糊级别</td>
+</tr>
+<tr class="odd">
+<td>shadowOffsetX</td>
+<td>设置或返回阴影距形状的水平距离</td>
+</tr>
+<tr class="even">
+<td>shadowOffsetY</td>
+<td>设置或返回阴影距形状的垂直距离</td>
+</tr>
+</tbody>
+</table>
+<h3 id="设置渐变">设置渐变</h3>
+<p>有这样几个方法可以设置渐变：</p>
+<table>
+<thead>
+<tr class="header">
+<th>方法</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>createLinearGradient()</td>
+<td>创建线性渐变（用在画布内容上）</td>
+</tr>
+<tr class="even">
+<td>createPattern()</td>
+<td>在指定的方向上重复指定的元素</td>
+</tr>
+<tr class="odd">
+<td>createRadialGradient()</td>
+<td>环形的渐变（用在画布内容上）</td>
+</tr>
+<tr class="even">
+<td>addColorStop()</td>
+<td>规定渐变对象中的颜色和停止位置</td>
+</tr>
+</tbody>
+</table>
+<p>主要使用到下面这个方法</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> grd = context.createLinerGradient(x0, y0, x1, y1)</span><br><span class="line">grd.addColorStop(stop, color) <span class="comment">// stop 是介于 0.0 ~ 1.0 之间的值</span></span><br></pre></td></tr></table></figure>
+<h3 id="图形转换">图形转换</h3>
+<table>
+<thead>
+<tr class="header">
+<th>方法</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>scale()</td>
+<td>缩放当前绘图至更大或更小</td>
+</tr>
+<tr class="even">
+<td>rotate()</td>
+<td>旋转当前绘图</td>
+</tr>
+<tr class="odd">
+<td>translate()</td>
+<td>重新映射画布上的 (0,0) 位置</td>
+</tr>
+<tr class="even">
+<td>transform()</td>
+<td>替换绘图的当前转换矩阵</td>
+</tr>
+<tr class="odd">
+<td>setTransform()</td>
+<td>将当前转换重置为单位矩阵，然后运行 transform()</td>
+</tr>
+</tbody>
+</table>
+<p>注意旋转实际上是对画布旋转，旋转之后所有的都会旋转</p>
+<h3 id="图形绘制">图形绘制</h3>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">drawImage(img, sx, sy, swidth, sheight, x, y, width, height)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>img</code>：规定要使用的图像、画布或视频</li>
+<li><code>sx</code>：可选。开始剪切的 x 坐标位置</li>
+<li><code>sy</code>：可选。开始剪切的 y 坐标位置</li>
+<li><code>swidth</code>：可选。被剪切图像的宽度</li>
+<li><code>sheight</code>：可选。被剪切图像的高度</li>
+<li><code>x</code>：在画布上放置图像的 x 坐标位置</li>
+<li><code>y</code>：在画布上放置图像的 y 坐标位置</li>
+<li><code>width</code>：可选。要使用的图像的宽度（伸展或缩小图像）</li>
+<li><code>height</code>：可选。要使用的图像的高度（伸展或缩小图像）</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/hais-notebook/tags/%E5%85%A5%E9%97%A8/" rel="tag"># 入门</a>
+          </div>
+
         
 
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2020/03/03/CS-Network/" rel="prev" title="计算机网络基础">
+                  <i class="fa fa-chevron-left"></i> 计算机网络基础
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2020/03/09/NodeJS-Intro/" rel="next" title="NodeJS 入门">
+                  NodeJS 入门 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/hais-notebook/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
 <div class="copyright">
-  
   &copy; 
   <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Harvey Zhang</span>
 </div>
-  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
-  </div>
-  <span class="post-meta-divider">|</span>
-  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.0
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>
 
-        
-
-
-
-
-
-
-
-
-      </div>
-    </footer>
-  </div>
+    </div>
+  </footer>
 
   
-  <script src="/hais-notebook/lib/anime.min.js"></script>
-  <script src="/hais-notebook/lib/velocity/velocity.min.js"></script>
-  <script src="/hais-notebook/lib/velocity/velocity.ui.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/hais-notebook/js/utils.js"></script><script src="/hais-notebook/js/next-boot.js"></script>
 
-<script src="/hais-notebook/js/utils.js"></script>
-
-<script src="/hais-notebook/js/motion.js"></script>
+  
+<script src="/hais-notebook/js/third-party/search/local-search.js"></script>
 
 
-<script src="/hais-notebook/js/schemes/pisces.js"></script>
-
-
-<script src="/hais-notebook/js/next-boot.js"></script>
 
 
 
@@ -741,25 +621,11 @@
 
 
   
-<script src="/hais-notebook/js/local-search.js"></script>
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{&quot;enable&quot;:true,&quot;tags&quot;:&quot;none&quot;,&quot;js&quot;:{&quot;url&quot;:&quot;https:&#x2F;&#x2F;cdn.jsdelivr.net&#x2F;npm&#x2F;mathjax@3.1.4&#x2F;es5&#x2F;tex-mml-chtml.js&quot;,&quot;integrity&quot;:&quot;sha256-ncNI9OXOS5Ek4tzVYiOMmN&#x2F;KKCPZ6V0Cpv2P&#x2F;zHntiA&#x3D;&quot;}}</script>
+<script src="/hais-notebook/js/third-party/math/mathjax.js"></script>
 
 
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  
-
-  
 
 </body>
 </html>

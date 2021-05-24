@@ -4,48 +4,22 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
+
+
   <link rel="apple-touch-icon" sizes="180x180" href="/hais-notebook/images/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/hais-notebook/images/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/hais-notebook/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/hais-notebook/images/logo.svg" color="#222">
 
 <link rel="stylesheet" href="/hais-notebook/css/main.css">
 
 
-<link rel="stylesheet" href="/hais-notebook/lib/font-awesome/css/font-awesome.min.css">
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
 
-<script id="hexo-configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    hostname: new URL('https://hyuain.github.io/hais-notebook').hostname,
-    root: '/hais-notebook/',
-    scheme: 'Gemini',
-    version: '7.7.0',
-    exturl: false,
-    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
-    copycode: {"enable":false,"show_result":false,"style":null},
-    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
-    bookmark: {"enable":false,"color":"#222","save":"auto"},
-    fancybox: false,
-    mediumzoom: false,
-    lazyload: false,
-    pangu: false,
-    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
-    algolia: {
-      appID: 'W0QZQNNH7N',
-      apiKey: '00189c8d102508ea71e94422b5f129fd',
-      indexName: 'hais-notebook',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    },
-    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
-    path: 'search.xml',
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
-  };
-</script>
-
-  <meta name="description" content="翻译文章 Angular Change Detection - How Does It Really Work? 。">
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;hyuain.github.io&quot;,&quot;root&quot;:&quot;&#x2F;hais-notebook&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;hais-notebook&#x2F;images&quot;,&quot;scheme&quot;:&quot;Gemini&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:true,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:false,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;搜索...&quot;,&quot;empty&quot;:&quot;没有找到任何搜索结果：${query}&quot;,&quot;hits_time&quot;:&quot;找到 ${hits} 个搜索结果（用时 ${time} 毫秒）&quot;,&quot;hits&quot;:&quot;找到 ${hits} 个搜索结果&quot;},&quot;path&quot;:&quot;&#x2F;hais-notebook&#x2F;search.xml&quot;,&quot;localsearch&quot;:{&quot;enable&quot;:true,&quot;trigger&quot;:&quot;auto&quot;,&quot;top_n_per_article&quot;:1,&quot;unescape&quot;:false,&quot;preload&quot;:false}}</script>
+<meta name="description" content="翻译文章 Angular Change Detection - How Does It Really Work? 。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="翻译：Angular 如何检查变化">
 <meta property="og:url" content="https://hyuain.github.io/hais-notebook/2021/05/17/Angular-ChangeDetection/index.html">
@@ -54,356 +28,115 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://blog.angular-university.io/how-does-angular-2-change-detection-really-work/">
 <meta property="article:published_time" content="2021-05-17T18:56:06.000Z">
-<meta property="article:modified_time" content="2021-05-24T13:39:43.269Z">
+<meta property="article:modified_time" content="2021-05-17T18:56:06.000Z">
 <meta property="article:author" content="Harvey Zhang">
 <meta property="article:tag" content="入门">
 <meta property="article:tag" content="文档">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://blog.angular-university.io/how-does-angular-2-change-detection-really-work/">
 
+
 <link rel="canonical" href="https://hyuain.github.io/hais-notebook/2021/05/17/Angular-ChangeDetection/">
 
 
-<script id="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome: false,
-    isPost: true
-  };
-</script>
 
-  <title>翻译：Angular 如何检查变化 | Hais Notebook</title>
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;zh-CN&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;https:&#x2F;&#x2F;hyuain.github.io&#x2F;hais-notebook&#x2F;2021&#x2F;05&#x2F;17&#x2F;Angular-ChangeDetection&#x2F;&quot;,&quot;path&quot;:&quot;2021&#x2F;05&#x2F;17&#x2F;Angular-ChangeDetection&#x2F;&quot;,&quot;title&quot;:&quot;翻译：Angular 如何检查变化&quot;}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>翻译：Angular 如何检查变化 | Hais Notebook</title><script src="/hais-notebook/js/config.js"></script>
   
-
-
 
 
 
 
   <noscript>
-  <style>
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header { opacity: initial; }
-
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
-
+    <link rel="stylesheet" href="/hais-notebook/css/noscript.css">
+  </noscript>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
-    <div class="headband"></div>
+  <div class="headband"></div>
 
+  <main class="main">
     <header class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-container">
-  <div class="site-meta">
-
-    <div>
-      <a href="/hais-notebook/" class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">Hais Notebook</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
     </div>
   </div>
 
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
-      <span class="toggle-line toggle-line-first"></span>
-      <span class="toggle-line toggle-line-middle"></span>
-      <span class="toggle-line toggle-line-last"></span>
+  <div class="site-meta">
+
+    <a href="/hais-notebook/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Hais Notebook</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
 
 
+
 <nav class="site-nav">
-  
-  <ul id="menu" class="menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/hais-notebook/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
-
-  </li>
-        <li class="menu-item menu-item-tags">
-
-    <a href="/hais-notebook/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
-
-  </li>
-        <li class="menu-item menu-item-categories">
-
-    <a href="/hais-notebook/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
-
-  </li>
-        <li class="menu-item menu-item-archives">
-
-    <a href="/hais-notebook/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
-
-  </li>
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/hais-notebook/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-tags"><a href="/hais-notebook/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/hais-notebook/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/hais-notebook/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
       </li>
   </ul>
-
 </nav>
-  <div class="site-search">
-    <div class="popup search-popup">
-    <div class="search-header">
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
   <span class="search-icon">
     <i class="fa fa-search"></i>
   </span>
   <div class="search-input-container">
-    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
            placeholder="搜索..." spellcheck="false"
-           type="text" id="search-input">
+           type="search" class="search-input">
   </div>
-  <span class="popup-btn-close">
+  <span class="popup-btn-close" role="button">
     <i class="fa fa-times-circle"></i>
   </span>
 </div>
-<div id="search-result"></div>
-
-</div>
-<div class="search-pop-overlay"></div>
-
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
   </div>
 </div>
-    </header>
-
-    
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-
-
-    <main class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-
-          <div class="content">
-            
-
-  <div class="posts-expand">
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2021/05/17/Angular-ChangeDetection/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
-      <meta itemprop="name" content="Harvey Zhang">
-      <meta itemprop="description" content="小海的笔记本">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hais Notebook">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          翻译：Angular 如何检查变化
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-05-17 18:56:06" itemprop="dateCreated datePublished" datetime="2021-05-17T18:56:06+00:00">2021-05-17</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-24 13:39:43" itemprop="dateModified" datetime="2021-05-24T13:39:43+00:00">2021-05-24</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hais-notebook/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index">
-                    <span itemprop="name">前端</span>
-                  </a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hais-notebook/categories/%E5%89%8D%E7%AB%AF/JavaScript/" itemprop="url" rel="index">
-                    <span itemprop="name">JavaScript</span>
-                  </a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hais-notebook/categories/%E5%89%8D%E7%AB%AF/JavaScript/Angular/" itemprop="url" rel="index">
-                    <span itemprop="name">Angular</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-        <p>翻译文章 <a href="https://blog.angular-university.io/how-does-angular-2-change-detection-really-work/" target="_blank" rel="noopener">Angular Change Detection - How Does It Really Work?</a> 。</p>
-<a id="more"></a>
-<h1 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h1><ul>
-<li>变化检查是如何进行的？</li>
-<li>Angular 变化检查器是什么样的？</li>
-<li>默认的变化检查机制是怎样进行的</li>
-<li>开启/关闭变化检查，手动触发他</li>
-<li>避开变化检查循环：生产模式和开发模式</li>
-<li><code>OnPush</code> 变化检查模式究竟做了什么？</li>
-<li>使用 Immutable.js 来简化 Angular 应用的构建</li>
-<li>总结</li>
-</ul>
-<p>如果想要了解更多关于 OnPush 变化检查机制，请查阅 <a href="https://blog.angular-university.io/onpush-change-detection-how-it-works" target="_blank" rel="noopener">这篇文章</a> 。</p>
-<h1 id="变化检查是如何实现的？"><a href="#变化检查是如何实现的？" class="headerlink" title="变化检查是如何实现的？"></a>变化检查是如何实现的？</h1><p>当组件的数据变化的时候，Angular 可以探测到，并重新渲染视图来相应这次变化。为了理解工作原理，我们需要首先意识到 JavaScript 中整个运行时都是可重写的。我们可以重写类似于 <code>String</code> 或 <code>Number</code> 等方法。</p>
-<h1 id="重写浏览器的默认机制"><a href="#重写浏览器的默认机制" class="headerlink" title="重写浏览器的默认机制"></a>重写浏览器的默认机制</h1><p>Angular 启动的时候，将一些底层的的浏览器 API（比如浏览器用来注册事件的 <code>addEventListener</code>）替换掉，就像这样：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 这是新版的 addEventListener</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">addEventListener</span>(<span class="params">eventName, callback</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 调用原生的 addEventListener</span></span><br><span class="line">  callRealAddEventListener(eventName, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 先调用原生的 callback</span></span><br><span class="line">    callback(...)</span><br><span class="line">    <span class="comment">// 再运行 Angular 添加的功能</span></span><br><span class="line">    <span class="keyword">var</span> changed = angular.runChangeDetection()</span><br><span class="line">    <span class="keyword">if</span> (changed) &#123;</span><br><span class="line">      angular.reRenderUIPart()</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>新版的 <code>addEventListener</code> 会给事件处理器添加更多的功能：除了调用回调函数之外，还让 Angular 可以检测到变化并更新视图。</p>
-<h1 id="这个底层的运行时替换是怎样工作的？"><a href="#这个底层的运行时替换是怎样工作的？" class="headerlink" title="这个底层的运行时替换是怎样工作的？"></a>这个底层的运行时替换是怎样工作的？</h1><p>一个叫 <a href="https://github.com/angular/zone.js/" target="_blank" rel="noopener">Zone.js</a> 的 Angular 自带的库完成了这个工作。</p>
-<p>Zone 其实就是一个在多个 JavaScript 虚拟机执行回合之中幸存下来的执行上下文——这是一个可以用来为浏览器增加更多功能的很普遍的机制。Angular 内部使用 Zones 来触发变化检查，但 Zone 也可以用来做应用分析（比如内存占用、程序复杂度等）、跨越不同的 JavaScript 虚拟机回合进行长堆栈跟踪。</p>
-<h1 id="浏览器异步-API-支持"><a href="#浏览器异步-API-支持" class="headerlink" title="浏览器异步 API 支持"></a>浏览器异步 API 支持</h1><p>为了支持变化检查，下面这些常用的浏览器机制也被修改了：</p>
-<ul>
-<li>所有的浏览器事件（click、mouseover、keyup 等）</li>
-<li><code>setTimeout()</code> 和 <code>setInterval()</code></li>
-<li>Ajax HTTP 请求</li>
-</ul>
-<p>事实上，为了无感知地触发 Angular 变化检查，Zone.js 也修改了很多别的浏览器 API，比如 Websocket。可以看看 Zone.js 的 <a href="https://github.com/angular/zone.js/tree/master/test/patch" target="_blank" rel="noopener">一段测试代码</a> 看看现在支持了哪些 API。</p>
-<p>这个机制的局限性在于：如果出于某些原因，Zone.js 不支持某个浏览器的异步 API，那么变化检查就不会被触发。比如 IndexedDB 的回调。</p>
-<p>上面解释了变化检查是怎样触发的，但是触发之后他到底是怎样运作的呢？</p>
-<h1 id="变化检查树"><a href="#变化检查树" class="headerlink" title="变化检查树"></a>变化检查树</h1><p>在应用的启动阶段，每个 Angular 组件都与一个变化检查器建立关联。比如下面的 <code>TodoItem</code> 组件：</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span>(&#123;</span><br><span class="line">  selector: <span class="string">'todo-item'</span>,</span><br><span class="line">  template: <span class="string">`</span></span><br><span class="line"><span class="string">    &lt;span (click)="onToggle()" class="todo noselect"&gt;</span></span><br><span class="line"><span class="string">      &#123;&#123;todo.owner.firstName&#125;&#125; - &#123;&#123;todo.description&#125;&#125; - completed: &#123;&#123;todo.completed&#125;&#125;</span></span><br><span class="line"><span class="string">    &lt;/span&gt;</span></span><br><span class="line"><span class="string">  `</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> TodoItem &#123;</span><br><span class="line">  <span class="meta">@Input</span>()</span><br><span class="line">  todo: Todo</span><br><span class="line">  </span><br><span class="line">  <span class="meta">@Output</span>()</span><br><span class="line">  toggle = <span class="keyword">new</span> EventEmitter&lt;<span class="built_in">Object</span>&gt;()</span><br><span class="line">  </span><br><span class="line">  onToggle() &#123;</span><br><span class="line">    <span class="keyword">this</span>.toggle.emit(<span class="keyword">this</span>.todo)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这个组件会接受一个 <code>Todo</code> 对象作为输入，并且当 todo 状态发生改变的时候发出一个事件。来搞点花样，<a href="https://github.com/jhades/blog.angular-university.io/blob/master/ng2-change-detection/src/todo.ts#L11" target="_blank" rel="noopener">Todo class</a> 里面还嵌套了一个对象：</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> Todo &#123;</span><br><span class="line">  <span class="keyword">constructor</span>(<span class="params"></span></span><br><span class="line"><span class="params">    <span class="keyword">public</span> id: <span class="built_in">number</span>,</span></span><br><span class="line"><span class="params">    <span class="keyword">public</span> description: <span class="built_in">string</span>,</span></span><br><span class="line"><span class="params">    <span class="keyword">public</span> completed: <span class="built_in">boolean</span>,</span></span><br><span class="line"><span class="params">    <span class="keyword">public</span> owner: Owner <span class="comment">// 嵌套了 Owner 对象</span></span></span><br><span class="line"><span class="params">  </span>) &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><code>Todo</code> 有一个属性 <code>owner</code>，<code>owner</code> 也是一个对象（有属性 <code>firstName</code> 和 <code>lastName</code>）。</p>
-<h1 id="TodoItem-的变化检查器长什么样子？"><a href="#TodoItem-的变化检查器长什么样子？" class="headerlink" title="TodoItem 的变化检查器长什么样子？"></a>TodoItem 的变化检查器长什么样子？</h1><p>事实上，我们可以在运行时看到变化检查器长什么样子！我们只需要在 Todo class 里面加一些代码来在访问他的属性的时候 <a href="https://github.com/jhades/blog.angular-university.io/blob/master/ng2-change-detection/src/todo.ts#L11" target="_blank" rel="noopener">打一个断点</a> 。</p>
-<p>到达断点的时候，我们可以跟着调用栈看到变化检查：</p>
-<p><img src="https://blog.angular-university.io/how-does-angular-2-change-detection-really-work/" alt=""></p>
-<p>别担心，你不需要去 debug 这些代码。这里也没有引入什么魔法，他只是一个在应用的启动阶段创建的简单的 Javascript 方法。但是他到底做了什么呢？</p>
-<h1 id="默认的变化检查机制是怎么工作的？"><a href="#默认的变化检查机制是怎么工作的？" class="headerlink" title="默认的变化检查机制是怎么工作的？"></a>默认的变化检查机制是怎么工作的？</h1><p>这个方法最开始看起来可能非常奇怪，还有一些奇怪名字的变量。但是我们来仔细看看，可以注意到他在做一些非常简单的事情：他会比较每个表达式中使用的属性现在和之前的值，如果一个属性现在和之前的值不一样，他会将 <code>isChanged</code> 设为 <code>true</code>。</p>
-<p>它使用了 <code>looseNotIdentical()</code> 来比较两个值，<a href="https://github.com/angular/angular/blob/50548fb5655bca742d1056ea91217a3b8460db08/modules/angular2/src/facade/lang.ts#L367" target="_blank" rel="noopener">这个方法</a> 使用了 <code>===</code> 运算符，并且对 <code>NaN</code> 进行了一些特殊处理。</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">looseIdentical</span>(<span class="params">a, b</span>): <span class="title">boolean</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> a === b || <span class="keyword">typeof</span> a === <span class="string">"number"</span> &amp;&amp; <span class="keyword">typeof</span> b === <span class="string">"number"</span> &amp;&amp; <span class="built_in">isNaN</span>(a) &amp;&amp; <span class="built_in">isNaN</span>(b)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h1 id="对于嵌套对象-owner-又怎么样呢？"><a href="#对于嵌套对象-owner-又怎么样呢？" class="headerlink" title="对于嵌套对象 owner 又怎么样呢？"></a>对于嵌套对象 <code>owner</code> 又怎么样呢？</h1><p>我们可以看到在变化检查器的代码中，<code>owner</code> 中的对象也被检查了，但是只检查了 <code>firstName</code>，并没有检查 <code>lastName</code>。</p>
-<p>这是因为 <code>lastName</code> 并没有被 template 使用！——同样地，Todo 中的 <code>id</code> 属性也没有被检查。</p>
-<p>对此，我们可以说：</p>
-<blockquote>
-<p>默认情况下，Angular 变化检查是检查 template 表达式中的值是否变化。他会检查所有的组件。</p>
-</blockquote>
-<p>我们也可以总结一下：</p>
-<blockquote>
-<p>默认情况下，Angular 不会做对象的深比较来检查便捷化，他只会关心在 template 中使用的属性。</p>
-</blockquote>
-<h1 id="为什么变化检查默认这样工作？"><a href="#为什么变化检查默认这样工作？" class="headerlink" title="为什么变化检查默认这样工作？"></a>为什么变化检查默认这样工作？</h1><p>Angular 的主要目标之一就是变得更透明和易用，因此框架的使用者不需要为了更有效率地使用它而去进行很冗长的 debug 或者了解他的内部机制。</p>
-<p>如果你熟悉 AngularJs，想一下 <code>$digest()</code> 和 <code>$apply()</code> 以及所有使用/不使用他们的时候的坑。Angular 的主要目标之一就是避免他们。</p>
-<h1 id="那通过引用比较又是怎样的呢？"><a href="#那通过引用比较又是怎样的呢？" class="headerlink" title="那通过引用比较又是怎样的呢？"></a>那通过引用比较又是怎样的呢？</h1><p>事实上，Javascript 的对象都是可变的，Angular 想要对此给予全力的支持。</p>
-<p>想象一下如果 Angular 默认变化检查机制给予组件输入的引用的比较（而不是默认的机制）。这样的话即便是像 TODO 这样简单的应用都需要一些技巧来创建：开发者需要非常小心地来创建一个新的 Todo，而不是只是更新属性。</p>
-<p>但就像我们将要看到的那样，如果有必要的话，也可以自定义 Angular 的变化检查。</p>
 
     </div>
-
-    
-    
-    
-
-      <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/hais-notebook/tags/%E5%85%A5%E9%97%A8/" rel="tag"># 入门</a>
-              <a href="/hais-notebook/tags/%E6%96%87%E6%A1%A3/" rel="tag"># 文档</a>
-          </div>
-
-        
-
-
-        
-    <div class="post-nav">
-      <div class="post-nav-item">
-    <a href="/hais-notebook/2021/05/14/Tools-RxJS-Trick/" rel="prev" title="RxJS 小技巧">
-      <i class="fa fa-chevron-left"></i> RxJS 小技巧
-    </a></div>
-      <div class="post-nav-item">
-    <a href="/hais-notebook/2021/05/23/Browser-HowBrowserWorks/" rel="next" title="浏览器的工作原理">
-      浏览器的工作原理 <i class="fa fa-chevron-right"></i>
-    </a></div>
-    </div>
-      </footer>
-    
-  </article>
-  
-  
-  
-
   </div>
 
-
-          </div>
-          
-
-<script>
-  window.addEventListener('tabs:register', () => {
-    let activeClass = CONFIG.comments.activeClass;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
-      }
-    }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      let commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
-</script>
-
-        </div>
-          
+</div>
+        
   
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line toggle-line-first"></span>
-    <span class="toggle-line toggle-line-middle"></span>
-    <span class="toggle-line toggle-line-last"></span>
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
   </div>
 
   <aside class="sidebar">
-    <div class="sidebar-inner">
 
-      <ul class="sidebar-nav motion-element">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
         </li>
@@ -412,18 +145,19 @@
         </li>
       </ul>
 
-      <!--noindex-->
-      <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#目录"><span class="nav-number">1.</span> <span class="nav-text">目录</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#变化检查是如何实现的？"><span class="nav-number">2.</span> <span class="nav-text">变化检查是如何实现的？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#重写浏览器的默认机制"><span class="nav-number">3.</span> <span class="nav-text">重写浏览器的默认机制</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#这个底层的运行时替换是怎样工作的？"><span class="nav-number">4.</span> <span class="nav-text">这个底层的运行时替换是怎样工作的？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#浏览器异步-API-支持"><span class="nav-number">5.</span> <span class="nav-text">浏览器异步 API 支持</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#变化检查树"><span class="nav-number">6.</span> <span class="nav-text">变化检查树</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#TodoItem-的变化检查器长什么样子？"><span class="nav-number">7.</span> <span class="nav-text">TodoItem 的变化检查器长什么样子？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#默认的变化检查机制是怎么工作的？"><span class="nav-number">8.</span> <span class="nav-text">默认的变化检查机制是怎么工作的？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#对于嵌套对象-owner-又怎么样呢？"><span class="nav-number">9.</span> <span class="nav-text">对于嵌套对象 owner 又怎么样呢？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#为什么变化检查默认这样工作？"><span class="nav-number">10.</span> <span class="nav-text">为什么变化检查默认这样工作？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#那通过引用比较又是怎样的呢？"><span class="nav-number">11.</span> <span class="nav-text">那通过引用比较又是怎样的呢？</span></a></li></ol></div>
-      </div>
-      <!--/noindex-->
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%AE%E5%BD%95"><span class="nav-number">1.</span> <span class="nav-text">目录</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%98%E5%8C%96%E6%A3%80%E6%9F%A5%E6%98%AF%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%9A%84"><span class="nav-number">2.</span> <span class="nav-text">变化检查是如何实现的？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%87%8D%E5%86%99%E6%B5%8F%E8%A7%88%E5%99%A8%E7%9A%84%E9%BB%98%E8%AE%A4%E6%9C%BA%E5%88%B6"><span class="nav-number">3.</span> <span class="nav-text">重写浏览器的默认机制</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%99%E4%B8%AA%E5%BA%95%E5%B1%82%E7%9A%84%E8%BF%90%E8%A1%8C%E6%97%B6%E6%9B%BF%E6%8D%A2%E6%98%AF%E6%80%8E%E6%A0%B7%E5%B7%A5%E4%BD%9C%E7%9A%84"><span class="nav-number">4.</span> <span class="nav-text">这个底层的运行时替换是怎样工作的？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E5%BC%82%E6%AD%A5-api-%E6%94%AF%E6%8C%81"><span class="nav-number">5.</span> <span class="nav-text">浏览器异步 API 支持</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%98%E5%8C%96%E6%A3%80%E6%9F%A5%E6%A0%91"><span class="nav-number">6.</span> <span class="nav-text">变化检查树</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#todoitem-%E7%9A%84%E5%8F%98%E5%8C%96%E6%A3%80%E6%9F%A5%E5%99%A8%E9%95%BF%E4%BB%80%E4%B9%88%E6%A0%B7%E5%AD%90"><span class="nav-number">7.</span> <span class="nav-text">TodoItem 的变化检查器长什么样子？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%BB%98%E8%AE%A4%E7%9A%84%E5%8F%98%E5%8C%96%E6%A3%80%E6%9F%A5%E6%9C%BA%E5%88%B6%E6%98%AF%E6%80%8E%E4%B9%88%E5%B7%A5%E4%BD%9C%E7%9A%84"><span class="nav-number">8.</span> <span class="nav-text">默认的变化检查机制是怎么工作的？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AF%B9%E4%BA%8E%E5%B5%8C%E5%A5%97%E5%AF%B9%E8%B1%A1-owner-%E5%8F%88%E6%80%8E%E4%B9%88%E6%A0%B7%E5%91%A2"><span class="nav-number">9.</span> <span class="nav-text">对于嵌套对象 owner 又怎么样呢？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E5%8F%98%E5%8C%96%E6%A3%80%E6%9F%A5%E9%BB%98%E8%AE%A4%E8%BF%99%E6%A0%B7%E5%B7%A5%E4%BD%9C"><span class="nav-number">10.</span> <span class="nav-text">为什么变化检查默认这样工作？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%82%A3%E9%80%9A%E8%BF%87%E5%BC%95%E7%94%A8%E6%AF%94%E8%BE%83%E5%8F%88%E6%98%AF%E6%80%8E%E6%A0%B7%E7%9A%84%E5%91%A2"><span class="nav-number">11.</span> <span class="nav-text">那通过引用比较又是怎样的呢？</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
 
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
   <p class="site-author-name" itemprop="name">Harvey Zhang</p>
   <div class="site-description" itemprop="description">小海的笔记本</div>
 </div>
-<div class="site-state-wrap motion-element">
+<div class="site-state-wrap site-overview-item animated">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/hais-notebook/archives/">
@@ -449,62 +183,222 @@
 
 
 
+        </div>
       </div>
-
     </div>
   </aside>
-  <div id="sidebar-dimmer"></div>
+  <div class="sidebar-dimmer"></div>
 
 
-      </div>
-    </main>
+    </header>
 
-    <footer class="footer">
-      <div class="footer-inner">
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2021/05/17/Angular-ChangeDetection/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
+      <meta itemprop="name" content="Harvey Zhang">
+      <meta itemprop="description" content="小海的笔记本">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hais Notebook">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          翻译：Angular 如何检查变化
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-05-17 18:56:06" itemprop="dateCreated datePublished" datetime="2021-05-17T18:56:06+00:00">2021-05-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">前端</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E5%89%8D%E7%AB%AF/JavaScript/" itemprop="url" rel="index"><span itemprop="name">JavaScript</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E5%89%8D%E7%AB%AF/JavaScript/Angular/" itemprop="url" rel="index"><span itemprop="name">Angular</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>翻译文章 <a target="_blank" rel="noopener" href="https://blog.angular-university.io/how-does-angular-2-change-detection-really-work/">Angular Change Detection - How Does It Really Work?</a> 。</p>
+<span id="more"></span>
+<h1 id="目录">目录</h1>
+<ul>
+<li>变化检查是如何进行的？</li>
+<li>Angular 变化检查器是什么样的？</li>
+<li>默认的变化检查机制是怎样进行的</li>
+<li>开启/关闭变化检查，手动触发他</li>
+<li>避开变化检查循环：生产模式和开发模式</li>
+<li><code>OnPush</code> 变化检查模式究竟做了什么？</li>
+<li>使用 Immutable.js 来简化 Angular 应用的构建</li>
+<li>总结</li>
+</ul>
+<p>如果想要了解更多关于 OnPush 变化检查机制，请查阅 <a target="_blank" rel="noopener" href="https://blog.angular-university.io/onpush-change-detection-how-it-works">这篇文章</a> 。</p>
+<h1 id="变化检查是如何实现的">变化检查是如何实现的？</h1>
+<p>当组件的数据变化的时候，Angular 可以探测到，并重新渲染视图来相应这次变化。为了理解工作原理，我们需要首先意识到 JavaScript 中整个运行时都是可重写的。我们可以重写类似于 <code>String</code> 或 <code>Number</code> 等方法。</p>
+<h1 id="重写浏览器的默认机制">重写浏览器的默认机制</h1>
+<p>Angular 启动的时候，将一些底层的的浏览器 API（比如浏览器用来注册事件的 <code>addEventListener</code>）替换掉，就像这样：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 这是新版的 addEventListener</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">addEventListener</span>(<span class="params">eventName, callback</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 调用原生的 addEventListener</span></span><br><span class="line">  callRealAddEventListener(eventName, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 先调用原生的 callback</span></span><br><span class="line">    callback(...)</span><br><span class="line">    <span class="comment">// 再运行 Angular 添加的功能</span></span><br><span class="line">    <span class="keyword">var</span> changed = angular.runChangeDetection()</span><br><span class="line">    <span class="keyword">if</span> (changed) &#123;</span><br><span class="line">      angular.reRenderUIPart()</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>新版的 <code>addEventListener</code> 会给事件处理器添加更多的功能：除了调用回调函数之外，还让 Angular 可以检测到变化并更新视图。</p>
+<h1 id="这个底层的运行时替换是怎样工作的">这个底层的运行时替换是怎样工作的？</h1>
+<p>一个叫 <a target="_blank" rel="noopener" href="https://github.com/angular/zone.js/">Zone.js</a> 的 Angular 自带的库完成了这个工作。</p>
+<p>Zone 其实就是一个在多个 JavaScript 虚拟机执行回合之中幸存下来的执行上下文——这是一个可以用来为浏览器增加更多功能的很普遍的机制。Angular 内部使用 Zones 来触发变化检查，但 Zone 也可以用来做应用分析（比如内存占用、程序复杂度等）、跨越不同的 JavaScript 虚拟机回合进行长堆栈跟踪。</p>
+<h1 id="浏览器异步-api-支持">浏览器异步 API 支持</h1>
+<p>为了支持变化检查，下面这些常用的浏览器机制也被修改了：</p>
+<ul>
+<li>所有的浏览器事件（click、mouseover、keyup 等）</li>
+<li><code>setTimeout()</code> 和 <code>setInterval()</code></li>
+<li>Ajax HTTP 请求</li>
+</ul>
+<p>事实上，为了无感知地触发 Angular 变化检查，Zone.js 也修改了很多别的浏览器 API，比如 Websocket。可以看看 Zone.js 的 <a target="_blank" rel="noopener" href="https://github.com/angular/zone.js/tree/master/test/patch">一段测试代码</a> 看看现在支持了哪些 API。</p>
+<p>这个机制的局限性在于：如果出于某些原因，Zone.js 不支持某个浏览器的异步 API，那么变化检查就不会被触发。比如 IndexedDB 的回调。</p>
+<p>上面解释了变化检查是怎样触发的，但是触发之后他到底是怎样运作的呢？</p>
+<h1 id="变化检查树">变化检查树</h1>
+<p>在应用的启动阶段，每个 Angular 组件都与一个变化检查器建立关联。比如下面的 <code>TodoItem</code> 组件：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span>(&#123;</span><br><span class="line">  <span class="attr">selector</span>: <span class="string">&#x27;todo-item&#x27;</span>,</span><br><span class="line">  <span class="attr">template</span>: <span class="string">`</span></span><br><span class="line"><span class="string">    &lt;span (click)=&quot;onToggle()&quot; class=&quot;todo noselect&quot;&gt;</span></span><br><span class="line"><span class="string">      &#123;&#123;todo.owner.firstName&#125;&#125; - &#123;&#123;todo.description&#125;&#125; - completed: &#123;&#123;todo.completed&#125;&#125;</span></span><br><span class="line"><span class="string">    &lt;/span&gt;</span></span><br><span class="line"><span class="string">  `</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">export</span> <span class="class"><span class="keyword">class</span> <span class="title">TodoItem</span> </span>&#123;</span><br><span class="line">  <span class="meta">@Input</span>()</span><br><span class="line">  <span class="attr">todo</span>: Todo</span><br><span class="line">  </span><br><span class="line">  <span class="meta">@Output</span>()</span><br><span class="line">  toggle = <span class="keyword">new</span> EventEmitter&lt;<span class="built_in">Object</span>&gt;()</span><br><span class="line">  </span><br><span class="line">  <span class="function"><span class="title">onToggle</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.toggle.emit(<span class="built_in">this</span>.todo)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个组件会接受一个 <code>Todo</code> 对象作为输入，并且当 todo 状态发生改变的时候发出一个事件。来搞点花样，<a target="_blank" rel="noopener" href="https://github.com/jhades/blog.angular-university.io/blob/master/ng2-change-detection/src/todo.ts#L11">Todo class</a> 里面还嵌套了一个对象：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="class"><span class="keyword">class</span> <span class="title">Todo</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="title">constructor</span>(<span class="params"></span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="keyword">public</span> id: <span class="built_in">number</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="keyword">public</span> description: <span class="built_in">string</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="keyword">public</span> completed: <span class="built_in">boolean</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="keyword">public</span> owner: Owner <span class="comment">// 嵌套了 Owner 对象</span></span></span></span><br><span class="line"><span class="params"><span class="function">  </span>)</span> &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>Todo</code> 有一个属性 <code>owner</code>，<code>owner</code> 也是一个对象（有属性 <code>firstName</code> 和 <code>lastName</code>）。</p>
+<h1 id="todoitem-的变化检查器长什么样子">TodoItem 的变化检查器长什么样子？</h1>
+<p>事实上，我们可以在运行时看到变化检查器长什么样子！我们只需要在 Todo class 里面加一些代码来在访问他的属性的时候 <a target="_blank" rel="noopener" href="https://github.com/jhades/blog.angular-university.io/blob/master/ng2-change-detection/src/todo.ts#L11">打一个断点</a> 。</p>
+<p>到达断点的时候，我们可以跟着调用栈看到变化检查：</p>
+<p><img src="https://blog.angular-university.io/how-does-angular-2-change-detection-really-work/" /></p>
+<p>别担心，你不需要去 debug 这些代码。这里也没有引入什么魔法，他只是一个在应用的启动阶段创建的简单的 Javascript 方法。但是他到底做了什么呢？</p>
+<h1 id="默认的变化检查机制是怎么工作的">默认的变化检查机制是怎么工作的？</h1>
+<p>这个方法最开始看起来可能非常奇怪，还有一些奇怪名字的变量。但是我们来仔细看看，可以注意到他在做一些非常简单的事情：他会比较每个表达式中使用的属性现在和之前的值，如果一个属性现在和之前的值不一样，他会将 <code>isChanged</code> 设为 <code>true</code>。</p>
+<p>它使用了 <code>looseNotIdentical()</code> 来比较两个值，<a target="_blank" rel="noopener" href="https://github.com/angular/angular/blob/50548fb5655bca742d1056ea91217a3b8460db08/modules/angular2/src/facade/lang.ts#L367">这个方法</a> 使用了 <code>===</code> 运算符，并且对 <code>NaN</code> 进行了一些特殊处理。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">looseIdentical</span>(<span class="params">a, b</span>): <span class="title">boolean</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> a === b || <span class="keyword">typeof</span> a === <span class="string">&quot;number&quot;</span> &amp;&amp; <span class="keyword">typeof</span> b === <span class="string">&quot;number&quot;</span> &amp;&amp; <span class="built_in">isNaN</span>(a) &amp;&amp; <span class="built_in">isNaN</span>(b)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="对于嵌套对象-owner-又怎么样呢">对于嵌套对象 <code>owner</code> 又怎么样呢？</h1>
+<p>我们可以看到在变化检查器的代码中，<code>owner</code> 中的对象也被检查了，但是只检查了 <code>firstName</code>，并没有检查 <code>lastName</code>。</p>
+<p>这是因为 <code>lastName</code> 并没有被 template 使用！——同样地，Todo 中的 <code>id</code> 属性也没有被检查。</p>
+<p>对此，我们可以说：</p>
+<blockquote>
+<p>默认情况下，Angular 变化检查是检查 template 表达式中的值是否变化。他会检查所有的组件。</p>
+</blockquote>
+<p>我们也可以总结一下：</p>
+<blockquote>
+<p>默认情况下，Angular 不会做对象的深比较来检查便捷化，他只会关心在 template 中使用的属性。</p>
+</blockquote>
+<h1 id="为什么变化检查默认这样工作">为什么变化检查默认这样工作？</h1>
+<p>Angular 的主要目标之一就是变得更透明和易用，因此框架的使用者不需要为了更有效率地使用它而去进行很冗长的 debug 或者了解他的内部机制。</p>
+<p>如果你熟悉 AngularJs，想一下 <code>$digest()</code> 和 <code>$apply()</code> 以及所有使用/不使用他们的时候的坑。Angular 的主要目标之一就是避免他们。</p>
+<h1 id="那通过引用比较又是怎样的呢">那通过引用比较又是怎样的呢？</h1>
+<p>事实上，Javascript 的对象都是可变的，Angular 想要对此给予全力的支持。</p>
+<p>想象一下如果 Angular 默认变化检查机制给予组件输入的引用的比较（而不是默认的机制）。这样的话即便是像 TODO 这样简单的应用都需要一些技巧来创建：开发者需要非常小心地来创建一个新的 Todo，而不是只是更新属性。</p>
+<p>但就像我们将要看到的那样，如果有必要的话，也可以自定义 Angular 的变化检查。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/hais-notebook/tags/%E5%85%A5%E9%97%A8/" rel="tag"># 入门</a>
+              <a href="/hais-notebook/tags/%E6%96%87%E6%A1%A3/" rel="tag"># 文档</a>
+          </div>
+
         
 
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2021/05/14/Tools-RxJS-Trick/" rel="prev" title="RxJS 小技巧">
+                  <i class="fa fa-chevron-left"></i> RxJS 小技巧
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2021/05/23/Browser-HowBrowserWorks/" rel="next" title="浏览器的工作原理">
+                  浏览器的工作原理 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/hais-notebook/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
 <div class="copyright">
-  
   &copy; 
   <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Harvey Zhang</span>
 </div>
-  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
-  </div>
-  <span class="post-meta-divider">|</span>
-  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.0
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>
 
-        
-
-
-
-
-
-
-
-
-      </div>
-    </footer>
-  </div>
+    </div>
+  </footer>
 
   
-  <script src="/hais-notebook/lib/anime.min.js"></script>
-  <script src="/hais-notebook/lib/velocity/velocity.min.js"></script>
-  <script src="/hais-notebook/lib/velocity/velocity.ui.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/hais-notebook/js/utils.js"></script><script src="/hais-notebook/js/next-boot.js"></script>
 
-<script src="/hais-notebook/js/utils.js"></script>
-
-<script src="/hais-notebook/js/motion.js"></script>
+  
+<script src="/hais-notebook/js/third-party/search/local-search.js"></script>
 
 
-<script src="/hais-notebook/js/schemes/pisces.js"></script>
-
-
-<script src="/hais-notebook/js/next-boot.js"></script>
 
 
 
@@ -515,25 +409,11 @@
 
 
   
-<script src="/hais-notebook/js/local-search.js"></script>
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{&quot;enable&quot;:true,&quot;tags&quot;:&quot;none&quot;,&quot;js&quot;:{&quot;url&quot;:&quot;https:&#x2F;&#x2F;cdn.jsdelivr.net&#x2F;npm&#x2F;mathjax@3.1.4&#x2F;es5&#x2F;tex-mml-chtml.js&quot;,&quot;integrity&quot;:&quot;sha256-ncNI9OXOS5Ek4tzVYiOMmN&#x2F;KKCPZ6V0Cpv2P&#x2F;zHntiA&#x3D;&quot;}}</script>
+<script src="/hais-notebook/js/third-party/math/mathjax.js"></script>
 
 
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  
-
-  
 
 </body>
 </html>

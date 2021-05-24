@@ -4,491 +4,136 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
+
+
   <link rel="apple-touch-icon" sizes="180x180" href="/hais-notebook/images/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/hais-notebook/images/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/hais-notebook/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/hais-notebook/images/logo.svg" color="#222">
 
 <link rel="stylesheet" href="/hais-notebook/css/main.css">
 
 
-<link rel="stylesheet" href="/hais-notebook/lib/font-awesome/css/font-awesome.min.css">
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
 
-<script id="hexo-configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    hostname: new URL('https://hyuain.github.io/hais-notebook').hostname,
-    root: '/hais-notebook/',
-    scheme: 'Gemini',
-    version: '7.7.0',
-    exturl: false,
-    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
-    copycode: {"enable":false,"show_result":false,"style":null},
-    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
-    bookmark: {"enable":false,"color":"#222","save":"auto"},
-    fancybox: false,
-    mediumzoom: false,
-    lazyload: false,
-    pangu: false,
-    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
-    algolia: {
-      appID: 'W0QZQNNH7N',
-      apiKey: '00189c8d102508ea71e94422b5f129fd',
-      indexName: 'hais-notebook',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    },
-    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
-    path: 'search.xml',
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
-  };
-</script>
-
-  <meta name="description" content="One Core Type: Observable.Satellite Types: Observer, Schedulers, Subjects.Operators: map, filter, reduce, every, etc.">
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;hyuain.github.io&quot;,&quot;root&quot;:&quot;&#x2F;hais-notebook&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;hais-notebook&#x2F;images&quot;,&quot;scheme&quot;:&quot;Gemini&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:true,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:false,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;搜索...&quot;,&quot;empty&quot;:&quot;没有找到任何搜索结果：${query}&quot;,&quot;hits_time&quot;:&quot;找到 ${hits} 个搜索结果（用时 ${time} 毫秒）&quot;,&quot;hits&quot;:&quot;找到 ${hits} 个搜索结果&quot;},&quot;path&quot;:&quot;&#x2F;hais-notebook&#x2F;search.xml&quot;,&quot;localsearch&quot;:{&quot;enable&quot;:true,&quot;trigger&quot;:&quot;auto&quot;,&quot;top_n_per_article&quot;:1,&quot;unescape&quot;:false,&quot;preload&quot;:false}}</script>
+<meta name="description" content="One Core Type: Observable. Satellite Types: Observer, Schedulers, Subjects. Operators: map, filter, reduce, every, etc.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="RxJS Overview">
 <meta property="og:url" content="https://hyuain.github.io/hais-notebook/2021/05/13/Tools-RxJS-Overview/index.html">
 <meta property="og:site_name" content="Hais Notebook">
-<meta property="og:description" content="One Core Type: Observable.Satellite Types: Observer, Schedulers, Subjects.Operators: map, filter, reduce, every, etc.">
+<meta property="og:description" content="One Core Type: Observable. Satellite Types: Observer, Schedulers, Subjects. Operators: map, filter, reduce, every, etc.">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-05-13T14:39:12.000Z">
-<meta property="article:modified_time" content="2021-05-24T13:39:43.277Z">
+<meta property="article:modified_time" content="2021-05-13T14:39:12.000Z">
 <meta property="article:author" content="Harvey Zhang">
 <meta property="article:tag" content="入门">
 <meta name="twitter:card" content="summary">
 
+
 <link rel="canonical" href="https://hyuain.github.io/hais-notebook/2021/05/13/Tools-RxJS-Overview/">
 
 
-<script id="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome: false,
-    isPost: true
-  };
-</script>
 
-  <title>RxJS Overview | Hais Notebook</title>
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;zh-CN&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;https:&#x2F;&#x2F;hyuain.github.io&#x2F;hais-notebook&#x2F;2021&#x2F;05&#x2F;13&#x2F;Tools-RxJS-Overview&#x2F;&quot;,&quot;path&quot;:&quot;2021&#x2F;05&#x2F;13&#x2F;Tools-RxJS-Overview&#x2F;&quot;,&quot;title&quot;:&quot;RxJS Overview&quot;}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>RxJS Overview | Hais Notebook</title><script src="/hais-notebook/js/config.js"></script>
   
-
-
 
 
 
 
   <noscript>
-  <style>
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header { opacity: initial; }
-
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
-
+    <link rel="stylesheet" href="/hais-notebook/css/noscript.css">
+  </noscript>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
-    <div class="headband"></div>
+  <div class="headband"></div>
 
+  <main class="main">
     <header class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-container">
-  <div class="site-meta">
-
-    <div>
-      <a href="/hais-notebook/" class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">Hais Notebook</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
     </div>
   </div>
 
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
-      <span class="toggle-line toggle-line-first"></span>
-      <span class="toggle-line toggle-line-middle"></span>
-      <span class="toggle-line toggle-line-last"></span>
+  <div class="site-meta">
+
+    <a href="/hais-notebook/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Hais Notebook</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
 
 
+
 <nav class="site-nav">
-  
-  <ul id="menu" class="menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/hais-notebook/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
-
-  </li>
-        <li class="menu-item menu-item-tags">
-
-    <a href="/hais-notebook/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
-
-  </li>
-        <li class="menu-item menu-item-categories">
-
-    <a href="/hais-notebook/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
-
-  </li>
-        <li class="menu-item menu-item-archives">
-
-    <a href="/hais-notebook/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
-
-  </li>
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/hais-notebook/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-tags"><a href="/hais-notebook/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/hais-notebook/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/hais-notebook/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
       </li>
   </ul>
-
 </nav>
-  <div class="site-search">
-    <div class="popup search-popup">
-    <div class="search-header">
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
   <span class="search-icon">
     <i class="fa fa-search"></i>
   </span>
   <div class="search-input-container">
-    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
            placeholder="搜索..." spellcheck="false"
-           type="text" id="search-input">
+           type="search" class="search-input">
   </div>
-  <span class="popup-btn-close">
+  <span class="popup-btn-close" role="button">
     <i class="fa fa-times-circle"></i>
   </span>
 </div>
-<div id="search-result"></div>
-
-</div>
-<div class="search-pop-overlay"></div>
-
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
   </div>
 </div>
-    </header>
-
-    
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-
-
-    <main class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-
-          <div class="content">
-            
-
-  <div class="posts-expand">
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2021/05/13/Tools-RxJS-Overview/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
-      <meta itemprop="name" content="Harvey Zhang">
-      <meta itemprop="description" content="小海的笔记本">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hais Notebook">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          RxJS Overview
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-05-13 14:39:12" itemprop="dateCreated datePublished" datetime="2021-05-13T14:39:12+00:00">2021-05-13</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-24 13:39:43" itemprop="dateModified" datetime="2021-05-24T13:39:43+00:00">2021-05-24</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hais-notebook/categories/%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index">
-                    <span itemprop="name">工具</span>
-                  </a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hais-notebook/categories/%E5%B7%A5%E5%85%B7/RxJS/" itemprop="url" rel="index">
-                    <span itemprop="name">RxJS</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-        <p>One Core Type: Observable.<br>Satellite Types: Observer, Schedulers, Subjects.<br>Operators: map, filter, reduce, every, etc.</p>
-<a id="more"></a>
-<h1 id="Observable"><a href="#Observable" class="headerlink" title="Observable"></a>Observable</h1><div class="table-container">
-<table>
-<thead>
-<tr>
-<th></th>
-<th>SINGLE</th>
-<th>MULTIPLE</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Pull</td>
-<td>Function</td>
-<td>Iterator</td>
-</tr>
-<tr>
-<td>Push</td>
-<td>Promise</td>
-<td>Observable</td>
-</tr>
-</tbody>
-</table>
-</div>
-<p>一个例子：</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; Observable &#125; <span class="keyword">from</span> <span class="string">'rxjs'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> observable = <span class="keyword">new</span> Observable(<span class="function"><span class="params">subscriber</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// 注意：当 subscribed 的时候，Observable push 1, 2, 3 的过程是同步执行的！ </span></span><br><span class="line">  subscriber.next(<span class="number">1</span>);</span><br><span class="line">  subscriber.next(<span class="number">2</span>);</span><br><span class="line">  subscriber.next(<span class="number">3</span>);</span><br><span class="line">  setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    subscriber.next(<span class="number">4</span>);</span><br><span class="line">    subscriber.complete();</span><br><span class="line">  &#125;, <span class="number">1000</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'just before subscribe'</span>);</span><br><span class="line">observable.subscribe(&#123;</span><br><span class="line">  next(x) &#123; <span class="built_in">console</span>.log(<span class="string">'got value '</span> + x); &#125;,</span><br><span class="line">  error(err) &#123; <span class="built_in">console</span>.error(<span class="string">'something wrong occurred: '</span> + err); &#125;,</span><br><span class="line">  complete() &#123; <span class="built_in">console</span>.log(<span class="string">'done'</span>); &#125;</span><br><span class="line">&#125;);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'just after subscribe'</span>);</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">just before subscribe</span><br><span class="line">got value 1</span><br><span class="line">got value 2</span><br><span class="line">got value 3</span><br><span class="line">just after subscribe</span><br><span class="line">got value 4</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
-<h2 id="Pull-和-Push"><a href="#Pull-和-Push" class="headerlink" title="Pull 和 Push"></a>Pull 和 Push</h2><p>在描述 <strong>数据生产者(Producer)</strong> 和 <strong>数据消费者(Consumer)</strong> 之间的沟通时，有 <strong>Pull</strong> 和 <strong>Push</strong> 两种不同的方案。</p>
-<h3 id="Pull"><a href="#Pull" class="headerlink" title="Pull"></a>Pull</h3><p>消费者决定了何时从生产者那里拿数据。</p>
-<p>比如每个 JS 函数就是一个 Pull System：函数是数据的生产者，调用函数的地方从函数那里 pull <strong>一个</strong> 返回值。<br>ES6 引入的 generator 函数和迭代器也是一种 Pull System：消费者调用 <code>iterator.next()</code>，从迭代器那里 pull <strong>多个</strong> 值。</p>
-<h3 id="Push"><a href="#Push" class="headerlink" title="Push"></a>Push</h3><p>生产者决定了何时发送数据给消费者。</p>
-<p>比如 Promise(生产者) 给 回调函数(消费者) 传输数据，Promise 掌控了 push 数据的时机。<br>Observable(生产者) 给 Observer(消费者) 传输数据。</p>
-<h2 id="Observable-与函数"><a href="#Observable-与函数" class="headerlink" title="Observable 与函数"></a>Observable 与函数</h2><blockquote class="blockquote-center"><p>function.call() 表示 <em>同步地给我一个值</em><br>observable.subscribe() 表示 <em>同步或异步地给我一堆值</em></p>
-</blockquote>
-<h3 id="Observable-与函数的相同点"><a href="#Observable-与函数的相同点" class="headerlink" title="Observable 与函数的相同点"></a>Observable 与函数的相同点</h3><h4 id="懒执行"><a href="#懒执行" class="headerlink" title="懒执行"></a>懒执行</h4><p>如果不 call Function，那么函数就不会执行；<br>如果不 subscribe Observable，那么 Observable 中注册的回调函数也不会执行。</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'Hello'</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">42</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> x = foo.call();</span><br><span class="line"><span class="built_in">console</span>.log(x);</span><br><span class="line"><span class="keyword">const</span> y = foo.call();</span><br><span class="line"><span class="built_in">console</span>.log(y);</span><br></pre></td></tr></table></figure>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> foo = <span class="keyword">new</span> Observable(<span class="function"><span class="params">subscriber</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'Hello'</span>);</span><br><span class="line">  subscriber.next(<span class="number">42</span>);</span><br><span class="line">&#125;);</span><br><span class="line"> </span><br><span class="line">foo.subscribe(<span class="function"><span class="params">x</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(x);</span><br><span class="line">&#125;);</span><br><span class="line">foo.subscribe(<span class="function"><span class="params">y</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(y);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<p>运行上面两段代码的结果是一样的：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&quot;Hello&quot;</span><br><span class="line">42</span><br><span class="line">&quot;Hello&quot;</span><br><span class="line">42</span><br></pre></td></tr></table></figure>
-<h4 id="每个-subscribing-都是独立的"><a href="#每个-subscribing-都是独立的" class="headerlink" title="每个 subscribing 都是独立的"></a>每个 subscribing 都是独立的</h4><p>就像每次 Function calling 都是独立的一样，每次 Observable subscribing 也是独立的，他们之间的副作用互不干扰——这与 EventEmitter 不同。</p>
-<h4 id="Observable-可同步可异步"><a href="#Observable-可同步可异步" class="headerlink" title="Observable 可同步可异步"></a>Observable 可同步可异步</h4><p>Observable 并不是都是异步的，如果没有引入其他异步数据源，他其实是同步的，这跟 Function 也是类似的。</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">'before'</span>);</span><br><span class="line"><span class="built_in">console</span>.log(foo.call());</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'after'</span>);</span><br></pre></td></tr></table></figure>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">'before'</span>);</span><br><span class="line">foo.subscribe(<span class="function"><span class="params">x</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(x);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'after'</span>);</span><br></pre></td></tr></table></figure>
-<p>以上两段代码运行的结果也是一样的：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&quot;before&quot;</span><br><span class="line">&quot;Hello&quot;</span><br><span class="line">42</span><br><span class="line">&quot;after&quot;</span><br></pre></td></tr></table></figure>
-<h3 id="Observable-与函数的不同点"><a href="#Observable-与函数的不同点" class="headerlink" title="Observable 与函数的不同点"></a>Observable 与函数的不同点</h3><h4 id="Observable-可以发出多个值"><a href="#Observable-可以发出多个值" class="headerlink" title="Observable 可以发出多个值"></a>Observable 可以发出多个值</h4><p>在函数中，我们不能这样写：</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'Hello'</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">42</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">100</span>; <span class="comment">// dead code. will never happen</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>但是在 Observable 却可以这样写：</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> foo = <span class="keyword">new</span> Observable(<span class="function"><span class="params">subscriber</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'Hello'</span>);</span><br><span class="line">  subscriber.next(<span class="number">42</span>);</span><br><span class="line">  subscriber.next(<span class="number">100</span>); <span class="comment">// "return" another value</span></span><br><span class="line">  subscriber.next(<span class="number">200</span>); <span class="comment">// "return" yet another</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'before'</span>);</span><br><span class="line">foo.subscribe(<span class="function"><span class="params">x</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(x);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'after'</span>);</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&quot;before&quot;</span><br><span class="line">&quot;Hello&quot;</span><br><span class="line">42</span><br><span class="line">100</span><br><span class="line">200</span><br><span class="line">&quot;after&quot;</span><br></pre></td></tr></table></figure>
-<h4 id="Observable-可以异步发出值"><a href="#Observable-可以异步发出值" class="headerlink" title="Observable 可以异步发出值"></a>Observable 可以异步发出值</h4><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> foo = <span class="keyword">new</span> Observable(<span class="function"><span class="params">subscriber</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'Hello'</span>);</span><br><span class="line">  subscriber.next(<span class="number">42</span>);</span><br><span class="line">  subscriber.next(<span class="number">100</span>);</span><br><span class="line">  subscriber.next(<span class="number">200</span>);</span><br><span class="line">  setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    subscriber.next(<span class="number">300</span>); <span class="comment">// happens asynchronously</span></span><br><span class="line">  &#125;, <span class="number">1000</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'before'</span>);</span><br><span class="line">foo.subscribe(<span class="function"><span class="params">x</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(x);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'after'</span>);</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&quot;before&quot;</span><br><span class="line">&quot;Hello&quot;</span><br><span class="line">42</span><br><span class="line">100</span><br><span class="line">200</span><br><span class="line">&quot;after&quot;</span><br><span class="line">300</span><br></pre></td></tr></table></figure>
-<h2 id="创建-Observable：Creating"><a href="#创建-Observable：Creating" class="headerlink" title="创建 Observable：Creating"></a>创建 Observable：Creating</h2><p>Observable 构造函数只需要一个参数：subscribe 函数</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建一个 Observable，他会给一个 subscriber 每秒钟都发出 "hi"</span></span><br><span class="line"><span class="keyword">const</span> observable = <span class="keyword">new</span> Observable(<span class="function"><span class="keyword">function</span> <span class="title">subscribe</span>(<span class="params">subscriber</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> id = setInterval(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    subscriber.next(<span class="string">'hi'</span>)</span><br><span class="line">  &#125;, <span class="number">1000</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<h2 id="订阅-Observable：Subscribing"><a href="#订阅-Observable：Subscribing" class="headerlink" title="订阅 Observable：Subscribing"></a>订阅 Observable：Subscribing</h2><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">observable.subscribe(<span class="function"><span class="params">x</span> =&gt;</span> <span class="built_in">console</span>.log(x));</span><br></pre></td></tr></table></figure>
-<p>当调用 <code>observable.subscribe</code> 的时候，subscribe 函数会用给定的 subscriber 运行，并且每次调用都是独立的。<br>与 <code>addEventListener</code> 这种 API 不一样，Observer 并没有注册为一个 listener，Observable 里面也没有维护 Observer 的列表。</p>
-<h2 id="执行-Observable：Executing"><a href="#执行-Observable：Executing" class="headerlink" title="执行 Observable：Executing"></a>执行 Observable：Executing</h2><p>在 <code>new Observable(function subscribe(subscriber) {...})</code> 中的代码表示一个 Observable execution。</p>
-<p>Observable Execution 可以发出三种类型的值：</p>
-<ul>
-<li>“Next” 通知：会伴随一个 Number、String、Object 等类型的值</li>
-<li>“Error” 通知：会伴随一个 JS Error 或者异常</li>
-<li>“Complete” 通知：不会伴随任何值</li>
-</ul>
-<p>通常来说，Execution 会随着时间通过 Next 通知发出多个值。但当发出 Error 或者 Complete 通知之后，就不会再发出值了。</p>
-<h2 id="释放-Executions：Disposing-Executions"><a href="#释放-Executions：Disposing-Executions" class="headerlink" title="释放 Executions：Disposing Executions"></a>释放 Executions：Disposing Executions</h2><p>当调用 <code>observable.subscribe</code> 之后，Observer 会跟一个新创建的 Observable execution 绑定。并且返回一个 <code>Subscription</code>：</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> subscription = observable.subscribe(<span class="function"><span class="params">x</span> =&gt;</span> <span class="built_in">console</span>.log(x));</span><br></pre></td></tr></table></figure>
-<p>Subscription 就代表了正在执行的 execution。</p>
-<ul>
-<li>可以通过 <code>subscription.unsubscribe()</code> 来取消正在执行的 execution。</li>
-<li>Complete 或 Error 也会取消 execution。</li>
-</ul>
-<p>我们有时候需要自定义一个 <code>unsubscribe</code> 函数来在取消 execution 的时候释放资源。</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> observable = <span class="keyword">new</span> Observable(<span class="function"><span class="keyword">function</span> <span class="title">subscribe</span>(<span class="params">subscriber</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> intervalId = setInterval(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    subscriber.next(<span class="string">'hi'</span>);</span><br><span class="line">  &#125;, <span class="number">1000</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 这个函数会在 unsubscribe 的时候执行，清除掉 interval</span></span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> <span class="title">unsubscribe</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    clearInterval(intervalId);</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<h1 id="Observer"><a href="#Observer" class="headerlink" title="Observer"></a>Observer</h1><p>Observer 是 Observable 发出数据的消费者，其实就是一个对象，对象包含了三个分别用于处理 Observable 三种通知类型的回调函数。</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> observer = &#123;</span><br><span class="line">  next: <span class="function"><span class="params">x</span> =&gt;</span> <span class="built_in">console</span>.log(<span class="string">'Observer got a next value: '</span> + x),</span><br><span class="line">  error: <span class="function"><span class="params">err</span> =&gt;</span> <span class="built_in">console</span>.error(<span class="string">'Observer got an error: '</span> + err),</span><br><span class="line">  complete: <span class="function"><span class="params">()</span> =&gt;</span> <span class="built_in">console</span>.log(<span class="string">'Observer got a complete notification'</span>),</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">observable.subscribe(observer)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 当然也可以直接将回调函数作为参数传进去，他会自动帮我们创建 Observer 对象</span></span><br><span class="line">observable.subscribe(<span class="function"><span class="params">()</span> =&gt;</span> <span class="built_in">console</span>.log(<span class="string">'Observer got a next value: '</span> + x))</span><br></pre></td></tr></table></figure>
-<h1 id="Operators"><a href="#Operators" class="headerlink" title="Operators"></a>Operators</h1><p>Operator 就是函数。有两种类型的 Operator：</p>
-<ul>
-<li>Pipeable Operator：不会改变原来的 Observable 实例，他接受一个 Observable 作为参数，然后再返回一个 Observable</li>
-<li>Creation Operator：会创建一个新的 Observable</li>
-</ul>
-<h2 id="高阶-Observable"><a href="#高阶-Observable" class="headerlink" title="高阶 Observable"></a>高阶 Observable</h2><p>可以这样构造一个高阶 Observable，用 map 返回一个 Observable：</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> clicks = fromEvent(<span class="built_in">document</span>, <span class="string">'click'</span>);</span><br><span class="line"><span class="keyword">const</span> higherOrder = clicks.pipe(map(<span class="function"><span class="params">ev</span> =&gt;</span> of(ev)));</span><br></pre></td></tr></table></figure>
-<p>这时候就需要用例如 concatAll 等操作符将其拍平。</p>
-<h1 id="Subscription"><a href="#Subscription" class="headerlink" title="Subscription"></a>Subscription</h1><p>Subscription 通常是一个 Observable 的 Execution，主要是用来调用释放资源 API <code>unsubscribe</code>。</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> subscription = interval(<span class="number">400</span>).subscribe(<span class="function"><span class="params">x</span> =&gt;</span> <span class="built_in">console</span>.log(<span class="string">'first: '</span> + x));</span><br><span class="line"><span class="keyword">const</span> childSubscription = interval(<span class="number">300</span>).subscribe(<span class="function"><span class="params">x</span> =&gt;</span> <span class="built_in">console</span>.log(<span class="string">'second: '</span> + x));</span><br><span class="line"></span><br><span class="line">subscription.add(childSubscription);</span><br><span class="line"></span><br><span class="line">setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// 同时 unsubscribe subcription 和 childSubscription</span></span><br><span class="line">  subscription.unsubscribe();</span><br><span class="line">&#125;, <span class="number">1000</span>);</span><br></pre></td></tr></table></figure>
-<h1 id="Subject"><a href="#Subject" class="headerlink" title="Subject"></a>Subject</h1><p>Subject 是一种特殊的 Observable，他可以向多个 Observer 以多播的形式发出值——而普通的 Observable 是单播，每个订阅的 Observer 对这个 Observable 都有自己独立的 Execution。</p>
-<ul>
-<li><strong>每个 Subject 都是 Observable</strong>。你可以 <code>subscribe</code> 一个 Subject。对于 Subject 来说，<code>subscribe</code> 并不会产生一个新的 Execution，他会将这个 Observer 注册到一个 ObserverList，就像 <code>addListner</code> 一样</li>
-<li><strong>每个 Subject 都是 Observer</strong>。他有 <code>next()</code> <code>error()</code> <code>complete()</code> 方法。只需要调用 <code>next()</code>，就会广播给所有已经注册了的 Observer。</li>
-</ul>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> subject = <span class="keyword">new</span> Subject&lt;<span class="built_in">number</span>&gt;();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 每个 Subject 都是 Observable：可以 subscribe 他</span></span><br><span class="line">subject.subscribe(&#123;</span><br><span class="line">  next: <span class="function">(<span class="params">v</span>) =&gt;</span> <span class="built_in">console</span>.log(<span class="string">`observerA: <span class="subst">$&#123;v&#125;</span>`</span>)</span><br><span class="line">&#125;);</span><br><span class="line">subject.subscribe(&#123;</span><br><span class="line">  next: <span class="function">(<span class="params">v</span>) =&gt;</span> <span class="built_in">console</span>.log(<span class="string">`observerB: <span class="subst">$&#123;v&#125;</span>`</span>)</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 每个 Subject 都是 Observer：调用他的 next() 方法，就会广播给所有已经注册的 Observer</span></span><br><span class="line">subject.next(<span class="number">1</span>);</span><br><span class="line">subject.next(<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Logs:</span></span><br><span class="line"><span class="comment">// observerA: 1</span></span><br><span class="line"><span class="comment">// observerB: 1</span></span><br><span class="line"><span class="comment">// observerA: 2</span></span><br><span class="line"><span class="comment">// observerB: 2</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 每个 Subject 都是 Observer：可以把他传给 subscribe 函数</span></span><br><span class="line"><span class="keyword">from</span>([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]).subscribe(subject);</span><br><span class="line"> </span><br><span class="line"><span class="comment">// Logs:</span></span><br><span class="line"><span class="comment">// observerA: 1</span></span><br><span class="line"><span class="comment">// observerB: 1</span></span><br><span class="line"><span class="comment">// observerA: 2</span></span><br><span class="line"><span class="comment">// observerB: 2</span></span><br><span class="line"><span class="comment">// observerA: 3</span></span><br><span class="line"><span class="comment">// observerB: 3</span></span><br></pre></td></tr></table></figure>
-<h2 id="多播-Observable"><a href="#多播-Observable" class="headerlink" title="多播 Observable"></a>多播 Observable</h2><p>注意！在 RxJS 7 已经将多播 API 进行了调整！<a href="https://rxjs.dev/guide/subject#multicasted-observables" target="_blank" rel="noopener">文档</a>中的 <code>multicast</code> 操作符将不再适用。详情请查看 <a href="https://rxjs.dev/deprecations/multicasting" target="_blank" rel="noopener">这篇文档</a>。</p>
-<h3 id="connectable"><a href="#connectable" class="headerlink" title="connectable"></a>connectable</h3><p>可以通过 connectable 创建一个可以多播的 Observable：</p>
-<h2 id="BehaviorSubject"><a href="#BehaviorSubject" class="headerlink" title="BehaviorSubject"></a>BehaviorSubject</h2><p>他会保存发给消费者的最后一个值，并且当一个新的 Observer subscribe 的时候，他会从 <code>BehaviorSubject</code> 那里立即接收到这个值。</p>
-<blockquote>
-<p>BehaviorSubject 非常适合用于表示 “随着时间发出值”。比如表示 “生日” 事件的流是 Subject，但表示 “年龄” 的流是 BehaviourSubject。</p>
-</blockquote>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 这里 0 表示初始值</span></span><br><span class="line"><span class="keyword">const</span> subject = <span class="keyword">new</span> BehaviorSubject&lt;<span class="built_in">number</span>&gt;(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">subject.subscribe(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'subscribe1'</span>, res);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">subject.next(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'before'</span>);</span><br><span class="line">  subject.subscribe(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'subscribe2'</span>, res);</span><br><span class="line">  &#125;);</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'after'</span>);</span><br><span class="line">&#125;, <span class="number">1000</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Logs:</span></span><br><span class="line"><span class="comment">// subscribe1 0</span></span><br><span class="line"><span class="comment">// next!</span></span><br><span class="line"><span class="comment">// subscribe1 1</span></span><br><span class="line"><span class="comment">// before</span></span><br><span class="line"><span class="comment">// subscribe2 1</span></span><br><span class="line"><span class="comment">// after</span></span><br></pre></td></tr></table></figure>
-<h2 id="ReplaySubject"><a href="#ReplaySubject" class="headerlink" title="ReplaySubject"></a>ReplaySubject</h2><p>他跟 <code>BehaviorSubject</code> 很像，不同的是 <code>BehaviourSubject</code> 只会保存最后一个值，而 <code>ReplaySubject</code> 会保存很多个值。</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> subject = <span class="keyword">new</span> ReplaySubject(<span class="number">3</span>, <span class="number">500</span>); <span class="comment">// 会缓存 3 个最新的值，最久保存 500ms</span></span><br><span class="line"> </span><br><span class="line">subject.subscribe(&#123;</span><br><span class="line">  next: <span class="function">(<span class="params">v</span>) =&gt;</span> <span class="built_in">console</span>.log(<span class="string">`observerA: <span class="subst">$&#123;v&#125;</span>`</span>)</span><br><span class="line">&#125;);</span><br><span class="line"> </span><br><span class="line">subject.next(<span class="number">1</span>);</span><br><span class="line">subject.next(<span class="number">2</span>);</span><br><span class="line">subject.next(<span class="number">3</span>);</span><br><span class="line">subject.next(<span class="number">4</span>);</span><br><span class="line"> </span><br><span class="line">subject.subscribe(&#123;</span><br><span class="line">  next: <span class="function">(<span class="params">v</span>) =&gt;</span> <span class="built_in">console</span>.log(<span class="string">`observerB: <span class="subst">$&#123;v&#125;</span>`</span>)</span><br><span class="line">&#125;);</span><br><span class="line"> </span><br><span class="line">subject.next(<span class="number">5</span>);</span><br><span class="line"> </span><br><span class="line"><span class="comment">// Logs:</span></span><br><span class="line"><span class="comment">// observerA: 1</span></span><br><span class="line"><span class="comment">// observerA: 2</span></span><br><span class="line"><span class="comment">// observerA: 3</span></span><br><span class="line"><span class="comment">// observerA: 4</span></span><br><span class="line"><span class="comment">// observerB: 2</span></span><br><span class="line"><span class="comment">// observerB: 3</span></span><br><span class="line"><span class="comment">// observerB: 4</span></span><br><span class="line"><span class="comment">// observerA: 5</span></span><br><span class="line"><span class="comment">// observerB: 5</span></span><br></pre></td></tr></table></figure>
-<h2 id="AsyncSubject"><a href="#AsyncSubject" class="headerlink" title="AsyncSubject"></a>AsyncSubject</h2><p>当 Observable execution complete 的时候才会发出值，并且只会发出最后一个值——这跟 <code>last()</code> 操作符差不多。</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> subject = <span class="keyword">new</span> AsyncSubject();</span><br><span class="line"></span><br><span class="line">subject.subscribe(&#123;</span><br><span class="line">  next: <span class="function">(<span class="params">v</span>) =&gt;</span> <span class="built_in">console</span>.log(<span class="string">`observerA: <span class="subst">$&#123;v&#125;</span>`</span>)</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">subject.next(<span class="number">1</span>);</span><br><span class="line">subject.next(<span class="number">2</span>);</span><br><span class="line">subject.next(<span class="number">3</span>);</span><br><span class="line">subject.next(<span class="number">4</span>);</span><br><span class="line"></span><br><span class="line">subject.subscribe(&#123;</span><br><span class="line">  next: <span class="function">(<span class="params">v</span>) =&gt;</span> <span class="built_in">console</span>.log(<span class="string">`observerB: <span class="subst">$&#123;v&#125;</span>`</span>)</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">subject.next(<span class="number">5</span>);</span><br><span class="line">subject.complete();</span><br><span class="line"></span><br><span class="line"><span class="comment">// Logs:</span></span><br><span class="line"><span class="comment">// observerA: 5</span></span><br><span class="line"><span class="comment">// observerB: 5</span></span><br></pre></td></tr></table></figure>
-<h2 id="Void-Subject"><a href="#Void-Subject" class="headerlink" title="Void Subject"></a>Void Subject</h2><p>简单来说，Subject 可以发出空值：</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> subject = <span class="keyword">new</span> Subject&lt;<span class="built_in">void</span>&gt;();</span><br><span class="line">setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> subject.next(), <span class="number">1000</span>);</span><br></pre></td></tr></table></figure>
-<h1 id="Scheduler"><a href="#Scheduler" class="headerlink" title="Scheduler"></a>Scheduler</h1><p>Scheduler 可以控制 subscription 开始和发出值的时间：</p>
-<ul>
-<li><strong>Scheduler 是一个数据结构</strong>：他知道如何存储数据，并可以基于优先级来管理任务队列</li>
-<li><strong>Scheduler 是一个执行上下文</strong>：他代表了任务在何时、何地执行（比如立即、或在某个回调中）</li>
-<li><strong>Scheduler 有一个虚拟时钟</strong>：他提供了 <code>noew()</code> 函数来表示时间，由 Scheduler 管理的任务都依附于这个时间。</li>
-</ul>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; Observable, asyncScheduler &#125; <span class="keyword">from</span> <span class="string">'rxjs'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; observeOn &#125; <span class="keyword">from</span> <span class="string">'rxjs/operators'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 这里的 proxyObserver 实际上是由 observeOn(asyncScheduler) 根据 finalObserver 创建的</span></span><br><span class="line"><span class="keyword">const</span> observable = <span class="keyword">new</span> Observable(<span class="function">(<span class="params">proxyObserver</span>) =&gt;</span> &#123;</span><br><span class="line">  proxyObserver.next(<span class="number">1</span>);</span><br><span class="line">  proxyObserver.next(<span class="number">2</span>);</span><br><span class="line">  proxyObserver.next(<span class="number">3</span>);</span><br><span class="line">  proxyObserver.complete();</span><br><span class="line">&#125;).pipe(</span><br><span class="line">  observeOn(asyncScheduler)</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> finalObserver = &#123;</span><br><span class="line">  next(x) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'got value '</span> + x)</span><br><span class="line">  &#125;,</span><br><span class="line">  error(err) &#123;</span><br><span class="line">    <span class="built_in">console</span>.error(<span class="string">'something wrong occurred: '</span> + err);</span><br><span class="line">  &#125;,</span><br><span class="line">  complete() &#123;</span><br><span class="line">     <span class="built_in">console</span>.log(<span class="string">'done'</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'just before subscribe'</span>);</span><br><span class="line">observable.subscribe(finalObserver);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'just after subscribe'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// LOGS:</span></span><br><span class="line"><span class="comment">// just before subscribe</span></span><br><span class="line"><span class="comment">// just after subscribe</span></span><br><span class="line"><span class="comment">// got value 1</span></span><br><span class="line"><span class="comment">// got value 2</span></span><br><span class="line"><span class="comment">// got value 3</span></span><br><span class="line"><span class="comment">// done</span></span><br></pre></td></tr></table></figure>
-<p>一个 <code>observeOn(asyncScheduler)</code> 创建的 <code>proxyObserver</code> 可以近似理解为：</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> proxyObserver = &#123;</span><br><span class="line">  next(val) &#123;</span><br><span class="line">    asyncSheduler.shedule(</span><br><span class="line">      (x) =&gt; finalObserserver.next(x),</span><br><span class="line">      <span class="number">0</span>, <span class="comment">// 延迟</span></span><br><span class="line">      val, <span class="comment">// 会传给上面的 x</span></span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>异步的 Scheduler 是通过 <code>setTimeout</code> 或 <code>setInterval</code> 操作，因此就算延迟是 0，也是异步操作。</p>
-<h2 id="Scheduler-的类型"><a href="#Scheduler-的类型" class="headerlink" title="Scheduler 的类型"></a>Scheduler 的类型</h2><div class="table-container">
-<table>
-<thead>
-<tr>
-<th>SCHEDULER</th>
-<th>目的</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>null</td>
-<td>通知都是同步地、递归地发出的，用于正常时间的操作和尾递归</td>
-</tr>
-<tr>
-<td>queueScheduler</td>
-<td>以队列的形式在当前事件帧安排，用于迭代操作</td>
-</tr>
-<tr>
-<td>asapScheduler</td>
-<td>在同 promise 一样的微任务队列中安排，用于异步会话</td>
-</tr>
-<tr>
-<td>asyncScheduler</td>
-<td>使用 <code>setInterval</code>，用于基于时间的操作</td>
-</tr>
-<tr>
-<td>animationFrameScheduler</td>
-<td>任务会在浏览器下一次重绘（repaint）之前进行，用于创建流畅的浏览器动画</td>
-</tr>
-</tbody>
-</table>
-</div>
-<h2 id="使用-Scheduler"><a href="#使用-Scheduler" class="headerlink" title="使用 Scheduler"></a>使用 Scheduler</h2><p>以后用到再翻译，先看<a href="https://rxjs.dev/guide/scheduler" target="_blank" rel="noopener">文档</a></p>
 
     </div>
-
-    
-    
-    
-
-      <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/hais-notebook/tags/%E5%85%A5%E9%97%A8/" rel="tag"># 入门</a>
-          </div>
-
-        
-
-
-        
-    <div class="post-nav">
-      <div class="post-nav-item">
-    <a href="/hais-notebook/2021/05/13/Book-HowProgramWorks/" rel="prev" title="读书笔记：《程序是怎么跑起来的》">
-      <i class="fa fa-chevron-left"></i> 读书笔记：《程序是怎么跑起来的》
-    </a></div>
-      <div class="post-nav-item">
-    <a href="/hais-notebook/2021/05/14/Tools-RxJS-Trick/" rel="next" title="RxJS 小技巧">
-      RxJS 小技巧 <i class="fa fa-chevron-right"></i>
-    </a></div>
-    </div>
-      </footer>
-    
-  </article>
-  
-  
-  
-
   </div>
 
-
-          </div>
-          
-
-<script>
-  window.addEventListener('tabs:register', () => {
-    let activeClass = CONFIG.comments.activeClass;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
-      }
-    }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      let commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
-</script>
-
-        </div>
-          
+</div>
+        
   
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line toggle-line-first"></span>
-    <span class="toggle-line toggle-line-middle"></span>
-    <span class="toggle-line toggle-line-last"></span>
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
   </div>
 
   <aside class="sidebar">
-    <div class="sidebar-inner">
 
-      <ul class="sidebar-nav motion-element">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
         </li>
@@ -497,18 +142,19 @@
         </li>
       </ul>
 
-      <!--noindex-->
-      <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Observable"><span class="nav-number">1.</span> <span class="nav-text">Observable</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Pull-和-Push"><span class="nav-number">1.1.</span> <span class="nav-text">Pull 和 Push</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Pull"><span class="nav-number">1.1.1.</span> <span class="nav-text">Pull</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Push"><span class="nav-number">1.1.2.</span> <span class="nav-text">Push</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Observable-与函数"><span class="nav-number">1.2.</span> <span class="nav-text">Observable 与函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Observable-与函数的相同点"><span class="nav-number">1.2.1.</span> <span class="nav-text">Observable 与函数的相同点</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#懒执行"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">懒执行</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#每个-subscribing-都是独立的"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">每个 subscribing 都是独立的</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Observable-可同步可异步"><span class="nav-number">1.2.1.3.</span> <span class="nav-text">Observable 可同步可异步</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Observable-与函数的不同点"><span class="nav-number">1.2.2.</span> <span class="nav-text">Observable 与函数的不同点</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Observable-可以发出多个值"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">Observable 可以发出多个值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Observable-可以异步发出值"><span class="nav-number">1.2.2.2.</span> <span class="nav-text">Observable 可以异步发出值</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建-Observable：Creating"><span class="nav-number">1.3.</span> <span class="nav-text">创建 Observable：Creating</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#订阅-Observable：Subscribing"><span class="nav-number">1.4.</span> <span class="nav-text">订阅 Observable：Subscribing</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#执行-Observable：Executing"><span class="nav-number">1.5.</span> <span class="nav-text">执行 Observable：Executing</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#释放-Executions：Disposing-Executions"><span class="nav-number">1.6.</span> <span class="nav-text">释放 Executions：Disposing Executions</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Observer"><span class="nav-number">2.</span> <span class="nav-text">Observer</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Operators"><span class="nav-number">3.</span> <span class="nav-text">Operators</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#高阶-Observable"><span class="nav-number">3.1.</span> <span class="nav-text">高阶 Observable</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Subscription"><span class="nav-number">4.</span> <span class="nav-text">Subscription</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Subject"><span class="nav-number">5.</span> <span class="nav-text">Subject</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#多播-Observable"><span class="nav-number">5.1.</span> <span class="nav-text">多播 Observable</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#connectable"><span class="nav-number">5.1.1.</span> <span class="nav-text">connectable</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BehaviorSubject"><span class="nav-number">5.2.</span> <span class="nav-text">BehaviorSubject</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ReplaySubject"><span class="nav-number">5.3.</span> <span class="nav-text">ReplaySubject</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AsyncSubject"><span class="nav-number">5.4.</span> <span class="nav-text">AsyncSubject</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Void-Subject"><span class="nav-number">5.5.</span> <span class="nav-text">Void Subject</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Scheduler"><span class="nav-number">6.</span> <span class="nav-text">Scheduler</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Scheduler-的类型"><span class="nav-number">6.1.</span> <span class="nav-text">Scheduler 的类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用-Scheduler"><span class="nav-number">6.2.</span> <span class="nav-text">使用 Scheduler</span></a></li></ol></li></ol></div>
-      </div>
-      <!--/noindex-->
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#observable"><span class="nav-number">1.</span> <span class="nav-text">Observable</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#pull-%E5%92%8C-push"><span class="nav-number">1.1.</span> <span class="nav-text">Pull 和 Push</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#pull"><span class="nav-number">1.1.1.</span> <span class="nav-text">Pull</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#push"><span class="nav-number">1.1.2.</span> <span class="nav-text">Push</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#observable-%E4%B8%8E%E5%87%BD%E6%95%B0"><span class="nav-number">1.2.</span> <span class="nav-text">Observable 与函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#observable-%E4%B8%8E%E5%87%BD%E6%95%B0%E7%9A%84%E7%9B%B8%E5%90%8C%E7%82%B9"><span class="nav-number">1.2.1.</span> <span class="nav-text">Observable 与函数的相同点</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%87%92%E6%89%A7%E8%A1%8C"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">懒执行</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AF%8F%E4%B8%AA-subscribing-%E9%83%BD%E6%98%AF%E7%8B%AC%E7%AB%8B%E7%9A%84"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">每个 subscribing 都是独立的</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#observable-%E5%8F%AF%E5%90%8C%E6%AD%A5%E5%8F%AF%E5%BC%82%E6%AD%A5"><span class="nav-number">1.2.1.3.</span> <span class="nav-text">Observable 可同步可异步</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#observable-%E4%B8%8E%E5%87%BD%E6%95%B0%E7%9A%84%E4%B8%8D%E5%90%8C%E7%82%B9"><span class="nav-number">1.2.2.</span> <span class="nav-text">Observable 与函数的不同点</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#observable-%E5%8F%AF%E4%BB%A5%E5%8F%91%E5%87%BA%E5%A4%9A%E4%B8%AA%E5%80%BC"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">Observable 可以发出多个值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#observable-%E5%8F%AF%E4%BB%A5%E5%BC%82%E6%AD%A5%E5%8F%91%E5%87%BA%E5%80%BC"><span class="nav-number">1.2.2.2.</span> <span class="nav-text">Observable 可以异步发出值</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-observablecreating"><span class="nav-number">1.3.</span> <span class="nav-text">创建 Observable：Creating</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A2%E9%98%85-observablesubscribing"><span class="nav-number">1.4.</span> <span class="nav-text">订阅 Observable：Subscribing</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C-observableexecuting"><span class="nav-number">1.5.</span> <span class="nav-text">执行 Observable：Executing</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8A%E6%94%BE-executionsdisposing-executions"><span class="nav-number">1.6.</span> <span class="nav-text">释放 Executions：Disposing Executions</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#observer"><span class="nav-number">2.</span> <span class="nav-text">Observer</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#operators"><span class="nav-number">3.</span> <span class="nav-text">Operators</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%AB%98%E9%98%B6-observable"><span class="nav-number">3.1.</span> <span class="nav-text">高阶 Observable</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#subscription"><span class="nav-number">4.</span> <span class="nav-text">Subscription</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#subject"><span class="nav-number">5.</span> <span class="nav-text">Subject</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E6%92%AD-observable"><span class="nav-number">5.1.</span> <span class="nav-text">多播 Observable</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#connectable"><span class="nav-number">5.1.1.</span> <span class="nav-text">connectable</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#behaviorsubject"><span class="nav-number">5.2.</span> <span class="nav-text">BehaviorSubject</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#replaysubject"><span class="nav-number">5.3.</span> <span class="nav-text">ReplaySubject</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#asyncsubject"><span class="nav-number">5.4.</span> <span class="nav-text">AsyncSubject</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#void-subject"><span class="nav-number">5.5.</span> <span class="nav-text">Void Subject</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#scheduler"><span class="nav-number">6.</span> <span class="nav-text">Scheduler</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#scheduler-%E7%9A%84%E7%B1%BB%E5%9E%8B"><span class="nav-number">6.1.</span> <span class="nav-text">Scheduler 的类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-scheduler"><span class="nav-number">6.2.</span> <span class="nav-text">使用 Scheduler</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
 
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
   <p class="site-author-name" itemprop="name">Harvey Zhang</p>
   <div class="site-description" itemprop="description">小海的笔记本</div>
 </div>
-<div class="site-state-wrap motion-element">
+<div class="site-state-wrap site-overview-item animated">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/hais-notebook/archives/">
@@ -534,62 +180,316 @@
 
 
 
+        </div>
       </div>
-
     </div>
   </aside>
-  <div id="sidebar-dimmer"></div>
+  <div class="sidebar-dimmer"></div>
 
 
-      </div>
-    </main>
+    </header>
 
-    <footer class="footer">
-      <div class="footer-inner">
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2021/05/13/Tools-RxJS-Overview/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
+      <meta itemprop="name" content="Harvey Zhang">
+      <meta itemprop="description" content="小海的笔记本">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hais Notebook">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          RxJS Overview
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-05-13 14:39:12" itemprop="dateCreated datePublished" datetime="2021-05-13T14:39:12+00:00">2021-05-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index"><span itemprop="name">工具</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E5%B7%A5%E5%85%B7/RxJS/" itemprop="url" rel="index"><span itemprop="name">RxJS</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>One Core Type: Observable. Satellite Types: Observer, Schedulers, Subjects. Operators: map, filter, reduce, every, etc.</p>
+<span id="more"></span>
+<h1 id="observable">Observable</h1>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th>SINGLE</th>
+<th>MULTIPLE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Pull</td>
+<td>Function</td>
+<td>Iterator</td>
+</tr>
+<tr class="even">
+<td>Push</td>
+<td>Promise</td>
+<td>Observable</td>
+</tr>
+</tbody>
+</table>
+<p>一个例子：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; Observable &#125; <span class="keyword">from</span> <span class="string">&#x27;rxjs&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> observable = <span class="keyword">new</span> Observable(<span class="function"><span class="params">subscriber</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// 注意：当 subscribed 的时候，Observable push 1, 2, 3 的过程是同步执行的！ </span></span><br><span class="line">  subscriber.next(<span class="number">1</span>);</span><br><span class="line">  subscriber.next(<span class="number">2</span>);</span><br><span class="line">  subscriber.next(<span class="number">3</span>);</span><br><span class="line">  <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    subscriber.next(<span class="number">4</span>);</span><br><span class="line">    subscriber.complete();</span><br><span class="line">  &#125;, <span class="number">1000</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">&#x27;just before subscribe&#x27;</span>);</span><br><span class="line">observable.subscribe(&#123;</span><br><span class="line">  <span class="function"><span class="title">next</span>(<span class="params">x</span>)</span> &#123; <span class="built_in">console</span>.log(<span class="string">&#x27;got value &#x27;</span> + x); &#125;,</span><br><span class="line">  <span class="function"><span class="title">error</span>(<span class="params">err</span>)</span> &#123; <span class="built_in">console</span>.error(<span class="string">&#x27;something wrong occurred: &#x27;</span> + err); &#125;,</span><br><span class="line">  <span class="function"><span class="title">complete</span>(<span class="params"></span>)</span> &#123; <span class="built_in">console</span>.log(<span class="string">&#x27;done&#x27;</span>); &#125;</span><br><span class="line">&#125;);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">&#x27;just after subscribe&#x27;</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">just before subscribe</span><br><span class="line">got value 1</span><br><span class="line">got value 2</span><br><span class="line">got value 3</span><br><span class="line">just after subscribe</span><br><span class="line">got value 4</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+<h2 id="pull-和-push">Pull 和 Push</h2>
+<p>在描述 <strong>数据生产者(Producer)</strong> 和 <strong>数据消费者(Consumer)</strong> 之间的沟通时，有 <strong>Pull</strong> 和 <strong>Push</strong> 两种不同的方案。</p>
+<h3 id="pull">Pull</h3>
+<p>消费者决定了何时从生产者那里拿数据。</p>
+<p>比如每个 JS 函数就是一个 Pull System：函数是数据的生产者，调用函数的地方从函数那里 pull <strong>一个</strong> 返回值。 ES6 引入的 generator 函数和迭代器也是一种 Pull System：消费者调用 <code>iterator.next()</code>，从迭代器那里 pull <strong>多个</strong> 值。</p>
+<h3 id="push">Push</h3>
+<p>生产者决定了何时发送数据给消费者。</p>
+<p>比如 Promise(生产者) 给 回调函数(消费者) 传输数据，Promise 掌控了 push 数据的时机。 Observable(生产者) 给 Observer(消费者) 传输数据。</p>
+<h2 id="observable-与函数">Observable 与函数</h2>
+<blockquote class="blockquote-center">
+<p>function.call() 表示 <em>同步地给我一个值</em> observable.subscribe() 表示 <em>同步或异步地给我一堆值</em></p>
+
+</blockquote>
+<h3 id="observable-与函数的相同点">Observable 与函数的相同点</h3>
+<h4 id="懒执行">懒执行</h4>
+<p>如果不 call Function，那么函数就不会执行； 如果不 subscribe Observable，那么 Observable 中注册的回调函数也不会执行。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;Hello&#x27;</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">42</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> x = foo.call();</span><br><span class="line"><span class="built_in">console</span>.log(x);</span><br><span class="line"><span class="keyword">const</span> y = foo.call();</span><br><span class="line"><span class="built_in">console</span>.log(y);</span><br></pre></td></tr></table></figure>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> foo = <span class="keyword">new</span> Observable(<span class="function"><span class="params">subscriber</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;Hello&#x27;</span>);</span><br><span class="line">  subscriber.next(<span class="number">42</span>);</span><br><span class="line">&#125;);</span><br><span class="line"> </span><br><span class="line">foo.subscribe(<span class="function"><span class="params">x</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(x);</span><br><span class="line">&#125;);</span><br><span class="line">foo.subscribe(<span class="function"><span class="params">y</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(y);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>运行上面两段代码的结果是一样的：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&quot;Hello&quot;</span><br><span class="line">42</span><br><span class="line">&quot;Hello&quot;</span><br><span class="line">42</span><br></pre></td></tr></table></figure>
+<h4 id="每个-subscribing-都是独立的">每个 subscribing 都是独立的</h4>
+<p>就像每次 Function calling 都是独立的一样，每次 Observable subscribing 也是独立的，他们之间的副作用互不干扰——这与 EventEmitter 不同。</p>
+<h4 id="observable-可同步可异步">Observable 可同步可异步</h4>
+<p>Observable 并不是都是异步的，如果没有引入其他异步数据源，他其实是同步的，这跟 Function 也是类似的。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">&#x27;before&#x27;</span>);</span><br><span class="line"><span class="built_in">console</span>.log(foo.call());</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">&#x27;after&#x27;</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">&#x27;before&#x27;</span>);</span><br><span class="line">foo.subscribe(<span class="function"><span class="params">x</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(x);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">&#x27;after&#x27;</span>);</span><br></pre></td></tr></table></figure>
+<p>以上两段代码运行的结果也是一样的：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&quot;before&quot;</span><br><span class="line">&quot;Hello&quot;</span><br><span class="line">42</span><br><span class="line">&quot;after&quot;</span><br></pre></td></tr></table></figure>
+<h3 id="observable-与函数的不同点">Observable 与函数的不同点</h3>
+<h4 id="observable-可以发出多个值">Observable 可以发出多个值</h4>
+<p>在函数中，我们不能这样写：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;Hello&#x27;</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">42</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">100</span>; <span class="comment">// dead code. will never happen</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>但是在 Observable 却可以这样写：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> foo = <span class="keyword">new</span> Observable(<span class="function"><span class="params">subscriber</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;Hello&#x27;</span>);</span><br><span class="line">  subscriber.next(<span class="number">42</span>);</span><br><span class="line">  subscriber.next(<span class="number">100</span>); <span class="comment">// &quot;return&quot; another value</span></span><br><span class="line">  subscriber.next(<span class="number">200</span>); <span class="comment">// &quot;return&quot; yet another</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">&#x27;before&#x27;</span>);</span><br><span class="line">foo.subscribe(<span class="function"><span class="params">x</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(x);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">&#x27;after&#x27;</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&quot;before&quot;</span><br><span class="line">&quot;Hello&quot;</span><br><span class="line">42</span><br><span class="line">100</span><br><span class="line">200</span><br><span class="line">&quot;after&quot;</span><br></pre></td></tr></table></figure>
+<h4 id="observable-可以异步发出值">Observable 可以异步发出值</h4>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> foo = <span class="keyword">new</span> Observable(<span class="function"><span class="params">subscriber</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;Hello&#x27;</span>);</span><br><span class="line">  subscriber.next(<span class="number">42</span>);</span><br><span class="line">  subscriber.next(<span class="number">100</span>);</span><br><span class="line">  subscriber.next(<span class="number">200</span>);</span><br><span class="line">  <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    subscriber.next(<span class="number">300</span>); <span class="comment">// happens asynchronously</span></span><br><span class="line">  &#125;, <span class="number">1000</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">&#x27;before&#x27;</span>);</span><br><span class="line">foo.subscribe(<span class="function"><span class="params">x</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(x);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">&#x27;after&#x27;</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&quot;before&quot;</span><br><span class="line">&quot;Hello&quot;</span><br><span class="line">42</span><br><span class="line">100</span><br><span class="line">200</span><br><span class="line">&quot;after&quot;</span><br><span class="line">300</span><br></pre></td></tr></table></figure>
+<h2 id="创建-observablecreating">创建 Observable：Creating</h2>
+<p>Observable 构造函数只需要一个参数：subscribe 函数</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建一个 Observable，他会给一个 subscriber 每秒钟都发出 &quot;hi&quot;</span></span><br><span class="line"><span class="keyword">const</span> observable = <span class="keyword">new</span> Observable(<span class="function"><span class="keyword">function</span> <span class="title">subscribe</span>(<span class="params">subscriber</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> id = <span class="built_in">setInterval</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    subscriber.next(<span class="string">&#x27;hi&#x27;</span>)</span><br><span class="line">  &#125;, <span class="number">1000</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="订阅-observablesubscribing">订阅 Observable：Subscribing</h2>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">observable.subscribe(<span class="function"><span class="params">x</span> =&gt;</span> <span class="built_in">console</span>.log(x));</span><br></pre></td></tr></table></figure>
+<p>当调用 <code>observable.subscribe</code> 的时候，subscribe 函数会用给定的 subscriber 运行，并且每次调用都是独立的。 与 <code>addEventListener</code> 这种 API 不一样，Observer 并没有注册为一个 listener，Observable 里面也没有维护 Observer 的列表。</p>
+<h2 id="执行-observableexecuting">执行 Observable：Executing</h2>
+<p>在 <code>new Observable(function subscribe(subscriber) &#123;...&#125;)</code> 中的代码表示一个 Observable execution。</p>
+<p>Observable Execution 可以发出三种类型的值： - "Next" 通知：会伴随一个 Number、String、Object 等类型的值 - "Error" 通知：会伴随一个 JS Error 或者异常 - "Complete" 通知：不会伴随任何值</p>
+<p>通常来说，Execution 会随着时间通过 Next 通知发出多个值。但当发出 Error 或者 Complete 通知之后，就不会再发出值了。</p>
+<h2 id="释放-executionsdisposing-executions">释放 Executions：Disposing Executions</h2>
+<p>当调用 <code>observable.subscribe</code> 之后，Observer 会跟一个新创建的 Observable execution 绑定。并且返回一个 <code>Subscription</code>：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> subscription = observable.subscribe(<span class="function"><span class="params">x</span> =&gt;</span> <span class="built_in">console</span>.log(x));</span><br></pre></td></tr></table></figure>
+<p>Subscription 就代表了正在执行的 execution。 - 可以通过 <code>subscription.unsubscribe()</code> 来取消正在执行的 execution。 - Complete 或 Error 也会取消 execution。</p>
+<p>我们有时候需要自定义一个 <code>unsubscribe</code> 函数来在取消 execution 的时候释放资源。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> observable = <span class="keyword">new</span> Observable(<span class="function"><span class="keyword">function</span> <span class="title">subscribe</span>(<span class="params">subscriber</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> intervalId = <span class="built_in">setInterval</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    subscriber.next(<span class="string">&#x27;hi&#x27;</span>);</span><br><span class="line">  &#125;, <span class="number">1000</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 这个函数会在 unsubscribe 的时候执行，清除掉 interval</span></span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> <span class="title">unsubscribe</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">clearInterval</span>(intervalId);</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h1 id="observer">Observer</h1>
+<p>Observer 是 Observable 发出数据的消费者，其实就是一个对象，对象包含了三个分别用于处理 Observable 三种通知类型的回调函数。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> observer = &#123;</span><br><span class="line">  <span class="attr">next</span>: <span class="function"><span class="params">x</span> =&gt;</span> <span class="built_in">console</span>.log(<span class="string">&#x27;Observer got a next value: &#x27;</span> + x),</span><br><span class="line">  <span class="attr">error</span>: <span class="function"><span class="params">err</span> =&gt;</span> <span class="built_in">console</span>.error(<span class="string">&#x27;Observer got an error: &#x27;</span> + err),</span><br><span class="line">  <span class="attr">complete</span>: <span class="function">() =&gt;</span> <span class="built_in">console</span>.log(<span class="string">&#x27;Observer got a complete notification&#x27;</span>),</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">observable.subscribe(observer)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 当然也可以直接将回调函数作为参数传进去，他会自动帮我们创建 Observer 对象</span></span><br><span class="line">observable.subscribe(<span class="function">() =&gt;</span> <span class="built_in">console</span>.log(<span class="string">&#x27;Observer got a next value: &#x27;</span> + x))</span><br></pre></td></tr></table></figure>
+<h1 id="operators">Operators</h1>
+<p>Operator 就是函数。有两种类型的 Operator： - Pipeable Operator：不会改变原来的 Observable 实例，他接受一个 Observable 作为参数，然后再返回一个 Observable - Creation Operator：会创建一个新的 Observable</p>
+<h2 id="高阶-observable">高阶 Observable</h2>
+<p>可以这样构造一个高阶 Observable，用 map 返回一个 Observable：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> clicks = fromEvent(<span class="built_in">document</span>, <span class="string">&#x27;click&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> higherOrder = clicks.pipe(map(<span class="function"><span class="params">ev</span> =&gt;</span> <span class="keyword">of</span>(ev)));</span><br></pre></td></tr></table></figure>
+<p>这时候就需要用例如 concatAll 等操作符将其拍平。</p>
+<h1 id="subscription">Subscription</h1>
+<p>Subscription 通常是一个 Observable 的 Execution，主要是用来调用释放资源 API <code>unsubscribe</code>。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> subscription = interval(<span class="number">400</span>).subscribe(<span class="function"><span class="params">x</span> =&gt;</span> <span class="built_in">console</span>.log(<span class="string">&#x27;first: &#x27;</span> + x));</span><br><span class="line"><span class="keyword">const</span> childSubscription = interval(<span class="number">300</span>).subscribe(<span class="function"><span class="params">x</span> =&gt;</span> <span class="built_in">console</span>.log(<span class="string">&#x27;second: &#x27;</span> + x));</span><br><span class="line"></span><br><span class="line">subscription.add(childSubscription);</span><br><span class="line"></span><br><span class="line"><span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// 同时 unsubscribe subcription 和 childSubscription</span></span><br><span class="line">  subscription.unsubscribe();</span><br><span class="line">&#125;, <span class="number">1000</span>);</span><br></pre></td></tr></table></figure>
+<h1 id="subject">Subject</h1>
+<p>Subject 是一种特殊的 Observable，他可以向多个 Observer 以多播的形式发出值——而普通的 Observable 是单播，每个订阅的 Observer 对这个 Observable 都有自己独立的 Execution。</p>
+<ul>
+<li><strong>每个 Subject 都是 Observable</strong>。你可以 <code>subscribe</code> 一个 Subject。对于 Subject 来说，<code>subscribe</code> 并不会产生一个新的 Execution，他会将这个 Observer 注册到一个 ObserverList，就像 <code>addListner</code> 一样</li>
+<li><strong>每个 Subject 都是 Observer</strong>。他有 <code>next()</code> <code>error()</code> <code>complete()</code> 方法。只需要调用 <code>next()</code>，就会广播给所有已经注册了的 Observer。</li>
+</ul>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> subject = <span class="keyword">new</span> Subject&lt;<span class="built_in">number</span>&gt;();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 每个 Subject 都是 Observable：可以 subscribe 他</span></span><br><span class="line">subject.subscribe(&#123;</span><br><span class="line">  <span class="attr">next</span>: <span class="function">(<span class="params">v</span>) =&gt;</span> <span class="built_in">console</span>.log(<span class="string">`observerA: <span class="subst">$&#123;v&#125;</span>`</span>)</span><br><span class="line">&#125;);</span><br><span class="line">subject.subscribe(&#123;</span><br><span class="line">  <span class="attr">next</span>: <span class="function">(<span class="params">v</span>) =&gt;</span> <span class="built_in">console</span>.log(<span class="string">`observerB: <span class="subst">$&#123;v&#125;</span>`</span>)</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 每个 Subject 都是 Observer：调用他的 next() 方法，就会广播给所有已经注册的 Observer</span></span><br><span class="line">subject.next(<span class="number">1</span>);</span><br><span class="line">subject.next(<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Logs:</span></span><br><span class="line"><span class="comment">// observerA: 1</span></span><br><span class="line"><span class="comment">// observerB: 1</span></span><br><span class="line"><span class="comment">// observerA: 2</span></span><br><span class="line"><span class="comment">// observerB: 2</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 每个 Subject 都是 Observer：可以把他传给 subscribe 函数</span></span><br><span class="line"><span class="keyword">from</span>([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]).subscribe(subject);</span><br><span class="line"> </span><br><span class="line"><span class="comment">// Logs:</span></span><br><span class="line"><span class="comment">// observerA: 1</span></span><br><span class="line"><span class="comment">// observerB: 1</span></span><br><span class="line"><span class="comment">// observerA: 2</span></span><br><span class="line"><span class="comment">// observerB: 2</span></span><br><span class="line"><span class="comment">// observerA: 3</span></span><br><span class="line"><span class="comment">// observerB: 3</span></span><br></pre></td></tr></table></figure>
+<h2 id="多播-observable">多播 Observable</h2>
+<p>注意！在 RxJS 7 已经将多播 API 进行了调整！<a target="_blank" rel="noopener" href="https://rxjs.dev/guide/subject#multicasted-observables">文档</a>中的 <code>multicast</code> 操作符将不再适用。详情请查看 <a target="_blank" rel="noopener" href="https://rxjs.dev/deprecations/multicasting">这篇文档</a>。</p>
+<h3 id="connectable">connectable</h3>
+<p>可以通过 connectable 创建一个可以多播的 Observable：</p>
+<h2 id="behaviorsubject">BehaviorSubject</h2>
+<p>他会保存发给消费者的最后一个值，并且当一个新的 Observer subscribe 的时候，他会从 <code>BehaviorSubject</code> 那里立即接收到这个值。</p>
+<blockquote>
+<p>BehaviorSubject 非常适合用于表示 “随着时间发出值”。比如表示 “生日” 事件的流是 Subject，但表示 “年龄” 的流是 BehaviourSubject。</p>
+</blockquote>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 这里 0 表示初始值</span></span><br><span class="line"><span class="keyword">const</span> subject = <span class="keyword">new</span> BehaviorSubject&lt;<span class="built_in">number</span>&gt;(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">subject.subscribe(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;subscribe1&#x27;</span>, res);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">subject.next(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;before&#x27;</span>);</span><br><span class="line">  subject.subscribe(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&#x27;subscribe2&#x27;</span>, res);</span><br><span class="line">  &#125;);</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;after&#x27;</span>);</span><br><span class="line">&#125;, <span class="number">1000</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Logs:</span></span><br><span class="line"><span class="comment">// subscribe1 0</span></span><br><span class="line"><span class="comment">// next!</span></span><br><span class="line"><span class="comment">// subscribe1 1</span></span><br><span class="line"><span class="comment">// before</span></span><br><span class="line"><span class="comment">// subscribe2 1</span></span><br><span class="line"><span class="comment">// after</span></span><br></pre></td></tr></table></figure>
+<h2 id="replaysubject">ReplaySubject</h2>
+<p>他跟 <code>BehaviorSubject</code> 很像，不同的是 <code>BehaviourSubject</code> 只会保存最后一个值，而 <code>ReplaySubject</code> 会保存很多个值。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> subject = <span class="keyword">new</span> ReplaySubject(<span class="number">3</span>, <span class="number">500</span>); <span class="comment">// 会缓存 3 个最新的值，最久保存 500ms</span></span><br><span class="line"> </span><br><span class="line">subject.subscribe(&#123;</span><br><span class="line">  <span class="attr">next</span>: <span class="function">(<span class="params">v</span>) =&gt;</span> <span class="built_in">console</span>.log(<span class="string">`observerA: <span class="subst">$&#123;v&#125;</span>`</span>)</span><br><span class="line">&#125;);</span><br><span class="line"> </span><br><span class="line">subject.next(<span class="number">1</span>);</span><br><span class="line">subject.next(<span class="number">2</span>);</span><br><span class="line">subject.next(<span class="number">3</span>);</span><br><span class="line">subject.next(<span class="number">4</span>);</span><br><span class="line"> </span><br><span class="line">subject.subscribe(&#123;</span><br><span class="line">  <span class="attr">next</span>: <span class="function">(<span class="params">v</span>) =&gt;</span> <span class="built_in">console</span>.log(<span class="string">`observerB: <span class="subst">$&#123;v&#125;</span>`</span>)</span><br><span class="line">&#125;);</span><br><span class="line"> </span><br><span class="line">subject.next(<span class="number">5</span>);</span><br><span class="line"> </span><br><span class="line"><span class="comment">// Logs:</span></span><br><span class="line"><span class="comment">// observerA: 1</span></span><br><span class="line"><span class="comment">// observerA: 2</span></span><br><span class="line"><span class="comment">// observerA: 3</span></span><br><span class="line"><span class="comment">// observerA: 4</span></span><br><span class="line"><span class="comment">// observerB: 2</span></span><br><span class="line"><span class="comment">// observerB: 3</span></span><br><span class="line"><span class="comment">// observerB: 4</span></span><br><span class="line"><span class="comment">// observerA: 5</span></span><br><span class="line"><span class="comment">// observerB: 5</span></span><br></pre></td></tr></table></figure>
+<h2 id="asyncsubject">AsyncSubject</h2>
+<p>当 Observable execution complete 的时候才会发出值，并且只会发出最后一个值——这跟 <code>last()</code> 操作符差不多。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> subject = <span class="keyword">new</span> AsyncSubject();</span><br><span class="line"></span><br><span class="line">subject.subscribe(&#123;</span><br><span class="line">  <span class="attr">next</span>: <span class="function">(<span class="params">v</span>) =&gt;</span> <span class="built_in">console</span>.log(<span class="string">`observerA: <span class="subst">$&#123;v&#125;</span>`</span>)</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">subject.next(<span class="number">1</span>);</span><br><span class="line">subject.next(<span class="number">2</span>);</span><br><span class="line">subject.next(<span class="number">3</span>);</span><br><span class="line">subject.next(<span class="number">4</span>);</span><br><span class="line"></span><br><span class="line">subject.subscribe(&#123;</span><br><span class="line">  <span class="attr">next</span>: <span class="function">(<span class="params">v</span>) =&gt;</span> <span class="built_in">console</span>.log(<span class="string">`observerB: <span class="subst">$&#123;v&#125;</span>`</span>)</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">subject.next(<span class="number">5</span>);</span><br><span class="line">subject.complete();</span><br><span class="line"></span><br><span class="line"><span class="comment">// Logs:</span></span><br><span class="line"><span class="comment">// observerA: 5</span></span><br><span class="line"><span class="comment">// observerB: 5</span></span><br></pre></td></tr></table></figure>
+<h2 id="void-subject">Void Subject</h2>
+<p>简单来说，Subject 可以发出空值：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> subject = <span class="keyword">new</span> Subject&lt;<span class="built_in">void</span>&gt;();</span><br><span class="line"><span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> subject.next(), <span class="number">1000</span>);</span><br></pre></td></tr></table></figure>
+<h1 id="scheduler">Scheduler</h1>
+<p>Scheduler 可以控制 subscription 开始和发出值的时间：</p>
+<ul>
+<li><strong>Scheduler 是一个数据结构</strong>：他知道如何存储数据，并可以基于优先级来管理任务队列</li>
+<li><strong>Scheduler 是一个执行上下文</strong>：他代表了任务在何时、何地执行（比如立即、或在某个回调中）</li>
+<li><strong>Scheduler 有一个虚拟时钟</strong>：他提供了 <code>noew()</code> 函数来表示时间，由 Scheduler 管理的任务都依附于这个时间。</li>
+</ul>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; Observable, asyncScheduler &#125; <span class="keyword">from</span> <span class="string">&#x27;rxjs&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; observeOn &#125; <span class="keyword">from</span> <span class="string">&#x27;rxjs/operators&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 这里的 proxyObserver 实际上是由 observeOn(asyncScheduler) 根据 finalObserver 创建的</span></span><br><span class="line"><span class="keyword">const</span> observable = <span class="keyword">new</span> Observable(<span class="function">(<span class="params">proxyObserver</span>) =&gt;</span> &#123;</span><br><span class="line">  proxyObserver.next(<span class="number">1</span>);</span><br><span class="line">  proxyObserver.next(<span class="number">2</span>);</span><br><span class="line">  proxyObserver.next(<span class="number">3</span>);</span><br><span class="line">  proxyObserver.complete();</span><br><span class="line">&#125;).pipe(</span><br><span class="line">  observeOn(asyncScheduler)</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> finalObserver = &#123;</span><br><span class="line">  <span class="function"><span class="title">next</span>(<span class="params">x</span>)</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&#x27;got value &#x27;</span> + x)</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="function"><span class="title">error</span>(<span class="params">err</span>)</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.error(<span class="string">&#x27;something wrong occurred: &#x27;</span> + err);</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="function"><span class="title">complete</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">     <span class="built_in">console</span>.log(<span class="string">&#x27;done&#x27;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">&#x27;just before subscribe&#x27;</span>);</span><br><span class="line">observable.subscribe(finalObserver);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">&#x27;just after subscribe&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// LOGS:</span></span><br><span class="line"><span class="comment">// just before subscribe</span></span><br><span class="line"><span class="comment">// just after subscribe</span></span><br><span class="line"><span class="comment">// got value 1</span></span><br><span class="line"><span class="comment">// got value 2</span></span><br><span class="line"><span class="comment">// got value 3</span></span><br><span class="line"><span class="comment">// done</span></span><br></pre></td></tr></table></figure>
+<p>一个 <code>observeOn(asyncScheduler)</code> 创建的 <code>proxyObserver</code> 可以近似理解为：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> proxyObserver = &#123;</span><br><span class="line">  <span class="function"><span class="title">next</span>(<span class="params">val</span>)</span> &#123;</span><br><span class="line">    asyncSheduler.shedule(</span><br><span class="line">      <span class="function">(<span class="params">x</span>) =&gt;</span> finalObserserver.next(x),</span><br><span class="line">      <span class="number">0</span>, <span class="comment">// 延迟</span></span><br><span class="line">      val, <span class="comment">// 会传给上面的 x</span></span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>异步的 Scheduler 是通过 <code>setTimeout</code> 或 <code>setInterval</code> 操作，因此就算延迟是 0，也是异步操作。</p>
+<h2 id="scheduler-的类型">Scheduler 的类型</h2>
+<table>
+<thead>
+<tr class="header">
+<th>SCHEDULER</th>
+<th>目的</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>null</td>
+<td>通知都是同步地、递归地发出的，用于正常时间的操作和尾递归</td>
+</tr>
+<tr class="even">
+<td>queueScheduler</td>
+<td>以队列的形式在当前事件帧安排，用于迭代操作</td>
+</tr>
+<tr class="odd">
+<td>asapScheduler</td>
+<td>在同 promise 一样的微任务队列中安排，用于异步会话</td>
+</tr>
+<tr class="even">
+<td>asyncScheduler</td>
+<td>使用 <code>setInterval</code>，用于基于时间的操作</td>
+</tr>
+<tr class="odd">
+<td>animationFrameScheduler</td>
+<td>任务会在浏览器下一次重绘（repaint）之前进行，用于创建流畅的浏览器动画</td>
+</tr>
+</tbody>
+</table>
+<h2 id="使用-scheduler">使用 Scheduler</h2>
+<p>以后用到再翻译，先看<a target="_blank" rel="noopener" href="https://rxjs.dev/guide/scheduler">文档</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/hais-notebook/tags/%E5%85%A5%E9%97%A8/" rel="tag"># 入门</a>
+          </div>
+
         
 
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2021/05/13/Book-HowProgramWorks/" rel="prev" title="读书笔记：《程序是怎么跑起来的》">
+                  <i class="fa fa-chevron-left"></i> 读书笔记：《程序是怎么跑起来的》
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2021/05/14/Tools-RxJS-Trick/" rel="next" title="RxJS 小技巧">
+                  RxJS 小技巧 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/hais-notebook/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
 <div class="copyright">
-  
   &copy; 
   <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Harvey Zhang</span>
 </div>
-  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
-  </div>
-  <span class="post-meta-divider">|</span>
-  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.0
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>
 
-        
-
-
-
-
-
-
-
-
-      </div>
-    </footer>
-  </div>
+    </div>
+  </footer>
 
   
-  <script src="/hais-notebook/lib/anime.min.js"></script>
-  <script src="/hais-notebook/lib/velocity/velocity.min.js"></script>
-  <script src="/hais-notebook/lib/velocity/velocity.ui.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/hais-notebook/js/utils.js"></script><script src="/hais-notebook/js/next-boot.js"></script>
 
-<script src="/hais-notebook/js/utils.js"></script>
-
-<script src="/hais-notebook/js/motion.js"></script>
+  
+<script src="/hais-notebook/js/third-party/search/local-search.js"></script>
 
 
-<script src="/hais-notebook/js/schemes/pisces.js"></script>
-
-
-<script src="/hais-notebook/js/next-boot.js"></script>
 
 
 
@@ -600,25 +500,11 @@
 
 
   
-<script src="/hais-notebook/js/local-search.js"></script>
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{&quot;enable&quot;:true,&quot;tags&quot;:&quot;none&quot;,&quot;js&quot;:{&quot;url&quot;:&quot;https:&#x2F;&#x2F;cdn.jsdelivr.net&#x2F;npm&#x2F;mathjax@3.1.4&#x2F;es5&#x2F;tex-mml-chtml.js&quot;,&quot;integrity&quot;:&quot;sha256-ncNI9OXOS5Ek4tzVYiOMmN&#x2F;KKCPZ6V0Cpv2P&#x2F;zHntiA&#x3D;&quot;}}</script>
+<script src="/hais-notebook/js/third-party/math/mathjax.js"></script>
 
 
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  
-
-  
 
 </body>
 </html>
