@@ -26,14 +26,14 @@
 <meta property="og:site_name" content="Hais Notebook">
 <meta property="og:description" content="翻译文章 Angular Change Detection - How Does It Really Work? 。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://blog.angular-university.io/how-does-angular-2-change-detection-really-work/">
+<meta property="og:image" content="https://raw.githubusercontent.com/jhades/blog.angular-university.io/master/ng2-change-detection/images/change.jpg">
 <meta property="article:published_time" content="2021-05-17T18:56:06.000Z">
 <meta property="article:modified_time" content="2021-05-17T18:56:06.000Z">
 <meta property="article:author" content="Harvey Zhang">
 <meta property="article:tag" content="入门">
 <meta property="article:tag" content="文档">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://blog.angular-university.io/how-does-angular-2-change-detection-really-work/">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/jhades/blog.angular-university.io/master/ng2-change-detection/images/change.jpg">
 
 
 <link rel="canonical" href="https://hyuain.github.io/hais-notebook/2021/05/17/Angular-ChangeDetection/">
@@ -148,7 +148,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%AE%E5%BD%95"><span class="nav-number">1.</span> <span class="nav-text">目录</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%98%E5%8C%96%E6%A3%80%E6%9F%A5%E6%98%AF%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%9A%84"><span class="nav-number">2.</span> <span class="nav-text">变化检查是如何实现的？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%87%8D%E5%86%99%E6%B5%8F%E8%A7%88%E5%99%A8%E7%9A%84%E9%BB%98%E8%AE%A4%E6%9C%BA%E5%88%B6"><span class="nav-number">3.</span> <span class="nav-text">重写浏览器的默认机制</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%99%E4%B8%AA%E5%BA%95%E5%B1%82%E7%9A%84%E8%BF%90%E8%A1%8C%E6%97%B6%E6%9B%BF%E6%8D%A2%E6%98%AF%E6%80%8E%E6%A0%B7%E5%B7%A5%E4%BD%9C%E7%9A%84"><span class="nav-number">4.</span> <span class="nav-text">这个底层的运行时替换是怎样工作的？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E5%BC%82%E6%AD%A5-api-%E6%94%AF%E6%8C%81"><span class="nav-number">5.</span> <span class="nav-text">浏览器异步 API 支持</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%98%E5%8C%96%E6%A3%80%E6%9F%A5%E6%A0%91"><span class="nav-number">6.</span> <span class="nav-text">变化检查树</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#todoitem-%E7%9A%84%E5%8F%98%E5%8C%96%E6%A3%80%E6%9F%A5%E5%99%A8%E9%95%BF%E4%BB%80%E4%B9%88%E6%A0%B7%E5%AD%90"><span class="nav-number">7.</span> <span class="nav-text">TodoItem 的变化检查器长什么样子？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%BB%98%E8%AE%A4%E7%9A%84%E5%8F%98%E5%8C%96%E6%A3%80%E6%9F%A5%E6%9C%BA%E5%88%B6%E6%98%AF%E6%80%8E%E4%B9%88%E5%B7%A5%E4%BD%9C%E7%9A%84"><span class="nav-number">8.</span> <span class="nav-text">默认的变化检查机制是怎么工作的？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AF%B9%E4%BA%8E%E5%B5%8C%E5%A5%97%E5%AF%B9%E8%B1%A1-owner-%E5%8F%88%E6%80%8E%E4%B9%88%E6%A0%B7%E5%91%A2"><span class="nav-number">9.</span> <span class="nav-text">对于嵌套对象 owner 又怎么样呢？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E5%8F%98%E5%8C%96%E6%A3%80%E6%9F%A5%E9%BB%98%E8%AE%A4%E8%BF%99%E6%A0%B7%E5%B7%A5%E4%BD%9C"><span class="nav-number">10.</span> <span class="nav-text">为什么变化检查默认这样工作？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%82%A3%E9%80%9A%E8%BF%87%E5%BC%95%E7%94%A8%E6%AF%94%E8%BE%83%E5%8F%88%E6%98%AF%E6%80%8E%E6%A0%B7%E7%9A%84%E5%91%A2"><span class="nav-number">11.</span> <span class="nav-text">那通过引用比较又是怎样的呢？</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%AE%E5%BD%95"><span class="nav-number">1.</span> <span class="nav-text">目录</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%98%E5%8C%96%E6%A3%80%E6%9F%A5%E6%98%AF%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%9A%84"><span class="nav-number">2.</span> <span class="nav-text">变化检查是如何实现的？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%87%8D%E5%86%99%E6%B5%8F%E8%A7%88%E5%99%A8%E7%9A%84%E9%BB%98%E8%AE%A4%E6%9C%BA%E5%88%B6"><span class="nav-number">3.</span> <span class="nav-text">重写浏览器的默认机制</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%99%E4%B8%AA%E5%BA%95%E5%B1%82%E7%9A%84%E8%BF%90%E8%A1%8C%E6%97%B6%E6%9B%BF%E6%8D%A2%E6%98%AF%E6%80%8E%E6%A0%B7%E5%B7%A5%E4%BD%9C%E7%9A%84"><span class="nav-number">4.</span> <span class="nav-text">这个底层的运行时替换是怎样工作的？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E5%BC%82%E6%AD%A5-api-%E6%94%AF%E6%8C%81"><span class="nav-number">5.</span> <span class="nav-text">浏览器异步 API 支持</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%98%E5%8C%96%E6%A3%80%E6%9F%A5%E6%A0%91"><span class="nav-number">6.</span> <span class="nav-text">变化检查树</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#todoitem-%E7%9A%84%E5%8F%98%E5%8C%96%E6%A3%80%E6%9F%A5%E5%99%A8%E9%95%BF%E4%BB%80%E4%B9%88%E6%A0%B7%E5%AD%90"><span class="nav-number">7.</span> <span class="nav-text">TodoItem 的变化检查器长什么样子？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%BB%98%E8%AE%A4%E7%9A%84%E5%8F%98%E5%8C%96%E6%A3%80%E6%9F%A5%E6%9C%BA%E5%88%B6%E6%98%AF%E6%80%8E%E4%B9%88%E5%B7%A5%E4%BD%9C%E7%9A%84"><span class="nav-number">8.</span> <span class="nav-text">默认的变化检查机制是怎么工作的？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AF%B9%E4%BA%8E%E5%B5%8C%E5%A5%97%E5%AF%B9%E8%B1%A1-owner-%E5%8F%88%E6%80%8E%E4%B9%88%E6%A0%B7%E5%91%A2"><span class="nav-number">9.</span> <span class="nav-text">对于嵌套对象 owner 又怎么样呢？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E5%8F%98%E5%8C%96%E6%A3%80%E6%9F%A5%E9%BB%98%E8%AE%A4%E8%BF%99%E6%A0%B7%E5%B7%A5%E4%BD%9C"><span class="nav-number">10.</span> <span class="nav-text">为什么变化检查默认这样工作？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E6%AF%94%E8%BE%83%E5%BC%95%E7%94%A8"><span class="nav-number">11.</span> <span class="nav-text">为什么不比较引用？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E5%A6%82%E4%BD%95"><span class="nav-number">12.</span> <span class="nav-text">性能如何？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%88%E7%9C%8B%E7%9C%8B%E8%99%9A%E6%8B%9F%E6%9C%BA%E9%87%8C%E9%9D%A2%E6%98%AF%E4%BB%80%E4%B9%88%E6%A0%B7%E7%9A%84"><span class="nav-number">13.</span> <span class="nav-text">先看看虚拟机里面是什么样的</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -254,7 +254,11 @@
         </span>
           ，
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/hais-notebook/categories/%E5%89%8D%E7%AB%AF/JavaScript/Angular/" itemprop="url" rel="index"><span itemprop="name">Angular</span></a>
+          <a href="/hais-notebook/categories/%E5%89%8D%E7%AB%AF/JavaScript/%E6%A1%86%E6%9E%B6/" itemprop="url" rel="index"><span itemprop="name">框架</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E5%89%8D%E7%AB%AF/JavaScript/%E6%A1%86%E6%9E%B6/Angular/" itemprop="url" rel="index"><span itemprop="name">Angular</span></a>
         </span>
     </span>
 
@@ -310,7 +314,7 @@
 <h1 id="todoitem-的变化检查器长什么样子">TodoItem 的变化检查器长什么样子？</h1>
 <p>事实上，我们可以在运行时看到变化检查器长什么样子！我们只需要在 Todo class 里面加一些代码来在访问他的属性的时候 <a target="_blank" rel="noopener" href="https://github.com/jhades/blog.angular-university.io/blob/master/ng2-change-detection/src/todo.ts#L11">打一个断点</a> 。</p>
 <p>到达断点的时候，我们可以跟着调用栈看到变化检查：</p>
-<p><img src="https://blog.angular-university.io/how-does-angular-2-change-detection-really-work/" /></p>
+<p><img src="https://raw.githubusercontent.com/jhades/blog.angular-university.io/master/ng2-change-detection/images/change.jpg" /></p>
 <p>别担心，你不需要去 debug 这些代码。这里也没有引入什么魔法，他只是一个在应用的启动阶段创建的简单的 Javascript 方法。但是他到底做了什么呢？</p>
 <h1 id="默认的变化检查机制是怎么工作的">默认的变化检查机制是怎么工作的？</h1>
 <p>这个方法最开始看起来可能非常奇怪，还有一些奇怪名字的变量。但是我们来仔细看看，可以注意到他在做一些非常简单的事情：他会比较每个表达式中使用的属性现在和之前的值，如果一个属性现在和之前的值不一样，他会将 <code>isChanged</code> 设为 <code>true</code>。</p>
@@ -330,10 +334,17 @@
 <h1 id="为什么变化检查默认这样工作">为什么变化检查默认这样工作？</h1>
 <p>Angular 的主要目标之一就是变得更透明和易用，因此框架的使用者不需要为了更有效率地使用它而去进行很冗长的 debug 或者了解他的内部机制。</p>
 <p>如果你熟悉 AngularJs，想一下 <code>$digest()</code> 和 <code>$apply()</code> 以及所有使用/不使用他们的时候的坑。Angular 的主要目标之一就是避免他们。</p>
-<h1 id="那通过引用比较又是怎样的呢">那通过引用比较又是怎样的呢？</h1>
+<h1 id="为什么不比较引用">为什么不比较引用？</h1>
 <p>事实上，Javascript 的对象都是可变的，Angular 想要对此给予全力的支持。</p>
-<p>想象一下如果 Angular 默认变化检查机制给予组件输入的引用的比较（而不是默认的机制）。这样的话即便是像 TODO 这样简单的应用都需要一些技巧来创建：开发者需要非常小心地来创建一个新的 Todo，而不是只是更新属性。</p>
+<p>想象一下如果 Angular 默认变化检查机制是基于组件输入的引用的比较（而不是默认的机制）。这样的话即便是像 TODO 这样简单的应用都需要一些技巧来创建：开发者需要非常小心地来创建一个新的 Todo，而不是只是更新属性。</p>
 <p>但就像我们将要看到的那样，如果有必要的话，也可以自定义 Angular 的变化检查。</p>
+<h1 id="性能如何">性能如何？</h1>
+<p>注意 TodoList 组件的变化检查器是怎样创建对 <code>todos</code> 属性的显式引用的。</p>
+<p>另一个方法是动态地遍历组件的属性，让代码具有普遍性（generic）——而不是为了这个组件特异化（specific）。这样我们就不用在每次组件创建的时候都创建一个变化检查器了！所以应该怎么做呢？</p>
+<h1 id="先看看虚拟机里面是什么样的">先看看虚拟机里面是什么样的</h1>
+<p>上面说的一切都与 Javascript 虚拟机有关。进行动态比较的代码并不能被虚拟机即时编译器（VM just-in-time compiler）优化为本地代码（native code）。</p>
+<p>特异化的代码对每个组件输入的属性有非常明确的访问，他们就像我们自己写的代码一样，而且虚拟机可以非常轻松地将他们转换为本地代码。</p>
+<p>用生成的特异化</p>
 
     </div>
 

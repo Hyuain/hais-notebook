@@ -19,12 +19,12 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
 
 <script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;hyuain.github.io&quot;,&quot;root&quot;:&quot;&#x2F;hais-notebook&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;hais-notebook&#x2F;images&quot;,&quot;scheme&quot;:&quot;Gemini&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:true,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:false,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;搜索...&quot;,&quot;empty&quot;:&quot;没有找到任何搜索结果：${query}&quot;,&quot;hits_time&quot;:&quot;找到 ${hits} 个搜索结果（用时 ${time} 毫秒）&quot;,&quot;hits&quot;:&quot;找到 ${hits} 个搜索结果&quot;},&quot;path&quot;:&quot;&#x2F;hais-notebook&#x2F;search.xml&quot;,&quot;localsearch&quot;:{&quot;enable&quot;:true,&quot;trigger&quot;:&quot;auto&quot;,&quot;top_n_per_article&quot;:1,&quot;unescape&quot;:false,&quot;preload&quot;:false}}</script>
-<meta name="description" content="收集 npm 的包和问题。">
+<meta name="description" content="收集 npm 的包和问题。 参考了 1 , 2">
 <meta property="og:type" content="article">
 <meta property="og:title" content="npm &amp; yarn">
 <meta property="og:url" content="https://hyuain.github.io/hais-notebook/2020/02/02/Tools-npm/index.html">
 <meta property="og:site_name" content="Hais Notebook">
-<meta property="og:description" content="收集 npm 的包和问题。">
+<meta property="og:description" content="收集 npm 的包和问题。 参考了 1 , 2">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-02-02T15:34:21.000Z">
 <meta property="article:modified_time" content="2020-02-02T15:34:21.000Z">
@@ -148,7 +148,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE"><span class="nav-number">1.</span> <span class="nav-text">基础配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">一些问题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%8E%E4%B9%88%E7%9F%A5%E9%81%93%E5%8C%85%E7%9A%84%E6%9C%80%E6%96%B0%E7%89%88%E6%98%AF%E5%A4%9A%E5%B0%91"><span class="nav-number">2.1.</span> <span class="nav-text">怎么知道包的最新版是多少？</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BE%9D%E8%B5%96%E5%8C%85%E5%88%86%E7%B1%BB"><span class="nav-number">1.</span> <span class="nav-text">依赖包分类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#dependencies-%E4%B8%8E-devdependencies"><span class="nav-number">1.1.</span> <span class="nav-text">dependencies 与 devDependencies</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">一些问题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%8E%E4%B9%88%E7%9F%A5%E9%81%93%E5%8C%85%E7%9A%84%E6%9C%80%E6%96%B0%E7%89%88%E6%98%AF%E5%A4%9A%E5%B0%91"><span class="nav-number">2.1.</span> <span class="nav-text">怎么知道包的最新版是多少？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A5%BD%E7%94%A8%E7%9A%84-npm-%E5%8C%85"><span class="nav-number">3.</span> <span class="nav-text">好用的 npm 包</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#nrm"><span class="nav-number">3.1.</span> <span class="nav-text">nrm</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -260,14 +260,46 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <p>收集 npm 的包和问题。</p>
+        <p>收集 npm 的包和问题。 参考了 <a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000039289332">1</a> , <a target="_blank" rel="noopener" href="https://juejin.cn/post/6844904160001785869">2</a></p>
 <span id="more"></span>
-<h1 id="基础配置">基础配置</h1>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">npm i -g nrm</span><br><span class="line">nrm use taobao</span><br><span class="line"><span class="comment"># 所有的全局安装都在 C:\Users\Zhang\AppData\Roaming\npm\</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yarn global add yrm</span><br><span class="line">yrm use taobao</span><br><span class="line"><span class="comment"># 用 yrm ls 可以看所有源</span></span><br></pre></td></tr></table></figure>
+<h1 id="依赖包分类">依赖包分类</h1>
+<h2 id="dependencies-与-devdependencies">dependencies 与 devDependencies</h2>
+<table>
+<thead>
+<tr class="header">
+<th>dependencies</th>
+<th>devDependencies</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>npm install [name]</code></td>
+<td><code>npm install [name] --save-dev</code></td>
+</tr>
+<tr class="even">
+<td>生产环境，属于线上代码的一部分</td>
+<td>开发时才需要的依赖</td>
+</tr>
+<tr class="odd">
+<td>vue、element-ui 等</td>
+<td>webpack、babel-loader 等</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><code>npm install</code> 的时候，两个模块的包都会被下载</li>
+<li>可以通过 <code>npm install --production</code> 忽略开发依赖，只安装基本依赖</li>
+<li>模块是否被打包，取决于项目是否引入了该模块，而不取决于是在 dependencies 还是在 devDependencies 中</li>
+<li>对于普通项目来说，把包写在哪里区别不大，但如果将这个包发布，那么写在 devDependencies 中的依赖将不会被下载</li>
+</ul>
 <h1 id="一些问题">一些问题</h1>
 <h2 id="怎么知道包的最新版是多少">怎么知道包的最新版是多少？</h2>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm info [name] version</span><br></pre></td></tr></table></figure>
+<h1 id="好用的-npm-包">好用的 npm 包</h1>
+<h2 id="nrm">nrm</h2>
+<p>一个 npm 镜像管理工具。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">npm i -g nrm</span><br><span class="line">nrm use taobao</span><br><span class="line"><span class="comment"># 所有的全局安装都在 C:\Users\Zhang\AppData\Roaming\npm\</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yarn global add yrm</span><br><span class="line">yrm use taobao</span><br><span class="line"><span class="comment"># 用 yrm ls 可以看所有源</span></span><br></pre></td></tr></table></figure>
 
     </div>
 

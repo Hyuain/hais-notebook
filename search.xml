@@ -47,6 +47,7 @@
       <categories>
         <category>前端</category>
         <category>JavaScript</category>
+        <category>框架</category>
         <category>Angular</category>
       </categories>
       <tags>
@@ -99,7 +100,7 @@
 <h1 id="todoitem-的变化检查器长什么样子">TodoItem 的变化检查器长什么样子？</h1>
 <p>事实上，我们可以在运行时看到变化检查器长什么样子！我们只需要在 Todo class 里面加一些代码来在访问他的属性的时候 <a href="https://github.com/jhades/blog.angular-university.io/blob/master/ng2-change-detection/src/todo.ts#L11">打一个断点</a> 。</p>
 <p>到达断点的时候，我们可以跟着调用栈看到变化检查：</p>
-<p><img src="https://blog.angular-university.io/how-does-angular-2-change-detection-really-work/" /></p>
+<p><img src="https://raw.githubusercontent.com/jhades/blog.angular-university.io/master/ng2-change-detection/images/change.jpg" /></p>
 <p>别担心，你不需要去 debug 这些代码。这里也没有引入什么魔法，他只是一个在应用的启动阶段创建的简单的 Javascript 方法。但是他到底做了什么呢？</p>
 <h1 id="默认的变化检查机制是怎么工作的">默认的变化检查机制是怎么工作的？</h1>
 <p>这个方法最开始看起来可能非常奇怪，还有一些奇怪名字的变量。但是我们来仔细看看，可以注意到他在做一些非常简单的事情：他会比较每个表达式中使用的属性现在和之前的值，如果一个属性现在和之前的值不一样，他会将 <code>isChanged</code> 设为 <code>true</code>。</p>
@@ -119,14 +120,22 @@
 <h1 id="为什么变化检查默认这样工作">为什么变化检查默认这样工作？</h1>
 <p>Angular 的主要目标之一就是变得更透明和易用，因此框架的使用者不需要为了更有效率地使用它而去进行很冗长的 debug 或者了解他的内部机制。</p>
 <p>如果你熟悉 AngularJs，想一下 <code>$digest()</code> 和 <code>$apply()</code> 以及所有使用/不使用他们的时候的坑。Angular 的主要目标之一就是避免他们。</p>
-<h1 id="那通过引用比较又是怎样的呢">那通过引用比较又是怎样的呢？</h1>
+<h1 id="为什么不比较引用">为什么不比较引用？</h1>
 <p>事实上，Javascript 的对象都是可变的，Angular 想要对此给予全力的支持。</p>
-<p>想象一下如果 Angular 默认变化检查机制给予组件输入的引用的比较（而不是默认的机制）。这样的话即便是像 TODO 这样简单的应用都需要一些技巧来创建：开发者需要非常小心地来创建一个新的 Todo，而不是只是更新属性。</p>
+<p>想象一下如果 Angular 默认变化检查机制是基于组件输入的引用的比较（而不是默认的机制）。这样的话即便是像 TODO 这样简单的应用都需要一些技巧来创建：开发者需要非常小心地来创建一个新的 Todo，而不是只是更新属性。</p>
 <p>但就像我们将要看到的那样，如果有必要的话，也可以自定义 Angular 的变化检查。</p>
+<h1 id="性能如何">性能如何？</h1>
+<p>注意 TodoList 组件的变化检查器是怎样创建对 <code>todos</code> 属性的显式引用的。</p>
+<p>另一个方法是动态地遍历组件的属性，让代码具有普遍性（generic）——而不是为了这个组件特异化（specific）。这样我们就不用在每次组件创建的时候都创建一个变化检查器了！所以应该怎么做呢？</p>
+<h1 id="先看看虚拟机里面是什么样的">先看看虚拟机里面是什么样的</h1>
+<p>上面说的一切都与 Javascript 虚拟机有关。进行动态比较的代码并不能被虚拟机即时编译器（VM just-in-time compiler）优化为本地代码（native code）。</p>
+<p>特异化的代码对每个组件输入的属性有非常明确的访问，他们就像我们自己写的代码一样，而且虚拟机可以非常轻松地将他们转换为本地代码。</p>
+<p>用生成的特异化</p>
 ]]></content>
       <categories>
         <category>前端</category>
         <category>JavaScript</category>
+        <category>框架</category>
         <category>Angular</category>
       </categories>
       <tags>
@@ -151,6 +160,7 @@
       <categories>
         <category>前端</category>
         <category>JavaScript</category>
+        <category>框架</category>
         <category>Angular</category>
       </categories>
       <tags>
@@ -251,6 +261,7 @@
       <categories>
         <category>前端</category>
         <category>JavaScript</category>
+        <category>框架</category>
         <category>Angular</category>
       </categories>
       <tags>
@@ -275,6 +286,7 @@
       <categories>
         <category>前端</category>
         <category>JavaScript</category>
+        <category>框架</category>
         <category>Angular</category>
       </categories>
       <tags>
@@ -6320,14 +6332,46 @@ true
   <entry>
     <title>npm &amp; yarn</title>
     <url>/hais-notebook/2020/02/02/Tools-npm/</url>
-    <content><![CDATA[<p>收集 npm 的包和问题。</p>
+    <content><![CDATA[<p>收集 npm 的包和问题。 参考了 <a href="https://segmentfault.com/a/1190000039289332">1</a> , <a href="https://juejin.cn/post/6844904160001785869">2</a></p>
 <span id="more"></span>
-<h1 id="基础配置">基础配置</h1>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm i -g nrm</span><br><span class="line">nrm use taobao</span><br><span class="line"><span class="comment"># 所有的全局安装都在 C:\Users\Zhang\AppData\Roaming\npm\</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">yarn global add yrm</span><br><span class="line">yrm use taobao</span><br><span class="line"><span class="comment"># 用 yrm ls 可以看所有源</span></span><br></pre></td></tr></table></figure>
+<h1 id="依赖包分类">依赖包分类</h1>
+<h2 id="dependencies-与-devdependencies">dependencies 与 devDependencies</h2>
+<table>
+<thead>
+<tr class="header">
+<th>dependencies</th>
+<th>devDependencies</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>npm install [name]</code></td>
+<td><code>npm install [name] --save-dev</code></td>
+</tr>
+<tr class="even">
+<td>生产环境，属于线上代码的一部分</td>
+<td>开发时才需要的依赖</td>
+</tr>
+<tr class="odd">
+<td>vue、element-ui 等</td>
+<td>webpack、babel-loader 等</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><code>npm install</code> 的时候，两个模块的包都会被下载</li>
+<li>可以通过 <code>npm install --production</code> 忽略开发依赖，只安装基本依赖</li>
+<li>模块是否被打包，取决于项目是否引入了该模块，而不取决于是在 dependencies 还是在 devDependencies 中</li>
+<li>对于普通项目来说，把包写在哪里区别不大，但如果将这个包发布，那么写在 devDependencies 中的依赖将不会被下载</li>
+</ul>
 <h1 id="一些问题">一些问题</h1>
 <h2 id="怎么知道包的最新版是多少">怎么知道包的最新版是多少？</h2>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm info [name] version</span><br></pre></td></tr></table></figure>
+<h1 id="好用的-npm-包">好用的 npm 包</h1>
+<h2 id="nrm">nrm</h2>
+<p>一个 npm 镜像管理工具。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm i -g nrm</span><br><span class="line">nrm use taobao</span><br><span class="line"><span class="comment"># 所有的全局安装都在 C:\Users\Zhang\AppData\Roaming\npm\</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">yarn global add yrm</span><br><span class="line">yrm use taobao</span><br><span class="line"><span class="comment"># 用 yrm ls 可以看所有源</span></span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
         <category>工具</category>
