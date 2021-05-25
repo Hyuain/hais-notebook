@@ -5,7 +5,7 @@ tags:
   - 入门
   - 文档
 categories:
-  - [前端, JavaScript, Angular]
+  - [前端, JavaScript, 框架, Angular]
 ---
 
 翻译文章 [Angular Change Detection - How Does It Really Work?](https://blog.angular-university.io/how-does-angular-2-change-detection-really-work/) 。
@@ -118,7 +118,7 @@ export class Todo {
 
 到达断点的时候，我们可以跟着调用栈看到变化检查：
 
-![](https://blog.angular-university.io/how-does-angular-2-change-detection-really-work/)
+![](https://raw.githubusercontent.com/jhades/blog.angular-university.io/master/ng2-change-detection/images/change.jpg)
 
 别担心，你不需要去 debug 这些代码。这里也没有引入什么魔法，他只是一个在应用的启动阶段创建的简单的 Javascript 方法。但是他到底做了什么呢？
 
@@ -154,10 +154,24 @@ Angular 的主要目标之一就是变得更透明和易用，因此框架的使
 
 如果你熟悉 AngularJs，想一下 `$digest()` 和 `$apply()` 以及所有使用/不使用他们的时候的坑。Angular 的主要目标之一就是避免他们。
 
-# 那通过引用比较又是怎样的呢？
+# 为什么不比较引用？
 
 事实上，Javascript 的对象都是可变的，Angular 想要对此给予全力的支持。
 
-想象一下如果 Angular 默认变化检查机制给予组件输入的引用的比较（而不是默认的机制）。这样的话即便是像 TODO 这样简单的应用都需要一些技巧来创建：开发者需要非常小心地来创建一个新的 Todo，而不是只是更新属性。
+想象一下如果 Angular 默认变化检查机制是基于组件输入的引用的比较（而不是默认的机制）。这样的话即便是像 TODO 这样简单的应用都需要一些技巧来创建：开发者需要非常小心地来创建一个新的 Todo，而不是只是更新属性。
 
 但就像我们将要看到的那样，如果有必要的话，也可以自定义 Angular 的变化检查。
+
+# 性能如何？
+
+注意 TodoList 组件的变化检查器是怎样创建对 `todos` 属性的显式引用的。
+
+另一个方法是动态地遍历组件的属性，让代码具有普遍性（generic）——而不是为了这个组件特异化（specific）。这样我们就不用在每次组件创建的时候都创建一个变化检查器了！所以应该怎么做呢？
+
+# 先看看虚拟机里面是什么样的
+
+上面说的一切都与 Javascript 虚拟机有关。进行动态比较的代码并不能被虚拟机即时编译器（VM just-in-time compiler）优化为本地代码（native code）。
+
+特异化的代码对每个组件输入的属性有非常明确的访问，他们就像我们自己写的代码一样，而且虚拟机可以非常轻松地将他们转换为本地代码。
+
+用生成的特异化
