@@ -6332,10 +6332,10 @@ true
   <entry>
     <title>npm &amp; yarn</title>
     <url>/hais-notebook/2020/02/02/Tools-npm/</url>
-    <content><![CDATA[<p>收集 npm 的包和问题。 参考了 <a href="https://segmentfault.com/a/1190000039289332">1</a> , <a href="https://juejin.cn/post/6844904160001785869">2</a></p>
+    <content><![CDATA[<p>收集 npm 的包和问题。 参考了 <a href="https://segmentfault.com/a/1190000039289332">1</a> , <a href="https://juejin.cn/post/6844903870578032647">2</a></p>
 <span id="more"></span>
 <h1 id="依赖包分类">依赖包分类</h1>
-<h2 id="dependencies-与-devdependencies">dependencies 与 devDependencies</h2>
+<h2 id="dependencies-devdependencies">dependencies, devDependencies</h2>
 <table>
 <thead>
 <tr class="header">
@@ -6364,6 +6364,30 @@ true
 <li>模块是否被打包，取决于项目是否引入了该模块，而不取决于是在 dependencies 还是在 devDependencies 中</li>
 <li>对于普通项目来说，把包写在哪里区别不大，但如果将这个包发布，那么写在 devDependencies 中的依赖将不会被下载</li>
 </ul>
+<h2 id="peerdependencies-bundledependencies-optionaldependencies">peerDependencies, bundleDependencies, optionalDependencies</h2>
+<p>这三个属性主要是面向包的发布者。</p>
+<h3 id="peerdependencies">peerDependencies</h3>
+<p>表明如果想要使用这个包，需要的宿主环境所安装的包。</p>
+<p>比如在 <code>vuei</code> 的 <code>1.0.0-alpha.24</code> 版本中，有：</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;peerDependencies&quot;</span>: &#123;</span><br><span class="line">    <span class="attr">&quot;vue&quot;</span>: <span class="string">&quot;^2.5.16&quot;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>表明如果在要使用该版本的 <code>vuei</code>，需要 <code>vue</code> 的版本 <code>&gt;=2.5.16</code> 且 <code>&lt;3.0.0</code>。</p>
+<p>在 npm3.x 以上的版本中，如果安装结束后宿主环境没有满足要求，就会在控制台打出警告。</p>
+<h3 id="bundleddependencies">bundledDependencies</h3>
+<p>如果想在本地保留一个完整的 npm 包或者想生成一个压缩文件来获取 npm 包，会用到这个 bundleDependencies。使用 <code>npm pack</code> 进行打包的时候会将 bundleDependencies 中的包一起打包，并在 <code>npm install</code> 的时候进行安装。</p>
+<p>比如：</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;my-npm-pack&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;version&quot;</span>: <span class="string">&quot;1.0.0&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;bundleDependencies&quot;</span>: [</span><br><span class="line">    <span class="string">&quot;renderized&quot;</span>,</span><br><span class="line">    <span class="string">&quot;super-streams&quot;</span></span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当我们执行 <code>npm pack</code> 之后会生成 <code>my-npm-pack-1.0.0.tgz</code> 文件，该文件中包含 <code>renderized</code> 和 <code>super-streams</code> 依赖。当执行 <code>npm install my-npm-pack-1.0.0.tgz</code> 时，会自动安装这两个依赖。他们的版本需要在 dependencies 中指定。</p>
+<p>当使用 <code>npm publish</code> 来发布包的话，这个属性将不起作用。</p>
+<h3 id="optionaldependencies">optionalDependencies</h3>
+<p>写在 optionalDependencies 里面的包，如果安装失败了也不会影响安装过程，并且 optionalDependencies 中的配置会覆盖 dependencies 中对应包的配置。</p>
+<h1 id="scripts">scripts</h1>
+<ul>
+<li>定义在 <code>scripts</code> 中的命令，可以用过 <code>npm run &lt;command&gt;</code> 来执行</li>
+<li><code>test</code> <code>start</code> <code>restart</code> <code>stop</code> 可以不用加 <code>run</code></li>
+<li><code>npm run env</code> 可以获取到脚本运行时所有的环境变量</li>
+<li><code>npm run</code> 会将 <code>node_modules/.bin/</code> 加入到 <code>shell</code> 的环境变量 <code>PATH</code> 中，这样局部安装的包就可以直接执行而不用加 <code>node_modules/.bin/</code> 的前缀</li>
+</ul>
+<h1 id="package-lock.json">package-lock.json</h1>
 <h1 id="一些问题">一些问题</h1>
 <h2 id="怎么知道包的最新版是多少">怎么知道包的最新版是多少？</h2>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm info [name] version</span><br></pre></td></tr></table></figure>
