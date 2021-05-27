@@ -249,13 +249,6 @@ a ^= b
 对象.属性名 = 属性值
 ```
 
-如果不是对象，JS会创建一个对象，用完之后再自动删除
-
-```js
-a.xxx = 'harvey' // 'harvey'
-a.xxx // undefiend
-```
-
 ### void 运算符
 
 > 求表达式的值或执行语句，然后 `void` 的值总为 `undefined`

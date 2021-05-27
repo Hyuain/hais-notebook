@@ -1,13 +1,12 @@
 ---
-title: JavaScript Object
-date: 2020-01-29 16:00:51
-tags:
-  - 入门
-categories:
-  - [前端, JavaScript, 原生 JavaScript]
+title: JavaScript Object date: 2020-01-29 16:00:51 tags:
+
+- 入门 categories:
+- [前端, JavaScript, 原生 JavaScript]
+
 ---
 
-简单来说，对象实际上就是无序的数据集合，或者说是 **键/值对（Key/Value Paris）**的集合.
+简单来说，对象实际上就是无序的数据集合，或者说是 **键/值对（Key/Value Paris）**的集合。
 
 <!-- more -->
 
@@ -18,18 +17,18 @@ categories:
 ```js
 // 对象的简便声明
 let obj = {
-    'name': 'harvey',
-    'age': 18
-    }
+  'name': 'harvey',
+  'age': 18
+}
 // 对象的标准写法
 let obj = new Object({
-    'name': 'harvey',
-    'age': 18
+  'name': 'harvey',
+  'age': 18
 })
 // 对象也可以作为参数直接传入函数
 console.log({
-    'name': 'harvey',
-    'age': 18
+  'name': 'harvey',
+  'age': 18
 })
 ```
 
@@ -62,7 +61,8 @@ console.log({
 
 删除完成后可以对删除的结果进行检查：
 
-1. `'name' in obj`，检查 `'name'` 是不是 `obj` 的属性名，如果是用上面的第一种方法删除，检查的结果将是 `true`；如果是第二种方法删除，则会返回 `false`；注意属性名有引号（因为属性名实际上是字符串）
+1. `'name' in obj`，检查 `'name'` 是不是 `obj` 的属性名，如果是用上面的第一种方法删除，检查的结果将是 `true`；如果是第二种方法删除，则会返回 `false`
+   ；注意属性名有引号（因为属性名实际上是字符串）
 2. `'name' in obj && obj.name === undefined`，检查是否含有属性名且值为 `undefined`，如果是上面第一种方法删除，则会返回 `true`
 
 ## 属性的查看
@@ -85,35 +85,33 @@ console.log({
 ```javascript
 obj.name = 'harvey'
 obj['name'] = 'harvey'
-obj['na'+'me'] = 'harvey' // 因为属性名本质是字符串，上面三句话实际上是一样的
+obj['na' + 'me'] = 'harvey' // 因为属性名本质是字符串，上面三句话实际上是一样的
 ```
 
 批量赋值：
 
 ```javascript
-Object.assign(obj, {p1:1, p2:2, p3:3})
+Object.assign(obj, { p1: 1, p2: 2, p3: 3 })
 ```
 
-但是，不能直接修改共有属性（原型上的属性）：比如，不能通过 `obj.toString` 来修改原型上的`'toString'`，这样只会为 `obj` 增添一个本身的`'toString'` 属性，而不会修改原型，除非这样写代码（但是这是不推荐的）：
+但是，不能直接修改共有属性（原型上的属性）：比如，不能通过 `obj.toString` 来修改原型上的`'toString'`，这样只会为 `obj` 增添一个本身的`'toString'`
+属性，而不会修改原型，除非这样写代码（但是这是不推荐的）：
 
 ```js
 // 修改原型的属性
 obj.__proto__.toString =
-Object.prototype.toString =
+  Object.prototype.toString =
 
 // 修改原型
-let person = Object.create(common)
+  let
+person = Object.create(common)
 // 相当于
 person.__proto__ = common // 原型链增加一个环节
 ```
 
 # 对象的原型
 
-{% note warning %}
-所有的函数自带 prototype（箭头函数没有 prototype）
-prototype 中自带 constructor
-constructor 里面的东西就是函数的内容
-{% endnote %}
+{% note warning %} 所有的函数自带 prototype（箭头函数没有 prototype） prototype 中自带 constructor constructor 里面的东西就是函数的内容 {% endnote %}
 
 ## new X()
 
@@ -125,20 +123,20 @@ constructor 里面的东西就是函数的内容
 ```js
 // 自己实现一个类似 new 的函数
 function X(a, b) {
-    this.a = a + 1
-    this.b = b + 1
+  this.a = a + 1
+  this.b = b + 1
 }
 
 const y = new X(1, 2)
 
-function NEW(fun, ...args){
-    const newObj = Object.create(fun.prototype)
-    // 相当于
-    // let newObj = {}
-    // newObj.__proto__ = fun.prototype
-    const result = fun.apply(newObj, args)
-    // 原版的 new 中，如果构造函数返回一个对象，则 new 也返回一个对象；如果构造函数返回一个简单类型，则 new 返回刚刚创建的新对象
-    return typeof result === 'object' ? result : newObj
+function NEW(fun, ...args) {
+  const newObj = Object.create(fun.prototype)
+  // 相当于
+  // let newObj = {}
+  // newObj.__proto__ = fun.prototype
+  const result = fun.apply(newObj, args)
+  // 原版的 new 中，如果构造函数返回一个对象，则 new 也返回一个对象；如果构造函数返回一个简单类型，则 new 返回刚刚创建的新对象
+  return typeof result === 'object' ? result : newObj
 }
 
 const z = NEW(X, 3, 4)
@@ -162,8 +160,8 @@ const z = NEW(X, 3, 4)
 
 ## 数据类型与对象的分类
 
->  数据类型是 JavaScript 数据的类型，一共有 7 种；
->  对象的分类则有无数种，常见的有 Array、Function、Date、RegExp 等
+> 数据类型是 JavaScript 数据的类型，一共有 7 种；
+> 对象的分类则有无数种，常见的有 Array、Function、Date、RegExp 等
 
 我们常见的有这几种类型的对象：
 
@@ -174,7 +172,7 @@ const z = NEW(X, 3, 4)
 - 函数对象
   - 自身属性：`'name'` `'length'`
   - 共有属性：`'call'` `'apply'` `'bind'`
-  
+
 # 其他问题
 
 > **Q: window 是谁构造出来的？**
