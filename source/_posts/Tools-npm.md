@@ -175,7 +175,7 @@ A
 
 ## npm ci
 
-现在我们知道了，`package-lock.json` 在每次 `npm install` 的时候都可能发生更新。并不是说 `package-lock.json` 中是什么版本，我用 `npm install` 安装的就是什么版本——若想要达成这样的效果，需要使用 [`npm ci`](https://docs.npmjs.com/cli/v7/commands/npm-ci)
+现在我们知道了，`package-lock.json` 在每次 `npm install` 的时候都可能发生更新，他只是精确描述了当前安装的 `node-moduels` 树。并不是说 `package-lock.json` 中是什么版本，我用 `npm install` 安装的就是什么版本——若想要达成这样的效果，需要使用 [`npm ci`](https://docs.npmjs.com/cli/v7/commands/npm-ci)
 
 ci 就是 `clean install` 的意思，他不会改变 `package-lock.json`，并且会完全按照 `package-lock.json` 中的样子进行安装，比较适合用于一些自动生成的环境，比如测试平台、持续集成等。
 
