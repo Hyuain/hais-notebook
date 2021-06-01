@@ -162,7 +162,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/hais-notebook/archives/">
         
-          <span class="site-state-item-count">87</span>
+          <span class="site-state-item-count">89</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -175,7 +175,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/hais-notebook/tags/">
           
-        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-count">18</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -358,7 +358,7 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">A</span><br><span class="line">+-- B@2</span><br><span class="line">+-- C</span><br><span class="line">    +-- B@2</span><br></pre></td></tr></table></figure>
 <p><code>B@2</code> 出现了两份，一份在顶层，一份在 <code>C</code> 中，这个时候需要我们手动执行 <code>npm dedupe</code> 进行去重操作。</p>
 <h2 id="npm-ci">npm ci</h2>
-<p>现在我们知道了，<code>package-lock.json</code> 在每次 <code>npm install</code> 的时候都可能发生更新。并不是说 <code>package-lock.json</code> 中是什么版本，我用 <code>npm install</code> 安装的就是什么版本——若想要达成这样的效果，需要使用 <a target="_blank" rel="noopener" href="https://docs.npmjs.com/cli/v7/commands/npm-ci"><code>npm ci</code></a></p>
+<p>现在我们知道了，<code>package-lock.json</code> 在每次 <code>npm install</code> 的时候都可能发生更新，他只是精确描述了当前安装的 <code>node-moduels</code> 树。并不是说 <code>package-lock.json</code> 中是什么版本，我用 <code>npm install</code> 安装的就是什么版本——若想要达成这样的效果，需要使用 <a target="_blank" rel="noopener" href="https://docs.npmjs.com/cli/v7/commands/npm-ci"><code>npm ci</code></a></p>
 <p>ci 就是 <code>clean install</code> 的意思，他不会改变 <code>package-lock.json</code>，并且会完全按照 <code>package-lock.json</code> 中的样子进行安装，比较适合用于一些自动生成的环境，比如测试平台、持续集成等。</p>
 <h1 id="npm-shrinkwrap.json">npm-shrinkwrap.json</h1>
 <p>在 npm5.x 之前，可以手动通过 <code>npm srhinkwrap</code> 生成 <code>npm-shrinkwrap.json</code> 文件，他与 <code>package-lock.json</code> 作用相同。当二者在项目中同时存在的时候，将优先使用 <code>npm-shrinkwrap.json</code></p>

@@ -3319,6 +3319,117 @@ true
       </tags>
   </entry>
   <entry>
+    <title>JavaScript Object</title>
+    <url>/hais-notebook/2020/01/29/JS-Object/</url>
+    <content><![CDATA[<p>简单来说，对象实际上就是无序的数据集合，或者说是 <strong>键/值对（Key/Value Paris）</strong>的集合。</p>
+<span id="more"></span>
+<h1 id="创建对象">创建对象</h1>
+<p>对象有以下这样几种写法：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 对象的简便声明</span></span><br><span class="line"><span class="keyword">let</span> obj = &#123;</span><br><span class="line">  <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;harvey&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;age&#x27;</span>: <span class="number">18</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 对象的标准写法</span></span><br><span class="line"><span class="keyword">let</span> obj = <span class="keyword">new</span> <span class="built_in">Object</span>(&#123;</span><br><span class="line">  <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;harvey&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;age&#x27;</span>: <span class="number">18</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">// 对象也可以作为参数直接传入函数</span></span><br><span class="line"><span class="built_in">console</span>.log(&#123;</span><br><span class="line">  <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;harvey&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;age&#x27;</span>: <span class="number">18</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>在这里我们需要注意以下几个细节：</p>
+<ul>
+<li>键名是字符串，不是标识符，可以是任意字符</li>
+<li>引号可以省略，省略之后就只能写标识符或者以数字开头</li>
+<li><strong>就算引号省略了，键名也还是字符串</strong>（不一定，键名也可能是函数、日期、正则等）</li>
+<li>奇怪的属性名： <code>1e2</code> 会变成 <code>'100'</code>， <code>.234</code> 会变成 <code>'0.234'</code>， <code>0xFF</code> 会变成 <code>'255'</code></li>
+<li>变量也可以作为属性名，比如：<code>let obj = &#123; [p1]: 'harvey' &#125;</code>，这样就会用 <code>p1</code> 里面的值了，<strong>中括号里面的东西都会先求值</strong></li>
+</ul>
+<h1 id="对象的属性">对象的属性</h1>
+<h2 id="隐藏的属性">隐藏的属性</h2>
+<p><strong>每一个</strong> 对象都有一个隐藏属性 <code>__proto__</code>，这个属性存着 <strong>一个对象的地址</strong>，这个对象包含了这类对象（普通对象、数组、函数等）的 <strong>共有属性</strong></p>
+<p><code>__proto__</code> 里面存的实际上就是 <strong>原型的地址</strong></p>
+<p>因此，<strong>每一个对象都有原型</strong></p>
+<p>比如 <code>obj = &#123;&#125;</code>，他的原型的地址就存储在 <code>obj.__proto__</code> 中，而<code>obj.__proto__</code> 也是一个对象，因此他也有原型，但我们规定，他的原型值为 <code>null</code></p>
+<h2 id="属性的删除">属性的删除</h2>
+<p>有以下两种删除对象属性的方法：</p>
+<ol type="1">
+<li><code>obj.name = undefined</code>，这样做只会删除属性的值，不会把属性完全删除</li>
+<li><code>delete obj.name</code>，同时删除属性名和属性值，或者用 <code>delete obj['name']</code> 也是可以的</li>
+</ol>
+<p>删除完成后可以对删除的结果进行检查：</p>
+<ol type="1">
+<li><code>'name' in obj</code>，检查 <code>'name'</code> 是不是 <code>obj</code> 的属性名，如果是用上面的第一种方法删除，检查的结果将是 <code>true</code>；如果是第二种方法删除，则会返回 <code>false</code> ；注意属性名有引号（因为属性名实际上是字符串）</li>
+<li><code>'name' in obj &amp;&amp; obj.name === undefined</code>，检查是否含有属性名且值为 <code>undefined</code>，如果是上面第一种方法删除，则会返回 <code>true</code></li>
+</ol>
+<h2 id="属性的查看">属性的查看</h2>
+<ul>
+<li><code>Object.keys(obj)</code>，查看 <code>obj</code> 的 <strong>自身</strong> 属性名</li>
+<li><code>Object.values(obj)</code>，查看 <code>obj</code> 的 <strong>自身</strong> 属性值</li>
+<li><code>Object.entries(obj)</code>，返回结果包含两个数组，第一个数组是 <code>obj</code> 的 <strong>自身</strong> 属性名，第二个数组是 <code>obj</code> 的 <strong>自身</strong> 属性值</li>
+<li><code>console.dir(obj)</code>，查看 <code>obj</code> 的 <strong>自身属性 + 共有属性</strong></li>
+<li><code>in</code>，查看是不是 <strong>自身属性 + 共有属性</strong> （相当于所有属性）</li>
+<li><code>obj.hasOwnProperty('toString')</code>，查看 <code>'toString'</code> 是不是 <code>'obj'</code> <strong>自身的</strong> 属性</li>
+</ul>
+<div class="note warning"><p><code>obj.name</code> 等价于 <code>obj['name']</code>，不等价于 <code>obj[name]</code></p>
+</div>
+<h2 id="添加或修改属性">添加或修改属性</h2>
+<p>直接赋值：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">obj.name = <span class="string">&#x27;harvey&#x27;</span></span><br><span class="line">obj[<span class="string">&#x27;name&#x27;</span>] = <span class="string">&#x27;harvey&#x27;</span></span><br><span class="line">obj[<span class="string">&#x27;na&#x27;</span> + <span class="string">&#x27;me&#x27;</span>] = <span class="string">&#x27;harvey&#x27;</span> <span class="comment">// 因为属性名本质是字符串，上面三句话实际上是一样的</span></span><br></pre></td></tr></table></figure>
+<p>批量赋值：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Object</span>.assign(obj, &#123; <span class="attr">p1</span>: <span class="number">1</span>, <span class="attr">p2</span>: <span class="number">2</span>, <span class="attr">p3</span>: <span class="number">3</span> &#125;)</span><br></pre></td></tr></table></figure>
+<p>但是，不能直接修改共有属性（原型上的属性）：比如，不能通过 <code>obj.toString</code> 来修改原型上的<code>'toString'</code>，这样只会为 <code>obj</code> 增添一个本身的<code>'toString'</code> 属性，而不会修改原型，除非这样写代码（但是这是不推荐的）：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 修改原型的属性</span></span><br><span class="line">obj.__proto__.toString =</span><br><span class="line">  <span class="built_in">Object</span>.prototype.toString =</span><br><span class="line"></span><br><span class="line"><span class="comment">// 修改原型</span></span><br><span class="line">  <span class="keyword">let</span></span><br><span class="line">person = <span class="built_in">Object</span>.create(common)</span><br><span class="line"><span class="comment">// 相当于</span></span><br><span class="line">person.__proto__ = common <span class="comment">// 原型链增加一个环节</span></span><br></pre></td></tr></table></figure>
+<h1 id="对象的原型">对象的原型</h1>
+<div class="note warning"><p>所有的函数自带 prototype（箭头函数没有 prototype） prototype 中自带 constructor constructor 里面的东西就是函数的内容</p>
+</div>
+<h2 id="new-x">new X()</h2>
+<ol type="1">
+<li>自动创建空对象</li>
+<li>自动为空对象关联原型，原型的地址为 <code>X.prototype</code></li>
+<li>自动将空对象作为 <code>this</code> 关键字运行构造函数</li>
+<li>自动 <code>return this</code>（也就是说可以接着写 <code>new X().getName()</code>）</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 自己实现一个类似 new 的函数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">X</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">this</span>.a = a + <span class="number">1</span></span><br><span class="line">  <span class="built_in">this</span>.b = b + <span class="number">1</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> y = <span class="keyword">new</span> X(<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">NEW</span>(<span class="params">fun, ...args</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> newObj = <span class="built_in">Object</span>.create(fun.prototype)</span><br><span class="line">  <span class="comment">// 相当于</span></span><br><span class="line">  <span class="comment">// let newObj = &#123;&#125;</span></span><br><span class="line">  <span class="comment">// newObj.__proto__ = fun.prototype</span></span><br><span class="line">  <span class="keyword">const</span> result = fun.apply(newObj, args)</span><br><span class="line">  <span class="comment">// 原版的 new 中，如果构造函数返回一个对象，则 new 也返回一个对象；如果构造函数返回一个简单类型，则 new 返回刚刚创建的新对象</span></span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">typeof</span> result === <span class="string">&#x27;object&#x27;</span> ? result : newObj</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> z = NEW(X, <span class="number">3</span>, <span class="number">4</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="构造函数-x">构造函数 <code>X</code></h2>
+<ul>
+<li><code>X</code> 自身用于添加新对象的<strong>自身的属性</strong></li>
+<li><code>X.prototype</code> 负责保存对象的<strong>共用属性</strong></li>
+</ul>
+<p>一般来讲有这样的代码规范：</p>
+<ul>
+<li>所有构造函数首字母大写，被构造出来的对象首字母小写</li>
+<li><code>new</code> 后面的函数使用名词；其他的函数一般用动词开头</li>
+</ul>
+<h2 id="如何确定一个对象的原型">如何确定一个对象的原型？</h2>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">对象.__proto__ === 其构造函数.prototype</span><br></pre></td></tr></table></figure>
+<h2 id="数据类型与对象的分类">数据类型与对象的分类</h2>
+<blockquote>
+<p>数据类型是 JavaScript 数据的类型，一共有 7 种； 对象的分类则有无数种，常见的有 Array、Function、Date、RegExp 等</p>
+</blockquote>
+<p>我们常见的有这几种类型的对象：</p>
+<ul>
+<li>数组对象
+<ul>
+<li>自身属性：<code>'0'</code> <code>'1'</code> <code>'2'</code> <code>'length'</code></li>
+<li>共有属性：<code>'push'</code> <code>'pop'</code> <code>'shift'</code> <code>'unshift'</code> <code>'join'</code></li>
+</ul></li>
+<li>函数对象
+<ul>
+<li>自身属性：<code>'name'</code> <code>'length'</code></li>
+<li>共有属性：<code>'call'</code> <code>'apply'</code> <code>'bind'</code></li>
+</ul></li>
+</ul>
+<h1 id="其他问题">其他问题</h1>
+<blockquote>
+<p><strong>Q: window 是谁构造出来的？</strong> A: 可以通过 constructor 属性看出构造者</p>
+</blockquote>
+<blockquote>
+<p><strong>Q: window.Object 是谁构造的？</strong> A: window.Function，所有的函数都是 window.Function 构造的</p>
+</blockquote>
+<blockquote>
+<p><strong>Q: window.Function 是谁构造的？</strong> A: window.Function，所有的函数都是 window.Function 构造的，浏览器构造了 Function，然后指定它的构造者是自己</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>前端</category>
+        <category>JavaScript</category>
+        <category>原生 JavaScript</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>JavaScript 序章</title>
     <url>/hais-notebook/2020/01/29/JS-Overview/</url>
     <content><![CDATA[<p>JavaScript 的历史和评价的简单介绍。</p>
@@ -4085,6 +4196,500 @@ true
       </categories>
       <tags>
         <tag>入门</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Linux 基本操作</title>
+    <url>/hais-notebook/2021/05/29/Operations-Linux-Basic/</url>
+    <content><![CDATA[<p>初学 Linux，参考文章 <a href="https://juejin.cn/post/6917096816118857736#heading-14">1</a></p>
+<span id="more"></span>
+<h1 id="linux-发行版">Linux 发行版</h1>
+<h2 id="linux-历史">Linux 历史</h2>
+<ul>
+<li>1983 年，Richard Stallman 发起 GNU 计划，他同时也是 smalltack 语言的发明者（被公认的第二个面向对象语言），他还编写了 Emacs。</li>
+<li>1991 年，Linus Torvalds 开始开发 Linux 内核。</li>
+<li>1996 年，确定企鹅为 Linux 的吉祥物。</li>
+</ul>
+<h2 id="linux-发行版的主要起源">Linux 发行版的主要起源</h2>
+<p>Linux 有众多发行版，但其实有两条主线，<strong>debian</strong> 系列和 <strong>redhat</strong> 系列。</p>
+<ul>
+<li>Debian 计划是一个致力于创建自有操作系统的合作组织，他的特点是稳定、安全。Ubuntu 就是基于 Debian 改进的。</li>
+<li>RedHat 是一家商业公司，现在对个人提供一些<em>红帽认证</em>之类的证书。现在的 Centos 占据了大部分服务器市场。</li>
+</ul>
+<h2 id="典型版本">典型版本</h2>
+<ul>
+<li>Ubuntu：基于 Debian 系统的 unstable 分支修改的，界面漂亮，包管理软件是 apt-get。</li>
+<li>Centos：是 RHEL 源码再编译的产物，在包管理和稳定性上，与红帽企业版差别不大。</li>
+<li>ArchLinux：采用滚动升级的模式发行，他的软件和理念通常都是最新的，定制化非常强。</li>
+<li>Gentoo：下载的是软件的源代码，然后在本地进行编译安装，比较底层。</li>
+<li>LFS：Linux From Scratch，有非常详细的安装文档，教你怎么编译内核，编译引导程序等。</li>
+<li>Kali：非常专业的发行版，包含了常见的破解、渗透、攻击工具。</li>
+</ul>
+<h1 id="path">PATH</h1>
+<p>Linux 上一些目录里的文件，是可以被默认找到的，这些目录的集合，就叫做 PATH。PATH 也是一个环境变量，我们可以额通过命令查看 PATH：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="variable">$PATH</span></span><br><span class="line"><span class="comment"># /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin</span></span><br></pre></td></tr></table></figure>
+<h1 id="linux-一切皆文件">Linux 一切皆文件</h1>
+<p>在 Linux 中，对命令、文档、设备、目录、套接字的操作都是一致的。开发驱动程序中使用的一些函数，其实和读写文件没什么两样。</p>
+<h2 id="当前路径pwd">当前路径：<code>pwd</code></h2>
+<blockquote>
+<p>pwd: print working directory</p>
+</blockquote>
+<div class="note warning"><p>在执行一些危险命令时，时常确认当前目录是是个好习惯。</p>
+</div>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">pwd</span></span><br><span class="line"><span class="comment"># /root</span></span><br></pre></td></tr></table></figure>
+<p>当默认使用 root 登录之后，就会停留在 <code>/root</code> 目录中，Linux 中的目录层次，是通过 <code>/</code> 进行划分的。</p>
+<h2 id="文件系统的用户标准">文件系统的用户标准</h2>
+<blockquote>
+<p>FHS: Filesystem Hierarchy Standard</p>
+</blockquote>
+<table>
+<thead>
+<tr class="header">
+<th>第一层</th>
+<th>第二层</th>
+<th>介绍</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>/bin</code></td>
+<td></td>
+<td>目录 <code>/usr/bin</code> 的软链接</td>
+</tr>
+<tr class="even">
+<td><code>/sbin</code></td>
+<td></td>
+<td>目录 <code>/usr/sbin</code> 的软链接</td>
+</tr>
+<tr class="odd">
+<td><code>/lib</code></td>
+<td></td>
+<td>目录 <code>/usr/lib</code> 的软链接</td>
+</tr>
+<tr class="even">
+<td><code>/usr</code></td>
+<td><code>/bin</code></td>
+<td>存放一些常用的命令</td>
+</tr>
+<tr class="odd">
+<td><code>/usr</code></td>
+<td><code>/sbin</code></td>
+<td>存放一些管理员常用的命令</td>
+</tr>
+<tr class="even">
+<td><code>/usr</code></td>
+<td><code>/lib</code></td>
+<td>存放一些动态库和模块文件</td>
+</tr>
+<tr class="odd">
+<td><code>/sys</code></td>
+<td></td>
+<td>内核中的数据结构的可视化接口</td>
+</tr>
+<tr class="even">
+<td><code>/proc</code></td>
+<td></td>
+<td>内存映像</td>
+</tr>
+<tr class="odd">
+<td><code>/run</code></td>
+<td></td>
+<td>内存映像</td>
+</tr>
+<tr class="even">
+<td><code>/boot</code></td>
+<td></td>
+<td>存放引导程序，内核相关文件</td>
+</tr>
+<tr class="odd">
+<td><code>/dev</code></td>
+<td></td>
+<td>存放一些设备文件，比如光盘</td>
+</tr>
+<tr class="even">
+<td><code>/etc</code></td>
+<td></td>
+<td>存放一些全局的、应用配置文件。比如如果安装了 php、nginx，他们的配置文件就放在这下面的某个文件夹里面</td>
+</tr>
+<tr class="odd">
+<td><code>/var</code></td>
+<td></td>
+<td>同 <code>/var/run</code>，存放系统运行时需要的文件，比如 mysql 的 pid 等</td>
+</tr>
+<tr class="even">
+<td><code>/tmp</code></td>
+<td></td>
+<td>非常特殊的临时文件夹，断电丢失，所有用户都有写入权限，通常用来做文件交换用</td>
+</tr>
+<tr class="odd">
+<td><code>/home</code></td>
+<td><code>/*</code></td>
+<td>用户目录。我们可以在里面做任何操作，可以存放一些自己的资料、测试用的数据资料等</td>
+</tr>
+<tr class="even">
+<td><code>/root</code></td>
+<td></td>
+<td>root 用户的 home</td>
+</tr>
+</tbody>
+</table>
+<h2 id="查看文件列表ls">查看文件列表：<code>ls</code></h2>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># ls 可以接受路径参数，不用跳转到那里去就能输出相关信息</span></span><br><span class="line">ls /</span><br></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr class="header">
+<th>常用参数</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>-a</code> <code>--all</code></td>
+<td>列出所有的文件，包括隐藏文件</td>
+</tr>
+<tr class="even">
+<td><code>-l</code></td>
+<td>列出文件的详细信息</td>
+</tr>
+<tr class="odd">
+<td><code>-t</code></td>
+<td>根据修改时间排序</td>
+</tr>
+<tr class="even">
+<td><code>-c</code></td>
+<td>根据 ctime 排序显示</td>
+</tr>
+<tr class="odd">
+<td><code>-C</code> <code>--color</code></td>
+<td>显示彩色</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">lrwxrwxrwx   1 root root         7 Apr 20 18:39 bin -&gt; usr/bin</span><br><span class="line">drwxr-xr-x   3 root root      4096 Apr 20 18:54 boot</span><br><span class="line">drwxr-xr-x  18 root root      3880 May 29 16:48 dev</span><br><span class="line">drwxr-xr-x  88 root root      4096 May 23 17:14 etc</span><br><span class="line">drwxr-xr-x   3 root root      4096 May 23 17:03 home</span><br><span class="line">lrwxrwxrwx   1 root root         7 Apr 20 18:39 lib -&gt; usr/lib</span><br></pre></td></tr></table></figure>
+<ul>
+<li>第一列：第一个字母是文件类型，后面表示文件权限</li>
+<li>第二列：普通文件表示链接数，目录表示是子文件数</li>
+<li>第三列：所属用户</li>
+<li>第四列：所属组</li>
+<li>第五列：大小</li>
+<li>第六列：最后修改时间</li>
+<li>最后一列：软链接或文件名</li>
+</ul>
+<h3 id="隐藏文件">隐藏文件</h3>
+<p>直接在 <code>/root</code> 目录里执行 <code>ls -al</code> 可以看到更多的东西，这些额外的东西就是隐藏文件，他们都是以 <code>.</code> 开头，并且以配置文件居多。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">drwx------  5 root root 4096 May 29 16:55  .</span><br><span class="line">drwxr-xr-x 18 root root 4096 May 23 16:52  ..</span><br><span class="line">-rw-------  1 root root 1196 May 29 19:45  .bash_history</span><br><span class="line">-rw-r--r--  1 root root 3106 Dec  5  2019  .bashrc</span><br></pre></td></tr></table></figure>
+<p>并且还有两个特殊的目录—— <code>.</code> 和 <code>..</code>。前者表示当前目录，后者表示上层目录。</p>
+<p>也可以使用 <code>ll</code>，他相当于 <code>ls -al</code>。</p>
+<h2 id="切换目录cd">切换目录：<code>cd</code></h2>
+<table>
+<thead>
+<tr class="header">
+<th>常用参数</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>../</code></td>
+<td>上层目录</td>
+</tr>
+<tr class="even">
+<td><code>./</code></td>
+<td>当前目录</td>
+</tr>
+<tr class="odd">
+<td><code>~</code></td>
+<td>当前的用户目录</td>
+</tr>
+<tr class="even">
+<td><code>-</code></td>
+<td>可以在最近的两次目录中来回切换</td>
+</tr>
+</tbody>
+</table>
+<h2 id="创建目录mkdir">创建目录：<code>mkdir</code></h2>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mkdir -p a1/b2/c3/d4/e5/f6/&#123;g7,g8,g9,g10&#125;</span><br></pre></td></tr></table></figure>
+<p><code>-p</code> 可以让我们一次性创建多层目录，<code>&#123;&#125;</code> 可以一次性创建多个目录</p>
+<h2 id="文件操作touch-rm-cp-mv">文件操作：<code>touch</code> <code>rm</code> <code>cp</code> <code>mv</code></h2>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 创建文件</span></span><br><span class="line">touch long.txt</span><br><span class="line">touch haha.txt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 复制文件</span></span><br><span class="line">cp haha.txt xixi.txt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 移动文件</span></span><br><span class="line">mv long.txt short.txt</span><br><span class="line">mv haha.txt a1/</span><br><span class="line">mv xixi.txt a1/b2</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除文件</span></span><br><span class="line">rm short.txt</span><br><span class="line">rm -rvf a1/</span><br></pre></td></tr></table></figure>
+<h3 id="复制文件cp">复制文件：<code>cp</code></h3>
+<table>
+<thead>
+<tr class="header">
+<th>常用参数</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>-r</code></td>
+<td>递归复制</td>
+</tr>
+<tr class="even">
+<td><code>-f</code></td>
+<td>强制复制，直接覆盖不给提示</td>
+</tr>
+<tr class="odd">
+<td><code>-i</code></td>
+<td>覆盖时给提示</td>
+</tr>
+<tr class="even">
+<td><code>-v</code></td>
+<td>显示详细步骤</td>
+</tr>
+<tr class="odd">
+<td><code>-p</code></td>
+<td>把文件属性也复制过去</td>
+</tr>
+<tr class="even">
+<td><code>-a</code></td>
+<td>把档案所有特性一起复制</td>
+</tr>
+</tbody>
+</table>
+<h2 id="删除文件rm">删除文件：<code>rm</code></h2>
+<table>
+<thead>
+<tr class="header">
+<th>常用参数</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>-r</code></td>
+<td>递归删除</td>
+</tr>
+<tr class="even">
+<td><code>-f</code></td>
+<td>强制删除，不给提示</td>
+</tr>
+<tr class="odd">
+<td><code>-i</code></td>
+<td>删除时给提示</td>
+</tr>
+<tr class="even">
+<td><code>-v</code></td>
+<td>显示详细步骤</td>
+</tr>
+</tbody>
+</table>
+<h2 id="移动文件mv">移动文件：<code>mv</code></h2>
+<table>
+<thead>
+<tr class="header">
+<th>常用参数</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>-f</code></td>
+<td>直接覆盖，不给提示</td>
+</tr>
+<tr class="even">
+<td><code>-i</code></td>
+<td>覆盖时给提示</td>
+</tr>
+<tr class="odd">
+<td><code>-v</code></td>
+<td>显示详细步骤</td>
+</tr>
+<tr class="even">
+<td><code>-b</code></td>
+<td>覆盖前先备份</td>
+</tr>
+<tr class="odd">
+<td><code>-u</code></td>
+<td>文件较新的时候才覆盖</td>
+</tr>
+</tbody>
+</table>
+<h1 id="操作文件">操作文件</h1>
+<p><code>ll</code> 结果的第一列的第一个字母，表示了 Linux 文件类型：</p>
+<table>
+<thead>
+<tr class="header">
+<th>字母</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>-</code></td>
+<td>普通文件</td>
+</tr>
+<tr class="even">
+<td><code>d</code></td>
+<td>目录文件</td>
+</tr>
+<tr class="odd">
+<td><code>l</code></td>
+<td>链接文件，比如快捷方式</td>
+</tr>
+<tr class="even">
+<td><code>s</code></td>
+<td>套接字文件</td>
+</tr>
+<tr class="odd">
+<td><code>c</code></td>
+<td>字符设备文件，比如 <code>/dev/ 中的很多文件</code></td>
+</tr>
+<tr class="even">
+<td><code>b</code></td>
+<td>块设备文件，比如一块磁盘</td>
+</tr>
+<tr class="odd">
+<td><code>p</code></td>
+<td>管道文件</td>
+</tr>
+</tbody>
+</table>
+<p>Linux 上文件可以没有后缀，他的后缀其实没有什么实际的意义，我们可以通过 <code>file</code> 命令查看文件的具体类型：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">file /etc</span><br><span class="line"><span class="comment"># /etc: directory</span></span><br><span class="line">file /etc/group</span><br><span class="line"><span class="comment"># /etc/group: ASCII text</span></span><br></pre></td></tr></table></figure>
+<h2 id="创建一个文件">创建一个文件</h2>
+<h3 id="生成数字序列seq">生成数字序列：<code>seq</code></h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">seq 10 20 &gt;&gt; spring</span><br></pre></td></tr></table></figure>
+<p><code>&gt;</code> 是将前面命令的输出重定向到其他地方；<code>&gt;&gt;</code> 类似，并且是在原来文件的基础上追加内容</p>
+<h3 id="查看内容cat">查看内容：<code>cat</code></h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">cat -n spring</span><br><span class="line"><span class="comment"># 1	10</span></span><br><span class="line"><span class="comment"># 2	11</span></span><br><span class="line"><span class="comment"># 3	12</span></span><br><span class="line"><span class="comment"># 4	13</span></span><br><span class="line"><span class="comment"># 5	14</span></span><br><span class="line"><span class="comment"># 6	15</span></span><br><span class="line"><span class="comment"># 7	16</span></span><br><span class="line"><span class="comment"># 8	17</span></span><br><span class="line"><span class="comment"># 9	18</span></span><br><span class="line"><span class="comment"># 10	19</span></span><br><span class="line"><span class="comment"># 11	20</span></span><br></pre></td></tr></table></figure>
+<p><code>-n</code> 会显示行号。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 合并 a 文件和 b 文件到 c 文件</span></span><br><span class="line">cat a b &gt;&gt; c</span><br><span class="line"></span><br><span class="line"><span class="comment"># 把 a 文件内容作为输入，使用管道处理</span></span><br><span class="line">cat a | cmd</span><br><span class="line"></span><br><span class="line"><span class="comment"># 写入内容到指定文件</span></span><br><span class="line">cat &gt; index.html &lt;&lt;<span class="string">EOF</span></span><br><span class="line"><span class="string">&lt;html&gt;</span></span><br><span class="line"><span class="string">  &lt;head&gt;&lt;title&gt;&lt;/title&gt;&lt;/head&gt;</span></span><br><span class="line"><span class="string">&lt;/html&gt;</span></span><br><span class="line"><span class="string">EOF</span></span><br></pre></td></tr></table></figure>
+<h3 id="平和地查看内容less-head-tail">平和地查看内容：<code>less</code> <code>head</code> <code>tail</code></h3>
+<p>如果文件非常大，使用 <code>cat</code> 就会在终端上疯狂输出，这时候我们可以使用另外的方案。</p>
+<h4 id="less"><code>less</code></h4>
+<table>
+<thead>
+<tr class="header">
+<th>常用参数</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>-n</code></td>
+<td>显示行号</td>
+</tr>
+<tr class="even">
+<td><code>-m</code></td>
+<td>显示百分比</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th>常用快捷键</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>/</code></td>
+<td>向下搜索</td>
+</tr>
+<tr class="even">
+<td><code>?</code></td>
+<td>向上搜索</td>
+</tr>
+<tr class="odd">
+<td><code>n</code></td>
+<td>重复上一个搜索</td>
+</tr>
+<tr class="even">
+<td><code>N</code></td>
+<td>反向重复上一个搜索</td>
+</tr>
+<tr class="odd">
+<td><code>&lt;space&gt;</code></td>
+<td>向后翻页</td>
+</tr>
+<tr class="even">
+<td><code>b</code></td>
+<td>向前翻页</td>
+</tr>
+<tr class="odd">
+<td><code>j</code></td>
+<td>向下一行</td>
+</tr>
+<tr class="even">
+<td><code>k</code></td>
+<td>向上一行</td>
+</tr>
+<tr class="odd">
+<td><code>g</code></td>
+<td>去开头</td>
+</tr>
+<tr class="even">
+<td><code>G</code></td>
+<td>去结尾</td>
+</tr>
+<tr class="odd">
+<td><code>q</code></td>
+<td>退出</td>
+</tr>
+</tbody>
+</table>
+<h4 id="head-tail"><code>head</code> <code>tail</code></h4>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 显示头三行</span></span><br><span class="line">head -n 3 spring</span><br><span class="line"></span><br><span class="line"><span class="comment"># 显示尾三行</span></span><br><span class="line">tail -n 3 spring</span><br></pre></td></tr></table></figure>
+<p><code>tail -f</code> 表示循环读取，可以用来在控制终端实时监控文件变化，来查看一些滚动日志，可以配合 <code>grep</code> 命令达到过滤效果</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 滚动查看系统日志</span></span><br><span class="line">tail -f /var/<span class="built_in">log</span>/messages</span><br><span class="line"></span><br><span class="line"><span class="comment"># 滚动查看包含 info 字样的日志信息</span></span><br><span class="line">tail -f /var/<span class="built_in">log</span>/messages | grep info</span><br><span class="line"></span><br><span class="line"><span class="comment"># 滚动监控到重新创建的文件，比如一些按天滚动的</span></span><br><span class="line">tail -F</span><br></pre></td></tr></table></figure>
+<h3 id="查找文件find">查找文件：<code>find</code></h3>
+<table>
+<thead>
+<tr class="header">
+<th>常用参数</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>-name</code></td>
+<td>文件名，可以使用通配符</td>
+</tr>
+<tr class="even">
+<td><code>-size</code></td>
+<td>根据大小搜索</td>
+</tr>
+<tr class="odd">
+<td><code>-type</code></td>
+<td>根据文件类型搜索 f d l s p b c</td>
+</tr>
+<tr class="even">
+<td><code>-perm</code></td>
+<td>根据文件权限搜索</td>
+</tr>
+<tr class="odd">
+<td><code>-mtime</code></td>
+<td>修改时间，天</td>
+</tr>
+<tr class="even">
+<td><code>-mmin</code></td>
+<td>修改时间，分</td>
+</tr>
+<tr class="odd">
+<td><code>-user</code></td>
+<td>属于某个用户</td>
+</tr>
+<tr class="even">
+<td><code>-group</code></td>
+<td>属于某个组</td>
+</tr>
+<tr class="odd">
+<td><code>-exec</code></td>
+<td>执行命令，建议使用 xargs 替代</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 全局找 decorator 文件</span></span><br><span class="line">find / -name decorator.py -<span class="built_in">type</span> f</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除当前目录中的所有 class 文件</span></span><br><span class="line">find . | grep .class$ | xargs rm -rvf</span><br><span class="line"></span><br><span class="line"><span class="comment"># 找到 /root 下一天前访问的文件</span></span><br><span class="line">find /root -atime 1 -<span class="built_in">type</span> f</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查找十分钟内更新过的文件</span></span><br><span class="line">find /root -cmin -10</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查找输入 root 用户的文件</span></span><br><span class="line">find /root -user root</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查找大于 1MB 的文件，进行清理</span></span><br><span class="line"></span><br><span class="line">find /root -size +1024k -<span class="built_in">type</span> f | xargs rm -f</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>全栈</category>
+        <category>运维</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>运维</tag>
       </tags>
   </entry>
   <entry>
@@ -5350,12 +5955,8 @@ true
 <h2 id="class-里面可以写任何语句">Class 里面可以写任何语句</h2>
 <figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="number">3</span>.times <span class="keyword">do</span></span><br><span class="line">  <span class="class"><span class="keyword">class</span> <span class="title">MyClass</span></span></span><br><span class="line">    puts <span class="string">&#x27;Hello&#x27;</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
 <p>在 Class 里面写的语句都会被执行</p>
-<h2 id="section"></h2>
-<p>```ruby class MyClass # 初始化方法 initialize，在 new 的时候会自动调用 def initialize # 相当于 this.@var <span class="citation" data-cites="var">@var</span> = 1 end</p>
-<p>def my_method <span class="citation" data-cites="var">@var</span> += 1 # 会自动 return <span class="citation" data-cites="var">@var</span> end end</p>
-<p>obj = MyClass.new p obj.class p obj.my_method p obj.instance_variables # 打印出所有变量 # obj<span class="citation" data-cites="v">[:@v]</span> 会报错，因为没有定义 [] 方法 p obj.methods # 打印出所有方法 p obj.methods.grep(/my/) # 打印出包含 my 的方法 p Class.instance_methods.grep(/my/)</p>
-<h1 id="类实例化之后实例变量存在对象上实例方法存在类上">类实例化之后，实例变量存在对象上，实例方法存在类上</h1>
-<p>```____</p>
+<h2 id="一个例子">一个例子</h2>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span></span></span><br><span class="line">  <span class="comment"># 初始化方法 initialize，在 new 的时候会自动调用</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">initialize</span></span></span><br><span class="line">    <span class="comment"># 相当于 this.<span class="doctag">@var</span></span></span><br><span class="line">    <span class="variable">@var</span> = <span class="number">1</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">my_method</span></span></span><br><span class="line">    <span class="variable">@var</span> += <span class="number">1</span></span><br><span class="line">    <span class="comment"># 会自动 return <span class="doctag">@var</span></span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">obj = MyClass.new</span><br><span class="line">p obj.<span class="keyword">class</span></span><br><span class="line">p obj.my_method</span><br><span class="line">p obj.instance_variables <span class="comment"># 打印出所有变量</span></span><br><span class="line"><span class="comment"># obj[:<span class="doctag">@v</span>] 会报错，因为没有定义 [] 方法</span></span><br><span class="line">p obj.methods <span class="comment"># 打印出所有方法</span></span><br><span class="line">p obj.methods.grep(<span class="regexp">/my/</span>) <span class="comment"># 打印出包含 my 的方法</span></span><br><span class="line">p Class.instance_methods.grep(<span class="regexp">/my/</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 类实例化之后，实例变量存在对象上，实例方法存在类上</span></span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
         <category>全栈</category>
@@ -6317,7 +6918,7 @@ true
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">A</span><br><span class="line">+-- B@2</span><br><span class="line">+-- C</span><br><span class="line">    +-- B@2</span><br></pre></td></tr></table></figure>
 <p><code>B@2</code> 出现了两份，一份在顶层，一份在 <code>C</code> 中，这个时候需要我们手动执行 <code>npm dedupe</code> 进行去重操作。</p>
 <h2 id="npm-ci">npm ci</h2>
-<p>现在我们知道了，<code>package-lock.json</code> 在每次 <code>npm install</code> 的时候都可能发生更新。并不是说 <code>package-lock.json</code> 中是什么版本，我用 <code>npm install</code> 安装的就是什么版本——若想要达成这样的效果，需要使用 <a href="https://docs.npmjs.com/cli/v7/commands/npm-ci"><code>npm ci</code></a></p>
+<p>现在我们知道了，<code>package-lock.json</code> 在每次 <code>npm install</code> 的时候都可能发生更新，他只是精确描述了当前安装的 <code>node-moduels</code> 树。并不是说 <code>package-lock.json</code> 中是什么版本，我用 <code>npm install</code> 安装的就是什么版本——若想要达成这样的效果，需要使用 <a href="https://docs.npmjs.com/cli/v7/commands/npm-ci"><code>npm ci</code></a></p>
 <p>ci 就是 <code>clean install</code> 的意思，他不会改变 <code>package-lock.json</code>，并且会完全按照 <code>package-lock.json</code> 中的样子进行安装，比较适合用于一些自动生成的环境，比如测试平台、持续集成等。</p>
 <h1 id="npm-shrinkwrap.json">npm-shrinkwrap.json</h1>
 <p>在 npm5.x 之前，可以手动通过 <code>npm srhinkwrap</code> 生成 <code>npm-shrinkwrap.json</code> 文件，他与 <code>package-lock.json</code> 作用相同。当二者在项目中同时存在的时候，将优先使用 <code>npm-shrinkwrap.json</code></p>
