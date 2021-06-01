@@ -37,7 +37,7 @@ end
 
 在 Class 里面写的语句都会被执行
 
-## 
+## 一个例子
 
 ```ruby
 class MyClass
@@ -63,4 +63,4 @@ p obj.methods.grep(/my/) # 打印出包含 my 的方法
 p Class.instance_methods.grep(/my/)
 
 # 类实例化之后，实例变量存在对象上，实例方法存在类上
-```____
+```

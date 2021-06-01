@@ -1,9 +1,10 @@
 ---
-title: JavaScript Object date: 2020-01-29 16:00:51 tags:
-
-- 入门 categories:
-- [前端, JavaScript, 原生 JavaScript]
-
+title: JavaScript Object
+date: 2020-01-29 16:00:51
+tags:
+  - 入门
+categories:
+  - [前端, JavaScript, 原生 JavaScript]
 ---
 
 简单来说，对象实际上就是无序的数据集合，或者说是 **键/值对（Key/Value Paris）**的集合。
