@@ -8,7 +8,7 @@ categories:
   - [全栈, 运维]
 ---
 
-初学 Linux，参考文章 [1](https://juejin.cn/post/6917096816118857736#heading-14)
+初学 Linux，参考文章 [1](https://juejin.cn/post/6917096816118857736)
 
 <!-- more -->
 
