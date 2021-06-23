@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hais-notebook/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/hais-notebook/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/hais-notebook/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/hais-notebook/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/hais-notebook/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;hyuain.github.io&quot;,&quot;root&quot;:&quot;&#x2F;hais-notebook&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;hais-notebook&#x2F;images&quot;,&quot;scheme&quot;:&quot;Gemini&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:true,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:false,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;搜索...&quot;,&quot;empty&quot;:&quot;没有找到任何搜索结果：${query}&quot;,&quot;hits_time&quot;:&quot;找到 ${hits} 个搜索结果（用时 ${time} 毫秒）&quot;,&quot;hits&quot;:&quot;找到 ${hits} 个搜索结果&quot;},&quot;path&quot;:&quot;&#x2F;hais-notebook&#x2F;search.xml&quot;,&quot;localsearch&quot;:{&quot;enable&quot;:true,&quot;trigger&quot;:&quot;auto&quot;,&quot;top_n_per_article&quot;:1,&quot;unescape&quot;:false,&quot;preload&quot;:false}}</script>
+<meta name="description" content="抄袭自腾讯 VTeam 技术团队的文章《前端元编程——使用注解加速你的前端开发》。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="元编程">
+<meta property="og:url" content="https://hyuain.github.io/hais-notebook/2021/06/07/Collections-Metadata/index.html">
+<meta property="og:site_name" content="Hais Notebook">
+<meta property="og:description" content="抄袭自腾讯 VTeam 技术团队的文章《前端元编程——使用注解加速你的前端开发》。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-06-07T21:55:48.000Z">
+<meta property="article:modified_time" content="2021-06-07T21:55:48.000Z">
+<meta property="article:author" content="Harvey Zhang">
+<meta property="article:tag" content="入门">
+<meta property="article:tag" content="这一秒是你的，下一秒就是我的">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://hyuain.github.io/hais-notebook/2021/06/07/Collections-Metadata/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;zh-CN&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;https:&#x2F;&#x2F;hyuain.github.io&#x2F;hais-notebook&#x2F;2021&#x2F;06&#x2F;07&#x2F;Collections-Metadata&#x2F;&quot;,&quot;path&quot;:&quot;2021&#x2F;06&#x2F;07&#x2F;Collections-Metadata&#x2F;&quot;,&quot;title&quot;:&quot;元编程&quot;}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>元编程 | Hais Notebook</title><script src="/hais-notebook/js/config.js"></script>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/hais-notebook/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/hais-notebook/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Hais Notebook</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/hais-notebook/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-tags"><a href="/hais-notebook/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/hais-notebook/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/hais-notebook/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%83%E7%BC%96%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">元编程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#decorator"><span class="nav-number">1.1.</span> <span class="nav-text">Decorator</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#reflect"><span class="nav-number">1.2.</span> <span class="nav-text">Reflect</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#reflect-metadata"><span class="nav-number">1.3.</span> <span class="nav-text">Reflect Metadata</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%94%A8%E5%85%83%E7%BC%96%E7%A8%8B%E5%87%8F%E5%B0%91-curd-%E6%A8%A1%E6%9D%BF%E4%BB%A3%E7%A0%81"><span class="nav-number">2.</span> <span class="nav-text">用元编程减少 CURD 模板代码</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%97%E5%AD%90api-model-%E6%98%A0%E5%B0%84"><span class="nav-number">2.1.</span> <span class="nav-text">栗子：API Model 映射</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%97%E5%AD%90%E5%88%97%E8%A1%A8%E9%A1%B5-tablepage"><span class="nav-number">2.2.</span> <span class="nav-text">栗子：列表页 TablePage</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Harvey Zhang</p>
+  <div class="site-description" itemprop="description">海鲜酱的笔记本</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/hais-notebook/archives/">
+        
+          <span class="site-state-item-count">90</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/hais-notebook/categories/">
+          
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/hais-notebook/tags/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2021/06/07/Collections-Metadata/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
+      <meta itemprop="name" content="Harvey Zhang">
+      <meta itemprop="description" content="海鲜酱的笔记本">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hais Notebook">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          元编程
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-06-07 21:55:48" itemprop="dateCreated datePublished" datetime="2021-06-07T21:55:48+00:00">2021-06-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">前端</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E5%89%8D%E7%AB%AF/%E6%94%B6%E9%9B%86/" itemprop="url" rel="index"><span itemprop="name">收集</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>抄袭自腾讯 VTeam 技术团队的文章《前端元编程——使用注解加速你的前端开发》。</p>
+<span id="more"></span>
+<p>尝试用 Decorator 和 Reflect 元编程来减少模板代码。</p>
+<h1 id="元编程">元编程</h1>
+<h2 id="decorator">Decorator</h2>
+<p>Decorator 可以帮助我们修改类和他们的成员。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// offer type</span></span><br><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Base</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="title">log</span>(<span class="params"></span>)</span> &#123;&#125;  </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">EnhanceClass</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params">Target</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="class"><span class="keyword">class</span> <span class="keyword">extends</span> <span class="title">Target</span> </span>&#123;</span><br><span class="line">      <span class="function"><span class="title">log</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">&quot;---log---&quot;</span>)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@EnhanceClass</span>()</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> <span class="keyword">extends</span> <span class="title">Base</span> </span>&#123; &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">new</span> Person().log() <span class="comment">// ---log---</span></span><br></pre></td></tr></table></figure>
+<h2 id="reflect">Reflect</h2>
+<p>Reflect 是一个 ES6 中的内置对象，提供了拦截 JavaScript 操作的方法。Vue3 中就依赖 Reflect 和 Proxy 来重写了响应式逻辑。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> _list = [ <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span> ]</span><br><span class="line"><span class="keyword">const</span> pList = <span class="keyword">new</span> <span class="built_in">Proxy</span>(_list, &#123;</span><br><span class="line">  get(target: <span class="built_in">number</span>[], <span class="attr">p</span>: <span class="built_in">string</span> | symbol, <span class="attr">receiver</span>: <span class="built_in">any</span>): <span class="built_in">any</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&quot;get value reflect: &quot;</span>, p)</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Reflect</span>.get(target, p, receiver)</span><br><span class="line">  &#125;,</span><br><span class="line">  set(target: <span class="built_in">number</span>[], <span class="attr">p</span>: <span class="built_in">string</span> | symbol, <span class="attr">value</span>: <span class="built_in">any</span>, <span class="attr">receiver</span>: <span class="built_in">any</span>): <span class="built_in">boolean</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&quot;set value reflect: &quot;</span>, p, value)</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Reflect</span>.set(target, p, value, receiver)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line">pList.push(<span class="number">4</span>)</span><br><span class="line"><span class="comment">// get value reflect: push</span></span><br><span class="line"><span class="comment">// get value reflect: length</span></span><br><span class="line"><span class="comment">// set value reflect: 3 4</span></span><br><span class="line"><span class="comment">// set value reflect: length 4</span></span><br></pre></td></tr></table></figure>
+<h2 id="reflect-metadata">Reflect Metadata</h2>
+<p>Reflect Metadata 能够为对象添加和读取元数据。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Type</span>(<span class="params"></span>): <span class="title">PropertyDecorator</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params">target, propertyKey</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">type</span> = <span class="built_in">Reflect</span>.getMetadata(<span class="string">&quot;design:type&quot;</span>, target, propertyKey)</span><br><span class="line">    <span class="built_in">console</span>.log(propertyKey, <span class="string">&quot; type: &quot;</span>, <span class="keyword">type</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> <span class="keyword">extends</span> <span class="title">Base</span> </span>&#123;</span><br><span class="line">  <span class="meta">@Type</span>()</span><br><span class="line">  <span class="attr">name</span>: <span class="built_in">string</span> = <span class="string">&#x27;&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// name type: String</span></span><br></pre></td></tr></table></figure>
+<h1 id="用元编程减少-curd-模板代码">用元编程减少 CURD 模板代码</h1>
+<p>首先需要一个函数来生成不同业务的属性装饰器：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">CreateProperDecoratorF</span>&lt;<span class="title">T</span>&gt;(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> metaKey = <span class="built_in">Symbol</span>()</span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">properDecoratorF</span>(<span class="params">config: T</span>): <span class="title">PropertyDecorator</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params">target, propertyKey</span>) </span>&#123;</span><br><span class="line">      <span class="built_in">Reflect</span>.defineMetadata(metaKey, config, target, propertyKey)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> &#123; metaKey, properDecoratorF &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>一个用来处理通过数据装饰器收集上来的元数据的类装饰器：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">EnhancedClass</span>(<span class="params">config: ClassConfig</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params">Target</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="class"><span class="keyword">class</span> <span class="keyword">extends</span> <span class="title">Target</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="栗子api-model-映射">栗子：API Model 映射</h2>
+<p>将后端数据转换为 type, interface 或者 class，这里选择了在编译后的 JavaScript 中仍然存在的 class：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">interface</span> TypePropertyConfig &#123;</span><br><span class="line">  handle?: <span class="built_in">string</span> | ServerHandle</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> typeConfig = CreateProperDecoratorF&lt;TypePropertyConfig&gt;()</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> Type = typeConfig.properDecoratorF</span><br><span class="line"></span><br><span class="line"><span class="meta">@EnhancedClass</span>(&#123;&#125;)</span><br><span class="line"><span class="keyword">export</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> <span class="keyword">extends</span> <span class="title">Base</span> </span>&#123;</span><br><span class="line">  <span class="keyword">static</span> sexOptions = [ <span class="string">&#x27;male&#x27;</span>, <span class="string">&#x27;female&#x27;</span>, <span class="string">&#x27;unknown&#x27;</span> ]</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 相当于每个属性都加了一个 metadata，key 是 CreateProperDecoratorF 中的 symbol（也就是 typeConfig.metaKey），value 是传进去的 &#123; handle: &#x27;ID&#x27; &#125;</span></span><br><span class="line">  <span class="meta">@Type</span>(&#123;</span><br><span class="line">    <span class="attr">handle</span>: <span class="string">&#x27;ID&#x27;</span></span><br><span class="line">  &#125;)</span><br><span class="line">  <span class="attr">id</span>: <span class="built_in">number</span> = <span class="number">0</span></span><br><span class="line">  </span><br><span class="line">  <span class="meta">@Type</span>(&#123;&#125;)</span><br><span class="line">  <span class="attr">name</span>: <span class="built_in">string</span> = <span class="string">&#x27;&#x27;</span></span><br><span class="line">  </span><br><span class="line">  <span class="meta">@Type</span>(&#123;</span><br><span class="line">    <span class="function"><span class="title">handle</span>(<span class="params">data, key</span>)</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="built_in">parseInt</span>(data[key] || <span class="string">&#x27;0&#x27;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">  <span class="attr">age</span>: <span class="built_in">number</span> = <span class="number">0</span></span><br><span class="line">  </span><br><span class="line">  <span class="meta">@Type</span>(&#123;</span><br><span class="line">    <span class="function"><span class="title">handle</span>(<span class="params">data, key</span>)</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> Person.sexOptions.includes(data[key] ? data[key] : <span class="string">&#x27;unknown&#x27;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">  <span class="attr">sex</span>: <span class="string">&#x27;male&#x27;</span> | <span class="string">&#x27;female&#x27;</span> | <span class="string">&#x27;unknown&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 在 EnhancedClass 这个 Decorator 中，拿出上面定义的每一个属性中的 metadata，按照其中 handle 定义的方法对数据进行转换</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">EnhancedClass</span>(<span class="params">config: ClassConfig</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params">Target</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="class"><span class="keyword">class</span> <span class="keyword">extends</span> <span class="title">Target</span> </span>&#123;</span><br><span class="line">      <span class="function"><span class="title">constructor</span>(<span class="params">data</span>)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>(data)</span><br><span class="line">        <span class="built_in">Object</span>.keys(<span class="built_in">this</span>).forEach(<span class="function">(<span class="params">key</span>) =&gt;</span> &#123;</span><br><span class="line">          <span class="keyword">const</span> config: TypePropertyConfig = <span class="built_in">Reflect</span>.getMetadata(typeConfig.metaKey, <span class="built_in">this</span>, key)</span><br><span class="line">          <span class="comment">// 将后端数据（data）转换为前端数据（this）</span></span><br><span class="line">          <span class="built_in">this</span>[key] = config.handle</span><br><span class="line">            ? <span class="keyword">typeof</span> config.handle === <span class="string">&#x27;string&#x27;</span></span><br><span class="line">              ? data[config.handle]</span><br><span class="line">              : config.handle(data, key)</span><br><span class="line">            : data[key]</span><br><span class="line">        &#125;)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="栗子列表页-tablepage">栗子：列表页 TablePage</h2>
+<p>原文中举了 Tea Component 的例子，通过类似的操作收集到</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/hais-notebook/tags/%E5%85%A5%E9%97%A8/" rel="tag"># 入门</a>
+              <a href="/hais-notebook/tags/%E8%BF%99%E4%B8%80%E7%A7%92%E6%98%AF%E4%BD%A0%E7%9A%84%EF%BC%8C%E4%B8%8B%E4%B8%80%E7%A7%92%E5%B0%B1%E6%98%AF%E6%88%91%E7%9A%84/" rel="tag"># 这一秒是你的，下一秒就是我的</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2021/05/29/Operations-Linux-Basic/" rel="prev" title="Linux 基本操作">
+                  <i class="fa fa-chevron-left"></i> Linux 基本操作
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/hais-notebook/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Harvey Zhang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/hais-notebook/js/utils.js"></script><script src="/hais-notebook/js/next-boot.js"></script>
+
+  
+<script src="/hais-notebook/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{&quot;enable&quot;:true,&quot;tags&quot;:&quot;none&quot;,&quot;js&quot;:{&quot;url&quot;:&quot;https:&#x2F;&#x2F;cdn.jsdelivr.net&#x2F;npm&#x2F;mathjax@3.1.4&#x2F;es5&#x2F;tex-mml-chtml.js&quot;,&quot;integrity&quot;:&quot;sha256-ncNI9OXOS5Ek4tzVYiOMmN&#x2F;KKCPZ6V0Cpv2P&#x2F;zHntiA&#x3D;&quot;}}</script>
+<script src="/hais-notebook/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
