@@ -125,7 +125,7 @@ $$
 ```javascript
 function selectionSort(list) {
   // 外层循环执行 n-1 次，每次执行赋值、交换两项操作，共 2n-2 次
-  for (current = 1 ... list.length -1) {
+  for (current = 1 ... list.length - 1) {
     smallest = current
     // 内层循环执行 n-1（外层第一次）、n-2（外层第二次）、n-3 次，共计 (n*n-n)/2 次赋值与交换操作，也就是 n*n-n 次操作 
     for (i = current + 1 ... list.length) {
@@ -718,4 +718,219 @@ function build_balanced(nodes) {
 - **散列冲突**：对于两个不同的输入，散列函数有时候会返回相同的存储地址，冲突发生时，两个元素必须保存在相同的地址（比如使用从这个地址开始的链表）。为了减少散列冲突，应确保散列表中至少存在50%的可用空间，否则可能由于过于频繁的冲突降低散列表的性能
 
 散列表常用于实现映射和集合。他比树有更高的插入、删除速度，但需要大量连续的内存才能正常工作
+
+# 第五章：算法
+
+## 排序
+
+### 选择排序
+
+> 在 i ... list.length 的中找到最小的，放到 i 的位置
+
+选择排序的时间复杂度为 $O(n^2)$，人们常用这种算法来排序扑克牌
+
+### 插入排序
+
+> 将第 i 项插入之前已经排好序的列表中
+
+插入排序也是一种具有二次成本的算法，但他在排序几乎已经排序的数组时非常有效
+
+```javascript
+function insertion_sort(list) {
+  for (i = 1 ... list.length) {
+    j = i
+    while (j.notNull && list[j - 1] > list) {
+      list.swap_items(j, j - 1)
+      j = j - 1
+    }
+  }
+}
+```
+
+### 归并排序
+
+> 将数据分成两份，对其分别进行排序，再合并，时间复杂度为 $O(n log n)$
+
+### 快速排序
+
+> 随机选一个基准；将大于他的放在右边，小于他的放在左边；然后对左右分别继续操作；再合并左、基准、右
+
+```javascript
+function quickSort(list) {
+  if (list.length < 2) { return list }
+  if (list.lenght == 2) { return list[0] > list[1] ? list.swap(0, 1) : list }
+  pivotIndex = list.length / 2
+  left = list.slice(0, pivotIndex)
+  right = list.slice(pivotIndex, list.length)
+  return merge(quickSort(left), list[pivotIndex], quickSort(right))
+}
+```
+
+## 搜索
+
+选择好的数据结构，比如二分查找树、散列表等，可以大幅提高查找效率
+
+### 顺序搜索
+
+> 最简单的搜索，从头开始找，时间复杂度为 $O(n)$
+
+### 二分查找
+
+> 元素位于排序数组中可以用二分查找，时间复杂度为 $O(n)$
+
+```javascript
+function binarySearch(items, key) {
+  if (items.isNull) { return null }
+  i = items.length / 2
+  if (key == items[i]) { return i }
+  sliced = key > items[i]
+    ? items.slice(i + 1, items.length)
+    : items.slice(0, i)
+  return binarySearch(sliced, key)
+}
+```
+
+## 图
+
+### 图的搜索
+
+#### 深度优先搜索（DFS）
+
+> 沿着图的边逐渐深入，达到某个与任何新结点都没有边相连的结点时，就返回前一个结点继续这个过程
+
+- 借助栈来跟踪搜索路径：将探索的结点压入栈中，需要返回时弹出来
+- 回溯策略就是利用这种方式搜索
+
+```javascript
+function DFS(startNode, key) {
+  nextNodes = Stack.new()
+  // 由于是图，没有父子关系，我们需要记住访问过哪些了
+  seenNodes = Set.new()
+  
+  nextNodes.push(startNode)
+  seenNodes.add(startNode)
+  
+  while (nextNodes.notEmpty) {
+    node = nextNodes.pop()
+    if (node.key == key) { return node }
+    for (n in node.connectedNodes) {
+      if (!seenNodes.has(n)) {
+        nextNodes.push(n)
+        seenNodes.add(n)
+      }
+    }
+  }
+  
+  return null
+}
+```
+
+#### 广度优先搜索（BFS）
+
+> 逐层对图进行探索
+
+- 用队列跟踪访问的结点：完成探索后，我们将它的子结点插入队列，然后取出下一个结点进行探索
+
+```javascript
+function BFS(startNode, key) {
+  nextNodes = Queue.new()
+  // 由于是图，没有父子关系，我们需要记住访问过哪些了
+  seenNodes = Set.new()
+  
+  nextNodes.enqueue(startNode)
+  seenNodes.add(startNode)
+  
+  while (!nextNodes.isEmpty(nextNodes)) {
+    node = nextNodes.dequeue()
+    if (node.key == key) { return node }
+    for (n in node.connectedNodes) {
+      if (!seenNodes.has(node)) {
+        nextNodes.enqueue(n)
+        seenNodes.add(n)
+      }
+    }
+  }
+  
+  return null
+}
+```
+
+#### 如何选择
+
+{% note warning %}
+DFS 和 BFS 其实只在跟踪结点的存储方式上有所不同：DFS 使用栈，而 BFS 使用队列。
+{% endnote %}
+
+- DFS 只需要存储“从哪个节点来”，BFS 则需要存储整个搜索的边界，当数据量十分庞大的时候，BFS 会消耗过多的内存
+- 如果正在搜索的结点距离起始点不太远，选择成本较高的 BFS 就比较划算，因为能更快地找到指定节点
+- 如果需要探索图的全部节点，最好使用 DFS，因为易于实现且内存占用更少
+
+### 图着色
+
+抽象模型：给固定数量的“颜色”，必须为图中的每个结点分配一种颜色，且通过边相连的结点不能共享同一种颜色。
+
+例：给一张基站及其小区的地图，位于相邻小区的基站必须工作在不同频率以避免干扰，且有四种频率可供选择，那么应该为每个基站分配哪种频率？
+
+> 书中没有给出解，感觉可以尝试使用回溯法解决，跟八皇后问题有点像
+
+### 寻路
+
+可以使用 BFS 或 DFS 策略找出较短的路径，但不如用 **戴克斯特拉算法**。
+
+- 使用优先队列跟踪探索过程：完成新结点的探索之后，将结点之间的连接添加进优先队列，结点的优先级是连接该节点与起始节点的边的权重
+- 负权重的路径可能会导致负循环——这会使得算法陷入无限循环
+- 如果搜索的图过于庞大，可以考虑使用 **双向搜索**，即：两个搜索进程从起始点和目标点同时进行，如果一个搜索区域中的任意节点出现在了另一个搜索区域中，就说明找到了符合条件的路径。
+
+### PageRank
+
+分析网页并呈现最相关的给用户。可以将万维网建模为一张图，其中的结点表示网页，边表示网页之间的链接。
+
+- 如果一个网页包括许多来自其他重要页面的链接，那么这个网页也很重要
+- 初始阶段，图中的网页具有相同的“分值”
+- 每轮计算完成后，每个页面将各自的分值分发给与之链接的页面
+- 重复进行，直到分值达到稳定分布，每个页面的稳定分值叫做 PageRank，使用 PageRank 来确定网页的重要性
+
+## 运筹学
+
+> 做出最佳决策，更好地管理人力与资源，涉及 **最大化** 或 **最小化** 目标
+
+- 航空公司用运筹学优化航班时刻表
+- 炼油厂找出原料的最佳配比
+- 用运筹学调度劳动力和设备
+
+### 线性最优化问题
+
+> 能用线性方程对问题的目标与约束条件进行建模的问题
+
+例：文件柜采购。
+
+- 文件柜 X 的价格为 10 元，占地 6 平米，能存放 8 立方米的文件；
+- 文件柜 Y 的价格为 20 元，占地 8 平米，能存放 12 立方米的文件；
+- 预算为 140 元，可用面积为 72 平米，如何采购才能放最多的文件？
+
+设 $x$ 和 $y$ 分别表示两种文件柜的数量，$z$ 为总容量，有：
+
+$$
+z = 8x + 12y
+$$
+
+现在我们要让 $z$ 最大，同时有这些约束条件：
+
+- 预算约束：$10x + 20y \leq 140$
+- 面积约束：$6x + 8y \leq 72$
+- 其他约束：$x \geq 0$，$y \geq 0$
+
+可以在坐标轴中将约束方程画出来，得到约束区域，然后从中找出 $z$ 最大的点即可。
+
+这被称为 **单纯形法**，可以用单纯形法求解器得到解。
+
+### 网络流问题
+
+例：补给网络。连接各个城市的铁路构成了铁路网，每条铁路有最大运力，求从一个给定的生产城市每天可以运送多少物资到一个给定的消费城市。
+
+- 每条铁路用一个变量来表示，表示通过这条铁路运送的物资量
+- 所有铁路不能超过其运力
+- 除了生产和消费城市以外，所有城市的流入量与流出量相等
+
+### 第六章：数据库
 
