@@ -148,7 +148,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%AE%E5%BD%95"><span class="nav-number">1.</span> <span class="nav-text">目录</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%98%E5%8C%96%E6%A3%80%E6%9F%A5%E6%98%AF%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%9A%84"><span class="nav-number">2.</span> <span class="nav-text">变化检查是如何实现的？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%87%8D%E5%86%99%E6%B5%8F%E8%A7%88%E5%99%A8%E7%9A%84%E9%BB%98%E8%AE%A4%E6%9C%BA%E5%88%B6"><span class="nav-number">3.</span> <span class="nav-text">重写浏览器的默认机制</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%99%E4%B8%AA%E5%BA%95%E5%B1%82%E7%9A%84%E8%BF%90%E8%A1%8C%E6%97%B6%E6%9B%BF%E6%8D%A2%E6%98%AF%E6%80%8E%E6%A0%B7%E5%B7%A5%E4%BD%9C%E7%9A%84"><span class="nav-number">4.</span> <span class="nav-text">这个底层的运行时替换是怎样工作的？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E5%BC%82%E6%AD%A5-api-%E6%94%AF%E6%8C%81"><span class="nav-number">5.</span> <span class="nav-text">浏览器异步 API 支持</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%98%E5%8C%96%E6%A3%80%E6%9F%A5%E6%A0%91"><span class="nav-number">6.</span> <span class="nav-text">变化检查树</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#todoitem-%E7%9A%84%E5%8F%98%E5%8C%96%E6%A3%80%E6%9F%A5%E5%99%A8%E9%95%BF%E4%BB%80%E4%B9%88%E6%A0%B7%E5%AD%90"><span class="nav-number">7.</span> <span class="nav-text">TodoItem 的变化检查器长什么样子？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%BB%98%E8%AE%A4%E7%9A%84%E5%8F%98%E5%8C%96%E6%A3%80%E6%9F%A5%E6%9C%BA%E5%88%B6%E6%98%AF%E6%80%8E%E4%B9%88%E5%B7%A5%E4%BD%9C%E7%9A%84"><span class="nav-number">8.</span> <span class="nav-text">默认的变化检查机制是怎么工作的？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AF%B9%E4%BA%8E%E5%B5%8C%E5%A5%97%E5%AF%B9%E8%B1%A1-owner-%E5%8F%88%E6%80%8E%E4%B9%88%E6%A0%B7%E5%91%A2"><span class="nav-number">9.</span> <span class="nav-text">对于嵌套对象 owner 又怎么样呢？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E5%8F%98%E5%8C%96%E6%A3%80%E6%9F%A5%E9%BB%98%E8%AE%A4%E8%BF%99%E6%A0%B7%E5%B7%A5%E4%BD%9C"><span class="nav-number">10.</span> <span class="nav-text">为什么变化检查默认这样工作？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E6%AF%94%E8%BE%83%E5%BC%95%E7%94%A8"><span class="nav-number">11.</span> <span class="nav-text">为什么不比较引用？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E5%A6%82%E4%BD%95"><span class="nav-number">12.</span> <span class="nav-text">性能如何？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%88%E7%9C%8B%E7%9C%8B%E8%99%9A%E6%8B%9F%E6%9C%BA%E9%87%8C%E9%9D%A2%E6%98%AF%E4%BB%80%E4%B9%88%E6%A0%B7%E7%9A%84"><span class="nav-number">13.</span> <span class="nav-text">先看看虚拟机里面是什么样的</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%AE%E5%BD%95"><span class="nav-number">1.</span> <span class="nav-text">目录</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%84%8F%E6%A3%80%E6%9F%A5%E6%98%AF%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%9A%84"><span class="nav-number">2.</span> <span class="nav-text">脏检查是如何实现的？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%87%8D%E5%86%99%E6%B5%8F%E8%A7%88%E5%99%A8%E7%9A%84%E9%BB%98%E8%AE%A4%E6%9C%BA%E5%88%B6"><span class="nav-number">3.</span> <span class="nav-text">重写浏览器的默认机制</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%99%E4%B8%AA%E5%BA%95%E5%B1%82%E7%9A%84%E8%BF%90%E8%A1%8C%E6%97%B6%E6%9B%BF%E6%8D%A2%E6%98%AF%E6%80%8E%E6%A0%B7%E5%B7%A5%E4%BD%9C%E7%9A%84"><span class="nav-number">4.</span> <span class="nav-text">这个底层的运行时替换是怎样工作的？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E5%BC%82%E6%AD%A5-api-%E6%94%AF%E6%8C%81"><span class="nav-number">5.</span> <span class="nav-text">浏览器异步 API 支持</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%84%8F%E6%A3%80%E6%9F%A5%E6%A0%91"><span class="nav-number">6.</span> <span class="nav-text">脏检查树</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#todoitem-%E7%9A%84%E8%84%8F%E6%A3%80%E6%9F%A5%E5%99%A8%E9%95%BF%E4%BB%80%E4%B9%88%E6%A0%B7%E5%AD%90"><span class="nav-number">7.</span> <span class="nav-text">TodoItem 的脏检查器长什么样子？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%BB%98%E8%AE%A4%E7%9A%84%E8%84%8F%E6%A3%80%E6%9F%A5%E6%9C%BA%E5%88%B6%E6%98%AF%E6%80%8E%E4%B9%88%E5%B7%A5%E4%BD%9C%E7%9A%84"><span class="nav-number">8.</span> <span class="nav-text">默认的脏检查机制是怎么工作的？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AF%B9%E4%BA%8E%E5%B5%8C%E5%A5%97%E5%AF%B9%E8%B1%A1-owner-%E5%8F%88%E6%80%8E%E4%B9%88%E6%A0%B7%E5%91%A2"><span class="nav-number">9.</span> <span class="nav-text">对于嵌套对象 owner 又怎么样呢？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%84%8F%E6%A3%80%E6%9F%A5%E9%BB%98%E8%AE%A4%E8%BF%99%E6%A0%B7%E5%B7%A5%E4%BD%9C"><span class="nav-number">10.</span> <span class="nav-text">为什么脏检查默认这样工作？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E6%AF%94%E8%BE%83%E5%BC%95%E7%94%A8"><span class="nav-number">11.</span> <span class="nav-text">为什么不比较引用？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E5%A6%82%E4%BD%95"><span class="nav-number">12.</span> <span class="nav-text">性能如何？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%88%E7%9C%8B%E7%9C%8B%E8%99%9A%E6%8B%9F%E6%9C%BA%E9%87%8C%E9%9D%A2%E6%98%AF%E4%BB%80%E4%B9%88%E6%A0%B7%E7%9A%84"><span class="nav-number">13.</span> <span class="nav-text">先看看虚拟机里面是什么样的</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#onpush-%E8%84%8F%E6%A3%80%E6%9F%A5%E6%A8%A1%E5%BC%8F"><span class="nav-number">14.</span> <span class="nav-text">OnPush 脏检查模式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#onpush-%E7%9C%9F%E7%9A%84%E5%8F%AA%E6%98%AF%E6%A3%80%E6%9F%A5%E5%BC%95%E7%94%A8%E5%90%97"><span class="nav-number">15.</span> <span class="nav-text">OnPush 真的只是检查引用吗？</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -276,17 +276,17 @@
 <span id="more"></span>
 <h1 id="目录">目录</h1>
 <ul>
-<li>变化检查是如何进行的？</li>
-<li>Angular 变化检查器是什么样的？</li>
-<li>默认的变化检查机制是怎样进行的</li>
-<li>开启/关闭变化检查，手动触发他</li>
-<li>避开变化检查循环：生产模式和开发模式</li>
-<li><code>OnPush</code> 变化检查模式究竟做了什么？</li>
+<li>脏检查是如何进行的？</li>
+<li>Angular 脏检查器是什么样的？</li>
+<li>默认的脏检查机制是怎样进行的</li>
+<li>开启/关闭脏检查，手动触发他</li>
+<li>避开脏检查循环：生产模式和开发模式</li>
+<li><code>OnPush</code> 脏检查模式究竟做了什么？</li>
 <li>使用 Immutable.js 来简化 Angular 应用的构建</li>
 <li>总结</li>
 </ul>
-<p>如果想要了解更多关于 OnPush 变化检查机制，请查阅 <a target="_blank" rel="noopener" href="https://blog.angular-university.io/onpush-change-detection-how-it-works">这篇文章</a> 。</p>
-<h1 id="变化检查是如何实现的">变化检查是如何实现的？</h1>
+<p>如果想要了解更多关于 OnPush 脏检查机制，请查阅 <a target="_blank" rel="noopener" href="https://blog.angular-university.io/onpush-change-detection-how-it-works">这篇文章</a> 。</p>
+<h1 id="脏检查是如何实现的">脏检查是如何实现的？</h1>
 <p>当组件的数据变化的时候，Angular 可以探测到，并重新渲染视图来相应这次变化。为了理解工作原理，我们需要首先意识到 JavaScript 中整个运行时都是可重写的。我们可以重写类似于 <code>String</code> 或 <code>Number</code> 等方法。</p>
 <h1 id="重写浏览器的默认机制">重写浏览器的默认机制</h1>
 <p>Angular 启动的时候，将一些底层的的浏览器 API（比如浏览器用来注册事件的 <code>addEventListener</code>）替换掉，就像这样：</p>
@@ -294,57 +294,81 @@
 <p>新版的 <code>addEventListener</code> 会给事件处理器添加更多的功能：除了调用回调函数之外，还让 Angular 可以检测到变化并更新视图。</p>
 <h1 id="这个底层的运行时替换是怎样工作的">这个底层的运行时替换是怎样工作的？</h1>
 <p>一个叫 <a target="_blank" rel="noopener" href="https://github.com/angular/zone.js/">Zone.js</a> 的 Angular 自带的库完成了这个工作。</p>
-<p>Zone 其实就是一个在多个 JavaScript 虚拟机执行回合之中幸存下来的执行上下文——这是一个可以用来为浏览器增加更多功能的很普遍的机制。Angular 内部使用 Zones 来触发变化检查，但 Zone 也可以用来做应用分析（比如内存占用、程序复杂度等）、跨越不同的 JavaScript 虚拟机回合进行长堆栈跟踪。</p>
+<p>Zone 其实就是一个在多个 JavaScript 虚拟机执行回合之中幸存下来的执行上下文——这是一个可以用来为浏览器增加更多功能的很普遍的机制。Angular 内部使用 Zones 来触发脏检查，但 Zone 也可以用来做应用分析（比如内存占用、程序复杂度等）、跨越不同的 JavaScript 虚拟机回合进行长堆栈跟踪。</p>
 <h1 id="浏览器异步-api-支持">浏览器异步 API 支持</h1>
-<p>为了支持变化检查，下面这些常用的浏览器机制也被修改了：</p>
+<p>为了支持脏检查，下面这些常用的浏览器机制也被修改了：</p>
 <ul>
 <li>所有的浏览器事件（click、mouseover、keyup 等）</li>
 <li><code>setTimeout()</code> 和 <code>setInterval()</code></li>
 <li>Ajax HTTP 请求</li>
 </ul>
-<p>事实上，为了无感知地触发 Angular 变化检查，Zone.js 也修改了很多别的浏览器 API，比如 Websocket。可以看看 Zone.js 的 <a target="_blank" rel="noopener" href="https://github.com/angular/zone.js/tree/master/test/patch">一段测试代码</a> 看看现在支持了哪些 API。</p>
-<p>这个机制的局限性在于：如果出于某些原因，Zone.js 不支持某个浏览器的异步 API，那么变化检查就不会被触发。比如 IndexedDB 的回调。</p>
-<p>上面解释了变化检查是怎样触发的，但是触发之后他到底是怎样运作的呢？</p>
-<h1 id="变化检查树">变化检查树</h1>
-<p>在应用的启动阶段，每个 Angular 组件都与一个变化检查器建立关联。比如下面的 <code>TodoItem</code> 组件：</p>
+<p>事实上，为了无感知地触发 Angular 脏检查，Zone.js 也修改了很多别的浏览器 API，比如 Websocket。可以看看 Zone.js 的 <a target="_blank" rel="noopener" href="https://github.com/angular/zone.js/tree/master/test/patch">一段测试代码</a> 看看现在支持了哪些 API。</p>
+<p>这个机制的局限性在于：如果出于某些原因，Zone.js 不支持某个浏览器的异步 API，那么脏检查就不会被触发。比如 IndexedDB 的回调。</p>
+<p>上面解释了脏检查是怎样触发的，但是触发之后他到底是怎样运作的呢？</p>
+<h1 id="脏检查树">脏检查树</h1>
+<p>在应用的启动阶段，每个 Angular 组件都与一个脏检查器建立关联。比如下面的 <code>TodoItem</code> 组件：</p>
 <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span>(&#123;</span><br><span class="line">  <span class="attr">selector</span>: <span class="string">&#x27;todo-item&#x27;</span>,</span><br><span class="line">  <span class="attr">template</span>: <span class="string">`</span></span><br><span class="line"><span class="string">    &lt;span (click)=&quot;onToggle()&quot; class=&quot;todo noselect&quot;&gt;</span></span><br><span class="line"><span class="string">      &#123;&#123;todo.owner.firstName&#125;&#125; - &#123;&#123;todo.description&#125;&#125; - completed: &#123;&#123;todo.completed&#125;&#125;</span></span><br><span class="line"><span class="string">    &lt;/span&gt;</span></span><br><span class="line"><span class="string">  `</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">export</span> <span class="class"><span class="keyword">class</span> <span class="title">TodoItem</span> </span>&#123;</span><br><span class="line">  <span class="meta">@Input</span>()</span><br><span class="line">  <span class="attr">todo</span>: Todo</span><br><span class="line">  </span><br><span class="line">  <span class="meta">@Output</span>()</span><br><span class="line">  toggle = <span class="keyword">new</span> EventEmitter&lt;<span class="built_in">Object</span>&gt;()</span><br><span class="line">  </span><br><span class="line">  <span class="function"><span class="title">onToggle</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.toggle.emit(<span class="built_in">this</span>.todo)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>这个组件会接受一个 <code>Todo</code> 对象作为输入，并且当 todo 状态发生改变的时候发出一个事件。来搞点花样，<a target="_blank" rel="noopener" href="https://github.com/jhades/blog.angular-university.io/blob/master/ng2-change-detection/src/todo.ts#L11">Todo class</a> 里面还嵌套了一个对象：</p>
 <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="class"><span class="keyword">class</span> <span class="title">Todo</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="title">constructor</span>(<span class="params"></span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="keyword">public</span> id: <span class="built_in">number</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="keyword">public</span> description: <span class="built_in">string</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="keyword">public</span> completed: <span class="built_in">boolean</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="keyword">public</span> owner: Owner <span class="comment">// 嵌套了 Owner 对象</span></span></span></span><br><span class="line"><span class="params"><span class="function">  </span>)</span> &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p><code>Todo</code> 有一个属性 <code>owner</code>，<code>owner</code> 也是一个对象（有属性 <code>firstName</code> 和 <code>lastName</code>）。</p>
-<h1 id="todoitem-的变化检查器长什么样子">TodoItem 的变化检查器长什么样子？</h1>
-<p>事实上，我们可以在运行时看到变化检查器长什么样子！我们只需要在 Todo class 里面加一些代码来在访问他的属性的时候 <a target="_blank" rel="noopener" href="https://github.com/jhades/blog.angular-university.io/blob/master/ng2-change-detection/src/todo.ts#L11">打一个断点</a> 。</p>
-<p>到达断点的时候，我们可以跟着调用栈看到变化检查：</p>
+<h1 id="todoitem-的脏检查器长什么样子">TodoItem 的脏检查器长什么样子？</h1>
+<p>事实上，我们可以在运行时看到脏检查器长什么样子！我们只需要在 Todo class 里面加一些代码来在访问他的属性的时候 <a target="_blank" rel="noopener" href="https://github.com/jhades/blog.angular-university.io/blob/master/ng2-change-detection/src/todo.ts#L11">打一个断点</a> 。</p>
+<p>到达断点的时候，我们可以跟着调用栈看到脏检查：</p>
 <p><img src="https://raw.githubusercontent.com/jhades/blog.angular-university.io/master/ng2-change-detection/images/change.jpg" /></p>
 <p>别担心，你不需要去 debug 这些代码。这里也没有引入什么魔法，他只是一个在应用的启动阶段创建的简单的 Javascript 方法。但是他到底做了什么呢？</p>
-<h1 id="默认的变化检查机制是怎么工作的">默认的变化检查机制是怎么工作的？</h1>
+<h1 id="默认的脏检查机制是怎么工作的">默认的脏检查机制是怎么工作的？</h1>
 <p>这个方法最开始看起来可能非常奇怪，还有一些奇怪名字的变量。但是我们来仔细看看，可以注意到他在做一些非常简单的事情：他会比较每个表达式中使用的属性现在和之前的值，如果一个属性现在和之前的值不一样，他会将 <code>isChanged</code> 设为 <code>true</code>。</p>
 <p>它使用了 <code>looseNotIdentical()</code> 来比较两个值，<a target="_blank" rel="noopener" href="https://github.com/angular/angular/blob/50548fb5655bca742d1056ea91217a3b8460db08/modules/angular2/src/facade/lang.ts#L367">这个方法</a> 使用了 <code>===</code> 运算符，并且对 <code>NaN</code> 进行了一些特殊处理。</p>
 <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">looseIdentical</span>(<span class="params">a, b</span>): <span class="title">boolean</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> a === b || <span class="keyword">typeof</span> a === <span class="string">&quot;number&quot;</span> &amp;&amp; <span class="keyword">typeof</span> b === <span class="string">&quot;number&quot;</span> &amp;&amp; <span class="built_in">isNaN</span>(a) &amp;&amp; <span class="built_in">isNaN</span>(b)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h1 id="对于嵌套对象-owner-又怎么样呢">对于嵌套对象 <code>owner</code> 又怎么样呢？</h1>
-<p>我们可以看到在变化检查器的代码中，<code>owner</code> 中的对象也被检查了，但是只检查了 <code>firstName</code>，并没有检查 <code>lastName</code>。</p>
+<p>我们可以看到在脏检查器的代码中，<code>owner</code> 中的对象也被检查了，但是只检查了 <code>firstName</code>，并没有检查 <code>lastName</code>。</p>
 <p>这是因为 <code>lastName</code> 并没有被 template 使用！——同样地，Todo 中的 <code>id</code> 属性也没有被检查。</p>
 <p>对此，我们可以说：</p>
 <blockquote>
-<p>默认情况下，Angular 变化检查是检查 template 表达式中的值是否变化。他会检查所有的组件。</p>
+<p>默认情况下，Angular 脏检查是检查 template 表达式中的值是否变化。他会检查所有的组件。</p>
 </blockquote>
 <p>我们也可以总结一下：</p>
 <blockquote>
 <p>默认情况下，Angular 不会做对象的深比较来检查便捷化，他只会关心在 template 中使用的属性。</p>
 </blockquote>
-<h1 id="为什么变化检查默认这样工作">为什么变化检查默认这样工作？</h1>
+<h1 id="为什么脏检查默认这样工作">为什么脏检查默认这样工作？</h1>
 <p>Angular 的主要目标之一就是变得更透明和易用，因此框架的使用者不需要为了更有效率地使用它而去进行很冗长的 debug 或者了解他的内部机制。</p>
 <p>如果你熟悉 AngularJs，想一下 <code>$digest()</code> 和 <code>$apply()</code> 以及所有使用/不使用他们的时候的坑。Angular 的主要目标之一就是避免他们。</p>
 <h1 id="为什么不比较引用">为什么不比较引用？</h1>
 <p>事实上，Javascript 的对象都是可变的，Angular 想要对此给予全力的支持。</p>
-<p>想象一下如果 Angular 默认变化检查机制是基于组件输入的引用的比较（而不是默认的机制）。这样的话即便是像 TODO 这样简单的应用都需要一些技巧来创建：开发者需要非常小心地来创建一个新的 Todo，而不是只是更新属性。</p>
-<p>但就像我们将要看到的那样，如果有必要的话，也可以自定义 Angular 的变化检查。</p>
+<p>想象一下如果 Angular 默认脏检查机制是基于组件输入的引用的比较（而不是默认的机制）。这样的话即便是像 TODO 这样简单的应用都需要一些技巧来创建：开发者需要非常小心地来创建一个新的 Todo，而不是只是更新属性。</p>
+<p>但就像我们将要看到的那样，如果有必要的话，也可以自定义 Angular 的脏检查。</p>
 <h1 id="性能如何">性能如何？</h1>
-<p>注意 TodoList 组件的变化检查器是怎样创建对 <code>todos</code> 属性的显式引用的。</p>
-<p>另一个方法是动态地遍历组件的属性，让代码具有普遍性（generic）——而不是为了这个组件特异化（specific）。这样我们就不用在每次组件创建的时候都创建一个变化检查器了！所以应该怎么做呢？</p>
+<p>注意 TodoList 组件的脏检查器是怎样创建对 <code>todos</code> 属性的显式引用的。</p>
+<p>另一个方法是动态地遍历组件的属性，让代码具有普遍性（generic）——而不是为了这个组件特异化（specific）。这样我们就不用在每次组件创建的时候都创建一个脏检查器了！所以应该怎么做呢？</p>
 <h1 id="先看看虚拟机里面是什么样的">先看看虚拟机里面是什么样的</h1>
 <p>上面说的一切都与 Javascript 虚拟机有关。进行动态比较的代码并不能被虚拟机即时编译器（VM just-in-time compiler）优化为本地代码（native code）。</p>
 <p>特异化的代码对每个组件输入的属性有非常明确的访问，他们就像我们自己写的代码一样，而且虚拟机可以非常轻松地将他们转换为本地代码。</p>
-<p>用生成的特异化</p>
+<p>用生成的特异化脏检查器的结果就是：会非常快、可预测和易读。</p>
+<p>接下来我们来讨论一下性能，有办法可以优化脏检查吗？</p>
+<h1 id="onpush-脏检查模式"><code>OnPush</code> 脏检查模式</h1>
+<p>如果我们的 Todo 列表非常的大，我们可以配置这个 <code>TodoList</code> 组件，使用 <code>OnPush</code> 策略，让他只有在 Todo 列表变化的时候才会更新自己。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span>(&#123;</span><br><span class="line">  <span class="attr">selector</span>: <span class="string">&quot;todo-list&quot;</span>,</span><br><span class="line">  <span class="attr">changeDetection</span>: ChangeDetectionStrategy.OnPush,</span><br><span class="line">  <span class="attr">template</span>: <span class="string">&quot;...&quot;</span>,</span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">export</span> <span class="class"><span class="keyword">class</span> <span class="title">TodoList</span> </span>&#123;&#125;</span><br></pre></td></tr></table></figure>
+<p>然后在整个列表外面加两个按钮：</p>
+<ul>
+<li>一个按钮直接修改 TodoItem，来改变他的状态</li>
+<li>一个按钮给整个 TodoList 增加一个新的 TodoItem</li>
+</ul>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span>(&#123;</span><br><span class="line">  <span class="attr">selector</span>: <span class="string">&quot;app&quot;</span>,</span><br><span class="line">  <span class="attr">template</span>: <span class="string">`</span></span><br><span class="line"><span class="string">  &lt;div&gt;</span></span><br><span class="line"><span class="string">    &lt;todo-list [todos]=&quot;todos&quot;&gt;&lt;/todo-list&gt;</span></span><br><span class="line"><span class="string">  &lt;/div&gt;</span></span><br><span class="line"><span class="string">  &lt;button (click)=&quot;toggleFirst()&quot;&gt;Toggle First Item&lt;/button&gt;</span></span><br><span class="line"><span class="string">  &lt;button (click)=&quot;addTodo()&quot;&gt;Add Todo to List&lt;/button&gt;</span></span><br><span class="line"><span class="string">  `</span>,</span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">export</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">  <span class="attr">todos</span>: <span class="built_in">Array</span> = initialData</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="title">constructor</span>(<span class="params"></span>)</span> &#123;&#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="title">toggleFirst</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.todos[<span class="number">0</span>].completed = ! <span class="built_in">this</span>.todos[<span class="number">0</span>].completed</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="title">addTodo</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> newTodos = <span class="built_in">this</span>.todos.slice(<span class="number">0</span>)</span><br><span class="line">    newTodos.push(</span><br><span class="line">      <span class="keyword">new</span> Todo(<span class="number">1</span>, <span class="string">&quot;TODO 4&quot;</span>, <span class="literal">false</span>, <span class="keyword">new</span> Owner(<span class="string">&quot;John&quot;</span>, <span class="string">&quot;Doe&quot;</span>))</span><br><span class="line">    )</span><br><span class="line">    <span class="built_in">this</span>.todos = newTodos</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>来看看他们不同的表现：</p>
+<ul>
+<li>第一个按钮 "Toggle First Item" 没有起作用！因为 <code>toggleFirst()</code> 函数直接改变了列表的第一个元素。<code>TodoList</code>。<code>TodoList</code> 无法检测到这个这个变化，因为输入的 <code>todos</code> 引用没有发生变化</li>
+<li>第二个按钮生效了！注意 <code>addTodo()</code> 创建了一个 todo list 的副本，然后在这个副本上增加一个项，最后用这个副本替代掉原来的 todos。因为输入的 todos 的引用发生了变化，这就触发了检查。</li>
+<li>第二个按钮中，直接修改这个 todo list 是不会生效的，我们需要一个新的 list</li>
+</ul>
+<h1 id="onpush-真的只是检查引用吗"><code>OnPush</code> 真的只是检查引用吗？</h1>
+<p>这不是问题，就算你将 <code>TodoItem</code> 也改成 <code>OnPush</code> 模式，你仍然可以做到只是点击一个 todo 就 toggle 他。</p>
+<p>因为 <code>OnPush</code> 不只是在组件输入变化的时候进行检查，组件触发的事件同样会触发脏检查。</p>
+<p>正如 Victor Savkin 在他的博客中所说：</p>
+<blockquote>
+<p>如果使用 OnPush 检查器的时候，框架会在他输入的属性变化的时候、他发出事件的时候、Observable 触发事件的时候，检查 OnPush 组件</p>
+</blockquote>
+<p>尽管 <code>OnPush</code> 可能会使得性能更好，在使用可变对象时，他的引入会带来更高的复杂度。这会引发一些很难推理和重现的 BUG。但是</p>
 
     </div>
 
