@@ -3,6 +3,7 @@ title: Ruby 基础
 date: 2021-02-13 10:05:22
 tags:
   - 入门
+  - Ruby
 categories:
   - [全栈, Ruby]
 ---

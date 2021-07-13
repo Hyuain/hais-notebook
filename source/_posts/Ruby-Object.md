@@ -3,6 +3,7 @@ title: Ruby 的对象与类
 date: 2021-02-13 10:48:11
 tags:
   - 入门
+  - Ruby
 categories:
   - [全栈, Ruby]
 ---
