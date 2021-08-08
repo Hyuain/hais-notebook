@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hais-notebook/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/hais-notebook/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/hais-notebook/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/hais-notebook/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/hais-notebook/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;hyuain.github.io&quot;,&quot;root&quot;:&quot;&#x2F;hais-notebook&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;hais-notebook&#x2F;images&quot;,&quot;scheme&quot;:&quot;Gemini&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:true,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:false,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;搜索...&quot;,&quot;empty&quot;:&quot;没有找到任何搜索结果：${query}&quot;,&quot;hits_time&quot;:&quot;找到 ${hits} 个搜索结果（用时 ${time} 毫秒）&quot;,&quot;hits&quot;:&quot;找到 ${hits} 个搜索结果&quot;},&quot;path&quot;:&quot;&#x2F;hais-notebook&#x2F;search.xml&quot;,&quot;localsearch&quot;:{&quot;enable&quot;:true,&quot;trigger&quot;:&quot;auto&quot;,&quot;top_n_per_article&quot;:1,&quot;unescape&quot;:false,&quot;preload&quot;:false}}</script>
+<meta name="description" content="Ruby 元编程是基于 Ruby2.0 编写的一本老书了，主要学习一下他的思想。 「元编程是编写能在运行时操作语言构件的代码。」——能写代码的代码">
+<meta property="og:type" content="article">
+<meta property="og:title" content="读书笔记：《Ruby 元编程》">
+<meta property="og:url" content="https://hyuain.github.io/hais-notebook/2021/07/11/Book-MetaprogrammingRuby/index.html">
+<meta property="og:site_name" content="Hais Notebook">
+<meta property="og:description" content="Ruby 元编程是基于 Ruby2.0 编写的一本老书了，主要学习一下他的思想。 「元编程是编写能在运行时操作语言构件的代码。」——能写代码的代码">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-07-11T11:49:12.000Z">
+<meta property="article:modified_time" content="2021-07-11T11:49:12.000Z">
+<meta property="article:author" content="Harvey Zhang">
+<meta property="article:tag" content="读书笔记">
+<meta property="article:tag" content="Ruby">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://hyuain.github.io/hais-notebook/2021/07/11/Book-MetaprogrammingRuby/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;zh-CN&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;https:&#x2F;&#x2F;hyuain.github.io&#x2F;hais-notebook&#x2F;2021&#x2F;07&#x2F;11&#x2F;Book-MetaprogrammingRuby&#x2F;&quot;,&quot;path&quot;:&quot;2021&#x2F;07&#x2F;11&#x2F;Book-MetaprogrammingRuby&#x2F;&quot;,&quot;title&quot;:&quot;读书笔记：《Ruby 元编程》&quot;}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>读书笔记：《Ruby 元编程》 | Hais Notebook</title><script src="/hais-notebook/js/config.js"></script>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/hais-notebook/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/hais-notebook/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Hais Notebook</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/hais-notebook/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-tags"><a href="/hais-notebook/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/hais-notebook/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/hais-notebook/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%83%E7%BC%96%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">元编程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B-the-object-model"><span class="nav-number">2.</span> <span class="nav-text">对象模型 The Object Model</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%93%E5%BC%80%E7%B1%BB-open-classes"><span class="nav-number">2.1.</span> <span class="nav-text">打开类 Open Classes</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B1%BB%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="nav-number">2.1.1.</span> <span class="nav-text">类的定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B1%BB%E7%9A%84%E7%9C%9F%E7%9B%B8"><span class="nav-number">2.1.2.</span> <span class="nav-text">类的真相</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E9%87%8F"><span class="nav-number">2.1.3.</span> <span class="nav-text">常量</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Harvey Zhang</p>
+  <div class="site-description" itemprop="description">海鲜酱的笔记本</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/hais-notebook/archives/">
+        
+          <span class="site-state-item-count">92</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/hais-notebook/categories/">
+          
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/hais-notebook/tags/">
+          
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2021/07/11/Book-MetaprogrammingRuby/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
+      <meta itemprop="name" content="Harvey Zhang">
+      <meta itemprop="description" content="海鲜酱的笔记本">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hais Notebook">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          读书笔记：《Ruby 元编程》
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-07-11 11:49:12" itemprop="dateCreated datePublished" datetime="2021-07-11T11:49:12+00:00">2021-07-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E5%85%A8%E6%A0%88/" itemprop="url" rel="index"><span itemprop="name">全栈</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E5%85%A8%E6%A0%88/Ruby/" itemprop="url" rel="index"><span itemprop="name">Ruby</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>Ruby 元编程是基于 Ruby2.0 编写的一本老书了，主要学习一下他的思想。</p>
+<p>「元编程是编写能在运行时操作语言构件的代码。」——能写代码的代码</p>
+<span id="more"></span>
+<h1 id="元编程">元编程</h1>
+<p>我们将变量、类、方法等这些称为<strong>语言构件</strong>。对于 C++ 这类语言，运行时就已经看不见他们了，我们无法在运行时询问一个类，他的实例方法有哪些； 但对于 Ruby 等语言，这些语言构件在运行时仍然存活，我们甚至可以在运行时询问某个构件，关于他的相关信息——这被称之为 <strong>内省（introspection）</strong>。</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Greeting</span></span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">initialize</span><span class="params">(text)</span></span></span><br><span class="line">    <span class="variable">@text</span> = text</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">welcome</span></span></span><br><span class="line">    <span class="variable">@text</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">my_object = Greeting.new <span class="string">&quot;Hello&quot;</span></span><br></pre></td></tr></table></figure>
+<p>我们可以在运行时通过这些方法来询问 <code>my_object</code>：</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">my_object.<span class="keyword">class</span> <span class="comment"># =&gt; Greeting</span></span><br><span class="line">my_object.<span class="keyword">class</span>.instance_methods(<span class="literal">false</span>) <span class="comment"># =&gt; [:welcome]</span></span><br><span class="line">my_object.instance_variables <span class="comment"># =&gt; [:<span class="doctag">@text</span>]</span></span><br></pre></td></tr></table></figure>
+<p>我们甚至可以在运行时增加新的实例方法。</p>
+<p>从广义上来说，用代码生成器也属于元编程（静态元编程 static metaprogramming），类似于模板；本书讨论的是另一种元编程（动态元编程 dynamic metaprogramming），即编写在运行时操作自身的代码。</p>
+<h1 id="对象模型-the-object-model">对象模型 The Object Model</h1>
+<p>Ruby 中，有很多语言构件：对象、类、模块、实例变量等，元编程操作的就是这些语言构件。所有这些语言构件存在的系统称之为<strong>对象模型</strong>。</p>
+<h2 id="打开类-open-classes">打开类 Open Classes</h2>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 直接修改了 String 这个 class</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">String</span></span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">to_alphanumeric</span></span></span><br><span class="line">    gsub(<span class="regexp">/[^\w\s]/</span>, <span class="string">&#x27;&#x27;</span>)</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<h3 id="类的定义">类的定义</h3>
+<ol type="1">
+<li>类定义中可以放任何语句</li>
+<li>类可以重复“定义”，第二次使用 <code>class</code> 尝试定义他的时候，他并不会覆盖之前的定义，而是会增加一些内容，这种反复定义，称为 <strong>打开类</strong></li>
+</ol>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">3</span>.times <span class="keyword">do</span></span><br><span class="line">  <span class="class"><span class="keyword">class</span> <span class="title">MyClass</span></span></span><br><span class="line">    puts <span class="string">&quot;Hello&quot;</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="string">``</span><span class="string">`  </span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">在很多 Ruby 的库中都使用了打开类来对一些标准的 Ruby 类来进行魔改，比如 `</span>monetize<span class="string">` 包就给 `</span>Numeric<span class="string">` 类增加了 `</span>to_money<span class="string">` 方法</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&gt; JavaScript 中其实也可以实现类似的操作，我们可以修改 Array、Number 的 prototype。但是经验上我并不会经常这么做，主要是怕重名或影响到别人的代码。</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">### 打开类的问题</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">确实，这种方法容易因为重名覆盖问题，导致其他的副作用。因此，有人称之为 **猴子补丁 Monkeypatch**</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">## 类的真相</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">### 对象中有什么</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">`</span><span class="string">``</span>ruby</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span></span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">my_method</span></span></span><br><span class="line">    <span class="variable">@v</span> = <span class="number">1</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">obj = MyClass.new</span><br></pre></td></tr></table></figure>
+<ol type="1">
+<li>实例变量 <code>[:@v]</code>：通过 <code>Object#instance_variables</code> 方法来查看。对象的类与实例变量没有关系，当给实例变量赋值时，他们就突然出现了。</li>
+<li>方法 <code>[:my_method]</code>：通过 <code>Object#methods</code> 方法查看，他会给出所有继承的方法，我们可以通过 <code>Array#grep</code> 方法进行过滤。</li>
+</ol>
+<blockquote>
+<p>实例变量存在对象中，而方法存放在类中。</p>
+</blockquote>
+<div class="note warning"><p>需要注意的是，我们不能说 <code>my_method</code> 是 <code>MyClass</code> 的方法，因为我们不能通过 <code>MyClass.my_method()</code> 这样来调用它。</p>
+<p>我们只能说 <code>my_method</code> 是 <code>MyClass</code> 的一个 <strong>实例方法</strong>，因为我们必须要先定义一个 <code>MyClass</code> 的实例，然后通过实例调用它。</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">String.instance_methods == <span class="string">&quot;abc&quot;</span>.methods  <span class="comment"># =&gt; true</span></span><br><span class="line">String.methods == <span class="string">&quot;abc&quot;</span>.methods  <span class="comment"># =&gt; false</span></span><br></pre></td></tr></table></figure>
+</div>
+<h3 id="类的真相">类的真相</h3>
+<p>类本身也是对象，这又有点像 JavaScript 了</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;hello&quot;</span>.<span class="keyword">class</span> <span class="comment"># =&gt; String</span></span><br><span class="line">String.<span class="keyword">class</span>  <span class="comment"># =&gt; Class</span></span><br></pre></td></tr></table></figure>
+<p>根据前面所述，实例的方法就是类的实例方法。因此，一个类的方法就是 <code>Class</code> 的实例方法</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># false 表示忽略继承的方法</span></span><br><span class="line">Class.instance_methods(<span class="literal">false</span>) <span class="comment"># =&gt; [:allocate,:new,:superclass]</span></span><br></pre></td></tr></table></figure>
+<p><code>allocate</code> 方法是 <code>new</code> 方法的支撑方法，<code>superclass</code> 则跟继承有关：</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Array.superclass  <span class="comment"># =&gt; Object</span></span><br><span class="line">Object.superclass <span class="comment"># =&gt; BasicObject</span></span><br><span class="line">BasicObject.superclass <span class="comment"># =&gt; nil</span></span><br></pre></td></tr></table></figure>
+<p><code>Class</code> 的 <code>superclass</code> 是 <code>Module</code>，类其实就是带有 <code>new</code> <code>allocate</code> <code>superclass</code> 的增强模块，这三个方法可以让我们按照一定层次创建对象。</p>
+<ul>
+<li>如果希望把代码 <code>include</code> 到别的代码中，就应该使用模块</li>
+<li>如果希望代码被实例化或继承，应该使用类</li>
+</ul>
+<h3 id="常量">常量</h3>
+<ul>
+<li>任何以大写字母开头的引用（包括类名和模块名）都是常量</li>
+<li>我们可以修改常量的值，尽管会得到一个警告</li>
+<li>常量和变量的最大区别在于作用域不同</li>
+</ul>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">module</span> <span class="title">MyModule</span></span></span><br><span class="line">  MyConstant = <span class="string">&#x27;Outer constant&#x27;</span></span><br><span class="line">  <span class="class"><span class="keyword">class</span> <span class="title">MyClass</span></span></span><br><span class="line">    <span class="comment"># 两个常量有着不同的作用域，他们是不同的</span></span><br><span class="line">    MyConstant = <span class="string">&#x27;InnerConstant&#x27;</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">M</span></span></span><br><span class="line">  <span class="class"><span class="keyword">class</span> <span class="title">C</span></span></span><br><span class="line">    X = <span class="string">&#x27;a constant&#x27;</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  C::X   <span class="comment"># =&gt; &#x27;a constant&#x27;</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line">M::C::X  <span class="comment"># =&gt; &#x27;a constant&#x27;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Y = <span class="string">&#x27;a root-level  constant&#x27;</span></span><br><span class="line"><span class="class"><span class="keyword">module</span> <span class="title">M</span></span></span><br><span class="line">  Y = <span class="string">&#x27;a constant in M&#x27;</span></span><br><span class="line">  Y     <span class="comment"># =&gt; &#x27;a constant in M&#x27;</span></span><br><span class="line">  <span class="symbol">:</span><span class="symbol">:Y</span>   <span class="comment"># =&gt; &#x27;a root-level  constant&#x27;</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p><code>Module</code> 类还有一个实例方法和类方法，方法名都叫 <code>constants</code></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/hais-notebook/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" rel="tag"># 读书笔记</a>
+              <a href="/hais-notebook/tags/Ruby/" rel="tag"># Ruby</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2021/06/07/Collections-Metadata/" rel="prev" title="元编程">
+                  <i class="fa fa-chevron-left"></i> 元编程
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2021/08/08/Book-ComputerScienceDistilled/" rel="next" title="">
+                   <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/hais-notebook/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Harvey Zhang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/hais-notebook/js/utils.js"></script><script src="/hais-notebook/js/next-boot.js"></script>
+
+  
+<script src="/hais-notebook/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{&quot;enable&quot;:true,&quot;tags&quot;:&quot;none&quot;,&quot;js&quot;:{&quot;url&quot;:&quot;https:&#x2F;&#x2F;cdn.jsdelivr.net&#x2F;npm&#x2F;mathjax@3.1.4&#x2F;es5&#x2F;tex-mml-chtml.js&quot;,&quot;integrity&quot;:&quot;sha256-ncNI9OXOS5Ek4tzVYiOMmN&#x2F;KKCPZ6V0Cpv2P&#x2F;zHntiA&#x3D;&quot;}}</script>
+<script src="/hais-notebook/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
