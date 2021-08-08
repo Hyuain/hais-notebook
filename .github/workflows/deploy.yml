@@ -14,10 +14,10 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.4.0
         
-      - uses: docker://pandoc/core:2.9
-        
       - name: Install And Build
         run: |
+          wget ${{ secrets.PANDOC_PATH }}
+          sudo dpkg -i pandoc*.deb
           npm install
           npm run build
       
