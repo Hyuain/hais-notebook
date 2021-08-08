@@ -10,17 +10,18 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      
+
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.4.0
-        
+
       - name: Install And Build
         run: |
           wget ${{ secrets.PANDOC_PATH }}
           sudo dpkg -i pandoc*.deb
           npm install
+          npm run clean
           npm run build
-      
+
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
