@@ -148,7 +148,7 @@ BasicObject.superclass # => nil
 
 ```ruby
 module MyModule
-  MyConstant = 'Outer constant'
+  MyConstant = 'OuterConstant'
   class MyClass
     # 两个常量有着不同的作用域，他们是不同的
     MyConstant = 'InnerConstant'
@@ -167,7 +167,7 @@ M::C::X  # => 'a constant'
 ```
 
 ```ruby
-Y = 'a root-level  constant'
+Y = 'a root-level constant'
 module M
   Y = 'a constant in M'
   Y     # => 'a constant in M'
@@ -175,4 +175,136 @@ module M
 end
 ```
 
-`Module` 类还有一个实例方法和类方法，方法名都叫 `constants`
+`Module` 类还有一个实例方法和类方法，方法名都叫 `constants`，`Module#constants` 方法返回当前范围内的所有常量，`Module.constants` 方法返回当前程序中所有顶层的常量。
+
+```ruby
+M.constans # => [:C, :Y]
+Module.constants.include? :Object # => true
+Module.constants.include? :Module # => true
+```
+
+`Module.nesting` 告诉我们当前代码所在的路径：
+
+```ruby
+module M
+  class C
+    module M2
+      Module.nesting # => [M::C::M2, M::C, M]
+    end
+  end
+end
+```
+
+### 对象和类小结
+
+- 对象是一组实例变量 + 一个指向类的引用
+- 对象的方法存放在对象的类中，对于类来说，这些方法被称为类的实例方法
+- 类是一个对象（Class 类的一个实例） + 一组实例方法 + 一个对其超类的引用
+- 类有自己的方法（也就是 Class 的实例方法，比如 new）
+- Class 是 Module 的子类
+
+### 使用命名空间解决冲突的问题
+
+比如你创建一个 Text 类，但 Action Mailer 中已经有了一个 Text Module，你可以使用命名空间来解决冲突：
+
+```ruby
+module MyModule
+  class Text
+  end
+end
+```
+
+ 
+
+### 调用方法时发生了什么
+
+#### 方法查找
+
+- 接受者 receiver：调用方法所在所在的对象
+- 祖先链 ancestors chain：找到对象的类，再找到类的超类，再找超类的超类，直到找到 `BasicObject` 类
+
+```ruby
+class MyClass
+  def my_method
+    'my_method()'
+  end
+end
+
+class MySubclass < MyClass
+end
+
+obj = MySubclass.new
+obj.my_method() # => 'my_method()'
+
+MySubclass.ancestors # => [MySubclass, MyClass, Object, Kernel, BasicObject]
+```
+
+`include` 某个模块或者继承某个类的时候，会将其加入到祖先链中。`prepend` 与 `include` 相似，前者会将模块插入到（祖先链中）该类的下方，后者会插入上方
+
+##### Kernel 模块
+
+我们可以随时调用比如 `print` 等方法，但其实 `print` 方法是 Kernel 模块的私有实例方法，Object 类包含了 Kernel 模块，使得每个对象都可以调用 Kernel 模块的方法
+
+#### 执行方法
+
+##### self
+
+`self` 代表了当前对象，当调用一个方法时，接受者就是 `self`
+
+```ruby
+class MyClass
+  def testing_self
+    @var = 10   # self 的一个实例变量
+    my_method() # 相当于 self.my_method()
+    self.my_private_method() # 不能这样写，private 方法不能指定接受者，只能通过隐式的 self 调用
+    self
+  end
+  
+  def my_method
+    @var = @var + 1
+  end
+  
+  private
+  
+  def my_private_method
+  end
+end
+
+obj = MyClass.new
+obj.testing_self # => #<MyClass:0x123 @var=11>
+```
+
+````ruby
+self       # => main
+self.class # => Object
+
+class MyClass
+  self     # => MyClass，在所有方法之外，self 是这个类或模块本身
+end
+````
+
+#### 细化 Refinement
+
+```ruby
+module StringExtensions
+  # 为 String 类 refine 了一个 to_alphanumeric 方法，他默认不生效，不能直接通过 String#to_alphanumeric 来调用
+  refine String do
+    def to_alphanumeric
+      gsub(/[^\w\s]/, '')
+    end
+  end
+end
+
+module StringStuff
+  using StringExtensions
+  "my_string".to_alphanumeric  # => 可以调用
+end
+
+"my_string".to_alphanumeric    # => 不能调用
+```
+
+细化只有在两种场合有效：
+
+1. `refine` 代码内部
+2. `using` 语句开始到模块结束（或者在顶层作用域调用到文件结束）
+
