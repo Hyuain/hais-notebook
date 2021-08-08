@@ -572,6 +572,9 @@
 <p>「元编程是编写能在运行时操作语言构件的代码。」——能写代码的代码</p>
 <span id="more"></span>
 <h1 id="元编程">元编程</h1>
+<p><span class="math display">\[
+{m}\cdot{n}
+\]</span></p>
 <p>我们将变量、类、方法等这些称为<strong>语言构件</strong>。对于 C++ 这类语言，运行时就已经看不见他们了，我们无法在运行时询问一个类，他的实例方法有哪些； 但对于 Ruby 等语言，这些语言构件在运行时仍然存活，我们甚至可以在运行时询问某个构件，关于他的相关信息——这被称之为 <strong>内省（introspection）</strong>。</p>
 <figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Greeting</span></span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">initialize</span><span class="params">(text)</span></span></span><br><span class="line">    <span class="variable">@text</span> = text</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">welcome</span></span></span><br><span class="line">    <span class="variable">@text</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">my_object = Greeting.new <span class="string">&quot;Hello&quot;</span></span><br></pre></td></tr></table></figure>
 <p>我们可以在运行时通过这些方法来询问 <code>my_object</code>：</p>
