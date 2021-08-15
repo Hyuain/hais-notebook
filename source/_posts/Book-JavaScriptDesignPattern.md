@@ -224,3 +224,46 @@ const calculateBonus = (level, salary) => {
   return strategies[level](salary)
 }
 ```
+
+### 使用策略模式实现缓动动画
+
+[DEMO 在这里](https://stackblitz.com/edit/js-e9bzig)
+
+目标：一个动画类 + 一些缓动算法，让小球在页面中运动
+思路：
+- 运动开始前，需要记录一些信息：
+  - 小球的原始位置
+  - 小球的目标位置
+  - 动画开始的时间点
+  - 动画持续时间
+- 然后用 `setInterval` 创建一个定时器，每 19ms 循环一次，传入当前信息，输出下一个位置
+- 更新 div 的 CSS 属性
+
+#### 常见的缓动算法
+
+```javascript
+const tween = {
+  // t - 当前时间
+  // b - 原始位置
+  // c - 目标位置
+  // d - 动画持续时间
+  linear(t, b, c, d) {
+    return c * t / d + b
+  },
+  easeIn(t, b, c, d) {
+    return c * ( t /= d ) * t + b
+  },
+  strongEaseIn(t, b, c, d) {
+    return c * (( t /= d ) * t ** 4 + 1) + b
+  },
+  strongEaseOut(t, b, c, d) {
+    return c * (( t = t / d - 1 ) * t ** 4 + 1) + b
+  },
+  sineaseIn(t, b, c, d) {
+    return c * ( t /= d ) * t ** 2 + b
+  },
+  sineaseOut(t, b, c, d) {
+    return c * (( t = t / d - 1 ) * t ** 2 + 1) + b
+  },
+}
+```
