@@ -71,7 +71,7 @@ end
     puts "Hello"
   end
 end
-```  
+```
 
 在很多 Ruby 的库中都使用了打开类来对一些标准的 Ruby 类来进行魔改，比如 `monetize` 包就给 `Numeric` 类增加了 `to_money` 方法
 
@@ -308,3 +308,89 @@ end
 1. `refine` 代码内部
 2. `using` 语句开始到模块结束（或者在顶层作用域调用到文件结束）
 
+# 方法 Methods
+
+## 动态方法 Dynamic Methods
+
+### 动态调用方法
+
+> 实际上调用一个方法就是给一个对象发送消息
+
+除了使用点标识符 `(.)` 来调用方法，还可以使用 `Object#send` 方法来调用某个实例的方法：
+
+```ruby
+class MyClass
+  def my_method(my_arg)
+    my_arg * 2
+  end
+end
+
+obj = MyClass.new
+obj.my_method(3)        # => 6
+obj.send(:my_method, 3) # => 6
+# send 的第一个参数是方法名，可以使用字符串，也可以使用符号；剩下的参数和代码块会被直接传递给调用的方法
+```
+
+这样动态调用方法的技巧叫做 **动态派发（Dynamic Dispatch）**
+
+### 动态定义方法
+
+可以用 `Module#define_method()` 动态定义方法：
+
+```ruby
+class MyClass
+  # 与 def 不同，define_method 允许在运行时决定方法的名字
+  define_method :my_method do |my_arg|
+    my_arg * 3
+  end
+end
+
+obj = MyClass.new
+obj.my_method(2)    # => 6
+```
+
+## method_missing
+
+当找不到方法是时，他就会调用对象上的 `method_missing` 方法，而我们可以覆写这个方法。调用者看起来调用了某个方法，但实际上这个方法却不存在，这称为 **幽灵方法（Ghost Method）**
+
+### respond_to_missing
+
+如果我们通过幽灵方法实现某功能，我们会发现使用 `respond_to?` 来查找方法的时候就会发现找不到这个方法。
+
+需要使用 `respond_to_missing` 方法才能感知到幽灵方法。因此我们通常在使用 `method_missing` 的时候会覆写 `respond_to_missing` 方法
+
+### const_missing
+
+当引用一个不存在的常量的时候，Ruby 会把这个常量名作为一个符号传给 `const_missing` 方法，我们可以通过覆盖 `const_missing` 方法达到拦截的目的：
+
+```ruby
+require 'rake'
+task_class = Task  # => 得到一个警告，让你使用 Rake::Task
+```
+
+能达到上面的效果是因为 Rake 覆盖了 `Module#const_missing`：
+
+```ruby
+class Module
+  def const_missing(const_name)
+    case const_name
+    when :Task
+      Rake.application.const_warning(const_name)
+      Rake::Task
+    end
+  end
+end
+```
+
+## 白板类 Blank Slates
+
+用幽灵方法时经常会遇到名称与已经存在的方法冲突的情况，尤其是与他继承来的方法冲突。这时候就需要删掉继承的很多无用的方法。
+
+### BasicObject
+
+`BasicObject` 只有几个实例方法，我们直接创建的类默认继承自 `Object` 类（`BasicObject` 的子类），我们可以将其改为继承 `BasicObject` 类
+
+### 删除方法
+
+1. `Module#undef_method`：删除（包括继承来的）方法
+2. `Module#remove_method`：删除接受者自己的方法

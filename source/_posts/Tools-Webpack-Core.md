@@ -390,3 +390,7 @@ if (/\.css$/.test(filePath)) {
 上述代码是有问题的。最终得到的文件将不是我们想要的文件。
 
 Loader 有不同的类型，像 sass-loader、less-loader 是将代码从一种语言转译为另外一种，这样的 loader 可以直接连接起来。但 style-loader 是插入代码而不是转译，所以需要寻找恰当的插入时机和位置——比如 css-loader 拿到结果之后。
+
+## 其他的 Loader 源码
+
+可以查看 Raw Loader、CSS Loader 等深入学习
