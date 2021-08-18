@@ -6209,6 +6209,42 @@ true
       </tags>
   </entry>
   <entry>
+    <title>小程序拖拽排序</title>
+    <url>/hais-notebook/2021/08/18/SourceCode-Work-MovableArea/</url>
+    <content><![CDATA[<p>借助小程序的 movableArea 和 movableView 实现拖拽排序。</p>
+<span id="more"></span>
+<h1 id="官方文档">官方文档</h1>
+<p><a href="https://developers.weixin.qq.com/miniprogram/dev/component/movable-area.html">movable-area</a></p>
+<p><a href="https://developers.weixin.qq.com/miniprogram/dev/component/movable-view.html">movable-view</a></p>
+<h1 id="整体思路">整体思路</h1>
+<p>借助 Move 类实现，每个 movable-area 对应一个 Move 类的实例。</p>
+<ul>
+<li>长按
+<ul>
+<li>用一个对象 <code>moveItemInfo</code> 记录正在移动的元素的信息：记录准备移动的元素开始时的 <code>index</code></li>
+</ul></li>
+<li>移动
+<ul>
+<li>更新 <code>moveItemInfo</code>：更新实时的 <code>x</code> <code>y</code></li>
+<li>*计算出移动中元素实时的 <code>index</code>：初始化的时候传入可移动元素的宽、高、间距，以及列的数量，然后结合当前 <code>moveItemInfo</code> 中的 <code>x</code> <code>y</code> 信息，计算拖动到的 <code>index</code></li>
+<li>*将元素移动导新的 <code>index</code>：遍历当前的所有可移动元素，找到他们的 <code>index</code>，根据当前移动中的元素是向前还是向后移动，来确定其他的元素是否需要移动、需要向哪个方向移动</li>
+<li>更新其他元素的 <code>movable-view</code> 中的 <code>x</code> 和 <code>y</code> 属性，达到移动的效果</li>
+</ul></li>
+<li>松手：计算出可移动对象最终的 index，并更新整个列表的位置信息</li>
+</ul>
+]]></content>
+      <categories>
+        <category>源码</category>
+        <category>工作</category>
+      </categories>
+      <tags>
+        <tag>源码</tag>
+        <tag>抄袭</tag>
+        <tag>优化</tag>
+        <tag>长列表</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>长列表优化：小程序虚拟列表</title>
     <url>/hais-notebook/2020/05/13/SourceCode-Work-VirtualList/</url>
     <content><![CDATA[<p>借助小程序的 createIntersectionObserver 来实现虚拟列表。</p>
