@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="generator" content="Hexo 5.4.1">
 
 
   <link rel="apple-touch-icon" sizes="180x180" href="/hais-notebook/images/apple-touch-icon.png">
@@ -164,7 +164,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/hais-notebook/archives/">
         
-          <span class="site-state-item-count">93</span>
+          <span class="site-state-item-count">94</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -177,7 +177,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/hais-notebook/tags/">
           
-        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-count">22</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -271,9 +271,9 @@
 <h1 id="滚动条的宽度">滚动条的宽度</h1>
 <p>滚动条的宽度在 14 ~ 19px 之间，根据操作系统不同</p>
 <h1 id="jquery-制作-tab">jQuery 制作 Tab</h1>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">$tabBar.on(<span class="string">&#x27;click&#x27;</span>, <span class="string">&#x27;li&#x27;</span>, <span class="function"><span class="params">e</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> $li = $(e.currentTarget)</span><br><span class="line">  $li</span><br><span class="line">    .addClass(<span class="string">&#x27;selected&#x27;</span>)</span><br><span class="line">    .siblings()</span><br><span class="line">    .removeClass(<span class="string">&#x27;selected&#x27;</span>)</span><br><span class="line">  <span class="keyword">const</span> index = $li.index()</span><br><span class="line">  $tabContent</span><br><span class="line">    .children()</span><br><span class="line">    .eq(index)</span><br><span class="line">    .addClass(<span class="string">&#x27;active&#x27;</span>) <span class="comment">// 一定不要用.css 和.show，样式和行为分离</span></span><br><span class="line">    .siblings()</span><br><span class="line">    .removeClass(<span class="string">&#x27;active&#x27;</span>)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">$tabBar.children().eq(<span class="number">0</span>).trigger(<span class="string">&#x27;click&#x27;</span>)  <span class="comment">// 默认触发第一个</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">$tabBar.<span class="title function_">on</span>(<span class="string">&#x27;click&#x27;</span>, <span class="string">&#x27;li&#x27;</span>, <span class="function"><span class="params">e</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> $li = $(e.<span class="property">currentTarget</span>)</span><br><span class="line">  $li</span><br><span class="line">    .<span class="title function_">addClass</span>(<span class="string">&#x27;selected&#x27;</span>)</span><br><span class="line">    .<span class="title function_">siblings</span>()</span><br><span class="line">    .<span class="title function_">removeClass</span>(<span class="string">&#x27;selected&#x27;</span>)</span><br><span class="line">  <span class="keyword">const</span> index = $li.<span class="title function_">index</span>()</span><br><span class="line">  $tabContent</span><br><span class="line">    .<span class="title function_">children</span>()</span><br><span class="line">    .<span class="title function_">eq</span>(index)</span><br><span class="line">    .<span class="title function_">addClass</span>(<span class="string">&#x27;active&#x27;</span>) <span class="comment">// 一定不要用.css 和.show，样式和行为分离</span></span><br><span class="line">    .<span class="title function_">siblings</span>()</span><br><span class="line">    .<span class="title function_">removeClass</span>(<span class="string">&#x27;active&#x27;</span>)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">$tabBar.<span class="title function_">children</span>().<span class="title function_">eq</span>(<span class="number">0</span>).<span class="title function_">trigger</span>(<span class="string">&#x27;click&#x27;</span>)  <span class="comment">// 默认触发第一个</span></span><br></pre></td></tr></table></figure>
 <h1 id="jquery-如果有-class-就删掉没有就加上">jQuery 如果有 class 就删掉，没有就加上</h1>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$square.on(<span class="string">&#x27;click&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  $square.toggleClass(<span class="string">&#x27;active&#x27;</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$square.<span class="title function_">on</span>(<span class="string">&#x27;click&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  $square.<span class="title function_">toggleClass</span>(<span class="string">&#x27;active&#x27;</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 <h1 id="js-的代码不能以括号开头">JS 的代码不能以括号开头</h1>
 <h1 id="方法-和-函数">*<strong>方法</strong> 和 <strong>函数</strong></h1>
 <ul>
@@ -287,7 +287,7 @@
 <li>figma</li>
 </ul>
 <h1 id="promise">Promise</h1>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Promise</span>.reject(<span class="string">&#x27;error&#x27;</span>)</span><br><span class="line">  .then( <span class="function">()=&gt;</span>&#123;<span class="built_in">console</span>.log(<span class="string">&#x27;success1&#x27;</span>)&#125;, <span class="function">()=&gt;</span>&#123;<span class="built_in">console</span>.log(<span class="string">&#x27;error1&#x27;</span>)&#125; )</span><br><span class="line">  .then( <span class="function">()=&gt;</span>&#123;<span class="built_in">console</span>.log(<span class="string">&#x27;success2&#x27;</span>)&#125;, <span class="function">()=&gt;</span>&#123;<span class="built_in">console</span>.log(<span class="string">&#x27;error2&#x27;</span>)&#125; )</span><br><span class="line"><span class="comment">// error1 -&gt; success2</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">Promise</span>.<span class="title function_">reject</span>(<span class="string">&#x27;error&#x27;</span>)</span><br><span class="line">  .<span class="title function_">then</span>( <span class="function">()=&gt;</span>&#123;<span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;success1&#x27;</span>)&#125;, <span class="function">()=&gt;</span>&#123;<span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;error1&#x27;</span>)&#125; )</span><br><span class="line">  .<span class="title function_">then</span>( <span class="function">()=&gt;</span>&#123;<span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;success2&#x27;</span>)&#125;, <span class="function">()=&gt;</span>&#123;<span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;error2&#x27;</span>)&#125; )</span><br><span class="line"><span class="comment">// error1 -&gt; success2</span></span><br></pre></td></tr></table></figure>
 <h1 id="新建一个项目要考虑哪些东西">新建一个项目要考虑哪些东西？</h1>
 <ul>
 <li>创建仓库</li>
@@ -317,7 +317,7 @@
 <li>为何用 redis 来存 session？session 访问频繁，对性能要求高；不用考虑断电数据丢失的问题；session 数据量不会太大</li>
 </ul>
 <h1 id="vue-的渲染过程">Vue 的渲染过程</h1>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 普通的同步渲染过程</span></span><br><span class="line"><span class="keyword">const</span> div = <span class="built_in">document</span>.createElement(<span class="string">&#x27;div&#x27;</span>)</span><br><span class="line"><span class="keyword">const</span> child = <span class="built_in">document</span>.createElement(<span class="string">&#x27;div&#x27;</span>)</span><br><span class="line">div.appendChild(child) <span class="comment">// -&gt; Vue.$mounted 调用，$mounted 是异步的，队列 1</span></span><br><span class="line">body.appendChild(div) <span class="comment">// -&gt; Vue.$mounted 调用，$mounted 是异步的，队列 2</span></span><br><span class="line"><span class="built_in">console</span>.log(div.outerHTML)</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 普通的同步渲染过程</span></span><br><span class="line"><span class="keyword">const</span> div = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&#x27;div&#x27;</span>)</span><br><span class="line"><span class="keyword">const</span> child = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&#x27;div&#x27;</span>)</span><br><span class="line">div.<span class="title function_">appendChild</span>(child) <span class="comment">// -&gt; Vue.$mounted 调用，$mounted 是异步的，队列 1</span></span><br><span class="line">body.<span class="title function_">appendChild</span>(div) <span class="comment">// -&gt; Vue.$mounted 调用，$mounted 是异步的，队列 2</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(div.<span class="property">outerHTML</span>)</span><br></pre></td></tr></table></figure>
 <h1 id="不能让-a-更新-b-的同时-b-更新-a">不能让 A —更新—&gt; B 的同时 B —更新—&gt; A</h1>
 <h1 id="造轮子">造轮子</h1>
 <ol type="1">
@@ -333,7 +333,7 @@
 <h1 id="url-和-uri">URL 和 URI？</h1>
 <p>URL 实际上是 URI 的一个子集，除识别资源外还提供定位资源的方法。</p>
 <p>下面是一个 URI 的组成：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">                    hierarchical part</span><br><span class="line">        ┌───────────────────┴─────────────────────┐</span><br><span class="line">                    authority               path</span><br><span class="line">        ┌───────────────┴───────────────┐┌───┴────┐</span><br><span class="line">  abc://username:password@example.com:123/path/data?key=value&amp;key2=value2#fragid1</span><br><span class="line">  └┬┘   └───────┬───────┘ └────┬────┘ └┬┘           └─────────┬─────────┘ └──┬──┘</span><br><span class="line">scheme  user information     host     port                  query         fragment</span><br><span class="line"></span><br><span class="line">  urn:example:mammal:monotreme:echidna</span><br><span class="line">  └┬┘ └──────────────┬───────────────┘</span><br><span class="line">scheme              path</span><br></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">                    hierarchical part</span><br><span class="line">        ┌───────────────────┴─────────────────────┐</span><br><span class="line">                    authority               path</span><br><span class="line">        ┌───────────────┴───────────────┐┌───┴────┐</span><br><span class="line">  abc://username:password@example.com:123/path/data?key=value&amp;key2=value2#fragid1</span><br><span class="line">  └┬┘   └───────┬───────┘ └────┬────┘ └┬┘           └─────────┬─────────┘ └──┬──┘</span><br><span class="line">scheme  user information     host     port                  query         fragment</span><br><span class="line"></span><br><span class="line">  urn:example:mammal:monotreme:echidna</span><br><span class="line">  └┬┘ └──────────────┬───────────────┘</span><br><span class="line">scheme              path</span><br></pre></td></tr></table></figure>
 <p>举一个我们常见的 URL（URI） 的例子：</p>
 <p>https://zh.wikipedia.org/w/index.php?title=Special:随机页面#5</p>
 <ol type="1">
@@ -381,8 +381,8 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/hais-notebook/2020/02/02/React-PropsState/" rel="prev" title="React Props & State">
-                  <i class="fa fa-chevron-left"></i> React Props & State
+                <a href="/hais-notebook/2020/02/02/React-Advanced/" rel="prev" title="React Advanced">
+                  <i class="fa fa-chevron-left"></i> React Advanced
                 </a>
             </div>
             <div class="post-nav-item">
@@ -409,7 +409,7 @@
 
 <div class="copyright">
   &copy; 
-  <span itemprop="copyrightYear">2021</span>
+  <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

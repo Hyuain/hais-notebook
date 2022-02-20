@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="generator" content="Hexo 5.4.1">
 
 
   <link rel="apple-touch-icon" sizes="180x180" href="/hais-notebook/images/apple-touch-icon.png">
@@ -196,7 +196,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/hais-notebook/archives/">
         
-          <span class="site-state-item-count">93</span>
+          <span class="site-state-item-count">94</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -209,7 +209,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/hais-notebook/tags/">
           
-        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-count">22</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -284,7 +284,7 @@
         </span>
           ，
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/hais-notebook/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/%E6%A6%82%E5%BF%B5/" itemprop="url" rel="index"><span itemprop="name">概念</span></a>
+          <a href="/hais-notebook/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">计算机网络</span></a>
         </span>
     </span>
 
@@ -358,15 +358,15 @@
 </blockquote>
 <h3 id="http-报文结构">HTTP 报文结构</h3>
 <h4 id="请求报文">请求报文</h4>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">【请求行】POST（请求方法） /webTours/login.pl（请求 URI） HTTP/1.1（HTTP 协议及版本）</span><br><span class="line">【请求头】用键值对来传递参数，包括 Host、Accept、Content-Type 等</span><br><span class="line"></span><br><span class="line">【请求体】</span><br></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">【请求行】POST（请求方法） /webTours/login.pl（请求 URI） HTTP/1.1（HTTP 协议及版本）</span><br><span class="line">【请求头】用键值对来传递参数，包括 Host、Accept、Content-Type 等</span><br><span class="line"></span><br><span class="line">【请求体】</span><br></pre></td></tr></table></figure>
 <p>可以用 curl 构造请求：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">curl -X -POST <span class="comment"># 设置请求动词</span></span><br><span class="line">curl -H <span class="string">&#x27;Accept: text/html&#x27;</span> <span class="comment"># -H 也可以写成 --header</span></span><br><span class="line">curl -H <span class="string">&#x27;Content-Type: text/plain;charset=utf-8&#x27;</span> -d <span class="string">&#x27;请求体内容&#x27;</span> <span class="comment"># -d 也可以写成 --data</span></span><br></pre></td></tr></table></figure>
 <p>可以用 Node.js 读取请求：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">request.method</span><br><span class="line">request.url <span class="comment">// 路径，带参数</span></span><br><span class="line">request.path <span class="comment">// 纯路径</span></span><br><span class="line">request.query <span class="comment">// 只有查询参数</span></span><br><span class="line">request.headers[<span class="string">&#x27;Accept&#x27;</span>]</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">request.<span class="property">method</span></span><br><span class="line">request.<span class="property">url</span> <span class="comment">// 路径，带参数</span></span><br><span class="line">request.<span class="property">path</span> <span class="comment">// 纯路径</span></span><br><span class="line">request.<span class="property">query</span> <span class="comment">// 只有查询参数</span></span><br><span class="line">request.<span class="property">headers</span>[<span class="string">&#x27;Accept&#x27;</span>]</span><br></pre></td></tr></table></figure>
 <h4 id="响应报文">响应报文</h4>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">【响应行】HTTP/1.1（报文协议及版本） 200 Ok（状态码及状态描述）</span><br><span class="line">【响应头】</span><br><span class="line"></span><br><span class="line">【响应体】</span><br></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">【响应行】HTTP/1.1（报文协议及版本） 200 Ok（状态码及状态描述）</span><br><span class="line">【响应头】</span><br><span class="line"></span><br><span class="line">【响应体】</span><br></pre></td></tr></table></figure>
 <p>可以用 Node.js 设置响应：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">response.statusCode = <span class="number">200</span></span><br><span class="line">response.setHeader(<span class="string">&#x27;Content-Type&#x27;</span>, <span class="string">&#x27;text/html&#x27;</span>)</span><br><span class="line">response.write(<span class="string">&#x27;内容&#x27;</span>) <span class="comment">// 内容可以追加</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">response.<span class="property">statusCode</span> = <span class="number">200</span></span><br><span class="line">response.<span class="title function_">setHeader</span>(<span class="string">&#x27;Content-Type&#x27;</span>, <span class="string">&#x27;text/html&#x27;</span>)</span><br><span class="line">response.<span class="title function_">write</span>(<span class="string">&#x27;内容&#x27;</span>) <span class="comment">// 内容可以追加</span></span><br></pre></td></tr></table></figure>
 <div class="note warning"><p>注意 <code>path</code> 都是以 <code>/</code> 开头的</p>
 </div>
 <h4 id="报文头">报文头</h4>
@@ -622,10 +622,10 @@
 <p>主要是通过请求头中的 <strong>Range</strong> 和响应头中的 <strong>Content-Range</strong> 实现的，并且若使用断点续传模式返回的状态码都是 206 Partial Content</p>
 <h4 id="range">Range</h4>
 <p>用于请求头中，指定第一个字节的位置和最后一个字节的位置：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Range:(unit=first byte pos)-[last byte pos]</span><br><span class="line">Range:bytes=0-499</span><br><span class="line">Range:bytes=-500</span><br><span class="line">Range:bytes=500-</span><br><span class="line">Range:bytes=500-600,601-999</span><br></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Range:(unit=first byte pos)-[last byte pos]</span><br><span class="line">Range:bytes=0-499</span><br><span class="line">Range:bytes=-500</span><br><span class="line">Range:bytes=500-</span><br><span class="line">Range:bytes=500-600,601-999</span><br></pre></td></tr></table></figure>
 <h4 id="content-range">Content-Range</h4>
 <p>用于响应头中，返回当前接受的范围和文件总大小：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Content-Range:bytes(unit first byte pos)-[last byte pos]/[entity length]</span><br></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Content-Range:bytes(unit first byte pos)-[last byte pos]/[entity length]</span><br></pre></td></tr></table></figure>
 <h2 id="https">HTTPS</h2>
 <h3 id="数字证书">数字证书</h3>
 <h4 id="对称加密与非对称加密">对称加密与非对称加密</h4>
@@ -692,7 +692,7 @@
 <p>HTTP 的生命周期是由 Request/Response 确定的，一个 Request 与 一个 Response 对应，且 Response 是被动的。</p>
 <p>WebSocket 是持久化协议，</p>
 <p>一个典型的 WebSocket 握手：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">GET /chat HTTP/1.1</span><br><span class="line">Host: server.example.com</span><br><span class="line">Upgrade: websocket</span><br><span class="line">Connection: Upgrade</span><br><span class="line">Sec-WebSocket-Key: x3JJHMbDL1EzLkh9GBhXDw==   浏览器随机生成的 Base64</span><br><span class="line">Sec-WebSocket-Protocol: chat, superchat  用来区分同一个 URL 下不同的服务所需要的协议 </span><br><span class="line">Sec-WebSocket-Version: 13</span><br><span class="line">Origin: http://example.com</span><br></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">GET /chat HTTP/1.1</span><br><span class="line">Host: server.example.com</span><br><span class="line">Upgrade: websocket</span><br><span class="line">Connection: Upgrade</span><br><span class="line">Sec-WebSocket-Key: x3JJHMbDL1EzLkh9GBhXDw==   浏览器随机生成的 Base64</span><br><span class="line">Sec-WebSocket-Protocol: chat, superchat  用来区分同一个 URL 下不同的服务所需要的协议 </span><br><span class="line">Sec-WebSocket-Version: 13</span><br><span class="line">Origin: http://example.com</span><br></pre></td></tr></table></figure>
 <p>传统的轮询方式：</p>
 <ul>
 <li>AJAX 轮询：浏览器每隔几秒发一次请求，询问服务器有没有新消息</li>
@@ -957,7 +957,7 @@
 <p>在受害者访问有这个 img 的页面之后，浏览器会自动向 <code>http://bank.example/withraw?amount=10000&amp;for=hacker</code> 发送请求</p>
 <h4 id="post-类型的-csrf">POST 类型的 CSRF</h4>
 <p>这类攻击通常是使用一个自动提交的表单：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">&quot;http://bank.example/withdraw&quot;</span> <span class="attr">method</span>=<span class="string">&quot;POST&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;hidden&quot;</span> <span class="attr">name</span>=<span class="string">&quot;account&quot;</span> <span class="attr">value</span>=<span class="string">&quot;xiaoming&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;hidden&quot;</span> <span class="attr">name</span>=<span class="string">&quot;amount&quot;</span> <span class="attr">value</span>=<span class="string">&quot;10000&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;hidden&quot;</span> <span class="attr">name</span>=<span class="string">&quot;for&quot;</span> <span class="attr">value</span>=<span class="string">&quot;hacker&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="javascript"></span></span><br><span class="line"><span class="javascript">  <span class="built_in">document</span>.forms[<span class="number">0</span>].submit()</span></span><br><span class="line"><span class="javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">&quot;http://bank.example/withdraw&quot;</span> <span class="attr">method</span>=<span class="string">&quot;POST&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;hidden&quot;</span> <span class="attr">name</span>=<span class="string">&quot;account&quot;</span> <span class="attr">value</span>=<span class="string">&quot;xiaoming&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;hidden&quot;</span> <span class="attr">name</span>=<span class="string">&quot;amount&quot;</span> <span class="attr">value</span>=<span class="string">&quot;10000&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;hidden&quot;</span> <span class="attr">name</span>=<span class="string">&quot;for&quot;</span> <span class="attr">value</span>=<span class="string">&quot;hacker&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="variable language_">document</span>.<span class="property">forms</span>[<span class="number">0</span>].<span class="title function_">submit</span>()</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <h4 id="链接类型的-csrf">链接类型的 CSRF</h4>
 <p>需要用户点击链接才会触发：</p>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;http://bank.example/withraw?amount=10000&amp;for=hacker&quot;</span> <span class="attr">target</span>=<span class="string">&quot;_blank&quot;</span>&gt;</span></span><br><span class="line">重磅消息！！</span><br><span class="line"><span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br></pre></td></tr></table></figure>
@@ -1077,7 +1077,7 @@
 <p>常用的可选项有： - Timestamp：TCP 时间戳 - MSS：TCP 允许的从对方接收的最大报文段 - SACK：选择确认选项 - Window Scale：窗口缩放</p>
 <h5 id="timestamp">Timestamp</h5>
 <p>Timestamp 一共占 10 个字节：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kind(1 Byte) + length(1 Byte) + info(8 Bytes)</span><br></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kind(1 Byte) + length(1 Byte) + info(8 Bytes)</span><br></pre></td></tr></table></figure>
 <p>其中 <code>kind=8</code> <code>length=10</code>，<code>info</code> 由 <code>timestamp</code> 和 <code>timestamp echo</code> 两部分构成，各占四个字节</p>
 <p>TCP 的时间戳主要解决两个问题： - 计算往返时延（RTT, Round-Trip Time） - 防止序列号回绕</p>
 <h6 id="计算-rtt">计算 RTT</h6>
@@ -1115,9 +1115,9 @@
 <blockquote>
 <p>平滑往返时间（SRTT, Smoothed Round-Trip Time）是根据 RTT 和之前的 SRTT 计算出来的一个值：</p>
 </blockquote>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SRTT = (α * SRTT) + ((1 - α) * RTT)</span><br><span class="line">初始的 SRTT 为 0</span><br></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SRTT = (α * SRTT) + ((1 - α) * RTT)</span><br><span class="line">初始的 SRTT 为 0</span><br></pre></td></tr></table></figure>
 <p>α 即为 <strong>平滑因子</strong>，建议值是 0.8，范围是 0.8 ~ 0.9</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">RTO = min(ubound, max(lbound, β * SRTT))</span><br></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">RTO = min(ubound, max(lbound, β * SRTT))</span><br></pre></td></tr></table></figure>
 <p>其中，β 是 <strong>加权因子</strong>，一般为 1.3 ~ 2.0，<strong>lbound 是 下界</strong>，<strong>ubound 是上界</strong></p>
 <p>在 RTT 变化较大的地方不太适用，因为 RTT 对 RTO 影响太小</p>
 <h4 id="标准方法">标准方法</h4>
@@ -1125,17 +1125,17 @@
 <ol type="1">
 <li><strong>计算 SRTT</strong>：</li>
 </ol>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SRTT = (α * SRTT) + ((1 - α) * RTT)</span><br></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SRTT = (α * SRTT) + ((1 - α) * RTT)</span><br></pre></td></tr></table></figure>
 <p>α 的建议值是 <strong>0.125</strong></p>
 <ol start="2" type="1">
 <li>**计算中间变量 RTTVAR（Round-Trip Time Variation）</li>
 </ol>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">RTTVAR = (1 - β) * RTTVAR + β * (|RTT - SRTT|)</span><br></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">RTTVAR = (1 - β) * RTTVAR + β * (|RTT - SRTT|)</span><br></pre></td></tr></table></figure>
 <p>β 的建议值是 *0.25**</p>
 <ol start="3" type="1">
 <li>计算 RTO</li>
 </ol>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">RTO = µ * SRTT + ∂ * RTTVAR </span><br></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">RTO = µ * SRTT + ∂ * RTTVAR </span><br></pre></td></tr></table></figure>
 <p>µ 建议值取 1, ∂ 建议值取 4</p>
 <h3 id="tcp-流量控制">TCP 流量控制</h3>
 <p>TCP 会把需要发送的数据放到 <strong>发送缓存区</strong>，需要接收的数据放到 <strong>接收缓存区</strong></p>
@@ -1163,7 +1163,7 @@
 <h4 id="拥塞窗口">拥塞窗口</h4>
 <p>指的是目前自己还能传输的数据量大小，与上面的接收窗口不同，是 <strong>发送端</strong> 的限制</p>
 <p>发送窗口最终的大小取 <strong>接收窗口</strong> 和 <strong>拥塞窗口</strong> 中的小值</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">发送窗口大小 = min(RWND, CWND)</span><br></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">发送窗口大小 = min(RWND, CWND)</span><br></pre></td></tr></table></figure>
 <h3 id="慢启动">慢启动</h3>
 <p>由于刚接入网络传输数据的时候，并不知道网络的状态，所以不能操之过急，拥塞控制会采用保守的算法来慢慢适应网络</p>
 <ul>
@@ -1253,7 +1253,7 @@
 
 <div class="copyright">
   &copy; 
-  <span itemprop="copyrightYear">2021</span>
+  <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

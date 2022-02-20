@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="generator" content="Hexo 5.4.1">
 
 
   <link rel="apple-touch-icon" sizes="180x180" href="/hais-notebook/images/apple-touch-icon.png">
@@ -159,7 +159,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/hais-notebook/archives/">
         
-          <span class="site-state-item-count">93</span>
+          <span class="site-state-item-count">94</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -172,7 +172,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/hais-notebook/tags/">
           
-        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-count">22</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -310,7 +310,7 @@
 </ol>
 <h1 id="本地构建-rails-镜像">本地构建 Rails 镜像</h1>
 <ol type="1">
-<li>创建 <code>Dockerfile</code>： <figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 从哪里下载镜像，可以指定目录</span></span><br><span class="line"><span class="keyword">FROM</span> ruby</span><br><span class="line"></span><br><span class="line"><span class="comment"># 工作目录</span></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="bash"> /usr/src/app</span></span><br><span class="line"><span class="comment"># 把源代码拷贝到这个镜像中</span></span><br><span class="line"><span class="keyword">COPY</span><span class="bash"> Gemfile .</span></span><br><span class="line"><span class="keyword">COPY</span><span class="bash"> Gemfile.lock .</span></span><br><span class="line"><span class="comment"># 在镜像中运行</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> gem sources --add https://gems.ruby-china.com/ --remove https://rubygems.org/</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> gem install bundler</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> bundle config mirror.https://rubygems.org https://gems.ruby-china.com</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> bundle install</span></span><br><span class="line"><span class="comment"># 将所有的文件都拷贝到这个镜像中</span></span><br><span class="line"><span class="keyword">COPY</span><span class="bash"> . .</span></span><br><span class="line"><span class="comment"># 更新 bin 目录</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> bundle <span class="built_in">exec</span> rake app:update:bin</span></span><br><span class="line"><span class="comment"># 暴露 3000 短开口</span></span><br><span class="line"><span class="keyword">EXPOSE</span> <span class="number">3000</span></span><br><span class="line"><span class="comment"># 入口命令</span></span><br><span class="line"><span class="keyword">CMD</span><span class="bash"> [ <span class="string">&quot;bin/rails&quot;</span>, <span class="string">&quot;server&quot;</span>, <span class="string">&quot;-b&quot;</span>,<span class="string">&quot;0.0.0.0&quot;</span>, <span class="string">&quot;-p&quot;</span>,<span class="string">&quot;3000&quot;</span>]</span></span><br></pre></td></tr></table></figure></li>
+<li>创建 <code>Dockerfile</code>： <figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 从哪里下载镜像，可以指定目录</span></span><br><span class="line"><span class="keyword">FROM</span> ruby</span><br><span class="line"></span><br><span class="line"><span class="comment"># 工作目录</span></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="language-bash"> /usr/src/app</span></span><br><span class="line"><span class="comment"># 把源代码拷贝到这个镜像中</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> Gemfile .</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> Gemfile.lock .</span></span><br><span class="line"><span class="comment"># 在镜像中运行</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> gem sources --add https://gems.ruby-china.com/ --remove https://rubygems.org/</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> gem install bundler</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> bundle config mirror.https://rubygems.org https://gems.ruby-china.com</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> bundle install</span></span><br><span class="line"><span class="comment"># 将所有的文件都拷贝到这个镜像中</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> . .</span></span><br><span class="line"><span class="comment"># 更新 bin 目录</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> bundle <span class="built_in">exec</span> rake app:update:bin</span></span><br><span class="line"><span class="comment"># 暴露 3000 短开口</span></span><br><span class="line"><span class="keyword">EXPOSE</span> <span class="number">3000</span></span><br><span class="line"><span class="comment"># 入口命令</span></span><br><span class="line"><span class="keyword">CMD</span><span class="language-bash"> [ <span class="string">&quot;bin/rails&quot;</span>, <span class="string">&quot;server&quot;</span>, <span class="string">&quot;-b&quot;</span>,<span class="string">&quot;0.0.0.0&quot;</span>, <span class="string">&quot;-p&quot;</span>,<span class="string">&quot;3000&quot;</span>]</span></span><br></pre></td></tr></table></figure></li>
 <li>将 <code>config/database.yml</code> 复制到 <code>config/database.sample.yml</code>，再把原来的 <code>config/database.yml</code> ignore 掉</li>
 <li><code>docker build -t harvey/rails-demo:0.1 .</code>，得到镜像 <code>harvey/rails-demo</code> 版本为 0.1</li>
 <li>运行刚刚得到的镜像：<code>docker run --net=host -p 3000:3000 harvey/rails-demo:0.1</code></li>
@@ -359,7 +359,7 @@
 
 <div class="copyright">
   &copy; 
-  <span itemprop="copyrightYear">2021</span>
+  <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

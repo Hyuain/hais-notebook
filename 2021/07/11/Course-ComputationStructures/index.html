@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hais-notebook/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/hais-notebook/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/hais-notebook/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/hais-notebook/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/hais-notebook/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;hyuain.github.io&quot;,&quot;root&quot;:&quot;&#x2F;hais-notebook&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;hais-notebook&#x2F;images&quot;,&quot;scheme&quot;:&quot;Gemini&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:true,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:false,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;搜索...&quot;,&quot;empty&quot;:&quot;没有找到任何搜索结果：${query}&quot;,&quot;hits_time&quot;:&quot;找到 ${hits} 个搜索结果（用时 ${time} 毫秒）&quot;,&quot;hits&quot;:&quot;找到 ${hits} 个搜索结果&quot;},&quot;path&quot;:&quot;&#x2F;hais-notebook&#x2F;search.xml&quot;,&quot;localsearch&quot;:{&quot;enable&quot;:true,&quot;trigger&quot;:&quot;auto&quot;,&quot;top_n_per_article&quot;:1,&quot;unescape&quot;:false,&quot;preload&quot;:false}}</script>
+<meta name="description" content="Computation Structures (6.004) From MIT OCW">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在线课程：计算机组成原理">
+<meta property="og:url" content="https://hyuain.github.io/hais-notebook/2021/07/11/Course-ComputationStructures/index.html">
+<meta property="og:site_name" content="Hais Notebook">
+<meta property="og:description" content="Computation Structures (6.004) From MIT OCW">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-1.png">
+<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-2.png">
+<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-3.png">
+<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-4.png">
+<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-5.png">
+<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-6.png">
+<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-7.png">
+<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-8.png">
+<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-9.png">
+<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-10.png">
+<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-11.png">
+<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-12.png">
+<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-13.png">
+<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-14.png">
+<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-15.png">
+<meta property="article:published_time" content="2021-07-11T11:49:12.000Z">
+<meta property="article:modified_time" content="2021-07-11T11:49:12.000Z">
+<meta property="article:author" content="Harvey Zhang">
+<meta property="article:tag" content="在线课程">
+<meta property="article:tag" content="计算机组成原理">
+<meta property="article:tag" content="计算机">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-1.png">
+
+
+<link rel="canonical" href="https://hyuain.github.io/hais-notebook/2021/07/11/Course-ComputationStructures/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;zh-CN&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;https:&#x2F;&#x2F;hyuain.github.io&#x2F;hais-notebook&#x2F;2021&#x2F;07&#x2F;11&#x2F;Course-ComputationStructures&#x2F;&quot;,&quot;path&quot;:&quot;2021&#x2F;07&#x2F;11&#x2F;Course-ComputationStructures&#x2F;&quot;,&quot;title&quot;:&quot;在线课程：计算机组成原理&quot;}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>在线课程：计算机组成原理 | Hais Notebook</title><script src="/hais-notebook/js/config.js"></script>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/hais-notebook/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/hais-notebook/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Hais Notebook</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/hais-notebook/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-tags"><a href="/hais-notebook/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/hais-notebook/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/hais-notebook/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E7%9A%84%E5%9F%BA%E7%A1%80-basic-of-information"><span class="nav-number">1.</span> <span class="nav-text">信息的基础 Basic Of Information</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%95%E4%B8%BA%E4%BF%A1%E6%81%AF-information"><span class="nav-number">1.1.</span> <span class="nav-text">何为信息 Information</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E9%87%8F%E5%8C%96%E4%BF%A1%E6%81%AF-quantifying-information"><span class="nav-number">1.2.</span> <span class="nav-text">如何量化信息 Quantifying Information</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E7%86%B5-entropy"><span class="nav-number">1.3.</span> <span class="nav-text">信息熵 Entropy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E7%A0%81-encoding"><span class="nav-number">1.4.</span> <span class="nav-text">编码 Encoding</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E9%95%BF%E7%BC%96%E7%A0%81-fixed-length-encoding"><span class="nav-number">1.4.1.</span> <span class="nav-text">定长编码 Fixed-length Encoding</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%96%E7%A0%81%E6%9C%89%E7%AC%A6%E5%8F%B7%E7%9A%84%E6%95%B0%E5%AD%97-encoding-signed-integers"><span class="nav-number">1.4.1.1.</span> <span class="nav-text">编码有符号的数字 Encoding Signed Integers</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%8C%E8%BF%9B%E5%88%B6%E8%A1%A5%E7%A0%81-twos-complement-encoding"><span class="nav-number">1.4.1.2.</span> <span class="nav-text">二进制补码 Two&#39;s Complement Encoding</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%98%E9%95%BF%E7%BC%96%E7%A0%81-variable-length-encoding"><span class="nav-number">1.4.2.</span> <span class="nav-text">变长编码 Variable-length Encoding</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9C%8D%E5%A4%AB%E6%9B%BC%E7%AE%97%E6%B3%95-huffmans-algorithm"><span class="nav-number">1.4.2.1.</span> <span class="nav-text">霍夫曼算法 Huffman&#39;s Algorithm</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%94%99%E8%AF%AF%E6%A0%A1%E9%AA%8C-error-detection-and-correction"><span class="nav-number">1.5.</span> <span class="nav-text">错误校验 Error Detection and Correction</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B1%89%E6%98%8E%E8%B7%9D%E7%A6%BB-hamming-distance"><span class="nav-number">1.5.1.</span> <span class="nav-text">汉明距离 Hamming Distance</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E7%82%B9%E9%94%99%E8%AF%AF-single-bit-error"><span class="nav-number">1.5.2.</span> <span class="nav-text">单点错误 Single-bit Error</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E7%82%B9%E9%94%99%E8%AF%AF-multi-bit-error"><span class="nav-number">1.5.3.</span> <span class="nav-text">多点错误 Multi-bit Error</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%94%99%E8%AF%AF%E6%A0%A1%E6%AD%A3-error-correction"><span class="nav-number">1.5.4.</span> <span class="nav-text">错误校正 Error Correction</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E5%AD%97%E7%9A%84%E6%8A%BD%E8%B1%A1-the-digital-abstraction"><span class="nav-number">2.</span> <span class="nav-text">数字的抽象 The Digital Abstraction</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%B5%E5%8E%8B%E8%BD%AC%E6%8D%A2%E7%89%B9%E6%80%A7-voltage-transfer-characteristic"><span class="nav-number">2.1.</span> <span class="nav-text">电压转换特性 Voltage Transfer Characteristic</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Harvey Zhang</p>
+  <div class="site-description" itemprop="description">海鲜酱的笔记本</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/hais-notebook/archives/">
+        
+          <span class="site-state-item-count">94</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/hais-notebook/categories/">
+          
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/hais-notebook/tags/">
+          
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2021/07/11/Course-ComputationStructures/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
+      <meta itemprop="name" content="Harvey Zhang">
+      <meta itemprop="description" content="海鲜酱的笔记本">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hais Notebook">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          在线课程：计算机组成原理
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-07-11 11:49:12" itemprop="dateCreated datePublished" datetime="2021-07-11T11:49:12+00:00">2021-07-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/" itemprop="url" rel="index"><span itemprop="name">计算机</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">计算机组成原理</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p><a target="_blank" rel="noopener" href="https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-004-computation-structures-spring-2017/index.htm">Computation Structures (6.004) From MIT OCW</a></p>
+<span id="more"></span>
+<h1 id="信息的基础-basic-of-information">信息的基础 Basic Of Information</h1>
+<h2 id="何为信息-information">何为信息 Information</h2>
+<blockquote>
+<p>信息可以 <strong>消除不确定性</strong></p>
+<p>Data communicated or received that <strong>resolves uncertainty</strong> about a particular fact or circumstances.</p>
+</blockquote>
+<p>比如，我们从 52 张扑克牌中选择一张，如果没有“信息”，那么就有 52 种可能性；但如果告诉你这是一张红桃，那么就只剩下 13 种可能性了——这就是信息。</p>
+<h2 id="如何量化信息-quantifying-information">如何量化信息 Quantifying Information</h2>
+<p>对于离散的随机变量 <span class="math inline">\(X\)</span></p>
+<ul>
+<li>有 <span class="math inline">\(N\)</span> 个可能的值：<span class="math inline">\(x_1\)</span>, <span class="math inline">\(x_2\)</span>, ..., <span class="math inline">\(x_n\)</span></li>
+<li>分别对应可能性：<span class="math inline">\(p_1\)</span>, <span class="math inline">\(p_2\)</span>, ..., <span class="math inline">\(p_n\)</span></li>
+</ul>
+<p>那么 <span class="math inline">\(x_i\)</span> 携带的信息量（如果将该信息用 0/1 来进行编码，需要的位数）就是： <span class="math display">\[
+I(x_i)=log_2(\frac 1{p_i})
+\]</span> 其中 <span class="math inline">\(\frac 1{p_i}\)</span> 衡量的是 <span class="math inline">\(x_i\)</span> 的不确定度。 <span class="math display">\[
+I(红桃)=log_2(\frac 1{\frac{13}{52}})=2 bits
+\]</span> 对于 N 选 M 类型的问题，可以写作： <span class="math display">\[
+I(x_i)=log_2(\frac 1{M\cdot(\frac 1N)})=log_2(\frac NM)bits
+\]</span> 有时候会得到 <span class="math inline">\(I\)</span> 包含小数点，比如 5.17，这表明为了编码一条信息，我们需要 6 bits，但如果编码 100 条，我们可能不需要 600 bits，而是 520 bits。</p>
+<blockquote>
+<p>由上述公式易得，如果某条信息对应的可能性越小，那么他的信息量就越多，就需要越多的 bits 来进行编码。</p>
+</blockquote>
+<h2 id="信息熵-entropy">信息熵 Entropy</h2>
+<blockquote>
+<p>信息熵 <span class="math inline">\(H(X)\)</span> 是每条信息的信息量的平均数</p>
+</blockquote>
+<p><span class="math display">\[
+H(x)=E(I(x))=\sum_{i=1}^N p_i \cdot log_2(\frac 1{p_i})
+\]</span></p>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-1.png" /></p>
+<p><span class="math inline">\(H(X)\)</span> 是我们对一段数据进行编码时，所需要的能完整表示其所携带的信息的最少 bits</p>
+<h2 id="编码-encoding">编码 Encoding</h2>
+<blockquote>
+<p>编码是数据与二进制数之间的 <strong>清晰（unambiguous）</strong> 映射</p>
+</blockquote>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-2.png" /></p>
+<p>一个二进制树：</p>
+<ol type="1">
+<li>所有的被编码的符号都位于该二进制树叶节点上</li>
+<li>从根节点到该符号位于的叶节点的路径，即为编码</li>
+</ol>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-3.png" /></p>
+<h3 id="定长编码-fixed-length-encoding">定长编码 Fixed-length Encoding</h3>
+<ol type="1">
+<li>所有选择的概率是相同的</li>
+<li>在二进制树中，每个符号到根节点的长度是相同的</li>
+<li>可以很方便地在一段信息的编码中找到指定的位置</li>
+<li>通常会比较低效</li>
+</ol>
+<p><span class="math display">\[
+H(x)=\sum_{i=1}^N \frac 1N \cdot log_2(\frac 1{\frac 1N})=log_2(N)
+\]</span></p>
+<p>例如：</p>
+<ol type="1">
+<li>4-bit 的十进制数的二进制编码：<span class="math inline">\(log_2(10)=3.322\)</span></li>
+<li>7-bit 的 ASCII：<span class="math inline">\(log_2(94)=6.555\)</span></li>
+</ol>
+<h4 id="编码有符号的数字-encoding-signed-integers">编码有符号的数字 Encoding Signed Integers</h4>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-4.png" /></p>
+<p>这个编码方式有两个问题：</p>
+<ol type="1">
+<li>出现了 +0 和 -0，这是无意义的</li>
+<li>除了加法运算之外，需要额外实现一套减法系统</li>
+</ol>
+<h4 id="二进制补码-twos-complement-encoding">二进制补码 Two's Complement Encoding</h4>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-5.png" /></p>
+<p>二进制补码就解决了上述两个问题。在二进制补码中，最高位 <strong>不是符号位</strong>，而是拥有一个 <strong>负的权重</strong>。</p>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-6.png" /></p>
+<ul>
+<li>通过二进制补码，我们可以额观察到， -1 和 1 相加为 0</li>
+<li>同时我们可以将 B-A 变为 B+(-A)，并且通过上述计算找出了 -A 的表达形式，即 (-1-A) + 1；-1 用二进制表示全部为 1，因此 (-1-A) 其实就是 <strong>按位取反</strong>。</li>
+</ul>
+<h3 id="变长编码-variable-length-encoding">变长编码 Variable-length Encoding</h3>
+<p>目标：将出现概率大的字符用尽可能短的编码来表示，将出现概率小的字符用长的编码来表示。</p>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-7.png" /></p>
+<h4 id="霍夫曼算法-huffmans-algorithm">霍夫曼算法 Huffman's Algorithm</h4>
+<ol type="1">
+<li>自底向上地考虑，先构建一颗二进制子树，他们的叶节点是概率最小的两个符号</li>
+<li>这棵子树的根节点的概率是这两个叶节点之和，然后在此基础上，使用概率第三小的符号添加新的子树</li>
+<li>以此类推，直到所有的符号都用完</li>
+</ol>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-8.png" /></p>
+<p>为了找到更有效的方法，我们可以进一步地考察组合的概率：</p>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-9.png" /></p>
+<h2 id="错误校验-error-detection-and-correction">错误校验 Error Detection and Correction</h2>
+<h3 id="汉明距离-hamming-distance">汉明距离 Hamming Distance</h3>
+<blockquote>
+<p>两个字符串对应位置不同的字符的个数。即将一个字符串变成另一个字符串所需要替换的字符个数</p>
+</blockquote>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-10.png" /></p>
+<h3 id="单点错误-single-bit-error">单点错误 Single-bit Error</h3>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-11.png" /></p>
+<p>对于只有一位的编码，汉明距离是 1。发生单点错误后的，我们无法知道到底有没有发生错误，因此需要添加一个奇偶校验位（parity bit），提高他的最小汉明距离，这样就能检测出是否有单点错误了。</p>
+<h3 id="多点错误-multi-bit-error">多点错误 Multi-bit Error</h3>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-12.png" /></p>
+<p>同样的，如果我们将汉明距离提升到 3，我们可以检测出两位的错误。为了检测出 <span class="math inline">\(E\)</span> 位的错误，我们需要将汉明距离提升至 <span class="math inline">\(E + 1\)</span></p>
+<h3 id="错误校正-error-correction">错误校正 Error Correction</h3>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-13.png" /></p>
+<p>以单点错误为例，如果汉明距离为 2，我们无法校正这个错误，我们只知道他错了，但是如果我们将汉明距离提升至 3，我们就能纠正这个错误的位。</p>
+<p>同理，为了校正 <span class="math inline">\(E\)</span> 位的错误，我们需要将汉明距离提升至 <span class="math inline">\(2E + 1\)</span></p>
+<h1 id="数字的抽象-the-digital-abstraction">数字的抽象 The Digital Abstraction</h1>
+<blockquote>
+<p>可以用电磁现象来传输数据，比如电压、相位、电流、频率</p>
+</blockquote>
+<p>我们可以用每个点的电压来保存一张黑白相片的信息，比如 0V 表示黑色、1V 表示白色、0.37V 表示 37% 灰阶。但这样的方式会使得数据容易在原器件的处理过程中损耗，因此在处理时需要进行数字抽象，大于一定电压为 1、小于一定电压为 0。</p>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-14.png" /></p>
+<p>并且，元件的输出需要比输入更加严格，以留出足够多的噪声余量。</p>
+<h2 id="电压转换特性-voltage-transfer-characteristic">电压转换特性 Voltage Transfer Characteristic</h2>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-15.png" /></p>
+<p>如图所示是一个缓冲器的 VTC，对于任意输入的比 <span class="math inline">\(V_{IL}\)</span> 小的值，需要得到一个比 <span class="math inline">\(V_{OL}\)</span> 小的值（因此大于 <span class="math inline">\(V_{OL}\)</span> 的值都是不允许的）；对于输入任意比 <span class="math inline">\(V_{IH}\)</span> 大的值，需要得到比 <span class="math inline">\(V_{OH}\)</span> 大的值（因此小于 <span class="math inline">\(V_{OH}\)</span> 的值都是不允许的），这样就得到了阴影部分的禁止区域。</p>
+<p>注意：</p>
+<ol type="1">
+<li>在 <span class="math inline">\(V_{IL} &lt; V_{IN} &lt; V_{IH}\)</span> 的区间内，VTC 可以是任意形状的</li>
+<li>中间的长方形一定是瘦长的，因为 <span class="math inline">\(V_{OH}-V_{OL}&gt;V_{IH}-V_{IL}\)</span>。因此 VTC 的斜率一定有某处是大于 1 的，并且整条 VTC 是非线性的</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/hais-notebook/tags/%E5%9C%A8%E7%BA%BF%E8%AF%BE%E7%A8%8B/" rel="tag"># 在线课程</a>
+              <a href="/hais-notebook/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/" rel="tag"># 计算机组成原理</a>
+              <a href="/hais-notebook/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" rel="tag"># 计算机</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2021/06/07/Collections-Metadata/" rel="prev" title="元编程">
+                  <i class="fa fa-chevron-left"></i> 元编程
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2021/07/11/Book-MetaprogrammingRuby/" rel="next" title="读书笔记：《Ruby 元编程》">
+                  读书笔记：《Ruby 元编程》 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/hais-notebook/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Harvey Zhang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/hais-notebook/js/utils.js"></script><script src="/hais-notebook/js/next-boot.js"></script>
+
+  
+<script src="/hais-notebook/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{&quot;enable&quot;:true,&quot;tags&quot;:&quot;none&quot;,&quot;js&quot;:{&quot;url&quot;:&quot;https:&#x2F;&#x2F;cdn.jsdelivr.net&#x2F;npm&#x2F;mathjax@3.1.4&#x2F;es5&#x2F;tex-mml-chtml.js&quot;,&quot;integrity&quot;:&quot;sha256-ncNI9OXOS5Ek4tzVYiOMmN&#x2F;KKCPZ6V0Cpv2P&#x2F;zHntiA&#x3D;&quot;}}</script>
+<script src="/hais-notebook/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

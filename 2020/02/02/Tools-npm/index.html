@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="generator" content="Hexo 5.4.1">
 
 
   <link rel="apple-touch-icon" sizes="180x180" href="/hais-notebook/images/apple-touch-icon.png">
@@ -162,7 +162,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/hais-notebook/archives/">
         
-          <span class="site-state-item-count">93</span>
+          <span class="site-state-item-count">94</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -175,7 +175,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/hais-notebook/tags/">
           
-        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-count">22</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -297,13 +297,13 @@
 <h3 id="peerdependencies">peerDependencies</h3>
 <p>表明如果想要使用这个包，需要的宿主环境所安装的包。</p>
 <p>比如在 <code>vuei</code> 的 <code>1.0.0-alpha.24</code> 版本中，有：</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;peerDependencies&quot;</span>: &#123;</span><br><span class="line">    <span class="attr">&quot;vue&quot;</span>: <span class="string">&quot;^2.5.16&quot;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;peerDependencies&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;vue&quot;</span><span class="punctuation">:</span> <span class="string">&quot;^2.5.16&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
 <p>表明如果在要使用该版本的 <code>vuei</code>，需要 <code>vue</code> 的版本 <code>&gt;=2.5.16</code> 且 <code>&lt;3.0.0</code>。</p>
 <p>在 npm3.x 以上的版本中，如果安装结束后宿主环境没有满足要求，就会在控制台打出警告。</p>
 <h3 id="bundleddependencies">bundledDependencies</h3>
 <p>如果想在本地保留一个完整的 npm 包或者想生成一个压缩文件来获取 npm 包，会用到这个 bundleDependencies。使用 <code>npm pack</code> 进行打包的时候会将 bundleDependencies 中的包一起打包，并在 <code>npm install</code> 的时候进行安装。</p>
 <p>比如：</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;my-npm-pack&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;version&quot;</span>: <span class="string">&quot;1.0.0&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;bundleDependencies&quot;</span>: [</span><br><span class="line">    <span class="string">&quot;renderized&quot;</span>,</span><br><span class="line">    <span class="string">&quot;super-streams&quot;</span></span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;my-npm-pack&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;version&quot;</span><span class="punctuation">:</span> <span class="string">&quot;1.0.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;bundleDependencies&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="string">&quot;renderized&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="string">&quot;super-streams&quot;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
 <p>当我们执行 <code>npm pack</code> 之后会生成 <code>my-npm-pack-1.0.0.tgz</code> 文件，该文件中包含 <code>renderized</code> 和 <code>super-streams</code> 依赖。当执行 <code>npm install my-npm-pack-1.0.0.tgz</code> 时，会自动安装这两个依赖。他们的版本需要在 dependencies 中指定。</p>
 <p>当使用 <code>npm publish</code> 来发布包的话，这个属性将不起作用。</p>
 <h3 id="optionaldependencies">optionalDependencies</h3>
@@ -342,20 +342,20 @@
 </ol>
 <h3 id="例1">例1</h3>
 <p>假设 <code>package&#123;dep&#125;</code> 结构代表包和包的依赖，现在有 <code>A&#123;B,C&#125;</code> <code>B&#123;C&#125;</code> <code>C&#123;D&#125;</code>，按照算法执行完毕之后，生成 <code>node_modules</code> 如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">A</span><br><span class="line">+-- B</span><br><span class="line">+-- C</span><br><span class="line">+-- D</span><br></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">A</span><br><span class="line">+-- B</span><br><span class="line">+-- C</span><br><span class="line">+-- D</span><br></pre></td></tr></table></figure>
 <p>在安装 <code>B</code> 的依赖——<code>C</code> 的时候，发现顶层已经有 <code>C</code> 了，于是不会再在 <code>B</code> 的 <code>node_modules</code> 中再次安装；安装 <code>D</code> 的时候发现顶层没有 <code>D</code>，于是就将 <code>D</code> 安装在顶层。</p>
 <h3 id="例2">例2</h3>
 <p>当我们使用 <code>A&#123;B,C&#125;</code> <code>B&#123;C, D@1&#125;</code> <code>C&#123;D@2&#125;</code> 这样的依赖关系，产生的结果如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">A</span><br><span class="line">+-- B</span><br><span class="line">+-- C</span><br><span class="line">    +-- D@2</span><br><span class="line">+-- D@1</span><br></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">A</span><br><span class="line">+-- B</span><br><span class="line">+-- C</span><br><span class="line">    +-- D@2</span><br><span class="line">+-- D@1</span><br></pre></td></tr></table></figure>
 <p><code>B</code> 依赖 <code>D@1</code>，安装时发现顶层没有，就会把 <code>D@1</code> 装在顶层；<code>C</code> 又依赖了 <code>D@2</code>，但安装 <code>D@2</code> 的时候发现顶层已经有了，npm 不允许同层存在两个名字相同的包，于是就将 <code>D@2</code> 装在了 <code>C</code> 自己的 <code>node_modules</code> 中。</p>
 <p>模块安装的顺序会影响当存在相同依赖时，哪个版本会被安装在顶层。首先是项目中依赖的第一层包，然后这些包会被按照 a-z 的顺序依次进行安装（与在 <code>package.json</code> 中写入的顺序无关）。</p>
 <h3 id="例3">例3</h3>
 <p>有时，我们项目中所引用的包版本比较低，比如 <code>A&#123;B@1, C&#125;</code>，但 <code>C&#123;B@2&#125;</code>，首先安装的结构如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">A</span><br><span class="line">+-- B@1</span><br><span class="line">+-- C</span><br><span class="line">    +-- B@2</span><br></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">A</span><br><span class="line">+-- B@1</span><br><span class="line">+-- C</span><br><span class="line">    +-- B@2</span><br></pre></td></tr></table></figure>
 <p>然后我们将项目中的 <code>B</code> 升级到 <code>B@2</code>，理想结构应该如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">A</span><br><span class="line">+-- B@2</span><br><span class="line">+-- C</span><br></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">A</span><br><span class="line">+-- B@2</span><br><span class="line">+-- C</span><br></pre></td></tr></table></figure>
 <p>但现在 <code>package-lock.json</code> 却是这样的：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">A</span><br><span class="line">+-- B@2</span><br><span class="line">+-- C</span><br><span class="line">    +-- B@2</span><br></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">A</span><br><span class="line">+-- B@2</span><br><span class="line">+-- C</span><br><span class="line">    +-- B@2</span><br></pre></td></tr></table></figure>
 <p><code>B@2</code> 出现了两份，一份在顶层，一份在 <code>C</code> 中，这个时候需要我们手动执行 <code>npm dedupe</code> 进行去重操作。</p>
 <h2 id="npm-ci">npm ci</h2>
 <p>现在我们知道了，<code>package-lock.json</code> 在每次 <code>npm install</code> 的时候都可能发生更新，他只是精确描述了当前安装的 <code>node-moduels</code> 树。并不是说 <code>package-lock.json</code> 中是什么版本，我用 <code>npm install</code> 安装的就是什么版本——若想要达成这样的效果，需要使用 <a target="_blank" rel="noopener" href="https://docs.npmjs.com/cli/v7/commands/npm-ci"><code>npm ci</code></a></p>
@@ -419,7 +419,7 @@
 
 <div class="copyright">
   &copy; 
-  <span itemprop="copyrightYear">2021</span>
+  <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

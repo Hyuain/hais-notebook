@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="generator" content="Hexo 5.4.1">
 
 
   <link rel="apple-touch-icon" sizes="180x180" href="/hais-notebook/images/apple-touch-icon.png">
@@ -162,7 +162,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/hais-notebook/archives/">
         
-          <span class="site-state-item-count">93</span>
+          <span class="site-state-item-count">94</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -175,7 +175,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/hais-notebook/tags/">
           
-        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-count">22</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -272,7 +272,7 @@
 <p>微信小程序提供了 <code>createIntersectionObserver</code> API，这个 API 可以监听元素的相交情况。利用此 API，我们可以知道元素何时进入（需要被渲染出来的）可视区域，何时退出可视区域，从而控制其是否渲染。 此外，还需要记录每个元素的高度，并在元素不被渲染出来的时候，提供一个 minHeight，防止高度塌陷。</p>
 <h1 id="伪代码">伪代码</h1>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- 当元素没有实际渲染出来的时候，需要提供最小高度，防止高度塌陷 --&gt;</span><br><span class="line">&lt;view class=&quot;.virtual-item&quot; style=&quot;minHeight: &#123;&#123;isShow ? 0 : virtualHeight&#125;&#125;px&quot;&gt;</span><br><span class="line">    &lt;block wx:if=&quot;&#123;&#123;isShow&#125;&#125;&quot;&gt;</span><br><span class="line">        &lt;slot&gt;&lt;/slot&gt;</span><br><span class="line">    &lt;/block&gt;</span><br><span class="line">    &lt;block wx:else&gt;</span><br><span class="line">        &lt;slot name=&quot;skeleton&quot;&gt;&lt;/slot&gt;</span><br><span class="line">    &lt;/block&gt;</span><br><span class="line">&lt;/view&gt;</span><br></pre></td></tr></table></figure>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> intersectionObserver</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> ready = <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> margin = props.overRenderScreenCount * windowHeight</span><br><span class="line">  intersectionObserver = wx.createIntersectionObserver(&#123; <span class="attr">initialRatio</span>: <span class="number">0</span> &#125;)</span><br><span class="line">    .relativeToViewPort(&#123; <span class="attr">top</span>: margin, <span class="attr">bottom</span>: margin &#125;)</span><br><span class="line">    .observe(<span class="string">&quot;.virtual-item&quot;</span>, <span class="function">(<span class="params">res</span>) =&gt;</span> &#123;</span><br><span class="line">      data.isShow = res.intersectionRatio &gt; <span class="number">0</span></span><br><span class="line">      data.virtualHeight = res.boundingClientRect.height</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> detached = <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  intersectionObserver?.disonnect?.()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> intersectionObserver</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">ready</span> = (<span class="params"></span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> margin = props.<span class="property">overRenderScreenCount</span> * windowHeight</span><br><span class="line">  intersectionObserver = wx.<span class="title function_">createIntersectionObserver</span>(&#123; <span class="attr">initialRatio</span>: <span class="number">0</span> &#125;)</span><br><span class="line">    .<span class="title function_">relativeToViewPort</span>(&#123; <span class="attr">top</span>: margin, <span class="attr">bottom</span>: margin &#125;)</span><br><span class="line">    .<span class="title function_">observe</span>(<span class="string">&quot;.virtual-item&quot;</span>, <span class="function">(<span class="params">res</span>) =&gt;</span> &#123;</span><br><span class="line">      data.<span class="property">isShow</span> = res.<span class="property">intersectionRatio</span> &gt; <span class="number">0</span></span><br><span class="line">      data.<span class="property">virtualHeight</span> = res.<span class="property">boundingClientRect</span>.<span class="property">height</span></span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">detached</span> = (<span class="params"></span>) =&gt; &#123;</span><br><span class="line">  intersectionObserver?.<span class="property">disonnect</span>?.()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
     </div>
 
@@ -320,7 +320,7 @@
 
 <div class="copyright">
   &copy; 
-  <span itemprop="copyrightYear">2021</span>
+  <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

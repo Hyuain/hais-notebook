@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="generator" content="Hexo 5.4.1">
 
 
   <link rel="apple-touch-icon" sizes="180x180" href="/hais-notebook/images/apple-touch-icon.png">
@@ -161,7 +161,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/hais-notebook/archives/">
         
-          <span class="site-state-item-count">93</span>
+          <span class="site-state-item-count">94</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -174,7 +174,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/hais-notebook/tags/">
           
-        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-count">22</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -307,7 +307,7 @@
 <li>类组件的 <code>shouldComponentUpdate</code> 中可以对 props 和 state 进行浅比较（使用 <code>pureComponent</code> API，比较一层 key 和 value，类似于浅拷贝），也可以进行深比较（递归）</li>
 <li>函数组件使用 <code>memo</code> 方法可以进行肩比较，但是只比较了 props：</li>
 </ul>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Component</span>(<span class="params"></span>) </span>&#123; &#125;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> React.memo(Component)</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">Component</span>(<span class="params"></span>) &#123; &#125;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title class_">React</span>.<span class="title function_">memo</span>(<span class="title class_">Component</span>)</span><br></pre></td></tr></table></figure>
 <h2 id="immutable-数据结构">immutable 数据结构</h2>
 <p>immutable 的意义：浅比较缺点很明显，深比较有时候又比较浪费性能</p>
 <p>简单来说：</p>
@@ -321,17 +321,17 @@
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;fromJS&#125; <span class="keyword">from</span> <span class="string">&#x27;immutable&#x27;</span></span><br><span class="line"><span class="keyword">const</span> immutableState = fromJS (&#123;</span><br><span class="line">  <span class="attr">count</span>: <span class="number">0</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 <h4 id="tojs">toJS</h4>
 <p>将 immutable 对象转换为 JS 对象</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> jsObj = immutableState.toJS()</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> jsObj = immutableState.<span class="title function_">toJS</span>()</span><br></pre></td></tr></table></figure>
 <h4 id="getgetin">get/getIn</h4>
 <p>用来获取 immutable 对象属性</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> jsObj = &#123;<span class="attr">a</span>: <span class="number">1</span>&#125;</span><br><span class="line"><span class="keyword">let</span> res = jsObj.a</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> immutableObj = fromJS(jsObj)</span><br><span class="line"><span class="keyword">let</span> res = immutableObj.get(<span class="string">&#x27;a&#x27;</span>)</span><br></pre></td></tr></table></figure>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> jsObj = &#123;<span class="attr">a</span>:&#123;<span class="attr">b</span>: <span class="number">1</span>&#125;&#125;</span><br><span class="line"><span class="keyword">let</span> res = jsObj.a.b</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> immutableObj = fromJS(jsObj)</span><br><span class="line"><span class="keyword">let</span> res = immutableObj.getIn([<span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;b&#x27;</span>]) <span class="comment">// 传入一个数组</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> jsObj = &#123;<span class="attr">a</span>: <span class="number">1</span>&#125;</span><br><span class="line"><span class="keyword">let</span> res = jsObj.<span class="property">a</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> immutableObj = <span class="title function_">fromJS</span>(jsObj)</span><br><span class="line"><span class="keyword">let</span> res = immutableObj.<span class="title function_">get</span>(<span class="string">&#x27;a&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> jsObj = &#123;<span class="attr">a</span>:&#123;<span class="attr">b</span>: <span class="number">1</span>&#125;&#125;</span><br><span class="line"><span class="keyword">let</span> res = jsObj.<span class="property">a</span>.<span class="property">b</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> immutableObj = <span class="title function_">fromJS</span>(jsObj)</span><br><span class="line"><span class="keyword">let</span> res = immutableObj.<span class="title function_">getIn</span>([<span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;b&#x27;</span>]) <span class="comment">// 传入一个数组</span></span><br></pre></td></tr></table></figure>
 <h4 id="set">set</h4>
 <p>用来给 immutable 对象的属性赋值</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> immutableObj = fromJS(&#123;<span class="attr">a</span>: <span class="number">1</span>&#125;)</span><br><span class="line">immutableObj.set(<span class="string">&#x27;a&#x27;</span>, <span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> immutableObj = <span class="title function_">fromJS</span>(&#123;<span class="attr">a</span>: <span class="number">1</span>&#125;)</span><br><span class="line">immutableObj.<span class="title function_">set</span>(<span class="string">&#x27;a&#x27;</span>, <span class="number">2</span>)</span><br></pre></td></tr></table></figure>
 <h4 id="merge">merge</h4>
 <p>新旧数据对比，旧数据中不存在的属性直接添加，存在的属性用新数据覆盖</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> immutableObj = fromJS(&#123;<span class="attr">a</span>: <span class="number">1</span>&#125;)</span><br><span class="line">immutableObj.merge(&#123;</span><br><span class="line">  <span class="attr">a</span>: <span class="number">2</span>,</span><br><span class="line">  <span class="attr">b</span>: <span class="number">3</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> immutableObj = <span class="title function_">fromJS</span>(&#123;<span class="attr">a</span>: <span class="number">1</span>&#125;)</span><br><span class="line">immutableObj.<span class="title function_">merge</span>(&#123;</span><br><span class="line">  <span class="attr">a</span>: <span class="number">2</span>,</span><br><span class="line">  <span class="attr">b</span>: <span class="number">3</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 
     </div>
 
@@ -378,7 +378,7 @@
 
 <div class="copyright">
   &copy; 
-  <span itemprop="copyrightYear">2021</span>
+  <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

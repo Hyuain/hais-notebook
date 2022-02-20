@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="generator" content="Hexo 5.4.1">
 
 
   <link rel="apple-touch-icon" sizes="180x180" href="/hais-notebook/images/apple-touch-icon.png">
@@ -176,7 +176,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/hais-notebook/archives/">
         
-          <span class="site-state-item-count">93</span>
+          <span class="site-state-item-count">94</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -189,7 +189,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/hais-notebook/tags/">
           
-        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-count">22</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -415,11 +415,11 @@
 <p>当页面合成时，合成器线程会标记页面中有绑定事件处理器的区域为 <strong>非快速滚动区域（Non-Fast Scrollable Region）</strong>。如果这些区域发生事件，合成器线程就会先把事件发送给主线程，否则他就会直接合成新的帧。</p>
 <p><img src="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/21.png" /></p>
 <p>因此，我们需要注意全局事件绑定，比如有时候我们使用事件委托，将目标元素的事件发送给根元素 body 来进行处理：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">document</span>.body.addEventListener(<span class="string">&#x27;touchstart&#x27;</span>, <span class="function"><span class="params">event</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (event.target === area) &#123;</span><br><span class="line">    event.preventDefault()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">document</span>.<span class="property">body</span>.<span class="title function_">addEventListener</span>(<span class="string">&#x27;touchstart&#x27;</span>, <span class="function"><span class="params">event</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (event.<span class="property">target</span> === area) &#123;</span><br><span class="line">    event.<span class="title function_">preventDefault</span>()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 <p>在这段代码下，整个 body 被绑定了事件监听器，也就意味着整个页面都视为非快速滚动区域，合成器每次都需要与主线程通信并且等待反馈。</p>
 <p><img src="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/22.png" /></p>
 <p>我们为了提升性能可以这样改一下：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">document</span>.body.addEventListener(<span class="string">&#x27;touchstart&#x27;</span>, <span class="function"><span class="params">event</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (event.target === area) &#123;</span><br><span class="line">    <span class="comment">// 注意这时候就不能调用 preventDefault 了，因为合成器线程不会再等待主线程的反馈</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;, &#123; <span class="attr">passive</span>: <span class="literal">true</span> &#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">document</span>.<span class="property">body</span>.<span class="title function_">addEventListener</span>(<span class="string">&#x27;touchstart&#x27;</span>, <span class="function"><span class="params">event</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (event.<span class="property">target</span> === area) &#123;</span><br><span class="line">    <span class="comment">// 注意这时候就不能调用 preventDefault 了，因为合成器线程不会再等待主线程的反馈</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;, &#123; <span class="attr">passive</span>: <span class="literal">true</span> &#125;)</span><br></pre></td></tr></table></figure>
 <h2 id="查找事件对象-event-target">查找事件对象 Event Target</h2>
 <p>当事件没有发生在非快速滚动区域的时候，合成器线程会向主线程发送事件信息，主线程获取到事件信息之后会通过命中测试（Hit Test）去找到事件的目标对象——命中测试会遍历在绘制阶段生成的绘画记录（Paint Record）来找到包含事件发生坐标上的元素对象。</p>
 <p><img src="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/23.png" /></p>
@@ -474,7 +474,7 @@
 
 <div class="copyright">
   &copy; 
-  <span itemprop="copyrightYear">2021</span>
+  <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

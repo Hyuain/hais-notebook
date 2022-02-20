@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="generator" content="Hexo 5.4.1">
 
 
   <link rel="apple-touch-icon" sizes="180x180" href="/hais-notebook/images/apple-touch-icon.png">
@@ -159,7 +159,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/hais-notebook/archives/">
         
-          <span class="site-state-item-count">93</span>
+          <span class="site-state-item-count">94</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -172,7 +172,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/hais-notebook/tags/">
           
-        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-count">22</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -272,7 +272,7 @@
 <li>表达式一般都有值，语句可能有也可能没有</li>
 <li>语句一般会改变环境（声明、赋值），逗号表示语句没完</li>
 </ul>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 表达式</span></span><br><span class="line"><span class="number">1</span> + <span class="number">2</span>          <span class="comment">// 值为 3</span></span><br><span class="line">add(<span class="number">1</span>, <span class="number">2</span>)      <span class="comment">// 值为函数的返回值</span></span><br><span class="line"><span class="built_in">console</span>.log    <span class="comment">// 值为函数本身</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">3</span>) <span class="comment">// 值为函数的返回值：undefined</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 语句</span></span><br><span class="line"><span class="keyword">var</span> a = <span class="number">1</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 表达式</span></span><br><span class="line"><span class="number">1</span> + <span class="number">2</span>          <span class="comment">// 值为 3</span></span><br><span class="line"><span class="title function_">add</span>(<span class="number">1</span>, <span class="number">2</span>)      <span class="comment">// 值为函数的返回值</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="property">log</span>    <span class="comment">// 值为函数本身</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">3</span>) <span class="comment">// 值为函数的返回值：undefined</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 语句</span></span><br><span class="line"><span class="keyword">var</span> a = <span class="number">1</span></span><br></pre></td></tr></table></figure>
 <div class="note warning"><p><code>retrun</code> 后面不能接回车，否则相当于返回 <code>undefined</code></p>
 </div>
 <h2 id="标识符">标识符</h2>
@@ -281,12 +281,12 @@
 <p>简单来说就是把代码用大括号包在一起</p>
 <h2 id="section">&amp;&amp;</h2>
 <p>如果前面是 <strong>真的</strong>，就执行后面的（若前面是假的，表达式的值为前面；若前面是真的，表达式的值为后面）</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.f1 &amp;&amp; <span class="built_in">console</span>.log(<span class="string">&#x27;f1 存在&#x27;</span>)</span><br><span class="line"><span class="built_in">console</span> &amp;&amp; <span class="built_in">console</span>.log &amp;&amp; <span class="built_in">console</span>.log(<span class="string">&#x27;hi&#x27;</span>) <span class="comment">// 因为 IE 没有 console.log，所以可以这样写防止出错</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">window</span>.<span class="property">f1</span> &amp;&amp; <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;f1 存在&#x27;</span>)</span><br><span class="line"><span class="variable language_">console</span> &amp;&amp; <span class="variable language_">console</span>.<span class="property">log</span> &amp;&amp; <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;hi&#x27;</span>) <span class="comment">// 因为 IE 没有 console.log，所以可以这样写防止出错</span></span><br></pre></td></tr></table></figure>
 <h2 id="section-1">||</h2>
 <p>如果前面是 <strong>假的</strong>，就执行后面的</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a = a || <span class="number">100</span> <span class="comment">// 可以用于设置保底值</span></span><br></pre></td></tr></table></figure>
 <h2 id="for">for</h2>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++)&#123;</span><br><span class="line">  <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> <span class="built_in">console</span>.log(i))</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 5 5 5 5 5</span></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++)&#123;</span><br><span class="line">  <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> <span class="built_in">console</span>.log(i))</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 0 1 2 3 4</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++)&#123;</span><br><span class="line">  <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(i))</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 5 5 5 5 5</span></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++)&#123;</span><br><span class="line">  <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(i))</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 0 1 2 3 4</span></span><br></pre></td></tr></table></figure>
 <h2 id="label">label</h2>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123; <span class="attr">a</span>:<span class="number">1</span> &#125; <span class="comment">// a 是一个 label，值是 1</span></span><br></pre></td></tr></table></figure>
 
@@ -333,7 +333,7 @@
 
 <div class="copyright">
   &copy; 
-  <span itemprop="copyrightYear">2021</span>
+  <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

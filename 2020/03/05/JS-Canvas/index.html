@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="generator" content="Hexo 5.4.1">
 
 
   <link rel="apple-touch-icon" sizes="180x180" href="/hais-notebook/images/apple-touch-icon.png">
@@ -159,7 +159,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/hais-notebook/archives/">
         
-          <span class="site-state-item-count">93</span>
+          <span class="site-state-item-count">94</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -172,7 +172,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/hais-notebook/tags/">
           
-        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-count">22</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -322,7 +322,7 @@
 <h2 id="设置宽高">设置宽高</h2>
 <p>可以通过 HTML 或 JS 来设置，不能通过 CSS 设置，这会导致不可预料的缩放</p>
 <h2 id="获取-canvas-对象">获取 Canvas 对象</h2>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">canvas.getContext(contextType, contextAttributes)</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">canvas.<span class="title function_">getContext</span>(contextType, contextAttributes)</span><br></pre></td></tr></table></figure>
 <p><code>contextType</code> 是上下文类型，有这样几种： - <code>2d</code>：代表一个二维渲染上下文 - <code>webgl</code> 或 <code>experimental-webgl</code>：代表一个三维渲染上下文 - <code>webgl2</code> 或 <code>experimental-webgl2</code>：代表一个三维渲染上下文，并且只能在浏览器中实现 WebGL 版本 2（OpenGL ES 3.0）</p>
 <h2 id="绘制路径">绘制路径</h2>
 <table>
@@ -401,10 +401,10 @@
 </table>
 <h3 id="绘制曲线">绘制曲线</h3>
 <h4 id="arc">arc()</h4>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">context.arc(x, y, sAngle, eAangle, counterCloseWise)</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">context.<span class="title function_">arc</span>(x, y, sAngle, eAangle, counterCloseWise)</span><br></pre></td></tr></table></figure>
 <p><code>x</code> 和 <code>y</code> 指定了圆心坐标，<code>sAngle</code> 和 <code>eAngle</code> 分别为起始角和结束角，<code>counterCloseWise</code> 设置为 <code>true</code> 表示逆时针绘制</p>
 <h3 id="绘制直线">绘制直线</h3>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">moveTo(x, y) <span class="comment">// 把路径移动到画布中的指定点，不创建线条</span></span><br><span class="line">lineTo(x, y) <span class="comment">// 添加一个新点，然后在画布中创建从该点到最后指定点的线条</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">moveTo</span>(x, y) <span class="comment">// 把路径移动到画布中的指定点，不创建线条</span></span><br><span class="line"><span class="title function_">lineTo</span>(x, y) <span class="comment">// 添加一个新点，然后在画布中创建从该点到最后指定点的线条</span></span><br></pre></td></tr></table></figure>
 <div class="note warning"><p>如果没有 <code>moveTo</code>，那么第一次 <code>lineTo</code> 就视为 <code>moveTo</code></p>
 </div>
 <p>可以给绘制的直线添加样式：</p>
@@ -435,7 +435,7 @@
 </tbody>
 </table>
 <h3 id="绘制矩形">绘制矩形</h3>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">fillRect(x, y, width, height) <span class="comment">// 绘制一个实心矩形</span></span><br><span class="line">strokeRect(x, y, width, height) <span class="comment">// 绘制一个空心矩形</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">fillRect</span>(x, y, width, height) <span class="comment">// 绘制一个实心矩形</span></span><br><span class="line"><span class="title function_">strokeRect</span>(x, y, width, height) <span class="comment">// 绘制一个空心矩形</span></span><br></pre></td></tr></table></figure>
 <h3 id="颜色样式和阴影">颜色、样式和阴影</h3>
 <p>创建路径之后，可以设置样式属性，再使用 <code>fill()</code> 和 <code>stroke()</code> 进行填充或描边</p>
 <table>
@@ -501,7 +501,7 @@
 </tbody>
 </table>
 <p>主要使用到下面这个方法</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> grd = context.createLinerGradient(x0, y0, x1, y1)</span><br><span class="line">grd.addColorStop(stop, color) <span class="comment">// stop 是介于 0.0 ~ 1.0 之间的值</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> grd = context.<span class="title function_">createLinerGradient</span>(x0, y0, x1, y1)</span><br><span class="line">grd.<span class="title function_">addColorStop</span>(stop, color) <span class="comment">// stop 是介于 0.0 ~ 1.0 之间的值</span></span><br></pre></td></tr></table></figure>
 <h3 id="图形转换">图形转换</h3>
 <table>
 <thead>
@@ -535,7 +535,7 @@
 </table>
 <p>注意旋转实际上是对画布旋转，旋转之后所有的都会旋转</p>
 <h3 id="图形绘制">图形绘制</h3>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">drawImage(img, sx, sy, swidth, sheight, x, y, width, height)</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">drawImage</span>(img, sx, sy, swidth, sheight, x, y, width, height)</span><br></pre></td></tr></table></figure>
 <ul>
 <li><code>img</code>：规定要使用的图像、画布或视频</li>
 <li><code>sx</code>：可选。开始剪切的 x 坐标位置</li>
@@ -591,7 +591,7 @@
 
 <div class="copyright">
   &copy; 
-  <span itemprop="copyrightYear">2021</span>
+  <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

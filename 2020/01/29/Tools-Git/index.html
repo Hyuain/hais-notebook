@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="generator" content="Hexo 5.4.1">
 
 
   <link rel="apple-touch-icon" sizes="180x180" href="/hais-notebook/images/apple-touch-icon.png">
@@ -160,7 +160,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/hais-notebook/archives/">
         
-          <span class="site-state-item-count">93</span>
+          <span class="site-state-item-count">94</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -173,7 +173,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/hais-notebook/tags/">
           
-        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-count">22</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -340,9 +340,9 @@
 </table>
 <p><code>.gitignore</code> 文件中可以输路径来忽略不想提交的文件，比如 <code>node_modules</code> <code>DS_Store</code> <code>.idea</code> <code>.vscode</code></p>
 <h1 id="git-远程仓库">Git 远程仓库</h1>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建一个私钥和公钥</span></span><br><span class="line">ssh-keygen -t rsa -b 4096 -C [useremail@example.com]</span><br><span class="line">cat ~/.ssh/id_rsa.pub</span><br><span class="line"></span><br><span class="line"><span class="comment"># 测试</span></span><br><span class="line">ssh -T git@github.com</span><br><span class="line"></span><br><span class="line"><span class="comment"># 上传一个本地仓库</span></span><br><span class="line">git remote add origin [git@github.com:Hyuain/git-demo-1.git]</span><br><span class="line">git push -u origin master <span class="comment"># 一个新的分支需要写 -u 和后面的</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 下载一个远程仓库</span></span><br><span class="line">git <span class="built_in">clone</span></span><br><span class="line"><span class="comment"># git clone git@?/xxx.git：创建一个新目录，与 xxx 同名</span></span><br><span class="line"><span class="comment"># git clone git@?/xxx.git yyy：创建一个新目录，命名为 yyy</span></span><br><span class="line"><span class="comment"># git clone git@?/xxx.git .：不会新建目录，使用当前目录容纳代码和 .git</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 其他</span></span><br><span class="line"><span class="comment"># git stash：把文件藏起来</span></span><br><span class="line"><span class="comment"># git stash pop：再把文件取出来</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建一个私钥和公钥</span></span><br><span class="line">ssh-keygen -t rsa -b 4096 -C [useremail@example.com]</span><br><span class="line"><span class="built_in">cat</span> ~/.ssh/id_rsa.pub</span><br><span class="line"></span><br><span class="line"><span class="comment"># 测试</span></span><br><span class="line">ssh -T git@github.com</span><br><span class="line"></span><br><span class="line"><span class="comment"># 上传一个本地仓库</span></span><br><span class="line">git remote add origin [git@github.com:Hyuain/git-demo-1.git]</span><br><span class="line">git push -u origin master <span class="comment"># 一个新的分支需要写 -u 和后面的</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 下载一个远程仓库</span></span><br><span class="line">git <span class="built_in">clone</span></span><br><span class="line"><span class="comment"># git clone git@?/xxx.git：创建一个新目录，与 xxx 同名</span></span><br><span class="line"><span class="comment"># git clone git@?/xxx.git yyy：创建一个新目录，命名为 yyy</span></span><br><span class="line"><span class="comment"># git clone git@?/xxx.git .：不会新建目录，使用当前目录容纳代码和 .git</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 其他</span></span><br><span class="line"><span class="comment"># git stash：把文件藏起来</span></span><br><span class="line"><span class="comment"># git stash pop：再把文件取出来</span></span><br></pre></td></tr></table></figure>
 <h2 id="高级操作">高级操作</h2>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">touch ~/.bashrc</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;alias ga=&quot;git add&quot;&#x27;</span>&gt;&gt; ~/.bashrc</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;alias gc=&quot;git commit -v&quot;&#x27;</span>&gt;&gt; ~/.bashrc</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;alias gl=&quot;git pull&quot;&#x27;</span>&gt;&gt; ~/.bashrc</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;alias gp=&quot;git push&quot;&#x27;</span>&gt;&gt; ~/.bashrc</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;alias gco=&quot;git checkout&quot;&#x27;</span>&gt;&gt; ~/.bashrc</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;alias gst=&quot;git status -sb&quot;&#x27;</span>&gt;&gt; ~/.bashrc</span><br><span class="line"></span><br><span class="line">code ~/.bashrc</span><br><span class="line"><span class="comment"># 在文件最后加上</span></span><br><span class="line"><span class="built_in">alias</span> glog=<span class="string">&quot;git log --graph --pretty=format:&#x27;%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)&lt;%an&gt;%Creset&#x27; --abbrev-commit -- | less&quot;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">touch</span> ~/.bashrc</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;alias ga=&quot;git add&quot;&#x27;</span>&gt;&gt; ~/.bashrc</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;alias gc=&quot;git commit -v&quot;&#x27;</span>&gt;&gt; ~/.bashrc</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;alias gl=&quot;git pull&quot;&#x27;</span>&gt;&gt; ~/.bashrc</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;alias gp=&quot;git push&quot;&#x27;</span>&gt;&gt; ~/.bashrc</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;alias gco=&quot;git checkout&quot;&#x27;</span>&gt;&gt; ~/.bashrc</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;alias gst=&quot;git status -sb&quot;&#x27;</span>&gt;&gt; ~/.bashrc</span><br><span class="line"></span><br><span class="line">code ~/.bashrc</span><br><span class="line"><span class="comment"># 在文件最后加上</span></span><br><span class="line"><span class="built_in">alias</span> glog=<span class="string">&quot;git log --graph --pretty=format:&#x27;%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)&lt;%an&gt;%Creset&#x27; --abbrev-commit -- | less&quot;</span></span><br></pre></td></tr></table></figure>
 <h1 id="踩坑记录">踩坑记录</h1>
 <h2 id="git-log-中文乱码">git log 中文乱码</h2>
 <p>输入以下命令即可解决</p>
@@ -355,7 +355,7 @@
 <ol type="1">
 <li>在 <code>~/.ssh</code> 存放密钥（<code>id_rsa</code> 和 <code>id_rsa.pub</code>）的文件夹，新建 <code>config</code>，内容如下：</li>
 </ol>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Host github.com</span><br><span class="line">User XXX@xx.com</span><br><span class="line">Hostname ssh.github.com</span><br><span class="line">PreferredAuthentications publickey</span><br><span class="line">IdentityFile ~/.ssh/id_rsa</span><br><span class="line">Port 443</span><br></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Host github.com</span><br><span class="line">User XXX@xx.com</span><br><span class="line">Hostname ssh.github.com</span><br><span class="line">PreferredAuthentications publickey</span><br><span class="line">IdentityFile ~/.ssh/id_rsa</span><br><span class="line">Port 443</span><br></pre></td></tr></table></figure>
 <ol start="2" type="1">
 <li>刷新 <code>config</code></li>
 </ol>
@@ -369,7 +369,7 @@
 <ol type="1">
 <li>修改 hosts 文件，也可以进入 <a target="_blank" rel="noopener" href="https://www.ipaddress.com/">IPAddress</a> 查询这域名的 IP 地址。</li>
 </ol>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">192.30.253.112 github.com</span><br><span class="line">185.199.108.153 assets-cdn.github.com</span><br><span class="line">185.199.109.153 assets-cdn.github.com</span><br><span class="line">185.199.110.153 assets-cdn.github.com</span><br><span class="line">185.199.111.153 assets-cdn.github.com</span><br><span class="line">199.232.5.194 github.global.ssl.fastly.net</span><br></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">192.30.253.112 github.com</span><br><span class="line">185.199.108.153 assets-cdn.github.com</span><br><span class="line">185.199.109.153 assets-cdn.github.com</span><br><span class="line">185.199.110.153 assets-cdn.github.com</span><br><span class="line">185.199.111.153 assets-cdn.github.com</span><br><span class="line">199.232.5.194 github.global.ssl.fastly.net</span><br></pre></td></tr></table></figure>
 <ol start="2" type="1">
 <li>刷新 DNS 缓存</li>
 </ol>
@@ -419,7 +419,7 @@
 
 <div class="copyright">
   &copy; 
-  <span itemprop="copyrightYear">2021</span>
+  <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="generator" content="Hexo 5.4.1">
 
 
   <link rel="apple-touch-icon" sizes="180x180" href="/hais-notebook/images/apple-touch-icon.png">
@@ -161,7 +161,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/hais-notebook/archives/">
         
-          <span class="site-state-item-count">93</span>
+          <span class="site-state-item-count">94</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -174,7 +174,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/hais-notebook/tags/">
           
-        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-count">22</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -270,9 +270,9 @@
 <h1 id="增">增</h1>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- use [schemas name]</span></span><br><span class="line">usz lzblog;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- insert into [table name] ([colunm name]) values ([colunm value])</span></span><br><span class="line"><span class="comment">-- password 是关键字，所以要用 `` 引起来</span></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> users (username, `password`, nickname) <span class="keyword">values</span> (<span class="string">&#x27;zs&#x27;</span>, <span class="string">&#x27;123&#x27;</span>, <span class="string">&#x27;zhangsan&#x27;</span>)</span><br></pre></td></tr></table></figure>
 <h1 id="删">删</h1>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">delete</span> <span class="keyword">from</span> users <span class="keyword">where</span> username <span class="operator">=</span><span class="string">&#x27;zs&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 一般采用软删除</span></span><br><span class="line"></span><br><span class="line">update users <span class="keyword">set</span> state<span class="operator">=</span><span class="string">&#x27;0&#x27;</span> <span class="keyword">where</span> username<span class="operator">=</span><span class="string">&#x27;lz&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> users <span class="keyword">where</span> state <span class="operator">&lt;&gt;</span> <span class="string">&#x27;0&#x27;</span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">delete</span> <span class="keyword">from</span> users <span class="keyword">where</span> username <span class="operator">=</span><span class="string">&#x27;zs&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 一般采用软删除</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">update</span> users <span class="keyword">set</span> state<span class="operator">=</span><span class="string">&#x27;0&#x27;</span> <span class="keyword">where</span> username<span class="operator">=</span><span class="string">&#x27;lz&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> users <span class="keyword">where</span> state <span class="operator">&lt;&gt;</span> <span class="string">&#x27;0&#x27;</span>;</span><br></pre></td></tr></table></figure>
 <h1 id="改">改</h1>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">update users <span class="keyword">set</span> nickname<span class="operator">=</span><span class="string">&#x27;lz2&#x27;</span> <span class="keyword">where</span> username<span class="operator">=</span><span class="string">&#x27;lz&#x27;</span>;</span><br><span class="line"><span class="comment">-- update [table name] set [colunm name]=[value] where [condition]</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- You are using safe update mode and you tried to update a table without a WHERE that uses a KEY column.</span></span><br><span class="line"><span class="keyword">SET</span> SQL_SAFE_UPDATES <span class="operator">=</span> <span class="number">0</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">update</span> users <span class="keyword">set</span> nickname<span class="operator">=</span><span class="string">&#x27;lz2&#x27;</span> <span class="keyword">where</span> username<span class="operator">=</span><span class="string">&#x27;lz&#x27;</span>;</span><br><span class="line"><span class="comment">-- update [table name] set [colunm name]=[value] where [condition]</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- You are using safe update mode and you tried to update a table without a WHERE that uses a KEY column.</span></span><br><span class="line"><span class="keyword">SET</span> SQL_SAFE_UPDATES <span class="operator">=</span> <span class="number">0</span></span><br></pre></td></tr></table></figure>
 <h1 id="查">查</h1>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> users;</span><br><span class="line"><span class="keyword">select</span> id,username <span class="keyword">from</span> users;</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> users <span class="keyword">where</span> username<span class="operator">=</span><span class="string">&#x27;lz&#x27;</span> <span class="keyword">and</span> `password`<span class="operator">=</span><span class="string">&#x27;123&#x27;</span>;</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> users <span class="keyword">where</span> username<span class="operator">=</span><span class="string">&#x27;lz&#x27;</span> <span class="keyword">or</span> `password`<span class="operator">=</span><span class="string">&#x27;123&#x27;</span>;</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> users <span class="keyword">where</span> username <span class="keyword">like</span> <span class="string">&#x27;%z%&#x27;</span>;</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> users <span class="keyword">where</span> username <span class="keyword">like</span> <span class="string">&#x27;%z%&#x27;</span> <span class="keyword">order</span> <span class="keyword">by</span> id <span class="keyword">desc</span>;</span><br></pre></td></tr></table></figure>
 
@@ -321,7 +321,7 @@
 
 <div class="copyright">
   &copy; 
-  <span itemprop="copyrightYear">2021</span>
+  <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

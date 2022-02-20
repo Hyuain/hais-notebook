@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="generator" content="Hexo 5.4.1">
 
 
   <link rel="apple-touch-icon" sizes="180x180" href="/hais-notebook/images/apple-touch-icon.png">
@@ -160,7 +160,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/hais-notebook/archives/">
         
-          <span class="site-state-item-count">93</span>
+          <span class="site-state-item-count">94</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -173,7 +173,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/hais-notebook/tags/">
           
-        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-count">22</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -278,7 +278,7 @@
 <p>cjs 和 umd 的区别？ - cjs 全称是 CommonJS，是 Node.js 支持的模块规范 - umd 是统一模块定义，兼容各种模块规范（包含浏览器） - 理论上优先使用 umd，同时支持 Node.js 和浏览器 - 最新的模块规范是使用 <code>import</code> 和 <code>export</code> 关键字</p>
 <h2 id="通过-webpack-引入">通过 webpack 引入</h2>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn add react react-dom</span><br></pre></td></tr></table></figure>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">&#x27;react&#x27;</span></span><br><span class="line"><span class="keyword">import</span> ReactDOM <span class="keyword">from</span> <span class="string">&#x27;react-dom&#x27;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="title class_">React</span> <span class="keyword">from</span> <span class="string">&#x27;react&#x27;</span></span><br><span class="line"><span class="keyword">import</span> <span class="title class_">ReactDOM</span> <span class="keyword">from</span> <span class="string">&#x27;react-dom&#x27;</span></span><br></pre></td></tr></table></figure>
 <h2 id="使用-create-react-app">使用 create-react-app</h2>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn create react-app my-app</span><br></pre></td></tr></table></figure>
 <h1 id="函数与普通代码的区别">函数与普通代码的区别</h1>
@@ -288,7 +288,7 @@
 <li>函数会等调用的时候再求值（<strong>延迟求值</strong>），求值时才会读取 a 的最新值</li>
 </ul>
 <h1 id="对比-react-元素和函数组件的区别">对比 React <strong>元素</strong>和<strong>函数组件</strong>的区别</h1>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> App1 = React.createElement(<span class="string">&#x27;div&#x27;</span>, <span class="literal">null</span>, n) <span class="comment">// App1 是一个 React 元素</span></span><br><span class="line"><span class="keyword">const</span> App2 = <span class="function">() =&gt;</span> React.createElement(<span class="string">&#x27;div&#x27;</span>, <span class="literal">null</span>, n) <span class="comment">// App2 是一个 React 函数组件</span></span><br><span class="line"><span class="comment">// App2 是延迟执行的代码，会在被调用的时候执行（会获取到 n 的最新值）</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="title class_">App1</span> = <span class="title class_">React</span>.<span class="title function_">createElement</span>(<span class="string">&#x27;div&#x27;</span>, <span class="literal">null</span>, n) <span class="comment">// App1 是一个 React 元素</span></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">App2</span> = (<span class="params"></span>) =&gt; <span class="title class_">React</span>.<span class="title function_">createElement</span>(<span class="string">&#x27;div&#x27;</span>, <span class="literal">null</span>, n) <span class="comment">// App2 是一个 React 函数组件</span></span><br><span class="line"><span class="comment">// App2 是延迟执行的代码，会在被调用的时候执行（会获取到 n 的最新值）</span></span><br></pre></td></tr></table></figure>
 <ul>
 <li>React 元素
 <ul>
@@ -348,7 +348,7 @@
 
 <div class="copyright">
   &copy; 
-  <span itemprop="copyrightYear">2021</span>
+  <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

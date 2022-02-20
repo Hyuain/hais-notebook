@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="generator" content="Hexo 5.4.1">
 
 
   <link rel="apple-touch-icon" sizes="180x180" href="/hais-notebook/images/apple-touch-icon.png">
@@ -159,7 +159,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/hais-notebook/archives/">
         
-          <span class="site-state-item-count">93</span>
+          <span class="site-state-item-count">94</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -172,7 +172,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/hais-notebook/tags/">
           
-        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-count">22</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -268,7 +268,7 @@
 <ul>
 <li>进入 <a target="_blank" rel="noopener" href="https://hub.docker.com/">Docker Hub 官方网站</a> 注册并下载</li>
 <li>确保 <code>docker --version</code> 返回版本号</li>
-<li>在 Docker Engine 中设置国内镜像，<a target="_blank" rel="noopener" href="http://guide.daocloud.io/dcs/daocloud-9153151.html">可以点这里查看教程</a> <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;registry-mirrors&quot;</span>: [</span><br><span class="line">    <span class="string">&quot;https://docker.mirrors.ustc.edu.cn&quot;</span></span><br><span class="line">  ],</span><br><span class="line">  <span class="attr">&quot;insecure-registries&quot;</span>: []</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>在 Docker Engine 中设置国内镜像，<a target="_blank" rel="noopener" href="http://guide.daocloud.io/dcs/daocloud-9153151.html">可以点这里查看教程</a> <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;registry-mirrors&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="string">&quot;https://docker.mirrors.ustc.edu.cn&quot;</span></span><br><span class="line">  <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;insecure-registries&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure></li>
 </ul>
 <h2 id="docker-安装-mysql">Docker 安装 MySQL</h2>
 <ul>
@@ -306,11 +306,11 @@
 <li>比如 MySQL、PostgreSQL、SQL Server、DB2、Oracle</li>
 </ul>
 <p>DBMS 大概结构如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">数据库（硬盘/内存中存数据的地方）</span><br><span class="line">           ↑ 读/写</span><br><span class="line">Server 服务端（数据提供者）</span><br><span class="line"> 请求的数据 ↓ ↑ SQL语句 </span><br><span class="line">Client 客户端（数据使用者）</span><br></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">数据库（硬盘/内存中存数据的地方）</span><br><span class="line">           ↑ 读/写</span><br><span class="line">Server 服务端（数据提供者）</span><br><span class="line"> 请求的数据 ↓ ↑ SQL语句 </span><br><span class="line">Client 客户端（数据使用者）</span><br></pre></td></tr></table></figure>
 <p>我们使用的 MySQL 命令，就是一个客户端，MySQL 背后其实还有一个 Server 在 24 小时不间断运行着</p>
 <h1 id="用-node.js-连接数据库">用 Node.js 连接数据库</h1>
 <p>可以使用 <a target="_blank" rel="noopener" href="https://github.com/mysqljs/mysql">mysqljs 库</a></p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> mysql = <span class="built_in">require</span>(<span class="string">&quot;mysql&quot;</span>)</span><br><span class="line"><span class="keyword">const</span> connection = mysql.createConnection(&#123;</span><br><span class="line">  <span class="attr">host</span>: <span class="string">&quot;localhost&quot;</span>,</span><br><span class="line">  <span class="attr">user</span>: <span class="string">&quot;root&quot;</span>,</span><br><span class="line">  <span class="attr">password</span>: <span class="string">&quot;123456&quot;</span>,</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">connection.connect()</span><br><span class="line"></span><br><span class="line">connection.query(<span class="string">&quot;CREATE DATABASE IF NOT EXISTS harvey DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;&quot;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">error, results, fields</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (error) <span class="keyword">throw</span> error</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&quot;创建数据库&quot;</span>, results)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">connection.query(<span class="string">&quot;USE harvey;&quot;</span>)</span><br><span class="line"></span><br><span class="line">connection.query(<span class="string">`CREATE TABLE IF NOT EXISTS user(</span></span><br><span class="line"><span class="string">  name text,</span></span><br><span class="line"><span class="string">  age int</span></span><br><span class="line"><span class="string">);`</span>, <span class="function"><span class="keyword">function</span> (<span class="params">error, results, fields</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (error) <span class="keyword">throw</span> error</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&quot;创建表&quot;</span>, results)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">connection.end()</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> mysql = <span class="built_in">require</span>(<span class="string">&quot;mysql&quot;</span>)</span><br><span class="line"><span class="keyword">const</span> connection = mysql.<span class="title function_">createConnection</span>(&#123;</span><br><span class="line">  <span class="attr">host</span>: <span class="string">&quot;localhost&quot;</span>,</span><br><span class="line">  <span class="attr">user</span>: <span class="string">&quot;root&quot;</span>,</span><br><span class="line">  <span class="attr">password</span>: <span class="string">&quot;123456&quot;</span>,</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">connection.<span class="title function_">connect</span>()</span><br><span class="line"></span><br><span class="line">connection.<span class="title function_">query</span>(<span class="string">&quot;CREATE DATABASE IF NOT EXISTS harvey DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;&quot;</span>, <span class="keyword">function</span> (<span class="params">error, results, fields</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (error) <span class="keyword">throw</span> error</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;创建数据库&quot;</span>, results)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">connection.<span class="title function_">query</span>(<span class="string">&quot;USE harvey;&quot;</span>)</span><br><span class="line"></span><br><span class="line">connection.<span class="title function_">query</span>(<span class="string">`CREATE TABLE IF NOT EXISTS user(</span></span><br><span class="line"><span class="string">  name text,</span></span><br><span class="line"><span class="string">  age int</span></span><br><span class="line"><span class="string">);`</span>, <span class="keyword">function</span> (<span class="params">error, results, fields</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (error) <span class="keyword">throw</span> error</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;创建表&quot;</span>, results)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">connection.<span class="title function_">end</span>()</span><br></pre></td></tr></table></figure>
 <h1 id="常见的-sql-命令">常见的 SQL 命令</h1>
 <h2 id="操作-databasetable">操作 database/table</h2>
 <ul>
@@ -361,8 +361,8 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/hais-notebook/2021/03/03/Tools-Webpack-Core/" rel="prev" title="Webpack 核心原理">
-                  <i class="fa fa-chevron-left"></i> Webpack 核心原理
+                <a href="/hais-notebook/2021/03/03/Tools-RxJS-ErrorHandling/" rel="prev" title="翻译：RxJS 中的错误处理">
+                  <i class="fa fa-chevron-left"></i> 翻译：RxJS 中的错误处理
                 </a>
             </div>
             <div class="post-nav-item">
@@ -389,7 +389,7 @@
 
 <div class="copyright">
   &copy; 
-  <span itemprop="copyrightYear">2021</span>
+  <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
