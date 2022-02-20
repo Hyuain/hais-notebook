@@ -394,3 +394,77 @@ end
 
 1. `Module#undef_method`：删除（包括继承来的）方法
 2. `Module#remove_method`：删除接受者自己的方法
+
+# 代码块 Blocks
+
+代码块源自像 LISP 这样的函数式编程语言
+
+## 代码块的基础使用
+
+```ruby
+def a_method(a, b)
+  a + yield(a, b)
+end
+
+a_method(1, 2) { |x, y| ( x + y ) * 3 }   # => 10
+```
+
+- 代码块可以用 `do...end` 定义，也可以用大括号定义
+- 只有在调用一个方法的时候才能定义一个块
+- 这个块会被直接传递给这个方法，该方法可以用 `yield` 关键字调用这个块
+- 在一个方法里，可以通过 `Kernel#block_given?` 询问当前方法的调用是否包含块
+
+## 代码块是闭包
+
+可以运行的代码 = 代码本身 + 绑定
+
+```ruby
+def my_method
+  x = "Good bye"
+  yield("cruel")
+end
+
+x = "Hello"
+my_method { |y| "#{x}, #{y} word" }  # => Hello, cruel world
+# 创建代码块时，x 会成为局部绑定，然后把代码块连同绑定传给 my_method 方法
+# 代码块中看到的 x 不是方法里面的 x，而是创建代码块时绑定的 x
+```
+
+```ruby
+def just_yield
+  yield
+end
+
+top_level_variable = 1
+
+just_yield do
+  top_level_variable += 1
+  local_to_block = 1  # => 在代码块中定义的额外的绑定
+end
+
+top_level_variable  # => 2
+local_to_block      # => Error，看不到了，额外的绑定在代码块结束时消失了
+```
+
+因此代码块，又被称为 **闭包（Closure）**
+
+### 作用域
+
+Ruby 中没有内部作用域和外部作用域的概念（即在内部作用域中可以看到外部作用域的变量）。Ruby 中不同的作用域是分开的
+
+```ruby
+v1 = 1
+class MyClass
+  v2 = 2
+  local_variables # => [:v2]
+  def my_method
+    v3 = 3
+    local_variables
+  end
+  local_variables # => [:v2]
+end
+
+obj = MyClass.new
+obj.my_method # => [:v3]
+local_variables # => [:v1, :obj]
+```
