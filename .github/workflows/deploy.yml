@@ -16,9 +16,6 @@ jobs:
 
       - name: Install And Build
         run: |
-          wget ${{ secrets.PANDOC_PATH }}
-          sudo dpkg -i pandoc*.deb
-          npm cache clear --force
           npm install
           npm run clean
           npm run build
