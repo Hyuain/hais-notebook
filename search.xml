@@ -3605,7 +3605,36 @@ H(x)=\sum_{i=1}^N \frac 1N \cdot log_2(\frac 1{\frac 1N})=log_2(N)
 <li><p>当 n 型半导体和 p 型半导体接触的时候，他们之间会有一个耗尽区（depletion region），这个区域将源级和漏级隔开。</p></li>
 <li><p>当 <span class="math inline">\(V_{GS}\)</span> 逐渐升高，栅极上的正电荷越来越多，吸引了越来越多的基体上的电子。当超过阈值的时候，电场力将基底的电子从价电子带拉升到导带，新的自由电子向栅极移动，然后在薄薄的氧化物层聚集。</p></li>
 <li><p>当氧化物层聚集了足够多的电子，p 型半导体变成 n 型半导体，并且在源级和漏级中间形成了一个 n 型半导体通道——这层也被称为反转层。于是漏级和源级就被导通了，他们之间的电压为 <span class="math inline">\(V_{DS}\)</span>。</p></li>
-<li><p>当 <span class="math inline">\(V_{DS}\)</span> 大于 <span class="math inline">\(V_{GS}\)</span> 之后，漏级一侧也会吸引大量电子，通道内电场的形状将会发生改变，随着 <span class="math inline">\(I_{DS}\)</span> 就不会再上升了。</p></li>
+<li><p>当 <span class="math inline">\(V_{DS}\)</span> 大于 <span class="math inline">\(V_{GS}\)</span> 之后，漏级一侧也会吸引大量电子，通道内电场的形状将会发生改变，<span class="math inline">\(I_{DS}\)</span> 就不会再随着 <span class="math inline">\(V_{DS}\)</span> 上升了。</p></li>
+</ol>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-18.png" /></p>
+<p><span class="math inline">\(V_{GS}\)</span> 越大，栅极底部吸引的电子也就越多，反转层也就越厚，电流也就越大。</p>
+<p>当 <span class="math inline">\(V_{DS}\)</span> 比 <span class="math inline">\(V_{GS}\)</span> 小时，MOSFET 就像遵循欧姆定律的电阻一样；而当 <span class="math inline">\(V_{DS}\)</span> 比 <span class="math inline">\(V_{GS}\)</span> 大时，通道在漏极截止，并且 <span class="math inline">\(I_{DS}\)</span> 也不会继续升高了。</p>
+<h2 id="cmos-1">CMOS</h2>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-19.png" /></p>
+<ul>
+<li><p>为什么叫 n-channel MOSFT？因为导通时，反转层就像 n 型半导体一样。</p></li>
+<li><p>控制 n-channel MOSFET 导通的电压（高电压，可以认为是数字 1），会使得 p-channel MOSFET 断开。</p></li>
+<li><p>n-channel 和 p-channel MOSFT 相辅相成，就是我们所说的 complementary MOS (CMOS)。</p></li>
+</ul>
+<h3 id="两条规则">两条规则</h3>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-20.png" /></p>
+<ol type="1">
+<li>在将信号节点连着 GND 的下拉电路（pulldown circuits）中，只使用 NFETs (n-channel MOSFETs)。当下拉电路导通时，信号节点为 0V，并标记为数字 0。</li>
+<li>在上拉电路（pullup circuits）中，只使用 PFETs (p-channel MOSFETs)。</li>
+</ol>
+<p>如果我们用相反的 FETs 来构造上拉或下拉电路，信号水平会下降，也会丢失噪声容限。</p>
+<h3 id="门电路">门电路</h3>
+<h4 id="inveter">Inveter</h4>
+<p>考察一个用一下拉电路（有一个 NFET、输出端连着 GND）和一上拉电路（有一个 PFET、输出端连着 <span class="math inline">\(V_{DD}\)</span> 组成的反转器：输入为 0 的时候，NFET 断开、PFET 导通，输出端与 <span class="math inline">\(V_{DD}\)</span> 连通；反之输入为 1 的时候，NFET 导通、PFET 断开，输出端接地。</p>
+<p>如果输入电压 <span class="math inline">\(V_{IN}\)</span> 介于 0 和 1 之间，可能 PFET 和 NFET 都被导通了。此时输入电压微小的变化都可能导致输入出电压较大的变化</p>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-21.png" /></p>
+<h4 id="nand">NAND</h4>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-22.png" /></p>
+<h4 id="更多的门">更多的门</h4>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-23.png" /></p>
+<ol type="1">
+<li></li>
 </ol>
 ]]></content>
       <categories>
