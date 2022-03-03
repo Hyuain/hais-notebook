@@ -224,7 +224,7 @@ $V_{GS}$ 越大，栅极底部吸引的电子也就越多，反转层也就越�
 
 - n-channel 和 p-channel MOSFT 相辅相成，就是我们所说的 complementary MOS (CMOS)。
 
-### 两条规则
+### 上拉电路与下拉电路 Pullup and Pulldown Circuits
 
 ![](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-20.png)
 
@@ -249,7 +249,113 @@ $V_{GS}$ 越大，栅极底部吸引的电子也就越多，反转层也就越�
 
 #### 更多的门
 
+##### 如何做出一个 CMOS 逻辑电路
+
 ![](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-23.png)
 
-1. 
+1. 找到满足需求的 PFETs 组成的上拉电路
+2. 将 PFETs 换成 NFETs，串联改并联、并联改串联，画出一个下拉电路
+3. 将上拉电路和下拉电路组合起来，形成一个完全互补的 CMOS
+
+##### 方法的局限性
+
+但是，由于之前的规定和 MOSFETs 的特性，当输入电流上升的时候（NFET 导通、接地，PFET 断开、断开与 $V_{DD}$ 的连接），输出的电流是在下降的。也就是说，我们不能用 CMOS 来做正向的逻辑判断（$A \cdot B$），只能用来做反向逻辑判断（$\overline A \cdot \overline B$）。
+
+## 时序规则 Timing Specification
+
+![](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-24.png)
+
+R 是导线的纯电阻、C 是导线和 MOSFET 栅极的纯电容。
+
+### 传播延迟 Propagation Delay
+
+![](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-25.png)
+
+传播延迟（Propagation Delay, $t_{PD}$）：从 **有效输入**（由 $V_{IL}$ 和 $V_{IH}$ 确定） 到 **有效输出**（由 $V_{OL}$ 和 $V_{OH}$ 确定）的时间上界。
+
+元件的 $t_{PD}$ 在出厂时就确定了，我们可以通过每个元件的 $t_{PD}$ 计算出整个系统的 $t_{PD}$。
+
+有趣的是，当我们想减少某个 MOSFET 的传播延迟，可以尝试降低它的电阻，也就是增加它的宽度；但增加宽度的同时也会增加栅极的电容。
+
+### 污染延迟 Contamination Delay
+
+![](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-26.png)
+
+污染延迟（Contamination Delay, $t_{CD}$）：从 **无效输入** 到 **无效输出** 的时间下界。制造商有时也会将污染延迟称为最小传播延迟（Minimun Propagatio Delay）
+
+通常我们会忽略 $t_{CD}$，并假设当输入变得无效之后，输出就立即变得无效。
+
+### 时序规则总结
+
+![](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-27.png)
+
+### 简单的例子
+
+![](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-28.png)
+
+### Lenient Combinational Device
+
+![](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-29.png)
+
+Lenient Combination Device：当有 **任意** 足够确定输出的有效输入时，输出至少在 $t_{PD}$ 内是有效的。也就是说，输出不会受到某些输入变化的影响。
+
+比如上图所示，对于一个 CMOS 与非门，只要当 A 为 1 时，不管 B 怎么变化，输出 Z 都一直是有效的 0。
+
+大部分使用 CMOS 实现的逻辑门都是天然宽松（lenient）的。
+
+# 组合逻辑 Combinational Logic
+
+## 描述组合逻辑
+
+1. **真值表**：一种简洁的描述组合系统功能的方法。真值表需要 $2^N$ 行来描述具有 N 个输入的系统
+2. **布尔表达式**：用 AND（乘法）、OR（加法）、取反（上划线）来表示布尔代数的表达式。可以与真值表相互转换，通常用 *乘积和*（sum-of-products）的方法将真值表转换为布尔表达式（即将每个输出为 1 的行加起来，如下图所示）
+
+## 组合逻辑电路的设计
+
+![](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-31.png)
+
+### 基本模块
+
+![](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-32.png)
+
+![](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-35.png)
+
+### 直接综合所有模块
+
+![](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-33.png)
+
+看起来整个电路的 $t_{PD}$ 为三个门之和，但实际上并不是这样，因为多个输入的 ANDs 和 ORs 并没有那么简单
+
+### 多个输入的 ANDs 和 ORs
+
+![](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-34.png)
+
+通常来讲，对于 N 个输入的系统，链式结构的 $t_{PD}$ 是 $N - 1$ 个模块的和，而树状结构则是 $log_2(N)$ 。但如上图所示，假如 D 的输入比其几个输入晚来，链式结构的 $t_{PD}$ 则会更优。因此要具体情况具体分析。
+
+## 使用相反逻辑门
+
+由于 CMOS 实现的逻辑门是天然相反的，因此为了追求更好的性能，我们通常不用 AND 和 OR，而用 NAND 和 NOR。
+
+1. NAND 和 NOR 可以用一个 CMOS 门（包含一个上拉电路和一个下拉电路）实现，但是 AND 和 OR 需要两个 CMOS 门（比如 NAND + INVERTER）。
+2. NAND 和 NOR 不满足结合律，一次我们不能像之前一样构建多输入的 NANDs 和 NORs
+
+![](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-35.png)
+
+### 2-INPUT NAND 是通用门
+
+可以用只 NAND 或者 NOR 达到 AND、OR、INVERTER 的效果
+
+![](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-36.png)
+
+### 德摩根定律 Demorgan's Law
+
+$$
+\overline A + \overline B = \overline {A \cdot B}
+\\
+\overline A \cdot \overline B = \overline {A+B}
+$$
+
+通过德摩根定律，我们可以将进行 AND-NOR、NAND-OR 之间的转换
+
+![](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-37.png)
 
