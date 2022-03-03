@@ -3617,7 +3617,7 @@ H(x)=\sum_{i=1}^N \frac 1N \cdot log_2(\frac 1{\frac 1N})=log_2(N)
 <li><p>控制 n-channel MOSFET 导通的电压（高电压，可以认为是数字 1），会使得 p-channel MOSFET 断开。</p></li>
 <li><p>n-channel 和 p-channel MOSFT 相辅相成，就是我们所说的 complementary MOS (CMOS)。</p></li>
 </ul>
-<h3 id="两条规则">两条规则</h3>
+<h3 id="上拉电路与下拉电路-pullup-and-pulldown-circuits">上拉电路与下拉电路 Pullup and Pulldown Circuits</h3>
 <p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-20.png" /></p>
 <ol type="1">
 <li>在将信号节点连着 GND 的下拉电路（pulldown circuits）中，只使用 NFETs (n-channel MOSFETs)。当下拉电路导通时，信号节点为 0V，并标记为数字 0。</li>
@@ -3632,10 +3632,71 @@ H(x)=\sum_{i=1}^N \frac 1N \cdot log_2(\frac 1{\frac 1N})=log_2(N)
 <h4 id="nand">NAND</h4>
 <p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-22.png" /></p>
 <h4 id="更多的门">更多的门</h4>
+<h5 id="如何做出一个-cmos-逻辑电路">如何做出一个 CMOS 逻辑电路</h5>
 <p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-23.png" /></p>
 <ol type="1">
-<li></li>
+<li>找到满足需求的 PFETs 组成的上拉电路</li>
+<li>将 PFETs 换成 NFETs，串联改并联、并联改串联，画出一个下拉电路</li>
+<li>将上拉电路和下拉电路组合起来，形成一个完全互补的 CMOS</li>
 </ol>
+<h5 id="方法的局限性">方法的局限性</h5>
+<p>但是，由于之前的规定和 MOSFETs 的特性，当输入电流上升的时候（NFET 导通、接地，PFET 断开、断开与 <span class="math inline">\(V_{DD}\)</span> 的连接），输出的电流是在下降的。也就是说，我们不能用 CMOS 来做正向的逻辑判断（<span class="math inline">\(A \cdot B\)</span>），只能用来做反向逻辑判断（<span class="math inline">\(\overline A \cdot \overline B\)</span>）。</p>
+<h2 id="时序规则-timing-specification">时序规则 Timing Specification</h2>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-24.png" /></p>
+<p>R 是导线的纯电阻、C 是导线和 MOSFET 栅极的纯电容。</p>
+<h3 id="传播延迟-propagation-delay">传播延迟 Propagation Delay</h3>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-25.png" /></p>
+<p>传播延迟（Propagation Delay, <span class="math inline">\(t_{PD}\)</span>）：从 <strong>有效输入</strong>（由 <span class="math inline">\(V_{IL}\)</span> 和 <span class="math inline">\(V_{IH}\)</span> 确定） 到 <strong>有效输出</strong>（由 <span class="math inline">\(V_{OL}\)</span> 和 <span class="math inline">\(V_{OH}\)</span> 确定）的时间上界。</p>
+<p>元件的 <span class="math inline">\(t_{PD}\)</span> 在出厂时就确定了，我们可以通过每个元件的 <span class="math inline">\(t_{PD}\)</span> 计算出整个系统的 <span class="math inline">\(t_{PD}\)</span>。</p>
+<p>有趣的是，当我们想减少某个 MOSFET 的传播延迟，可以尝试降低它的电阻，也就是增加它的宽度；但增加宽度的同时也会增加栅极的电容。</p>
+<h3 id="污染延迟-contamination-delay">污染延迟 Contamination Delay</h3>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-26.png" /></p>
+<p>污染延迟（Contamination Delay, <span class="math inline">\(t_{CD}\)</span>）：从 <strong>无效输入</strong> 到 <strong>无效输出</strong> 的时间下界。制造商有时也会将污染延迟称为最小传播延迟（Minimun Propagatio Delay）</p>
+<p>通常我们会忽略 <span class="math inline">\(t_{CD}\)</span>，并假设当输入变得无效之后，输出就立即变得无效。</p>
+<h3 id="时序规则总结">时序规则总结</h3>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-27.png" /></p>
+<h3 id="简单的例子">简单的例子</h3>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-28.png" /></p>
+<h3 id="lenient-combinational-device">Lenient Combinational Device</h3>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-29.png" /></p>
+<p>Lenient Combination Device：当有 <strong>任意</strong> 足够确定输出的有效输入时，输出至少在 <span class="math inline">\(t_{PD}\)</span> 内是有效的。也就是说，输出不会受到某些输入变化的影响。</p>
+<p>比如上图所示，对于一个 CMOS 与非门，只要当 A 为 1 时，不管 B 怎么变化，输出 Z 都一直是有效的 0。</p>
+<p>大部分使用 CMOS 实现的逻辑门都是天然宽松（lenient）的。</p>
+<h1 id="组合逻辑-combinational-logic">组合逻辑 Combinational Logic</h1>
+<h2 id="描述组合逻辑">描述组合逻辑</h2>
+<ol type="1">
+<li><strong>真值表</strong>：一种简洁的描述组合系统功能的方法。真值表需要 <span class="math inline">\(2^N\)</span> 行来描述具有 N 个输入的系统</li>
+<li><strong>布尔表达式</strong>：用 AND（乘法）、OR（加法）、取反（上划线）来表示布尔代数的表达式。可以与真值表相互转换，通常用 <em>乘积和</em>（sum-of-products）的方法将真值表转换为布尔表达式（即将每个输出为 1 的行加起来，如下图所示）</li>
+</ol>
+<h2 id="组合逻辑电路的设计">组合逻辑电路的设计</h2>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-31.png" /></p>
+<h3 id="基本模块">基本模块</h3>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-32.png" /></p>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-35.png" /></p>
+<h3 id="直接综合所有模块">直接综合所有模块</h3>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-33.png" /></p>
+<p>看起来整个电路的 <span class="math inline">\(t_{PD}\)</span> 为三个门之和，但实际上并不是这样，因为多个输入的 ANDs 和 ORs 并没有那么简单</p>
+<h3 id="多个输入的-ands-和-ors">多个输入的 ANDs 和 ORs</h3>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-34.png" /></p>
+<p>通常来讲，对于 N 个输入的系统，链式结构的 <span class="math inline">\(t_{PD}\)</span> 是 <span class="math inline">\(N - 1\)</span> 个模块的和，而树状结构则是 <span class="math inline">\(log_2(N)\)</span> 。但如上图所示，假如 D 的输入比其几个输入晚来，链式结构的 <span class="math inline">\(t_{PD}\)</span> 则会更优。因此要具体情况具体分析。</p>
+<h2 id="使用相反逻辑门">使用相反逻辑门</h2>
+<p>由于 CMOS 实现的逻辑门是天然相反的，因此为了追求更好的性能，我们通常不用 AND 和 OR，而用 NAND 和 NOR。</p>
+<ol type="1">
+<li>NAND 和 NOR 可以用一个 CMOS 门（包含一个上拉电路和一个下拉电路）实现，但是 AND 和 OR 需要两个 CMOS 门（比如 NAND + INVERTER）。</li>
+<li>NAND 和 NOR 不满足结合律，一次我们不能像之前一样构建多输入的 NANDs 和 NORs</li>
+</ol>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-35.png" /></p>
+<h3 id="input-nand-是通用门">2-INPUT NAND 是通用门</h3>
+<p>可以用只 NAND 或者 NOR 达到 AND、OR、INVERTER 的效果</p>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-36.png" /></p>
+<h3 id="德摩根定律-demorgans-law">德摩根定律 Demorgan's Law</h3>
+<p><span class="math display">\[
+\overline A + \overline B = \overline {A \cdot B}
+\\
+\overline A \cdot \overline B = \overline {A+B}
+\]</span></p>
+<p>通过德摩根定律，我们可以将进行 AND-NOR、NAND-OR 之间的转换</p>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-37.png" /></p>
 ]]></content>
       <categories>
         <category>计算机</category>
