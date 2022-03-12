@@ -355,7 +355,41 @@ $$
 \overline A \cdot \overline B = \overline {A+B}
 $$
 
-通过德摩根定律，我们可以将进行 AND-NOR、NAND-OR 之间的转换
+1. 通过德摩根定律，可以实现 AND-NOR、NAND-OR 之间的转换，同时可以看到通过 CMOS 实现的相反逻辑门虽然面积更大，但拥有更低的 $t_{PD}$ 。
 
 ![](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-37.png)
 
+![Course-ComputationStructure-39](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-39.jpg)
+
+> 注意上图中 NAND-NAND 和 NOR-NOR 达成的效果是一样的，但是 NAND-NAND 中的 A 信号连接了两个门（4 个 MOSFET 电路），而 NOR-NOR 中的 A 信号只连接了 INVERTER 中的 2 个 MOSFET 电路，A 的电容负载更小。如果在 A 还需要连接更多的电路的情况下，这就显得很重要。
+
+2. 通过德摩根定律，可以构造更多输入的 NAND 和 NOR
+
+![Course-ComputationStructure-38](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-38.png)
+
+
+
+## 逻辑简化
+
+### 使用布尔代数进行逻辑简化
+
+|            |                                                              |
+| ---------- | ------------------------------------------------------------ |
+| 或         | $a+1=1 \\ a+0=a \\ a+a=a$                                    |
+| 与         | $a1=a \\ a0=0 \\ aa=a$                                       |
+| 交换律     | $a+b=b+a \\ ab=ba$                                           |
+| 结合律     | $(a+b)+c=a+(b+c) \\ (ab)c=a(bc)$                             |
+| 分配律     | $a(b+c)=ab+ac \\ a+bc=(a+b)(a+c) $                           |
+| 互补律     | $a+\overline a=1 \\ a \overline a = 0$                       |
+| 吸收律     | $a+ab=a \\ a+\overline ab=a+b \\ a(a+b)=a \\ a(\overline a+b)=ab$ |
+| 消除律     | $ab+\overline a b = b \\ (a+b)(\overline a+b)=b$             |
+| 德摩根定律 | $\overline a + \overline b = \overline{ab} \\ \overline a \overline b = \overline {a + b}$ |
+
+例子：
+$$
+Y = \overline C \overline B A + CB \overline A + CBA + \overline CBA
+\\
+Y = \overline C \overline B A + CB + \overline C BA
+\\
+Y = \overline C A + CB
+$$
