@@ -3724,27 +3724,8 @@ z = 8x + 12y
 <h2 id="用-mouse-事件写一个可拖拽的-div">用 mouse 事件写一个可拖拽的 div</h2>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> dragging = <span class="literal">false</span></span><br><span class="line"><span class="keyword">let</span> position = <span class="literal">null</span></span><br><span class="line"></span><br><span class="line">div.<span class="title function_">addEventListener</span>(<span class="string">&#x27;mousedown&#x27;</span>, <span class="function">(<span class="params">e</span>) =&gt;</span> &#123;</span><br><span class="line">  dragging = <span class="literal">true</span></span><br><span class="line">  position = [e.<span class="property">clientX</span>, e.<span class="property">clientY</span>]</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">addEventListener</span>(<span class="string">&#x27;mousemove&#x27;</span>, <span class="function">(<span class="params">e</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (!dragging) <span class="keyword">return</span></span><br><span class="line">  <span class="keyword">const</span> x = e.<span class="property">clientX</span></span><br><span class="line">  <span class="keyword">const</span> y = e.<span class="property">clientY</span></span><br><span class="line">  <span class="keyword">const</span> deltaX = x - position[<span class="number">0</span>]</span><br><span class="line">  <span class="keyword">const</span> deltaY = y - position[<span class="number">1</span>]</span><br><span class="line">  <span class="keyword">const</span> left = <span class="built_in">parseInt</span>(div.<span class="property">style</span>.<span class="property">left</span> || <span class="number">0</span>)</span><br><span class="line">  <span class="keyword">const</span> top = <span class="built_in">parseInt</span>(div.<span class="property">style</span>.<span class="property">top</span> || <span class="number">0</span>)</span><br><span class="line">  div.<span class="property">style</span>.<span class="property">left</span> = left + deltaX + <span class="string">&#x27;px&#x27;</span></span><br><span class="line">  div.<span class="property">style</span>.<span class="property">top</span> = top + deltaY + <span class="string">&#x27;px&#x27;</span></span><br><span class="line">  position = [x, y]</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">addEventListener</span>(<span class="string">&#x27;mouseup&#x27;</span>, <span class="function">(<span class="params">e</span>) =&gt;</span> &#123;</span><br><span class="line">  dragging = <span class="literal">false</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 <h1 id="http">HTTP</h1>
-<h3 id="http-状态码">HTTP 状态码</h3>
-<p><a href="CS-Network.md">可以查看这里</a></p>
-<h1 id="http-缓存">HTTP 缓存</h1>
-<h2 id="etag">ETag</h2>
-<blockquote>
-<p>MD5</p>
-</blockquote>
-<p>实际上还是会发请求，命中了一般就是 304 Not Modified</p>
-<h2 id="expire">Expire</h2>
-<blockquote>
-<p>日期</p>
-</blockquote>
-<p>时间点，可以通过修改本地时间改变</p>
-<h2 id="cache-control">Cache-Control</h2>
-<blockquote>
-<p>max-age=600</p>
-</blockquote>
-<p>时间段，是相对时间；而且是无请求的</p>
 <h2 id="pwa">PWA</h2>
-<p>浏览器缓存顺序</p>
-<h1 id="get-和-post-的区别">GET 和 POST 的区别？</h1>
+<h2 id="get-和-post-的区别">GET 和 POST 的区别</h2>
 <ul>
 <li>GET 不安全，POST 不安全（其实都不安全）</li>
 <li>GET 是有长度限制的，POST 没有长度限制（但一般 GET 的长度不超过 1 KB，POST 上限 4M ~ 20M 左右）</li>
@@ -3753,7 +3734,103 @@ z = 8x + 12y
 <li>GET 幂等，POST 不幂等</li>
 <li>语义不同，GET 是为了获取数据，POST 是为了提交数据</li>
 </ul>
-<h1 id="http2-和-http1-的区别">HTTP/2 和 HTTP/1 的区别</h1>
+<h1 id="vue">Vue</h1>
+<h2 id="组件间通信">组件间通信</h2>
+<ol type="1">
+<li>父子组件：<code>$emit</code> 和 <code>$on</code></li>
+<li>爷孙组件、兄弟组件：eventBus</li>
+<li>Vuex</li>
+</ol>
+<h1 id="react">React</h1>
+<h2 id="组件间通信-1">组件间通信</h2>
+<ol type="1">
+<li>父子组件：通过 props 直接传参（onChange、onClick）</li>
+<li>爷孙组件：传两次 props</li>
+<li>任意组件：Redux</li>
+</ol>
+<h2 id="dom-diff">DOM Diff</h2>
+<h3 id="reconciliation">Reconciliation</h3>
+<p>Reconciliation 直译为协调，即 React 的渲染机制，他有以下几步：</p>
+<ol type="1">
+<li>props 或 state 改变</li>
+<li>render 函数返回不同的元素树（虚拟 DOM）</li>
+<li>新旧 DOM 对比（vDOM Diff）</li>
+<li>针对差异的地方进行更新</li>
+<li>渲染为真实的 DOM 树</li>
+</ol>
+<h3 id="dom-diff-原理">DOM Diff 原理</h3>
+<h4 id="设计思想">设计思想</h4>
+<ol type="1">
+<li>永远只比较同层的节点，不会跨层级比较</li>
+<li>不同的两个节点产生不同的树（两个类型不同的节点直接用新的全部替代旧的，包括其后代）</li>
+<li>通过 key 判断哪些元素是相同的（比如列表如果没有 key，从头部插入元素会导致列表全部更新），因此 key 需要在列表中保持唯一（不需要全局唯一）</li>
+</ol>
+<h4 id="比较流程">比较流程</h4>
+<ul>
+<li>若元素类型不相同：直接用新的树替换掉原来的树</li>
+<li>若元素类型相同：
+<ul>
+<li>若都是 DOM 节点：更新 DOM 属性，比如 <code>style</code>、<code>title</code> 等，再向下递归找</li>
+<li>若都是组件节点：组件实例保持不变，更新 Props</li>
+</ul></li>
+</ul>
+<h3 id="如何减少-diff-过程">如何减少 Diff 过程</h3>
+<blockquote>
+<p>利用 <code>shouldComponentUpdate</code></p>
+</blockquote>
+<p>默认的 <code>shouldComponentUpdate</code> 会在 props 或 state 发生变化的时候返回 true，表示组件会重新渲染，然后调用 render 函数，进行 vDOM Diff；相对的，我们也可以通过控制它的返回值来控制是否发生 vDOM Diff</p>
+<h3 id="浅比较与深比较">浅比较与深比较</h3>
+<ul>
+<li>类组件的 <code>shouldComponentUpdate</code> 中可以对 props 和 state 进行浅比较（使用 <code>pureComponent</code> API，比较一层 key 和 value，类似于浅拷贝），也可以进行深比较（递归）</li>
+<li>函数组件使用 <code>memo</code> 方法可以进行肩比较，但是只比较了 props：</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">Component</span>(<span class="params"></span>) &#123; &#125;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title class_">React</span>.<span class="title function_">memo</span>(<span class="title class_">Component</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="immutable-数据结构">immutable 数据结构</h3>
+<p>immutable 的意义：浅比较缺点很明显，深比较有时候又比较浪费性能</p>
+<p>简单来说：</p>
+<ol type="1">
+<li><strong>节省性能</strong>：immutable 内部采用多叉树结构，如果它里面有节点被改变，那么则更新 <strong>这个节点</strong> 和他有关的所有 <strong>上级节点</strong></li>
+<li><strong>返回一个新的引用</strong>，即使是浅比较也能感知到数据的变化</li>
+</ol>
+<h4 id="一些-immutable-api">一些 immutable API</h4>
+<h5 id="fromjs">fromJS</h5>
+<p>将 JS 对象转换为 immutable 对象</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;fromJS&#125; <span class="keyword">from</span> <span class="string">&#x27;immutable&#x27;</span></span><br><span class="line"><span class="keyword">const</span> immutableState = <span class="title function_">fromJS</span>(&#123;</span><br><span class="line">  <span class="attr">count</span>: <span class="number">0</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h5 id="tojs">toJS</h5>
+<p>将 immutable 对象转换为 JS 对象</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> jsObj = immutableState.<span class="title function_">toJS</span>()</span><br></pre></td></tr></table></figure>
+<h5 id="getgetin">get/getIn</h5>
+<p>用来获取 immutable 对象属性</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> jsObj = &#123;<span class="attr">a</span>: <span class="number">1</span>&#125;</span><br><span class="line"><span class="keyword">let</span> res = jsObj.<span class="property">a</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> immutableObj = <span class="title function_">fromJS</span>(jsObj)</span><br><span class="line"><span class="keyword">let</span> res = immutableObj.<span class="title function_">get</span>(<span class="string">&#x27;a&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> jsObj = &#123;<span class="attr">a</span>:&#123;<span class="attr">b</span>: <span class="number">1</span>&#125;&#125;</span><br><span class="line"><span class="keyword">let</span> res = jsObj.<span class="property">a</span>.<span class="property">b</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> immutableObj = <span class="title function_">fromJS</span>(jsObj)</span><br><span class="line"><span class="keyword">let</span> res = immutableObj.<span class="title function_">getIn</span>([<span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;b&#x27;</span>]) <span class="comment">// 传入一个数组</span></span><br></pre></td></tr></table></figure>
+<h5 id="set">set</h5>
+<p>用来给 immutable 对象的属性赋值</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> immutableObj = <span class="title function_">fromJS</span>(&#123;<span class="attr">a</span>: <span class="number">1</span>&#125;)</span><br><span class="line">immutableObj.<span class="title function_">set</span>(<span class="string">&#x27;a&#x27;</span>, <span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+<h5 id="merge">merge</h5>
+<p>新旧数据对比，旧数据中不存在的属性直接添加，存在的属性用新数据覆盖</p>
+<h1 id="webpack">Webpack</h1>
+<p><a href="zhuanlan.zhihu.com/p/44438844">更多问题可以查看这篇知乎专栏</a></p>
+<h2 id="提高构建速度">提高构建速度</h2>
+<ul>
+<li>happypack 使用多线程打包</li>
+<li>dllplugin</li>
+</ul>
+<h2 id="webpack-文件过大">webpack 文件过大</h2>
+<ul>
+<li>提取通用模块文件</li>
+<li>压缩 JS、CSS、图片</li>
+<li>按需加载</li>
+</ul>
+<h1 id="数据结构">数据结构</h1>
+<h2 id="哈希表">哈希表</h2>
+<p>按照一定的规则（有很多种不同的规则，可以按实际情况选择）去存储数据，这样找数据的时候就会很快了。 有时候会出现冲突（不同的数据根据规则计算应该放到同样的地方），这个时候需要解决冲突。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">HashTable</span> &#123;</span><br><span class="line">  <span class="title function_">constructor</span>(<span class="params">length = <span class="number">1000</span></span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">slots</span> = <span class="title class_">Array</span>(length) <span class="comment">// slots 就是哈希表的这个数组</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 计算出要存的位置，这里的方法是：将这个字符串的每一位的 ASCII 码算出来，再把每一位的加起来，再%哈希表的总长度</span></span><br><span class="line">  <span class="title function_">hash</span>(<span class="params">v</span>) &#123;</span><br><span class="line">    <span class="comment">// 将字符串解构为一个个的数组</span></span><br><span class="line">    <span class="keyword">let</span> value =[...v.<span class="title function_">toString</span>()].<span class="title function_">map</span>(<span class="function"><span class="params">char</span> =&gt;</span> char.<span class="title function_">charCodeAt</span>(<span class="number">0</span>)).<span class="title function_">reduce</span>(<span class="function">(<span class="params">result, item</span>) =&gt;</span> result + item)</span><br><span class="line">    <span class="keyword">return</span> value%<span class="variable language_">this</span>.<span class="property">slots</span>.<span class="property">length</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 存数据，因为 hash 值可能相同，所以用 push</span></span><br><span class="line">  <span class="title function_">add</span>(<span class="params">value</span>) &#123;</span><br><span class="line">    <span class="keyword">let</span> key = <span class="variable language_">this</span>.<span class="title function_">hash</span>(value)</span><br><span class="line">    <span class="keyword">if</span>(<span class="variable language_">this</span>.<span class="property">slots</span>[key]) &#123;</span><br><span class="line">      <span class="keyword">if</span>(!<span class="variable language_">this</span>.<span class="property">slots</span>[key].<span class="title function_">includes</span>((value))) <span class="variable language_">this</span>.<span class="property">slots</span>[key].<span class="property">push</span>[value]</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="variable language_">this</span>.<span class="property">slots</span>[key] = [value]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 删数据</span></span><br><span class="line">  <span class="title function_">remove</span>(<span class="params">value</span>)&#123;</span><br><span class="line">    <span class="keyword">let</span> key = <span class="variable language_">this</span>.<span class="title function_">hash</span>(value)</span><br><span class="line">    <span class="keyword">if</span>(<span class="variable language_">this</span>.<span class="property">slots</span>[key] &amp;&amp; <span class="variable language_">this</span>.<span class="property">slots</span>[key].<span class="title function_">includes</span>(value)) &#123;</span><br><span class="line">      <span class="variable language_">this</span>.<span class="property">slots</span>[key] = <span class="variable language_">this</span>.<span class="property">slots</span>[key].<span class="title function_">filter</span>(<span class="function"><span class="params">v</span> =&gt;</span> v !== value)</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="title function_">search</span>(<span class="params">value</span>)&#123;</span><br><span class="line">    <span class="keyword">let</span> key = <span class="variable language_">this</span>.<span class="title function_">hash</span>(value)</span><br><span class="line">    <span class="keyword">return</span> !!(<span class="variable language_">this</span>.<span class="property">slots</span>[key] &amp;&amp; <span class="variable language_">this</span>.<span class="property">slots</span>[key].<span class="title function_">includes</span>(value));</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="title function_">show</span>(<span class="params"></span>)&#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">this</span>.<span class="property">slots</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="图">图</h2>
+<p>顶点：vertex 边：edge</p>
+<p>可以这样表示：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">[[V1, V2, V4], [V0, V2, V3], [V0, V1], [V1], [V0]]</span><br></pre></td></tr></table></figure>
+<p>每一个数组表示对应的顶点与那些点相邻</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Graph</span> &#123;</span><br><span class="line">  <span class="title function_">constructor</span>(<span class="params">vCount</span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">vertexCount</span> = vCount <span class="comment">// 顶点数</span></span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">adjacencyList</span> = [...<span class="title class_">Array</span>(vCount)].<span class="title function_">map</span>(<span class="function"><span class="params">v</span> =&gt;</span> []) <span class="comment">// 相邻顶点的列表，得到类似于数组 [[], [], [], []]</span></span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">verticesStatus</span> = [...<span class="title class_">Array</span>(vCount)].<span class="title function_">map</span>(<span class="function"><span class="params">v</span> =&gt;</span> <span class="literal">false</span>) <span class="comment">// 记录点是不是找过了</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="title function_">addEdge</span>(<span class="params">v1, v2</span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">adjacencyList</span>[v1].<span class="title function_">push</span>(v2)</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">adjacencyList</span>[v2].<span class="title function_">push</span>(v1)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="title function_">showGraph</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">adjacencyList</span>.<span class="title function_">forEach</span>(<span class="function">(<span class="params">adjVertices, v</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`<span class="subst">$&#123;v&#125;</span> -&gt; <span class="subst">$&#123;adjVertices.toString()&#125;</span>`</span>)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="title function_">resetStatus</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">verticesStatus</span> = [...<span class="title class_">Array</span>(<span class="variable language_">this</span>.<span class="property">vertexCount</span>)].<span class="title function_">map</span>(<span class="function"><span class="params">v</span> =&gt;</span> <span class="literal">false</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 深度优先搜索</span></span><br><span class="line">  <span class="title function_">dfs</span>(<span class="params">v</span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">verticesStatus</span>[v] = <span class="literal">true</span></span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`访问到：<span class="subst">$&#123;v&#125;</span>`</span>)</span><br><span class="line">    <span class="comment">// Array.isArray 判断传递进来的是否是一个 Array</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="title class_">Array</span>.<span class="title function_">isArray</span>(<span class="variable language_">this</span>.<span class="property">adjacencyList</span>[v])) &#123;</span><br><span class="line">      <span class="variable language_">this</span>.<span class="property">adjacencyList</span>[v].<span class="title function_">forEach</span>(<span class="function"><span class="params">adjVertex</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">if</span>(!<span class="variable language_">this</span>.<span class="property">verticesStatus</span>[adjVertex]) <span class="variable language_">this</span>.<span class="title function_">dfs</span>(adjVertex)      </span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 广度优先搜索</span></span><br><span class="line">  <span class="title function_">bfs</span>(<span class="params">v</span>) &#123;</span><br><span class="line">    <span class="keyword">let</span> queue = []</span><br><span class="line">    queue.<span class="title function_">push</span>(v)</span><br><span class="line">    <span class="keyword">while</span> (queue.<span class="property">length</span> &gt; <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="keyword">let</span> v = queue.<span class="title function_">shift</span>()</span><br><span class="line">      <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">verticesStatus</span>[v]) <span class="keyword">continue</span></span><br><span class="line">      <span class="variable language_">this</span>.<span class="property">verticesStatus</span>[v] = <span class="literal">true</span></span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`访问到 <span class="subst">$&#123;v&#125;</span>`</span>)</span><br><span class="line">      <span class="variable language_">this</span>.<span class="property">adjacencyList</span>[v].<span class="title function_">forEach</span>(<span class="function"><span class="params">adjVertex</span> =&gt;</span> &#123;</span><br><span class="line">        queue.<span class="title function_">push</span>(adjVertex)</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
         <category>收集</category>
@@ -7478,209 +7555,6 @@ true
       </categories>
       <tags>
         <tag>入门</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>FAQs：数据结构</title>
-    <url>/hais-notebook/2020/02/10/Others-QA-DataStructure/</url>
-    <content><![CDATA[<p>关于数据结构的一些问题与答案。</p>
-<span id="more"></span>
-<h1 id="哈希表">哈希表</h1>
-<p>按照一定的规则（有很多种不同的规则，可以按实际情况选择）去存储数据，这样找数据的时候就会很快了。 有时候会出现冲突（不同的数据根据规则计算应该放到同样的地方），这个时候需要解决冲突。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">HashTable</span> &#123;</span><br><span class="line">  <span class="title function_">constructor</span>(<span class="params">length = <span class="number">1000</span></span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">slots</span> = <span class="title class_">Array</span>(length) <span class="comment">// slots 就是哈希表的这个数组</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 计算出要存的位置，这里的方法是：将这个字符串的每一位的 ASCII 码算出来，再把每一位的加起来，再%哈希表的总长度</span></span><br><span class="line">  <span class="title function_">hash</span>(<span class="params">v</span>) &#123;</span><br><span class="line">    <span class="comment">// 将字符串解构为一个个的数组</span></span><br><span class="line">    <span class="keyword">let</span> value =[...v.<span class="title function_">toString</span>()].<span class="title function_">map</span>(<span class="function"><span class="params">char</span> =&gt;</span> char.<span class="title function_">charCodeAt</span>(<span class="number">0</span>)).<span class="title function_">reduce</span>(<span class="function">(<span class="params">result, item</span>) =&gt;</span> result + item)</span><br><span class="line">    <span class="keyword">return</span> value%<span class="variable language_">this</span>.<span class="property">slots</span>.<span class="property">length</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 存数据，因为 hash 值可能相同，所以用 push</span></span><br><span class="line">  <span class="title function_">add</span>(<span class="params">value</span>) &#123;</span><br><span class="line">    <span class="keyword">let</span> key = <span class="variable language_">this</span>.<span class="title function_">hash</span>(value)</span><br><span class="line">    <span class="keyword">if</span>(<span class="variable language_">this</span>.<span class="property">slots</span>[key]) &#123;</span><br><span class="line">      <span class="keyword">if</span>(!<span class="variable language_">this</span>.<span class="property">slots</span>[key].<span class="title function_">includes</span>((value))) <span class="variable language_">this</span>.<span class="property">slots</span>[key].<span class="property">push</span>[value]</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="variable language_">this</span>.<span class="property">slots</span>[key] = [value]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 删数据</span></span><br><span class="line">  <span class="title function_">remove</span>(<span class="params">value</span>)&#123;</span><br><span class="line">    <span class="keyword">let</span> key = <span class="variable language_">this</span>.<span class="title function_">hash</span>(value)</span><br><span class="line">    <span class="keyword">if</span>(<span class="variable language_">this</span>.<span class="property">slots</span>[key] &amp;&amp; <span class="variable language_">this</span>.<span class="property">slots</span>[key].<span class="title function_">includes</span>(value)) &#123;</span><br><span class="line">      <span class="variable language_">this</span>.<span class="property">slots</span>[key] = <span class="variable language_">this</span>.<span class="property">slots</span>[key].<span class="title function_">filter</span>(<span class="function"><span class="params">v</span> =&gt;</span> v !== value)</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="title function_">search</span>(<span class="params">value</span>)&#123;</span><br><span class="line">    <span class="keyword">let</span> key = <span class="variable language_">this</span>.<span class="title function_">hash</span>(value)</span><br><span class="line">    <span class="keyword">return</span> !!(<span class="variable language_">this</span>.<span class="property">slots</span>[key] &amp;&amp; <span class="variable language_">this</span>.<span class="property">slots</span>[key].<span class="title function_">includes</span>(value));</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="title function_">show</span>(<span class="params"></span>)&#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">this</span>.<span class="property">slots</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h1 id="图">图</h1>
-<p>顶点：vertex 边：edge</p>
-<p>可以这样表示：</p>
-<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">[[V1, V2, V4], [V0, V2, V3], [V0, V1], [V1], [V0]]</span><br></pre></td></tr></table></figure>
-<p>每一个数组表示对应的顶点与那些点相邻</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Graph</span> &#123;</span><br><span class="line">  <span class="title function_">constructor</span>(<span class="params">vCount</span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">vertexCount</span> = vCount <span class="comment">// 顶点数</span></span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">adjacencyList</span> = [...<span class="title class_">Array</span>(vCount)].<span class="title function_">map</span>(<span class="function"><span class="params">v</span> =&gt;</span> []) <span class="comment">// 相邻顶点的列表，得到类似于数组 [[], [], [], []]</span></span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">verticesStatus</span> = [...<span class="title class_">Array</span>(vCount)].<span class="title function_">map</span>(<span class="function"><span class="params">v</span> =&gt;</span> <span class="literal">false</span>) <span class="comment">// 记录点是不是找过了</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="title function_">addEdge</span>(<span class="params">v1, v2</span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">adjacencyList</span>[v1].<span class="title function_">push</span>(v2)</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">adjacencyList</span>[v2].<span class="title function_">push</span>(v1)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="title function_">showGraph</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">adjacencyList</span>.<span class="title function_">forEach</span>(<span class="function">(<span class="params">adjVertices, v</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`<span class="subst">$&#123;v&#125;</span> -&gt; <span class="subst">$&#123;adjVertices.toString()&#125;</span>`</span>)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="title function_">resetStatus</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">verticesStatus</span> = [...<span class="title class_">Array</span>(<span class="variable language_">this</span>.<span class="property">vertexCount</span>)].<span class="title function_">map</span>(<span class="function"><span class="params">v</span> =&gt;</span> <span class="literal">false</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 深度优先搜索</span></span><br><span class="line">  <span class="title function_">dfs</span>(<span class="params">v</span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">verticesStatus</span>[v] = <span class="literal">true</span></span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`访问到：<span class="subst">$&#123;v&#125;</span>`</span>)</span><br><span class="line">    <span class="comment">// Array.isArray 判断传递进来的是否是一个 Array</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="title class_">Array</span>.<span class="title function_">isArray</span>(<span class="variable language_">this</span>.<span class="property">adjacencyList</span>[v])) &#123;</span><br><span class="line">      <span class="variable language_">this</span>.<span class="property">adjacencyList</span>[v].<span class="title function_">forEach</span>(<span class="function"><span class="params">adjVertex</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">if</span>(!<span class="variable language_">this</span>.<span class="property">verticesStatus</span>[adjVertex]) <span class="variable language_">this</span>.<span class="title function_">dfs</span>(adjVertex)      </span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 广度优先搜索</span></span><br><span class="line">  <span class="title function_">bfs</span>(<span class="params">v</span>) &#123;</span><br><span class="line">    <span class="keyword">let</span> queue = []</span><br><span class="line">    queue.<span class="title function_">push</span>(v)</span><br><span class="line">    <span class="keyword">while</span> (queue.<span class="property">length</span> &gt; <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="keyword">let</span> v = queue.<span class="title function_">shift</span>()</span><br><span class="line">      <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">verticesStatus</span>[v]) <span class="keyword">continue</span></span><br><span class="line">      <span class="variable language_">this</span>.<span class="property">verticesStatus</span>[v] = <span class="literal">true</span></span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`访问到 <span class="subst">$&#123;v&#125;</span>`</span>)</span><br><span class="line">      <span class="variable language_">this</span>.<span class="property">adjacencyList</span>[v].<span class="title function_">forEach</span>(<span class="function"><span class="params">adjVertex</span> =&gt;</span> &#123;</span><br><span class="line">        queue.<span class="title function_">push</span>(adjVertex)</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>前端</category>
-        <category>其他</category>
-      </categories>
-      <tags>
-        <tag>入门</tag>
-        <tag>FAQ</tag>
-        <tag>收集</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>FAQs：HTTP</title>
-    <url>/hais-notebook/2020/02/13/Others-QA-HTTP/</url>
-    <content><![CDATA[<p>关于 HTTP 的一些问题与答案。</p>
-<span id="more"></span>
-<h1 id="http-状态码">HTTP 状态码</h1>
-<h1 id="http-缓存">HTTP 缓存</h1>
-<h2 id="etag">ETag</h2>
-<blockquote>
-<p>MD5</p>
-</blockquote>
-<p>实际上还是会发请求，命中了一般就是 304 Not Modified</p>
-<h2 id="expire">Expire</h2>
-<blockquote>
-<p>日期</p>
-</blockquote>
-<p>时间点，可以通过修改本地时间改变</p>
-<h2 id="cache-control">Cache-Control</h2>
-<blockquote>
-<p>max-age=600</p>
-</blockquote>
-<p>时间段，是相对时间；而且是无请求的</p>
-<h2 id="pwa">PWA</h2>
-<p>浏览器缓存顺序</p>
-<h1 id="get-和-post-的区别">GET 和 POST 的区别？</h1>
-<ul>
-<li>GET 不安全，POST 不安全（其实都不安全）</li>
-<li>GET 是有长度限制的，POST 没有长度限制（但一般 GET 的长度不超过 1 KB，POST 上限 4M ~ 20M 左右）</li>
-<li>GET 参数在 URL 中，POST 消息在消息体中</li>
-<li>GET 只需要一个报文，POST 需要两个以上（因为有消息体）</li>
-<li>GET 幂等，POST 不幂等</li>
-<li>语义不同，GET 是为了获取数据，POST 是为了提交数据</li>
-</ul>
-<h1 id="http2-和-http1-的区别">HTTP/2 和 HTTP/1 的区别</h1>
-]]></content>
-      <categories>
-        <category>前端</category>
-        <category>其他</category>
-      </categories>
-      <tags>
-        <tag>入门</tag>
-        <tag>FAQ</tag>
-        <tag>收集</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>FAQs：React</title>
-    <url>/hais-notebook/2020/02/13/Others-QA-React/</url>
-    <content><![CDATA[<p>关于 React 的一些问题与答案。</p>
-<span id="more"></span>
-<h1 id="react-实现组件间通信">React 实现组件间通信？</h1>
-<ol type="1">
-<li>父子组件：通过 props 直接传参（onChange、onClick）</li>
-<li>爷孙组件：传两次 props</li>
-<li>任意组件：Redux</li>
-</ol>
-<h1 id="dom-diff">DOM Diff</h1>
-<h2 id="reconciliation">Reconciliation</h2>
-<p>Reconciliation 直译为协调，即 React 的渲染机制，他有以下几步：</p>
-<ol type="1">
-<li>props 或 state 改变</li>
-<li>render 函数返回不同的元素树（虚拟 DOM）</li>
-<li>新旧 DOM 对比（vDOM Diff）</li>
-<li>针对差异的地方进行更新</li>
-<li>渲染为真实的 DOM 树</li>
-</ol>
-<h2 id="dom-diff-原理">DOM Diff 原理</h2>
-<h3 id="设计思想">设计思想</h3>
-<ol type="1">
-<li>永远只比较同层的节点，不会跨层级比较</li>
-<li>不同的两个节点产生不同的树（两个类型不同的节点直接用新的全部替代旧的，包括其后代）</li>
-<li>通过 key 判断哪些元素是相同的（比如列表如果没有 key，从头部插入元素会导致列表全部更新），因此 key 需要在列表中保持唯一（不需要全局唯一）</li>
-</ol>
-<h3 id="比较流程">比较流程</h3>
-<ul>
-<li>若元素类型不相同：直接用新的树替换掉原来的树</li>
-<li>若元素类型相同：
-<ul>
-<li>若都是 DOM 节点：更新 DOM 属性，比如 <code>style</code>、<code>title</code> 等，再向下递归找</li>
-<li>若都是组件节点：组件实例保持不变，更新 Props</li>
-</ul></li>
-</ul>
-<h2 id="如何减少-diff-过程">如何减少 Diff 过程</h2>
-<blockquote>
-<p>利用 <code>shouldComponentUpdate</code></p>
-</blockquote>
-<p>默认的 <code>shouldComponentUpdate</code> 会在 props 或 state 发生变化的时候返回 true，表示组件会重新渲染，然后调用 render 函数，进行 vDOM Diff；相对的，我们也可以通过控制它的返回值来控制是否发生 vDOM Diff</p>
-<h2 id="浅比较与深比较">浅比较与深比较</h2>
-<ul>
-<li>类组件的 <code>shouldComponentUpdate</code> 中可以对 props 和 state 进行浅比较（使用 <code>pureComponent</code> API，比较一层 key 和 value，类似于浅拷贝），也可以进行深比较（递归）</li>
-<li>函数组件使用 <code>memo</code> 方法可以进行肩比较，但是只比较了 props：</li>
-</ul>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">Component</span>(<span class="params"></span>) &#123; &#125;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title class_">React</span>.<span class="title function_">memo</span>(<span class="title class_">Component</span>)</span><br></pre></td></tr></table></figure>
-<h2 id="immutable-数据结构">immutable 数据结构</h2>
-<p>immutable 的意义：浅比较缺点很明显，深比较有时候又比较浪费性能</p>
-<p>简单来说：</p>
-<ol type="1">
-<li><strong>节省性能</strong>：immutable 内部采用多叉树结构，如果它里面有节点被改变，那么则更新 <strong>这个节点</strong> 和他有关的所有 <strong>上级节点</strong></li>
-<li><strong>返回一个新的引用</strong>，即使是浅比较也能感知到数据的变化</li>
-</ol>
-<h3 id="一些-immutable-api">一些 immutable API</h3>
-<h4 id="fromjs">fromJS</h4>
-<p>将 JS 对象转换为 immutable 对象</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;fromJS&#125; <span class="keyword">from</span> <span class="string">&#x27;immutable&#x27;</span></span><br><span class="line"><span class="keyword">const</span> immutableState = fromJS (&#123;</span><br><span class="line">  <span class="attr">count</span>: <span class="number">0</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<h4 id="tojs">toJS</h4>
-<p>将 immutable 对象转换为 JS 对象</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> jsObj = immutableState.<span class="title function_">toJS</span>()</span><br></pre></td></tr></table></figure>
-<h4 id="getgetin">get/getIn</h4>
-<p>用来获取 immutable 对象属性</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> jsObj = &#123;<span class="attr">a</span>: <span class="number">1</span>&#125;</span><br><span class="line"><span class="keyword">let</span> res = jsObj.<span class="property">a</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> immutableObj = <span class="title function_">fromJS</span>(jsObj)</span><br><span class="line"><span class="keyword">let</span> res = immutableObj.<span class="title function_">get</span>(<span class="string">&#x27;a&#x27;</span>)</span><br></pre></td></tr></table></figure>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> jsObj = &#123;<span class="attr">a</span>:&#123;<span class="attr">b</span>: <span class="number">1</span>&#125;&#125;</span><br><span class="line"><span class="keyword">let</span> res = jsObj.<span class="property">a</span>.<span class="property">b</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> immutableObj = <span class="title function_">fromJS</span>(jsObj)</span><br><span class="line"><span class="keyword">let</span> res = immutableObj.<span class="title function_">getIn</span>([<span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;b&#x27;</span>]) <span class="comment">// 传入一个数组</span></span><br></pre></td></tr></table></figure>
-<h4 id="set">set</h4>
-<p>用来给 immutable 对象的属性赋值</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> immutableObj = <span class="title function_">fromJS</span>(&#123;<span class="attr">a</span>: <span class="number">1</span>&#125;)</span><br><span class="line">immutableObj.<span class="title function_">set</span>(<span class="string">&#x27;a&#x27;</span>, <span class="number">2</span>)</span><br></pre></td></tr></table></figure>
-<h4 id="merge">merge</h4>
-<p>新旧数据对比，旧数据中不存在的属性直接添加，存在的属性用新数据覆盖</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> immutableObj = <span class="title function_">fromJS</span>(&#123;<span class="attr">a</span>: <span class="number">1</span>&#125;)</span><br><span class="line">immutableObj.<span class="title function_">merge</span>(&#123;</span><br><span class="line">  <span class="attr">a</span>: <span class="number">2</span>,</span><br><span class="line">  <span class="attr">b</span>: <span class="number">3</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>前端</category>
-        <category>其他</category>
-      </categories>
-      <tags>
-        <tag>入门</tag>
-        <tag>FAQ</tag>
-        <tag>收集</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>FAQs：Vue</title>
-    <url>/hais-notebook/2020/02/13/Others-QA-Vue/</url>
-    <content><![CDATA[<p>关于 Vue 的一些问题与答案。</p>
-<span id="more"></span>
-<h1 id="vue-组件间的通信">Vue 组件间的通信？</h1>
-<ol type="1">
-<li>父子组件：<code>$emit</code> 和 <code>$on</code></li>
-<li>爷孙组件、兄弟组件：eventBus</li>
-<li>Vuex</li>
-</ol>
-]]></content>
-      <categories>
-        <category>前端</category>
-        <category>其他</category>
-      </categories>
-      <tags>
-        <tag>入门</tag>
-        <tag>FAQ</tag>
-        <tag>收集</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>FAQs：Webpack</title>
-    <url>/hais-notebook/2020/02/14/Others-QA-Webpack/</url>
-    <content><![CDATA[<p>关于 Webpack 的一些问题与答案。</p>
-<span id="more"></span>
-<h1 id="如何提高构建速度">如何提高构建速度？</h1>
-<ul>
-<li>happypack 使用多线程打包</li>
-<li>dllplugin</li>
-</ul>
-<h1 id="webpack-文件过大">webpack 文件过大：</h1>
-<ul>
-<li>提取通用模块文件</li>
-<li>压缩 JS、CSS、图片</li>
-<li>按需加载</li>
-</ul>
-<p>zhuanlan.zhihu.com/p/44438844</p>
-]]></content>
-      <categories>
-        <category>前端</category>
-        <category>其他</category>
-      </categories>
-      <tags>
-        <tag>入门</tag>
-        <tag>FAQ</tag>
-        <tag>收集</tag>
       </tags>
   </entry>
   <entry>
