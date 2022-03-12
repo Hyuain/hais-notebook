@@ -196,13 +196,13 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/hais-notebook/archives/">
-          <span class="site-state-item-count">85</span>
+          <span class="site-state-item-count">83</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/hais-notebook/categories/">
-        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-count">31</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
@@ -354,6 +354,19 @@
 <blockquote>
 <p>问题：我们在浏览器的 Web 地址应该叫 URL 还是 URI？ - URI：可以分为 URL 和 URN，或同时具备 locators 和 names 特性的一个东西 - URN 像一个人的名字，URL 像一个人的地址；URN 确定了东西的身份，URL 提供了找到它的方式（提供了访问机制，比如说协议）</p>
 </blockquote>
+<p>URL 实际上是 URI 的一个子集，除识别资源外还提供定位资源的方法。</p>
+<p>下面是一个 URI 的组成：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">                    hierarchical part</span><br><span class="line">        ┌───────────────────┴─────────────────────┐</span><br><span class="line">                    authority               path</span><br><span class="line">        ┌───────────────┴───────────────┐┌───┴────┐</span><br><span class="line">  abc://username:password@example.com:123/path/data?key=value&amp;key2=value2#fragid1</span><br><span class="line">  └┬┘   └───────┬───────┘ └────┬────┘ └┬┘           └─────────┬─────────┘ └──┬──┘</span><br><span class="line">scheme  user information     host     port                  query         fragment</span><br><span class="line"></span><br><span class="line">  urn:example:mammal:monotreme:echidna</span><br><span class="line">  └┬┘ └──────────────┬───────────────┘</span><br><span class="line">scheme              path</span><br></pre></td></tr></table></figure>
+<p>举一个我们常见的 URL（URI） 的例子：</p>
+<p>https://zh.wikipedia.org/w/index.php?title=Special:随机页面#5</p>
+<ol type="1">
+<li><code>https</code>：协议</li>
+<li><code>zh.wikipedia.org</code>：域名</li>
+<li><code>/w/index.php</code>：路径（不同的页面）</li>
+<li><code>?title=Special:随机页面</code>：查询参数（相同页面，不同内容）</li>
+<li><code>#5</code>：锚点（相同页面，相同内容，不同位置）</li>
+<li>其中若不写端口号，则表示使用 https 对应的默认端口号 443</li>
+</ol>
 <h3 id="http-报文结构">HTTP 报文结构</h3>
 <h4 id="请求报文">请求报文</h4>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">【请求行】POST（请求方法） /webTours/login.pl（请求 URI） HTTP/1.1（HTTP 协议及版本）</span><br><span class="line">【请求头】用键值对来传递参数，包括 Host、Accept、Content-Type 等</span><br><span class="line"></span><br><span class="line">【请求体】</span><br></pre></td></tr></table></figure>

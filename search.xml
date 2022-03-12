@@ -2065,6 +2065,19 @@ z = 8x + 12y
 <blockquote>
 <p>问题：我们在浏览器的 Web 地址应该叫 URL 还是 URI？ - URI：可以分为 URL 和 URN，或同时具备 locators 和 names 特性的一个东西 - URN 像一个人的名字，URL 像一个人的地址；URN 确定了东西的身份，URL 提供了找到它的方式（提供了访问机制，比如说协议）</p>
 </blockquote>
+<p>URL 实际上是 URI 的一个子集，除识别资源外还提供定位资源的方法。</p>
+<p>下面是一个 URI 的组成：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">                    hierarchical part</span><br><span class="line">        ┌───────────────────┴─────────────────────┐</span><br><span class="line">                    authority               path</span><br><span class="line">        ┌───────────────┴───────────────┐┌───┴────┐</span><br><span class="line">  abc://username:password@example.com:123/path/data?key=value&amp;key2=value2#fragid1</span><br><span class="line">  └┬┘   └───────┬───────┘ └────┬────┘ └┬┘           └─────────┬─────────┘ └──┬──┘</span><br><span class="line">scheme  user information     host     port                  query         fragment</span><br><span class="line"></span><br><span class="line">  urn:example:mammal:monotreme:echidna</span><br><span class="line">  └┬┘ └──────────────┬───────────────┘</span><br><span class="line">scheme              path</span><br></pre></td></tr></table></figure>
+<p>举一个我们常见的 URL（URI） 的例子：</p>
+<p>https://zh.wikipedia.org/w/index.php?title=Special:随机页面#5</p>
+<ol type="1">
+<li><code>https</code>：协议</li>
+<li><code>zh.wikipedia.org</code>：域名</li>
+<li><code>/w/index.php</code>：路径（不同的页面）</li>
+<li><code>?title=Special:随机页面</code>：查询参数（相同页面，不同内容）</li>
+<li><code>#5</code>：锚点（相同页面，相同内容，不同位置）</li>
+<li>其中若不写端口号，则表示使用 https 对应的默认端口号 443</li>
+</ol>
 <h3 id="http-报文结构">HTTP 报文结构</h3>
 <h4 id="请求报文">请求报文</h4>
 <figure class="highlight text"><table><tr><td class="code"><pre><span class="line">【请求行】POST（请求方法） /webTours/login.pl（请求 URI） HTTP/1.1（HTTP 协议及版本）</span><br><span class="line">【请求头】用键值对来传递参数，包括 Host、Accept、Content-Type 等</span><br><span class="line"></span><br><span class="line">【请求体】</span><br></pre></td></tr></table></figure>
@@ -3412,7 +3425,7 @@ z = 8x + 12y
   <entry>
     <title>FAQs</title>
     <url>/hais-notebook/2022/03/12/Collections-FAQs/</url>
-    <content><![CDATA[<p>收集一些奇怪的问题/话题及其解决方案方案。</p>
+    <content><![CDATA[<p>收集一些问题/话题。</p>
 <span id="more"></span>
 <h1 id="javascript">JavaScript</h1>
 <h2 id="promise">Promise</h2>
@@ -3421,6 +3434,8 @@ z = 8x + 12y
 <p>解决办法： 1. 回调函数延迟绑定，回调函数是通过后面的 then 方法传入的 2. 返回值穿透，根据 then 中回调函数的传入值创建不同类型的 Promise，再把返回的 Promise 穿透到外层，以供后续使用。以上两点实现了链式调用，解决多层嵌套问题 3. 错误冒泡，前面产生的错误会一直向后传递，被 catch 接收到，就不用频繁地检查错误了</p>
 <h3 id="promise-怎样实现链式调用的">Promise 怎样实现链式调用的</h3>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="variable constant_">PENDING</span> = <span class="string">&#x27;pending&#x27;</span></span><br><span class="line"><span class="keyword">const</span> <span class="variable constant_">FULFILLED</span> = <span class="string">&#x27;fulfilled&#x27;</span></span><br><span class="line"><span class="keyword">const</span> <span class="variable constant_">REJECTED</span> = <span class="string">&#x27;rejected&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">MyPromise</span>(<span class="params">executor</span>) &#123;</span><br><span class="line">  <span class="comment">// 缓存当前 Promise 实例</span></span><br><span class="line">  <span class="keyword">let</span> self = <span class="variable language_">this</span></span><br><span class="line">  self.<span class="property">value</span> = <span class="literal">null</span></span><br><span class="line">  self.<span class="property">error</span> = <span class="literal">null</span></span><br><span class="line">  self.<span class="property">status</span> = <span class="variable constant_">PENDING</span></span><br><span class="line">  <span class="comment">// 回调函数有可能是个数组</span></span><br><span class="line">  self.<span class="property">onFulfilledCallbacks</span> = []</span><br><span class="line">  self.<span class="property">onRejectedCallbacks</span> = []</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> <span class="title function_">resolve</span> = value =&gt; &#123;</span><br><span class="line">    <span class="keyword">if</span> (self.<span class="property">status</span> !== <span class="variable constant_">PENDING</span>) <span class="keyword">return</span></span><br><span class="line">    <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">      self.<span class="property">status</span> = <span class="variable constant_">FULFILLED</span></span><br><span class="line">      self.<span class="property">value</span> = value</span><br><span class="line">      self.<span class="property">onFulfilledCallbacks</span>.<span class="title function_">forEach</span>(<span class="function"><span class="params">callback</span> =&gt;</span> <span class="title function_">callback</span>(self.<span class="property">value</span>))</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">const</span> <span class="title function_">reject</span> = error =&gt; &#123;</span><br><span class="line">    <span class="keyword">if</span> (self.<span class="property">status</span> !== <span class="variable constant_">PENDING</span>) <span class="keyword">return</span></span><br><span class="line">    <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">      self.<span class="property">status</span> = <span class="variable constant_">REJECTED</span></span><br><span class="line">      self.<span class="property">error</span> = error</span><br><span class="line">      self.<span class="property">onRejectedCallbacks</span>.<span class="title function_">forEach</span>(<span class="function"><span class="params">callback</span> =&gt;</span> <span class="title function_">callback</span>(self.<span class="property">error</span>))</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="title function_">executor</span>(resolve, reject)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title class_">MyPromise</span>.<span class="property"><span class="keyword">prototype</span></span>.<span class="property">then</span> = <span class="keyword">function</span>(<span class="params">onFulfilled, onRejected</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> self = <span class="variable language_">this</span></span><br><span class="line">  <span class="keyword">let</span> bridgePromise</span><br><span class="line">  onFulfilled = <span class="keyword">typeof</span> onFulfilled === <span class="string">&#x27;function&#x27;</span> ? onFulfilled : <span class="function"><span class="params">value</span> =&gt;</span> value</span><br><span class="line">  onRejected = <span class="keyword">typeof</span> onRejected === <span class="string">&#x27;function&#x27;</span> ? onRejected : <span class="function"><span class="params">error</span> =&gt;</span> &#123; <span class="keyword">throw</span> error &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">resolvePromise</span>(<span class="params">bridgePromise, x, resolve, reject</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (x <span class="keyword">instanceof</span> <span class="title class_">MyPromise</span>) &#123;</span><br><span class="line">      <span class="comment">// 拆解这个 promise，直到返回值不为 promise 为止</span></span><br><span class="line">      <span class="keyword">if</span> (x.<span class="property">status</span> === <span class="variable constant_">PENDING</span>) &#123;</span><br><span class="line">        x.<span class="title function_">then</span>(<span class="function"><span class="params">y</span> =&gt;</span> &#123;</span><br><span class="line">          <span class="title function_">resolvePromise</span>(bridgePromise, y, resolve, reject)</span><br><span class="line">        &#125;, <span class="function"><span class="params">error</span> =&gt;</span> &#123;</span><br><span class="line">          <span class="title function_">reject</span>(error)</span><br><span class="line">        &#125;)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="title function_">resolve</span>(x)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (self.<span class="property">status</span> === <span class="variable constant_">PENDING</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> bridgePromise =  <span class="keyword">new</span> <span class="title class_">MyPromise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">      self.<span class="property">onFulfilledCallbacks</span>.<span class="title function_">push</span>(<span class="function"><span class="params">value</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="comment">// 要拿到 then 中回调返回的结果</span></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">          <span class="keyword">let</span> x = <span class="title function_">onFulfilled</span>(value)</span><br><span class="line">          <span class="title function_">resolvePromise</span>(bridgePromise, x, resolve, reject)</span><br><span class="line">        &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">          <span class="title function_">reject</span>(e)</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;)</span><br><span class="line">      self.<span class="property">onRejectedCallbacks</span>.<span class="title function_">push</span>(<span class="function"><span class="params">error</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">          <span class="title function_">reject</span>(<span class="title function_">onRejected</span>(error))</span><br><span class="line">        &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">          <span class="title function_">reject</span>(e)</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (self.<span class="property">status</span> === <span class="variable constant_">FULFILLED</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> bridgePromise = <span class="keyword">new</span> <span class="title class_">MyPromise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">          <span class="keyword">let</span> x = <span class="title function_">onFulfilled</span>(self.<span class="property">value</span>)</span><br><span class="line">          <span class="title function_">resolvePromise</span>(bridgePromise, x, resolve, reject)</span><br><span class="line">        &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">          <span class="title function_">reject</span>(e)</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> bridgePromise = <span class="keyword">new</span> <span class="title class_">MyPromise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">          <span class="keyword">let</span> x = <span class="title function_">onRejected</span>(self.<span class="property">error</span>)</span><br><span class="line">          <span class="title function_">resolvePromise</span>(bridgePromise, x, resolve, reject)</span><br><span class="line">        &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">          <span class="title function_">reject</span>(e)</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title class_">MyPromise</span>.<span class="property"><span class="keyword">prototype</span></span>.<span class="property">catch</span> = <span class="keyword">function</span> (<span class="params">onRejected</span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="variable language_">this</span>.<span class="title function_">then</span>(<span class="literal">null</span>, onRejected)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="一些例子">一些例子</h3>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="title class_">Promise</span>.<span class="title function_">reject</span>(<span class="string">&#x27;error&#x27;</span>)</span><br><span class="line">  .<span class="title function_">then</span>( <span class="function">()=&gt;</span>&#123;<span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;success1&#x27;</span>)&#125;, <span class="function">()=&gt;</span>&#123;<span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;error1&#x27;</span>)&#125; )</span><br><span class="line">  .<span class="title function_">then</span>( <span class="function">()=&gt;</span>&#123;<span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;success2&#x27;</span>)&#125;, <span class="function">()=&gt;</span>&#123;<span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;error2&#x27;</span>)&#125; )</span><br><span class="line"><span class="comment">// error1 -&gt; success2</span></span><br></pre></td></tr></table></figure>
 <h2 id="前端路由">前端路由</h2>
 <blockquote>
 <p>路由就是根据不同的 URL 来展示不同的内容或页面</p>
@@ -3565,7 +3580,7 @@ z = 8x + 12y
 <li>检查是否有 <strong>Web worker</strong> 任务，有则执行</li>
 <li>执行队首新的 <strong>宏任务</strong>，回到 2 循环至宏任务队列为空</li>
 </ol>
-<h4 id="一些例子">一些例子</h4>
+<h4 id="一些例子-1">一些例子</h4>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">async1</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;async1 start&#x27;</span>)  <span class="comment">// 2</span></span><br><span class="line">  <span class="keyword">await</span> <span class="title function_">async2</span>() <span class="comment">// -&gt; 执行 async2 并等待返回结果</span></span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;async1 end&#x27;</span>) <span class="comment">// 6 -&gt; 有的浏览器会先执行 then 的，而不是按入栈出栈的先后顺序</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">async2</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;async2&#x27;</span>)  <span class="comment">// 3</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;script start&#x27;</span>)  <span class="comment">// 1</span></span><br><span class="line"><span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;setTimeout&#x27;</span>)  <span class="comment">// 8</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="title function_">async1</span>()</span><br><span class="line"><span class="keyword">new</span> <span class="title class_">Promise</span>(<span class="keyword">function</span>(<span class="params">resolve</span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;promise1&#x27;</span>) <span class="comment">// 4</span></span><br><span class="line">  <span class="title function_">resolve</span>()</span><br><span class="line">&#125;).<span class="title function_">then</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;promise2&#x27;</span>) <span class="comment">// 7</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;script end&#x27;</span>) <span class="comment">// 5</span></span><br></pre></td></tr></table></figure>
 <h3 id="node.js-中的-eventloop">Node.js 中的 EventLoop</h3>
 <p><img src="https://user-gold-cdn.xitu.io/2019/11/23/16e96b8587ad911d?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" /></p>
@@ -3593,7 +3608,7 @@ z = 8x + 12y
 <li><code>nextTick</code> -&gt; 当前阶段的后面</li>
 <li><code>promise.then</code> -&gt; 看他是通过什么实现的，如果是用 <code>nextTick</code> 实现的，就当 <code>nextTick</code> 看，当 <code>resolve</code> 的时候放在当前阶段的后面</li>
 </ul>
-<h4 id="一些例子-1">一些例子</h4>
+<h4 id="一些例子-2">一些例子</h4>
 <p>注意：有可能先执行 JS 代码，也有可能先开启 EventLoop，因为进程开启都需要时间。</p>
 <p>比如当执行：</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">setTimeout</span>(fn, <span class="number">100</span>)</span><br><span class="line"><span class="title function_">setImmediate</span>(fn2)</span><br></pre></td></tr></table></figure>
@@ -3673,6 +3688,8 @@ z = 8x + 12y
 <h2 id="代码题">代码题</h2>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> a = &#123;<span class="attr">name</span>: <span class="string">&#x27;x&#x27;</span>&#125;</span><br><span class="line">a.<span class="property">x</span> = a = &#123;&#125;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(a.<span class="property">x</span>) <span class="comment">// undefined</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 代码执行分为两步： 1. 确定 a 是什么；2. 执行（从右向左）</span></span><br><span class="line"><span class="comment">// 执行到 a.x 的时候，a 还是原来的地址，但是他右边的 a 已经是新的地址了</span></span><br></pre></td></tr></table></figure>
 <h1 id="css">CSS</h1>
+<h2 id="滚动条的宽度">滚动条的宽度</h2>
+<p>滚动条的宽度在 14 ~ 19px 之间，根据操作系统不同</p>
 <h2 id="回溯机制">回溯机制</h2>
 <h2 id="flex-的常见属性">flex 的常见属性</h2>
 <h2 id="页面导入样式时link-和-import-有什么区别">页面导入样式时，<code>link</code> 和 <code>@import</code> 有什么区别</h2>
@@ -3734,6 +3751,20 @@ z = 8x + 12y
 <li>GET 幂等，POST 不幂等</li>
 <li>语义不同，GET 是为了获取数据，POST 是为了提交数据</li>
 </ul>
+<h2 id="nslookup">nslookup</h2>
+<p>直接使用可以查询到域名的 A 记录。比如：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nslookup hais-teatime.com</span><br></pre></td></tr></table></figure>
+<h2 id="域名">域名</h2>
+<p>比如对于 www.baidu.com</p>
+<ul>
+<li>顶级域名：com</li>
+<li>：baidu.com</li>
+<li>三级域名：www.baidu.com</li>
+</ul>
+<p>三级域名跟二级域名可以没关系，有可能都不是属于一家公司，注意辨别。</p>
+<h1 id="jquery">jQuery</h1>
+<h2 id="制作-tab">制作 Tab</h2>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">$tabBar.<span class="title function_">on</span>(<span class="string">&#x27;click&#x27;</span>, <span class="string">&#x27;li&#x27;</span>, <span class="function"><span class="params">e</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> $li = $(e.<span class="property">currentTarget</span>)</span><br><span class="line">  $li</span><br><span class="line">    .<span class="title function_">addClass</span>(<span class="string">&#x27;selected&#x27;</span>)</span><br><span class="line">    .<span class="title function_">siblings</span>()</span><br><span class="line">    .<span class="title function_">removeClass</span>(<span class="string">&#x27;selected&#x27;</span>)</span><br><span class="line">  <span class="keyword">const</span> index = $li.<span class="title function_">index</span>()</span><br><span class="line">  $tabContent</span><br><span class="line">    .<span class="title function_">children</span>()</span><br><span class="line">    .<span class="title function_">eq</span>(index)</span><br><span class="line">    .<span class="title function_">addClass</span>(<span class="string">&#x27;active&#x27;</span>) <span class="comment">// 一定不要用.css 和.show，样式和行为分离</span></span><br><span class="line">    .<span class="title function_">siblings</span>()</span><br><span class="line">    .<span class="title function_">removeClass</span>(<span class="string">&#x27;active&#x27;</span>)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">$tabBar.<span class="title function_">children</span>().<span class="title function_">eq</span>(<span class="number">0</span>).<span class="title function_">trigger</span>(<span class="string">&#x27;click&#x27;</span>)  <span class="comment">// 默认触发第一个</span></span><br></pre></td></tr></table></figure>
 <h1 id="vue">Vue</h1>
 <h2 id="组件间通信">组件间通信</h2>
 <ol type="1">
@@ -3741,6 +3772,9 @@ z = 8x + 12y
 <li>爷孙组件、兄弟组件：eventBus</li>
 <li>Vuex</li>
 </ol>
+<h2 id="渲染过程">渲染过程</h2>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 普通的同步渲染过程</span></span><br><span class="line"><span class="keyword">const</span> div = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&#x27;div&#x27;</span>)</span><br><span class="line"><span class="keyword">const</span> child = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&#x27;div&#x27;</span>)</span><br><span class="line">div.<span class="title function_">appendChild</span>(child) <span class="comment">// -&gt; Vue.$mounted 调用，$mounted 是异步的，队列 1</span></span><br><span class="line">body.<span class="title function_">appendChild</span>(div) <span class="comment">// -&gt; Vue.$mounted 调用，$mounted 是异步的，队列 2</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(div.<span class="property">outerHTML</span>)</span><br></pre></td></tr></table></figure>
+<p>不能让 A —更新—&gt; B 的同时 B —更新—&gt; A</p>
 <h1 id="react">React</h1>
 <h2 id="组件间通信-1">组件间通信</h2>
 <ol type="1">
@@ -3821,6 +3855,11 @@ z = 8x + 12y
 <li>压缩 JS、CSS、图片</li>
 <li>按需加载</li>
 </ul>
+<h2 id="import-alias">import alias</h2>
+<h3 id="在-js-或-ts-中使用">在 JS 或 TS 中使用 <code>@</code></h3>
+<p>可以直接使用</p>
+<h3 id="在-css-或-scss-中使用">在 CSS 或 SCSS 中使用 <code>@</code></h3>
+<p>需要使用 <code>~@</code>，但是 webstorm 中会报错，需要点开 <code>settings</code>-<code>webpack</code>，在路径中找到 <code>node_modules\@vue\cli-service\webpack.config.js</code></p>
 <h1 id="数据结构">数据结构</h1>
 <h2 id="哈希表">哈希表</h2>
 <p>按照一定的规则（有很多种不同的规则，可以按实际情况选择）去存储数据，这样找数据的时候就会很快了。 有时候会出现冲突（不同的数据根据规则计算应该放到同样的地方），这个时候需要解决冲突。</p>
@@ -3831,6 +3870,112 @@ z = 8x + 12y
 <figure class="highlight text"><table><tr><td class="code"><pre><span class="line">[[V1, V2, V4], [V0, V2, V3], [V0, V1], [V1], [V0]]</span><br></pre></td></tr></table></figure>
 <p>每一个数组表示对应的顶点与那些点相邻</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Graph</span> &#123;</span><br><span class="line">  <span class="title function_">constructor</span>(<span class="params">vCount</span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">vertexCount</span> = vCount <span class="comment">// 顶点数</span></span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">adjacencyList</span> = [...<span class="title class_">Array</span>(vCount)].<span class="title function_">map</span>(<span class="function"><span class="params">v</span> =&gt;</span> []) <span class="comment">// 相邻顶点的列表，得到类似于数组 [[], [], [], []]</span></span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">verticesStatus</span> = [...<span class="title class_">Array</span>(vCount)].<span class="title function_">map</span>(<span class="function"><span class="params">v</span> =&gt;</span> <span class="literal">false</span>) <span class="comment">// 记录点是不是找过了</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="title function_">addEdge</span>(<span class="params">v1, v2</span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">adjacencyList</span>[v1].<span class="title function_">push</span>(v2)</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">adjacencyList</span>[v2].<span class="title function_">push</span>(v1)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="title function_">showGraph</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">adjacencyList</span>.<span class="title function_">forEach</span>(<span class="function">(<span class="params">adjVertices, v</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`<span class="subst">$&#123;v&#125;</span> -&gt; <span class="subst">$&#123;adjVertices.toString()&#125;</span>`</span>)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="title function_">resetStatus</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">verticesStatus</span> = [...<span class="title class_">Array</span>(<span class="variable language_">this</span>.<span class="property">vertexCount</span>)].<span class="title function_">map</span>(<span class="function"><span class="params">v</span> =&gt;</span> <span class="literal">false</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 深度优先搜索</span></span><br><span class="line">  <span class="title function_">dfs</span>(<span class="params">v</span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">verticesStatus</span>[v] = <span class="literal">true</span></span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`访问到：<span class="subst">$&#123;v&#125;</span>`</span>)</span><br><span class="line">    <span class="comment">// Array.isArray 判断传递进来的是否是一个 Array</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="title class_">Array</span>.<span class="title function_">isArray</span>(<span class="variable language_">this</span>.<span class="property">adjacencyList</span>[v])) &#123;</span><br><span class="line">      <span class="variable language_">this</span>.<span class="property">adjacencyList</span>[v].<span class="title function_">forEach</span>(<span class="function"><span class="params">adjVertex</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">if</span>(!<span class="variable language_">this</span>.<span class="property">verticesStatus</span>[adjVertex]) <span class="variable language_">this</span>.<span class="title function_">dfs</span>(adjVertex)      </span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 广度优先搜索</span></span><br><span class="line">  <span class="title function_">bfs</span>(<span class="params">v</span>) &#123;</span><br><span class="line">    <span class="keyword">let</span> queue = []</span><br><span class="line">    queue.<span class="title function_">push</span>(v)</span><br><span class="line">    <span class="keyword">while</span> (queue.<span class="property">length</span> &gt; <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="keyword">let</span> v = queue.<span class="title function_">shift</span>()</span><br><span class="line">      <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">verticesStatus</span>[v]) <span class="keyword">continue</span></span><br><span class="line">      <span class="variable language_">this</span>.<span class="property">verticesStatus</span>[v] = <span class="literal">true</span></span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`访问到 <span class="subst">$&#123;v&#125;</span>`</span>)</span><br><span class="line">      <span class="variable language_">this</span>.<span class="property">adjacencyList</span>[v].<span class="title function_">forEach</span>(<span class="function"><span class="params">adjVertex</span> =&gt;</span> &#123;</span><br><span class="line">        queue.<span class="title function_">push</span>(adjVertex)</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="架构">架构</h1>
+<h2 id="新建一个项目">新建一个项目</h2>
+<ol type="1">
+<li><p>创建仓库</p></li>
+<li><p>声明 LICENCE <img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/free_software_licenses.png" /></p></li>
+<li><p>要用什么第三方的东西？ npm</p></li>
+<li><p>在 webstorm 里面搜 VCS</p></li>
+</ol>
+<h2 id="单元测试">单元测试</h2>
+<ul>
+<li>BDD（Behavior-Driven Development）：行为驱动开发，用自然语言描述需求</li>
+<li>TDD（Test-Driven Development）：测试驱动开发，目的是为了让测试通过</li>
+<li>Assert：断言</li>
+</ul>
+<h2 id="持续集成">持续集成</h2>
+<ul>
+<li>持续测试</li>
+<li>持续交付</li>
+<li>持续部署</li>
+</ul>
+<h1 id="mysql">MySQL</h1>
+<h2 id="nodejs-client-does-not-support-authentication-protocol-requested-by-server-consider-upgrading-mysql-client">nodejs Client does not support authentication protocol requested by server; consider upgrading MySQL client</h2>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">USER</span> <span class="string">&#x27;root&#x27;</span>@<span class="string">&#x27;localhost&#x27;</span> IDENTIFIED <span class="keyword">WITH</span> mysql_native_password <span class="keyword">BY</span> <span class="string">&#x27;123456&#x27;</span>;</span><br></pre></td></tr></table></figure>
+<h1 id="redis">Redis</h1>
+<ul>
+<li>web server 常用的缓存数据库，数据放在内存中</li>
+<li>相比于 mysql，访问速度快；但是成本更高，数据量更小</li>
+<li>解决：将 web server 和 redis 拆分成两个服务，不会占用 web server 的内存，可以跨进程访问</li>
+<li>为何用 redis 来存 session？session 访问频繁，对性能要求高；不用考虑断电数据丢失的问题；session 数据量不会太大</li>
+</ul>
+<h1 id="其他">其他</h1>
+<h2 id="发展趋势">发展趋势</h2>
+<h3 id="最重要的">最重要的</h3>
+<ul>
+<li>React Hooks</li>
+<li>ES6</li>
+<li>TypeScript</li>
+<li>Flutter</li>
+</ul>
+<h3 id="值得一学的">值得一学的</h3>
+<ul>
+<li>Graph QL</li>
+<li>PWA</li>
+<li>WebAssembly</li>
+<li>WebGL 3D</li>
+<li>《计算的本质》</li>
+</ul>
+<h3 id="需要了解的">需要了解的</h3>
+<h4 id="html-5">HTML 5</h4>
+<ul>
+<li>语义化标签</li>
+<li>音视频处理</li>
+<li>canvas / webGL</li>
+<li>history API</li>
+<li>requestAnimationFrame</li>
+<li>地理位置</li>
+<li>web socket</li>
+</ul>
+<h4 id="css-3">CSS 3</h4>
+<ul>
+<li>常规</li>
+<li>动画</li>
+<li>盒子模型</li>
+<li>响应式布局</li>
+</ul>
+<h4 id="javascript-1">JavaScript</h4>
+<ul>
+<li>ES 3/5/6/7/8/9</li>
+<li>DOM</li>
+<li>BOM</li>
+<li>设计模式</li>
+<li>底层原理
+<ul>
+<li>堆栈内存</li>
+<li>闭包作用域 AO/VO/GO/EC/ESTACK</li>
+<li>面向对象 OOP</li>
+<li>This</li>
+<li>EventLoop</li>
+<li>浏览器渲染原理</li>
+<li>回流重绘</li>
+</ul></li>
+</ul>
+<h4 id="网络通信层">网络通信层</h4>
+<ul>
+<li>AJAX / Fetch / axios</li>
+<li>HTTP 1.0/2.0</li>
+<li>TCP</li>
+<li>跨域处理方案</li>
+<li>性能优化</li>
+</ul>
+<h4 id="hybrid-app-小程序">Hybrid / APP / 小程序</h4>
+<ul>
+<li>Hybrid</li>
+<li>uni-app</li>
+<li>RN</li>
+<li>Flutter</li>
+<li>MPVUE</li>
+<li>Weex</li>
+<li>PWA</li>
+</ul>
+<h4 id="工程化">工程化</h4>
+<ul>
+<li>webpack</li>
+<li>git</li>
+<li>linux / nginx</li>
+</ul>
 ]]></content>
       <categories>
         <category>收集</category>
@@ -7555,208 +7700,6 @@ true
       </categories>
       <tags>
         <tag>入门</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>一些 Tips</title>
-    <url>/hais-notebook/2020/02/02/Others-Tips/</url>
-    <content><![CDATA[<p>收集一些 Tips。</p>
-<span id="more"></span>
-<h1 id="滚动条的宽度">滚动条的宽度</h1>
-<p>滚动条的宽度在 14 ~ 19px 之间，根据操作系统不同</p>
-<h1 id="jquery-制作-tab">jQuery 制作 Tab</h1>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">$tabBar.<span class="title function_">on</span>(<span class="string">&#x27;click&#x27;</span>, <span class="string">&#x27;li&#x27;</span>, <span class="function"><span class="params">e</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> $li = $(e.<span class="property">currentTarget</span>)</span><br><span class="line">  $li</span><br><span class="line">    .<span class="title function_">addClass</span>(<span class="string">&#x27;selected&#x27;</span>)</span><br><span class="line">    .<span class="title function_">siblings</span>()</span><br><span class="line">    .<span class="title function_">removeClass</span>(<span class="string">&#x27;selected&#x27;</span>)</span><br><span class="line">  <span class="keyword">const</span> index = $li.<span class="title function_">index</span>()</span><br><span class="line">  $tabContent</span><br><span class="line">    .<span class="title function_">children</span>()</span><br><span class="line">    .<span class="title function_">eq</span>(index)</span><br><span class="line">    .<span class="title function_">addClass</span>(<span class="string">&#x27;active&#x27;</span>) <span class="comment">// 一定不要用.css 和.show，样式和行为分离</span></span><br><span class="line">    .<span class="title function_">siblings</span>()</span><br><span class="line">    .<span class="title function_">removeClass</span>(<span class="string">&#x27;active&#x27;</span>)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">$tabBar.<span class="title function_">children</span>().<span class="title function_">eq</span>(<span class="number">0</span>).<span class="title function_">trigger</span>(<span class="string">&#x27;click&#x27;</span>)  <span class="comment">// 默认触发第一个</span></span><br></pre></td></tr></table></figure>
-<h1 id="jquery-如果有-class-就删掉没有就加上">jQuery 如果有 class 就删掉，没有就加上</h1>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">$square.<span class="title function_">on</span>(<span class="string">&#x27;click&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  $square.<span class="title function_">toggleClass</span>(<span class="string">&#x27;active&#x27;</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<h1 id="js-的代码不能以括号开头">JS 的代码不能以括号开头</h1>
-<h1 id="方法-和-函数">*<strong>方法</strong> 和 <strong>函数</strong></h1>
-<ul>
-<li>方法是面向对象概念，一定是依附于一个对象的</li>
-<li>函数是数学概念</li>
-<li>都是指的 function</li>
-</ul>
-<h1 id="常用的画草图的软件">常用的画草图的软件</h1>
-<ul>
-<li>balsamiq</li>
-<li>figma</li>
-</ul>
-<h1 id="promise">Promise</h1>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="title class_">Promise</span>.<span class="title function_">reject</span>(<span class="string">&#x27;error&#x27;</span>)</span><br><span class="line">  .<span class="title function_">then</span>( <span class="function">()=&gt;</span>&#123;<span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;success1&#x27;</span>)&#125;, <span class="function">()=&gt;</span>&#123;<span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;error1&#x27;</span>)&#125; )</span><br><span class="line">  .<span class="title function_">then</span>( <span class="function">()=&gt;</span>&#123;<span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;success2&#x27;</span>)&#125;, <span class="function">()=&gt;</span>&#123;<span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;error2&#x27;</span>)&#125; )</span><br><span class="line"><span class="comment">// error1 -&gt; success2</span></span><br></pre></td></tr></table></figure>
-<h1 id="新建一个项目要考虑哪些东西">新建一个项目要考虑哪些东西？</h1>
-<ul>
-<li>创建仓库</li>
-<li>声明 LICENCE <img src="https://www.ruanyifeng.com/blogimg/asset/201105/free_software_licenses.png" /></li>
-<li>要用什么第三方的东西？ npm</li>
-<li>在 webstorm 里面搜 VCS</li>
-</ul>
-<h1 id="单元测试">单元测试</h1>
-<ul>
-<li>BDD（Behavior-Driven Development）：行为驱动开发，用自然语言描述需求</li>
-<li>TDD（Test-Driven Development）：测试驱动开发，目的是为了让测试通过</li>
-<li>Assert：断言</li>
-</ul>
-<h1 id="持续集成">持续集成</h1>
-<ul>
-<li>持续测试</li>
-<li>持续交付</li>
-<li>持续部署</li>
-</ul>
-<h1 id="nodejs-client-does-not-support-authentication-protocol-requested-by-server-consider-upgrading-mysql-client">nodejs Client does not support authentication protocol requested by server; consider upgrading MySQL client</h1>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">USER</span> <span class="string">&#x27;root&#x27;</span>@<span class="string">&#x27;localhost&#x27;</span> IDENTIFIED <span class="keyword">WITH</span> mysql_native_password <span class="keyword">BY</span> <span class="string">&#x27;123456&#x27;</span>;</span><br></pre></td></tr></table></figure>
-<h1 id="redis">redis</h1>
-<ul>
-<li>web server 常用的缓存数据库，数据放在内存中</li>
-<li>相比于 mysql，访问速度快；但是成本更高，数据量更小</li>
-<li>解决：将 web server 和 redis 拆分成两个服务，不会占用 web server 的内存，可以跨进程访问</li>
-<li>为何用 redis 来存 session？session 访问频繁，对性能要求高；不用考虑断电数据丢失的问题；session 数据量不会太大</li>
-</ul>
-<h1 id="vue-的渲染过程">Vue 的渲染过程</h1>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 普通的同步渲染过程</span></span><br><span class="line"><span class="keyword">const</span> div = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&#x27;div&#x27;</span>)</span><br><span class="line"><span class="keyword">const</span> child = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&#x27;div&#x27;</span>)</span><br><span class="line">div.<span class="title function_">appendChild</span>(child) <span class="comment">// -&gt; Vue.$mounted 调用，$mounted 是异步的，队列 1</span></span><br><span class="line">body.<span class="title function_">appendChild</span>(div) <span class="comment">// -&gt; Vue.$mounted 调用，$mounted 是异步的，队列 2</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(div.<span class="property">outerHTML</span>)</span><br></pre></td></tr></table></figure>
-<h1 id="不能让-a-更新-b-的同时-b-更新-a">不能让 A —更新—&gt; B 的同时 B —更新—&gt; A</h1>
-<h1 id="造轮子">造轮子</h1>
-<ol type="1">
-<li>没有需求不要写代码，没有设计稿不要写代码</li>
-<li>单元测试是重构的前提</li>
-<li>设计模式
-<ol type="1">
-<li>发布订阅模式</li>
-<li>单向数据流</li>
-<li>正交（props）</li>
-</ol></li>
-</ol>
-<h1 id="url-和-uri">URL 和 URI？</h1>
-<p>URL 实际上是 URI 的一个子集，除识别资源外还提供定位资源的方法。</p>
-<p>下面是一个 URI 的组成：</p>
-<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">                    hierarchical part</span><br><span class="line">        ┌───────────────────┴─────────────────────┐</span><br><span class="line">                    authority               path</span><br><span class="line">        ┌───────────────┴───────────────┐┌───┴────┐</span><br><span class="line">  abc://username:password@example.com:123/path/data?key=value&amp;key2=value2#fragid1</span><br><span class="line">  └┬┘   └───────┬───────┘ └────┬────┘ └┬┘           └─────────┬─────────┘ └──┬──┘</span><br><span class="line">scheme  user information     host     port                  query         fragment</span><br><span class="line"></span><br><span class="line">  urn:example:mammal:monotreme:echidna</span><br><span class="line">  └┬┘ └──────────────┬───────────────┘</span><br><span class="line">scheme              path</span><br></pre></td></tr></table></figure>
-<p>举一个我们常见的 URL（URI） 的例子：</p>
-<p>https://zh.wikipedia.org/w/index.php?title=Special:随机页面#5</p>
-<ol type="1">
-<li><code>https</code>：协议</li>
-<li><code>zh.wikipedia.org</code>：域名</li>
-<li><code>/w/index.php</code>：路径（不同的页面）</li>
-<li><code>?title=Special:随机页面</code>：查询参数（相同页面，不同内容）</li>
-<li><code>#5</code>：锚点（相同页面，相同内容，不同位置）</li>
-<li>其中若不写端口号，则表示使用 https 对应的默认端口号 443</li>
-</ol>
-<h1 id="nslookup">nslookup</h1>
-<p>直接使用可以查询到域名的 A 记录。比如：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nslookup hais-teatime.com</span><br></pre></td></tr></table></figure>
-<h1 id="顶级域名二级域名">顶级域名？二级域名？</h1>
-<p>比如对于 www.baidu.com</p>
-<ul>
-<li>顶级域名：com</li>
-<li>二级域名：baidu.com</li>
-<li>三级域名：www.baidu.com</li>
-</ul>
-<p>三级域名跟二级域名可以没关系，有可能都不是属于一家公司，注意辨别。</p>
-<h1 id="instanceof"><code>instanceof</code></h1>
-<p>看这个对象是不是处于原型链上的</p>
-<h1 id="使用-表示-src-目录import-alias">使用 <code>@</code> 表示 <code>src</code> 目录（import alias）</h1>
-<h2 id="在-js-或-ts-中使用">在 JS 或 TS 中使用 <code>@</code></h2>
-<p>可以直接使用</p>
-<h2 id="在-css-或-scss-中使用">在 CSS 或 SCSS 中使用 <code>@</code></h2>
-<p>需要使用 <code>~@</code>，但是 webstorm 中会报错，需要点开 <code>settings</code>-<code>webpack</code>，在路径中找到 <code>node_modules\@vue\cli-service\webpack.config.js</code></p>
-]]></content>
-      <categories>
-        <category>前端</category>
-        <category>其他</category>
-      </categories>
-      <tags>
-        <tag>入门</tag>
-        <tag>收集</tag>
-        <tag>Tip</tag>
-        <tag>踩坑</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>一些话题</title>
-    <url>/hais-notebook/2020/02/02/Others-Topics/</url>
-    <content><![CDATA[<p>收集大佬的推荐。</p>
-<span id="more"></span>
-<h1 id="一些需要掌握的技术栈">一些需要掌握的技术栈</h1>
-<h2 id="最重要的">最重要的</h2>
-<ul>
-<li>React Hooks</li>
-<li>ES6</li>
-<li>TypeScript</li>
-<li>Flutter</li>
-</ul>
-<h2 id="值得一学的">值得一学的</h2>
-<ul>
-<li>Graph QL</li>
-<li>PWA</li>
-<li>WebAssembly</li>
-<li>WebGL 3D</li>
-<li>《计算的本质》</li>
-</ul>
-<h2 id="需要了解的">需要了解的</h2>
-<h3 id="html-5">HTML 5</h3>
-<ul>
-<li>语义化标签</li>
-<li>音视频处理</li>
-<li>canvas / webGL</li>
-<li>history API</li>
-<li>requestAnimationFrame</li>
-<li>地理位置</li>
-<li>web socket</li>
-</ul>
-<h3 id="css-3">CSS 3</h3>
-<ul>
-<li>常规</li>
-<li>动画</li>
-<li>盒子模型</li>
-<li>响应式布局</li>
-</ul>
-<h3 id="javascript">JavaScript</h3>
-<ul>
-<li>ES 3/5/6/7/8/9</li>
-<li>DOM</li>
-<li>BOM</li>
-<li>设计模式</li>
-<li>底层原理
-<ul>
-<li>堆栈内存</li>
-<li>闭包作用域 AO/VO/GO/EC/ESTACK</li>
-<li>面向对象 OOP</li>
-<li>This</li>
-<li>EventLoop</li>
-<li>浏览器渲染原理</li>
-<li>回流重绘</li>
-</ul></li>
-</ul>
-<h3 id="网络通信层">网络通信层</h3>
-<ul>
-<li>AJAX / Fetch / axios</li>
-<li>HTTP 1.0/2.0</li>
-<li>TCP</li>
-<li>跨域处理方案</li>
-<li>性能优化</li>
-</ul>
-<h3 id="hybrid-app-小程序">Hybrid / APP / 小程序</h3>
-<ul>
-<li>Hybrid</li>
-<li>uni-app</li>
-<li>RN</li>
-<li>Flutter</li>
-<li>MPVUE</li>
-<li>Weex</li>
-<li>PWA</li>
-</ul>
-<h3 id="工程化">工程化</h3>
-<ul>
-<li>webpack</li>
-<li>git</li>
-<li>linux / nginx</li>
-</ul>
-]]></content>
-      <categories>
-        <category>前端</category>
-        <category>其他</category>
-      </categories>
-      <tags>
-        <tag>入门</tag>
-        <tag>收集</tag>
-        <tag>杂谈</tag>
       </tags>
   </entry>
   <entry>
