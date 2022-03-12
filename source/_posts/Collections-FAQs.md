@@ -9,7 +9,7 @@ categories:
   - [收集, FAQs]
 ---
 
-收集一些奇怪的问题/话题及其解决方案方案。
+收集一些问题/话题。
 
 <!-- more -->
 
@@ -136,6 +136,14 @@ MyPromise.prototype.catch = function (onRejected) {
 }
 ```
 
+### 一些例子
+
+```js
+Promise.reject('error')
+  .then( ()=>{console.log('success1')}, ()=>{console.log('error1')} )
+  .then( ()=>{console.log('success2')}, ()=>{console.log('error2')} )
+// error1 -> success2
+```
 
 ## 前端路由
 
@@ -1215,6 +1223,10 @@ console.log(a.x) // undefined
 
 # CSS
 
+## 滚动条的宽度
+
+滚动条的宽度在 14 ~ 19px 之间，根据操作系统不同
+
 ## 回溯机制
 
 ## flex 的常见属性
@@ -1316,6 +1328,47 @@ document.addEventListener('mouseup', (e) => {
 - GET 幂等，POST 不幂等
 - 语义不同，GET 是为了获取数据，POST 是为了提交数据
 
+## nslookup
+
+直接使用可以查询到域名的 A 记录。比如：
+
+```
+nslookup hais-teatime.com
+```
+
+## 域名
+
+比如对于 www.baidu.com
+
+- 顶级域名：com
+- ：baidu.com
+- 三级域名：www.baidu.com
+
+三级域名跟二级域名可以没关系，有可能都不是属于一家公司，注意辨别。
+
+# jQuery
+
+## 制作 Tab
+
+```js
+$tabBar.on('click', 'li', e => {
+  const $li = $(e.currentTarget)
+  $li
+    .addClass('selected')
+    .siblings()
+    .removeClass('selected')
+  const index = $li.index()
+  $tabContent
+    .children()
+    .eq(index)
+    .addClass('active') // 一定不要用.css 和.show，样式和行为分离
+    .siblings()
+    .removeClass('active')
+})
+
+$tabBar.children().eq(0).trigger('click')  // 默认触发第一个
+```
+
 # Vue
 
 ## 组件间通信
@@ -1323,6 +1376,19 @@ document.addEventListener('mouseup', (e) => {
 1. 父子组件：`$emit` 和 `$on`
 2. 爷孙组件、兄弟组件：eventBus
 3. Vuex
+
+## 渲染过程
+
+```js
+// 普通的同步渲染过程
+const div = document.createElement('div')
+const child = document.createElement('div')
+div.appendChild(child) // -> Vue.$mounted 调用，$mounted 是异步的，队列 1
+body.appendChild(div) // -> Vue.$mounted 调用，$mounted 是异步的，队列 2
+console.log(div.outerHTML)
+```
+
+不能让  A —更新—> B 的同时 B —更新—> A
 
 # React
 
@@ -1453,6 +1519,16 @@ immutableObj.set('a', 2)
 - 压缩 JS、CSS、图片
 - 按需加载
 
+## import alias
+
+### 在 JS 或 TS 中使用 `@`
+
+可以直接使用
+
+### 在 CSS 或 SCSS 中使用 `@`
+
+需要使用 `~@`，但是 webstorm 中会报错，需要点开 `settings`-`webpack`，在路径中找到 `node_modules\@vue\cli-service\webpack.config.js`
+
 # 数据结构
 
 ## 哈希表
@@ -1558,4 +1634,119 @@ class Graph {
   }
 }
 ```
+
+# 架构
+
+## 新建一个项目
+
+1. 创建仓库
+2. 声明 LICENCE
+   ![](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/free_software_licenses.png)
+
+3. 要用什么第三方的东西？ npm
+4. 在 webstorm 里面搜 VCS
+
+## 单元测试
+
+- BDD（Behavior-Driven Development）：行为驱动开发，用自然语言描述需求
+- TDD（Test-Driven Development）：测试驱动开发，目的是为了让测试通过
+- Assert：断言
+
+## 持续集成
+
+- 持续测试
+- 持续交付
+- 持续部署
+
+# MySQL
+
+## nodejs Client does not support authentication protocol requested by server; consider upgrading MySQL client
+
+```sql
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '123456';
+```
+
+# Redis
+
+- web server 常用的缓存数据库，数据放在内存中
+- 相比于 mysql，访问速度快；但是成本更高，数据量更小
+- 解决：将 web server 和 redis 拆分成两个服务，不会占用 web server 的内存，可以跨进程访问
+- 为何用 redis 来存 session？session 访问频繁，对性能要求高；不用考虑断电数据丢失的问题；session 数据量不会太大
+
+# 其他
+
+## 发展趋势
+
+### 最重要的
+
+- React Hooks
+- ES6
+- TypeScript
+- Flutter
+
+### 值得一学的
+
+- Graph QL
+- PWA
+- WebAssembly
+- WebGL 3D
+- 《计算的本质》
+
+### 需要了解的
+
+#### HTML 5
+
+- 语义化标签
+- 音视频处理
+- canvas / webGL
+- history API
+- requestAnimationFrame
+- 地理位置
+- web socket
+
+#### CSS 3
+
+- 常规
+- 动画
+- 盒子模型
+- 响应式布局
+
+#### JavaScript
+
+- ES 3/5/6/7/8/9
+- DOM
+- BOM
+- 设计模式
+- 底层原理
+  - 堆栈内存
+  - 闭包作用域 AO/VO/GO/EC/ESTACK
+  - 面向对象 OOP
+  - This
+  - EventLoop
+  - 浏览器渲染原理
+  - 回流重绘
+
+#### 网络通信层
+
+- AJAX / Fetch / axios
+- HTTP 1.0/2.0
+- TCP
+- 跨域处理方案
+- 性能优化
+
+#### Hybrid / APP / 小程序
+
+- Hybrid
+- uni-app
+- RN
+- Flutter
+- MPVUE
+- Weex
+- PWA
+
+#### 工程化
+
+- webpack
+- git
+- linux / nginx
 

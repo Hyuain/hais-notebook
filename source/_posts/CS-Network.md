@@ -65,6 +65,35 @@ categories:
 > - URI：可以分为 URL 和 URN，或同时具备 locators 和 names 特性的一个东西
 > - URN 像一个人的名字，URL 像一个人的地址；URN 确定了东西的身份，URL 提供了找到它的方式（提供了访问机制，比如说协议）
 
+URL 实际上是 URI 的一个子集，除识别资源外还提供定位资源的方法。 
+
+下面是一个 URI 的组成：
+
+```text
+                    hierarchical part
+        ┌───────────────────┴─────────────────────┐
+                    authority               path
+        ┌───────────────┴───────────────┐┌───┴────┐
+  abc://username:password@example.com:123/path/data?key=value&key2=value2#fragid1
+  └┬┘   └───────┬───────┘ └────┬────┘ └┬┘           └─────────┬─────────┘ └──┬──┘
+scheme  user information     host     port                  query         fragment
+
+  urn:example:mammal:monotreme:echidna
+  └┬┘ └──────────────┬───────────────┘
+scheme              path
+```
+
+举一个我们常见的 URL（URI） 的例子：
+
+https://zh.wikipedia.org/w/index.php?title=Special:随机页面#5
+
+1. `https`：协议
+2. `zh.wikipedia.org`：域名
+3. `/w/index.php`：路径（不同的页面）
+4. `?title=Special:随机页面`：查询参数（相同页面，不同内容）
+5. `#5`：锚点（相同页面，相同内容，不同位置）
+6. 其中若不写端口号，则表示使用 https 对应的默认端口号 443
+
 ### HTTP 报文结构
 
 #### 请求报文
@@ -460,6 +489,7 @@ HTTPS 对性能的影响：
     - 浏览器计算耗时
     - 服务端计算耗时
     
+
 {% note warning %}
 HTTPS 并不能解决所有的劫持问题
 {% endnote %}
