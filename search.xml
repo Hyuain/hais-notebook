@@ -3695,8 +3695,75 @@ H(x)=\sum_{i=1}^N \frac 1N \cdot log_2(\frac 1{\frac 1N})=log_2(N)
 \\
 \overline A \cdot \overline B = \overline {A+B}
 \]</span></p>
-<p>通过德摩根定律，我们可以将进行 AND-NOR、NAND-OR 之间的转换</p>
+<ol type="1">
+<li>通过德摩根定律，可以实现 AND-NOR、NAND-OR 之间的转换，同时可以看到通过 CMOS 实现的相反逻辑门虽然面积更大，但拥有更低的 <span class="math inline">\(t_{PD}\)</span> 。</li>
+</ol>
 <p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-37.png" /></p>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-39.jpg" alt="Course-ComputationStructure-39" /><figcaption aria-hidden="true">Course-ComputationStructure-39</figcaption>
+</figure>
+<blockquote>
+<p>注意上图中 NAND-NAND 和 NOR-NOR 达成的效果是一样的，但是 NAND-NAND 中的 A 信号连接了两个门（4 个 MOSFET 电路），而 NOR-NOR 中的 A 信号只连接了 INVERTER 中的 2 个 MOSFET 电路，A 的电容负载更小。如果在 A 还需要连接更多的电路的情况下，这就显得很重要。</p>
+</blockquote>
+<ol start="2" type="1">
+<li>通过德摩根定律，可以构造更多输入的 NAND 和 NOR</li>
+</ol>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Course-ComputationStructure-38.png" alt="Course-ComputationStructure-38" /><figcaption aria-hidden="true">Course-ComputationStructure-38</figcaption>
+</figure>
+<h2 id="逻辑简化">逻辑简化</h2>
+<h3 id="使用布尔代数进行逻辑简化">使用布尔代数进行逻辑简化</h3>
+<table>
+<colgroup>
+<col style="width: 14%" />
+<col style="width: 85%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td>或</td>
+<td><span class="math inline">\(a+1=1 \\ a+0=a \\ a+a=a\)</span></td>
+</tr>
+<tr class="even">
+<td>与</td>
+<td><span class="math inline">\(a1=a \\ a0=0 \\ aa=a\)</span></td>
+</tr>
+<tr class="odd">
+<td>交换律</td>
+<td><span class="math inline">\(a+b=b+a \\ ab=ba\)</span></td>
+</tr>
+<tr class="even">
+<td>结合律</td>
+<td><span class="math inline">\((a+b)+c=a+(b+c) \\ (ab)c=a(bc)\)</span></td>
+</tr>
+<tr class="odd">
+<td>分配律</td>
+<td>$a(b+c)=ab+ac \ a+bc=(a+b)(a+c) $</td>
+</tr>
+<tr class="even">
+<td>互补律</td>
+<td><span class="math inline">\(a+\overline a=1 \\ a \overline a = 0\)</span></td>
+</tr>
+<tr class="odd">
+<td>吸收律</td>
+<td><span class="math inline">\(a+ab=a \\ a+\overline ab=a+b \\ a(a+b)=a \\ a(\overline a+b)=ab\)</span></td>
+</tr>
+<tr class="even">
+<td>消除律</td>
+<td><span class="math inline">\(ab+\overline a b = b \\ (a+b)(\overline a+b)=b\)</span></td>
+</tr>
+<tr class="odd">
+<td>德摩根定律</td>
+<td><span class="math inline">\(\overline a + \overline b = \overline{ab} \\ \overline a \overline b = \overline {a + b}\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>例子： <span class="math display">\[
+Y = \overline C \overline B A + CB \overline A + CBA + \overline CBA
+\\
+Y = \overline C \overline B A + CB + \overline C BA
+\\
+Y = \overline C A + CB
+\]</span></p>
 ]]></content>
       <categories>
         <category>计算机</category>
