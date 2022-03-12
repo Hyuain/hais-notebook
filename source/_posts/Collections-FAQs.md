@@ -1307,7 +1307,7 @@ document.addEventListener('mouseup', (e) => {
 
 ### HTTP 状态码
 
-[可以查看这里](CS-Network.md)
+[可以查看这里](./CS-Network.md)
 
 # HTTP 缓存
 
