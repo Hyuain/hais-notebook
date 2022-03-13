@@ -6,7 +6,7 @@ tags:
   - 收集
   - FAQ
 categories:
-  - [收集, FAQs]
+  - [收集]
 ---
 
 收集一些问题/话题。
@@ -20,10 +20,12 @@ categories:
 ### Promise 如何消灭回调地狱
 
 回调地狱：
+
 1. 多层嵌套
 2. 无法方便地进行错误处理
 
 解决办法：
+
 1. 回调函数延迟绑定，回调函数是通过后面的 then 方法传入的
 2. 返回值穿透，根据 then 中回调函数的传入值创建不同类型的 Promise，再把返回的 Promise 穿透到外层，以供后续使用。以上两点实现了链式调用，解决多层嵌套问题
 3. 错误冒泡，前面产生的错误会一直向后传递，被 catch 接收到，就不用频繁地检查错误了
@@ -150,11 +152,15 @@ Promise.reject('error')
 > 路由就是根据不同的 URL 来展示不同的内容或页面
 
 用户每次提交表单就要重新刷新页面 -> 催生了 AJAX；
+
 用户在多页面之间跳转体验很差 -> 催生了单页应用（SPA, Single-Page Application）
+
 单页应用页面本身的 URL 没有变化，导致其无法记住用户的操作，对 SEO 也不友好 -> 催生了前端路由
 
 > 前端路由就是在 **保证只有一个 HTML 页面**，且与用户交互时不刷新和跳转页面的同时，为 SPA 中的每个视图展示形式匹配一个 **特殊的 URL**
+>
 > 在刷新、前进、后退和 SEO 时均通过这个特殊的 URL 来实现
+>
 > 并且改变 URL 时不向服务器发送请求
 
 ### Hash 与 History
@@ -277,7 +283,7 @@ history.replaceState() // 用新的状态代替当前状态
 history.state // 返回当前状态对象
 ```
 
-与 hash 不同，history 的改变并不会触发任何事件，所以我们无法直接监听 history 的改变而做出相应的改变
+与 hash 不同，history 的改变并不会触发任何事件，所以我们无法直接监听 history 的改变而做出相应的改变。
 
 而对于单页应用的 history 模式而言，URL 的改变只有可能是以下四种情况：
 
@@ -399,7 +405,7 @@ router.load()
 
 ### 各自的优缺点及使用场景
 
-#### 为什么 hash 模式需要服务器端配合？
+#### 为什么 history 模式需要服务器端配合？
 
 我们通过 history 来修改 URL 后，页面不会刷新；如果我们手动刷新页面，或者通过 URL 直接进入应用时，服务端是无法识别这个 URL 的——因为我们其实只有一个 html 文件
 
@@ -533,6 +539,7 @@ const obj2 = JSON.parse(JSON.stringify(obj))
 ```
 
 但是在有些时候是会出现问题的：
+
 1. 循环引用
 2. 无法处理 RegExp、Date、Set、Map、Function 等
 
@@ -581,7 +588,9 @@ const deepClone = (target, map = new weakMap()) => {
 }
 ```
 
-如果使用 Map，那么 map 的 key 将会与 map 形成强引用，如果强引用一直存在，那么对象将无法被回收；使用 WeakMap 可以构造一种弱引用（一个对象若只被弱引用所引用，则被认为是不可访问（或弱可访问）的，并因此可能在任何时刻被回收），WeakMap 的 Key 必须是对象，而值可以是任意的。
+如果使用 Map，那么 map 的 key 将会与 map 形成强引用，如果强引用一直存在，那么对象将无法被回收；
+
+使用 WeakMap 可以构造一种弱引用（一个对象若只被弱引用所引用，则被认为是不可访问（或弱可访问）的，并因此可能在任何时刻被回收），WeakMap 的 Key 必须是对象，而值可以是任意的。
 
 #### 拷贝特殊对象
 
@@ -819,8 +828,11 @@ console.log(a[b]) // => 'Zhang'
 ```
 
 {% note warning %}
+
 堆：存储引用类型值的空间；
+
 栈：存储基本类型值和执行代码的环境；浏览器加载页面就会形成栈内存，当执行函数的时候，都会形成一个新的执行上下文（Execution Context Stack），压入栈中执行
+
 {% endnote %}
 
 闭包的作用 1：保存——保存私有变量，不被销毁
@@ -1044,7 +1056,26 @@ console.log('script end') // 5
 
 ### Node.js 中的 EventLoop
 
-![](https://user-gold-cdn.xitu.io/2019/11/23/16e96b8587ad911d?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
+```
+   ┌───────────────────────────┐
+┌─>│           timers          │
+│  └─────────────┬─────────────┘
+│  ┌─────────────┴─────────────┐
+│  │     pending callbacks     │
+│  └─────────────┬─────────────┘
+│  ┌─────────────┴─────────────┐
+│  │       idle, prepare       │
+│  └─────────────┬─────────────┘      ┌───────────────┐
+│  ┌─────────────┴─────────────┐      │   incoming:   │
+│  │           poll            │<─────┤  connections, │
+│  └─────────────┬─────────────┘      │   data, etc.  │
+│  ┌─────────────┴─────────────┐      └───────────────┘
+│  │           check           │
+│  └─────────────┬─────────────┘
+│  ┌─────────────┴─────────────┐
+└──┤      close callbacks      │
+   └───────────────────────────┘
+```
 
 #### 三大关键阶段
 
@@ -1058,10 +1089,14 @@ console.log('script end') // 5
             - 没有则继续等待，等待 callback 加入队列，加入后会立即执行；一定时间后自动进入 check 阶段
 3. **check**：直接执行 `setImmediate`
 
-- `setTimeout` -> timers
-- `setImmediate` -> check
-- `nextTick` -> 当前阶段的后面
-- `promise.then` -> 看他是通过什么实现的，如果是用 `nextTick` 实现的，就当 `nextTick` 看，当 `resolve` 的时候放在当前阶段的后面
+    - `setTimeout` -> timers
+
+    - `setImmediate` -> check
+
+    - `nextTick` -> 当前阶段的后面
+
+    - `promise.then` -> 看他是通过什么实现的，如果是用 `nextTick` 实现的，就当 `nextTick` 看，当 `resolve` 的时候放在当前阶段的后面
+
 
 #### 一些例子
 
@@ -1075,13 +1110,19 @@ setImmediate(fn2)
 ```
 
 **`fn` 放到一个 timers 的一个数组中**
+
 V
+
 **进入 poll 阶段进行等待，同时看时间**
+
 V
+
 **进入 check 阶段**
 允许在 poll 阶段空闲的时候立即执行一些函数，主要是 `setImmediate()` 里面的，
 比如如果有 `setImmediate(fn2)`，则在 poll 中就不等了，直接进入 check，在 check 中执行 `fn2`
+
 V
+
 **进入 timers 阶段，执行 `fn`**
 如果因为之前有 `setImmediate()` 导致提前进入了下一个循环，而此时 `setTimeout` 的计时还没到，则此时不执行 `fn`
 
@@ -1093,8 +1134,10 @@ setImmediate(fn2)
 ```
 
 注意：
-如果 EventLoop 开启得很快，则此时 timers 中没有 `fn`；
-如果 EventLoop 开启得慢，则此时 timers 中有 `fn`，而如果此时 timers 中有 `fn`，而且计时已经结束，就马上执行了 `fn` 再往下走
+
+- 如果 EventLoop 开启得很快，则此时 timers 中没有 `fn`；
+
+- 如果 EventLoop 开启得慢，则此时 timers 中有 `fn`，而如果此时 timers 中有 `fn`，而且计时已经结束，就马上执行了 `fn` 再往下走
 
 也就是说因为 EventLoop 有时候开启得快，有时候开启得慢，所以如果一开始就执行上面两句代码，他们的执行先后是不确定的！
 

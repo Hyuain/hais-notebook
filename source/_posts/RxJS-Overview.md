@@ -3,12 +3,15 @@ title: RxJS Overview
 date: 2021-05-13 14:39:12
 tags:
 - 入门
+- RxJS
 categories:
-- [工具, RxJS]
+- [前端, RxJS]
 ---
 
 One Core Type: Observable.
+
 Satellite Types: Observer, Schedulers, Subjects.
+
 Operators: map, filter, reduce, every, etc.
 
 <!-- more -->

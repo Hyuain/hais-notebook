@@ -1,5 +1,5 @@
 ---
-title: TypeScript 基本用法
+title: TypeScript：基本用法
 date: 2020-02-06 20:33:48
 tags:
   - 入门
