@@ -934,7 +934,7 @@ def another_double
   return result * 2		# 不可到达的代码
 end
 
-another_double # => 10
+another_double 				# => 10
 ```
 
 因此下面代码是错误的：
@@ -945,10 +945,10 @@ def double(callable_object)
 end
 
 p = Proc.new { return 10 }
-double(p)			# => 不可到达的代码
+double(p)			# 不可到达的代码
 ```
 
-可以不使用 `return` 来规避这个问题
+可以不使用 `return` 来规避这  个问题
 
 #### Proc、Lambda 和参数数量
 
@@ -1057,5 +1057,112 @@ add_method_to String
 
 ### 类实例变量
 
+类定义中的 `self` 是类本身，因此不要混淆了 **类的实例变量** 和 **类的对象的实例变量**
 
+```ruby
+ class MyClass
+   @my_var = 1
+   def self.read; @my_var; end
+   def write; @my_var = 2; end
+   def read; @my_var; end
+ end
+
+obj = MyClass.new
+obj.read			# => nil
+obj.write
+obj.read			# => 2
+MyClass.read  # => 1
+```
+
+### 类变量
+
+类变量可以被子类或类的实例所使用。
+
+```ruby
+class C
+  @@v = 1
+end
+
+class D < C
+  def my_method; @@v; end
+end
+
+D.new.my_method			# => 1
+```
+
+因为类变量不属于这个类，而是属于类体系结构，因此会产生一些别的问题：
+
+```ruby
+@@v = 1
+
+class MyClass
+  @@v = 2
+end
+
+# @@v 属于 main 的类 Object，所以也属于 Object 的所有后代，MyClass 继承自 Object，也共享了这个变量
+@@v 	 # => 2
+```
+
+## 单件方法
+
+只对单个对象生效的方法，称为 **单件方法（Singleton Method）**。
+
+```ruby
+str = "just a regular string"
+
+def str.title?
+  self.upcase == self
+end
+
+str.title?										# => false
+str.methods.grep(/title?/)		# => [:title?]
+str.singleton_methods					# => [:title?]
+```
+
+### 类方法
+
+类方法其实就是一个类的单件方法。
+
+```ruby
+def obj.a_singleton_method; end
+def MyClass.another_class_method; end
+
+# 定义单件方法
+def object.method
+  # 方法的主体
+end
+```
+
+### 类宏
+
+#### `attr_accessor`
+
+Ruby 的对象是没有属性的，如果想要得到 JavaScript 类似的属性的效果，得定义 **拟态方法**：
+
+```ruby
+class MyClass
+  def my_attribute=(value)
+    @my_attribute = value
+  end
+  def my_attribute
+    @my_attribute
+  end
+end
+
+obj = MyClass.new
+obj.my_attribute = 'x'
+obj.my_attribute          # => "x"
+```
+
+这样的写法（也叫访问器）很麻烦，可以用 `Module#attr_*` 方法定义访问器，`Module#attr_reader` 生成读方法、`Module#attr_writer` 生成写方法、`Module#attr_accessor` 同时生成两者：
+
+```ruby
+class MyClass
+  attr_accessor :my_attribute
+end
+```
+
+所有的 `attr_*` 方法都定义在 `Module` 类中，因此不管 `self` 是类还是模块，都可以使用。这种方法被称为 **类宏（Class Macro）**，简单来说就是可以在类定义中使用的方法。
+
+#### 使用类宏
 
