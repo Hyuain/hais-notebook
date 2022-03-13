@@ -8193,6 +8193,23 @@ true
       </tags>
   </entry>
   <entry>
+    <title>Redux</title>
+    <url>/hais-notebook/2020/02/04/React-Redux/</url>
+    <content><![CDATA[<p>主要记录了 Redux 的相关东西。</p>
+<p>可以看看 <a href="https://codesandbox.io/s/jovial-gates-wbs8e">这个例子</a></p>
+]]></content>
+      <categories>
+        <category>前端</category>
+        <category>JavaScript</category>
+        <category>框架</category>
+        <category>React</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+        <tag>文档</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>React Props &amp; State</title>
     <url>/hais-notebook/2020/02/02/React-PropsState/</url>
     <content><![CDATA[<p>主要记录了 React 的 Props 和 State。</p>
@@ -8215,23 +8232,6 @@ true
 <h1 id="vue-和-react-的区别">Vue 和 React 的区别</h1>
 <p>共同点： - 都是对视图的封装，React 是用类和函数表示一个组件，Vue 是用构造选项表示一个组件 - 都提供了 <code>creatElement</code> 的 XML 简写，React 是 JSX，Vue 是 template</p>
 <p>不同点： 1. 监听数据变化的实现原理不同 - Vue 通过 getter/setter 和代理等方式进行劫持，能够精确知道数据的变化，不需要特别的优化 - React 默认是通过比较引用的方式来进行的，可能会造成不必要的 vDOM 重新渲染，需要用诸如 PureComponent/shouldComponentUpdate 等方式来进行优化 2. 数据流不同 - Vue 在 1.0 的时候 <strong>父子组件</strong> props 可以双向绑定，还有 v-model 可以实现 <strong>组件与 DOM</strong> 双向绑定 - Vue 2 的时候 <strong>父子组件</strong> 不能双向绑定了（虽然仍然提供了 .sync 语法糖），并且还有 v-model - React 中是单向数据流，并且组件与 DOM 之间也需要使用 onChange/setState。 3. HoC 和 mixins - Vue 中使用不同功能的组合是通过 mixins 实现的 - React 中则使用 HoC 4. 组件间的通信 - 都有 props，也都可以跨层级通信，比如 Vue 的 provide/inject、React 的 context - React 本身不支持自定义事件，因此 Vue 里面一般使用事件，React 中一般使用父组件传来的回调函数 5. 更新视图 - Vue 中一个对象，对应一个虚拟 DOM，当对象的属性改变时，把属性相关的 DOM 节点全部更新 - React 一个对象，对应一个虚拟 DOM，另一个对象对应另一个虚拟 DOM，对比两个更新，用 DOM Diff 算法找不同，然后局部更新 DOM 6. 写法不同 - Vue 是 JS in HTML - React 是 HTML in JS 7. Vuex 和 Redux 的区别 - Vue 中的 <span class="math inline">\(store 直接注入到了组件实例中，可以直接用 dispatch、commit、mapState、this.\)</span>store 等；React 中需要用 connect 把 props 和 dispatch、state 连接起来 - Vue 中可以用 dispatch action、commit mutation；React 中只能使用 dispatch，不能直接操作 reduce - Redux 中的使用的是不可变数据，每次都要用新的 State 替换旧的，而 Vue 中是直接修改的</p>
-]]></content>
-      <categories>
-        <category>前端</category>
-        <category>JavaScript</category>
-        <category>框架</category>
-        <category>React</category>
-      </categories>
-      <tags>
-        <tag>入门</tag>
-        <tag>文档</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Redux</title>
-    <url>/hais-notebook/2020/02/04/React-Redux/</url>
-    <content><![CDATA[<p>主要记录了 Redux 的相关东西。</p>
-<p>可以看看 <a href="https://codesandbox.io/s/jovial-gates-wbs8e">这个例子</a></p>
 ]]></content>
       <categories>
         <category>前端</category>
@@ -8620,10 +8620,10 @@ true
 <li><code>proc</code> 中的 <code>return</code> 表示从定义 <code>proc</code> 的作用域中返回</li>
 </ul>
 <figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">double</span><span class="params">(callable_object)</span></span></span><br><span class="line">  callable_object.call * <span class="number">2</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">l = <span class="built_in">lambda</span> &#123; <span class="keyword">return</span> <span class="number">10</span> &#125;</span><br><span class="line">double(l)			<span class="comment"># =&gt; 20</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">another_double</span></span></span><br><span class="line">  p = Proc.new &#123; <span class="keyword">return</span> <span class="number">10</span> &#125;</span><br><span class="line">  result = p.call</span><br><span class="line">  <span class="keyword">return</span> result * <span class="number">2</span>		<span class="comment"># 不可到达的代码</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">another_double <span class="comment"># =&gt; 10</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">another_double</span></span></span><br><span class="line">  p = Proc.new &#123; <span class="keyword">return</span> <span class="number">10</span> &#125;</span><br><span class="line">  result = p.call</span><br><span class="line">  <span class="keyword">return</span> result * <span class="number">2</span>		<span class="comment"># 不可到达的代码</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">another_double 				<span class="comment"># =&gt; 10</span></span><br></pre></td></tr></table></figure>
 <p>因此下面代码是错误的：</p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">double</span><span class="params">(callable_object)</span></span></span><br><span class="line">  callable_object.call * <span class="number">2</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">p = Proc.new &#123; <span class="keyword">return</span> <span class="number">10</span> &#125;</span><br><span class="line">double(p)			<span class="comment"># =&gt; 不可到达的代码</span></span><br></pre></td></tr></table></figure>
-<p>可以不使用 <code>return</code> 来规避这个问题</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">double</span><span class="params">(callable_object)</span></span></span><br><span class="line">  callable_object.call * <span class="number">2</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">p = Proc.new &#123; <span class="keyword">return</span> <span class="number">10</span> &#125;</span><br><span class="line">double(p)			<span class="comment"># 不可到达的代码</span></span><br></pre></td></tr></table></figure>
+<p>可以不使用 <code>return</code> 来规避这 个问题</p>
 <h4 id="proclambda-和参数数量">Proc、Lambda 和参数数量</h4>
 <p>如果给一个定义了两个参数的 <code>proc</code> 或 <code>lambda</code> 传一个或三个参数，可能会导致错误，并且 <code>lambda</code> 的适应能力比 <code>proc</code> 和普通代码块差。</p>
 <p>如果参数比期望的多，<code>proc</code> 会忽略多余的参数；如果参数数量不足，对于未指定的参数，<code>proc</code> 会赋值为 <code>nil</code>。</p>
@@ -8665,6 +8665,27 @@ true
 <li>另外还有 <code>module_exec</code> 和 <code>class_exec</code>，可以接受额外的参数。</li>
 </ul>
 <h3 id="类实例变量">类实例变量</h3>
+<p>类定义中的 <code>self</code> 是类本身，因此不要混淆了 <strong>类的实例变量</strong> 和 <strong>类的对象的实例变量</strong></p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"> <span class="class"><span class="keyword">class</span> <span class="title">MyClass</span></span></span><br><span class="line">   <span class="variable">@my_var</span> = <span class="number">1</span></span><br><span class="line">   def <span class="keyword">self</span>.read; <span class="variable">@my_var</span>; <span class="keyword">end</span></span><br><span class="line">   <span class="function"><span class="keyword">def</span> <span class="title">write</span>;</span> <span class="variable">@my_var</span> = <span class="number">2</span>; <span class="keyword">end</span></span><br><span class="line">   <span class="function"><span class="keyword">def</span> <span class="title">read</span>;</span> <span class="variable">@my_var</span>; <span class="keyword">end</span></span><br><span class="line"> <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">obj = MyClass.new</span><br><span class="line">obj.read			<span class="comment"># =&gt; nil</span></span><br><span class="line">obj.write</span><br><span class="line">obj.read			<span class="comment"># =&gt; 2</span></span><br><span class="line">MyClass.read  <span class="comment"># =&gt; 1</span></span><br></pre></td></tr></table></figure>
+<h3 id="类变量">类变量</h3>
+<p>类变量可以被子类或类的实例所使用。</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">C</span></span></span><br><span class="line">  <span class="variable">@@v</span> = <span class="number">1</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">D</span> &lt; C</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">my_method</span>;</span> <span class="variable">@@v</span>; <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">D.new.my_method			<span class="comment"># =&gt; 1</span></span><br></pre></td></tr></table></figure>
+<p>因为类变量不属于这个类，而是属于类体系结构，因此会产生一些别的问题：</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="variable">@@v</span> = <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span></span></span><br><span class="line">  <span class="variable">@@v</span> = <span class="number">2</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># @<span class="doctag">@v</span> 属于 main 的类 Object，所以也属于 Object 的所有后代，MyClass 继承自 Object，也共享了这个变量</span></span><br><span class="line"><span class="variable">@@v</span> 	 <span class="comment"># =&gt; 2</span></span><br></pre></td></tr></table></figure>
+<h2 id="单件方法">单件方法</h2>
+<p>只对单个对象生效的方法，称为 <strong>单件方法（Singleton Method）</strong>。</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">str = <span class="string">&quot;just a regular string&quot;</span></span><br><span class="line"></span><br><span class="line">def str.title?</span><br><span class="line">  <span class="keyword">self</span>.upcase == <span class="keyword">self</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">str.title?										<span class="comment"># =&gt; false</span></span><br><span class="line">str.methods.grep(<span class="regexp">/title?/</span>)		<span class="comment"># =&gt; [:title?]</span></span><br><span class="line">str.singleton_methods					<span class="comment"># =&gt; [:title?]</span></span><br></pre></td></tr></table></figure>
+<h3 id="类方法">类方法</h3>
+<p>类方法其实就是一个类的单件方法。</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">def obj.a_singleton_method; <span class="keyword">end</span></span><br><span class="line">def MyClass.another_class_method; <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义单件方法</span></span><br><span class="line">def object.method</span><br><span class="line">  <span class="comment"># 方法的主体</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<h3 id="类宏">类宏</h3>
+<h4 id="attr_accessor"><code>attr_accessor</code></h4>
+<p>Ruby 的对象是没有属性的，如果想要得到 JavaScript 类似的属性的效果，得定义 <strong>拟态方法</strong>：</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span></span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">my_attribute=</span><span class="params">(value)</span></span></span><br><span class="line">    <span class="variable">@my_attribute</span> = value</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">my_attribute</span></span></span><br><span class="line">    <span class="variable">@my_attribute</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">obj = MyClass.new</span><br><span class="line">obj.my_attribute = <span class="string">&#x27;x&#x27;</span></span><br><span class="line">obj.my_attribute          <span class="comment"># =&gt; &quot;x&quot;</span></span><br></pre></td></tr></table></figure>
+<p>这样的写法（也叫访问器）很麻烦，可以用 <code>Module#attr_*</code> 方法定义访问器，<code>Module#attr_reader</code> 生成读方法、<code>Module#attr_writer</code> 生成写方法、<code>Module#attr_accessor</code> 同时生成两者：</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span></span></span><br><span class="line">  <span class="keyword">attr_accessor</span> <span class="symbol">:my_attribute</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>所有的 <code>attr_*</code> 方法都定义在 <code>Module</code> 类中，因此不管 <code>self</code> 是类还是模块，都可以使用。这种方法被称为 <strong>类宏（Class Macro）</strong>，简单来说就是可以在类定义中使用的方法。</p>
+<h4 id="使用类宏">使用类宏</h4>
 ]]></content>
       <categories>
         <category>全栈</category>
