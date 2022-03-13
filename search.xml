@@ -1447,166 +1447,6 @@ z = 8x + 12y
       </tags>
   </entry>
   <entry>
-    <title>读书笔记：《Ruby 元编程》</title>
-    <url>/hais-notebook/2021/07/11/Book-MetaprogrammingRuby/</url>
-    <content><![CDATA[<p>Ruby 元编程是基于 Ruby2.0 编写的一本老书了，主要学习一下他的思想。</p>
-<p>「元编程是编写能在运行时操作语言构件的代码。」——能写代码的代码</p>
-<span id="more"></span>
-<h1 id="元编程">元编程</h1>
-<p>我们将变量、类、方法等这些称为<strong>语言构件</strong>。对于 C++ 这类语言，运行时就已经看不见他们了，我们无法在运行时询问一个类，他的实例方法有哪些； 但对于 Ruby 等语言，这些语言构件在运行时仍然存活，我们甚至可以在运行时询问某个构件，关于他的相关信息——这被称之为 <strong>内省（introspection）</strong>。</p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Greeting</span></span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">initialize</span><span class="params">(text)</span></span></span><br><span class="line">    <span class="variable">@text</span> = text</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">welcome</span></span></span><br><span class="line">    <span class="variable">@text</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">my_object = Greeting.new <span class="string">&quot;Hello&quot;</span></span><br></pre></td></tr></table></figure>
-<p>我们可以在运行时通过这些方法来询问 <code>my_object</code>：</p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">my_object.<span class="keyword">class</span> <span class="comment"># =&gt; Greeting</span></span><br><span class="line">my_object.<span class="keyword">class</span>.instance_methods(<span class="literal">false</span>) <span class="comment"># =&gt; [:welcome]</span></span><br><span class="line">my_object.instance_variables <span class="comment"># =&gt; [:<span class="doctag">@text</span>]</span></span><br></pre></td></tr></table></figure>
-<p>我们甚至可以在运行时增加新的实例方法。</p>
-<p>从广义上来说，用代码生成器也属于元编程（静态元编程 static metaprogramming），类似于模板；本书讨论的是另一种元编程（动态元编程 dynamic metaprogramming），即编写在运行时操作自身的代码。</p>
-<h1 id="对象模型-the-object-model">对象模型 The Object Model</h1>
-<p>Ruby 中，有很多语言构件：对象、类、模块、实例变量等，元编程操作的就是这些语言构件。所有这些语言构件存在的系统称之为<strong>对象模型</strong>。</p>
-<h2 id="打开类-open-classes">打开类 Open Classes</h2>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 直接修改了 String 这个 class</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">String</span></span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">to_alphanumeric</span></span></span><br><span class="line">    gsub(<span class="regexp">/[^\w\s]/</span>, <span class="string">&#x27;&#x27;</span>)</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
-<h3 id="类的定义">类的定义</h3>
-<ol type="1">
-<li>类定义中可以放任何语句</li>
-<li>类可以重复“定义”，第二次使用 <code>class</code> 尝试定义他的时候，他并不会覆盖之前的定义，而是会增加一些内容，这种反复定义，称为 <strong>打开类</strong></li>
-</ol>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="number">3</span>.times <span class="keyword">do</span></span><br><span class="line">  <span class="class"><span class="keyword">class</span> <span class="title">MyClass</span></span></span><br><span class="line">    puts <span class="string">&quot;Hello&quot;</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
-<p>在很多 Ruby 的库中都使用了打开类来对一些标准的 Ruby 类来进行魔改，比如 <code>monetize</code> 包就给 <code>Numeric</code> 类增加了 <code>to_money</code> 方法</p>
-<blockquote>
-<p>JavaScript 中其实也可以实现类似的操作，我们可以修改 Array、Number 的 prototype。但是经验上我并不会经常这么做，主要是怕重名或影响到别人的代码。</p>
-</blockquote>
-<h3 id="打开类的问题">打开类的问题</h3>
-<p>确实，这种方法容易因为重名覆盖问题，导致其他的副作用。因此，有人称之为 <strong>猴子补丁 Monkeypatch</strong></p>
-<h2 id="类的真相">类的真相</h2>
-<h3 id="对象中有什么">对象中有什么</h3>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span></span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">my_method</span></span></span><br><span class="line">    <span class="variable">@v</span> = <span class="number">1</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">obj = MyClass.new</span><br></pre></td></tr></table></figure>
-<ol type="1">
-<li>实例变量 <code>[:@v]</code>：通过 <code>Object#instance_variables</code> 方法来查看。对象的类与实例变量没有关系，当给实例变量赋值时，他们就突然出现了。</li>
-<li>方法 <code>[:my_method]</code>：通过 <code>Object#methods</code> 方法查看，他会给出所有继承的方法，我们可以通过 <code>Array#grep</code> 方法进行过滤。</li>
-</ol>
-<blockquote>
-<p>实例变量存在对象中，而方法存放在类中。</p>
-</blockquote>
-<div class="note warning"><p>需要注意的是，我们不能说 <code>my_method</code> 是 <code>MyClass</code> 的方法，因为我们不能通过 <code>MyClass.my_method()</code> 这样来调用它。</p>
-<p>我们只能说 <code>my_method</code> 是 <code>MyClass</code> 的一个 <strong>实例方法</strong>，因为我们必须要先定义一个 <code>MyClass</code> 的实例，然后通过实例调用它。</p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">String.instance_methods == <span class="string">&quot;abc&quot;</span>.methods  <span class="comment"># =&gt; true</span></span><br><span class="line">String.methods == <span class="string">&quot;abc&quot;</span>.methods  <span class="comment"># =&gt; false</span></span><br></pre></td></tr></table></figure>
-</div>
-<h3 id="类的真相-1">类的真相</h3>
-<p>类本身也是对象，这又有点像 JavaScript 了</p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="string">&quot;hello&quot;</span>.<span class="keyword">class</span> <span class="comment"># =&gt; String</span></span><br><span class="line">String.<span class="keyword">class</span>  <span class="comment"># =&gt; Class</span></span><br></pre></td></tr></table></figure>
-<p>根据前面所述，实例的方法就是类的实例方法。因此，一个类的方法就是 <code>Class</code> 的实例方法</p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="comment"># false 表示忽略继承的方法</span></span><br><span class="line">Class.instance_methods(<span class="literal">false</span>) <span class="comment"># =&gt; [:allocate,:new,:superclass]</span></span><br></pre></td></tr></table></figure>
-<p><code>allocate</code> 方法是 <code>new</code> 方法的支撑方法，<code>superclass</code> 则跟继承有关：</p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">Array.superclass  <span class="comment"># =&gt; Object</span></span><br><span class="line">Object.superclass <span class="comment"># =&gt; BasicObject</span></span><br><span class="line">BasicObject.superclass <span class="comment"># =&gt; nil</span></span><br></pre></td></tr></table></figure>
-<p><code>Class</code> 的 <code>superclass</code> 是 <code>Module</code>，类其实就是带有 <code>new</code> <code>allocate</code> <code>superclass</code> 的增强模块，这三个方法可以让我们按照一定层次创建对象。</p>
-<ul>
-<li>如果希望把代码 <code>include</code> 到别的代码中，就应该使用模块</li>
-<li>如果希望代码被实例化或继承，应该使用类</li>
-</ul>
-<h3 id="常量">常量</h3>
-<ul>
-<li>任何以大写字母开头的引用（包括类名和模块名）都是常量</li>
-<li>我们可以修改常量的值，尽管会得到一个警告</li>
-<li>常量和变量的最大区别在于作用域不同</li>
-</ul>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">module</span> <span class="title">MyModule</span></span></span><br><span class="line">  MyConstant = <span class="string">&#x27;OuterConstant&#x27;</span></span><br><span class="line">  <span class="class"><span class="keyword">class</span> <span class="title">MyClass</span></span></span><br><span class="line">    <span class="comment"># 两个常量有着不同的作用域，他们是不同的</span></span><br><span class="line">    MyConstant = <span class="string">&#x27;InnerConstant&#x27;</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">M</span></span></span><br><span class="line">  <span class="class"><span class="keyword">class</span> <span class="title">C</span></span></span><br><span class="line">    X = <span class="string">&#x27;a constant&#x27;</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  C::X   <span class="comment"># =&gt; &#x27;a constant&#x27;</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line">M::C::X  <span class="comment"># =&gt; &#x27;a constant&#x27;</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">Y = <span class="string">&#x27;a root-level constant&#x27;</span></span><br><span class="line"><span class="class"><span class="keyword">module</span> <span class="title">M</span></span></span><br><span class="line">  Y = <span class="string">&#x27;a constant in M&#x27;</span></span><br><span class="line">  Y     <span class="comment"># =&gt; &#x27;a constant in M&#x27;</span></span><br><span class="line">  <span class="symbol">:</span><span class="symbol">:Y</span>   <span class="comment"># =&gt; &#x27;a root-level  constant&#x27;</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
-<p><code>Module</code> 类还有一个实例方法和类方法，方法名都叫 <code>constants</code>，<code>Module#constants</code> 方法返回当前范围内的所有常量，<code>Module.constants</code> 方法返回当前程序中所有顶层的常量。</p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">M.constans <span class="comment"># =&gt; [:C, :Y]</span></span><br><span class="line">Module.constants.<span class="keyword">include</span>? <span class="symbol">:Object</span> <span class="comment"># =&gt; true</span></span><br><span class="line">Module.constants.<span class="keyword">include</span>? <span class="symbol">:Module</span> <span class="comment"># =&gt; true</span></span><br></pre></td></tr></table></figure>
-<p><code>Module.nesting</code> 告诉我们当前代码所在的路径：</p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">module</span> <span class="title">M</span></span></span><br><span class="line">  <span class="class"><span class="keyword">class</span> <span class="title">C</span></span></span><br><span class="line">    <span class="class"><span class="keyword">module</span> <span class="title">M2</span></span></span><br><span class="line">      Module.nesting <span class="comment"># =&gt; [M::C::M2, M::C, M]</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
-<h3 id="对象和类小结">对象和类小结</h3>
-<ul>
-<li>对象是一组实例变量 + 一个指向类的引用</li>
-<li>对象的方法存放在对象的类中，对于类来说，这些方法被称为类的实例方法</li>
-<li>类是一个对象（Class 类的一个实例） + 一组实例方法 + 一个对其超类的引用</li>
-<li>类有自己的方法（也就是 Class 的实例方法，比如 new）</li>
-<li>Class 是 Module 的子类</li>
-</ul>
-<h3 id="使用命名空间解决冲突的问题">使用命名空间解决冲突的问题</h3>
-<p>比如你创建一个 Text 类，但 Action Mailer 中已经有了一个 Text Module，你可以使用命名空间来解决冲突：</p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">module</span> <span class="title">MyModule</span></span></span><br><span class="line">  <span class="class"><span class="keyword">class</span> <span class="title">Text</span></span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
-<h3 id="调用方法时发生了什么">调用方法时发生了什么</h3>
-<h4 id="方法查找">方法查找</h4>
-<ul>
-<li>接受者 receiver：调用方法所在所在的对象</li>
-<li>祖先链 ancestors chain：找到对象的类，再找到类的超类，再找超类的超类，直到找到 <code>BasicObject</code> 类</li>
-</ul>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span></span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">my_method</span></span></span><br><span class="line">    <span class="string">&#x27;my_method()&#x27;</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MySubclass</span> &lt; MyClass</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">obj = MySubclass.new</span><br><span class="line">obj.my_method() <span class="comment"># =&gt; &#x27;my_method()&#x27;</span></span><br><span class="line"></span><br><span class="line">MySubclass.ancestors <span class="comment"># =&gt; [MySubclass, MyClass, Object, Kernel, BasicObject]</span></span><br></pre></td></tr></table></figure>
-<p><code>include</code> 某个模块或者继承某个类的时候，会将其加入到祖先链中。<code>prepend</code> 与 <code>include</code> 相似，前者会将模块插入到（祖先链中）该类的下方，后者会插入上方</p>
-<h5 id="kernel-模块">Kernel 模块</h5>
-<p>我们可以随时调用比如 <code>print</code> 等方法，但其实 <code>print</code> 方法是 Kernel 模块的私有实例方法，Object 类包含了 Kernel 模块，使得每个对象都可以调用 Kernel 模块的方法</p>
-<h4 id="执行方法">执行方法</h4>
-<h5 id="self">self</h5>
-<p><code>self</code> 代表了当前对象，当调用一个方法时，接受者就是 <code>self</code></p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span></span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">testing_self</span></span></span><br><span class="line">    <span class="variable">@var</span> = <span class="number">10</span>   <span class="comment"># self 的一个实例变量</span></span><br><span class="line">    my_method() <span class="comment"># 相当于 self.my_method()</span></span><br><span class="line">    <span class="keyword">self</span>.my_private_method() <span class="comment"># 不能这样写，private 方法不能指定接受者，只能通过隐式的 self 调用</span></span><br><span class="line">    <span class="keyword">self</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  </span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">my_method</span></span></span><br><span class="line">    <span class="variable">@var</span> = <span class="variable">@var</span> + <span class="number">1</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  </span><br><span class="line">  private</span><br><span class="line">  </span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">my_private_method</span></span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">obj = MyClass.new</span><br><span class="line">obj.testing_self <span class="comment"># =&gt; #&lt;MyClass:0x123 <span class="doctag">@var</span>=11&gt;</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="keyword">self</span>       <span class="comment"># =&gt; main</span></span><br><span class="line"><span class="keyword">self</span>.<span class="keyword">class</span> <span class="comment"># =&gt; Object</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span></span></span><br><span class="line">  <span class="keyword">self</span>     <span class="comment"># =&gt; MyClass，在所有方法之外，self 是这个类或模块本身</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
-<h4 id="细化-refinement">细化 Refinement</h4>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">module</span> <span class="title">StringExtensions</span></span></span><br><span class="line">  <span class="comment"># 为 String 类 refine 了一个 to_alphanumeric 方法，他默认不生效，不能直接通过 String#to_alphanumeric 来调用</span></span><br><span class="line">  refine String <span class="keyword">do</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">to_alphanumeric</span></span></span><br><span class="line">      gsub(<span class="regexp">/[^\w\s]/</span>, <span class="string">&#x27;&#x27;</span>)</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">module</span> <span class="title">StringStuff</span></span></span><br><span class="line">  using StringExtensions</span><br><span class="line">  <span class="string">&quot;my_string&quot;</span>.to_alphanumeric  <span class="comment"># =&gt; 可以调用</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="string">&quot;my_string&quot;</span>.to_alphanumeric    <span class="comment"># =&gt; 不能调用</span></span><br></pre></td></tr></table></figure>
-<p>细化只有在两种场合有效：</p>
-<ol type="1">
-<li><code>refine</code> 代码内部</li>
-<li><code>using</code> 语句开始到模块结束（或者在顶层作用域调用到文件结束）</li>
-</ol>
-<h1 id="方法-methods">方法 Methods</h1>
-<h2 id="动态方法-dynamic-methods">动态方法 Dynamic Methods</h2>
-<h3 id="动态调用方法">动态调用方法</h3>
-<blockquote>
-<p>实际上调用一个方法就是给一个对象发送消息</p>
-</blockquote>
-<p>除了使用点标识符 <code>(.)</code> 来调用方法，还可以使用 <code>Object#send</code> 方法来调用某个实例的方法：</p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span></span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">my_method</span><span class="params">(my_arg)</span></span></span><br><span class="line">    my_arg * <span class="number">2</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">obj = MyClass.new</span><br><span class="line">obj.my_method(<span class="number">3</span>)        <span class="comment"># =&gt; 6</span></span><br><span class="line">obj.send(<span class="symbol">:my_method</span>, <span class="number">3</span>) <span class="comment"># =&gt; 6</span></span><br><span class="line"><span class="comment"># send 的第一个参数是方法名，可以使用字符串，也可以使用符号；剩下的参数和代码块会被直接传递给调用的方法</span></span><br></pre></td></tr></table></figure>
-<p>这样动态调用方法的技巧叫做 <strong>动态派发（Dynamic Dispatch）</strong></p>
-<h3 id="动态定义方法">动态定义方法</h3>
-<p>可以用 <code>Module#define_method()</code> 动态定义方法：</p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span></span></span><br><span class="line">  <span class="comment"># 与 def 不同，define_method 允许在运行时决定方法的名字</span></span><br><span class="line">  define_method <span class="symbol">:my_method</span> <span class="keyword">do</span> <span class="params">|my_arg|</span></span><br><span class="line">    my_arg * <span class="number">3</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">obj = MyClass.new</span><br><span class="line">obj.my_method(<span class="number">2</span>)    <span class="comment"># =&gt; 6</span></span><br></pre></td></tr></table></figure>
-<h2 id="method_missing">method_missing</h2>
-<p>当找不到方法是时，他就会调用对象上的 <code>method_missing</code> 方法，而我们可以覆写这个方法。调用者看起来调用了某个方法，但实际上这个方法却不存在，这称为 <strong>幽灵方法（Ghost Method）</strong></p>
-<h3 id="respond_to_missing">respond_to_missing</h3>
-<p>如果我们通过幽灵方法实现某功能，我们会发现使用 <code>respond_to?</code> 来查找方法的时候就会发现找不到这个方法。</p>
-<p>需要使用 <code>respond_to_missing</code> 方法才能感知到幽灵方法。因此我们通常在使用 <code>method_missing</code> 的时候会覆写 <code>respond_to_missing</code> 方法</p>
-<h3 id="const_missing">const_missing</h3>
-<p>当引用一个不存在的常量的时候，Ruby 会把这个常量名作为一个符号传给 <code>const_missing</code> 方法，我们可以通过覆盖 <code>const_missing</code> 方法达到拦截的目的：</p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="keyword">require</span> <span class="string">&#x27;rake&#x27;</span></span><br><span class="line">task_class = Task  <span class="comment"># =&gt; 得到一个警告，让你使用 Rake::Task</span></span><br></pre></td></tr></table></figure>
-<p>能达到上面的效果是因为 Rake 覆盖了 <code>Module#const_missing</code>：</p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Module</span></span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">const_missing</span><span class="params">(const_name)</span></span></span><br><span class="line">    <span class="keyword">case</span> const_name</span><br><span class="line">    <span class="keyword">when</span> <span class="symbol">:Task</span></span><br><span class="line">      Rake.application.const_warning(const_name)</span><br><span class="line">      Rake::Task</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
-<h2 id="白板类-blank-slates">白板类 Blank Slates</h2>
-<p>用幽灵方法时经常会遇到名称与已经存在的方法冲突的情况，尤其是与他继承来的方法冲突。这时候就需要删掉继承的很多无用的方法。</p>
-<h3 id="basicobject">BasicObject</h3>
-<p><code>BasicObject</code> 只有几个实例方法，我们直接创建的类默认继承自 <code>Object</code> 类（<code>BasicObject</code> 的子类），我们可以将其改为继承 <code>BasicObject</code> 类</p>
-<h3 id="删除方法">删除方法</h3>
-<ol type="1">
-<li><code>Module#undef_method</code>：删除（包括继承来的）方法</li>
-<li><code>Module#remove_method</code>：删除接受者自己的方法</li>
-</ol>
-<h1 id="代码块-blocks">代码块 Blocks</h1>
-<p>代码块源自像 LISP 这样的函数式编程语言</p>
-<h2 id="代码块的基础使用">代码块的基础使用</h2>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">a_method</span><span class="params">(a, b)</span></span></span><br><span class="line">  a + <span class="keyword">yield</span>(a, b)</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">a_method(<span class="number">1</span>, <span class="number">2</span>) &#123; <span class="params">|x, y|</span> ( x + y ) * <span class="number">3</span> &#125;   <span class="comment"># =&gt; 10</span></span><br></pre></td></tr></table></figure>
-<ul>
-<li>代码块可以用 <code>do...end</code> 定义，也可以用大括号定义</li>
-<li>只有在调用一个方法的时候才能定义一个块</li>
-<li>这个块会被直接传递给这个方法，该方法可以用 <code>yield</code> 关键字调用这个块</li>
-<li>在一个方法里，可以通过 <code>Kernel#block_given?</code> 询问当前方法的调用是否包含块</li>
-</ul>
-<h2 id="代码块是闭包">代码块是闭包</h2>
-<p>可以运行的代码 = 代码本身 + 绑定</p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">my_method</span></span></span><br><span class="line">  x = <span class="string">&quot;Good bye&quot;</span></span><br><span class="line">  <span class="keyword">yield</span>(<span class="string">&quot;cruel&quot;</span>)</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">x = <span class="string">&quot;Hello&quot;</span></span><br><span class="line">my_method &#123; <span class="params">|y|</span> <span class="string">&quot;<span class="subst">#&#123;x&#125;</span>, <span class="subst">#&#123;y&#125;</span> word&quot;</span> &#125;  <span class="comment"># =&gt; Hello, cruel world</span></span><br><span class="line"><span class="comment"># 创建代码块时，x 会成为局部绑定，然后把代码块连同绑定传给 my_method 方法</span></span><br><span class="line"><span class="comment"># 代码块中看到的 x 不是方法里面的 x，而是创建代码块时绑定的 x</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">just_yield</span></span></span><br><span class="line">  <span class="keyword">yield</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">top_level_variable = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">just_yield <span class="keyword">do</span></span><br><span class="line">  top_level_variable += <span class="number">1</span></span><br><span class="line">  local_to_block = <span class="number">1</span>  <span class="comment"># =&gt; 在代码块中定义的额外的绑定</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">top_level_variable  <span class="comment"># =&gt; 2</span></span><br><span class="line">local_to_block      <span class="comment"># =&gt; Error，看不到了，额外的绑定在代码块结束时消失了</span></span><br></pre></td></tr></table></figure>
-<p>因此代码块，又被称为 <strong>闭包（Closure）</strong></p>
-<h3 id="作用域">作用域</h3>
-<p>Ruby 中没有内部作用域和外部作用域的概念（即在内部作用域中可以看到外部作用域的变量）。Ruby 中不同的作用域是分开的</p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">v1 = <span class="number">1</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span></span></span><br><span class="line">  v2 = <span class="number">2</span></span><br><span class="line">  local_variables <span class="comment"># =&gt; [:v2]</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">my_method</span></span></span><br><span class="line">    v3 = <span class="number">3</span></span><br><span class="line">    local_variables</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  local_variables <span class="comment"># =&gt; [:v2]</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">obj = MyClass.new</span><br><span class="line">obj.my_method <span class="comment"># =&gt; [:v3]</span></span><br><span class="line">local_variables <span class="comment"># =&gt; [:v1, :obj]</span></span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>全栈</category>
-        <category>Ruby</category>
-      </categories>
-      <tags>
-        <tag>读书笔记</tag>
-        <tag>Ruby</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Cookie</title>
     <url>/hais-notebook/2020/01/30/Browser-Cookie/</url>
     <content><![CDATA[<p>Cookie 是浏览器下发给浏览器的一段字符串，浏览器必须保存这个 Cookie，之后发起的相同二级域名的请求，浏览器必须附上 Cookie。</p>
@@ -8453,17 +8293,20 @@ true
       </tags>
   </entry>
   <entry>
-    <title>Ruby 基础</title>
-    <url>/hais-notebook/2021/02/13/Ruby-Intro/</url>
-    <content><![CDATA[<p>Ruby 的介绍与基础。</p>
+    <title>Ruby</title>
+    <url>/hais-notebook/2022/03/13/Ruby/</url>
+    <content><![CDATA[<p>结合网课、Ruby 文档和《Ruby 元编程 2》。</p>
+<p>「元编程是编写能在运行时操作语言构件的代码。」——能写代码的代码Ruby 的介绍与基础。</p>
 <span id="more"></span>
-<h1 id="基本">基本</h1>
-<h2 id="运行-ruby-的方式">运行 Ruby 的方式</h2>
+<h1 id="startup">Startup</h1>
+<h2 id="运行-ruby">运行 Ruby</h2>
 <ul>
 <li><code>irb</code> 可交互式命令行</li>
 <li><code>ruby</code> + 文件路径</li>
 </ul>
-<h2 id="变量">变量</h2>
+<h1 id="basic-syntax">Basic Syntax</h1>
+<h2 id="值">值</h2>
+<h3 id="变量">变量</h3>
 <ul>
 <li>没有 <code>var</code> <code>const</code> <code>let</code> 等关键字</li>
 <li>局部变量：小写字母开头或 <code>_</code> 开头</li>
@@ -8471,11 +8314,23 @@ true
 <li>类变量：<code>@@</code> 开头</li>
 <li>实例变量：<code>@</code> 开头</li>
 </ul>
-<h2 id="常量">常量</h2>
+<h3 id="常量">常量</h3>
 <ul>
-<li>全大写，且默认为全局，比如 <code>RUBY_VERSION</code></li>
+<li><p>任何以大写字母开头的引用（包括类名和模块名）都是常量</p></li>
+<li><p>我们可以修改常量的值，尽管会得到一个警告</p></li>
+<li><p>常量和变量的最大区别在于作用域不同</p></li>
 </ul>
-<h2 id="多重赋值">多重赋值</h2>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">module</span> <span class="title">MyModule</span></span></span><br><span class="line">  MyConstant = <span class="string">&#x27;OuterConstant&#x27;</span></span><br><span class="line">  <span class="class"><span class="keyword">class</span> <span class="title">MyClass</span></span></span><br><span class="line">    <span class="comment"># 两个常量有着不同的作用域，他们是不同的</span></span><br><span class="line">    MyConstant = <span class="string">&#x27;InnerConstant&#x27;</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">M</span></span></span><br><span class="line">  <span class="class"><span class="keyword">class</span> <span class="title">C</span></span></span><br><span class="line">    X = <span class="string">&#x27;a constant&#x27;</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  C::X   <span class="comment"># =&gt; &#x27;a constant&#x27;</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line">M::C::X  <span class="comment"># =&gt; &#x27;a constant&#x27;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">Y = <span class="string">&#x27;a root-level constant&#x27;</span></span><br><span class="line"><span class="class"><span class="keyword">module</span> <span class="title">M</span></span></span><br><span class="line">  Y = <span class="string">&#x27;a constant in M&#x27;</span></span><br><span class="line">  Y     <span class="comment"># =&gt; &#x27;a constant in M&#x27;</span></span><br><span class="line">  <span class="symbol">:</span><span class="symbol">:Y</span>   <span class="comment"># =&gt; &#x27;a root-level  constant&#x27;</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p><code>Module</code> 类还有一个实例方法和类方法，方法名都叫 <code>constants</code>，<code>Module#constants</code> 方法返回当前范围内的所有常量，<code>Module.constants</code> 方法返回当前程序中所有顶层的常量。</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">M.constans <span class="comment"># =&gt; [:C, :Y]</span></span><br><span class="line">Module.constants.<span class="keyword">include</span>? <span class="symbol">:Object</span> <span class="comment"># =&gt; true</span></span><br><span class="line">Module.constants.<span class="keyword">include</span>? <span class="symbol">:Module</span> <span class="comment"># =&gt; true</span></span><br></pre></td></tr></table></figure>
+<p><code>Module.nesting</code> 告诉我们当前代码所在的路径：</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">module</span> <span class="title">M</span></span></span><br><span class="line">  <span class="class"><span class="keyword">class</span> <span class="title">C</span></span></span><br><span class="line">    <span class="class"><span class="keyword">module</span> <span class="title">M2</span></span></span><br><span class="line">      Module.nesting <span class="comment"># =&gt; [M::C::M2, M::C, M]</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<h4 id="使用命名空间解决冲突的问题">使用命名空间解决冲突的问题</h4>
+<p>比如你创建一个 Text 类，但 Action Mailer 中已经有了一个 Text Module，你可以使用命名空间来解决冲突：</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">module</span> <span class="title">MyModule</span></span></span><br><span class="line">  <span class="class"><span class="keyword">class</span> <span class="title">Text</span></span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<h3 id="多重赋值">多重赋值</h3>
 <ul>
 <li><code>a,b,c = 1,2,3</code></li>
 <li><code>a,b = [1,2]</code></li>
@@ -8483,51 +8338,14 @@ true
 <li><code>a,*b,c = 1,2,3,4,5</code></li>
 <li><code>a,b = b,a</code></li>
 </ul>
-<h2 id="字符串">字符串</h2>
+<h3 id="字符串">字符串</h3>
 <ul>
 <li>单引号，没有转义，写 <code>'\n'</code> 里面就是 <code>\n</code></li>
 <li>双引号，有转义</li>
 <li>多行字符串</li>
 </ul>
 <figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">s = <span class="string">&lt;&lt;eos</span></span><br><span class="line"><span class="string">dfa123</span></span><br><span class="line"><span class="string">fad</span></span><br><span class="line"><span class="string">eos</span></span><br></pre></td></tr></table></figure>
-<h2 id="log">log</h2>
-<ul>
-<li><code>print</code></li>
-<li><code>puts</code> put string</li>
-<li><code>p</code></li>
-</ul>
-<h2 id="注释">注释</h2>
-<ul>
-<li>单行注释 <code>#</code></li>
-<li>多行注释</li>
-</ul>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="comment">=begin</span></span><br><span class="line"><span class="comment">注释</span></span><br><span class="line"><span class="comment">=end</span></span><br></pre></td></tr></table></figure>
-<h1 id="控制语句">控制语句</h1>
-<h2 id="if">if</h2>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> a &gt; <span class="number">3</span> <span class="keyword">then</span> p <span class="string">&#x27;大&#x27;</span> <span class="keyword">end</span></span><br><span class="line"><span class="keyword">if</span> a &gt; <span class="number">3</span> <span class="keyword">then</span> p <span class="string">&#x27;大&#x27;</span> <span class="keyword">else</span> p <span class="string">&#x27;小&#x27;</span> <span class="keyword">end</span></span><br><span class="line">p(<span class="keyword">if</span> a &gt; <span class="number">3</span> <span class="keyword">then</span> <span class="string">&#x27;大&#x27;</span> <span class="keyword">else</span> <span class="string">&#x27;小&#x27;</span> <span class="keyword">end</span>)</span><br><span class="line">p(<span class="keyword">if</span> a &gt; <span class="number">4</span></span><br><span class="line">  <span class="string">&#x27;大&#x27;</span></span><br><span class="line">  elseif a &gt; <span class="number">2</span></span><br><span class="line">  <span class="string">&#x27;中&#x27;</span></span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">  <span class="string">&#x27;小&#x27;</span></span><br><span class="line">  <span class="keyword">end</span>)</span><br></pre></td></tr></table></figure>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="keyword">return</span> <span class="keyword">if</span> error</span><br><span class="line"><span class="keyword">return</span> <span class="keyword">if</span> <span class="keyword">not</span> success</span><br><span class="line"><span class="keyword">return</span> <span class="keyword">unless</span> success</span><br></pre></td></tr></table></figure>
-<h2 id="case">case</h2>
-<p>类似 <code>switch-case</code> 单不需要 <code>break</code></p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">x = <span class="keyword">case</span> a</span><br><span class="line"><span class="keyword">when</span> <span class="number">1</span></span><br><span class="line">  <span class="string">&#x27;1&#x27;</span></span><br><span class="line"><span class="keyword">when</span> <span class="number">2</span></span><br><span class="line">  <span class="string">&#x27;2&#x27;</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">  <span class="string">&#x27;others&#x27;</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
-<h1 id="循环语句">循环语句</h1>
-<h2 id="times">times</h2>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="number">7</span>.times <span class="keyword">do</span></span><br><span class="line">  p <span class="string">&#x27;哈哈&#x27;</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="number">7</span>.times &#123; p <span class="string">&#x27;哈哈&#x27;</span> &#125;</span><br></pre></td></tr></table></figure>
-<p><code>times</code> 是函数，<code>do end</code> 和 <code>&#123;&#125;</code> 是代码块，作为 <code>times</code> 函数的最后的参数，一般多行用 <code>do end</code>，单行用 <code>&#123;&#125;</code></p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="number">7</span>.times <span class="keyword">do</span> <span class="params">|i|</span> p <span class="string">&quot;<span class="subst">#&#123;i&#125;</span> time&quot;</span> <span class="keyword">end</span></span><br></pre></td></tr></table></figure>
-<p><code>|i|</code> 相当于给你的参数，表示第几次</p>
-<h2 id="each">each</h2>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>].each <span class="keyword">do</span> <span class="params">|item|</span> p item <span class="keyword">end</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">(<span class="number">1</span>..<span class="number">7</span>).each <span class="keyword">do</span> <span class="params">|n|</span> p n <span class="keyword">end</span></span><br></pre></td></tr></table></figure>
-<h2 id="for">for</h2>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">1</span>..<span class="number">7</span> <span class="keyword">do</span> p i <span class="keyword">end</span></span><br></pre></td></tr></table></figure>
-<h2 id="whileuntil">while/until</h2>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">i = <span class="number">1</span></span><br><span class="line"><span class="keyword">while</span> <span class="number">1</span> &lt; <span class="number">3</span></span><br><span class="line">  p i</span><br><span class="line">  i += <span class="number">1</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">j = <span class="number">1</span></span><br><span class="line"><span class="keyword">until</span> j &gt;= <span class="number">3</span></span><br><span class="line">  p j</span><br><span class="line">  j += <span class="number">3</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
-<h2 id="loop">loop</h2>
-<p>一直循环</p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">loop</span><br><span class="line">  p <span class="string">&#x27;ruby&#x27;</span></span><br><span class="line">  <span class="keyword">if</span> x &gt; <span class="number">10</span> <span class="keyword">then</span> <span class="keyword">break</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
-<h2 id="break-continue">break continue</h2>
-<p><code>break</code> 和 <code>next</code> 对应 <code>break</code> 和 <code>continue</code></p>
-<h1 id="数据类型">数据类型</h1>
+<h2 id="数据类型">数据类型</h2>
 <p>ruby 中只有对象，可以用 <code>.class</code> 查看类</p>
 <ul>
 <li><code>Integer</code> <code>Numeric</code> 整数</li>
@@ -8542,9 +8360,9 @@ true
 <li><code>Hash</code> 散列</li>
 </ul>
 <p>每个对象都有唯一的 <code>object_id</code> 属性</p>
-<h2 id="array">Array</h2>
+<h3 id="array">Array</h3>
 <p><code>arr.methods</code> 可以看到有什么 api</p>
-<h2 id="hash">Hash</h2>
+<h3 id="hash">Hash</h3>
 <figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">me = &#123; <span class="symbol">name:</span> <span class="string">&#x27;Harvey&#x27;</span>, <span class="symbol">age:</span> <span class="number">20</span> &#125;</span><br></pre></td></tr></table></figure>
 <p>上面的 <code>name</code> 和 <code>age</code> 不是字符串，是 symbol，相当于</p>
 <figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">me = &#123; <span class="symbol">:name</span> =&gt; <span class="string">&#x27;Harvey&#x27;</span>, <span class="symbol">:age</span> =&gt; <span class="number">20</span> &#125;</span><br></pre></td></tr></table></figure>
@@ -8561,30 +8379,174 @@ true
 <li>要给对象声明一个属性为函数，比较麻烦</li>
 </ul>
 <figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">say_hi</span></span></span><br><span class="line">  p <span class="string">&#x27;hi&#x27;</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 这样写是不行的，他等价于 me[:say_hi] = say_hi()</span></span><br><span class="line">me[<span class="symbol">:say_hi</span>] = say_hi</span><br><span class="line"><span class="comment"># 要用 lambda 表达式</span></span><br><span class="line">me[<span class="symbol">:say_hi</span>] = <span class="built_in">lambda</span>&#123; p <span class="string">&#x27;hi&#x27;</span> &#125;</span><br><span class="line">me[<span class="symbol">:say_hi</span>].call</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>全栈</category>
-        <category>Ruby</category>
-      </categories>
-      <tags>
-        <tag>入门</tag>
-        <tag>Ruby</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Ruby 的对象与类</title>
-    <url>/hais-notebook/2021/02/13/Ruby-Object/</url>
-    <content><![CDATA[<p>Ruby 的简单的面向对象与类的相关知识。</p>
-<span id="more"></span>
-<h1 id="class">Class</h1>
-<h2 id="class-可以被重复定义">Class 可以被重复定义</h2>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">String</span></span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">to_words</span></span></span><br><span class="line">    <span class="keyword">self</span>.gsub(<span class="regexp">/[^\da-zA-z\s]/</span>, <span class="string">&#x27;&#x27;</span>) <span class="comment"># self. 可以省略</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
-<p>在重复定义的过程中，相同名字的 Class 会合并。 此处相当于打开 String 类（open class String），并添加 to_words 方法。</p>
-<h2 id="class-里面可以写任何语句">Class 里面可以写任何语句</h2>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="number">3</span>.times <span class="keyword">do</span></span><br><span class="line">  <span class="class"><span class="keyword">class</span> <span class="title">MyClass</span></span></span><br><span class="line">    puts <span class="string">&#x27;Hello&#x27;</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
-<p>在 Class 里面写的语句都会被执行</p>
-<h2 id="一个例子">一个例子</h2>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span></span></span><br><span class="line">  <span class="comment"># 初始化方法 initialize，在 new 的时候会自动调用</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">initialize</span></span></span><br><span class="line">    <span class="comment"># 相当于 this.<span class="doctag">@var</span></span></span><br><span class="line">    <span class="variable">@var</span> = <span class="number">1</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">my_method</span></span></span><br><span class="line">    <span class="variable">@var</span> += <span class="number">1</span></span><br><span class="line">    <span class="comment"># 会自动 return <span class="doctag">@var</span></span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">obj = MyClass.new</span><br><span class="line">p obj.<span class="keyword">class</span></span><br><span class="line">p obj.my_method</span><br><span class="line">p obj.instance_variables <span class="comment"># 打印出所有变量</span></span><br><span class="line"><span class="comment"># obj[:<span class="doctag">@v</span>] 会报错，因为没有定义 [] 方法</span></span><br><span class="line">p obj.methods <span class="comment"># 打印出所有方法</span></span><br><span class="line">p obj.methods.grep(<span class="regexp">/my/</span>) <span class="comment"># 打印出包含 my 的方法</span></span><br><span class="line">p Class.instance_methods.grep(<span class="regexp">/my/</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 类实例化之后，实例变量存在对象上，实例方法存在类上</span></span><br></pre></td></tr></table></figure>
+<h2 id="语句">语句</h2>
+<h3 id="控制语句">控制语句</h3>
+<h4 id="if">if</h4>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> a &gt; <span class="number">3</span> <span class="keyword">then</span> p <span class="string">&#x27;大&#x27;</span> <span class="keyword">end</span></span><br><span class="line"><span class="keyword">if</span> a &gt; <span class="number">3</span> <span class="keyword">then</span> p <span class="string">&#x27;大&#x27;</span> <span class="keyword">else</span> p <span class="string">&#x27;小&#x27;</span> <span class="keyword">end</span></span><br><span class="line">p(<span class="keyword">if</span> a &gt; <span class="number">3</span> <span class="keyword">then</span> <span class="string">&#x27;大&#x27;</span> <span class="keyword">else</span> <span class="string">&#x27;小&#x27;</span> <span class="keyword">end</span>)</span><br><span class="line">p(<span class="keyword">if</span> a &gt; <span class="number">4</span></span><br><span class="line">  <span class="string">&#x27;大&#x27;</span></span><br><span class="line">  elseif a &gt; <span class="number">2</span></span><br><span class="line">  <span class="string">&#x27;中&#x27;</span></span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">  <span class="string">&#x27;小&#x27;</span></span><br><span class="line">  <span class="keyword">end</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="keyword">return</span> <span class="keyword">if</span> error</span><br><span class="line"><span class="keyword">return</span> <span class="keyword">if</span> <span class="keyword">not</span> success</span><br><span class="line"><span class="keyword">return</span> <span class="keyword">unless</span> success</span><br></pre></td></tr></table></figure>
+<h4 id="case">case</h4>
+<p>类似 <code>switch-case</code> 单不需要 <code>break</code></p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">x = <span class="keyword">case</span> a</span><br><span class="line"><span class="keyword">when</span> <span class="number">1</span></span><br><span class="line">  <span class="string">&#x27;1&#x27;</span></span><br><span class="line"><span class="keyword">when</span> <span class="number">2</span></span><br><span class="line">  <span class="string">&#x27;2&#x27;</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">  <span class="string">&#x27;others&#x27;</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<h3 id="循环语句">循环语句</h3>
+<h4 id="times">times</h4>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="number">7</span>.times <span class="keyword">do</span></span><br><span class="line">  p <span class="string">&#x27;哈哈&#x27;</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="number">7</span>.times &#123; p <span class="string">&#x27;哈哈&#x27;</span> &#125;</span><br></pre></td></tr></table></figure>
+<p><code>times</code> 是函数，<code>do end</code> 和 <code>&#123;&#125;</code> 是代码块，作为 <code>times</code> 函数的最后的参数，一般多行用 <code>do end</code>，单行用 <code>&#123;&#125;</code></p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="number">7</span>.times <span class="keyword">do</span> <span class="params">|i|</span> p <span class="string">&quot;<span class="subst">#&#123;i&#125;</span> time&quot;</span> <span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p><code>|i|</code> 相当于给你的参数，表示第几次</p>
+<h4 id="each">each</h4>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>].each <span class="keyword">do</span> <span class="params">|item|</span> p item <span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">(<span class="number">1</span>..<span class="number">7</span>).each <span class="keyword">do</span> <span class="params">|n|</span> p n <span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<h4 id="for">for</h4>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">1</span>..<span class="number">7</span> <span class="keyword">do</span> p i <span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<h4 id="whileuntil">while/until</h4>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">i = <span class="number">1</span></span><br><span class="line"><span class="keyword">while</span> <span class="number">1</span> &lt; <span class="number">3</span></span><br><span class="line">  p i</span><br><span class="line">  i += <span class="number">1</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">j = <span class="number">1</span></span><br><span class="line"><span class="keyword">until</span> j &gt;= <span class="number">3</span></span><br><span class="line">  p j</span><br><span class="line">  j += <span class="number">3</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<h4 id="loop">loop</h4>
+<p>一直循环</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">loop</span><br><span class="line">  p <span class="string">&#x27;ruby&#x27;</span></span><br><span class="line">  <span class="keyword">if</span> x &gt; <span class="number">10</span> <span class="keyword">then</span> <span class="keyword">break</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<h4 id="break-continue">break continue</h4>
+<p><code>break</code> 和 <code>next</code> 对应 <code>break</code> 和 <code>continue</code></p>
+<h2 id="其他">其他</h2>
+<h3 id="log">log</h3>
+<ul>
+<li><code>print</code></li>
+<li><code>puts</code> put string</li>
+<li><code>p</code></li>
+</ul>
+<h3 id="注释">注释</h3>
+<ul>
+<li>单行注释 <code>#</code></li>
+<li>多行注释</li>
+</ul>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="comment">=begin</span></span><br><span class="line"><span class="comment">注释</span></span><br><span class="line"><span class="comment">=end</span></span><br></pre></td></tr></table></figure>
+<h1 id="metaprogramming">Metaprogramming</h1>
+<p>我们将变量、类、方法等这些称为<strong>语言构件</strong>。对于 C++ 这类语言，运行时就已经看不见他们了，我们无法在运行时询问一个类，他的实例方法有哪些；</p>
+<p>但对于 Ruby 等语言，这些语言构件在运行时仍然存活，我们甚至可以在运行时询问某个构件，关于他的相关信息——这被称之为 <strong>内省（introspection）</strong>。</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Greeting</span></span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">initialize</span><span class="params">(text)</span></span></span><br><span class="line">    <span class="variable">@text</span> = text</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">welcome</span></span></span><br><span class="line">    <span class="variable">@text</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">my_object = Greeting.new <span class="string">&quot;Hello&quot;</span></span><br></pre></td></tr></table></figure>
+<p>我们可以在运行时通过这些方法来询问 <code>my_object</code>：</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">my_object.<span class="keyword">class</span> <span class="comment"># =&gt; Greeting</span></span><br><span class="line">my_object.<span class="keyword">class</span>.instance_methods(<span class="literal">false</span>) <span class="comment"># =&gt; [:welcome]</span></span><br><span class="line">my_object.instance_variables <span class="comment"># =&gt; [:<span class="doctag">@text</span>]</span></span><br></pre></td></tr></table></figure>
+<p>我们甚至可以在运行时增加新的实例方法。</p>
+<p>从广义上来说，用代码生成器也属于元编程（静态元编程 static metaprogramming），类似于模板；本书讨论的是另一种元编程（动态元编程 dynamic metaprogramming），即编写在运行时操作自身的代码。</p>
+<h1 id="the-object-model">The Object Model</h1>
+<p>Ruby 中，有很多语言构件：对象、类、模块、实例变量等，元编程操作的就是这些语言构件。所有这些语言构件存在的系统称之为<strong>对象模型</strong>。</p>
+<ul>
+<li><strong>对象</strong> 是一组 <strong>实例变量</strong> + 一个 <strong>指向类的引用</strong>（<code>.class</code>）</li>
+<li>对象的方法存放在对象的类中，对于类来说，这些方法被称为类的实例方法</li>
+<li><strong>类 </strong>是一个 <strong>对象</strong>（Class 类的一个实例） + 一组 <strong>实例方法</strong> + 一个 <strong>对其超类的引用</strong>（<code>.superclass</code>）</li>
+<li>类有自己的方法（也就是 Class 的实例方法，比如 new）</li>
+<li>Class 是 Module 的子类</li>
+</ul>
+<h2 id="打开类-open-classes">打开类 Open Classes</h2>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 直接修改了 String 这个 class</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">String</span></span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">to_alphanumeric</span></span></span><br><span class="line">    gsub(<span class="regexp">/[^\w\s]/</span>, <span class="string">&#x27;&#x27;</span>)</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<h3 id="类的定义">类的定义</h3>
+<ol type="1">
+<li>类定义中可以放任何语句</li>
+<li>类可以重复“定义”，第二次使用 <code>class</code> 尝试定义他的时候，他并不会覆盖之前的定义，而是会增加一些内容，这种反复定义，称为 <strong>打开类</strong></li>
+</ol>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="number">3</span>.times <span class="keyword">do</span></span><br><span class="line">  <span class="class"><span class="keyword">class</span> <span class="title">MyClass</span></span></span><br><span class="line">    puts <span class="string">&quot;Hello&quot;</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>在很多 Ruby 的库中都使用了打开类来对一些标准的 Ruby 类来进行魔改，比如 <code>monetize</code> 包就给 <code>Numeric</code> 类增加了 <code>to_money</code> 方法</p>
+<blockquote>
+<p>JavaScript 中其实也可以实现类似的操作，我们可以修改 Array、Number 的 prototype。但是经验上我并不会经常这么做，主要是怕重名或影响到别人的代码。</p>
+</blockquote>
+<h3 id="打开类的问题">打开类的问题</h3>
+<p>确实，这种方法容易因为重名覆盖问题，导致其他的副作用。因此，有人称之为 <strong>猴子补丁 Monkeypatch</strong></p>
+<h2 id="类的真相">类的真相</h2>
+<h3 id="实例变量与实例方法">实例变量与实例方法</h3>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span></span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">my_method</span></span></span><br><span class="line">    <span class="variable">@v</span> = <span class="number">1</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">obj = MyClass.new</span><br></pre></td></tr></table></figure>
+<ol type="1">
+<li>我们用 <code>#</code> 指类的实例方法，<code>.</code> 代指类的方法</li>
+<li>实例变量 <code>[:@v]</code>：通过 <code>Object#instance_variables</code> 方法来查看。对象的类与实例变量没有关系，当给实例变量赋值时，他们就突然出现了。</li>
+<li>实例方法 <code>[:my_method]</code>：通过 <code>Object#methods</code> 方法查看，他会给出所有继承的方法，我们可以通过 <code>Array#grep</code> 方法进行过滤。</li>
+</ol>
+<blockquote>
+<p>实例变量存在对象中，而方法存放在类中。</p>
+</blockquote>
+<div class="note warning"><p>需要注意的是，我们不能说 <code>my_method</code> 是 <code>MyClass</code> 的方法，因为我们不能通过 <code>MyClass.my_method()</code> 这样来调用它。</p>
+<p>我们只能说 <code>my_method</code> 是 <code>MyClass</code> 的一个 <strong>实例方法</strong>，因为我们必须要先定义一个 <code>MyClass</code> 的实例，然后通过实例调用它。</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">String.instance_methods == <span class="string">&quot;abc&quot;</span>.methods  <span class="comment"># =&gt; true</span></span><br><span class="line">String.methods == <span class="string">&quot;abc&quot;</span>.methods  <span class="comment"># =&gt; false</span></span><br></pre></td></tr></table></figure>
+</div>
+<h3 id="类本身也是对象">类本身也是对象</h3>
+<p>类本身也是对象，相当于是 <code>Class</code> 的实例，这又有点像 JavaScript 了</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="string">&quot;hello&quot;</span>.<span class="keyword">class</span> <span class="comment"># =&gt; String</span></span><br><span class="line">String.<span class="keyword">class</span>  <span class="comment"># =&gt; Class</span></span><br></pre></td></tr></table></figure>
+<p>根据前面所述，<strong>实例的方法就是类的实例方法</strong>。因此，一个类的方法就是 <code>Class</code> 的实例方法</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="comment"># false 表示忽略继承的方法</span></span><br><span class="line">Class.instance_methods(<span class="literal">false</span>) <span class="comment"># =&gt; [:allocate,:new,:superclass]</span></span><br></pre></td></tr></table></figure>
+<p><code>allocate</code> 方法是 <code>new</code> 方法的支撑方法，<code>superclass</code> 则跟继承有关：</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">Array.superclass  	 	<span class="comment"># =&gt; Object</span></span><br><span class="line">Object.superclass 		<span class="comment"># =&gt; BasicObject</span></span><br><span class="line">BasicObject.superclass  <span class="comment"># =&gt; nil</span></span><br><span class="line">Class.superclass  		<span class="comment"># =&gt; Module</span></span><br><span class="line">Module.superclass       <span class="comment"># =&gt; Object</span></span><br></pre></td></tr></table></figure>
+<p><code>Class</code> 的 <code>superclass</code> 是 <code>Module</code>，类其实就是带有 <code>new</code> <code>allocate</code> <code>superclass</code> 的增强模块，这三个方法可以让我们按照一定层次创建对象。</p>
+<ul>
+<li>如果希望把代码 <code>include</code> 到别的代码中，就应该使用模块</li>
+<li>如果希望代码被实例化或继承，应该使用类</li>
+</ul>
+<h3 id="方法调用">方法调用</h3>
+<h4 id="方法查找">方法查找</h4>
+<ul>
+<li>接受者 receiver：调用方法所在所在的对象</li>
+<li>祖先链 ancestors chain：找到对象的类，再找到类的超类，再找超类的超类，直到找到 <code>BasicObject</code> 类</li>
+</ul>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span></span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">my_method</span></span></span><br><span class="line">    <span class="string">&#x27;my_method()&#x27;</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MySubclass</span> &lt; MyClass</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">obj = MySubclass.new</span><br><span class="line">obj.my_method() <span class="comment"># =&gt; &#x27;my_method()&#x27;</span></span><br><span class="line"></span><br><span class="line">MySubclass.ancestors <span class="comment"># =&gt; [MySubclass, MyClass, Object, Kernel, BasicObject]</span></span><br></pre></td></tr></table></figure>
+<p><code>include</code> 某个模块或者继承某个类的时候，会将其加入到祖先链中。<code>prepend</code> 与 <code>include</code> 相似，前者会将模块插入到（祖先链中）该类的下方，后者会插入上方</p>
+<h5 id="kernel-模块">Kernel 模块</h5>
+<p>我们可以随时调用比如 <code>print</code> 等方法，但其实 <code>print</code> 方法是 Kernel 模块的私有实例方法，Object 类包含了 Kernel 模块，使得每个对象都可以调用 Kernel 模块的方法</p>
+<h4 id="执行方法">执行方法</h4>
+<h5 id="self">self</h5>
+<p><code>self</code> 代表了当前对象，当调用一个方法时，接受者就是 <code>self</code></p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span></span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">testing_self</span></span></span><br><span class="line">    <span class="variable">@var</span> = <span class="number">10</span>   <span class="comment"># self 的一个实例变量</span></span><br><span class="line">    my_method() <span class="comment"># 相当于 self.my_method()</span></span><br><span class="line">    <span class="keyword">self</span>.my_private_method() <span class="comment"># 不能这样写，private 方法不能指定接受者，只能通过隐式的 self 调用</span></span><br><span class="line">    <span class="keyword">self</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  </span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">my_method</span></span></span><br><span class="line">    <span class="variable">@var</span> = <span class="variable">@var</span> + <span class="number">1</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  </span><br><span class="line">  private</span><br><span class="line">  </span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">my_private_method</span></span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">obj = MyClass.new</span><br><span class="line">obj.testing_self <span class="comment"># =&gt; #&lt;MyClass:0x123 <span class="doctag">@var</span>=11&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="keyword">self</span>       <span class="comment"># =&gt; main</span></span><br><span class="line"><span class="keyword">self</span>.<span class="keyword">class</span> <span class="comment"># =&gt; Object</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span></span></span><br><span class="line">  <span class="keyword">self</span>     <span class="comment"># =&gt; MyClass，在所有方法之外，self 是这个类或模块本身</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<h4 id="细化-refinement">细化 Refinement</h4>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">module</span> <span class="title">StringExtensions</span></span></span><br><span class="line">  <span class="comment"># 为 String 类 refine 了一个 to_alphanumeric 方法，他默认不生效，不能直接通过 String#to_alphanumeric 来调用</span></span><br><span class="line">  refine String <span class="keyword">do</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">to_alphanumeric</span></span></span><br><span class="line">      gsub(<span class="regexp">/[^\w\s]/</span>, <span class="string">&#x27;&#x27;</span>)</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">module</span> <span class="title">StringStuff</span></span></span><br><span class="line">  using StringExtensions</span><br><span class="line">  <span class="string">&quot;my_string&quot;</span>.to_alphanumeric  <span class="comment"># =&gt; 可以调用</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="string">&quot;my_string&quot;</span>.to_alphanumeric    <span class="comment"># =&gt; 不能调用</span></span><br></pre></td></tr></table></figure>
+<p>细化只有在两种场合有效：</p>
+<ol type="1">
+<li><code>refine</code> 代码内部</li>
+<li><code>using</code> 语句开始到模块结束（或者在顶层作用域调用到文件结束）</li>
+</ol>
+<h1 id="methods">Methods</h1>
+<h2 id="动态方法-dynamic-methods">动态方法 Dynamic Methods</h2>
+<h3 id="动态调用方法">动态调用方法</h3>
+<blockquote>
+<p>实际上调用一个方法就是给一个对象发送消息</p>
+</blockquote>
+<p>除了使用点标识符 <code>(.)</code> 来调用方法，还可以使用 <code>Object#send</code> 方法来调用某个实例的方法：</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span></span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">my_method</span><span class="params">(my_arg)</span></span></span><br><span class="line">    my_arg * <span class="number">2</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">obj = MyClass.new</span><br><span class="line">obj.my_method(<span class="number">3</span>)        <span class="comment"># =&gt; 6</span></span><br><span class="line">obj.send(<span class="symbol">:my_method</span>, <span class="number">3</span>) <span class="comment"># =&gt; 6</span></span><br><span class="line"><span class="comment"># send 的第一个参数是方法名，可以使用字符串，也可以使用符号；剩下的参数和代码块会被直接传递给调用的方法</span></span><br></pre></td></tr></table></figure>
+<p>这样动态调用方法的技巧叫做 <strong>动态派发（Dynamic Dispatch）</strong></p>
+<h3 id="动态定义方法">动态定义方法</h3>
+<p>可以用 <code>Module#define_method()</code> 动态定义方法：</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span></span></span><br><span class="line">  <span class="comment"># 与 def 不同，define_method 允许在运行时决定方法的名字</span></span><br><span class="line">  define_method <span class="symbol">:my_method</span> <span class="keyword">do</span> <span class="params">|my_arg|</span></span><br><span class="line">    my_arg * <span class="number">3</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">obj = MyClass.new</span><br><span class="line">obj.my_method(<span class="number">2</span>)    <span class="comment"># =&gt; 6</span></span><br></pre></td></tr></table></figure>
+<h2 id="method_missing">method_missing</h2>
+<p>当找不到方法是时，他就会调用对象上的 <code>method_missing</code> 方法，而我们可以覆写这个方法。调用者看起来调用了某个方法，但实际上这个方法却不存在，这称为 <strong>幽灵方法（Ghost Method）</strong></p>
+<h3 id="respond_to_missing">respond_to_missing</h3>
+<p>如果我们通过幽灵方法实现某功能，我们会发现使用 <code>respond_to?</code> 来查找方法的时候就会发现找不到这个方法。</p>
+<p>需要使用 <code>respond_to_missing</code> 方法才能感知到幽灵方法。因此我们通常在使用 <code>method_missing</code> 的时候会覆写 <code>respond_to_missing</code> 方法</p>
+<h3 id="const_missing">const_missing</h3>
+<p>当引用一个不存在的常量的时候，Ruby 会把这个常量名作为一个符号传给 <code>const_missing</code> 方法，我们可以通过覆盖 <code>const_missing</code> 方法达到拦截的目的：</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="keyword">require</span> <span class="string">&#x27;rake&#x27;</span></span><br><span class="line">task_class = Task  <span class="comment"># =&gt; 得到一个警告，让你使用 Rake::Task</span></span><br></pre></td></tr></table></figure>
+<p>能达到上面的效果是因为 Rake 覆盖了 <code>Module#const_missing</code>：</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Module</span></span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">const_missing</span><span class="params">(const_name)</span></span></span><br><span class="line">    <span class="keyword">case</span> const_name</span><br><span class="line">    <span class="keyword">when</span> <span class="symbol">:Task</span></span><br><span class="line">      Rake.application.const_warning(const_name)</span><br><span class="line">      Rake::Task</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<h2 id="白板类-blank-slates">白板类 Blank Slates</h2>
+<p>用幽灵方法时经常会遇到名称与已经存在的方法冲突的情况，尤其是与他继承来的方法冲突。这时候就需要删掉继承的很多无用的方法。</p>
+<h3 id="basicobject">BasicObject</h3>
+<p><code>BasicObject</code> 只有几个实例方法，我们直接创建的类默认继承自 <code>Object</code> 类（<code>BasicObject</code> 的子类），我们可以将其改为继承 <code>BasicObject</code> 类</p>
+<h3 id="删除方法">删除方法</h3>
+<ol type="1">
+<li><code>Module#undef_method</code>：删除（包括继承来的）方法</li>
+<li><code>Module#remove_method</code>：删除接受者自己的方法</li>
+</ol>
+<h1 id="代码块-blocks">代码块 Blocks</h1>
+<p>代码块源自像 LISP 这样的函数式编程语言</p>
+<h2 id="代码块的基础使用">代码块的基础使用</h2>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">a_method</span><span class="params">(a, b)</span></span></span><br><span class="line">  a + <span class="keyword">yield</span>(a, b)</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">a_method(<span class="number">1</span>, <span class="number">2</span>) &#123; <span class="params">|x, y|</span> ( x + y ) * <span class="number">3</span> &#125;   <span class="comment"># =&gt; 10</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>代码块可以用 <code>do...end</code> 定义，也可以用大括号定义</li>
+<li>只有在调用一个方法的时候才能定义一个块</li>
+<li>这个块会被直接传递给这个方法，该方法可以用 <code>yield</code> 关键字调用这个块</li>
+<li>在一个方法里，可以通过 <code>Kernel#block_given?</code> 询问当前方法的调用是否包含块</li>
+</ul>
+<h2 id="代码块是闭包">代码块是闭包</h2>
+<p>可以运行的代码 = 代码本身 + 绑定</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">my_method</span></span></span><br><span class="line">  x = <span class="string">&quot;Good bye&quot;</span></span><br><span class="line">  <span class="keyword">yield</span>(<span class="string">&quot;cruel&quot;</span>)</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">x = <span class="string">&quot;Hello&quot;</span></span><br><span class="line">my_method &#123; <span class="params">|y|</span> <span class="string">&quot;<span class="subst">#&#123;x&#125;</span>, <span class="subst">#&#123;y&#125;</span> word&quot;</span> &#125;  <span class="comment"># =&gt; Hello, cruel world</span></span><br><span class="line"><span class="comment"># 创建代码块时，x 会成为局部绑定，然后把代码块连同绑定传给 my_method 方法</span></span><br><span class="line"><span class="comment"># 代码块中看到的 x 不是方法里面的 x，而是创建代码块时绑定的 x</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">just_yield</span></span></span><br><span class="line">  <span class="keyword">yield</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">top_level_variable = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">just_yield <span class="keyword">do</span></span><br><span class="line">  top_level_variable += <span class="number">1</span></span><br><span class="line">  local_to_block = <span class="number">1</span>  <span class="comment"># =&gt; 在代码块中定义的额外的绑定</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">top_level_variable  <span class="comment"># =&gt; 2</span></span><br><span class="line">local_to_block      <span class="comment"># =&gt; Error，看不到了，额外的绑定在代码块结束时消失了</span></span><br></pre></td></tr></table></figure>
+<p>因此代码块，又被称为 <strong>闭包（Closure）</strong></p>
+<h3 id="作用域">作用域</h3>
+<p>Ruby 中没有内部作用域和外部作用域的概念（即在内部作用域中可以看到外部作用域的变量）。Ruby 中不同的作用域是分开的</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">v1 = <span class="number">1</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span></span></span><br><span class="line">  v2 = <span class="number">2</span></span><br><span class="line">  local_variables <span class="comment"># =&gt; [:v2]</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">my_method</span></span></span><br><span class="line">    v3 = <span class="number">3</span></span><br><span class="line">    local_variables</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  local_variables <span class="comment"># =&gt; [:v2]</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">obj = MyClass.new</span><br><span class="line">obj.my_method <span class="comment"># =&gt; [:v3]</span></span><br><span class="line">local_variables <span class="comment"># =&gt; [:v1, :obj]</span></span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
         <category>全栈</category>
