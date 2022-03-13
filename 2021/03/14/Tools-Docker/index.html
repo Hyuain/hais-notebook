@@ -19,30 +19,28 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"hyuain.github.io","root":"/hais-notebook/","images":"/hais-notebook/images","scheme":"Gemini","darkmode":false,"version":"8.10.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/hais-notebook/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/hais-notebook/js/config.js"></script>
 
-  <meta name="description" content="涉及 SQL 的基本语法。">
+  <meta name="description" content="数据库的基本知识以及用 Docker 来安装数据库。">
 <meta property="og:type" content="website">
-<meta property="og:title" content="SQL 基本语法">
-<meta property="og:url" content="https://hyuain.github.io/hais-notebook/2020/02/04/SQL/index.html">
+<meta property="og:title" content="Docker">
+<meta property="og:url" content="https://hyuain.github.io/hais-notebook/2021/03/14/Tools-Docker/index.html">
 <meta property="og:site_name" content="Hais Notebook">
-<meta property="og:description" content="涉及 SQL 的基本语法。">
+<meta property="og:description" content="数据库的基本知识以及用 Docker 来安装数据库。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-02-04T16:39:35.000Z">
-<meta property="article:modified_time" content="2020-02-04T16:39:35.000Z">
+<meta property="article:published_time" content="2021-03-14T10:49:35.000Z">
+<meta property="article:modified_time" content="2021-03-14T10:49:35.000Z">
 <meta property="article:author" content="Harvey Zhang">
 <meta property="article:tag" content="入门">
-<meta property="article:tag" content="慕课网">
-<meta property="article:tag" content="自学">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://hyuain.github.io/hais-notebook/2020/02/04/SQL/">
+<link rel="canonical" href="https://hyuain.github.io/hais-notebook/2021/03/14/Tools-Docker/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hyuain.github.io/hais-notebook/2020/02/04/SQL/","path":"2020/02/04/SQL/","title":"SQL 基本语法"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hyuain.github.io/hais-notebook/2021/03/14/Tools-Docker/","path":"2021/03/14/Tools-Docker/","title":"Docker"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>SQL 基本语法 | Hais Notebook</title>
+<title>Docker | Hais Notebook</title>
   
 
 
@@ -148,7 +146,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD"><span class="nav-number">1.</span> <span class="nav-text">下载</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A2%9E"><span class="nav-number">2.</span> <span class="nav-text">增</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%A0"><span class="nav-number">3.</span> <span class="nav-text">删</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%94%B9"><span class="nav-number">4.</span> <span class="nav-text">改</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9F%A5"><span class="nav-number">5.</span> <span class="nav-text">查</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%94%A8-docker-%E6%9D%A5%E5%AE%89%E8%A3%85%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">1.</span> <span class="nav-text">用 Docker 来安装数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-docker"><span class="nav-number">1.1.</span> <span class="nav-text">安装 Docker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker-%E5%AE%89%E8%A3%85-mysql"><span class="nav-number">1.2.</span> <span class="nav-text">Docker 安装 MySQL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker-%E8%BF%9E%E6%8E%A5-mysql"><span class="nav-number">1.3.</span> <span class="nav-text">Docker 连接 MySQL</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -161,18 +159,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/hais-notebook/archives/">
-          <span class="site-state-item-count">83</span>
+          <span class="site-state-item-count">82</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/hais-notebook/categories/">
-        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-count">29</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/hais-notebook/tags/">
-        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-count">23</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -211,7 +209,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2020/02/04/SQL/">
+    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2021/03/14/Tools-Docker/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
@@ -224,7 +222,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          SQL 基本语法
+          Docker
         </h1>
 
         <div class="post-meta-container">
@@ -235,7 +233,7 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2020-02-04 16:39:35" itemprop="dateCreated datePublished" datetime="2020-02-04T16:39:35+00:00">2020-02-04</time>
+      <time title="创建时间：2021-03-14 10:49:35" itemprop="dateCreated datePublished" datetime="2021-03-14T10:49:35+00:00">2021-03-14</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -243,11 +241,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/hais-notebook/categories/%E5%85%A8%E6%A0%88/" itemprop="url" rel="index"><span itemprop="name">全栈</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/hais-notebook/categories/%E5%85%A8%E6%A0%88/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+          <a href="/hais-notebook/categories/%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index"><span itemprop="name">工具</span></a>
         </span>
     </span>
 
@@ -261,18 +255,36 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <p>涉及 SQL 的基本语法。</p>
+        <p>数据库的基本知识以及用 Docker 来安装数据库。</p>
 <span id="more"></span>
-<h1 id="下载">下载</h1>
-<p><a target="_blank" rel="noopener" href="https://dev.mysql.com/downloads/mysql/">下载 MySQL</a> <a target="_blank" rel="noopener" href="https://dev.mysql.com/downloads/workbench">下载 MySQL WorkBench</a></p>
-<h1 id="增">增</h1>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- use [schemas name]</span></span><br><span class="line">usz lzblog;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- insert into [table name] ([colunm name]) values ([colunm value])</span></span><br><span class="line"><span class="comment">-- password 是关键字，所以要用 `` 引起来</span></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> users (username, `password`, nickname) <span class="keyword">values</span> (<span class="string">&#x27;zs&#x27;</span>, <span class="string">&#x27;123&#x27;</span>, <span class="string">&#x27;zhangsan&#x27;</span>)</span><br></pre></td></tr></table></figure>
-<h1 id="删">删</h1>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">delete</span> <span class="keyword">from</span> users <span class="keyword">where</span> username <span class="operator">=</span><span class="string">&#x27;zs&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 一般采用软删除</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">update</span> users <span class="keyword">set</span> state<span class="operator">=</span><span class="string">&#x27;0&#x27;</span> <span class="keyword">where</span> username<span class="operator">=</span><span class="string">&#x27;lz&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> users <span class="keyword">where</span> state <span class="operator">&lt;&gt;</span> <span class="string">&#x27;0&#x27;</span>;</span><br></pre></td></tr></table></figure>
-<h1 id="改">改</h1>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">update</span> users <span class="keyword">set</span> nickname<span class="operator">=</span><span class="string">&#x27;lz2&#x27;</span> <span class="keyword">where</span> username<span class="operator">=</span><span class="string">&#x27;lz&#x27;</span>;</span><br><span class="line"><span class="comment">-- update [table name] set [colunm name]=[value] where [condition]</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- You are using safe update mode and you tried to update a table without a WHERE that uses a KEY column.</span></span><br><span class="line"><span class="keyword">SET</span> SQL_SAFE_UPDATES <span class="operator">=</span> <span class="number">0</span></span><br></pre></td></tr></table></figure>
-<h1 id="查">查</h1>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> users;</span><br><span class="line"><span class="keyword">select</span> id,username <span class="keyword">from</span> users;</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> users <span class="keyword">where</span> username<span class="operator">=</span><span class="string">&#x27;lz&#x27;</span> <span class="keyword">and</span> `password`<span class="operator">=</span><span class="string">&#x27;123&#x27;</span>;</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> users <span class="keyword">where</span> username<span class="operator">=</span><span class="string">&#x27;lz&#x27;</span> <span class="keyword">or</span> `password`<span class="operator">=</span><span class="string">&#x27;123&#x27;</span>;</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> users <span class="keyword">where</span> username <span class="keyword">like</span> <span class="string">&#x27;%z%&#x27;</span>;</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> users <span class="keyword">where</span> username <span class="keyword">like</span> <span class="string">&#x27;%z%&#x27;</span> <span class="keyword">order</span> <span class="keyword">by</span> id <span class="keyword">desc</span>;</span><br></pre></td></tr></table></figure>
+<h1 id="用-docker-来安装数据库">用 Docker 来安装数据库</h1>
+<h2 id="安装-docker">安装 Docker</h2>
+<ul>
+<li>进入 <a target="_blank" rel="noopener" href="https://hub.docker.com/">Docker Hub 官方网站</a> 注册并下载</li>
+<li>确保 <code>docker --version</code> 返回版本号</li>
+<li>在 Docker Engine 中设置国内镜像，<a target="_blank" rel="noopener" href="http://guide.daocloud.io/dcs/daocloud-9153151.html">可以点这里查看教程</a> <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;registry-mirrors&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="string">&quot;https://docker.mirrors.ustc.edu.cn&quot;</span></span><br><span class="line">  <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;insecure-registries&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="docker-安装-mysql">Docker 安装 MySQL</h2>
+<ul>
+<li>进入 Docker 上面 <a target="_blank" rel="noopener" href="https://hub.docker.com/_/mysql">MySQL 的主页</a></li>
+<li>运行命令创建容器： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:tag</span><br><span class="line"><span class="comment"># -d 表示守护进程形式，不会随意关掉</span></span><br><span class="line"><span class="comment"># -p 用来设置端口映射 本机端口号:虚拟机端口号</span></span><br><span class="line">docker run --name mysql-demo1 -e MYSQL_ROOT_PASSWORD=123456 -p 3306:3306 -d mysql:latest</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>常见的 docker 命令：</p>
+<ul>
+<li><code>docker run</code> 启动新容器</li>
+<li><code>docker ps -a</code> 查看所有的容器（Containers）</li>
+<li><code>docker kill &lt;id|name&gt;</code> 关闭对应的容器</li>
+<li><code>docker restart &lt;id|name&gt;</code> 重启关闭的容器</li>
+<li><code>docer rm &lt;id|name&gt;</code> 删除对应的容器</li>
+<li><code>docker container prune</code> 删除无用的容器，以节省空间</li>
+</ul>
+<p>注意：用 docker 运行的容器，默认不会持久化，容器被删掉，数据也就没了</p>
+<h2 id="docker-连接-mysql">Docker 连接 MySQL</h2>
+<ol type="1">
+<li>进入 Docker 容器，相当于一个 Linux 虚拟机： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="built_in">exec</span> -it mysql-demo1 bash</span><br></pre></td></tr></table></figure></li>
+<li>使用 MySQL 命令进入数据库 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -u root：以 ROOT 用户进入</span></span><br><span class="line"><span class="comment"># -p 直接回车，然后输入密码</span></span><br><span class="line">mysql -u root -p</span><br></pre></td></tr></table></figure></li>
+<li>使用 SQL 语句操作 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># 查看有哪些数据库</span><br><span class="line"><span class="keyword">show</span> databases;</span><br><span class="line"># 进入其中一个数据库</span><br><span class="line">use <span class="operator">&lt;</span>数据库名称<span class="operator">&gt;</span>;</span><br><span class="line"># 看有哪些表</span><br><span class="line"><span class="keyword">show</span> tables;</span><br><span class="line"># 查看表内容</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> <span class="operator">&lt;</span>表名称<span class="operator">&gt;</span>;</span><br></pre></td></tr></table></figure></li>
+</ol>
 
     </div>
 
@@ -283,21 +295,19 @@
     <footer class="post-footer">
           <div class="post-tags">
               <a href="/hais-notebook/tags/%E5%85%A5%E9%97%A8/" rel="tag"># 入门</a>
-              <a href="/hais-notebook/tags/%E6%85%95%E8%AF%BE%E7%BD%91/" rel="tag"># 慕课网</a>
-              <a href="/hais-notebook/tags/%E8%87%AA%E5%AD%A6/" rel="tag"># 自学</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/hais-notebook/2020/02/04/CS-Algorithm-String/" rel="prev" title="简单算法：字符串">
-                  <i class="fa fa-chevron-left"></i> 简单算法：字符串
+                <a href="/hais-notebook/2021/03/03/RxJS-ErrorHandling/" rel="prev" title="翻译：RxJS 中的错误处理">
+                  <i class="fa fa-chevron-left"></i> 翻译：RxJS 中的错误处理
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/hais-notebook/2020/02/06/TS-Trail/" rel="next" title="TypeScript 基本用法">
-                  TypeScript 基本用法 <i class="fa fa-chevron-right"></i>
+                <a href="/hais-notebook/2021/03/20/DataBase/" rel="next" title="数据库">
+                  数据库 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
