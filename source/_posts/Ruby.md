@@ -38,7 +38,7 @@ categories:
 - 任何以大写字母开头的引用（包括类名和模块名）都是常量
 - 我们可以修改常量的值，尽管会得到一个警告
 
-- 常量和变量的最大区别在于作用域不同
+- 常量和变量的最大区别在于作用域不同，常量在所有作用域中都能访问，而不同作用域中的变量则是分开的（变量与作用域见 Blocks 章节）
 
 ```ruby
 module MyModule
@@ -623,7 +623,7 @@ end
 1. `Module#undef_method`：删除（包括继承来的）方法
 2. `Module#remove_method`：删除接受者自己的方法
 
-# 代码块 Blocks
+#  Blocks
 
 代码块源自像 LISP 这样的函数式编程语言
 
@@ -642,7 +642,9 @@ a_method(1, 2) { |x, y| ( x + y ) * 3 }   # => 10
 - 这个块会被直接传递给这个方法，该方法可以用 `yield` 关键字调用这个块
 - 在一个方法里，可以通过 `Kernel#block_given?` 询问当前方法的调用是否包含块
 
-## 代码块是闭包
+## 闭包与作用域
+
+### 代码块是闭包
 
 可以运行的代码 = 代码本身 + 绑定
 
@@ -678,7 +680,7 @@ local_to_block      # => Error，看不到了，额外的绑定在代码块结�
 
 ### 作用域
 
-Ruby 中没有内部作用域和外部作用域的概念（即在内部作用域中可以看到外部作用域的变量）。Ruby 中不同的作用域是分开的
+Ruby 中没有内部作用域和外部作用域的概念（即在内部作用域中可以看到外部作用域的变量）。Ruby 中不同的作用域是分开的，没有“内部作用域可以看到外部作用域的变量”这样的说法。
 
 ```ruby
 v1 = 1
@@ -696,4 +698,364 @@ obj = MyClass.new
 obj.my_method # => [:v3]
 local_variables # => [:v1, :obj]
 ```
+
+#### 全局变量和顶级实例变量
+
+全局变量
+
+- 全局变量可以在任何作用域中访问
+- 变量名最开始有 `$`
+- 所有人都可以修改全局变量
+
+```ruby
+def a_scope
+  $var = "some value"
+end
+
+def another_scope
+  $var
+end
+
+a_scope
+another_scope  # => "some value"
+```
+
+顶级实例变量
+
+- 顶级对象 `main` 的实例变量
+- 有时可以用来代替全局变量
+- 一般认为顶级实例变量更安全，但也不是完全安全
+
+```ruby
+@var = "the top-level @var"
+
+def my_method
+  @var
+end
+
+my_method	 # => "the top-level @var"
+
+def MyClass
+  def my_method
+    @var = "this is not the top-level @var"
+    # 由于这里的 self 不是 main，因此他不是顶级实例变量
+  end
+end
+```
+
+#### 作用域门
+
+在这三种情况下，程序会关闭前一个作用域，打开一个新的作用域：
+
+- 类定义 `class`
+- 模块定义 `module`
+- 方法 `def`
+
+`class` `module` `def` 是切换作用域的标志，每个关键字都对应一个 **作用域门（Scope Gate）**。
+
+另外注意类和模组定义中的代码会立即自动执行一次，而方法定义中的则不会。
+
+#### 扁平化作用域
+
+通过替换掉 `class` `def` 这些关键字，来让变量穿越作用域门，这种技巧叫嵌套文法作用域（nested lexical scopes），也称扁平化作用域（flattening the scope）。
+
+```ruby
+my_var = "Success"
+
+# 用 Class.new 代替 class
+MyClass = Class.new do
+  puts "#{my_var} in the class definition"
+  
+  # 用 define_method 代替 def
+  define_method :my_method do
+    puts "#{my_var} in the method"
+  end
+end
+
+MyClass.new.my_method
+# => Success in the class definition
+# => Success in the method
+```
+
+#### 共享作用域
+
+利用扁平化作用域，可以实现在一组方法之间共享某个变量，而其他方法则无法访问这个变量。
+
+```ruby
+def define_methods
+  shared = 0
+  # 定义 Kernel#counter 方法
+  Kernel.send :define_method, :counter do
+    shared
+  end
+  Kernel.send :define_method, :inc do
+    shared += x
+  end
+end
+
+define_methods
+
+counter 	# => 0
+inc(4)
+counter   # => 4
+```
+
+## `instance_eval`
+
+```ruby
+class MyClass
+  def initialize
+    @v = 1
+  end
+end
+
+obj = MyClass.new
+
+obj.instance_eval do
+  self	# => #<MyClass:0x00000000062acbb8 @v=1>
+  @v		# => 1
+end
+```
+
+传给 `instance_eval` 中代码块中的 `self` 就是 `obj`，并且在这个代码块中可以使用并修改实例变量 `@v`。
+
+因此把传给 `BasicObject#instance_eval` 方法的代码块称为  **上下文探针（Context Prob）**，他就像一个深入到对象中的代码片段，并且可以对这个对象进行操作。
+
+`instance_eval` 会破坏封装，可以肆意查看私有数据，但有时在开发和测试中使用会非常方便。
+
+### `instance_exec`
+
+```ruby
+class C
+  def initialize
+    @x = 1
+  end
+end
+
+class D
+  def twisted_method
+    @y = 2
+    # 注意这样打印的 @y 是 nil，因为代码块已经不在 twisted_method 的作用域里面了
+    C.new.instance_eval { p "@x: #{@x}, @y: #{@y}" }
+    # 可以使用 instance_exec 方法将 @y 传进去
+    C.new.instance_exec(@y) { |y| p "@x: #{@x}, @y: #{y}" }
+  end
+end
+
+D.new.twisted_method
+```
+
+## 可调用对象
+
+代码块的使用分为：1. 打包代码；2. 通过 `yield` 语句执行代码。
+
+除了代码块之外，还有三种打包代码的方式：
+
+1. proc，proc 是由块转换来的对象
+2. lambda，proc 的变种
+3. 使用方法
+
+### Proc
+
+#### 创建 Proc
+
+##### Proc.new
+
+将代码块传给 `Proc.new` 就可以创建一个 `Proc`
+
+```ruby
+inc = Proc.new { |x| x + 1 }
+inc.call(2)		# => 3
+```
+
+##### lambda
+
+用 `Kernel#lambda` 方法也可以创建 `Proc`
+
+```ruby
+dec = lambda { |x| x - 1 }
+# 上述代码也可以这样写
+dec = ->(x) { x - 1 }
+dec.class 	  # => Proc
+dec.call(2)	  # => 1
+```
+
+##### & 操作符
+
+通过给方法添加一个特殊的参数，可以将代码块附加到一个绑定上，这个参数必须满足：
+
+1. 是参数列表的最后一个参数
+2. 以 & 开头
+
+```ruby
+def math(a, b)
+  yield(a, b)
+end
+
+def do_math(a, b, &operation)
+  # 将 & 去掉，就可以得到一个 Proc 对象；也可以将一个 Proc 加上 & 得到一个代码块
+  p operation.class    # => Proc
+  math(a, b, &operation)
+end
+
+do_math(2, 3) { |x, y| x * y }		# => 6
+```
+
+#### 执行 Proc
+
+然后通过 `Proc#call` 方法执行 `Proc` 对应的代码块。
+
+这种技巧被称为 **延迟执行（Deferred Evaluation）**：还可以使用 `lambda` 方法创建 Proc：#### & 操作符
+
+### Proc 和 Lambda
+
+用 `lambda` 方法创建的 `Proc` 被称为 `lambda`， 其他方式创建的则称为 `proc`，可以通过 `Proc#lamda?` 方法来检测 `Proc` 是不是 `lambda`。
+
+#### Proc、Lambda 和 return
+
+`lambda` 和 `proc` 的 `return` 关键字含义不同。
+
+- `lambda` 中的 `return` 仅仅表示从这个 `lambda` 中返回
+- `proc` 中的 `return` 表示从定义 `proc` 的作用域中返回
+
+```ruby
+def double(callable_object)
+  callable_object.call * 2
+end
+
+l = lambda { return 10 }
+double(l)			# => 20
+```
+
+```ruby
+def another_double
+  p = Proc.new { return 10 }
+  result = p.call
+  return result * 2		# 不可到达的代码
+end
+
+another_double # => 10
+```
+
+因此下面代码是错误的：
+
+```ruby
+def double(callable_object)
+  callable_object.call * 2
+end
+
+p = Proc.new { return 10 }
+double(p)			# => 不可到达的代码
+```
+
+可以不使用 `return` 来规避这个问题
+
+#### Proc、Lambda 和参数数量
+
+如果给一个定义了两个参数的 `proc` 或 `lambda` 传一个或三个参数，可能会导致错误，并且 `lambda` 的适应能力比 `proc` 和普通代码块差。
+
+如果参数比期望的多，`proc` 会忽略多余的参数；如果参数数量不足，对于未指定的参数，`proc` 会赋值为 `nil`。
+
+整体而言，`lambda` 更直观，因为他更像一个方法；因此许多 Ruby 程序员优先使用 `lambda`。
+
+### Method
+
+1. 通过 `Kernel#method` 方法可以获得一个用 Method 对象表示的方法，可以用 `Method#call` 来调用这个方法。
+
+2. 可以通过 `Kernel#singleton_method` 方法把 **单件方法** 名转换为 Method 对象。
+3. 可以通过 `Method#to_proc` 方法把 Method 转换为 Proc
+4. 可以通过 `define_method` 方法把代码块转换为方法
+5. 注意 `lambda` 在定义他的作用域中执行（闭包），Method 对象则在他自身所在对象的作用域中执行
+
+```ruby
+class MyClass
+  def initialize(value)
+    @x = value
+  end
+  def my_method
+    p @x
+  end
+end
+
+obj = MyClass.new(1)
+m = obj.method :my_method
+m.call 		# => 1
+```
+
+#### 自由方法
+
+自由方法（unbound method）跟普通方法类似，但他从定义它的类或模块中脱离了。
+
+通过 `Method#unbind` 方法可以讲一个方法变成自由方法，也可以直接调用 `Module#instance_method` 方法获得自有方法：
+
+```ruby
+module MyModule
+  def my_method
+    42
+  end
+end
+
+unbound = MyModule.instance_method(:my_method)
+unbound.class			# => UnboundMethod
+```
+
+不能调用 UnboundMethod，但可以将它绑到一个对象上，让他再次成为 Method 对象。
+
+可以通过 `UnboundMethod#bind` 方法，也可以通过 `Module#define_method` 方法来进行绑定。
+
+```ruby
+String.send :define_method, :another_method, unbound
+"abc".another_method		# => 42
+```
+
+# Class
+
+## 类的定义
+
+### 当前类
+
+不管在哪里，都会有一个当前对象：`self`，和一个当前类（或模块）。定义一个方法时，那个方法将成为当前类的一个实例方法。
+
+- 在程序的顶层，当前类是 `Object`，这是 `main` 对象所属的类。在程序顶层定义的方法会成为 `Object` 实例方法。
+- 在一个方法中，当前类就是当前对象的类。
+
+```ruby
+class C
+  def m1
+    def m2; end
+  end
+end
+
+class D < C; end
+
+obj = D.new
+obj.m1
+
+C.instance_methods(false)    	# => [:m1, :m2]
+```
+
+- 当用 `class` 关键字打开一个类时（或用 `module` 关键字打开模块时），这个类成为当前类。
+
+#### `class_eval`
+
+通过 `Module#class_eval`方法（别名 `module_eval` 方法），可以不使用 `class` 关键字就修改某个类，在不知道某个类的名字的时候比较好用：
+
+```ruby
+def add_method_to(a_class)
+  a_class.class_eval do
+    def m; 'Hello!'; end
+  end
+end
+
+add_method_to String
+"abc".m				# => "Hello!"
+```
+
+- 与 `Object#instance_eval` 方法不同，`instance_val` 只修改 `self`，但 `class_eval` 会修改当前类和 `self`。
+- `class_eval` 与 `class` 不同，并不会打开一个新的作用域，而可以使用外部的变量。
+- 另外还有 `module_exec` 和  `class_exec`，可以接受额外的参数。
+
+### 类实例变量
+
+
 
