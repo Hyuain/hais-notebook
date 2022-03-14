@@ -10,7 +10,7 @@ categories:
 
 结合网课、Ruby 文档和《Ruby 元编程 2》。
 
-「元编程是编写能在运行时操作语言构件的代码。」——能写代码的代码Ruby 的介绍与基础。
+「元编程是编写能在运行时操作语言构件的代码。」
 
 <!-- more -->
 
@@ -449,7 +449,7 @@ Module.superclass       # => Object
 #### 方法查找
 
 - 接受者 receiver：调用方法所在所在的对象
-- 祖先链 ancestors chain：找到对象的类，再找到类的超类，再找超类的超类，直到找到 `BasicObject` 类
+- 祖先链 ancestors chain：找到对象的类（class），再找到类的超类（superclass），再找超类的超类（superclass），直到找到 `BasicObject` 类
 
 ```ruby
 class MyClass
@@ -1164,5 +1164,57 @@ end
 
 所有的 `attr_*` 方法都定义在 `Module` 类中，因此不管 `self` 是类还是模块，都可以使用。这种方法被称为 **类宏（Class Macro）**，简单来说就是可以在类定义中使用的方法。
 
-#### 使用类宏
+下面是一个使用类宏来标记方法名已弃用的例子：
+
+```ruby
+class Book
+  def title #...
+  def subtitle #...
+  def lend_to #...
+  
+  def self.deprecate(old_method, new_method)
+    define_method(old_method) do |*args, &block|
+      warn "Warning #{old_method}() is deprecated. Use #{new_method}()"
+      send(new_method, *args, &block)
+    end
+  end
+  
+  deprecate :GetTitle, :title
+  deprecate :LEND_TO_USER, :lend_to
+  deprecate :title2, :subtitle
+end
+```
+
+## 单件类
+
+根据之前所学，查找方法时会先进入接受者的类，然后沿着 superclass 向上查找。但是这里面都没有容纳对象单件方法的地方。
+
+事实上，每个对象都有一个特有的隐藏类（这个类不能用 `Object#class` 方法查看到），被称为该对象的单件类，也被称为元类（metaclass）或本征类（eigenclass）。
+
+可以通过一个特殊的语法进入该单件类的作用域，并获得他的引用：
+
+```ruby
+obj = Object.new
+
+singleton_class = class << obj
+  # 这里是你的代码
+  # 可以返回 self，让外面得到单件类的引用
+  self
+end
+
+singleton_class.class		# => Class
+```
+
+还可以通过 `Object#singleton_class` 方法来获得单件类的引用：
+
+```ruby
+"abc".singleton_class		# => #<Class:#<String:0x0000000006df44a8>>
+```
+
+每个单件类只有一个实例，并且不能被继承，单件方法就在单件类中：
+
+```ruby
+def obj.my_singleton_method; end
+singleton_class.instance_method.grep(/my_/)    # => [:my_singleton_method]
+```
 
