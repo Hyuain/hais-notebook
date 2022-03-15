@@ -8480,10 +8480,12 @@ true
 <h4 id="方法查找">方法查找</h4>
 <ul>
 <li>接受者 receiver：调用方法所在所在的对象</li>
-<li>祖先链 ancestors chain：找到对象的类（class），再找到类的超类（superclass），再找超类的超类（superclass），直到找到 <code>BasicObject</code> 类</li>
+<li>祖先链 ancestors chain：找到对象的类（class）*，再找到类的超类（superclass），再找超类的超类（superclass），直到找到 <code>BasicObject</code> 类</li>
 </ul>
 <figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span></span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">my_method</span></span></span><br><span class="line">    <span class="string">&#x27;my_method()&#x27;</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MySubclass</span> &lt; MyClass</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">obj = MySubclass.new</span><br><span class="line">obj.my_method() <span class="comment"># =&gt; &#x27;my_method()&#x27;</span></span><br><span class="line"></span><br><span class="line">MySubclass.ancestors <span class="comment"># =&gt; [MySubclass, MyClass, Object, Kernel, BasicObject]</span></span><br></pre></td></tr></table></figure>
-<p><code>include</code> 某个模块或者继承某个类的时候，会将其加入到祖先链中。<code>prepend</code> 与 <code>include</code> 相似，前者会将模块插入到（祖先链中）该类的下方，后者会插入上方</p>
+<p><code>include</code> 某个模块或者继承某个类的时候，会将其加入到祖先链中。<code>prepend</code> 与 <code>include</code> 相似，前者会将模块插入到（祖先链中）该类的下方，后者会插入上方。</p>
+<div class="note warning"><p>*事实上，查找方法的时候会先找该对象的 <strong>单件类（singleton_class）</strong>，再找 <strong>单件类的超类</strong>（也就是该对象的类）。但单件类并不会被 <code>class</code> 、<code>ancestors</code> 方法显示出来，详情请看单件类章节。</p>
+</div>
 <h5 id="kernel-模块">Kernel 模块</h5>
 <p>我们可以随时调用比如 <code>print</code> 等方法，但其实 <code>print</code> 方法是 Kernel 模块的私有实例方法，Object 类包含了 Kernel 模块，使得每个对象都可以调用 Kernel 模块的方法</p>
 <h4 id="执行方法">执行方法</h4>
@@ -8690,12 +8692,26 @@ true
 <h2 id="单件类">单件类</h2>
 <p>根据之前所学，查找方法时会先进入接受者的类，然后沿着 superclass 向上查找。但是这里面都没有容纳对象单件方法的地方。</p>
 <p>事实上，每个对象都有一个特有的隐藏类（这个类不能用 <code>Object#class</code> 方法查看到），被称为该对象的单件类，也被称为元类（metaclass）或本征类（eigenclass）。</p>
-<p>可以通过一个特殊的语法进入该单件类的作用域，并获得他的引用：</p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">obj = Object.new</span><br><span class="line"></span><br><span class="line">singleton_class = <span class="class"><span class="keyword">class</span> &lt;&lt; obj</span></span><br><span class="line">  <span class="comment"># 这里是你的代码</span></span><br><span class="line">  <span class="comment"># 可以返回 self，让外面得到单件类的引用</span></span><br><span class="line">  <span class="keyword">self</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">singleton_class.<span class="keyword">class</span>		<span class="comment"># =&gt; Class</span></span><br></pre></td></tr></table></figure>
+<p>可以通过一个 <strong>特殊的语法</strong> <code>class &lt;&lt; my_object</code> 进入该单件类的作用域，并获得他的引用：</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">C</span></span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">a_method</span></span></span><br><span class="line">    <span class="string">&#x27;C#a_method()&#x27;</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">D</span> &lt; C;</span> <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">obj = D.new</span><br><span class="line"></span><br><span class="line">singleton_class = <span class="class"><span class="keyword">class</span> &lt;&lt; obj</span></span><br><span class="line">  <span class="comment"># 这里是你的代码</span></span><br><span class="line">  <span class="comment"># 这里定义的方法 = 单件类的实例方法 = 单件方法</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">a_singleton_method</span></span></span><br><span class="line">    <span class="string">&#x27;obj#a_singleton_method&#x27;</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  </span><br><span class="line">  <span class="comment"># 可以返回 self，让外面得到单件类的引用</span></span><br><span class="line">  <span class="keyword">self</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">singleton_class.<span class="keyword">class</span>				 <span class="comment"># =&gt; Class</span></span><br><span class="line">singleton_class.superclass 	 <span class="comment"># =&gt; D，对象的单件类的超类 = 对象的类</span></span><br></pre></td></tr></table></figure>
 <p>还可以通过 <code>Object#singleton_class</code> 方法来获得单件类的引用：</p>
 <figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="string">&quot;abc&quot;</span>.singleton_class		<span class="comment"># =&gt; #&lt;Class:#&lt;String:0x0000000006df44a8&gt;&gt;</span></span><br></pre></td></tr></table></figure>
-<p>每个单件类只有一个实例，并且不能被继承，单件方法就在单件类中：</p>
+<p><strong>每个单件类只有一个实例，单件类不能被继承，单件方法就在单件类中：</strong></p>
 <figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">def obj.my_singleton_method; <span class="keyword">end</span></span><br><span class="line">singleton_class.instance_method.grep(<span class="regexp">/my_/</span>)    <span class="comment"># =&gt; [:my_singleton_method]</span></span><br></pre></td></tr></table></figure>
+<h3 id="单件类和继承">单件类和继承</h3>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">C</span></span></span><br><span class="line">  <span class="class"><span class="keyword">class</span> &lt;&lt; self</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">a_class_method</span></span></span><br><span class="line">      <span class="string">&#x27;C.a_class_method()&#x27;</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">D</span> &lt; C;</span> <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">C.singleton_class							<span class="comment"># =&gt; #&lt;Class:C&gt;，注意单件类前面有#</span></span><br><span class="line">D.singleton_class   					<span class="comment"># =&gt; #&lt;Class:D&gt;</span></span><br><span class="line">D.singleton_class.superclass 	<span class="comment"># =&gt; #&lt;Class:C&gt;，注意类的单件类的 superclass 与普通对象的单件类的 superclass 不同</span></span><br><span class="line">C.signleton_class.superclass	<span class="comment"># =&gt; #&lt;Class:Object&gt;</span></span><br></pre></td></tr></table></figure>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Ruby%20%E5%8D%95%E4%BB%B6%E7%B1%BB%E5%92%8C%E7%BB%A7%E6%89%BF.jpg" alt="Ruby 单件类和继承" /><figcaption aria-hidden="true">Ruby 单件类和继承</figcaption>
+</figure>
+<div class="note warning"><p>一个对象的单件类的超类是这个对象的类。</p>
+<p>一个类的单件类的超类是这个类的超类的单件类。</p>
+</div>
+<p><code>Kernel</code> 模块置于 <code>Object</code> <code>BasicObnject</code> 之间，他也有自己的单件类，但他的单件类并不是 <code>obj</code> 或者 <code>#D</code> 祖先链上的一员。</p>
+<p>用这种组织方式，可以在子类上调用父类的类方法：</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">D.a_class_method 		<span class="comment"># =&gt; &quot;C.a_class_method()&quot;</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>其实单件类也有自己的单件类，暂时不用管这个。</p>
+</blockquote>
 ]]></content>
       <categories>
         <category>全栈</category>
