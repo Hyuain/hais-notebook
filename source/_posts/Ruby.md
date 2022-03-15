@@ -402,6 +402,7 @@ obj = MyClass.new
 > 实例变量存在对象中，而方法存放在类中。
 
 {% note warning %}
+
 需要注意的是，我们不能说 `my_method` 是 `MyClass` 的方法，因为我们不能通过 `MyClass.my_method()` 这样来调用它。
 
 我们只能说 `my_method` 是 `MyClass` 的一个 **实例方法**，因为我们必须要先定义一个 `MyClass` 的实例，然后通过实例调用它。
@@ -449,7 +450,7 @@ Module.superclass       # => Object
 #### 方法查找
 
 - 接受者 receiver：调用方法所在所在的对象
-- 祖先链 ancestors chain：找到对象的类（class），再找到类的超类（superclass），再找超类的超类（superclass），直到找到 `BasicObject` 类
+- 祖先链 ancestors chain：找到对象的类（class）*，再找到类的超类（superclass），再找超类的超类（superclass），直到找到 `BasicObject` 类
 
 ```ruby
 class MyClass
@@ -467,7 +468,13 @@ obj.my_method() # => 'my_method()'
 MySubclass.ancestors # => [MySubclass, MyClass, Object, Kernel, BasicObject]
 ```
 
-`include` 某个模块或者继承某个类的时候，会将其加入到祖先链中。`prepend` 与 `include` 相似，前者会将模块插入到（祖先链中）该类的下方，后者会插入上方
+`include` 某个模块或者继承某个类的时候，会将其加入到祖先链中。`prepend` 与 `include` 相似，前者会将模块插入到（祖先链中）该类的下方，后者会插入上方。
+
+{% note warning %}
+
+*事实上，查找方法的时候会先找该对象的 **单件类（singleton_class）**，再找 **单件类的超类**（也就是该对象的类）。但单件类并不会被 `class` 、`ancestors` 方法显示出来，详情请看单件类章节。
+
+{% endnote %}
 
 ##### Kernel 模块
 
@@ -1191,18 +1198,32 @@ end
 
 事实上，每个对象都有一个特有的隐藏类（这个类不能用 `Object#class` 方法查看到），被称为该对象的单件类，也被称为元类（metaclass）或本征类（eigenclass）。
 
-可以通过一个特殊的语法进入该单件类的作用域，并获得他的引用：
+可以通过一个 **特殊的语法** `class << my_object` 进入该单件类的作用域，并获得他的引用：
 
 ```ruby
-obj = Object.new
+class C
+  def a_method
+    'C#a_method()'
+  end
+end
+
+class D < C; end
+
+obj = D.new
 
 singleton_class = class << obj
   # 这里是你的代码
+  # 这里定义的方法 = 单件类的实例方法 = 单件方法
+  def a_singleton_method
+    'obj#a_singleton_method'
+  end
+  
   # 可以返回 self，让外面得到单件类的引用
   self
 end
 
-singleton_class.class		# => Class
+singleton_class.class				 # => Class
+singleton_class.superclass 	 # => D，对象的单件类的超类 = 对象的类
 ```
 
 还可以通过 `Object#singleton_class` 方法来获得单件类的引用：
@@ -1211,10 +1232,48 @@ singleton_class.class		# => Class
 "abc".singleton_class		# => #<Class:#<String:0x0000000006df44a8>>
 ```
 
-每个单件类只有一个实例，并且不能被继承，单件方法就在单件类中：
+**每个单件类只有一个实例，单件类不能被继承，单件方法就在单件类中：**
 
 ```ruby
 def obj.my_singleton_method; end
 singleton_class.instance_method.grep(/my_/)    # => [:my_singleton_method]
 ```
 
+### 单件类和继承
+
+```ruby
+class C
+  class << self
+    def a_class_method
+      'C.a_class_method()'
+    end
+  end
+end
+
+class D < C; end
+
+C.singleton_class							# => #<Class:C>，注意单件类前面有#
+D.singleton_class   					# => #<Class:D>
+D.singleton_class.superclass 	# => #<Class:C>，注意类的单件类的 superclass 与普通对象的单件类的 superclass 不同
+C.signleton_class.superclass	# => #<Class:Object>
+```
+
+![Ruby 单件类和继承](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Ruby%20%E5%8D%95%E4%BB%B6%E7%B1%BB%E5%92%8C%E7%BB%A7%E6%89%BF.jpg)
+
+{% note warning %}
+
+一个对象的单件类的超类是这个对象的类。
+
+一个类的单件类的超类是这个类的超类的单件类。
+
+{% endnote %}
+
+`Kernel` 模块置于 `Object` `BasicObnject` 之间，他也有自己的单件类，但他的单件类并不是 `obj` 或者 `#D` 祖先链上的一员。
+
+用这种组织方式，可以在子类上调用父类的类方法：
+
+```ruby
+D.a_class_method 		# => "C.a_class_method()"
+```
+
+> 其实单件类也有自己的单件类，暂时不用管这个。
