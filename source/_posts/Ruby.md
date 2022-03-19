@@ -140,7 +140,13 @@ ruby 中只有对象，可以用 `.class` 查看类
 
 ### Array
 
-`arr.methods` 可以看到有什么 api
+`arr.methods` 可以看到有什么 api。
+
+```ruby
+array = [10, 20]
+element = 30
+array << element # => [10, 20, 30]
+```
 
 ### Hash
 
@@ -819,12 +825,16 @@ end
 obj = MyClass.new
 
 obj.instance_eval do
-  self	# => #<MyClass:0x00000000062acbb8 @v=1>
-  @v		# => 1
+  self											# => #<MyClass:0x00000000062acbb8 @v=1>
+  @v												# => 1
+  def my_method!; end       # => 这样定义的方法是 obj 的单件方法
 end
 ```
 
-传给 `instance_eval` 中代码块中的 `self` 就是 `obj`，并且在这个代码块中可以使用并修改实例变量 `@v`。
+- 传给 `instance_eval` 中代码块中的 `self` 就是 `obj`
+- 并且在这个代码块中可以使用并修改实例变量 `@v`
+- 这个代码块中的当前类是接受者的 **单件类**
+- `instance_eval` 表示：我想修改 `self`
 
 因此把传给 `BasicObject#instance_eval` 方法的代码块称为  **上下文探针（Context Prob）**，他就像一个深入到对象中的代码片段，并且可以对这个对象进行操作。
 
@@ -1058,7 +1068,10 @@ add_method_to String
 "abc".m				# => "Hello!"
 ```
 
-- 与 `Object#instance_eval` 方法不同，`instance_val` 只修改 `self`，但 `class_eval` 会修改当前类和 `self`。
+- 与 `Object#instance_eval` 方法不同：
+  - `instance_val` 修改 `self` ，并且会把当前类修改为接受者的单件类；
+  - `class_eval` 会修改当前类和 `self`。
+
 - `class_eval` 与 `class` 不同，并不会打开一个新的作用域，而可以使用外部的变量。
 - 另外还有 `module_exec` 和  `class_exec`，可以接受额外的参数。
 
@@ -1137,6 +1150,22 @@ def MyClass.another_class_method; end
 # 定义单件方法
 def object.method
   # 方法的主体
+end
+```
+
+一共有三种方式可以定义类方法：
+
+```ruby
+def MyClass.a_class_method; end
+
+class MyClass
+  def self.another_class_method; end
+end
+
+class MyClass
+  class << self
+    def yet_another_class_method; end
+  end
 end
 ```
 
@@ -1277,3 +1306,449 @@ D.a_class_method 		# => "C.a_class_method()"
 ```
 
 > 其实单件类也有自己的单件类，暂时不用管这个。
+
+### 单件类的用处
+
+给一个类定义类属性：
+
+```ruby
+# 这样定义的话，b 实际上在 Class 上，所有的类都会增加 b
+class MyClass; end
+class Class
+  attr_accessor :b
+end
+MyClass.b = 42
+MyClass.b				# => 42
+
+# 可以定义到 MyClass 的单件类上
+class MyClass
+  class << self
+    attr_accessor :c
+  end
+end
+MyClass.c = "It works!"
+MyClass.c				# => "It works!"
+```
+
+### 类扩展
+
+类扩展：通过 `include` 的方式为类添加单件方法。
+
+尝试在模块中定义一个单件方法，然后通过 `include` 的方式让类可以访问到他，失败了：
+
+```ruby
+class C
+  def self.my_method; 'hi'; end
+end
+
+module M
+  def self.my_method; 'hello'; end
+end
+
+class D < C; end
+
+class E
+  include M
+end
+
+p D.my_method    # => ‘hi'
+p E.my_method	   # => NoMethodError!
+```
+
+因为 `include` 获得的是该模块的实例方法，这与继承有点区别。
+
+如果要达到想要的效果，需要在模块中定义普通的实例方法，然后让类的单件类来包含这个模块：
+
+```ruby
+module M
+  def my_method; 'hello'; end
+end
+
+class E
+  class << self
+    include M
+  end
+end
+
+MyClass.my_method			# => 'hello'
+```
+
+### 对象扩展
+
+对象扩展：用类扩展的技巧，为对象添加单件方法。
+
+```ruby
+module M
+  def my_method; 'hello'; end
+end
+
+obj = Object.new
+
+class << obj
+  include M
+end
+
+obj.my_method							# => 'hello'
+obj.singleton_methods			# => [:my_method]
+```
+
+可以用 `Object#extend` 方法来更好地书写类扩展和对象扩展：
+
+```ruby
+module M
+  def my_method; 'hello'; end
+end
+
+obj = Object.new
+obj.extend M
+obj.my_method					# => 'hello'
+
+class C
+  extend M
+end
+
+C.my_method						# => 'hello'
+```
+
+## 方法包装器
+
+有三种方式可以用一个方法包装另一个方法。
+
+### 方法别名与环绕别名
+
+可以用 `alias` 关键字或 `Module#alias_method` 来给方法取一个新名字
+
+```ruby
+class MyClass
+  def my_method; 'my_method()'; end
+  alias_method :m, :my_method
+end
+
+obj = MyClass.new
+obj.my_method			# => "my_method()"
+obj,m							# => "my_method()"
+```
+
+重新定义方法的时候，并不会真正修改原来的方法，因此如果给一个方法取了别名之后，重新定义一个跟之前名字相同的方法，别名仍然绑定的原来的方法。
+
+```ruby
+class String
+  alias_method :real_length, :length
+  
+  def length
+    real_length > 5 'long' : 'short'
+  end
+end
+
+"War and Peace".length 		   # => "long"
+"war and Peace".real_length  # => 13
+```
+
+可以用 **环绕别名** 的技巧来包装一个一个方法：
+
+1. 给方法定义一个别名
+2. 重新定义这个方法
+3. 在新方法中调用老方法
+
+{% note warning %}
+
+环绕别名实际上也是一种猴子补丁，他会全局性地破坏已有代码。
+
+{% endnote %}
+
+### 细化封装器
+
+在细化的方法中调用 `super` 方法，就会调用没有细化的原始方法：
+
+```ruby
+module StringRefinement
+  refine String do
+    def length
+      super > 5 ? 'long' : 'short'
+    end
+  end
+end
+
+using StringRefinement
+
+"War and Peace".length 	 # => "long"
+```
+
+同其他细化一样，细化封装器的作用范围只到文件末尾处（Ruby 2.1 中是模块定义的范围内），因此比环绕别名更安全。
+
+### `Module#prepend` 与下包含包装器
+
+与 `include` 类似，但是 `Module#prepend` 方法会将包含的模块插在祖先链中该类的下方，而非上方。因此可以用这个技巧复写同名方法，也可以用 `super` 调用到该类的原始方法。
+
+```ruby
+module ExplicitString
+  def length
+    super > 5 ? 'long' : 'short'
+  end
+end
+
+String.class_eval do
+  prepend ExplicitString
+end
+
+# 也可以用打开类的方式书写
+class String
+  prepend ExplicitString
+end
+
+"War and Peace".length 	 # => "long"
+```
+
+这种技巧被称为下包含包装器。
+
+# Code That Writes Code
+
+## `Kernel#eval`
+
+使用 `Kenerl#eval` 方法可以直接执行包含 Ruby 代码的字符串：
+
+```ruby
+array = [10, 20]
+element = 30
+eval("array << element")    # => [10, 20, 30]
+```
+
+比如在 REST Client 中，通过这种方式批量定义这些方法：
+
+```ruby
+# 我们需要定义形如这样的方法
+def get(path, *args, &b)
+  r[path].get(*args, &b)
+end
+
+# 可以这样使用 eval 定义
+POSSIBLE_VERBS = ['get', 'put', 'post', 'delete']
+
+POSSIBLE_VERBS.each do |m|
+  # 这种方式被称为 here 文档（here document, heredoc）
+  # 在 eval 后面接一个字符串，<< 后面紧跟一个结束序列（terminal sequence）（在这里是 end_eval）
+  # 下次再遇到结束列的时候，字符串定义结束
+  eval <<-end_eval
+		def #{m}(path, *args, &b)
+			r[path].#{m}(*args, &b)
+		end
+	end_eval
+end
+```
+
+### 绑定对象
+
+`Binding` 就是一个用对象表示的完整作用域，可以通过 `Binding` 对象来捕获并带走当前的作用域，然后通过 `eval` 方法在这个 `Binding` 对象所携带的作用域中执行代码。
+
+可以用 `Kernel#binding` 方法来创建 `Binding` 对象：
+
+```ruby
+class MyClass
+  def my_method
+    @x = 1
+    binding
+  end
+end
+
+b = MyClass.new.my_method
+```
+
+`Binding` 对象可以看做是比代码块更“纯净”的闭包，因为他只包含作用域，不包含代码。
+
+可以将 `Binding` 对象传给 `eval` 方法：
+
+```ruby
+eval "@x", b  	# => 1
+```
+
+Ruby 中还有一个常量 `TOPLEVEL_BINDING`，表示顶级作用于的 `Binding` 对象：
+
+```ruby
+class AnotherClass
+  def my_method
+    eval "self", TOPLEVEL_BINDING
+  end
+end
+
+AnotherClass.new.my_method		# => main
+```
+
+### 应该选择哪种 `*eval`
+
+现在有三种 `*eval`：`eval`、`instance_eval` 和 `class_eval`：
+
+1. `eval` 只能执行代码字符串，不能执行代码块；`instance_eval` 和 `class_eval` 除了执行代码块，也可以执行代码字符串
+
+2. 代码字符串中也可以像块那样访问局部变量：
+
+   ```ruby
+   array = ['a', 'b', 'c']
+   x = 'd'
+   array.instance_eval "self[1] = x"
+   
+   array   # => ["a", "d", "c"]
+   ```
+
+3. 能使用代码块就尽量用代码块，代码字符串安全性会有问题
+
+#### 代码注入
+
+比如你写了一个方法，检查数组是否存在某方法：
+
+```ruby
+def explore_array(method)
+  code = "['a', 'b', 'c'].#{method}"
+  puts "Evaluating: #{code}"
+  eval code
+end
+```
+
+结果用户输入了这样一个字符串：
+
+```ruby
+object_id; Dir.glob(*)
+# 就会执行
+['a', 'b', 'c'].object_id; Dir.glob("*")		# => 你的私有信息就会暴露在这里
+```
+
+#### 防止代码注入
+
+1. 完全禁止 `eval`，根据具体的问题寻找替代方法，比如动态方法、动态派发
+2. 用下面的一些方法更安全地使用 `eval`
+
+#### 污染对象和安全级别
+
+Ruby 会自动将不安全的对象（尤其是外部传入的对象）标记为污染对象，可以用 `Object#tainted?` 方法来判断一个对象是不是被污染了：
+
+```ruby
+user_input = "User input #{gets()}"
+puts user_input.tainted?			# => true
+```
+
+可以通过给 `$SAFE` 全局变量赋值来设置一个安全级别，就可以禁止某些危险操作：
+
+- 默认 0，什么都可以做；在任何大于 0 的安全级别上，Ruby 都会拒绝执行污染的字符串
+- 2 可以禁止绝大多数与文件相关的操作
+- 最高 3，创建的每一个对象都是被污染的
+
+可以通过 `Object#untain` 方法来手动去除字符串的污染性。
+
+**沙盒（Sandbox）**指的就是通过使用安全级别为 `eval` 方法创造的一个可控环境。
+
+比如 ERB 中对 HTML 模板中写的 Ruby 代码，会创建一个沙盒来执行：
+
+```ruby
+class ERB
+  # new_toplevel 是顶级变量 TOPLEVEL_BINDING 的一个拷贝
+  def result(b=new_toplevel)
+    if @safe_level
+      # 使用 Proc 作为一个洁净室
+      proc {
+        # 这个安全级别只有 proc 中有效
+        $SAFE = @safe_level
+        eval(@src, b, (@filename || '(erb)'), 0)
+      }.call
+    else
+      eval(@src, b, (@filename || 'erb'), 0)
+    end
+  end
+  #...
+```
+
+## 钩子方法
+
+
+
+## 例子
+
+需要编写一个 `add_checked_attribute` 方法，为类添加一个经过校验的属性，下面是测试用例：
+
+```ruby
+require 'test/unit'
+
+class Person; end
+
+class TestCheckedAttribute < Test::Unit::TestCase
+  def setup
+    add_checked_attribute(Person, :age) { |v| v >= 18 }
+    @bob = Person.new
+  end
+  
+  def test_accepts_valid_values
+    @bob.age = 20
+    assert_equal 20, @bob.age
+  end
+  
+  def test_refuses_nil_values
+    assert_raises RuntimeError, 'Invalid attribute' do
+      @bob.age = nil
+    end
+  end
+  
+  def test_refuses_false_values
+    assert_raises RuntimeError, 'Invalid attribute' do
+      @bob.age = false
+    end
+  end
+  
+  def test_refueses_invalid_values
+    assert_raises RuntimeError, 'Invalid attribute' do
+      @bob.age = 17
+    end
+  end
+end
+```
+
+### 使用 `eval` 来完成
+
+```ruby
+def add_checked_attribute(klass, attribute, &validation)
+  eval "
+		class #{klass}
+			def #{attribute}=(value)
+				raise 'Invalid attribute' unless value
+				@#{attribute} = value
+			end
+
+			def #{attribute}()
+				@#{attribute}
+			end
+		end
+  "
+end
+```
+
+### 去掉 `eval`
+
+```ruby
+def add_checked_attribute(klass, attribute)
+  klass.class_eval do
+    define_method "#{attribute}=" do |value|
+      raise 'Invalid attribute' unless value
+      instance_variable_set("@#{attribute}", value)
+    end
+    
+    define_method attribute do
+      instance_variable_get "@#{attribute}"
+    end
+  end
+end
+```
+
+### 通过一个代码块来实现校验
+
+```ruby
+def add_checked_attribute(klass, attribute, &validation)
+  klass.class_eval do
+    define_method "#{attribute}=" do |value|
+      raise 'Invalid attribute' unless validation.call(value)
+      instance_variable_set("@#{attribute}", value)
+    end
+    
+    define_method attribute do
+      instance_variable_get "@#{attribute}"
+    end
+  end
+end
+```
+
