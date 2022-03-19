@@ -1,5 +1,5 @@
 ---
-title: JavaScript Array
+title: JavaScript
 date: 2020-01-29 17:22:52
 tags:
   - 入门
