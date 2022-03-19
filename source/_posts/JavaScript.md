@@ -1458,14 +1458,16 @@ JS 实际上并不是一门完全的解释型语言，因为字节码不仅配�
 
 **函数公理：所有函数都是由 `Function` 构造的**
 
-{% note warning %}
+{% endnote %}
 
 ![JSWorld-1](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/JS-World-1.png)
 ![JSWorld-2](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/JS-World-2.png)
 ![JSWorld-3](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/JS-World-3.png)
 ![JSWorld-4](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/JS-World-4.png)
 
-# 获取节点
+# DOM
+
+## 获取节点
 
 ```js
 window.id // 或者直接 id
@@ -1478,7 +1480,7 @@ document.querySelector('div>span:nth-child(2)')
 document.querySelectorAll('.red')
 ```
 
-## 获取特定的元素
+### 获取特定的元素
 
 - 获取 html： `document.documentElement`
 - 获取 head： `document.head`
@@ -1486,7 +1488,7 @@ document.querySelectorAll('.red')
 - 获取 window： `window`
 - 获取所有元素： `document.all`，第 6 个 `falsy` 值，别的浏览器为了不使用为了 IE 设计的代码（这个是 IE 发明的）
 
-## 获取的元素的原型
+### 获取的元素的原型
 
 div 的原型链：
 
@@ -1502,7 +1504,7 @@ div 的原型链：
 - 9 表示 Document
 - 11 表示 Document Fragment
 
-## 获取附近的元素
+### 获取附近的元素
 
 - 查爸爸： `div.parentNode` 或者 `div.parentElement`
 - 查子代： `div.childNodes` 或者 `div.children`，推荐使用后者，因为前者包括了文本节点，比如空格，两者都会实时变化
@@ -1524,8 +1526,6 @@ travel = (node, fn) => {
 }
 travel(div1, (node) => console.log(node))
 ```
-
-# DOM
 
 ## 创建节点
 
