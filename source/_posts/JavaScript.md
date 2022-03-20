@@ -4,7 +4,7 @@ date: 2020-01-29 17:22:52
 tags:
   - 入门
 categories:
-  - [前端, JavaScript]
+  - [前端]
 ---
 
 - JavaScript 有 7 种数据类型，3 种变量声明的方式
@@ -1494,7 +1494,7 @@ div 的原型链：
 
 `HTMLDivElement.prototype` → `HTMLElement.prototype` → `Elment.prototype` → `Node.prototype` → `EventTarget.prototype` → `Object.prototype`
 
-## 节点（Node）和元素（Element）的区别
+### 节点（Node）和元素（Element）的区别
 
 使用 x.nodeType 可以得到一个数字：
 
@@ -1679,3 +1679,513 @@ test.classList.add('end')
 - 大部分时候，同名的 Property 和 Attribute 值相等
 - 如果不是标准属性，那么他们俩只会在一开始的时候相等
 - 但注意 Attribute 只支持字符串，而 Property 支持字符串、布尔等类型
+
+# Asynchronous
+
+## AJAX
+
+> AJAX 即 Asynchronous JavaScript and XML（异步的 JavaScript 与 XML 技术），其实就是一套综合了多项技术的浏览器端网页开发技术。Google 在它多个著名的交互应用程序中使用了这套技术，如 Google 讨论组、Google 地图、Google 搜索建议、Gmail 等，这使得人们看到了前端领域新的可能性。
+>
+> 传统的 Web 应用允许用户端填写表单（form），当提交表单时就向网页服务器发送一个请求；服务器接收并处理传来的表单，然后送回一个**新的网页**。
+>
+> 但这个做法浪费了许多带宽，因为在前后两个页面中的大部分 HTML 码往往是相同的。由于每次应用的沟通都需要向服务器发送请求，应用的回应时间依赖于服务器的回应时间。这导致了用户界面的回应比本机应用慢得多。
+>
+> 与此不同，AJAX 应用可以仅向服务器发送并取回必须的数据，并在客户端采用 JavaScript 处理来自服务器的回应。因为在服务器和浏览器之间交换的数据大量减少，服务器回应更快了。同时，很多的处理工作可以在发出请求的客户端机器上完成，因此Web服务器的负荷也减少了。
+
+简单来讲：
+
+1. AJAX 是浏览器上的功能，浏览器可以使用 AJAX 发请求、收响应；
+2. 浏览器在 `window` 上面加了一个 `XMLHttpRequest`，方便开发者通过 JS 来发请求、收响应，这是一个构造函数
+
+### 加载 CSS / JS / HTML / XML
+
+如果想要使用 `XMLHttpRequest` 让浏览器来帮我们加载 CSS / JS / HTML / XML，一共需要进行四步：
+
+1. 创建 `XMLHttpResquest` 对象
+2. 调用他的 `open()` 方法
+3. 使用 `onreadystatechange` 监听他的成功和失败事件
+4. 调用他的 `send()` 方法
+
+```js
+const request = new XMLHttpRequest()
+request.open('GET', '/{url}')
+request.onreadystatechange = () => {
+  if (request.readyState == 4) {
+    if (request.status >= 200 && request.status < 300) {
+      alert('success')
+    } else {
+      alert('error')
+    }
+  }     
+}
+request.send()
+```
+
+HTTP 里面可以装 HTML / CSS / JS / XML 等，但得知道怎么解析他们：
+
+- 拿到 CSS 之后生成 `<style>` 标签
+- 拿到 JS 之后生成 `<script>` 标签
+- 拿到 HTML 之后使用 `innerHTML` 和 DOM API，可以新建一个 `div`
+- 拿到 XML 之后的 `request.responseXML` 实际上已经是一个 DOM 节点了
+
+### JSON
+
+> JavaScript Object Natation，JSON 不是对象，而是一种标记语言（就像 HTML、XML、Markdown），用来展示数据，[JSON 中文官网](http://json.org/json-zh.html)
+
+#### JSON 的数据类型
+
+- string（但是只支持双引号）
+- number（支持科学计数法）
+- bool
+- null
+- object
+- array
+
+{% note warning %}
+JSON 中，不支持函数和变量
+{% endnote %}
+
+#### JSON.parse()
+
+> 反序列化
+
+- 将符合 JSON 语法的字符串转换为 JS 对应类型的数据
+- JSON 字符串 ⇒ JS 数据
+- 由于 JSON 只有六种类型，所以转换出的数据也只有六种
+- 如果不符合 JSON 语法，则会抛出 Error，一般用 try catch 捕获错误，比如
+
+```js
+let object
+try {
+	object = JSON.parse(`{'name':'harvey'}`)
+} catch (error) {
+	console.log('出错了，错误详情是：')
+	console.log(error)
+	object = {'name': 'no name'}
+}
+console.log(object)
+```
+
+#### JSON.stringify()
+
+> 序列化
+
+- 是 JSON.parse 的逆运算
+- JS 数据 ⇒ JSON 字符串
+- 由于 JS 的数据类型比 JSON 多，所以不一定能够成功
+- 如果失败，则会抛出一个 Error 对象
+
+## 异步
+
+### 异步与同步
+
+- **同步**： **能直接拿到结果，不拿到结果就不离开**，就像医院挂号一样，可能需要花上几分钟，但是 **拿到号之后才会离开窗口**
+- **异步**： **不能直接拿到结果**，比如在餐厅门口等位，拿到号之后我们可以去逛街，那什么时候真正吃上饭呢？我们可以：
+  - 每 10 分钟去餐厅问一下（**轮询**）
+  - 也可以扫码用微信接收通知（**回调**）
+
+AJAX 举例：当 `request.send()` 之后，并不能直接得到 `response`，必须要等待 `readyState` 变成 `4` 之后，浏览器回头调用 `request.onreadystatechange` 函数
+
+### 回调（callback）
+
+- 写给自己的函数，不是回调
+- 写给别人用的函数，放在一个地方，让他来调用，就是回调
+- `request.onreadystatechange`，是写给浏览器调用的，意思是让浏览器回头调一下这个函数
+
+举例：
+
+```js
+function f1(){}
+function f2(fn){
+  fn()
+}
+f2(f1)
+// 我调用了 f2，因此 f2 不是回调
+// 我把 f1 传给了 f2
+// 我没有调用，而是 f2 调用了 f1
+// 所以 f1 是回调
+```
+
+### 异步与回调
+
+#### 关联
+
+异步任务需要在得到结果时通知 JS 来拿结果，怎么通知呢？
+
+1. 可以让 JS 留一个函数地址（电话号码）给浏览器
+2. 异步任务完成之后，浏览器调用该函数的地址（拨打电话）
+3. 同时 **把结果作为参数** 传给该函数（电话里说可以来吃了）
+
+这个函数是我写给浏览器调用的，所以是回调函数
+
+#### 区别
+
+异步任务需要用回调函数来通知结果
+
+- 但异步也可以用 **轮询**
+- 回调也不一定用在异步里面，比如 `array.forEach( n ⇒ console.log(n) )`，这就是 **同步回调**
+
+### 异步函数
+
+[MDN Async Function](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Statements/async_function)
+
+如果一个函数的返回值处于以下这三个内部，即为异步函数：
+
+- `setTimeout`
+- AJAX（即 `XMLHttpRequest`）
+- `AddEventListener`
+
+也可以设置同步的 AJAX，`request.open("get", "/5.json", false)`，但是这样会使页面在请求期间卡住
+
+举例：
+
+```js
+function 摇骰子(){
+  setTimeout( () => {
+    return parseInt(Math.random() * 6) + 1
+  }, 1000)
+  // return undefined
+}
+
+// 如果是按上面这样写，将拿不到 1 ~ 6 的随机数，而是 undefined
+const n = 摇骰子()
+console.log(n) // undefined
+
+// 通过回调来拿到异步的结果
+function 摇骰子(fn){
+  setTimeout( () => {
+    fn(parseInt(Math.random() * 6) + 1)
+  }, 1000)
+}
+function f1(x){ console.log(x) }
+摇骰子(f1)
+
+// 可以简化代码，因为 f1 只用了一次
+function 摇骰子(fn){
+  setTimeout( () => {
+    fn(parseInt(Math.random() * 6) +1)
+  }, 1000)
+}
+摇骰子(x => {
+  console.log(x)
+})
+
+// 可以再简化为
+摇骰子(console.log) // 但是如果参数个数不一致就不能这样简化
+```
+
+可以再看一下下面这道题：
+
+```js
+const array = ['1', '2', '3'].map(parseInt)
+  console.log(array) // [1, NaN, NaN]
+    
+  // 正确的写法，i 和 arr 可以省略
+  const array = ['1', '2', '3'].map((item, i, arr) => {
+    return paseInt(item)
+  })
+    
+  // 最开始的写法相当于
+  const array = ['1', '2', '3'].map((item, i, arr) => {
+    return paseInt(item, i, arr)
+    // parseInt('1', 0, arr)，0 为无效参数，忽略
+    // parseInt('2', 1, arr)，相当于把 '2' 作为 1 进制来进行解析 => NaN
+    // parseInt('3', 2, arr)，相当于把 '3' 作为 2 进制来进行解析 => NaN
+  })
+```
+
+### Promise
+
+> 如果异步任务有两个结果：成功或失败，怎么做？
+
+方法一：回调接受两个参数
+
+```js
+fs.readFile('./1.txt', (error, data) => {
+  if(error){ console.log('失败'); return }
+    console.log(data.toString())
+  }
+)
+```
+
+方法二：使用两个回调
+
+```js
+ajax('get', '/1.json', data=>{}, error=>{})
+ajax('get', '/1.json', {
+  success: ()=>{}, fail: ()=>{}
+})
+```
+
+但是这两个方法都有问题：
+
+1. 不规范，名称五花八门，有人用 `success + error`，有人用 `success + fail`，有人用 `done + fail`
+2. 容易出现回调地狱，代码看不懂
+3. 很难进行错误处理
+
+#### 回调地狱
+
+```js
+getUser( user => {
+  getGroups( user, groups => {
+    groups.forEach( (g) => {
+      g.filter( x => x.owenerId === user.id)
+        .forEach( x => console.log(x))
+    })
+  })
+})
+```
+
+#### Promise
+
+##### 基本用法
+
+```js
+ajax = (method, url, options) => {
+  const {success, fail} = options
+  const request = new XMLHttpRequest()
+  request.open(method, url)
+  request.onreadystatechange = () => {
+    if(request.readyState === 4) {
+      if(request.status < 400) {
+       success.call(null, request.response)
+      } else if(request.status >= 400) {
+        fail.call(null, request, request.status)
+      }
+    }
+  }
+  request.send()
+}
+
+ajax('get', '/xxx', {
+  success(response){}, fail:(request, status) => {}
+})  // 左边是 function 的缩写，右边是箭头函数
+```
+
+↑ 上面是普通的写法，↓ 下面是 Promise 的写法
+
+```js
+ajax = (method, url) => {
+  return new Promise( (resolve, reject) => {  // return new Promise((resolve, reject)=>{..})
+    const request = new XMLHttpRequest()
+    request.open(method, url)
+    request.onreadystatechange = () => {
+      if(request.readyState === 4) {
+        if(request.status < 400) {
+          resolve.call(null, request.response)  // 成功调用 resolve(result)，他再回调用第一个函数
+        } else if(request.status >= 400) {
+          reject.call(null, request)  // 失败调用 reject(error)，他再会调用第二个函数
+        }
+      }
+    }
+    request.send()
+  })
+}
+    
+ajax('get', '/xxx')
+  .then( (response) => {}, (request) => {} )   // Promise 的回调（成功/失败）只能接受一个参数
+```
+
+##### Promise 是如何解决回调地狱的
+
+回调地狱：
+
+1. 多层嵌套
+2. 无法方便地进行错误处理
+
+解决办法：
+
+1. 回调函数延迟绑定，回调函数是通过后面的 then 方法传入的
+2. 返回值穿透，根据 then 中回调函数的传入值创建不同类型的 Promise，再把返回的 Promise 穿透到外层，以供后续使用。以上两点实现了链式调用，解决多层嵌套问题
+3. 错误冒泡，前面产生的错误会一直向后传递，被 catch 接收到，就不用频繁地检查错误了
+
+##### Promise.all()
+
+- 如果传入的参数是一个空的可迭代对象，比如空数组，则返回一个已完成（already resolved）状态的 Promise。
+- 如果传入的参数不包含任何 promise，则返回一个异步完成（asynchronously resolved） Promise。
+- 其它情况下返回一个处理中（pending）的Promise。
+
+返回的 promise 之后会在所有的 promise 都完成或有一个 promise 失败时异步地变为完成或失败。（如果都成功，则成功；有一个失败，则失败）
+
+返回值将会按照参数内的 promise 顺序排列，而不是由调用 promise 的完成顺序决定。
+
+```js
+var p1 = Promise.resolve(3);
+var p2 = 1337;
+var p3 = new Promise((resolve, reject) => {
+  setTimeout(resolve, 100, 'foo');
+}); 
+
+Promise.all([p1, p2, p3]).then(values => { 
+  console.log(values); // [3, 1337, "foo"] 
+});
+```
+
+##### Promise.race()
+
+可以传入多个 promise，谁快，Promise.race() 就会跟谁一样，如果传的迭代是空的，则返回的 promise 将永远等待。
+
+# Canvas
+
+## 什么是 Canvas
+
+> `<canvas>` 是 HTML 5 新增的元素，可用于通过使用 JavaScript 的脚本来绘制图形。例如，他可以用于绘制图形、制作照片、创建动画，甚至可以进行实时视频处理和渲染
+
+简单来说，`<canvas>` 提供了一块画布，在上面可以使用 JavaScript 动态渲染图像
+
+### Canvas 与 SVG
+
+> SVG（Scalable Vector Graphics）是基于 XML，用于描述二维矢量图形的一种图片格式，由 W3C 指定，是一个开放标准
+
+Canvas 在绘制结束之后不能被保存到内存中，每次都需要重新绘制，是实时绘制的；svg 则在绘制完之后会被保存在内存中，当需要修改这个对象信息的时候，直接修改就可以了
+
+| Canvas                                   | SVG                                            |
+| ---------------------------------------- | ---------------------------------------------- |
+| 依赖分辨率（位图）                       | 不依赖分辨率（矢量图）                         |
+| 单个 HTML 元素                           | 每个图形都是一个 DOM 元素                      |
+| 只能通过脚本语言绘制                     | CSS、脚本语言都可以用来绘制                    |
+| 不支持事件处理程序                       | 支持事件处理程序                               |
+| 弱的文本渲染恩能够力                     | 最适合带有大型渲染区域的应用程序，比如谷歌地图 |
+| 图面较小，对象数量较大时（>10k）性能最佳 | 对象数量较小（<10k）、图面更大时性能更佳       |
+
+## Canvas 的应用场景
+
+1. **绘制图表**，比如 EChats 之类的数据可视化库都是使用 Canvas 实现的
+2. **小游戏**，基本上所有的 HTML 5 游戏都是基于 Canvas 开发的，因为不需要借助其他任何插件
+3. **活动页面**，比如转转轮、刮奖
+4. **特效、背景**
+
+## Canvas API
+
+### 设置宽高
+
+可以通过 HTML 或 JS 来设置，不能通过 CSS 设置，这会导致不可预料的缩放
+
+### 获取 Canvas 对象
+
+```js
+canvas.getContext(contextType, contextAttributes)
+```
+
+`contextType` 是上下文类型，有这样几种：
+
+- `2d`：代表一个二维渲染上下文
+- `webgl` 或 `experimental-webgl`：代表一个三维渲染上下文
+- `webgl2` 或 `experimental-webgl2`：代表一个三维渲染上下文，并且只能在浏览器中实现 WebGL 版本 2（OpenGL ES 3.0）
+
+### 绘制路径
+
+| 方法                 | 描述                                                    |
+| -------------------- | ------------------------------------------------------- |
+| `fill()`             | 填充路径                                                |
+| `stroke()`           | 描边                                                    |
+| `arc()`              | 创建圆弧                                                |
+| `rect()`             | 创建矩形                                                |
+| `fillRect()`         | 绘制矩形路径区域                                        |
+| `strokeRect()`       | 绘制矩形路径描边                                        |
+| `clearRect()`        | 在给定的矩形内清除指定的像素                            |
+| `arcTo()`            | 创建两切线之间的弧/曲线                                 |
+| `beginPath()`        | 起始一条路径，或重置当前路径                            |
+| `moveTo()`           | 把路径移动到画布中的指定点，不创建线条                  |
+| `lineTo()`           | 添加一个新点，然后画布中创建从该点到最后指定点的线条    |
+| `closePath()`        | 创建从当前点回到起始点的路径                            |
+| `clip()`             | 从原始画布剪切任意形状和尺寸的区域                      |
+| `quadraticCurveTo()` | 创建二次方贝塞尔曲线                                    |
+| `bezierCurveTo()`    | 创建三次方贝塞尔曲线                                    |
+| `isPointInPath()`    | 如果指定的点位于当前路径中，则返回 true，否则返回 false |
+
+#### 绘制曲线
+
+##### arc()
+
+```js
+context.arc(x, y, sAngle, eAangle, counterCloseWise)
+```
+
+`x` 和 `y` 指定了圆心坐标，`sAngle` 和 `eAngle` 分别为起始角和结束角，`counterCloseWise` 设置为 `true` 表示逆时针绘制
+
+#### 绘制直线
+
+```js
+moveTo(x, y) // 把路径移动到画布中的指定点，不创建线条
+lineTo(x, y) // 添加一个新点，然后在画布中创建从该点到最后指定点的线条
+```
+
+{% note warning %}
+如果没有 `moveTo`，那么第一次 `lineTo` 就视为 `moveTo`
+{% endnote %}
+
+可以给绘制的直线添加样式：
+
+| 样式         | 描述                                     |
+| ------------ | ---------------------------------------- |
+| `lineCap`    | 设置或返回线条的结束端点样式             |
+| `lineJoin`   | 设置或返回两条线相交时，所创建的拐角类型 |
+| `lineWidth`  | 设置或返回当前的线条宽度                 |
+| `miterLimit` | 设置或返回最大斜接长度                   |
+
+#### 绘制矩形
+
+```js
+fillRect(x, y, width, height) // 绘制一个实心矩形
+strokeRect(x, y, width, height) // 绘制一个空心矩形
+```
+
+#### 颜色、样式和阴影
+
+创建路径之后，可以设置样式属性，再使用 `fill()` 和 `stroke()` 进行填充或描边
+
+| 属性          | 描述                                     |
+| ------------- | ---------------------------------------- |
+| fillStyle     | 设置或返回用于填充绘画的颜色、渐变或模式 |
+| strokeStyle   | 设置或返回用于笔触的颜色、渐变或模式     |
+| shadowColor   | 设置或返回用于阴影的颜色                 |
+| shadowBlur    | 设置或返回用于阴影的模糊级别             |
+| shadowOffsetX | 设置或返回阴影距形状的水平距离           |
+| shadowOffsetY | 设置或返回阴影距形状的垂直距离           |
+
+#### 设置渐变
+
+有这样几个方法可以设置渐变：
+
+| 方法                   | 描述                           |
+| ---------------------- | ------------------------------ |
+| createLinearGradient() | 创建线性渐变（用在画布内容上） |
+| createPattern()        | 在指定的方向上重复指定的元素   |
+| createRadialGradient() | 环形的渐变（用在画布内容上）   |
+| addColorStop()         | 规定渐变对象中的颜色和停止位置 |
+
+主要使用到下面这个方法
+
+```js
+const grd = context.createLinerGradient(x0, y0, x1, y1)
+grd.addColorStop(stop, color) // stop 是介于 0.0 ~ 1.0 之间的值
+```
+
+#### 图形转换
+
+| 方法           | 描述                                           |
+| -------------- | ---------------------------------------------- |
+| scale()        | 缩放当前绘图至更大或更小                       |
+| rotate()       | 旋转当前绘图                                   |
+| translate()    | 重新映射画布上的 (0,0) 位置                    |
+| transform()    | 替换绘图的当前转换矩阵                         |
+| setTransform() | 将当前转换重置为单位矩阵，然后运行 transform() |
+
+注意旋转实际上是对画布旋转，旋转之后所有的都会旋转
+
+#### 图形绘制
+
+```js
+drawImage(img, sx, sy, swidth, sheight, x, y, width, height)
+```
+
+- `img`：规定要使用的图像、画布或视频
+- `sx`：可选。开始剪切的 x 坐标位置
+- `sy`：可选。开始剪切的 y 坐标位置
+- `swidth`：可选。被剪切图像的宽度
+- `sheight`：可选。被剪切图像的高度
+- `x`：在画布上放置图像的 x 坐标位置
+- `y`：在画布上放置图像的 y 坐标位置
+- `width`：可选。要使用的图像的宽度（伸展或缩小图像）
+- `height`：可选。要使用的图像的高度（伸展或缩小图像）

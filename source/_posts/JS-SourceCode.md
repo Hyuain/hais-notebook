@@ -6,7 +6,7 @@ tags:
   - 收集
   - FAQ
 categories:
-  - [前端, JavaScript, 原生 JavaScript]
+  - [前端]
 ---
 
 实现一些常见的 API。
