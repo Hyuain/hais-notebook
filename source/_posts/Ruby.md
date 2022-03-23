@@ -1656,7 +1656,31 @@ class ERB
 
 ## 钩子方法
 
+有不少钩子方法，可以通过覆写这些方法在特定的时间完成一些操作，比如：
 
+```ruby
+class String
+  def self.inherited(subclass)
+    puts "#{self} was inherited by #{subclass}"
+  end
+end
+
+module M1
+  def self.included(othermod)
+    puts "M1 was included into #{othermod}"
+  end
+end
+
+module M2
+  def self.prepended(othermod)
+    puts "M2 was prepended to #{othermod}"
+  end
+end
+```
+
+另外还有 `Module#extend_object` `method_added` `method_removed` `undefined` 等方法。
+
+如果需要捕获单件方法，则需要使用 `singleton_method_added` `singleton_methoded_removed` 等方法。
 
 ## 例子
 
@@ -1669,7 +1693,7 @@ class Person; end
 
 class TestCheckedAttribute < Test::Unit::TestCase
   def setup
-    add_checked_attribute(Person, :age) { |v| v >= 18 }
+    add_checked_attribute(Person, :age)
     @bob = Person.new
   end
   
@@ -1687,12 +1711,6 @@ class TestCheckedAttribute < Test::Unit::TestCase
   def test_refuses_false_values
     assert_raises RuntimeError, 'Invalid attribute' do
       @bob.age = false
-    end
-  end
-  
-  def test_refueses_invalid_values
-    assert_raises RuntimeError, 'Invalid attribute' do
-      @bob.age = 17
     end
   end
 end
@@ -1737,6 +1755,25 @@ end
 ### 通过一个代码块来实现校验
 
 ```ruby
+require 'test/unit'
+
+class Person; end
+
+class TestCheckedAttribute < Test::Unit::TestCase
+  def setup
+    add_checked_attribute(Person, :age) { |v| v >= 18 }
+    @bob = Person.new
+  end
+  
+  def test_refueses_invalid_values
+    assert_raises RuntimeError, 'Invalid attribute' do
+      @bob.age = 17
+    end
+  end
+end
+```
+
+```ruby
 def add_checked_attribute(klass, attribute, &validation)
   klass.class_eval do
     define_method "#{attribute}=" do |value|
@@ -1746,6 +1783,70 @@ def add_checked_attribute(klass, attribute, &validation)
     
     define_method attribute do
       instance_variable_get "@#{attribute}"
+    end
+  end
+end
+```
+
+### 把内核方法改造成一个类宏，让他对所有类都可以用
+
+```ruby
+require 'test/unit'
+
+class Person
+	attr_checked :age do |v|
+    v >= 18
+  end
+end
+
+class TestCheckedAttribute < Test::Unit::TestCase
+  def setup
+    @bob = Person.new
+  end
+end
+```
+
+```ruby
+class Class
+  def attr_checked(attribute, &validation)
+    define_method "#{attribute}=" do |value|
+      raise 'Invalid attribute' unless validation.call(value)
+      instance_variable_set("@#{attribute}", value)
+    end
+    define_method attribute do
+      instance_variable_get "@#{attribute}"
+    end
+  end
+end
+```
+
+### 写在一个模块中
+
+```ruby
+class Person
+  include CheckedAttributes
+  
+  attr_checked :age do |v|
+    v >= 18
+  end
+end
+```
+
+```ruby
+module CheckedAttributes
+  def self.included(base)
+    base.extend ClassMethods
+  end
+  
+  module ClassMethods
+    def attr_checked(attribute, &validation)
+      define_method "#{attribute}=" do |value|
+        raise 'Invalid attribute' unless validation.call(value)
+        instance_variable_set("@#{attribute}", value)
+      end
+      define_method attribute do
+        instance_variable_get "@#{attribute}"
+      end
     end
   end
 end
