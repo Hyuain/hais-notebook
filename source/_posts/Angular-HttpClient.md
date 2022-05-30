@@ -5,7 +5,7 @@ tags:
   - 入门
   - 文档
 categories:
-  - [前端, JavaScript, 框架, Angular]
+  - [前端, Angular]
 ---
 
 HttpClient 是 Angular 用来与服务器通过 HTTP 交流的装置。

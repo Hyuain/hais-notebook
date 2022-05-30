@@ -5,7 +5,7 @@ tags:
   - 入门
   - 文档
 categories:
-  - [前端, JavaScript, 框架, Vue]
+  - [前端, Vue]
 ---
 
 用了几次 Vuex 之后抄一下文档。

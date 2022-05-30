@@ -4,7 +4,7 @@ date: 2020-01-29 17:22:52
 tags:
   - 入门
 categories:
-  - [前端]
+  - [前端, JavaScript]
 ---
 
 - JavaScript 有 7 种数据类型，3 种变量声明的方式

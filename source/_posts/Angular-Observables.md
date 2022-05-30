@@ -5,7 +5,7 @@ tags:
   - 入门
   - 文档
 categories:
-  - [前端, JavaScript, 框架, Angular]
+  - [前端, Angular]
 ---
 
 - 提供了 publishers 和 subscribers 之间传递数据的方式

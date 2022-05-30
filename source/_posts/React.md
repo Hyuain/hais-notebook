@@ -5,7 +5,7 @@ tags:
   - 入门
   - 文档
 categories:
-  - [前端]
+  - [前端, React]
 ---
 
 - React 的安装与使用

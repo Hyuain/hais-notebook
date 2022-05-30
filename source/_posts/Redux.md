@@ -5,7 +5,7 @@ tags:
   - 入门
   - 文档
 categories:
-  - [前端, JavaScript, 框架, React]
+  - [前端, React]
 ---
 
 主要记录了 Redux 的相关东西。

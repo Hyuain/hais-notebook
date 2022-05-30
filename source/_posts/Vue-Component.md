@@ -5,7 +5,7 @@ tags:
   - 入门
   - 文档
 categories:
-  - [前端, JavaScript, 框架, Vue]
+  - [前端, Vue]
 ---
 
 记录 Vue Component 中的内容。

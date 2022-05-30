@@ -4,7 +4,7 @@ date: 2021-07-17 20:06:11
 tags:
   - 读书笔记
 categories:
-  - [前端, JavaScript, 原生 JavaScript]
+  - [前端, JavaScript]
 ---
 
 妄图了解设计模式，开始阅读此书。

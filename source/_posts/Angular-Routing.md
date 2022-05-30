@@ -5,7 +5,7 @@ tags:
   - 入门
   - 文档
 categories:
-  - [前端, JavaScript, 框架, Angular]
+  - [前端, Angular]
 ---
 
 抄一下 Angular 的文档。

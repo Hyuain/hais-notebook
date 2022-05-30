@@ -5,7 +5,7 @@ tags:
   - 入门
   - 文档
 categories:
-  - [前端, JavaScript, 框架, Vue]
+  - [前端, Vue]
 ---
 
 Vue 笔记的开始，主要记录了 Vue 的安装与历史。
