@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hais-notebook/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/hais-notebook/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/hais-notebook/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/hais-notebook/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/hais-notebook/css/main.css">
+
+
+
+<link rel="stylesheet" href="/hais-notebook/lib/@fortawesome/fontawesome-free/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"hyuain.github.io","root":"/hais-notebook/","images":"/hais-notebook/images","scheme":"Gemini","darkmode":false,"version":"8.12.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac","show_result":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/hais-notebook/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/hais-notebook/js/config.js"></script>
+
+    <meta name="description" content="参考文章 1、B 站教程等。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux">
+<meta property="og:url" content="https://hyuain.github.io/hais-notebook/2022/05/29/Operations-Linux/index.html">
+<meta property="og:site_name" content="Hais Notebook">
+<meta property="og:description" content="参考文章 1、B 站教程等。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-05-29T16:25:00.000Z">
+<meta property="article:modified_time" content="2022-05-29T16:25:00.000Z">
+<meta property="article:author" content="Harvey Zhang">
+<meta property="article:tag" content="入门">
+<meta property="article:tag" content="运维">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://hyuain.github.io/hais-notebook/2022/05/29/Operations-Linux/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hyuain.github.io/hais-notebook/2022/05/29/Operations-Linux/","path":"2022/05/29/Operations-Linux/","title":"Linux"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Linux | Hais Notebook</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/hais-notebook/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/hais-notebook/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Hais Notebook</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/hais-notebook/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/hais-notebook/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/hais-notebook/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/hais-notebook/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#linux-%E5%8F%91%E8%A1%8C%E7%89%88"><span class="nav-number">1.</span> <span class="nav-text">Linux 发行版</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#linux-%E5%8E%86%E5%8F%B2"><span class="nav-number">1.1.</span> <span class="nav-text">Linux 历史</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#linux-%E5%8F%91%E8%A1%8C%E7%89%88%E7%9A%84%E4%B8%BB%E8%A6%81%E8%B5%B7%E6%BA%90"><span class="nav-number">1.2.</span> <span class="nav-text">Linux 发行版的主要起源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B8%E5%9E%8B%E7%89%88%E6%9C%AC"><span class="nav-number">1.3.</span> <span class="nav-text">典型版本</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#path"><span class="nav-number">2.</span> <span class="nav-text">PATH</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#linux-%E4%B8%80%E5%88%87%E7%9A%86%E6%96%87%E4%BB%B6"><span class="nav-number">3.</span> <span class="nav-text">Linux 一切皆文件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BD%93%E5%89%8D%E8%B7%AF%E5%BE%84pwd"><span class="nav-number">3.1.</span> <span class="nav-text">当前路径：pwd</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E7%9A%84%E7%94%A8%E6%88%B7%E6%A0%87%E5%87%86"><span class="nav-number">3.2.</span> <span class="nav-text">文件系统的用户标准</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E6%96%87%E4%BB%B6%E5%88%97%E8%A1%A8ls"><span class="nav-number">3.3.</span> <span class="nav-text">查看文件列表：ls</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9A%90%E8%97%8F%E6%96%87%E4%BB%B6"><span class="nav-number">3.3.1.</span> <span class="nav-text">隐藏文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%87%E6%8D%A2%E7%9B%AE%E5%BD%95cd"><span class="nav-number">3.4.</span> <span class="nav-text">切换目录：cd</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E7%9B%AE%E5%BD%95mkdir"><span class="nav-number">3.5.</span> <span class="nav-text">创建目录：mkdir</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9Ctouch-rm-cp-mv"><span class="nav-number">3.6.</span> <span class="nav-text">文件操作：touch rm cp mv</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%8D%E5%88%B6%E6%96%87%E4%BB%B6cp"><span class="nav-number">3.6.1.</span> <span class="nav-text">复制文件：cp</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E6%96%87%E4%BB%B6rm"><span class="nav-number">3.7.</span> <span class="nav-text">删除文件：rm</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A7%BB%E5%8A%A8%E6%96%87%E4%BB%B6mv"><span class="nav-number">3.8.</span> <span class="nav-text">移动文件：mv</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E6%96%87%E4%BB%B6"><span class="nav-number">4.</span> <span class="nav-text">操作文件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E6%96%87%E4%BB%B6"><span class="nav-number">4.1.</span> <span class="nav-text">创建一个文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%9F%E6%88%90%E6%95%B0%E5%AD%97%E5%BA%8F%E5%88%97seq"><span class="nav-number">4.1.1.</span> <span class="nav-text">生成数字序列：seq</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E5%86%85%E5%AE%B9cat"><span class="nav-number">4.1.2.</span> <span class="nav-text">查看内容：cat</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B9%B3%E5%92%8C%E5%9C%B0%E6%9F%A5%E7%9C%8B%E5%86%85%E5%AE%B9less-head-tail"><span class="nav-number">4.1.3.</span> <span class="nav-text">平和地查看内容：less head tail</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#less"><span class="nav-number">4.1.3.1.</span> <span class="nav-text">less</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#head-tail"><span class="nav-number">4.1.3.2.</span> <span class="nav-text">head tail</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E6%89%BE%E6%96%87%E4%BB%B6find"><span class="nav-number">4.1.4.</span> <span class="nav-text">查找文件：find</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Harvey Zhang</p>
+  <div class="site-description" itemprop="description">海鲜酱的笔记本</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/hais-notebook/archives/">
+          <span class="site-state-item-count">60</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/hais-notebook/categories/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/hais-notebook/tags/">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2022/05/29/Operations-Linux/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
+      <meta itemprop="name" content="Harvey Zhang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hais Notebook">
+      <meta itemprop="description" content="海鲜酱的笔记本">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Linux | Hais Notebook">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Linux
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-05-29 16:25:00" itemprop="dateCreated datePublished" datetime="2022-05-29T16:25:00+00:00">2022-05-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E5%85%A8%E6%A0%88/" itemprop="url" rel="index"><span itemprop="name">全栈</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E5%85%A8%E6%A0%88/%E8%BF%90%E7%BB%B4/" itemprop="url" rel="index"><span itemprop="name">运维</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>参考文章 <a target="_blank" rel="noopener" href="https://juejin.cn/post/6917096816118857736">1</a>、B 站教程等。</p>
+<span id="more"></span>
+<h1 id="linux-发行版">Linux 发行版</h1>
+<h2 id="linux-历史">Linux 历史</h2>
+<ul>
+<li>1983 年，Richard Stallman 发起 GNU 计划，他同时也是 smalltack 语言的发明者（被公认的第二个面向对象语言），他还编写了 Emacs。</li>
+<li>1991 年，Linus Torvalds 开始开发 Linux 内核。</li>
+<li>1996 年，确定企鹅为 Linux 的吉祥物。</li>
+</ul>
+<h2 id="linux-发行版的主要起源">Linux 发行版的主要起源</h2>
+<p>Linux 有众多发行版，但其实有两条主线，<strong>debian</strong> 系列和 <strong>redhat</strong> 系列。</p>
+<ul>
+<li>Debian 计划是一个致力于创建自有操作系统的合作组织，他的特点是稳定、安全。Ubuntu 就是基于 Debian 改进的。</li>
+<li>RedHat 是一家商业公司，现在对个人提供一些<em>红帽认证</em>之类的证书。现在的 Centos 占据了大部分服务器市场。</li>
+</ul>
+<h2 id="典型版本">典型版本</h2>
+<ul>
+<li>Ubuntu：基于 Debian 系统的 unstable 分支修改的，界面漂亮，包管理软件是 apt-get。</li>
+<li>Centos：是 RHEL 源码再编译的产物，在包管理和稳定性上，与红帽企业版差别不大。</li>
+<li>ArchLinux：采用滚动升级的模式发行，他的软件和理念通常都是最新的，定制化非常强。</li>
+<li>Gentoo：下载的是软件的源代码，然后在本地进行编译安装，比较底层。</li>
+<li>LFS：Linux From Scratch，有非常详细的安装文档，教你怎么编译内核，编译引导程序等。</li>
+<li>Kali：非常专业的发行版，包含了常见的破解、渗透、攻击工具。</li>
+</ul>
+<h1 id="path">PATH</h1>
+<p>Linux 上一些目录里的文件，是可以被默认找到的，这些目录的集合，就叫做 PATH。PATH 也是一个环境变量，我们可以额通过命令查看 PATH：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="variable">$PATH</span></span><br><span class="line"><span class="comment"># /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin</span></span><br></pre></td></tr></table></figure>
+<h1 id="linux-一切皆文件">Linux 一切皆文件</h1>
+<p>在 Linux 中，对命令、文档、设备、目录、套接字的操作都是一致的。开发驱动程序中使用的一些函数，其实和读写文件没什么两样。</p>
+<h2 id="当前路径pwd">当前路径：<code>pwd</code></h2>
+<blockquote>
+<p>pwd: print working directory</p>
+</blockquote>
+<div class="note warning"><p>在执行一些危险命令时，时常确认当前目录是是个好习惯。</p>
+</div>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">pwd</span></span><br><span class="line"><span class="comment"># /root</span></span><br></pre></td></tr></table></figure>
+<p>当默认使用 root 登录之后，就会停留在 <code>/root</code> 目录中，Linux 中的目录层次，是通过 <code>/</code> 进行划分的。</p>
+<h2 id="文件系统的用户标准">文件系统的用户标准</h2>
+<blockquote>
+<p>FHS: Filesystem Hierarchy Standard</p>
+</blockquote>
+<table>
+<thead>
+<tr class="header">
+<th>第一层</th>
+<th>第二层</th>
+<th>介绍</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>/bin</code></td>
+<td></td>
+<td>目录 <code>/usr/bin</code> 的软链接</td>
+</tr>
+<tr class="even">
+<td><code>/sbin</code></td>
+<td></td>
+<td>目录 <code>/usr/sbin</code> 的软链接</td>
+</tr>
+<tr class="odd">
+<td><code>/lib</code></td>
+<td></td>
+<td>目录 <code>/usr/lib</code> 的软链接</td>
+</tr>
+<tr class="even">
+<td><code>/usr</code></td>
+<td><code>/bin</code></td>
+<td>存放一些常用的命令</td>
+</tr>
+<tr class="odd">
+<td><code>/usr</code></td>
+<td><code>/sbin</code></td>
+<td>存放一些管理员常用的命令</td>
+</tr>
+<tr class="even">
+<td><code>/usr</code></td>
+<td><code>/lib</code></td>
+<td>存放一些动态库和模块文件</td>
+</tr>
+<tr class="odd">
+<td><code>/sys</code></td>
+<td></td>
+<td>内核中的数据结构的可视化接口</td>
+</tr>
+<tr class="even">
+<td><code>/proc</code></td>
+<td></td>
+<td>内存映像</td>
+</tr>
+<tr class="odd">
+<td><code>/run</code></td>
+<td></td>
+<td>内存映像</td>
+</tr>
+<tr class="even">
+<td><code>/boot</code></td>
+<td></td>
+<td>存放引导程序，内核相关文件</td>
+</tr>
+<tr class="odd">
+<td><code>/dev</code></td>
+<td></td>
+<td>存放一些设备文件，比如光盘</td>
+</tr>
+<tr class="even">
+<td><code>/etc</code></td>
+<td></td>
+<td>存放一些全局的、应用配置文件。比如如果安装了 php、nginx，他们的配置文件就放在这下面的某个文件夹里面</td>
+</tr>
+<tr class="odd">
+<td><code>/var</code></td>
+<td></td>
+<td>同 <code>/var/run</code>，存放系统运行时需要的文件，比如 mysql 的 pid 等</td>
+</tr>
+<tr class="even">
+<td><code>/tmp</code></td>
+<td></td>
+<td>非常特殊的临时文件夹，断电丢失，所有用户都有写入权限，通常用来做文件交换用</td>
+</tr>
+<tr class="odd">
+<td><code>/home</code></td>
+<td><code>/*</code></td>
+<td>用户目录。我们可以在里面做任何操作，可以存放一些自己的资料、测试用的数据资料等</td>
+</tr>
+<tr class="even">
+<td><code>/root</code></td>
+<td></td>
+<td>root 用户的 home</td>
+</tr>
+</tbody>
+</table>
+<h2 id="查看文件列表ls">查看文件列表：<code>ls</code></h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ls 可以接受路径参数，不用跳转到那里去就能输出相关信息</span></span><br><span class="line"><span class="built_in">ls</span> /</span><br></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr class="header">
+<th>常用参数</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>-a</code> <code>--all</code></td>
+<td>列出所有的文件，包括隐藏文件</td>
+</tr>
+<tr class="even">
+<td><code>-l</code></td>
+<td>列出文件的详细信息</td>
+</tr>
+<tr class="odd">
+<td><code>-t</code></td>
+<td>根据修改时间排序</td>
+</tr>
+<tr class="even">
+<td><code>-c</code></td>
+<td>根据 ctime 排序显示</td>
+</tr>
+<tr class="odd">
+<td><code>-C</code> <code>--color</code></td>
+<td>显示彩色</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">lrwxrwxrwx   1 root root         7 Apr 20 18:39 bin -&gt; usr/bin</span><br><span class="line">drwxr-xr-x   3 root root      4096 Apr 20 18:54 boot</span><br><span class="line">drwxr-xr-x  18 root root      3880 May 29 16:48 dev</span><br><span class="line">drwxr-xr-x  88 root root      4096 May 23 17:14 etc</span><br><span class="line">drwxr-xr-x   3 root root      4096 May 23 17:03 home</span><br><span class="line">lrwxrwxrwx   1 root root         7 Apr 20 18:39 lib -&gt; usr/lib</span><br></pre></td></tr></table></figure>
+<ul>
+<li>第一列：第一个字母是文件类型，后面表示文件权限</li>
+<li>第二列：普通文件表示链接数，目录表示是子文件数</li>
+<li>第三列：所属用户</li>
+<li>第四列：所属组</li>
+<li>第五列：大小</li>
+<li>第六列：最后修改时间</li>
+<li>最后一列：软链接或文件名</li>
+</ul>
+<h3 id="隐藏文件">隐藏文件</h3>
+<p>直接在 <code>/root</code> 目录里执行 <code>ls -al</code> 可以看到更多的东西，这些额外的东西就是隐藏文件，他们都是以 <code>.</code> 开头，并且以配置文件居多。</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">drwx------  5 root root 4096 May 29 16:55  .</span><br><span class="line">drwxr-xr-x 18 root root 4096 May 23 16:52  ..</span><br><span class="line">-rw-------  1 root root 1196 May 29 19:45  .bash_history</span><br><span class="line">-rw-r--r--  1 root root 3106 Dec  5  2019  .bashrc</span><br></pre></td></tr></table></figure>
+<p>并且还有两个特殊的目录—— <code>.</code> 和 <code>..</code>。前者表示当前目录，后者表示上层目录。</p>
+<p>也可以使用 <code>ll</code>，他相当于 <code>ls -al</code>。</p>
+<h2 id="切换目录cd">切换目录：<code>cd</code></h2>
+<table>
+<thead>
+<tr class="header">
+<th>常用参数</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>../</code></td>
+<td>上层目录</td>
+</tr>
+<tr class="even">
+<td><code>./</code></td>
+<td>当前目录</td>
+</tr>
+<tr class="odd">
+<td><code>~</code></td>
+<td>当前的用户目录</td>
+</tr>
+<tr class="even">
+<td><code>-</code></td>
+<td>可以在最近的两次目录中来回切换</td>
+</tr>
+</tbody>
+</table>
+<h2 id="创建目录mkdir">创建目录：<code>mkdir</code></h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> -p a1/b2/c3/d4/e5/f6/&#123;g7,g8,g9,g10&#125;</span><br></pre></td></tr></table></figure>
+<p><code>-p</code> 可以让我们一次性创建多层目录，<code>&#123;&#125;</code> 可以一次性创建多个目录</p>
+<h2 id="文件操作touch-rm-cp-mv">文件操作：<code>touch</code> <code>rm</code> <code>cp</code> <code>mv</code></h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建文件</span></span><br><span class="line"><span class="built_in">touch</span> long.txt</span><br><span class="line"><span class="built_in">touch</span> haha.txt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 复制文件</span></span><br><span class="line"><span class="built_in">cp</span> haha.txt xixi.txt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 移动文件</span></span><br><span class="line"><span class="built_in">mv</span> long.txt short.txt</span><br><span class="line"><span class="built_in">mv</span> haha.txt a1/</span><br><span class="line"><span class="built_in">mv</span> xixi.txt a1/b2</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除文件</span></span><br><span class="line"><span class="built_in">rm</span> short.txt</span><br><span class="line"><span class="built_in">rm</span> -rvf a1/</span><br></pre></td></tr></table></figure>
+<h3 id="复制文件cp">复制文件：<code>cp</code></h3>
+<table>
+<thead>
+<tr class="header">
+<th>常用参数</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>-r</code></td>
+<td>递归复制</td>
+</tr>
+<tr class="even">
+<td><code>-f</code></td>
+<td>强制复制，直接覆盖不给提示</td>
+</tr>
+<tr class="odd">
+<td><code>-i</code></td>
+<td>覆盖时给提示</td>
+</tr>
+<tr class="even">
+<td><code>-v</code></td>
+<td>显示详细步骤</td>
+</tr>
+<tr class="odd">
+<td><code>-p</code></td>
+<td>把文件属性也复制过去</td>
+</tr>
+<tr class="even">
+<td><code>-a</code></td>
+<td>把档案所有特性一起复制</td>
+</tr>
+</tbody>
+</table>
+<h2 id="删除文件rm">删除文件：<code>rm</code></h2>
+<table>
+<thead>
+<tr class="header">
+<th>常用参数</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>-r</code></td>
+<td>递归删除</td>
+</tr>
+<tr class="even">
+<td><code>-f</code></td>
+<td>强制删除，不给提示</td>
+</tr>
+<tr class="odd">
+<td><code>-i</code></td>
+<td>删除时给提示</td>
+</tr>
+<tr class="even">
+<td><code>-v</code></td>
+<td>显示详细步骤</td>
+</tr>
+</tbody>
+</table>
+<h2 id="移动文件mv">移动文件：<code>mv</code></h2>
+<table>
+<thead>
+<tr class="header">
+<th>常用参数</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>-f</code></td>
+<td>直接覆盖，不给提示</td>
+</tr>
+<tr class="even">
+<td><code>-i</code></td>
+<td>覆盖时给提示</td>
+</tr>
+<tr class="odd">
+<td><code>-v</code></td>
+<td>显示详细步骤</td>
+</tr>
+<tr class="even">
+<td><code>-b</code></td>
+<td>覆盖前先备份</td>
+</tr>
+<tr class="odd">
+<td><code>-u</code></td>
+<td>文件较新的时候才覆盖</td>
+</tr>
+</tbody>
+</table>
+<h1 id="操作文件">操作文件</h1>
+<p><code>ll</code> 结果的第一列的第一个字母，表示了 Linux 文件类型：</p>
+<table>
+<thead>
+<tr class="header">
+<th>字母</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>-</code></td>
+<td>普通文件</td>
+</tr>
+<tr class="even">
+<td><code>d</code></td>
+<td>目录文件</td>
+</tr>
+<tr class="odd">
+<td><code>l</code></td>
+<td>链接文件，比如快捷方式</td>
+</tr>
+<tr class="even">
+<td><code>s</code></td>
+<td>套接字文件</td>
+</tr>
+<tr class="odd">
+<td><code>c</code></td>
+<td>字符设备文件，比如 <code>/dev/ 中的很多文件</code></td>
+</tr>
+<tr class="even">
+<td><code>b</code></td>
+<td>块设备文件，比如一块磁盘</td>
+</tr>
+<tr class="odd">
+<td><code>p</code></td>
+<td>管道文件</td>
+</tr>
+</tbody>
+</table>
+<p>Linux 上文件可以没有后缀，他的后缀其实没有什么实际的意义，我们可以通过 <code>file</code> 命令查看文件的具体类型：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">file /etc</span><br><span class="line"><span class="comment"># /etc: directory</span></span><br><span class="line">file /etc/group</span><br><span class="line"><span class="comment"># /etc/group: ASCII text</span></span><br></pre></td></tr></table></figure>
+<h2 id="创建一个文件">创建一个文件</h2>
+<h3 id="生成数字序列seq">生成数字序列：<code>seq</code></h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">seq</span> 10 20 &gt;&gt; spring</span><br></pre></td></tr></table></figure>
+<p><code>&gt;</code> 是将前面命令的输出重定向到其他地方；<code>&gt;&gt;</code> 类似，并且是在原来文件的基础上追加内容</p>
+<h3 id="查看内容cat">查看内容：<code>cat</code></h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cat</span> -n spring</span><br><span class="line"><span class="comment"># 1	10</span></span><br><span class="line"><span class="comment"># 2	11</span></span><br><span class="line"><span class="comment"># 3	12</span></span><br><span class="line"><span class="comment"># 4	13</span></span><br><span class="line"><span class="comment"># 5	14</span></span><br><span class="line"><span class="comment"># 6	15</span></span><br><span class="line"><span class="comment"># 7	16</span></span><br><span class="line"><span class="comment"># 8	17</span></span><br><span class="line"><span class="comment"># 9	18</span></span><br><span class="line"><span class="comment"># 10	19</span></span><br><span class="line"><span class="comment"># 11	20</span></span><br></pre></td></tr></table></figure>
+<p><code>-n</code> 会显示行号。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 合并 a 文件和 b 文件到 c 文件</span></span><br><span class="line"><span class="built_in">cat</span> a b &gt;&gt; c</span><br><span class="line"></span><br><span class="line"><span class="comment"># 把 a 文件内容作为输入，使用管道处理</span></span><br><span class="line"><span class="built_in">cat</span> a | cmd</span><br><span class="line"></span><br><span class="line"><span class="comment"># 写入内容到指定文件</span></span><br><span class="line"><span class="built_in">cat</span> &gt; index.html &lt;&lt;<span class="string">EOF</span></span><br><span class="line"><span class="string">&lt;html&gt;</span></span><br><span class="line"><span class="string">  &lt;head&gt;&lt;title&gt;&lt;/title&gt;&lt;/head&gt;</span></span><br><span class="line"><span class="string">&lt;/html&gt;</span></span><br><span class="line"><span class="string">EOF</span></span><br></pre></td></tr></table></figure>
+<h3 id="平和地查看内容less-head-tail">平和地查看内容：<code>less</code> <code>head</code> <code>tail</code></h3>
+<p>如果文件非常大，使用 <code>cat</code> 就会在终端上疯狂输出，这时候我们可以使用另外的方案。</p>
+<h4 id="less"><code>less</code></h4>
+<table>
+<thead>
+<tr class="header">
+<th>常用参数</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>-n</code></td>
+<td>显示行号</td>
+</tr>
+<tr class="even">
+<td><code>-m</code></td>
+<td>显示百分比</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th>常用快捷键</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>/</code></td>
+<td>向下搜索</td>
+</tr>
+<tr class="even">
+<td><code>?</code></td>
+<td>向上搜索</td>
+</tr>
+<tr class="odd">
+<td><code>n</code></td>
+<td>重复上一个搜索</td>
+</tr>
+<tr class="even">
+<td><code>N</code></td>
+<td>反向重复上一个搜索</td>
+</tr>
+<tr class="odd">
+<td><code>&lt;space&gt;</code></td>
+<td>向后翻页</td>
+</tr>
+<tr class="even">
+<td><code>b</code></td>
+<td>向前翻页</td>
+</tr>
+<tr class="odd">
+<td><code>j</code></td>
+<td>向下一行</td>
+</tr>
+<tr class="even">
+<td><code>k</code></td>
+<td>向上一行</td>
+</tr>
+<tr class="odd">
+<td><code>g</code></td>
+<td>去开头</td>
+</tr>
+<tr class="even">
+<td><code>G</code></td>
+<td>去结尾</td>
+</tr>
+<tr class="odd">
+<td><code>q</code></td>
+<td>退出</td>
+</tr>
+</tbody>
+</table>
+<h4 id="head-tail"><code>head</code> <code>tail</code></h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 显示头三行</span></span><br><span class="line"><span class="built_in">head</span> -n 3 spring</span><br><span class="line"></span><br><span class="line"><span class="comment"># 显示尾三行</span></span><br><span class="line"><span class="built_in">tail</span> -n 3 spring</span><br></pre></td></tr></table></figure>
+<p><code>tail -f</code> 表示循环读取，可以用来在控制终端实时监控文件变化，来查看一些滚动日志，可以配合 <code>grep</code> 命令达到过滤效果</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 滚动查看系统日志</span></span><br><span class="line"><span class="built_in">tail</span> -f /var/log/messages</span><br><span class="line"></span><br><span class="line"><span class="comment"># 滚动查看包含 info 字样的日志信息</span></span><br><span class="line"><span class="built_in">tail</span> -f /var/log/messages | grep info</span><br><span class="line"></span><br><span class="line"><span class="comment"># 滚动监控到重新创建的文件，比如一些按天滚动的</span></span><br><span class="line"><span class="built_in">tail</span> -F</span><br></pre></td></tr></table></figure>
+<h3 id="查找文件find">查找文件：<code>find</code></h3>
+<table>
+<thead>
+<tr class="header">
+<th>常用参数</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>-name</code></td>
+<td>文件名，可以使用通配符</td>
+</tr>
+<tr class="even">
+<td><code>-size</code></td>
+<td>根据大小搜索</td>
+</tr>
+<tr class="odd">
+<td><code>-type</code></td>
+<td>根据文件类型搜索 f d l s p b c</td>
+</tr>
+<tr class="even">
+<td><code>-perm</code></td>
+<td>根据文件权限搜索</td>
+</tr>
+<tr class="odd">
+<td><code>-mtime</code></td>
+<td>修改时间，天</td>
+</tr>
+<tr class="even">
+<td><code>-mmin</code></td>
+<td>修改时间，分</td>
+</tr>
+<tr class="odd">
+<td><code>-user</code></td>
+<td>属于某个用户</td>
+</tr>
+<tr class="even">
+<td><code>-group</code></td>
+<td>属于某个组</td>
+</tr>
+<tr class="odd">
+<td><code>-exec</code></td>
+<td>执行命令，建议使用 xargs 替代</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 全局找 decorator 文件</span></span><br><span class="line">find / -name decorator.py -<span class="built_in">type</span> f</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除当前目录中的所有 class 文件</span></span><br><span class="line">find . | grep .class$ | xargs <span class="built_in">rm</span> -rvf</span><br><span class="line"></span><br><span class="line"><span class="comment"># 找到 /root 下一天前访问的文件</span></span><br><span class="line">find /root -atime 1 -<span class="built_in">type</span> f</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查找十分钟内更新过的文件</span></span><br><span class="line">find /root -cmin -10</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查找输入 root 用户的文件</span></span><br><span class="line">find /root -user root</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查找大于 1MB 的文件，进行清理</span></span><br><span class="line"></span><br><span class="line">find /root -size +1024k -<span class="built_in">type</span> f | xargs <span class="built_in">rm</span> -f</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/hais-notebook/tags/%E5%85%A5%E9%97%A8/" rel="tag"># 入门</a>
+              <a href="/hais-notebook/tags/%E8%BF%90%E7%BB%B4/" rel="tag"># 运维</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2022/03/13/Ruby/" rel="prev" title="Ruby">
+                  <i class="fa fa-chevron-left"></i> Ruby
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Harvey Zhang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="/hais-notebook/lib/animejs/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/hais-notebook/js/comments.js"></script><script src="/hais-notebook/js/utils.js"></script><script src="/hais-notebook/js/next-boot.js"></script>
+
+  
+<script src="/hais-notebook/lib/hexo-generator-searchdb/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/hais-notebook/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"/hais-notebook/lib/mathjax/es5/tex-mml-chtml.js","integrity":"sha256-hlC2uSQYTmPsrzGZTEQEg9PZ1a/+SV6VBCTclohf2og="}}</script>
+<script src="/hais-notebook/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
