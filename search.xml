@@ -5623,7 +5623,7 @@ true
   </entry>
   <entry>
     <title>Topics From Chromium Blogs</title>
-    <url>/hais-notebook/2022/03/12/Memo-Chromium-Blogs/</url>
+    <url>/hais-notebook/2022/06/16/Memo-Chromium-Blogs/</url>
     <content><![CDATA[<p>Read some articles in chromium blogs or relative wikis, and take these memos.</p>
 <span id="more"></span>
 <h1 id="architecture">Architecture</h1>
@@ -6622,6 +6622,100 @@ true
       </tags>
   </entry>
   <entry>
+    <title>Stream</title>
+    <url>/hais-notebook/2021/03/21/NodeJS-Stream/</url>
+    <content><![CDATA[<p>数据流叫 Stream，每次写的小数据叫 chunk，产生数据的一段叫 source，得到数据的一段叫 sink。</p>
+<span id="more"></span>
+<h1 id="nodejs-中的-stream">NodeJS 中的 Stream</h1>
+<h2 id="用-stream-写文件">用 Stream 写文件</h2>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">&quot;fs&quot;</span>)</span><br><span class="line"><span class="keyword">const</span> stream = fs.<span class="title function_">createWriteStream</span>(<span class="string">&quot;./big_file.txt&quot;</span>)</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; <span class="number">1000</span>; i++) &#123;</span><br><span class="line">  stream.<span class="title function_">write</span>(<span class="string">`这是第 <span class="subst">$&#123;i&#125;</span> 行的内容，哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈\n`</span>)</span><br><span class="line">&#125;</span><br><span class="line">stream.<span class="title function_">end</span>()</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;done&quot;</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="不用-stream-读文件">不用 Stream 读文件</h2>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> http = <span class="built_in">require</span>(<span class="string">&quot;http&quot;</span>)</span><br><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">&quot;fs&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> server = http.<span class="title function_">createServer</span>()</span><br><span class="line"></span><br><span class="line">server.<span class="title function_">on</span>(<span class="string">&quot;request&quot;</span>, <span class="function">(<span class="params">request, response</span>) =&gt;</span> &#123;</span><br><span class="line">  fs.<span class="title function_">readFile</span>(<span class="string">&quot;./big_file.txt&quot;</span>, <span class="function">(<span class="params">err, data</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (err) <span class="keyword">throw</span> err</span><br><span class="line">    response.<span class="title function_">end</span>(data)</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;done&quot;</span>)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">server.<span class="title function_">listen</span>(<span class="number">8888</span>)</span><br></pre></td></tr></table></figure>
+<p>可以看到 Nodejs 进程的内存占用非常大。</p>
+<h2 id="用-stream-读文件">用 Stream 读文件</h2>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> http = <span class="built_in">require</span>(<span class="string">&quot;http&quot;</span>)</span><br><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">&quot;fs&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> server = http.<span class="title function_">createServer</span>()</span><br><span class="line"></span><br><span class="line">server.<span class="title function_">on</span>(<span class="string">&quot;request&quot;</span>, <span class="function">(<span class="params">request, response</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> stream = fs.<span class="title function_">createReadStream</span>(<span class="string">&quot;./big_file.txt&quot;</span>)</span><br><span class="line">  stream.<span class="title function_">pipe</span>(response) <span class="comment">// response 也是 stream，文件 stream 和 response stream 通过管道连接</span></span><br><span class="line">  stream.<span class="title function_">on</span>(<span class="string">&quot;end&quot;</span>, <span class="function">() =&gt;</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;done&quot;</span>))</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">server.<span class="title function_">listen</span>(<span class="number">8888</span>)</span><br></pre></td></tr></table></figure>
+<p>使用 Stream，Nodejs 的内存占用会更低。</p>
+<p>管道也可以通过这样来实现：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// stream1 有数据就塞给 stream2</span></span><br><span class="line">stream1.<span class="title function_">on</span>(<span class="string">&quot;data&quot;</span>, <span class="function">(<span class="params">chunk</span>) =&gt;</span> &#123;</span><br><span class="line">  stream2.<span class="title function_">write</span>(chunk)</span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">// stream1 停了，就停掉 steam2</span></span><br><span class="line">stream1.<span class="title function_">on</span>(<span class="string">&quot;end&quot;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  stream2.<span class="title function_">end</span>()</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h1 id="stream-的原型链">Stream 的原型链</h1>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">s = fs.<span class="title function_">createReadStream</span>(path)</span><br></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">s -&gt; fs.ReadStream -&gt; stream.Readable -&gt; stream.Stream -&gt; event.EventEmitter -&gt; Object</span><br></pre></td></tr></table></figure>
+<h2 id="支持的事件和方法">支持的事件和方法</h2>
+<h3 id="stream.readable">stream.Readable</h3>
+<ul>
+<li><p>事件：data, end, error, close, readable, pause, resume ...</p></li>
+<li><p>方法：</p>
+<ul>
+<li>pipe()</li>
+<li>unpipe()</li>
+<li>wrap()</li>
+<li>destroy()</li>
+<li>read()</li>
+<li>unshift()</li>
+<li>resume()</li>
+<li>pause()</li>
+<li>isPaused()</li>
+<li>setEncoding()</li>
+</ul></li>
+</ul>
+<h3 id="stream.writable">stream.Writable</h3>
+<ul>
+<li><p>事件：drain, finish, error, close, pipe, unpipe ...</p></li>
+<li><p>方法：</p>
+<ul>
+<li>write()</li>
+<li>destroy()</li>
+<li>end()</li>
+<li>cork()</li>
+<li>uncork()</li>
+<li>setDefaultEncoding()</li>
+</ul></li>
+</ul>
+<h1 id="stream-的分类">Stream 的分类</h1>
+<ul>
+<li>Readable，可读，数据的生产者</li>
+<li>Writable，可写，数据的消费者</li>
+<li>Duplex，可读可写（双向，读和写的内容无关）</li>
+<li>Transform，可读可写（变化，比如先把内容读出来，再写到别的地方）</li>
+</ul>
+<h2 id="readable-stream">Readable Stream</h2>
+<ul>
+<li>paused 静止态</li>
+<li>flowing 流动态</li>
+</ul>
+<p>默认处于 paused；添加 data 事件监听，就会变成 flowing；删掉 data 事件监听就又变成 paused。 pause() 可以让他变为 paused，resume() 可以让他变为 flowing。</p>
+<h2 id="writable-stream">Writable Stream</h2>
+<ul>
+<li>drain：writable.write(chunk) 将会返回一个 boolean，如果 boolean 为 false，这个 stream 堵车了，这个时候就需要等待。当 writable 监听到 drain 事件，表示不堵车了，可以继续传输数据。</li>
+<li>finish：调用 stream.end() 方法，并且缓冲区的数据都已经传给底层系统后会触发。</li>
+</ul>
+<h2 id="transform-stream">Transform Stream</h2>
+<p>NodeJS 内置了一些 Transform Stream，可以看这个使用 gzip 压缩的例子：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">&quot;fs&quot;</span>)</span><br><span class="line"><span class="keyword">const</span> zlib = <span class="built_in">require</span>(<span class="string">&quot;zlib&quot;</span>)</span><br><span class="line"><span class="keyword">const</span> &#123; <span class="title class_">Transform</span> &#125; = <span class="built_in">require</span>(<span class="string">&quot;stream&quot;</span>)</span><br><span class="line"><span class="keyword">const</span> crypto = <span class="built_in">require</span>(<span class="string">&quot;crypto&quot;</span>)</span><br><span class="line"><span class="keyword">const</span> file = process.<span class="property">argv</span>[<span class="number">2</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> reportProgress = <span class="keyword">new</span> <span class="title class_">Transform</span>(&#123;</span><br><span class="line">  <span class="title function_">transform</span>(<span class="params">chunk, encoding, callback</span>) &#123;</span><br><span class="line">    process.<span class="property">stdout</span>.<span class="title function_">write</span>(<span class="string">&quot;.&quot;</span>)</span><br><span class="line">    <span class="comment">// 可以将 chunk push 进去</span></span><br><span class="line">    <span class="comment">// this.push(chunk)</span></span><br><span class="line">    <span class="comment">// 也可以把 chunk 给 callback</span></span><br><span class="line">    <span class="title function_">callback</span>(<span class="literal">null</span>, chunk)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">fs.<span class="title function_">createReadStream</span>(file)</span><br><span class="line">  .<span class="title function_">pipe</span>(crypto.<span class="title function_">createCipher</span>(<span class="string">&quot;aes-192-gcm&quot;</span>, <span class="string">&quot;123456&quot;</span>))</span><br><span class="line">  .<span class="title function_">pipe</span>(zlib.<span class="title function_">createGzip</span>())</span><br><span class="line">  <span class="comment">// 可以用 on 来进行监听并作出副作用（不会影响原来的数据）</span></span><br><span class="line">  <span class="comment">// .on(&quot;data&quot;, () =&gt; process.stdout.write(&quot;.&quot;))</span></span><br><span class="line">  <span class="comment">// 也可以插入一个 TransformStream</span></span><br><span class="line">  .<span class="title function_">pipe</span>(reportProgress)</span><br><span class="line">  .<span class="title function_">pipe</span>(fs.<span class="title function_">createWriteStream</span>(file + <span class="string">&quot;.gz&quot;</span>))</span><br><span class="line">  .<span class="title function_">on</span>(<span class="string">&quot;finish&quot;</span>, <span class="function">() =&gt;</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Done&quot;</span>))</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h1 id="创建一个-stream">创建一个 Stream</h1>
+<h2 id="创建一个-writable-stream">创建一个 Writable Stream</h2>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; <span class="title class_">Writable</span> &#125; = <span class="built_in">require</span>(<span class="string">&quot;stream&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> consumer = <span class="keyword">new</span> <span class="title class_">Writable</span>(&#123;</span><br><span class="line">  <span class="title function_">write</span>(<span class="params">chunk, encoding, callback</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(chunk.<span class="title function_">toString</span>())</span><br><span class="line">    <span class="comment">// callback 调用这句必须要写，否则就会卡住</span></span><br><span class="line">    <span class="title function_">callback</span>()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 用户的输入 stream -&gt; consumer</span></span><br><span class="line">process.<span class="property">stdin</span>.<span class="title function_">pipe</span>(consumer)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 也可以这样写：</span></span><br><span class="line"><span class="comment">// process.stdin.on(&quot;data&quot;, (chunk) =&gt; &#123;</span></span><br><span class="line"><span class="comment">//   consumer.write(chunk)</span></span><br><span class="line"><span class="comment">// &#125;)</span></span><br></pre></td></tr></table></figure>
+<h2 id="创建一个-readable-stream">创建一个 Readable Stream</h2>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; <span class="title class_">Readable</span> &#125; = <span class="built_in">require</span>(<span class="string">&quot;stream&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> producer = <span class="keyword">new</span> <span class="title class_">Readable</span>()</span><br><span class="line"></span><br><span class="line">producer.<span class="title function_">push</span>(<span class="string">&quot;HAHAHA&quot;</span>)</span><br><span class="line">producer.<span class="title function_">push</span>(<span class="string">&quot;XIXIXI&quot;</span>)</span><br><span class="line"><span class="comment">// push null 必须写，表示已经结束了</span></span><br><span class="line">producer.<span class="title function_">push</span>(<span class="literal">null</span>)</span><br><span class="line"></span><br><span class="line">producer.<span class="title function_">pipe</span>(process.<span class="property">stdout</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 也可以这样写</span></span><br><span class="line"><span class="comment">// producer.on(&quot;data&quot;, (chunk) =&gt; &#123;</span></span><br><span class="line"><span class="comment">//   process.stdout.write(chunk)</span></span><br><span class="line"><span class="comment">//   console.log(&quot;WRITE&quot;)</span></span><br><span class="line"><span class="comment">// &#125;)</span></span><br></pre></td></tr></table></figure>
+<p>上面的写法是先将所有的数据 push 进流里面，那么有没有办法让他边读边写呢？</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; <span class="title class_">Readable</span> &#125; = <span class="built_in">require</span>(<span class="string">&quot;stream&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> producer = <span class="keyword">new</span> <span class="title class_">Readable</span>(&#123;</span><br><span class="line">  <span class="title function_">read</span>(<span class="params">size</span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="title function_">push</span>(<span class="title class_">String</span>.<span class="title function_">fromCharCode</span>(<span class="variable language_">this</span>.<span class="property">currentCharCode</span>++))</span><br><span class="line">    <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">currentCharCode</span> &gt; <span class="number">90</span>) &#123;</span><br><span class="line">      <span class="comment">// push null 表示终止</span></span><br><span class="line">      <span class="variable language_">this</span>.<span class="title function_">push</span>(<span class="literal">null</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">producer.<span class="property">currentCharCode</span> = <span class="string">&quot;A&quot;</span>.<span class="title function_">charCodeAt</span>()</span><br><span class="line"></span><br><span class="line">producer.<span class="title function_">pipe</span>(process.<span class="property">stdout</span>)</span><br></pre></td></tr></table></figure>
+<p>上述的代码就是在 <code>process.stdout</code> 要数据的时候（调用 <code>read</code> 的时候），<code>producer</code> 才往里面 push 一个字符。</p>
+<h2 id="创建一个-duplex-stream">创建一个 Duplex Stream</h2>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; <span class="title class_">Duplex</span> &#125; = <span class="built_in">require</span>(<span class="string">&quot;stream&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> duplex = <span class="keyword">new</span> <span class="title class_">Duplex</span>(&#123;</span><br><span class="line">  <span class="title function_">write</span>(<span class="params">chunk, encoding, callback</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(chunk.<span class="title function_">toString</span>())</span><br><span class="line">    <span class="title function_">callback</span>()</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="title function_">read</span>(<span class="params">size</span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="title function_">push</span>(<span class="title class_">String</span>.<span class="title function_">fromCharCode</span>(<span class="variable language_">this</span>.<span class="property">currentCharCode</span>++))</span><br><span class="line">    <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">currentCharCode</span> &gt; <span class="number">90</span>) &#123;</span><br><span class="line">      <span class="variable language_">this</span>.<span class="title function_">push</span>(<span class="literal">null</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">duplex.<span class="property">currentCharCode</span> = <span class="number">65</span></span><br><span class="line"></span><br><span class="line">process.<span class="property">stdin</span>.<span class="title function_">pipe</span>(duplex).<span class="title function_">pipe</span>(process.<span class="property">stdout</span>)</span><br></pre></td></tr></table></figure>
+<p>简单来说就是把 Readable 和 Writable Stream 写在一起，就成了一个双向的 Stream，它既可写又可读，既可以消费信息、又可以生产信息。他的生产和消费过程彼此相互独立、互不影响。</p>
+<h2 id="transform-stream-1">Transform Stream</h2>
+<p>Transform 虽然也被称为“双向流”，但跟 Duplex 不同，他是先读数据，转换之后再写数据。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; <span class="title class_">Transform</span> &#125; = <span class="built_in">require</span>(<span class="string">&quot;stream&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> upperCaseTransformer = <span class="keyword">new</span> <span class="title class_">Transform</span>(&#123;</span><br><span class="line">  <span class="title function_">transform</span>(<span class="params">chunk, encoding, callback</span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="title function_">push</span>(chunk.<span class="title function_">toString</span>().<span class="title function_">toUpperCase</span>())</span><br><span class="line">    <span class="title function_">callback</span>()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">process.<span class="property">stdin</span>.<span class="title function_">pipe</span>(upperCaseTransformer).<span class="title function_">pipe</span>(process.<span class="property">stdout</span>)</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>全栈</category>
+        <category>NodeJS</category>
+      </categories>
+      <tags>
+        <tag>入门</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Next</title>
     <url>/hais-notebook/2021/04/07/NodeJS-Next/</url>
     <content><![CDATA[<p>NodeJS WEB 框架之 Next。 Tip：如何保存密码？ 1. 存在环境变量中：用 <code>export xxx=</code> 设置环境变量，用 <code>process.env.xxx</code> 使用环境变量 2. 或者参考 <a href="https://nextjs.org/docs/basic-features/environment-variables">这篇文章</a></p>
@@ -6726,100 +6820,6 @@ true
 <li>相关，SSR（getServerSideProps）或 BSR</li>
 <li>无关，SSG（getStaticProps） 或 SSR 或 BSR</li>
 </ul>
-]]></content>
-      <categories>
-        <category>全栈</category>
-        <category>NodeJS</category>
-      </categories>
-      <tags>
-        <tag>入门</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Stream</title>
-    <url>/hais-notebook/2021/03/21/NodeJS-Stream/</url>
-    <content><![CDATA[<p>数据流叫 Stream，每次写的小数据叫 chunk，产生数据的一段叫 source，得到数据的一段叫 sink。</p>
-<span id="more"></span>
-<h1 id="nodejs-中的-stream">NodeJS 中的 Stream</h1>
-<h2 id="用-stream-写文件">用 Stream 写文件</h2>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">&quot;fs&quot;</span>)</span><br><span class="line"><span class="keyword">const</span> stream = fs.<span class="title function_">createWriteStream</span>(<span class="string">&quot;./big_file.txt&quot;</span>)</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; <span class="number">1000</span>; i++) &#123;</span><br><span class="line">  stream.<span class="title function_">write</span>(<span class="string">`这是第 <span class="subst">$&#123;i&#125;</span> 行的内容，哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈\n`</span>)</span><br><span class="line">&#125;</span><br><span class="line">stream.<span class="title function_">end</span>()</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;done&quot;</span>)</span><br></pre></td></tr></table></figure>
-<h2 id="不用-stream-读文件">不用 Stream 读文件</h2>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> http = <span class="built_in">require</span>(<span class="string">&quot;http&quot;</span>)</span><br><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">&quot;fs&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> server = http.<span class="title function_">createServer</span>()</span><br><span class="line"></span><br><span class="line">server.<span class="title function_">on</span>(<span class="string">&quot;request&quot;</span>, <span class="function">(<span class="params">request, response</span>) =&gt;</span> &#123;</span><br><span class="line">  fs.<span class="title function_">readFile</span>(<span class="string">&quot;./big_file.txt&quot;</span>, <span class="function">(<span class="params">err, data</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (err) <span class="keyword">throw</span> err</span><br><span class="line">    response.<span class="title function_">end</span>(data)</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;done&quot;</span>)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">server.<span class="title function_">listen</span>(<span class="number">8888</span>)</span><br></pre></td></tr></table></figure>
-<p>可以看到 Nodejs 进程的内存占用非常大。</p>
-<h2 id="用-stream-读文件">用 Stream 读文件</h2>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> http = <span class="built_in">require</span>(<span class="string">&quot;http&quot;</span>)</span><br><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">&quot;fs&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> server = http.<span class="title function_">createServer</span>()</span><br><span class="line"></span><br><span class="line">server.<span class="title function_">on</span>(<span class="string">&quot;request&quot;</span>, <span class="function">(<span class="params">request, response</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> stream = fs.<span class="title function_">createReadStream</span>(<span class="string">&quot;./big_file.txt&quot;</span>)</span><br><span class="line">  stream.<span class="title function_">pipe</span>(response) <span class="comment">// response 也是 stream，文件 stream 和 response stream 通过管道连接</span></span><br><span class="line">  stream.<span class="title function_">on</span>(<span class="string">&quot;end&quot;</span>, <span class="function">() =&gt;</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;done&quot;</span>))</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">server.<span class="title function_">listen</span>(<span class="number">8888</span>)</span><br></pre></td></tr></table></figure>
-<p>使用 Stream，Nodejs 的内存占用会更低。</p>
-<p>管道也可以通过这样来实现：</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// stream1 有数据就塞给 stream2</span></span><br><span class="line">stream1.<span class="title function_">on</span>(<span class="string">&quot;data&quot;</span>, <span class="function">(<span class="params">chunk</span>) =&gt;</span> &#123;</span><br><span class="line">  stream2.<span class="title function_">write</span>(chunk)</span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">// stream1 停了，就停掉 steam2</span></span><br><span class="line">stream1.<span class="title function_">on</span>(<span class="string">&quot;end&quot;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  stream2.<span class="title function_">end</span>()</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<h1 id="stream-的原型链">Stream 的原型链</h1>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">s = fs.<span class="title function_">createReadStream</span>(path)</span><br></pre></td></tr></table></figure>
-<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">s -&gt; fs.ReadStream -&gt; stream.Readable -&gt; stream.Stream -&gt; event.EventEmitter -&gt; Object</span><br></pre></td></tr></table></figure>
-<h2 id="支持的事件和方法">支持的事件和方法</h2>
-<h3 id="stream.readable">stream.Readable</h3>
-<ul>
-<li><p>事件：data, end, error, close, readable, pause, resume ...</p></li>
-<li><p>方法：</p>
-<ul>
-<li>pipe()</li>
-<li>unpipe()</li>
-<li>wrap()</li>
-<li>destroy()</li>
-<li>read()</li>
-<li>unshift()</li>
-<li>resume()</li>
-<li>pause()</li>
-<li>isPaused()</li>
-<li>setEncoding()</li>
-</ul></li>
-</ul>
-<h3 id="stream.writable">stream.Writable</h3>
-<ul>
-<li><p>事件：drain, finish, error, close, pipe, unpipe ...</p></li>
-<li><p>方法：</p>
-<ul>
-<li>write()</li>
-<li>destroy()</li>
-<li>end()</li>
-<li>cork()</li>
-<li>uncork()</li>
-<li>setDefaultEncoding()</li>
-</ul></li>
-</ul>
-<h1 id="stream-的分类">Stream 的分类</h1>
-<ul>
-<li>Readable，可读，数据的生产者</li>
-<li>Writable，可写，数据的消费者</li>
-<li>Duplex，可读可写（双向，读和写的内容无关）</li>
-<li>Transform，可读可写（变化，比如先把内容读出来，再写到别的地方）</li>
-</ul>
-<h2 id="readable-stream">Readable Stream</h2>
-<ul>
-<li>paused 静止态</li>
-<li>flowing 流动态</li>
-</ul>
-<p>默认处于 paused；添加 data 事件监听，就会变成 flowing；删掉 data 事件监听就又变成 paused。 pause() 可以让他变为 paused，resume() 可以让他变为 flowing。</p>
-<h2 id="writable-stream">Writable Stream</h2>
-<ul>
-<li>drain：writable.write(chunk) 将会返回一个 boolean，如果 boolean 为 false，这个 stream 堵车了，这个时候就需要等待。当 writable 监听到 drain 事件，表示不堵车了，可以继续传输数据。</li>
-<li>finish：调用 stream.end() 方法，并且缓冲区的数据都已经传给底层系统后会触发。</li>
-</ul>
-<h2 id="transform-stream">Transform Stream</h2>
-<p>NodeJS 内置了一些 Transform Stream，可以看这个使用 gzip 压缩的例子：</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">&quot;fs&quot;</span>)</span><br><span class="line"><span class="keyword">const</span> zlib = <span class="built_in">require</span>(<span class="string">&quot;zlib&quot;</span>)</span><br><span class="line"><span class="keyword">const</span> &#123; <span class="title class_">Transform</span> &#125; = <span class="built_in">require</span>(<span class="string">&quot;stream&quot;</span>)</span><br><span class="line"><span class="keyword">const</span> crypto = <span class="built_in">require</span>(<span class="string">&quot;crypto&quot;</span>)</span><br><span class="line"><span class="keyword">const</span> file = process.<span class="property">argv</span>[<span class="number">2</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> reportProgress = <span class="keyword">new</span> <span class="title class_">Transform</span>(&#123;</span><br><span class="line">  <span class="title function_">transform</span>(<span class="params">chunk, encoding, callback</span>) &#123;</span><br><span class="line">    process.<span class="property">stdout</span>.<span class="title function_">write</span>(<span class="string">&quot;.&quot;</span>)</span><br><span class="line">    <span class="comment">// 可以将 chunk push 进去</span></span><br><span class="line">    <span class="comment">// this.push(chunk)</span></span><br><span class="line">    <span class="comment">// 也可以把 chunk 给 callback</span></span><br><span class="line">    <span class="title function_">callback</span>(<span class="literal">null</span>, chunk)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">fs.<span class="title function_">createReadStream</span>(file)</span><br><span class="line">  .<span class="title function_">pipe</span>(crypto.<span class="title function_">createCipher</span>(<span class="string">&quot;aes-192-gcm&quot;</span>, <span class="string">&quot;123456&quot;</span>))</span><br><span class="line">  .<span class="title function_">pipe</span>(zlib.<span class="title function_">createGzip</span>())</span><br><span class="line">  <span class="comment">// 可以用 on 来进行监听并作出副作用（不会影响原来的数据）</span></span><br><span class="line">  <span class="comment">// .on(&quot;data&quot;, () =&gt; process.stdout.write(&quot;.&quot;))</span></span><br><span class="line">  <span class="comment">// 也可以插入一个 TransformStream</span></span><br><span class="line">  .<span class="title function_">pipe</span>(reportProgress)</span><br><span class="line">  .<span class="title function_">pipe</span>(fs.<span class="title function_">createWriteStream</span>(file + <span class="string">&quot;.gz&quot;</span>))</span><br><span class="line">  .<span class="title function_">on</span>(<span class="string">&quot;finish&quot;</span>, <span class="function">() =&gt;</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Done&quot;</span>))</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h1 id="创建一个-stream">创建一个 Stream</h1>
-<h2 id="创建一个-writable-stream">创建一个 Writable Stream</h2>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; <span class="title class_">Writable</span> &#125; = <span class="built_in">require</span>(<span class="string">&quot;stream&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> consumer = <span class="keyword">new</span> <span class="title class_">Writable</span>(&#123;</span><br><span class="line">  <span class="title function_">write</span>(<span class="params">chunk, encoding, callback</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(chunk.<span class="title function_">toString</span>())</span><br><span class="line">    <span class="comment">// callback 调用这句必须要写，否则就会卡住</span></span><br><span class="line">    <span class="title function_">callback</span>()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 用户的输入 stream -&gt; consumer</span></span><br><span class="line">process.<span class="property">stdin</span>.<span class="title function_">pipe</span>(consumer)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 也可以这样写：</span></span><br><span class="line"><span class="comment">// process.stdin.on(&quot;data&quot;, (chunk) =&gt; &#123;</span></span><br><span class="line"><span class="comment">//   consumer.write(chunk)</span></span><br><span class="line"><span class="comment">// &#125;)</span></span><br></pre></td></tr></table></figure>
-<h2 id="创建一个-readable-stream">创建一个 Readable Stream</h2>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; <span class="title class_">Readable</span> &#125; = <span class="built_in">require</span>(<span class="string">&quot;stream&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> producer = <span class="keyword">new</span> <span class="title class_">Readable</span>()</span><br><span class="line"></span><br><span class="line">producer.<span class="title function_">push</span>(<span class="string">&quot;HAHAHA&quot;</span>)</span><br><span class="line">producer.<span class="title function_">push</span>(<span class="string">&quot;XIXIXI&quot;</span>)</span><br><span class="line"><span class="comment">// push null 必须写，表示已经结束了</span></span><br><span class="line">producer.<span class="title function_">push</span>(<span class="literal">null</span>)</span><br><span class="line"></span><br><span class="line">producer.<span class="title function_">pipe</span>(process.<span class="property">stdout</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 也可以这样写</span></span><br><span class="line"><span class="comment">// producer.on(&quot;data&quot;, (chunk) =&gt; &#123;</span></span><br><span class="line"><span class="comment">//   process.stdout.write(chunk)</span></span><br><span class="line"><span class="comment">//   console.log(&quot;WRITE&quot;)</span></span><br><span class="line"><span class="comment">// &#125;)</span></span><br></pre></td></tr></table></figure>
-<p>上面的写法是先将所有的数据 push 进流里面，那么有没有办法让他边读边写呢？</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; <span class="title class_">Readable</span> &#125; = <span class="built_in">require</span>(<span class="string">&quot;stream&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> producer = <span class="keyword">new</span> <span class="title class_">Readable</span>(&#123;</span><br><span class="line">  <span class="title function_">read</span>(<span class="params">size</span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="title function_">push</span>(<span class="title class_">String</span>.<span class="title function_">fromCharCode</span>(<span class="variable language_">this</span>.<span class="property">currentCharCode</span>++))</span><br><span class="line">    <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">currentCharCode</span> &gt; <span class="number">90</span>) &#123;</span><br><span class="line">      <span class="comment">// push null 表示终止</span></span><br><span class="line">      <span class="variable language_">this</span>.<span class="title function_">push</span>(<span class="literal">null</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">producer.<span class="property">currentCharCode</span> = <span class="string">&quot;A&quot;</span>.<span class="title function_">charCodeAt</span>()</span><br><span class="line"></span><br><span class="line">producer.<span class="title function_">pipe</span>(process.<span class="property">stdout</span>)</span><br></pre></td></tr></table></figure>
-<p>上述的代码就是在 <code>process.stdout</code> 要数据的时候（调用 <code>read</code> 的时候），<code>producer</code> 才往里面 push 一个字符。</p>
-<h2 id="创建一个-duplex-stream">创建一个 Duplex Stream</h2>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; <span class="title class_">Duplex</span> &#125; = <span class="built_in">require</span>(<span class="string">&quot;stream&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> duplex = <span class="keyword">new</span> <span class="title class_">Duplex</span>(&#123;</span><br><span class="line">  <span class="title function_">write</span>(<span class="params">chunk, encoding, callback</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(chunk.<span class="title function_">toString</span>())</span><br><span class="line">    <span class="title function_">callback</span>()</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="title function_">read</span>(<span class="params">size</span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="title function_">push</span>(<span class="title class_">String</span>.<span class="title function_">fromCharCode</span>(<span class="variable language_">this</span>.<span class="property">currentCharCode</span>++))</span><br><span class="line">    <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">currentCharCode</span> &gt; <span class="number">90</span>) &#123;</span><br><span class="line">      <span class="variable language_">this</span>.<span class="title function_">push</span>(<span class="literal">null</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">duplex.<span class="property">currentCharCode</span> = <span class="number">65</span></span><br><span class="line"></span><br><span class="line">process.<span class="property">stdin</span>.<span class="title function_">pipe</span>(duplex).<span class="title function_">pipe</span>(process.<span class="property">stdout</span>)</span><br></pre></td></tr></table></figure>
-<p>简单来说就是把 Readable 和 Writable Stream 写在一起，就成了一个双向的 Stream，它既可写又可读，既可以消费信息、又可以生产信息。他的生产和消费过程彼此相互独立、互不影响。</p>
-<h2 id="transform-stream-1">Transform Stream</h2>
-<p>Transform 虽然也被称为“双向流”，但跟 Duplex 不同，他是先读数据，转换之后再写数据。</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; <span class="title class_">Transform</span> &#125; = <span class="built_in">require</span>(<span class="string">&quot;stream&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> upperCaseTransformer = <span class="keyword">new</span> <span class="title class_">Transform</span>(&#123;</span><br><span class="line">  <span class="title function_">transform</span>(<span class="params">chunk, encoding, callback</span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="title function_">push</span>(chunk.<span class="title function_">toString</span>().<span class="title function_">toUpperCase</span>())</span><br><span class="line">    <span class="title function_">callback</span>()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">process.<span class="property">stdin</span>.<span class="title function_">pipe</span>(upperCaseTransformer).<span class="title function_">pipe</span>(process.<span class="property">stdout</span>)</span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
         <category>全栈</category>
