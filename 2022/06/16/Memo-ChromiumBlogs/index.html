@@ -13,7 +13,7 @@
 
 <link rel="stylesheet" href="/hais-notebook/css/main.css">
 
-
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
 
 <link rel="stylesheet" href="/hais-notebook/lib/@fortawesome/fontawesome-free/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
 
@@ -22,7 +22,7 @@
     <meta name="description" content="Read some articles in chromium blogs or relative wikis, and take these memos.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Topics From Chromium Blogs">
-<meta property="og:url" content="https://hyuain.github.io/hais-notebook/2022/06/16/Memo-Chromium-Blogs/index.html">
+<meta property="og:url" content="https://hyuain.github.io/hais-notebook/2022/06/16/Memo-ChromiumBlogs/index.html">
 <meta property="og:site_name" content="Hais Notebook">
 <meta property="og:description" content="Read some articles in chromium blogs or relative wikis, and take these memos.">
 <meta property="og:locale" content="zh_CN">
@@ -34,11 +34,11 @@
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://hyuain.github.io/hais-notebook/2022/06/16/Memo-Chromium-Blogs/">
+<link rel="canonical" href="https://hyuain.github.io/hais-notebook/2022/06/16/Memo-ChromiumBlogs/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hyuain.github.io/hais-notebook/2022/06/16/Memo-Chromium-Blogs/","path":"2022/06/16/Memo-Chromium-Blogs/","title":"Topics From Chromium Blogs"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hyuain.github.io/hais-notebook/2022/06/16/Memo-ChromiumBlogs/","path":"2022/06/16/Memo-ChromiumBlogs/","title":"Topics From Chromium Blogs"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>Topics From Chromium Blogs | Hais Notebook</title>
@@ -206,7 +206,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2022/06/16/Memo-Chromium-Blogs/">
+    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2022/06/16/Memo-ChromiumBlogs/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
@@ -285,7 +285,7 @@
 <ol type="1">
 <li>JIT is a way of executing computer code that involves compilation <strong>during execution of a program</strong> (at <strong>run time</strong>) rather than before execution.</li>
 <li>This may consist of <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Source_code">source code</a> translation but is more commonly <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Bytecode">bytecode</a> translation to <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Machine_code">machine code</a>, which is then executed directly.</li>
-<li>JIT compilation is a combination of the two traditional approaches to translation to machine code—<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Ahead-of-time_compilation">ahead-of-time compilation</a> (AOT), and <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Interpreter_(computing)">interpretation</a>—and combines some advantages and drawbacks of both.</li>
+<li>JIT compilation is a <strong>combination</strong> of the two traditional approaches to translation to machine code—<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Ahead-of-time_compilation">ahead-of-time compilation</a> (<strong>AOT</strong>), and <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Interpreter_(computing)"><strong>interpretation</strong></a>—and combines some advantages and drawbacks of both.</li>
 <li>Roughly, JIT compilation combines <strong>the speed of compiled code</strong> with <strong>the flexibility of interpretation</strong>, with <strong>the overhead of an interpreter</strong> and <strong>the additional overhead of compiling and <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Linker_(computing)">linking</a></strong> (not just interpreting).</li>
 </ol></li>
 <li>Design:
@@ -303,7 +303,7 @@
 </ol>
 <h2 id="garbage-collection">Garbage Collection</h2>
 <blockquote>
-<p>V8 uses a generational garbage collector with the Javascript heap split into a small young generation for newly allocated objects and a large old generation for long living objects. see <a target="_blank" rel="noopener" href="https://v8.dev/blog/free-garbage-collection">this blog</a>.</p>
+<p>V8 uses a generational garbage collector with the JavaScript heap split into a small young generation for newly allocated objects and a large old generation for long living objects. see <a target="_blank" rel="noopener" href="https://v8.dev/blog/free-garbage-collection">this blog</a>.</p>
 </blockquote>
 <p>There are several kinds of garbage collection:</p>
 <ol type="1">
@@ -314,11 +314,19 @@
 <li>In each collection cycle, some or all of the objects are condemned (those objects are candidates for recycling), and the graph is traced to find which of the condemned objects are reachable. Those that were not reachable may be reclaimed.</li>
 <li>Typical strategies:
 <ol type="1">
-<li>Copying garbage collection: relocate reachable objects, and then reclaim objects are left behind.</li>
-<li>Generational garbage collection: see next part.</li>
+<li><em>Copying garbage collection</em>: relocate reachable objects, and then reclaim objects are left behind.</li>
+<li><em>Generational garbage collection</em>: see next part.</li>
 </ol></li>
 </ol></li>
-<li>Reference counting</li>
+<li>Reference counting
+<ol type="1">
+<li>Keeping a count in each object, of how many references there are to the object.</li>
+<li>The reference count is incremented for each new reference, and is decremented if a reference is overwritten, or if the referring object is recycled.</li>
+<li>Problems:
+<ol type="1">
+<li></li>
+</ol></li>
+</ol></li>
 </ol>
 <h3 id="generational-garbage-collection">Generational Garbage Collection</h3>
 <blockquote>
