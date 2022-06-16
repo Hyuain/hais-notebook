@@ -5670,16 +5670,17 @@ true
 </ol>
 <h2 id="garbage-collection">Garbage Collection</h2>
 <blockquote>
-<p>V8 uses a generational garbage collector with the JavaScript heap split into a small young generation for newly allocated objects and a large old generation for long living objects. see <a href="https://v8.dev/blog/free-garbage-collection">this blog</a>.</p>
+<p>V8 uses a generational garbage collector with the JavaScript heap split into a small young generation for newly allocated objects and a large old generation for long living objects. See <a href="https://v8.dev/blog/free-garbage-collection">this blog</a>.</p>
 </blockquote>
 <p>There are several kinds of garbage collection:</p>
 <ol type="1">
 <li>Tracing garbage collection
 <ol type="1">
-<li>Based on <strong>reachability</strong> (An object is <em>reachable</em> if it is referred to by a root, or is referred to by a reachable object; that is, if it can be reached from the roots by following references.</li>
+<li>Based on <strong>reachability</strong> (An object is <strong>reachable</strong> if it is <strong>referred to by a root</strong>, or is <strong>referred to by a reachable object</strong>; that is, if it can be reached from the roots by following references.)</li>
+<li><em>Object</em>: A contiguous block of memory forming a single logical structure, objects are the units of allocation, deallocation, etc.</li>
 <li>If an object is <strong>not reachable</strong>, there is no way the mutator could ever access it, and therefore it <strong>cannot be live</strong>.</li>
-<li>In each collection cycle, some or all of the objects are condemned (those objects are candidates for recycling), and the graph is traced to find which of the condemned objects are reachable. Those that were not reachable may be reclaimed.</li>
-<li>Typical strategies:
+<li>In each collection cycle, some or all of the objects are <em>condemned</em> (those objects are candidates for recycling), and the graph is traced to find which of the condemned objects are reachable. Those that were not reachable may be reclaimed.</li>
+<li>Typical scenes:
 <ol type="1">
 <li><em>Copying garbage collection</em>: relocate reachable objects, and then reclaim objects are left behind.</li>
 <li><em>Generational garbage collection</em>: see next part.</li>
@@ -5689,9 +5690,22 @@ true
 <ol type="1">
 <li>Keeping a count in each object, of how many references there are to the object.</li>
 <li>The reference count is incremented for each new reference, and is decremented if a reference is overwritten, or if the referring object is recycled.</li>
+<li>Advantages:
+<ol type="1">
+<li>Can reclaim objects promptly.</li>
+<li>Pauses are typically fairly short, but removing a single reference may cause the recycling of a large number of objects at once.</li>
+<li>It can be implemented without any support from the language or compiler.</li>
+</ol></li>
 <li>Problems:
 <ol type="1">
-<li></li>
+<li><strong>The reference count filed size is limited</strong>, system will break down if there are too many references.</li>
+<li><strong>Performance penalty</strong>, since the count need to be maintained after every modification of pointers.</li>
+<li><strong>Object will become larger</strong> to store the reference count.</li>
+<li><strong>Cyclic data structure</strong> problems.</li>
+</ol></li>
+<li>Typical scenes:
+<ol type="1">
+<li><em>Distributed garbage collection</em>: The garbage collection in a system where objects might not reside in the same address space or even on the same machine. Because the costs of synchronization and communication between processes are particularly high for a <em>tracing garbage collector</em>, so other techniques, including <em>weighted reference counting</em>, are commonly used instead.</li>
 </ol></li>
 </ol></li>
 </ol>
@@ -5701,10 +5715,58 @@ true
 </blockquote>
 <ol type="1">
 <li>Generational garbage collection is <strong>tracing garbage collection</strong> that makes use of the <strong>generational hypothesis</strong>.</li>
-<li><strong>Objects</strong> (object is a contiguous block of memory forming a single logical structure, objects are the units of allocation, deallocation, etc.) are <strong>gathered</strong> together <strong>in generations</strong>. New objects are allocated in the <em>youngest</em> or <em>nursery</em> generation, and <a href="https://www.memorymanagement.org/glossary/p.html#term-promotion">promoted</a> to <em>older</em> generations if they survive. Objects in older generations are <a href="https://www.memorymanagement.org/glossary/c.html#term-condemned-set">condemned</a> less frequently, saving CPU time.</li>
+<li><em>Generational hypothesis (also say Infant mortality)</em>: in most cases, young objects are much more likely to die than old objects.</li>
+<li>Objects are gathered together <strong>in generations</strong>. New objects are allocated in the <em>youngest</em> or <em>nursery</em> generation, and promoted to (or become) <em>older</em> generations if they survive. <strong>Objects in older generations are condemned less frequently</strong>, saving CPU time.</li>
 </ol>
-<p>It is typically rare for an object to refer to a younger object. Hence, objects in one generation typically have few <a href="https://www.memorymanagement.org/glossary/r.html#term-reference">references</a> to objects in younger generations. This means that the <a href="https://www.memorymanagement.org/glossary/s.html#term-scan">scanning</a> of old generations in the course of collecting younger generations can be done more efficiently by means of <a href="https://www.memorymanagement.org/glossary/r.html#term-remembered-set">remembered sets</a>.</p>
-<p>In some purely functional languages (that is, without update), all references are backwards in time, in which case remembered sets are unnecessary.</p>
+<h3 id="v8s-garbage-collection-engine">V8's Garbage Collection Engine</h3>
+<blockquote>
+<p>V8 uses a generational garbage collector. See <a href="https://v8.dev/blog/trash-talk">this article</a>.</p>
+</blockquote>
+<h4 id="generational-layout">Generational Layout</h4>
+<p><strong>Split</strong> the JavaScript heap into:</p>
+<ol type="1">
+<li><strong>A small young generation</strong> for newly allocated objects (split further into <em>nursery</em> and <em>intermediate</em> sub-generations).</li>
+<li><strong>A large old generation</strong> for long living objects.</li>
+</ol>
+<p>Objects are first allocated into the <em>nursery</em>. If they survive the next GC, they remain in the young generation but are considered <em>intermediate</em>. If they survive yet another GC, they are moved into the old generation.</p>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-GC-1.svg" alt="Memo-ChromiumBlogs-GC-1" /><figcaption aria-hidden="true">Memo-ChromiumBlogs-GC-1</figcaption>
+</figure>
+<h4 id="major-gc-full-mark-compact">Major GC (Full Mark-Compact)</h4>
+<p>The Major GC collects garbage from the entire heap.</p>
+<ol type="1">
+<li><strong>Marking</strong>: Marking reachable objects from the root.</li>
+<li><strong>Sweeping</strong>: Add the gaps in memory left by dead objects into a <em>free-list</em>. In the future when we want to allocate memory, we just look at the free-list and find an appropriately sized chunk of memory.</li>
+<li><strong>Compaction</strong>: if needed, evacuate/compact some pages, to make use of the small and scattered gaps within the memory left behind by dead objects.</li>
+</ol>
+<h4 id="minor-gc-scavenger">Minor GC (Scavenger)</h4>
+<p>The Minor GC (Scavenger) collects garbage in the young generation.</p>
+<ol type="1">
+<li>It uses a <strong>semi-space</strong> allocation strategy, where <em>nursery object</em> are initially allocated in the young generation’s active semi-space.</li>
+<li>Once that semi-space becomes full, a <strong>scavenge</strong> operation (also use mark to check reachability) will move live objects to other semi-space, and become <em>intermediate</em>. If a object is already <em>intermediate</em>, it will be promoted to the old generation.</li>
+<li>The new semi-spaces becomes active, and all the remaining objects in old semi-space are discarded.</li>
+</ol>
+<p>Unlike Major GC, in scavenging we actually do these three steps - marking, evacuating, and pointer-updating - all interleaved, rather than in distinct phases.</p>
+<h4 id="orinoco">Orinoco</h4>
+<p>Orinoco is the codename of the GC project and try to obtain better performance.</p>
+<ol type="1">
+<li><strong>Parallel</strong>: <em>Main Thread</em> and <em>Helper Threads</em> do a roughly equal amount of work at the same time.</li>
+</ol>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-GC-2.svg" alt="Memo-ChromiumBlogs-GC-2" /><figcaption aria-hidden="true">Memo-ChromiumBlogs-GC-2</figcaption>
+</figure>
+<ol start="2" type="1">
+<li><strong>Incremental</strong>: The main thread does a small amount of work intermittently.</li>
+</ol>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-GC-3.svg" alt="Memo-ChromiumBlogs-GC-3" /><figcaption aria-hidden="true">Memo-ChromiumBlogs-GC-3</figcaption>
+</figure>
+<ol start="3" type="1">
+<li><strong>Concurrent</strong>: The main thread executes JavaScript constantly, and helper threads do GC work totally in the background.</li>
+</ol>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-GC-4.svg" alt="Memo-ChromiumBlogs-GC-4" /><figcaption aria-hidden="true">Memo-ChromiumBlogs-GC-4</figcaption>
+</figure>
 ]]></content>
       <categories>
         <category>Memo</category>
