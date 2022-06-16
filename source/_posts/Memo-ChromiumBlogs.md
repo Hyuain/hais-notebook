@@ -51,22 +51,33 @@ Read some articles in chromium blogs or relative wikis, and take these memos.
 
 ## Garbage Collection
 
-> V8 uses a generational garbage collector with the JavaScript heap split into a small young generation for newly allocated objects and a large old generation for long living objects. see [this blog](https://v8.dev/blog/free-garbage-collection).
+> V8 uses a generational garbage collector with the JavaScript heap split into a small young generation for newly allocated objects and a large old generation for long living objects. See [this blog](https://v8.dev/blog/free-garbage-collection).
 
 There are several kinds of garbage collection:
 
 1. Tracing garbage collection
-   1. Based on **reachability** (An object is *reachable* if it is referred to by a root, or is referred to by a reachable object; that is, if it can be reached from the roots by following references.
-   2. If an object is **not reachable**, there is no way the mutator could ever access it, and therefore it **cannot be live**.
-   3.  In each collection cycle, some or all of the objects are condemned (those objects are candidates for recycling), and the graph is traced to find which of the condemned objects are reachable. Those that were not reachable may be reclaimed.
-   4. Typical strategies:
+   1. Based on **reachability** (An object is **reachable** if it is **referred to by a root**, or is **referred to by a reachable object**; that is, if it can be reached from the roots by following references.)
+   2. *Object*: A contiguous block of memory forming a single logical structure, objects are the units of allocation, deallocation, etc.
+   3. If an object is **not reachable**, there is no way the mutator could ever access it, and therefore it **cannot be live**.
+   4. In each collection cycle, some or all of the objects are *condemned* (those objects are candidates for recycling), and the graph is traced to find which of the condemned objects are reachable. Those that were not reachable may be reclaimed.
+   5. Typical scenes:
       1. *Copying garbage collection*: relocate reachable objects, and then reclaim objects are left behind.
       2. *Generational garbage collection*: see next part.
 2. Reference counting
    1. Keeping a count in each object, of how many references there are to the object.
    2. The reference count is incremented for each new reference, and is decremented if a reference is overwritten, or if the referring object is recycled.
-   3. Problems:
-      1. 
+   3. Advantages:
+      1. Can reclaim objects promptly.
+      2. Pauses are typically fairly short, but removing a single reference may cause the recycling of a large number of objects at once.
+      3. It can be implemented without any support from the language or compiler.
+
+   4. Problems:
+      1. **The reference count filed size is limited**, system will break down if there are too many references.
+      2. **Performance penalty**, since the count need to be maintained after every modification of pointers.
+      3. **Object will become larger** to store the reference count.
+      4. **Cyclic data structure** problems.
+   5. Typical scenes:
+      1. *Distributed garbage collection*: The garbage collection in a system where objects might not reside in the same address space or even on the same machine. Because the costs of synchronization and communication between processes are particularly high for a *tracing garbage collector*, so other techniques, including *weighted reference counting*, are commonly used instead.
 
 
 ### Generational Garbage Collection
@@ -74,8 +85,55 @@ There are several kinds of garbage collection:
 > See [this website](https://www.memorymanagement.org/glossary/g.html#term-generational-garbage-collection).
 
 1. Generational garbage collection is **tracing garbage collection** that makes use of the **generational hypothesis**.
-2. **Objects** (object is a contiguous block of memory forming a single logical structure, objects are the units of allocation, deallocation, etc.) are **gathered** together **in generations**. New objects are allocated in the *youngest* or *nursery* generation, and [promoted](https://www.memorymanagement.org/glossary/p.html#term-promotion) to *older* generations if they survive. Objects in older generations are [condemned](https://www.memorymanagement.org/glossary/c.html#term-condemned-set) less frequently, saving CPU time.
+2. *Generational hypothesis (also say Infant mortality)*: in most cases, young objects are much more likely to die than old objects.
+3. Objects are gathered together **in generations**. New objects are allocated in the *youngest* or *nursery* generation, and promoted to (or become) *older* generations if they survive. **Objects in older generations are condemned less frequently**, saving CPU time.
 
-It is typically rare for an object to refer to a younger object. Hence, objects in one generation typically have few [references](https://www.memorymanagement.org/glossary/r.html#term-reference) to objects in younger generations. This means that the [scanning](https://www.memorymanagement.org/glossary/s.html#term-scan) of old generations in the course of collecting younger generations can be done more efficiently by means of [remembered sets](https://www.memorymanagement.org/glossary/r.html#term-remembered-set).
+### V8's Garbage Collection Engine
 
-In some purely functional languages (that is, without update), all references are backwards in time, in which case remembered sets are unnecessary.
+> V8 uses a generational garbage collector. See [this article](https://v8.dev/blog/trash-talk).
+
+#### Generational Layout
+
+**Split** the JavaScript heap into:
+
+1. **A small young generation** for newly allocated objects (split further into *nursery* and *intermediate* sub-generations).
+2.  **A large old generation** for long living objects.
+
+Objects are first allocated into the *nursery*. If they survive the next GC, they remain in the young generation but are considered *intermediate*. If they survive yet another GC, they are moved into the old generation.
+
+![Memo-ChromiumBlogs-GC-1](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-GC-1.svg)
+
+#### Major GC (Full Mark-Compact)
+
+The Major GC collects garbage from the entire heap.
+
+1. **Marking**: Marking reachable objects from the root.
+2. **Sweeping**: Add the gaps in memory left by dead objects into a *free-list*. In the future when we want to allocate memory, we just look at the free-list and find an appropriately sized chunk of memory.
+3. **Compaction**: if needed, evacuate/compact some pages, to make use of the small and scattered gaps within the memory left behind by dead objects.
+
+#### Minor GC (Scavenger)
+
+The Minor GC (Scavenger) collects garbage in the young generation.
+
+1. It uses a **semi-space** allocation strategy, where *nursery object* are initially allocated in the young generation’s active semi-space.
+2. Once that semi-space becomes full, a **scavenge** operation (also use mark to check reachability) will move live objects to other semi-space, and become *intermediate*. If a object is already *intermediate*, it will be promoted to the old generation.
+3. The new semi-spaces becomes active, and all the remaining objects in old semi-space are discarded.
+
+Unlike Major GC, in scavenging we actually do these three steps - marking, evacuating, and pointer-updating - all interleaved, rather than in distinct phases.
+
+#### Orinoco
+
+Orinoco is the codename of the GC project and try to obtain better performance.
+
+1. **Parallel**: *Main Thread* and *Helper Threads* do a roughly equal amount of work at the same time.
+
+![Memo-ChromiumBlogs-GC-2](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-GC-2.svg)
+
+2. **Incremental**: The main thread does a small amount of work intermittently.
+
+![Memo-ChromiumBlogs-GC-3](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-GC-3.svg)
+
+3. **Concurrent**:  The main thread executes JavaScript constantly, and helper threads do GC work totally in the background.
+
+![Memo-ChromiumBlogs-GC-4](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-GC-4.svg)
+
