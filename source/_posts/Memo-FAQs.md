@@ -6,7 +6,7 @@ tags:
   - 收集
   - FAQ
 categories:
-  - [收集]
+  - [Memo]
 ---
 
 收集一些问题/话题。
