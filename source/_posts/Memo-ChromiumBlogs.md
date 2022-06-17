@@ -17,6 +17,8 @@ Read some articles in chromium blogs or relative wikis, and take these memos.
 ## Multi-process Architecture
 
 >  [Multi-process Architecture](https://blog.chromium.org/2008/09/multi-process-architecture.html) - Thursday, September 11, 2008
+>
+>  Overview: One browser process + many renderer processes (roughly one for each tab) + plugin processes (one for each plugin)
 
 1. Three different types of processes: browser, renderers, and plug-ins.
    1. *Browser*. There's only **one** browser process, which manages the tabs, windows, and "chrome" of the browser.  This process also handles all interactions with the disk, network, user input, and display, but it makes no attempt to parse or render any content from the web.
@@ -34,36 +36,44 @@ Read some articles in chromium blogs or relative wikis, and take these memos.
 ## JIT: Just-in-time compilation
 
 > V8 uses [TurboFan JIT](https://v8.dev/blog/turbofan-jit).
+>
+> Overview:
+>
+> 1. JIT = AOT + interpretation
+> 2. Source code -> bytecode -> machine code
+> 3. Generating better machine code increase initial delay 
 
 1. Introduction:
    1. JIT is a way of executing computer code that involves compilation **during execution of a program** (at **run time**) rather than before execution.
-   2. This may consist of [source code](https://en.wikipedia.org/wiki/Source_code) translation but is more commonly [bytecode](https://en.wikipedia.org/wiki/Bytecode) translation to [machine code](https://en.wikipedia.org/wiki/Machine_code), which is then executed directly.
-   3. JIT compilation is a **combination** of the two traditional approaches to translation to machine code—[ahead-of-time compilation](https://en.wikipedia.org/wiki/Ahead-of-time_compilation) (**AOT**), and [**interpretation**](https://en.wikipedia.org/wiki/Interpreter_(computing))—and combines some advantages and drawbacks of both.
+   2. This may consist of [*source code*](https://en.wikipedia.org/wiki/Source_code) translation but is more commonly [*bytecode*](https://en.wikipedia.org/wiki/Bytecode) translation to [*machine code*](https://en.wikipedia.org/wiki/Machine_code), which is then executed directly.
+   3. JIT compilation is a **combination** of the two traditional approaches to translation to machine code - [*ahead-of-time compilation*](https://en.wikipedia.org/wiki/Ahead-of-time_compilation) (*AOT*), and [*interpretation*](https://en.wikipedia.org/wiki/Interpreter_(computing)) - and combines some advantages and drawbacks of both.
    4. Roughly, JIT compilation combines **the speed of compiled code** with **the flexibility of interpretation**, with **the overhead of an interpreter** and **the additional overhead of compiling and [linking](https://en.wikipedia.org/wiki/Linker_(computing))** (not just interpreting).
 2. Design:
-   1. Source code is translated to an intermediate representation known as **bytecode**.
-   2. **Bytecode** is not the machine code for any particular computer, and may be portable among computer architectures. The **bytecode** may then be **interpreted** by, or run on **a virtual machine**. 
-   3. Traditional **interpreted virtual machine** vs. **JIT**
-      1. The traditional **interpreted virtual machine**: simply **interpret the bytecode**, generally with much lower performance.
-      2. **The JIT compiler**: reads the bytecodes in many sections (or in full, rarely) and **compiles** them dynamically **into machine code** so the program can run faster. This can be done per-file, per-function or even on any arbitrary code fragment; the code can be compiled when it is about to be executed (hence the name "just-in-time"), and then **cached and reused** later without needing to be recompiled.
-   4. Because a JIT must render and execute a native binary image at runtime, true machine-code JITs necessitate platforms that allow for data to be executed at runtime, making using such JITs on a [Harvard architecture](https://en.wikipedia.org/wiki/Harvard_architecture)-based machine impossible; the same can be said for certain operating systems and virtual machines as well.
-3. Startup time delay or warm-up time: the time taken to load and compile the bytecode. The more optimization JIT performs, the better the code it will generate, but the initial delay will also increase. 
+   1. Source code is translated to an intermediate representation known as *bytecode*.
+   2. *Bytecode* is not the machine code for any particular computer, and may be portable among computer architectures. The *bytecode* may then be **interpreted** by, or run on **a virtual machine**. 
+   3. *Traditional interpreted virtual machine* vs. *JIT*
+      1. *The traditional interpreted virtual machine*: simply **interpret the bytecode**, generally with much lower performance.
+      2. *The JIT compiler*: reads the bytecodes in many sections (or in full, rarely) and **compiles** them dynamically **into machine code** so the program can run faster. This can be done per-file, per-function or even on any arbitrary code fragment; the code can be compiled when it is about to be executed (hence the name "just-in-time"), and then **cached and reused** later without needing to be recompiled.
+   4. Because a JIT must render and execute a native binary image at runtime, true machine-code JITs necessitate platforms that allow for data to be executed at runtime, making using such JITs on a [*Harvard architecture*](https://en.wikipedia.org/wiki/Harvard_architecture)-based machine impossible; the same can be said for certain operating systems and virtual machines as well.
+3. *Startup time delay* or *warm-up time*: the time taken to load and compile the bytecode. The more optimization JIT performs, the better the code it will generate, but the initial delay will also increase. 
 
 ## Garbage Collection
 
-> V8 uses a generational garbage collector with the JavaScript heap split into a small young generation for newly allocated objects and a large old generation for long living objects. See [this blog](https://v8.dev/blog/free-garbage-collection).
+> See [this blog](https://v8.dev/blog/free-garbage-collection).
+>
+> Overview: Two ways to find garbage: tracing garbage collection & reference counting
 
 There are several kinds of garbage collection:
 
-1. Tracing garbage collection
-   1. Based on **reachability** (An object is **reachable** if it is **referred to by a root**, or is **referred to by a reachable object**; that is, if it can be reached from the roots by following references.)
+1. *Tracing garbage collection*
+   1. Based on *reachability* (An object is **reachable** if it is **referred to by a root**, or is **referred to by a reachable object**; that is, if it can be reached from the roots by following references.)
    2. *Object*: A contiguous block of memory forming a single logical structure, objects are the units of allocation, deallocation, etc.
    3. If an object is **not reachable**, there is no way the mutator could ever access it, and therefore it **cannot be live**.
    4. In each collection cycle, some or all of the objects are *condemned* (those objects are candidates for recycling), and the graph is traced to find which of the condemned objects are reachable. Those that were not reachable may be reclaimed.
    5. Typical scenes:
       1. *Copying garbage collection*: relocate reachable objects, and then reclaim objects are left behind.
       2. *Generational garbage collection*: see next part.
-2. Reference counting
+2. *Reference counting*
    1. Keeping a count in each object, of how many references there are to the object.
    2. The reference count is incremented for each new reference, and is decremented if a reference is overwritten, or if the referring object is recycled.
    3. Advantages:
@@ -83,18 +93,27 @@ There are several kinds of garbage collection:
 ### Generational Garbage Collection
 
 > See [this website](https://www.memorymanagement.org/glossary/g.html#term-generational-garbage-collection).
+>
+> Overview: Based on "young is more likely to die than old"
 
-1. Generational garbage collection is **tracing garbage collection** that makes use of the **generational hypothesis**.
+1. Generational garbage collection is *tracing garbage collection* that makes use of the *generational hypothesis*.
 2. *Generational hypothesis (also say Infant mortality)*: in most cases, young objects are much more likely to die than old objects.
 3. Objects are gathered together **in generations**. New objects are allocated in the *youngest* or *nursery* generation, and promoted to (or become) *older* generations if they survive. **Objects in older generations are condemned less frequently**, saving CPU time.
 
 ### V8's Garbage Collection Engine
 
 > V8 uses a generational garbage collector. See [this article](https://v8.dev/blog/trash-talk).
+>
+> Overview:
+>
+> 1. Split into young (nursery and intermediate) and old.
+> 2. Major GC collects garbage in the entire heap, including marking, sweeping and copaction.
+> 3. Minor GC is responsible for the young generation, using semi-space allocation strategy.
+> 4. Orinoco is a project try to improve GC performance.
 
 #### Generational Layout
 
-**Split** the JavaScript heap into:
+Split the JavaScript heap into:
 
 1. **A small young generation** for newly allocated objects (split further into *nursery* and *intermediate* sub-generations).
 2.  **A large old generation** for long living objects.
@@ -107,16 +126,16 @@ Objects are first allocated into the *nursery*. If they survive the next GC, the
 
 The Major GC collects garbage from the entire heap.
 
-1. **Marking**: Marking reachable objects from the root.
-2. **Sweeping**: Add the gaps in memory left by dead objects into a *free-list*. In the future when we want to allocate memory, we just look at the free-list and find an appropriately sized chunk of memory.
-3. **Compaction**: if needed, evacuate/compact some pages, to make use of the small and scattered gaps within the memory left behind by dead objects.
+1. *Marking*: Marking reachable objects from the root.
+2. *Sweeping*: Add the gaps in memory left by dead objects into a *free-list*. In the future when we want to allocate memory, we just look at the free-list and find an appropriately sized chunk of memory.
+3. *Compaction*: if needed, evacuate/compact some pages, to make use of the small and scattered gaps within the memory left behind by dead objects.
 
 #### Minor GC (Scavenger)
 
 The Minor GC (Scavenger) collects garbage in the young generation.
 
-1. It uses a **semi-space** allocation strategy, where *nursery object* are initially allocated in the young generation’s active semi-space.
-2. Once that semi-space becomes full, a **scavenge** operation (also use mark to check reachability) will move live objects to other semi-space, and become *intermediate*. If a object is already *intermediate*, it will be promoted to the old generation.
+1. It uses a *semi-space allocation* strategy, where *nursery* object are initially allocated in the young generation’s active semi-space.
+2. Once that semi-space becomes full, a *scavenge* operation (also use marking to check reachability) will move live objects to other semi-space, and become *intermediate*. If a object is already *intermediate*, it will be promoted to the old generation.
 3. The new semi-spaces becomes active, and all the remaining objects in old semi-space are discarded.
 
 Unlike Major GC, in scavenging we actually do these three steps - marking, evacuating, and pointer-updating - all interleaved, rather than in distinct phases.
@@ -137,3 +156,33 @@ Orinoco is the codename of the GC project and try to obtain better performance.
 
 ![Memo-ChromiumBlogs-GC-4](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-GC-4.svg)
 
+## RegExp
+
+### Lookbehind assertions
+
+> See [this blog](https://v8.dev/blog/regexp-lookbehind-assertions).
+>
+> Overview:
+>
+> 1. V8's lookbehind implementation supports patterns of arbitrary length (can use `*` `+`)
+> 2. Some strange features because of the implementation
+
+1. Two ways to implement lookbehind assertions:
+   1. Perl: Requires fixed length, so cannot use `*` `+`. Because the regular expression engine can step back by that fixed length and match.
+   2. .NET framework: Can match patterns of arbitrary length. It simply matches the lookbehind pattern backwards (reading characters against the normal read direction).
+2. A capturing group with a *quantifier captures* the last match. Usually, that is the right-most match. But inside a lookbehind assertion, we match from right to left, therefore the left-most match is captured:
+```js
+/h(?=\w)/.exec('hodor');  // ['h']
+/h(?=(\w))/.exec('hodor');  // ['h', 'o']
+/h(?=(\w){2})/.exec('hodor');  // ['h', 'd']
+/h(?=(\w)+)/.exec('hodor');  // ['h', 'r']
+
+/(?<=(\w){2})r/.exec('hodor'); // ['r', 'd']
+/(?<=(\w)+)r/.exec('hodor'); // ['r', 'h']
+```
+3. A capturing group can be referenced via back reference after it has been captured. Usually, the back reference has to be to the right of the capture group. Otherwise, it would match the empty string, as nothing has been captured yet. However, inside a lookbehind assertion, the match direction is reversed:
+
+```js
+/(?<=(o)d\1)r/.exec('hodor'); // null
+/(?<=\1d(o))r/.exec('hodor'); // ['r', 'o']
+```
