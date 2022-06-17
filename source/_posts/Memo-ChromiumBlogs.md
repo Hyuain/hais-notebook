@@ -171,6 +171,7 @@ Orinoco is the codename of the GC project and try to obtain better performance.
    1. Perl: Requires fixed length, so cannot use `*` `+`. Because the regular expression engine can step back by that fixed length and match.
    2. .NET framework: Can match patterns of arbitrary length. It simply matches the lookbehind pattern backwards (reading characters against the normal read direction).
 2. A capturing group with a *quantifier captures* the last match. Usually, that is the right-most match. But inside a lookbehind assertion, we match from right to left, therefore the left-most match is captured:
+
 ```js
 /h(?=\w)/.exec('hodor');  // ['h']
 /h(?=(\w))/.exec('hodor');  // ['h', 'o']
@@ -180,6 +181,7 @@ Orinoco is the codename of the GC project and try to obtain better performance.
 /(?<=(\w){2})r/.exec('hodor'); // ['r', 'd']
 /(?<=(\w)+)r/.exec('hodor'); // ['r', 'h']
 ```
+
 3. A capturing group can be referenced via back reference after it has been captured. Usually, the back reference has to be to the right of the capture group. Otherwise, it would match the empty string, as nothing has been captured yet. However, inside a lookbehind assertion, the match direction is reversed:
 
 ```js
