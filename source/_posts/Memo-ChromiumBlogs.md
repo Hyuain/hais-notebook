@@ -57,6 +57,14 @@ Read some articles in chromium blogs or relative wikis, and take these memos.
    4. Because a JIT must render and execute a native binary image at runtime, true machine-code JITs necessitate platforms that allow for data to be executed at runtime, making using such JITs on a [*Harvard architecture*](https://en.wikipedia.org/wiki/Harvard_architecture)-based machine impossible; the same can be said for certain operating systems and virtual machines as well.
 3. *Startup time delay* or *warm-up time*: the time taken to load and compile the bytecode. The more optimization JIT performs, the better the code it will generate, but the initial delay will also increase. 
 
+## Ignition Interpreter
+
+> See [this blog](https://v8.dev/blog/ignition-interpreter).
+
+1. Code is initially compiled by *baseline compiler*, which can generated non-optimized machine code quickly.
+2. The compiled code is analyzed during runtime and optionally re-compiled dynamically with a more advanced optimizing compiler for peak performance.
+3. JITed machine code can consume a significant amount of memory, so V8 uses Ignition to compile JavaScript functions to a concise bytecode. This bytecode is then executed by a interpreter.
+
 ## Garbage Collection
 
 > See [this blog](https://v8.dev/blog/free-garbage-collection).
@@ -120,7 +128,7 @@ Split the JavaScript heap into:
 
 Objects are first allocated into the *nursery*. If they survive the next GC, they remain in the young generation but are considered *intermediate*. If they survive yet another GC, they are moved into the old generation.
 
-![Memo-ChromiumBlogs-GC-1](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-GC-1.svg)
+![Generational layout of GC in V8](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-GC-1.svg)
 
 #### Major GC (Full Mark-Compact)
 
@@ -146,15 +154,15 @@ Orinoco is the codename of the GC project and try to obtain better performance.
 
 1. **Parallel**: *Main Thread* and *Helper Threads* do a roughly equal amount of work at the same time.
 
-![Memo-ChromiumBlogs-GC-2](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-GC-2.svg)
+![](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-GC-2.svg)
 
 2. **Incremental**: The main thread does a small amount of work intermittently.
 
-![Memo-ChromiumBlogs-GC-3](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-GC-3.svg)
+![](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-GC-3.svg)
 
 3. **Concurrent**:  The main thread executes JavaScript constantly, and helper threads do GC work totally in the background.
 
-![Memo-ChromiumBlogs-GC-4](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-GC-4.svg)
+![](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-GC-4.svg)
 
 ## RegExp
 
@@ -188,3 +196,52 @@ Orinoco is the codename of the GC project and try to obtain better performance.
 /(?<=(o)d\1)r/.exec('hodor'); // null
 /(?<=\1d(o))r/.exec('hodor'); // ['r', 'o']
 ```
+
+## Object Iteration
+
+### ECMA Specification
+
+> See [this document](https://tc39.es/ecma262/#sec-ordinaryownpropertykeys).
+
+1. JavaScript objects mostly behave like dictionaries, with *string* keys and *arbitrary objects* as values.
+2. The specification treat *integer-indexed properties* and *other properties* differently during *iteration*. Other than that, the different properties behave mostly the same.
+
+### Fast Properties In V8
+
+> See [this blog](https://v8.dev/blog/fast-properties).
+
+#### Named Properties vs. Elements
+
+![A basic JavaScript object looks like in memory](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-OI-1.png)
+
+1. Elements and properties are stored in two separate data structures which makes adding and accessing properties or elements more efficient for different usage patterns.
+2. *Elements*:
+   1. Most of time, V8 represents *elements* as *simple arrays* internally, since methods (like `pop` `slice` in `Array.prototype`) access properties in consecutive ranges.
+   2. But sometimes switch to a sparse *dictionary-based* representation to save memory.
+3. *Named properties*:
+   1. They are stored in a similar way in a separate *array*.
+   2. We cannot simply use the *key* to deduce their *position* within the properties array, we need some additional metadata - In V8, every JavaScript object has a *HiddenClass* associated.
+   3. The *HiddenClass* stores information about the *shape* of an object, a *mapping* from property names to indices into the properties, and so on.
+
+#### HiddenClasses and DescriptorArrays
+
+![Overview of HiddenClass in V8](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-OI-2.png)
+
+1. Any object on V8 heap points to a HiddenClass.
+2. The third bit field of HiddenClass stores the number of properties, and a pointer to the *descriptor array*.
+3. The *descriptor array* contains information about *named properties*, like *the name itself* and *the position* where value is stored. (there is no entry of *indexed properties* in the *descriptor array*)
+
+4. Objects with the same structure (e.g. the same named properties in the same order) share the same HiddenClass.
+
+![HiddenClass change when add new properties](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-OI-3.png)
+
+5. V8 creates a *transition tree* that links the HiddenClasses together.
+
+![Transition tree](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-OI-4.png)
+
+6. If we create a **new object** that gets a different property added, in this case property `"d"`, V8 creates a **separate branch** for the new HiddenClasses.
+
+![Transition tree with branches](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-OI-5.png)
+
+7. Adding *array-indexed properties* does **not** create new HiddenClasses.
+
