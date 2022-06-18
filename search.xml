@@ -5675,6 +5675,15 @@ true
 </ol></li>
 <li><em>Startup time delay</em> or <em>warm-up time</em>: the time taken to load and compile the bytecode. The more optimization JIT performs, the better the code it will generate, but the initial delay will also increase.</li>
 </ol>
+<h2 id="ignition-interpreter">Ignition Interpreter</h2>
+<blockquote>
+<p>See <a href="https://v8.dev/blog/ignition-interpreter">this blog</a>.</p>
+</blockquote>
+<ol type="1">
+<li>Code is initially compiled by <em>baseline compiler</em>, which can generated non-optimized machine code quickly.</li>
+<li>The compiled code is analyzed during runtime and optionally re-compiled dynamically with a more advanced optimizing compiler for peak performance.</li>
+<li>JITed machine code can consume a significant amount of memory, so V8 uses Ignition to compile JavaScript functions to a concise bytecode. This bytecode is then executed by a interpreter.</li>
+</ol>
 <h2 id="garbage-collection">Garbage Collection</h2>
 <blockquote>
 <p>See <a href="https://v8.dev/blog/free-garbage-collection">this blog</a>.</p>
@@ -5746,7 +5755,7 @@ true
 </ol>
 <p>Objects are first allocated into the <em>nursery</em>. If they survive the next GC, they remain in the young generation but are considered <em>intermediate</em>. If they survive yet another GC, they are moved into the old generation.</p>
 <figure>
-<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-GC-1.svg" alt="Memo-ChromiumBlogs-GC-1" /><figcaption aria-hidden="true">Memo-ChromiumBlogs-GC-1</figcaption>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-GC-1.svg" alt="Generational layout of GC in V8" /><figcaption aria-hidden="true">Generational layout of GC in V8</figcaption>
 </figure>
 <h4 id="major-gc-full-mark-compact">Major GC (Full Mark-Compact)</h4>
 <p>The Major GC collects garbage from the entire heap.</p>
@@ -5768,21 +5777,15 @@ true
 <ol type="1">
 <li><strong>Parallel</strong>: <em>Main Thread</em> and <em>Helper Threads</em> do a roughly equal amount of work at the same time.</li>
 </ol>
-<figure>
-<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-GC-2.svg" alt="Memo-ChromiumBlogs-GC-2" /><figcaption aria-hidden="true">Memo-ChromiumBlogs-GC-2</figcaption>
-</figure>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-GC-2.svg" /></p>
 <ol start="2" type="1">
 <li><strong>Incremental</strong>: The main thread does a small amount of work intermittently.</li>
 </ol>
-<figure>
-<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-GC-3.svg" alt="Memo-ChromiumBlogs-GC-3" /><figcaption aria-hidden="true">Memo-ChromiumBlogs-GC-3</figcaption>
-</figure>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-GC-3.svg" /></p>
 <ol start="3" type="1">
 <li><strong>Concurrent</strong>: The main thread executes JavaScript constantly, and helper threads do GC work totally in the background.</li>
 </ol>
-<figure>
-<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-GC-4.svg" alt="Memo-ChromiumBlogs-GC-4" /><figcaption aria-hidden="true">Memo-ChromiumBlogs-GC-4</figcaption>
-</figure>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-GC-4.svg" /></p>
 <h2 id="regexp">RegExp</h2>
 <h3 id="lookbehind-assertions">Lookbehind assertions</h3>
 <blockquote>
@@ -5806,6 +5809,65 @@ true
 <li>A capturing group can be referenced via back reference after it has been captured. Usually, the back reference has to be to the right of the capture group. Otherwise, it would match the empty string, as nothing has been captured yet. However, inside a lookbehind assertion, the match direction is reversed:</li>
 </ol>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">/(?&lt;=(o)d\<span class="number">1</span>)r/.<span class="title function_">exec</span>(<span class="string">&#x27;hodor&#x27;</span>); <span class="comment">// null</span></span><br><span class="line"><span class="regexp">/(?&lt;=\1d(o))r/</span>.<span class="title function_">exec</span>(<span class="string">&#x27;hodor&#x27;</span>); <span class="comment">// [&#x27;r&#x27;, &#x27;o&#x27;]</span></span><br></pre></td></tr></table></figure>
+<h2 id="object-iteration">Object Iteration</h2>
+<h3 id="ecma-specification">ECMA Specification</h3>
+<blockquote>
+<p>See <a href="https://tc39.es/ecma262/#sec-ordinaryownpropertykeys">this document</a>.</p>
+</blockquote>
+<ol type="1">
+<li>JavaScript objects mostly behave like dictionaries, with <em>string</em> keys and <em>arbitrary objects</em> as values.</li>
+<li>The specification treat <em>integer-indexed properties</em> and <em>other properties</em> differently during <em>iteration</em>. Other than that, the different properties behave mostly the same.</li>
+</ol>
+<h3 id="fast-properties-in-v8">Fast Properties In V8</h3>
+<blockquote>
+<p>See <a href="https://v8.dev/blog/fast-properties">this blog</a>.</p>
+</blockquote>
+<h4 id="named-properties-vs.-elements">Named Properties vs. Elements</h4>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-OI-1.png" alt="A basic JavaScript object looks like in memory" /><figcaption aria-hidden="true">A basic JavaScript object looks like in memory</figcaption>
+</figure>
+<ol type="1">
+<li>Elements and properties are stored in two separate data structures which makes adding and accessing properties or elements more efficient for different usage patterns.</li>
+<li><em>Elements</em>:
+<ol type="1">
+<li>Most of time, V8 represents <em>elements</em> as <em>simple arrays</em> internally, since methods (like <code>pop</code> <code>slice</code> in <code>Array.prototype</code>) access properties in consecutive ranges.</li>
+<li>But sometimes switch to a sparse <em>dictionary-based</em> representation to save memory.</li>
+</ol></li>
+<li><em>Named properties</em>:
+<ol type="1">
+<li>They are stored in a similar way in a separate <em>array</em>.</li>
+<li>We cannot simply use the <em>key</em> to deduce their <em>position</em> within the properties array, we need some additional metadata - In V8, every JavaScript object has a <em>HiddenClass</em> associated.</li>
+<li>The <em>HiddenClass</em> stores information about the <em>shape</em> of an object, a <em>mapping</em> from property names to indices into the properties, and so on.</li>
+</ol></li>
+</ol>
+<h4 id="hiddenclasses-and-descriptorarrays">HiddenClasses and DescriptorArrays</h4>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-OI-2.png" alt="Overview of HiddenClass in V8" /><figcaption aria-hidden="true">Overview of HiddenClass in V8</figcaption>
+</figure>
+<ol type="1">
+<li><p>Any object on V8 heap points to a HiddenClass.</p></li>
+<li><p>The third bit field of HiddenClass stores the number of properties, and a pointer to the <em>descriptor array</em>.</p></li>
+<li><p>The <em>descriptor array</em> contains information about <em>named properties</em>, like <em>the name itself</em> and <em>the position</em> where value is stored. (there is no entry of <em>indexed properties</em> in the <em>descriptor array</em>)</p></li>
+<li><p>Objects with the same structure (e.g. the same named properties in the same order) share the same HiddenClass.</p></li>
+</ol>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-OI-3.png" alt="HiddenClass change when add new properties" /><figcaption aria-hidden="true">HiddenClass change when add new properties</figcaption>
+</figure>
+<ol start="5" type="1">
+<li>V8 creates a <em>transition tree</em> that links the HiddenClasses together.</li>
+</ol>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-OI-4.png" alt="Transition tree" /><figcaption aria-hidden="true">Transition tree</figcaption>
+</figure>
+<ol start="6" type="1">
+<li>If we create a <strong>new object</strong> that gets a different property added, in this case property <code>"d"</code>, V8 creates a <strong>separate branch</strong> for the new HiddenClasses.</li>
+</ol>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-OI-5.png" alt="Transition tree with branches" /><figcaption aria-hidden="true">Transition tree with branches</figcaption>
+</figure>
+<ol start="7" type="1">
+<li>Adding <em>array-indexed properties</em> does <strong>not</strong> create new HiddenClasses.</li>
+</ol>
 ]]></content>
       <categories>
         <category>Memo</category>
