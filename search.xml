@@ -5845,7 +5845,7 @@ true
 <img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-OI-2.png" alt="Overview of HiddenClass in V8" /><figcaption aria-hidden="true">Overview of HiddenClass in V8</figcaption>
 </figure>
 <ol type="1">
-<li><p>Any object on V8 heap points to a HiddenClass.</p></li>
+<li><p>The first field of any object on V8 heap points to a HiddenClass.</p></li>
 <li><p>The third bit field of HiddenClass stores the number of properties, and a pointer to the <em>descriptor array</em>.</p></li>
 <li><p>The <em>descriptor array</em> contains information about <em>named properties</em>, like <em>the name itself</em> and <em>the position</em> where value is stored. (there is no entry of <em>indexed properties</em> in the <em>descriptor array</em>)</p></li>
 <li><p>Objects with the same structure (e.g. the same named properties in the same order) share the same HiddenClass.</p></li>
@@ -5868,6 +5868,68 @@ true
 <ol start="7" type="1">
 <li>Adding <em>array-indexed properties</em> does <strong>not</strong> create new HiddenClasses.</li>
 </ol>
+<h4 id="the-three-different-kinds-of-named-properties">The three different kinds of named properties</h4>
+<ol type="1">
+<li>A simple object such as <code>&#123;a: 1, b: 2&#125;</code> can have various internal presentations in V8.</li>
+<li>While JavaScript objects behave like simple <em>dictionaries</em> from outside, V8 tries to avoid dictionaries because they hamper certain optimizations such as <em>inline caches</em>.</li>
+</ol>
+<h5 id="in-object-properties">1. In-object Properties</h5>
+<p>In-object properties stored directly on the object themselves. These are the fastest properties available in V8.</p>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-OI-6.png" alt="In-object and fast properties" /><figcaption aria-hidden="true">In-object and fast properties</figcaption>
+</figure>
+<h5 id="fast-properties">2. Fast Properties</h5>
+<ol type="1">
+<li>Fast properties are stored in the <em>linear properties store</em>, and can simply accessed by index.</li>
+<li>To get from the property name actual position in the properties store, we have to consult the <em>descriptor array</em> on <em>HiddenClass</em>.</li>
+</ol>
+<h5 id="slow-properties">3. Slow Properties</h5>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-OI-7.png" alt="Object with slow properties" /><figcaption aria-hidden="true">Object with slow properties</figcaption>
+</figure>
+<ol type="1">
+<li>Many properties get added and deleted from an object. They are slow properties.</li>
+<li>An object with slow properties has a self-contained dictionary as a properties store. <strong>All the properties meta information</strong> is no longer stored in the descriptor array on the HiddenClass but <strong>directly in the properties' dictionary</strong>.</li>
+<li>Properties can be added and removed without updating the HiddenClass.</li>
+<li><em>Inline caches</em> don't work with those dictionary properties.</li>
+</ol>
+<h4 id="elements-or-array-indexed-properties">Elements or array-indexed properties</h4>
+<p>There are several types of elements.</p>
+<h5 id="packed-or-holey-elements">Packed or Holey Elements</h5>
+<p>To ways to get hole: delete an indexed element or just don't defined it (like <code>[1,,3]</code>).</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> o = [<span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;b&#x27;</span>, <span class="string">&#x27;c&#x27;</span>];</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(o[<span class="number">1</span>]);          <span class="comment">// Prints &#x27;b&#x27;.</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">delete</span> o[<span class="number">1</span>];                <span class="comment">// Introduces a hole in the elements store.</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(o[<span class="number">1</span>]);          <span class="comment">// Prints &#x27;undefined&#x27;; property 1 does not exist.</span></span><br><span class="line">o.<span class="property">__proto__</span> = &#123;<span class="number">1</span>: <span class="string">&#x27;B&#x27;</span>&#125;;     <span class="comment">// Define property 1 on the prototype.</span></span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(o[<span class="number">0</span>]);          <span class="comment">// Prints &#x27;a&#x27;.</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(o[<span class="number">1</span>]);          <span class="comment">// Prints &#x27;B&#x27;.</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(o[<span class="number">2</span>]);          <span class="comment">// Prints &#x27;c&#x27;.</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(o[<span class="number">3</span>]);          <span class="comment">// Prints undefined</span></span><br></pre></td></tr></table></figure>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-OI-8.png" alt="Holey elements example" /><figcaption aria-hidden="true">Holey elements example</figcaption>
+</figure>
+<ol type="1">
+<li>Given that element properties are self-contained (we don't store information about element on the HiddenClass), we need a special value (called <code>the_hole</code>) to mark properties that are not present.</li>
+<li>This is crucial for the performance of Array functions. Because if we know that there are no holes (the elements store is packed), we can perform local operations without expensive lookups on the prototype chain.</li>
+</ol>
+<h5 id="fast-or-dictionary-elements">Fast or Dictionary Elements</h5>
+<ol type="1">
+<li>Fast elements are simple <em>VM-internal arrays</em> where the <em>property index</em> maps to the in <em>index in the elements store</em>.</li>
+<li>The simple presentation is rather wasteful for very large <em>sparse/holey arrays</em>. V8 creates a <em>dictionary</em> where we store a <em>key-value-descriptor triplets</em>.</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> sparseArray = [];</span><br><span class="line">sparseArray[<span class="number">9999</span>] = <span class="string">&#x27;foo&#x27;</span>; <span class="comment">// Creates an array with dictionary elements.</span></span><br></pre></td></tr></table></figure>
+<ol start="3" type="1">
+<li>V8 resorts to slow elements whenever you define an indexed properties with a custom descriptor.</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> array = [];</span><br><span class="line"><span class="comment">// 0 is slow element</span></span><br><span class="line"><span class="title class_">Object</span>.<span class="title function_">defineProperty</span>(array, <span class="number">0</span>, &#123;<span class="attr">value</span>: <span class="string">&#x27;fixed&#x27;</span> <span class="attr">configurable</span>: <span class="literal">false</span>&#125;);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(array[<span class="number">0</span>]);      <span class="comment">// Prints &#x27;fixed&#x27;.</span></span><br><span class="line">array[<span class="number">0</span>] = <span class="string">&#x27;other value&#x27;</span>;   <span class="comment">// Cannot override index 0.</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(array[<span class="number">0</span>]);      <span class="comment">// Still prints &#x27;fixed&#x27;.</span></span><br></pre></td></tr></table></figure>
+<ol start="4" type="1">
+<li>Array functions perform considerably slower on objects with slow elements.</li>
+</ol>
+<h5 id="semi-and-double-elements">Semi and Double Elements</h5>
+<ol type="1">
+<li>If you only store integers in an Array, a common use-case, the GC does not have to look at the array, as integers are directly encoded as so called <em>small integers (Smis)</em> in place.</li>
+<li>Unlike Smis, floating point numbers are usually represented as full objects occupying several words. However, V8 stores raw doubles for pure double arrays to avoid memory and performance overhead.</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> a1 = [<span class="number">1</span>,   <span class="number">2</span>, <span class="number">3</span>];  <span class="comment">// Smi Packed</span></span><br><span class="line"><span class="keyword">const</span> a2 = [<span class="number">1</span>,    , <span class="number">3</span>];  <span class="comment">// Smi Holey, a2[1] reads from the prototype</span></span><br><span class="line"><span class="keyword">const</span> b1 = [<span class="number">1.1</span>, <span class="number">2</span>, <span class="number">3</span>];  <span class="comment">// Double Packed</span></span><br><span class="line"><span class="keyword">const</span> b2 = [<span class="number">1.1</span>,  , <span class="number">3</span>];  <span class="comment">// Double Holey, b2[1] reads from the prototype</span></span><br></pre></td></tr></table></figure>
+<h5 id="special-elements">Special Elements</h5>
+<p>There are more types: TypedArrays, string wrappers, arguments objects.</p>
+<h5 id="the-elementsaccessor">The ElementsAccessor</h5>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-OI-9.png" alt="What happens when call array methods" /><figcaption aria-hidden="true">What happens when call array methods</figcaption>
+</figure>
 ]]></content>
       <categories>
         <category>Memo</category>
