@@ -227,7 +227,7 @@ Orinoco is the codename of the GC project and try to obtain better performance.
 
 ![Overview of HiddenClass in V8](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-OI-2.png)
 
-1. Any object on V8 heap points to a HiddenClass.
+1. The first field of any object on V8 heap points to a HiddenClass.
 2. The third bit field of HiddenClass stores the number of properties, and a pointer to the *descriptor array*.
 3. The *descriptor array* contains information about *named properties*, like *the name itself* and *the position* where value is stored. (there is no entry of *indexed properties* in the *descriptor array*)
 
@@ -245,3 +245,97 @@ Orinoco is the codename of the GC project and try to obtain better performance.
 
 7. Adding *array-indexed properties* does **not** create new HiddenClasses.
 
+#### The three different kinds of named properties
+
+1. A simple object such as `{a: 1, b: 2}` can have various internal presentations in V8.
+2. While JavaScript objects behave like simple *dictionaries* from outside, V8 tries to avoid dictionaries because they hamper certain optimizations such as *inline caches*.
+
+##### 1. In-object Properties
+
+In-object properties stored directly on the object themselves. These are the fastest properties available in V8.
+
+![In-object and fast properties](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-OI-6.png)
+
+##### 2. Fast Properties
+
+1. Fast properties are stored in the *linear properties store*, and can simply accessed by index. 
+2. To get from the property name actual position in the properties store, we have to consult the *descriptor array* on *HiddenClass*.
+
+##### 3. Slow Properties
+
+![Object with slow properties](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-OI-7.png)
+
+1. Many properties get added and deleted from an object. They are slow properties.
+2. An object with slow properties has a self-contained dictionary as a properties store. **All the properties meta information** is no longer stored in the descriptor array on the HiddenClass but **directly in the properties' dictionary**.
+3. Properties can be added and removed without updating the HiddenClass.
+4. *Inline caches* don't work with those dictionary properties.
+
+#### Elements or array-indexed properties
+
+There are several types of elements.
+
+##### Packed or Holey Elements
+
+To ways to get hole: delete an indexed element or just don't defined it (like `[1,,3]`).
+
+```js
+const o = ['a', 'b', 'c'];
+console.log(o[1]);          // Prints 'b'.
+
+delete o[1];                // Introduces a hole in the elements store.
+console.log(o[1]);          // Prints 'undefined'; property 1 does not exist.
+o.__proto__ = {1: 'B'};     // Define property 1 on the prototype.
+
+console.log(o[0]);          // Prints 'a'.
+console.log(o[1]);          // Prints 'B'.
+console.log(o[2]);          // Prints 'c'.
+console.log(o[3]);          // Prints undefined
+```
+
+![Holey elements example](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-OI-8.png)
+
+1. Given that element properties are self-contained (we don't store information about element on the HiddenClass), we need a special value (called `the_hole`) to mark properties that are not present.
+2. This is crucial for the performance of Array functions. Because if we know that there are no holes (the elements store is packed), we can perform local operations without expensive lookups on the prototype chain.
+
+#####  Fast or Dictionary Elements
+
+1. Fast elements are simple *VM-internal arrays* where the *property index* maps to the in *index in the elements store*.
+2. The simple presentation is rather wasteful for very large *sparse/holey arrays*. V8 creates a *dictionary* where we store a *key-value-descriptor triplets*.
+
+```js
+const sparseArray = [];
+sparseArray[9999] = 'foo'; // Creates an array with dictionary elements.
+```
+
+3. V8 resorts to slow elements whenever you define an indexed properties with a custom descriptor.
+
+```js
+const array = [];
+// 0 is slow element
+Object.defineProperty(array, 0, {value: 'fixed' configurable: false});
+console.log(array[0]);      // Prints 'fixed'.
+array[0] = 'other value';   // Cannot override index 0.
+console.log(array[0]);      // Still prints 'fixed'.
+```
+
+4. Array functions perform considerably slower on objects with slow elements.
+
+##### Semi and Double Elements
+
+1.  If you only store integers in an Array, a common use-case, the GC does not have to look at the array, as integers are directly encoded as so called *small integers (Smis)* in place.
+2. Unlike Smis, floating point numbers are usually represented as full objects occupying several words. However, V8 stores raw doubles for pure double arrays to avoid memory and performance overhead.
+
+```js
+const a1 = [1,   2, 3];  // Smi Packed
+const a2 = [1,    , 3];  // Smi Holey, a2[1] reads from the prototype
+const b1 = [1.1, 2, 3];  // Double Packed
+const b2 = [1.1,  , 3];  // Double Holey, b2[1] reads from the prototype
+```
+
+##### Special Elements
+
+There are more types: TypedArrays, string wrappers, arguments objects.
+
+##### The ElementsAccessor
+
+![What happens when call array methods](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-OI-9.png)
