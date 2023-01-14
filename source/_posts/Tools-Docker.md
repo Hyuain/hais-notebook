@@ -44,7 +44,7 @@ docker run --name mysql-demo1 -e MYSQL_ROOT_PASSWORD=123456 -p 3306:3306 -d mysq
 - `docker ps -a` 查看所有的容器（Containers）
 - `docker kill <id|name>` 关闭对应的容器
 - `docker restart <id|name>` 重启关闭的容器
-- `docer rm <id|name>` 删除对应的容器
+- `docker rm <id|name>` 删除对应的容器
 - `docker container prune` 删除无用的容器，以节省空间
 
 注意：用 docker 运行的容器，默认不会持久化，容器被删掉，数据也就没了

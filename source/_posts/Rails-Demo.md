@@ -40,7 +40,7 @@ docker run -v [容器路径]:/var/lib/postgresql/data -p 5001:5432 -e POSTGRES_U
 - `docker ps -a` 查看所有的容器（Containers）
 - `docker kill <id|name>` 关闭对应的容器
 - `docker restart <id|name>` 重启关闭的容器
-- `docer rm <id|name>` 删除对应的容器
+- `docker rm <id|name>` 删除对应的容器
 - `docker container prune` 删除无用的容器，以节省空间
 
 # 准备数据库
