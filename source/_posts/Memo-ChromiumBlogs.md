@@ -29,8 +29,6 @@ Read some articles in chromium blogs or relative wikis, and take these memos.
 
 # Security
 
-<iframe src="https://xmind.works/XXsi3uwc" style="width: 100%; height: 500px; border: none;"></iframe>
-
 # JavaScript
 
 ## JIT: Just-in-time compilation
