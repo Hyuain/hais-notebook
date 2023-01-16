@@ -1,6 +1,6 @@
 ---
 title: Blockchain
-date: 2022-01-16 14:38:30
+date: 2023-01-16 14:38:30
 tags:
 - 计算机
 categories:
@@ -13,4 +13,4 @@ Memos about blockchain.
 
 # Etherum
 
-<iframe src="https://xmind.works/XXsi3uwc" style="width: 100%; height: 500px; border: none;"></iframe>
+<iframe src="https://xmind.works/XXsi3uwc" style="width: 100%; height: 600px; border: none;"></iframe>
