@@ -1,18 +1,114 @@
 ---
-title: 浏览器的工作原理
-date: 2021-05-23 11:10:48
+title: Cookie
+date: 2020-01-30 09:45:22
 tags:
   - 入门
-  - 这一秒是你的，下一秒就是我的
-  - FAQ
 categories:
   - [前端, 浏览器]
 ---
 
-笔记，备忘。
-原文：[浏览器的工作原理](https://github.com/yacan8/blog/issues/28) 
+Cookie 是浏览器下发给浏览器的一段字符串，浏览器必须保存这个 Cookie，之后发起的相同二级域名的请求，浏览器必须附上 Cookie。
 
 <!-- more -->
+
+# Cookie
+
+## Cookie 防篡改
+
+思路一：加密，但是有安全漏洞（加密后的内容可以无限期使用）
+
+思路二：把用户信息隐藏在服务器，这样我就可以自由控制 Cookie 的失效时间
+
+- 把用户信息放在服务器的 `session` 里，再给信息一个随机 `id`
+- 把随机的 `id` 发送给浏览器
+- 后端读取的时候，通过 `session[id]` 获取用户信息
+
+## Cookie、LocalStorage、SessionStorage 和 Session
+
+### Cookie 和 Session 的区别
+
+Cookie 是服务器发给浏览器的一段字符串，每次浏览器在访问对应域名的时候，都需要把这个字符串带上
+Session 是会话，表示浏览器与服务器一段时间内的会话
+
+- 一般 Cookie 在浏览器上，Session 在服务器上
+- Session 一般是基于 Cookie 来实现的（把 SessionID 放到 Cookie 里面）
+
+### Cookie 和 LocalStorage 的区别
+
+- Cookie 上限一般为 4K，LocalStorage 为 5M
+- Cookie 一般存储用户信息，LocalStorage 一般存储不重要的数据
+- Cookie 需要发送到服务器上，LocalStorage 不发送到服务器上
+
+### LocalStorage 和 SessionStorage 的区别
+
+LocalStorage 一般不过期，SessionStorage 一般在 Session 结束的时候过期（比如关闭浏览器的时候）
+
+# 同源策略
+
+- 源：输入 `window.origin` 或者 `location.origin`，我们就可以看到 **源**，实际上他就是 **协议 + 域名 + 端口号**。
+- 同源：当两个 url 的源（协议、域名、端口号）完全一致，则称之为 **同源**，比如 `https://baidu.com` 和 `https://www.baidu.com` 就不同源。
+- 同源策略：**浏览器** 规定：如果 JS **运行在**源 A 里，那么就不能获取源 B 的数据，这就是 **同源策略** ——不允许不同源的资源 **跨域访问**。
+
+{% note warning %}
+要注意的是，同源策略限制的是 **数据的访问**，引用 CSS、JS 和图片的时候，其实并不知道其内容，只是在 **引用**，因此不受同源策略限制。
+{% endnote %}
+
+## CORS
+
+> Cross-Origin Resource Sharing
+
+只需要在响应头里面写 `Access-Control-Allow-Origin: http://foo.example` 就可以了，但是 IE 6、7、8、9 都不支持，得用 JSONP。
+
+## JSONP
+
+> JSONP 和 JSON 没有多大关系
+
+让 `frank.com` 访问 `qq.com` 的方法：
+
+1. `qq.com` 将 数据写到 `/friends.js`
+2. `frank.com` 用 `script` 标签引用 `/friends.js`
+3. `/friends.js` 执行，执行 `frank.com` 事先定义好的 `window.xxx` 函数（`window.xxx({friends:[...]})`）
+4. 然后 `frank.com` 通过 `window.xxx` 获取到了数据，这也是一个回调
+
+但是，JSONP 存在安全性问题：
+
+- 因为每个人都可以引用 js，需要进行 `referer` 检查
+- 仍然存在安全问题，如果 `frank.com` 被攻陷，则 `qq.com` 也被攻陷
+
+如何自动生成 window.xxx（如何把 frank.com 定义好的函数传给后台）？
+
+- 通过查询参数
+
+> 什么是 JSONP？
+> 背景：当前浏览器或者由于某些因素导致不支持跨域
+> 方法：请求一个 JS 文件，文件会执行一个回调，回调里面有我们的数据，回调的名字可以随机生成，我们把名字用 callback 参数传给后台，后台再返回给我们再执行
+> 优点：兼容 IE、可以跨域
+> 缺点：由于是 `script` 标签，所以读不到 AJAX 那么精确的状态（比如 Status、响应头等等），并且只能发 `GET` 请求，不支持 `POST`
+
+一个代码实现：
+
+```js
+function jsonp(settings) {
+  const data = settings.data || {}
+  const key = settings.key || 'callback'
+  const callback = settings.callback || function() {}
+  
+  data[key] = '__onGetData__'
+  window.__onGetData__ = function(response) {
+    callback(response)
+  }
+  
+  const query = []
+  for (let key in data) {
+    query.push(key + '=' + data.key)
+  }
+
+  const script = document.createElement('script')
+  script.src = url + '?' + encodeURIComponent(query.join('&'))
+  document.head.appendChild(script)
+  document.head.removeChild(script)
+}
+```
 
 # 浏览器架构
 
@@ -65,7 +161,7 @@ Chrome 提供了四种进程模式（Process Models），不同的进程会对 T
 - **site-instance** 指的是一组 connected pages from the same site。connected 即 can obtain references to each other in script code。比如满足下面两种情况，并打开的新页面和旧页面就属于同一个 site，那么他们就属于一个 site-instance：
   - 用户通过 `<a>` 标签打开的页面
   - 通过 Javascript 代码打开的新页面（比如 `window.open`）
-  
+
 举个栗子：若使用 **Process-per-site-instance** 模式，当打开一个 tab 访问 a.baidu.com，再打开一个 tab 访问 b.baidu.com，就是两个进程；若在 a.baidu.com 中，通过 Javascript 代码打开了 b.baidu.com，就会使用同一个进程。
 
 因此实际上这是介于 **Process-per-site** 和 **Process-per-tab** 之间的一种模式。

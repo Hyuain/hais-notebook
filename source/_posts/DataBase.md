@@ -46,7 +46,7 @@ Client 客户端（数据使用者）
 
 [下载 MySQL](https://dev.mysql.com/downloads/mysql/)、[下载 MySQL WorkBench](https://dev.mysql.com/downloads/workbench)
 
-使用 Docker {% post_link Tools-Docker %}
+使用 Docker {% post_link Docker %}
 
 ## 用 Node.js 连接数据库
 

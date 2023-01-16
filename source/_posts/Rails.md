@@ -1,10 +1,10 @@
 ---
-title: Rails 的项目搭建
-date: 2021-02-13 11:48:41
+title: Rails
+date: 2023-01-16 11:48:41
 tags:
   - 入门
 categories:
-  - [全栈, Ruby, Rails]
+  - [全栈, Ruby]
 ---
 
 Rails 的一个项目是如何搭建起来的。
@@ -17,7 +17,9 @@ Rails 的一个项目是如何搭建起来的。
 
 如果 `gem install` 安装很慢，按照 [RubyChina](https://gems.ruby-china.com/) 的方法进行操作。
 
-# 创建 Rails 项目
+# Development
+
+## 创建 Rails 项目
 
 ```bash
 gem install rails
@@ -26,7 +28,7 @@ rails new [ProjectName] --database=postgresql --skip-action-mailbox --skip-actio
 
 然后使用 `bin/rails server` 命令启动服务器，但是这时会报错，因为我们还没有数据库。
 
-# 创建 docker 容器
+## 创建 docker 容器
 
 ```bash
 docker run -v [容器路径]:/var/lib/postgresql/data -p 5001:5432 -e POSTGRES_USER=[用户名] -e POSTGRES_PASSWORD=[密码] -d postgres:[版本号 也可以不指定]
@@ -35,7 +37,7 @@ docker run -v [容器路径]:/var/lib/postgresql/data -p 5001:5432 -e POSTGRES_U
 如果速度太慢，需要使用镜像，按照 [此教程](http://guide.daocloud.io/dcs/daocloud-9153151.html) 进行配置。
 可将镜像地址配置为中科大镜像地址：https://docker.mirrors.ustc.edu.cn
 
-## 其他的 docker 命令
+### 其他的 docker 命令
 
 - `docker ps -a` 查看所有的容器（Containers）
 - `docker kill <id|name>` 关闭对应的容器
@@ -43,9 +45,9 @@ docker run -v [容器路径]:/var/lib/postgresql/data -p 5001:5432 -e POSTGRES_U
 - `docker rm <id|name>` 删除对应的容器
 - `docker container prune` 删除无用的容器，以节省空间
 
-# 准备数据库
+## 准备数据库
 
-## 配置数据库
+### 配置数据库
 
 数据库需要在 `config/database.yml` 中进行配置。
 
@@ -76,13 +78,13 @@ production:
 
 ```
 
-## 创建数据库
+### 创建数据库
 
 ```bash
 bin/rials db:create
 ```
 
-## 查看数据库
+### 查看数据库
 
 ```bash
 # 进入虚拟机并运行 bash：
@@ -97,9 +99,9 @@ psql -U <用户名>
 select * from <表名称> limit 10;
 ```
 
-# Hello Rails
+## Hello Rails
 
-## Routes
+### Routes
 
 路由需要在 `config/routes.rb` 中进行配置。
 
@@ -112,9 +114,9 @@ end
 
 可以通过 `bin/rails routes` 命令查看所有的路由。
 
-## Controller
+### Controller
 
-### 手动创建 controller
+#### 手动创建 controller
 
 controller 需要在 `app/controllers` 中进行配置。
 比如如上面 routes 中的配置所说，我们需要一个 `app/controllers/first_controller.rb` 文件，里面有一个 `FirstController` class，其中对应有 `hello` 和 `hi` 方法：
@@ -128,13 +130,13 @@ class FirstController < ApplicationController
 end
 ```
 
-### 通过命令创建 controller
+#### 通过命令创建 controller
 
 ```bash
 bin/rails g controller users
 ``` 
 
-### 渲染 JSON
+#### 渲染 JSON
 
 ```ruby
 class FirstController < ApplicationController
@@ -144,9 +146,9 @@ class FirstController < ApplicationController
 end
 ```
 
-## View
+### View
 
-### 渲染 HTML
+#### 渲染 HTML
 
 一般前后端分离的情况下，不是由 rails 来渲染 HTML，当然 rails 也可以用于渲染 HTML，这时我们需要建立一个新的文件 `app/views/first/hello.html`，然后在 FirstController 中这样写：
 
@@ -166,7 +168,7 @@ class ApplicationController < ActionController::API
 end
 ``` 
 
-### Layout
+#### Layout
 
 erb 可以使用 `<% %>` 来包裹语句：
 
@@ -204,9 +206,9 @@ erb 可以使用 `<% %>` 来包裹语句：
 <% end %>
 ```
 
-# 注册功能
+## 注册功能
 
-## 第一步：创建 Model 与数据表
+### 第一步：创建 Model 与数据表
 
 ```bash
 bin/rails g model User
@@ -239,7 +241,7 @@ bin/rails db:migrate
 
 然后可以在 rubyMine 中查看数据库、User 表。
 
-## 第二步：配置路由
+### 第二步：配置路由
 
 ```ruby
 Rails.application.routes.draw do
@@ -257,7 +259,7 @@ end
 resources :users
 ```
 
-## 第三步：在 Rails Console 中尝试进行增删改查
+### 第三步：在 Rails Console 中尝试进行增删改查
 
 可以在 Rails Console 中先体验一下增删改查是如何进行的：
 
@@ -280,7 +282,7 @@ u.save
 
 输入 `exit` 或者按 `Ctrl`+`D` 可以退出 Rails Console。
 
-## 第四步：存储密码
+### 第四步：存储密码
 
 我们平时的 User 表中不会存储密码的明文，而是存储一个 `password_digest` 字段，这可以通过 has_secure_password 来实现。
 
@@ -312,7 +314,7 @@ u.save
 u.authenticate('123')
 ```
 
-## 第五步：创建与配置 Controller
+### 第五步：创建与配置 Controller
 
 我们可以通过如下命令创建 Controller，得到 `app/controllers/users_controller.rb`：
 
@@ -344,13 +346,13 @@ class UsersController < ApplicationController
 end
 ```
 
-### 模拟请求进行调试
+#### 模拟请求进行调试
 
-#### 使用 RubyMine 中的 HTTP Client
+##### 使用 RubyMine 中的 HTTP Client
 
 `Double Shift` - `HTTP Client`，然后可以通过 examples 看看如何使用。
 
-#### 使用 Postman 测试
+##### 使用 Postman 测试
 
 ### 第六步：在 Model 中进行数据校验
 
@@ -396,7 +398,7 @@ zh-CN:
               confirmation: 两次密码不匹配
 ```
 
-## 第八步：发送邮件
+### 第八步：发送邮件
 
 可以通过 `mailer` 来发送邮件，点击 [这里查看官方文档](https://ruby-china.github.io/rails-guides/action_mailer_basics.html)。
 
@@ -408,9 +410,9 @@ bin/rails generate mailer UserMailer
 
 通过 `dotenv-rails` 和 `.env` `.env.local` 文件来抽出环境变量，注意 `.env.local` 需要被加入 `.gitignore` 中，防止将密码提交到 Git 记录中。
 
-# 登录功能
+## 登录功能
 
-## 第一步：配置路由
+### 第一步：配置路由
 
 按照惯例我们需要先配置路由：
 
@@ -420,7 +422,7 @@ Rails.application.routes.draw do
 end
 ```
 
-## 第二步：创建 Model
+### 第二步：创建 Model
 
 Session 不需要写入数据库，故而不需要创建一个完整的 Model（继承于 ActiveRecord），而是一个轻量的 Model（继承于/include ActiveModel）。
 
@@ -437,7 +439,7 @@ class Session
 end
 ```
 
-### attr_accessor
+#### attr_accessor
 
 ```ruby
 attr_accessor :xxx
@@ -447,7 +449,7 @@ attr_accessor :xxx
 2. 会定义一个方法：`xxx`，用于获取 `@xxx` 的值
 3. 会定义一个方法：`xxx=`，用于给 `@xxx` 赋值
 
-## 第三步：创建 Controller
+### 第三步：创建 Controller
 
 ```bash
 bin/rails g controller sessions
@@ -471,7 +473,7 @@ class SessionsController < ApplicationController
 end
 ```
 
-## 第四步：自定义校验，校验账号密码
+### 第四步：自定义校验，校验账号密码
 
 ```ruby
 class Session
@@ -497,7 +499,7 @@ class Session
 end
 ```
 
-## 第五步：使用中间件，记录 session（cookie）
+### 第五步：使用中间件，记录 session（cookie）
 
 `config/application.rb`
 
@@ -522,7 +524,7 @@ end
 
 这样前端在发送请求之后将会得到一个 cookie，RubyMine 可以在 `http-client.cookies` 中查看
 
-## 第六步：获取当前用户的信息
+### 第六步：获取当前用户的信息
 
 ```ruby
 def current_user
@@ -533,7 +535,7 @@ def current_user
 end
 ```
 
-## 第七步：注销登录
+### 第七步：注销登录
 
 ```ruby
 class SessionsController < ApplicationController
@@ -546,7 +548,7 @@ end
 
 将 session 中对应 id 的值删掉即可。
 
-## 单元测试
+### 单元测试
 
 使用 RSpec 进行单元测试，详情查看 [RSpec For Rails 文档](https://github.com/rspec/rspec-rails)。
 
@@ -555,7 +557,7 @@ end
 - Model 需要测试：validation 和 public 方法
 - Controller 需要测试：响应体和响应头（status、body、cookie），一般要测试正反两种情况（成功和不成功）
 
-## 自动生成文档
+### 自动生成文档
 
 使用 `rspec_api_documentation` 可以直接通过单元测试生成 API 文档，详细内容可以 [查看这里](https://github.com/zipmark/rspec_api_documentation)
 
@@ -564,20 +566,20 @@ rake docs:generate
 start doc/api/index.html
 ```
 
-## 其他技巧
+### 其他技巧
 
 1. 可以在 `rspec_helper.rb` 中定义一些常用的工具函数
 2. 可以使用 `rspec_api_documentation` 直接生成 API 文档
 
-# 后端分页
+## 后端分页
 
 使用 `kaminari` gem
 
-# 使用中间表关联两个表
+## 使用中间表关联两个表
 
 比如我们需要建立 tagging 来关联 record 和 tag
 
-## 创建 Model
+### 创建 Model
 
 ```bash
 bin/rails g model tagging
@@ -630,7 +632,7 @@ class Record < ApplicationRecord
 end
 ```
 
-# 使用 Factory Bot 加速测试
+## 使用 Factory Bot 加速测试
 
 可以使用 [factory-bot](https://github.com/thoughtbot/factory_bot) 来帮助我们自动化一些流程，比如：
 
@@ -648,3 +650,81 @@ end
 # spec/requests/record.rb
 user = create(:user)
 ```
+
+# Deployment
+
+## 购买并登录阿里云服务器
+
+1. 去阿里云选择 ECS 服务器，购买一个。登录凭证选择使用密钥对。
+2. 使用 `ssh root@公网ip` 登录到机器上
+1. 公网 IP 很难记，建议记到 hosts 文件里
+
+## 创建低权限用户
+
+1. 进入 root 用户
+2. 安装 git：`apt update; apt install git -y`
+3. 创建 harvey 用户：`adduser harvey`，密码为 `123456`
+4. 让 harvey 用户也能 ssh 登录
+1. `mkdir -p /home/harvey/.ssh`
+2. `cp ~/.ssh/authorized_keys /home/harvey/.ssh/`
+3. `chown -R harvey:harvey /home/harvey/.ssh`
+5. 退出 root（使用 `exit` 或 `ctrl + D`）
+6. 现在就可以使用 `ssh root@harvey` 登录 harvey 用户了
+
+## 安装 Docker
+
+1. 进入 root 用户
+2. 根据 [菜鸟教程](https://www.runoob.com/docker/ubuntu-docker-install.html) 来安装 Docker
+3. 将 harvey 添加到 docker 用户组：`usermod -aG docker harvey`，这样 harvey 才能运行 docker 命令
+4. 运行 `docker run hello-world`
+5. 如果 `docker run hello-wrold` 运行很慢，可以参考 [这篇文章](https://developer.aliyun.com/article/29941) ，在 [这里](https://cr.console.aliyun.com/cn-hangzhou/instances/mirrors) 配置镜像加速器。
+
+## 用 Docker 启动数据库
+
+1. 进入 harvey 用户
+2. 创建数据库目录 `mkdir /home/harvey/data`
+3. 开启数据库 `docker run --net=host -v /home/harvey/data:/var/lib/postgresql/data -p 5432:5432 -e POSTGRES_USER=harvey -e POSTGRES_PASSWORD=123456 --name psql1 -d postgres`
+1. 注意如果 `-net=host` 没有写的话会导致两个容器网不通
+2. 此处用了端口 5432 而不是 5001，因为 `-net=host` 不支持 `5001:5432`
+4. 测试数据库
+1. `docker exec -t psql1 bash` 进入容器
+2. `psql -U harvey`
+3. `\l` 列出所有可用数据库
+
+## 测试 Ruby 容器
+
+1. 进入 harvey 用户
+2. 创建测试文件 `echo "p 'Hi, I am Harvey'" > test.rb`
+3. 使用 ruby 容器运行测试文件：`docker run -it --rm -v "$PWD":/usr/src/myapp -w /usr/src/myapp ruby ruby test.rb`
+4. 看到 `Hi, I am Harvey` 就说明测试成功了，然后用 `rm test.rb` 删除测试代码
+
+## 本地构建 Rails 镜像
+
+1. 创建 `Dockerfile`：
+```dockerfile
+# 从哪里下载镜像，可以指定目录
+FROM ruby
+
+# 工作目录
+WORKDIR /usr/src/app
+# 把源代码拷贝到这个镜像中
+COPY Gemfile .
+COPY Gemfile.lock .
+# 在镜像中运行
+RUN gem sources --add https://gems.ruby-china.com/ --remove https://rubygems.org/
+RUN gem install bundler
+RUN bundle config mirror.https://rubygems.org https://gems.ruby-china.com
+RUN bundle install
+# 将所有的文件都拷贝到这个镜像中
+COPY . .
+# 更新 bin 目录
+RUN bundle exec rake app:update:bin
+# 暴露 3000 短开口
+EXPOSE 3000
+# 入口命令
+CMD [ "bin/rails", "server", "-b","0.0.0.0", "-p","3000"]
+```
+2. 将 `config/database.yml` 复制到 `config/database.sample.yml`，再把原来的 `config/database.yml` ignore 掉
+3. `docker build -t harvey/rails-demo:0.1 .`，得到镜像 `harvey/rails-demo` 版本为 0.1
+3. 运行刚刚得到的镜像：`docker run --net=host -p 3000:3000 harvey/rails-demo:0.1`
+
