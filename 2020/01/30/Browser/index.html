@@ -18,12 +18,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"hyuain.github.io","root":"/hais-notebook/","images":"/hais-notebook/images","scheme":"Gemini","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac","show_result":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/hais-notebook/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/hais-notebook/js/config.js"></script>
 
-    <meta name="description" content="笔记，备忘。 原文：浏览器的工作原理">
+    <meta name="description" content="Cookie 是浏览器下发给浏览器的一段字符串，浏览器必须保存这个 Cookie，之后发起的相同二级域名的请求，浏览器必须附上 Cookie。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="浏览器的工作原理">
-<meta property="og:url" content="https://hyuain.github.io/hais-notebook/2021/05/23/Browser-HowBrowserWorks/index.html">
+<meta property="og:title" content="Cookie">
+<meta property="og:url" content="https://hyuain.github.io/hais-notebook/2020/01/30/Browser/index.html">
 <meta property="og:site_name" content="Hais Notebook">
-<meta property="og:description" content="笔记，备忘。 原文：浏览器的工作原理">
+<meta property="og:description" content="Cookie 是浏览器下发给浏览器的一段字符串，浏览器必须保存这个 Cookie，之后发起的相同二级域名的请求，浏览器必须附上 Cookie。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/2.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/3.png">
@@ -39,24 +39,22 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/23.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/24.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/25.png">
-<meta property="article:published_time" content="2021-05-23T11:10:48.000Z">
-<meta property="article:modified_time" content="2021-05-23T11:10:48.000Z">
+<meta property="article:published_time" content="2020-01-30T09:45:22.000Z">
+<meta property="article:modified_time" content="2020-01-30T09:45:22.000Z">
 <meta property="article:author" content="Harvey Zhang">
 <meta property="article:tag" content="入门">
-<meta property="article:tag" content="FAQ">
-<meta property="article:tag" content="这一秒是你的，下一秒就是我的">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/2.png">
 
 
-<link rel="canonical" href="https://hyuain.github.io/hais-notebook/2021/05/23/Browser-HowBrowserWorks/">
+<link rel="canonical" href="https://hyuain.github.io/hais-notebook/2020/01/30/Browser/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hyuain.github.io/hais-notebook/2021/05/23/Browser-HowBrowserWorks/","path":"2021/05/23/Browser-HowBrowserWorks/","title":"浏览器的工作原理"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hyuain.github.io/hais-notebook/2020/01/30/Browser/","path":"2020/01/30/Browser/","title":"Cookie"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>浏览器的工作原理 | Hais Notebook</title>
+<title>Cookie | Hais Notebook</title>
   
 
 
@@ -157,7 +155,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E6%9E%B6%E6%9E%84"><span class="nav-number">1.</span> <span class="nav-text">浏览器架构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E7%9A%84%E5%A4%9A%E8%BF%9B%E7%A8%8B%E6%9E%B6%E6%9E%84"><span class="nav-number">1.1.</span> <span class="nav-text">浏览器的多进程架构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#chrome-%E7%9A%84%E5%A4%9A%E8%BF%9B%E7%A8%8B%E6%9E%B6%E6%9E%84"><span class="nav-number">1.1.1.</span> <span class="nav-text">Chrome 的多进程架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E8%BF%9B%E7%A8%8B%E6%9E%B6%E6%9E%84%E7%9A%84%E5%A5%BD%E5%A4%84"><span class="nav-number">1.1.2.</span> <span class="nav-text">多进程架构的好处</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E8%BF%9B%E7%A8%8B%E6%9E%B6%E6%9E%84%E4%BC%98%E5%8C%96"><span class="nav-number">1.1.3.</span> <span class="nav-text">多进程架构优化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E7%9A%84%E8%BF%9B%E7%A8%8B%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.1.3.1.</span> <span class="nav-text">浏览器的进程模式</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AF%BC%E8%88%AA%E8%BF%87%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">导航过程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E9%A1%B5%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B"><span class="nav-number">2.1.</span> <span class="nav-text">网页加载过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%E5%A4%84%E7%90%86%E8%BE%93%E5%85%A5"><span class="nav-number">2.1.1.</span> <span class="nav-text">第一步：处理输入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%E5%BC%80%E5%A7%8B%E5%AF%BC%E8%88%AA"><span class="nav-number">2.1.2.</span> <span class="nav-text">第二步：开始导航</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%E8%AF%BB%E5%8F%96%E5%93%8D%E5%BA%94"><span class="nav-number">2.1.3.</span> <span class="nav-text">第三步：读取响应</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E5%9B%9B%E6%AD%A5%E6%9F%A5%E6%89%BE%E6%B8%B2%E6%9F%93%E8%BF%9B%E7%A8%8B"><span class="nav-number">2.1.4.</span> <span class="nav-text">第四步：查找渲染进程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%BA%94%E6%AD%A5%E6%8F%90%E4%BA%A4%E5%AF%BC%E8%88%AA"><span class="nav-number">2.1.5.</span> <span class="nav-text">第五步：提交导航</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E5%85%AD%E6%AD%A5%E5%88%9D%E5%A7%8B%E5%8C%96%E5%8A%A0%E8%BD%BD%E5%AE%8C%E6%88%90"><span class="nav-number">2.1.6.</span> <span class="nav-text">第六步：初始化加载完成</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E9%A1%B5%E6%B8%B2%E6%9F%93%E5%8E%9F%E7%90%86"><span class="nav-number">2.2.</span> <span class="nav-text">网页渲染原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E5%BB%BA-dom"><span class="nav-number">2.2.1.</span> <span class="nav-text">构建 DOM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%90%E8%B5%84%E6%BA%90%E5%8A%A0%E8%BD%BD"><span class="nav-number">2.2.2.</span> <span class="nav-text">子资源加载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#javascript-%E7%9A%84%E5%8A%A0%E8%BD%BD%E4%B8%8E%E6%89%A7%E8%A1%8C"><span class="nav-number">2.2.3.</span> <span class="nav-text">Javascript 的加载与执行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B7%E5%BC%8F%E8%AE%A1%E7%AE%97style-calculation"><span class="nav-number">2.2.4.</span> <span class="nav-text">样式计算：Style Calculation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%83%E5%B1%80layout"><span class="nav-number">2.2.5.</span> <span class="nav-text">布局：Layout</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%98%E5%88%B6paint"><span class="nav-number">2.2.6.</span> <span class="nav-text">绘制：Paint</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%88%E6%88%90compositing"><span class="nav-number">2.2.7.</span> <span class="nav-text">合成：Compositing</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%90%88%E6%88%90"><span class="nav-number">2.2.7.1.</span> <span class="nav-text">什么是合成</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E7%9A%84%E7%BB%98%E5%88%B6%E6%96%B9%E5%BC%8F"><span class="nav-number">2.2.7.1.1.</span> <span class="nav-text">简单的绘制方式</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%87%87%E7%94%A8%E5%90%88%E6%88%90%E7%9A%84%E6%96%B9%E5%BC%8F%E6%8F%90%E9%AB%98%E6%80%A7%E8%83%BD"><span class="nav-number">2.2.7.1.2.</span> <span class="nav-text">采用合成的方式提高性能</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BB%E7%BA%BF%E7%A8%8B%E4%B8%8E%E5%85%83%E7%B4%A0%E5%88%86%E5%B1%82"><span class="nav-number">2.2.7.2.</span> <span class="nav-text">主线程与元素分层</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%88%E6%88%90%E5%99%A8%E7%BA%BF%E7%A8%8B%E5%85%89%E6%A0%85%E5%8C%96%E7%BA%BF%E7%A8%8B"><span class="nav-number">2.2.7.3.</span> <span class="nav-text">合成器线程、光栅化线程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E4%BA%A4%E5%90%88%E6%88%90%E5%B8%A7"><span class="nav-number">2.2.7.4.</span> <span class="nav-text">提交合成帧</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E5%A4%84%E7%90%86%E4%BA%8B%E4%BB%B6"><span class="nav-number">3.</span> <span class="nav-text">浏览器处理事件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B8%B2%E6%9F%93%E8%BF%9B%E7%A8%8B%E4%B8%AD%E7%9A%84%E5%90%88%E6%88%90%E5%99%A8%E7%BA%BF%E7%A8%8B%E6%8E%A5%E6%94%B6%E4%BA%8B%E4%BB%B6"><span class="nav-number">3.1.</span> <span class="nav-text">渲染进程中的合成器线程接收事件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E6%89%BE%E4%BA%8B%E4%BB%B6%E5%AF%B9%E8%B1%A1-event-target"><span class="nav-number">3.2.</span> <span class="nav-text">查找事件对象 Event Target</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E5%AF%B9%E4%BA%8B%E4%BB%B6%E7%9A%84%E4%BC%98%E5%8C%96"><span class="nav-number">3.3.</span> <span class="nav-text">浏览器对事件的优化</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#cookie"><span class="nav-number">1.</span> <span class="nav-text">Cookie</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#cookie-%E9%98%B2%E7%AF%A1%E6%94%B9"><span class="nav-number">1.1.</span> <span class="nav-text">Cookie 防篡改</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cookielocalstoragesessionstorage-%E5%92%8C-session"><span class="nav-number">1.2.</span> <span class="nav-text">Cookie、LocalStorage、SessionStorage 和 Session</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#cookie-%E5%92%8C-session-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">1.2.1.</span> <span class="nav-text">Cookie 和 Session 的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cookie-%E5%92%8C-localstorage-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">1.2.2.</span> <span class="nav-text">Cookie 和 LocalStorage 的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#localstorage-%E5%92%8C-sessionstorage-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">1.2.3.</span> <span class="nav-text">LocalStorage 和 SessionStorage 的区别</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%8C%E6%BA%90%E7%AD%96%E7%95%A5"><span class="nav-number">2.</span> <span class="nav-text">同源策略</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#cors"><span class="nav-number">2.1.</span> <span class="nav-text">CORS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#jsonp"><span class="nav-number">2.2.</span> <span class="nav-text">JSONP</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E6%9E%B6%E6%9E%84"><span class="nav-number">3.</span> <span class="nav-text">浏览器架构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E7%9A%84%E5%A4%9A%E8%BF%9B%E7%A8%8B%E6%9E%B6%E6%9E%84"><span class="nav-number">3.1.</span> <span class="nav-text">浏览器的多进程架构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#chrome-%E7%9A%84%E5%A4%9A%E8%BF%9B%E7%A8%8B%E6%9E%B6%E6%9E%84"><span class="nav-number">3.1.1.</span> <span class="nav-text">Chrome 的多进程架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E8%BF%9B%E7%A8%8B%E6%9E%B6%E6%9E%84%E7%9A%84%E5%A5%BD%E5%A4%84"><span class="nav-number">3.1.2.</span> <span class="nav-text">多进程架构的好处</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E8%BF%9B%E7%A8%8B%E6%9E%B6%E6%9E%84%E4%BC%98%E5%8C%96"><span class="nav-number">3.1.3.</span> <span class="nav-text">多进程架构优化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E7%9A%84%E8%BF%9B%E7%A8%8B%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.1.3.1.</span> <span class="nav-text">浏览器的进程模式</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AF%BC%E8%88%AA%E8%BF%87%E7%A8%8B"><span class="nav-number">4.</span> <span class="nav-text">导航过程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E9%A1%B5%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B"><span class="nav-number">4.1.</span> <span class="nav-text">网页加载过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%E5%A4%84%E7%90%86%E8%BE%93%E5%85%A5"><span class="nav-number">4.1.1.</span> <span class="nav-text">第一步：处理输入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%E5%BC%80%E5%A7%8B%E5%AF%BC%E8%88%AA"><span class="nav-number">4.1.2.</span> <span class="nav-text">第二步：开始导航</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%E8%AF%BB%E5%8F%96%E5%93%8D%E5%BA%94"><span class="nav-number">4.1.3.</span> <span class="nav-text">第三步：读取响应</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E5%9B%9B%E6%AD%A5%E6%9F%A5%E6%89%BE%E6%B8%B2%E6%9F%93%E8%BF%9B%E7%A8%8B"><span class="nav-number">4.1.4.</span> <span class="nav-text">第四步：查找渲染进程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%BA%94%E6%AD%A5%E6%8F%90%E4%BA%A4%E5%AF%BC%E8%88%AA"><span class="nav-number">4.1.5.</span> <span class="nav-text">第五步：提交导航</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E5%85%AD%E6%AD%A5%E5%88%9D%E5%A7%8B%E5%8C%96%E5%8A%A0%E8%BD%BD%E5%AE%8C%E6%88%90"><span class="nav-number">4.1.6.</span> <span class="nav-text">第六步：初始化加载完成</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E9%A1%B5%E6%B8%B2%E6%9F%93%E5%8E%9F%E7%90%86"><span class="nav-number">4.2.</span> <span class="nav-text">网页渲染原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E5%BB%BA-dom"><span class="nav-number">4.2.1.</span> <span class="nav-text">构建 DOM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%90%E8%B5%84%E6%BA%90%E5%8A%A0%E8%BD%BD"><span class="nav-number">4.2.2.</span> <span class="nav-text">子资源加载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#javascript-%E7%9A%84%E5%8A%A0%E8%BD%BD%E4%B8%8E%E6%89%A7%E8%A1%8C"><span class="nav-number">4.2.3.</span> <span class="nav-text">Javascript 的加载与执行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B7%E5%BC%8F%E8%AE%A1%E7%AE%97style-calculation"><span class="nav-number">4.2.4.</span> <span class="nav-text">样式计算：Style Calculation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%83%E5%B1%80layout"><span class="nav-number">4.2.5.</span> <span class="nav-text">布局：Layout</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%98%E5%88%B6paint"><span class="nav-number">4.2.6.</span> <span class="nav-text">绘制：Paint</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%88%E6%88%90compositing"><span class="nav-number">4.2.7.</span> <span class="nav-text">合成：Compositing</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%90%88%E6%88%90"><span class="nav-number">4.2.7.1.</span> <span class="nav-text">什么是合成</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E7%9A%84%E7%BB%98%E5%88%B6%E6%96%B9%E5%BC%8F"><span class="nav-number">4.2.7.1.1.</span> <span class="nav-text">简单的绘制方式</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%87%87%E7%94%A8%E5%90%88%E6%88%90%E7%9A%84%E6%96%B9%E5%BC%8F%E6%8F%90%E9%AB%98%E6%80%A7%E8%83%BD"><span class="nav-number">4.2.7.1.2.</span> <span class="nav-text">采用合成的方式提高性能</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BB%E7%BA%BF%E7%A8%8B%E4%B8%8E%E5%85%83%E7%B4%A0%E5%88%86%E5%B1%82"><span class="nav-number">4.2.7.2.</span> <span class="nav-text">主线程与元素分层</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%88%E6%88%90%E5%99%A8%E7%BA%BF%E7%A8%8B%E5%85%89%E6%A0%85%E5%8C%96%E7%BA%BF%E7%A8%8B"><span class="nav-number">4.2.7.3.</span> <span class="nav-text">合成器线程、光栅化线程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E4%BA%A4%E5%90%88%E6%88%90%E5%B8%A7"><span class="nav-number">4.2.7.4.</span> <span class="nav-text">提交合成帧</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E5%A4%84%E7%90%86%E4%BA%8B%E4%BB%B6"><span class="nav-number">5.</span> <span class="nav-text">浏览器处理事件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B8%B2%E6%9F%93%E8%BF%9B%E7%A8%8B%E4%B8%AD%E7%9A%84%E5%90%88%E6%88%90%E5%99%A8%E7%BA%BF%E7%A8%8B%E6%8E%A5%E6%94%B6%E4%BA%8B%E4%BB%B6"><span class="nav-number">5.1.</span> <span class="nav-text">渲染进程中的合成器线程接收事件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E6%89%BE%E4%BA%8B%E4%BB%B6%E5%AF%B9%E8%B1%A1-event-target"><span class="nav-number">5.2.</span> <span class="nav-text">查找事件对象 Event Target</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E5%AF%B9%E4%BA%8B%E4%BB%B6%E7%9A%84%E4%BC%98%E5%8C%96"><span class="nav-number">5.3.</span> <span class="nav-text">浏览器对事件的优化</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -170,18 +168,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/hais-notebook/archives/">
-          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-count">58</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/hais-notebook/categories/">
-        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-count">27</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/hais-notebook/tags/">
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">24</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -208,7 +206,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2021/05/23/Browser-HowBrowserWorks/">
+    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2020/01/30/Browser/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
@@ -221,12 +219,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="浏览器的工作原理 | Hais Notebook">
+      <meta itemprop="name" content="Cookie | Hais Notebook">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          浏览器的工作原理
+          Cookie
         </h1>
 
         <div class="post-meta-container">
@@ -237,7 +235,7 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2021-05-23 11:10:48" itemprop="dateCreated datePublished" datetime="2021-05-23T11:10:48+00:00">2021-05-23</time>
+      <time title="创建时间：2020-01-30 09:45:22" itemprop="dateCreated datePublished" datetime="2020-01-30T09:45:22+00:00">2020-01-30</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -263,8 +261,70 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <p>笔记，备忘。 原文：<a target="_blank" rel="noopener" href="https://github.com/yacan8/blog/issues/28">浏览器的工作原理</a></p>
+        <p>Cookie 是浏览器下发给浏览器的一段字符串，浏览器必须保存这个 Cookie，之后发起的相同二级域名的请求，浏览器必须附上 Cookie。</p>
 <span id="more"></span>
+<h1 id="cookie">Cookie</h1>
+<h2 id="cookie-防篡改">Cookie 防篡改</h2>
+<p>思路一：加密，但是有安全漏洞（加密后的内容可以无限期使用）</p>
+<p>思路二：把用户信息隐藏在服务器，这样我就可以自由控制 Cookie 的失效时间</p>
+<ul>
+<li>把用户信息放在服务器的 <code>session</code> 里，再给信息一个随机 <code>id</code></li>
+<li>把随机的 <code>id</code> 发送给浏览器</li>
+<li>后端读取的时候，通过 <code>session[id]</code> 获取用户信息</li>
+</ul>
+<h2 id="cookielocalstoragesessionstorage-和-session">Cookie、LocalStorage、SessionStorage 和 Session</h2>
+<h3 id="cookie-和-session-的区别">Cookie 和 Session 的区别</h3>
+<p>Cookie 是服务器发给浏览器的一段字符串，每次浏览器在访问对应域名的时候，都需要把这个字符串带上 Session 是会话，表示浏览器与服务器一段时间内的会话</p>
+<ul>
+<li>一般 Cookie 在浏览器上，Session 在服务器上</li>
+<li>Session 一般是基于 Cookie 来实现的（把 SessionID 放到 Cookie 里面）</li>
+</ul>
+<h3 id="cookie-和-localstorage-的区别">Cookie 和 LocalStorage 的区别</h3>
+<ul>
+<li>Cookie 上限一般为 4K，LocalStorage 为 5M</li>
+<li>Cookie 一般存储用户信息，LocalStorage 一般存储不重要的数据</li>
+<li>Cookie 需要发送到服务器上，LocalStorage 不发送到服务器上</li>
+</ul>
+<h3 id="localstorage-和-sessionstorage-的区别">LocalStorage 和 SessionStorage 的区别</h3>
+<p>LocalStorage 一般不过期，SessionStorage 一般在 Session 结束的时候过期（比如关闭浏览器的时候）</p>
+<h1 id="同源策略">同源策略</h1>
+<ul>
+<li>源：输入 <code>window.origin</code> 或者 <code>location.origin</code>，我们就可以看到 <strong>源</strong>，实际上他就是 <strong>协议 + 域名 + 端口号</strong>。</li>
+<li>同源：当两个 url 的源（协议、域名、端口号）完全一致，则称之为 <strong>同源</strong>，比如 <code>https://baidu.com</code> 和 <code>https://www.baidu.com</code> 就不同源。</li>
+<li>同源策略：<strong>浏览器</strong> 规定：如果 JS <strong>运行在</strong>源 A 里，那么就不能获取源 B 的数据，这就是 <strong>同源策略</strong> ——不允许不同源的资源 <strong>跨域访问</strong>。</li>
+</ul>
+<div class="note warning"><p>要注意的是，同源策略限制的是 <strong>数据的访问</strong>，引用 CSS、JS 和图片的时候，其实并不知道其内容，只是在 <strong>引用</strong>，因此不受同源策略限制。</p>
+</div>
+<h2 id="cors">CORS</h2>
+<blockquote>
+<p>Cross-Origin Resource Sharing</p>
+</blockquote>
+<p>只需要在响应头里面写 <code>Access-Control-Allow-Origin: http://foo.example</code> 就可以了，但是 IE 6、7、8、9 都不支持，得用 JSONP。</p>
+<h2 id="jsonp">JSONP</h2>
+<blockquote>
+<p>JSONP 和 JSON 没有多大关系</p>
+</blockquote>
+<p>让 <code>frank.com</code> 访问 <code>qq.com</code> 的方法：</p>
+<ol type="1">
+<li><code>qq.com</code> 将 数据写到 <code>/friends.js</code></li>
+<li><code>frank.com</code> 用 <code>script</code> 标签引用 <code>/friends.js</code></li>
+<li><code>/friends.js</code> 执行，执行 <code>frank.com</code> 事先定义好的 <code>window.xxx</code> 函数（<code>window.xxx(&#123;friends:[...]&#125;)</code>）</li>
+<li>然后 <code>frank.com</code> 通过 <code>window.xxx</code> 获取到了数据，这也是一个回调</li>
+</ol>
+<p>但是，JSONP 存在安全性问题：</p>
+<ul>
+<li>因为每个人都可以引用 js，需要进行 <code>referer</code> 检查</li>
+<li>仍然存在安全问题，如果 <code>frank.com</code> 被攻陷，则 <code>qq.com</code> 也被攻陷</li>
+</ul>
+<p>如何自动生成 window.xxx（如何把 frank.com 定义好的函数传给后台）？</p>
+<ul>
+<li>通过查询参数</li>
+</ul>
+<blockquote>
+<p>什么是 JSONP？ 背景：当前浏览器或者由于某些因素导致不支持跨域 方法：请求一个 JS 文件，文件会执行一个回调，回调里面有我们的数据，回调的名字可以随机生成，我们把名字用 callback 参数传给后台，后台再返回给我们再执行 优点：兼容 IE、可以跨域 缺点：由于是 <code>script</code> 标签，所以读不到 AJAX 那么精确的状态（比如 Status、响应头等等），并且只能发 <code>GET</code> 请求，不支持 <code>POST</code></p>
+</blockquote>
+<p>一个代码实现：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">jsonp</span>(<span class="params">settings</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> data = settings.<span class="property">data</span> || &#123;&#125;</span><br><span class="line">  <span class="keyword">const</span> key = settings.<span class="property">key</span> || <span class="string">&#x27;callback&#x27;</span></span><br><span class="line">  <span class="keyword">const</span> callback = settings.<span class="property">callback</span> || <span class="keyword">function</span>(<span class="params"></span>) &#123;&#125;</span><br><span class="line">  </span><br><span class="line">  data[key] = <span class="string">&#x27;__onGetData__&#x27;</span></span><br><span class="line">  <span class="variable language_">window</span>.<span class="property">__onGetData__</span> = <span class="keyword">function</span>(<span class="params">response</span>) &#123;</span><br><span class="line">    <span class="title function_">callback</span>(response)</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">const</span> query = []</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> key <span class="keyword">in</span> data) &#123;</span><br><span class="line">    query.<span class="title function_">push</span>(key + <span class="string">&#x27;=&#x27;</span> + data.<span class="property">key</span>)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> script = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&#x27;script&#x27;</span>)</span><br><span class="line">  script.<span class="property">src</span> = url + <span class="string">&#x27;?&#x27;</span> + <span class="built_in">encodeURIComponent</span>(query.<span class="title function_">join</span>(<span class="string">&#x27;&amp;&#x27;</span>))</span><br><span class="line">  <span class="variable language_">document</span>.<span class="property">head</span>.<span class="title function_">appendChild</span>(script)</span><br><span class="line">  <span class="variable language_">document</span>.<span class="property">head</span>.<span class="title function_">removeChild</span>(script)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h1 id="浏览器架构">浏览器架构</h1>
 <h2 id="浏览器的多进程架构">浏览器的多进程架构</h2>
 <h3 id="chrome-的多进程架构">Chrome 的多进程架构</h3>
@@ -423,21 +483,19 @@
     <footer class="post-footer">
           <div class="post-tags">
               <a href="/hais-notebook/tags/%E5%85%A5%E9%97%A8/" rel="tag"># 入门</a>
-              <a href="/hais-notebook/tags/FAQ/" rel="tag"># FAQ</a>
-              <a href="/hais-notebook/tags/%E8%BF%99%E4%B8%80%E7%A7%92%E6%98%AF%E4%BD%A0%E7%9A%84%EF%BC%8C%E4%B8%8B%E4%B8%80%E7%A7%92%E5%B0%B1%E6%98%AF%E6%88%91%E7%9A%84/" rel="tag"># 这一秒是你的，下一秒就是我的</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/hais-notebook/2021/05/17/Angular-ChangeDetection/" rel="prev" title="翻译：Angular 如何检查变化">
-                  <i class="fa fa-chevron-left"></i> 翻译：Angular 如何检查变化
+                <a href="/hais-notebook/2020/01/29/Tools-Git/" rel="prev" title="Git & GitHub">
+                  <i class="fa fa-chevron-left"></i> Git & GitHub
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/hais-notebook/2021/07/11/Course-ComputationStructures/" rel="next" title="在线课程：计算机组成原理">
-                  在线课程：计算机组成原理 <i class="fa fa-chevron-right"></i>
+                <a href="/hais-notebook/2020/01/30/Vue-Start/" rel="next" title="Vue 开始">
+                  Vue 开始 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
