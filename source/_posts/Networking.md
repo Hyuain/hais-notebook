@@ -1,21 +1,34 @@
 ---
-title: 计算机网络基础
-date: 2020-03-03 21:37:30
+title: 计算机网络
+date: 2023-01-18 21:37:30
 tags:
   - 入门
+  - 计算机网络
 categories:
-  - [计算机, 计算机网络]
+  - [计算机]
 ---
 
-主要是关于计算机网络基础的一些东西。
+计算机网络自顶向下方法 + 网课。
 
 <!-- more -->
 
-# HTTP
+# 协议栈
 
-## HTTP 基本介绍
+- 应用层：FTP、DNS、HTTP
+- 传输层：TCP、UDP
+- 网络层：IP
+- 链路层：DOCSIS
+- 物理层：与双绞铜线、同轴电缆、光纤等相关
 
-### HTTP 历史
+# 应用层
+
+## HTTP
+
+> Web 的应用层协议是超文本传输协议（HyperText Transfer Protocol, HTTP）
+
+### HTTP 概述
+
+#### HTTP 历史
 
 - HTTP 0.9：1991，只有 GET、只能传HTML，没有 CSS、JS，每个HTTP请求都是短连接
 - HTTP 1.0：1996，有了 POST、HEAD……
@@ -23,24 +36,9 @@ categories:
 - HTTP 2.0：2015，HTTP 1.1 的扩展，于2015年5月提出
 - HTTP 3.0：QUIC 协议（一种传输层协议，TCP的效率比较低，QUIC 为了减小 TCP 的延迟和带宽开销）
 
-### TCP/IP 与 HTTP
+### HTTP 协议结构和通讯原理
 
-#### 分层
-
-- 应用层：FTP、DNS、HTTP
-- 传输层：TCP、UDP
-- 网络层：IP
-- 链路层：网络
-
-#### DNS 解析
-
-- 系统在 HOST 文件中找 IP 地址
-- 系统向本地 DNS 服务器请求：114.114.114.114（国内移动、电信和联通通用的DNS），8.8.8.8（GOOGLE 公司提供的 DNS，该地址是全球通用）
-- 本地 DNS 服务器一层层向上请求，直到根 DNS 服务器
-
-## HTTP 协议结构和通讯原理
-
-### HTTP 协议特点
+#### HTTP 协议特点
 
 - **支持客户/服务器模式**
 - **简单快速**
@@ -59,7 +57,7 @@ categories:
     - 如果后续处理需要前面的信息，则必须重传，导致每次连接的数据量增大
 	- 另一方面，在服务器不需要先前信息时它的应答就较快
 
-### URI 和 URL
+#### URI 和 URL
 
 > 问题：我们在浏览器的 Web 地址应该叫 URL 还是 URI？
 > - URI：可以分为 URL 和 URN，或同时具备 locators 和 names 特性的一个东西
@@ -94,9 +92,9 @@ https://zh.wikipedia.org/w/index.php?title=Special:随机页面#5
 5. `#5`：锚点（相同页面，相同内容，不同位置）
 6. 其中若不写端口号，则表示使用 https 对应的默认端口号 443
 
-### HTTP 报文结构
+#### HTTP 报文结构
 
-#### 请求报文
+##### 请求报文
 
 ```text
 【请求行】POST（请求方法） /webTours/login.pl（请求 URI） HTTP/1.1（HTTP 协议及版本）
@@ -123,7 +121,7 @@ request.query // 只有查询参数
 request.headers['Accept']
 ```
 
-#### 响应报文
+##### 响应报文
 
 ```text
 【响应行】HTTP/1.1（报文协议及版本） 200 Ok（状态码及状态描述）
@@ -144,7 +142,7 @@ response.write('内容') // 内容可以追加
 注意 `path` 都是以 `/` 开头的
 {% endnote %}
 
-#### 报文头
+#### HTTP 报文头
 
 - **Accept**：浏览器端可以接收的媒体类型
     - **Accept: text/html**，代表浏览器可以接收服务器回发的类型为 text/html 类型的数据，如果服务器无法返回此类型，应该返回一个 406 错误（Non Acceptable）
@@ -175,7 +173,7 @@ response.write('内容') // 内容可以追加
     **application/octet-stream**：二进制数据流
     **application/x-www-form-urlencoded**：表单提交
 
-### HTTP 请求方法
+#### HTTP 请求方法
 
 - **GET**：请求访问已被 URI 识别的资源
     - 提交的内容是 URL 的一部分，长度限制、安全性
@@ -188,7 +186,7 @@ response.write('内容') // 内容可以追加
 - **TRACE**：回显服务器收到的请求，主要用于测试或诊断，但容易受到 XST 攻击，一般不用
 - **CONNECT**：开启客户端与所请求资源之间的双向沟通的通道，可以用来创建隧道，一般用于 HTTP 代理
 
-### HTTP 状态码
+#### HTTP 状态码
 
 ![HTTP状态码](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/HTTP-StatusCode.png)
 
@@ -204,39 +202,39 @@ response.write('内容') // 内容可以追加
 - **500 Internal Server Error**，服务器内部错误，无法完成请求
 - **502 Bad Gateway**，充当网关或代理的服务器，从远端服务器接收到了一个无效的请求
 
-### HTTP 状态管理：Cookie 和 Session
+#### HTTP 状态管理：Cookie 和 Session
 
-#### Cookie
+##### Cookie
 
 W3C 推行的一种机制，客户端请求服务器，如果服务器需要记录该用户的状态，就向客户端浏览器颁发一个Cookie，
 客户端浏览器会把Cookie保存起来，浏览器再请求的时候，就会把请求的网址连同Cookie一同提交给服务器
 
-#### Session
+##### Session
 
 另一种记录客户状态的机制，服务器把客户端信息以某种形式记录在服务器上
 客户端可以以 Cookie、URL 重写或隐藏表单的形式保存 Session ID
 
 ![Session与Cookie](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Session-Cookie.png)
 
-#### Cookie 和 Session
+##### Cookie 和 Session
 
 - 有效期不同
     - Cookie 的有效时间久，或者可以设置到永远
     - Session 的有效期
         - 超时自动失效，通常不长
-		- 程序调用 HttpSession.invalidate() 主动失效（退出、注销等操作）
+		- 程序调用 `HttpSession.invalidate()` 主动失效（退出、注销等操作）
         - 服务器进程被终止
     - 存放位置不同，Cookie 在客户端，Session 在服务器端
 	- 安全性（隐私策略）不同，用户可以更改 Cookie
 	- 对服务器压力不同
 
-## HTTP 协议的特性
+### HTTP 协议的特性
 
-### HTTP 协议中的编码和解码
+#### HTTP 协议中的编码和解码
 
 > 码 = 字符集+编码
 
-#### 编码规范
+##### 编码规范
 
 - 字库表：里面存储了所有的字符
 - 字符集：字符对应的二进制地址的集合
@@ -249,11 +247,11 @@ W3C 推行的一种机制，客户端请求服务器，如果服务器需要记�
 - ISO-8859-1：加了希腊语等，把其他所有的当做 ISO-8859-1 来解都没问题，没有中文，8 位码，1 个字节
 - Unicode：包含全世界所有的字符，最多 4 个字节
 
-#### 乱码
+##### 乱码
 
 乱码的由来：解码过程、编码过程都可能导致乱码
 
-#### URL 的编码与解码
+##### URL 的编码与解码
 
 URL 是采用 ASCII 字符集进行编码的
 
@@ -265,17 +263,17 @@ URL 是采用 ASCII 字符集进行编码的
 
 > Fiddler
 
-### HTTP 协议的基本认证
+#### HTTP 协议的基本认证
 
-#### 常见的认证方式
+##### 常见的认证方式
 
-#### BASIC
+##### BASIC
 
 ![BASIC](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/BASIC.png)
 
 不便捷灵活，且不安全（Base64实际上就是明文传输）
 
-#### DIGEST
+##### DIGEST
 
 同样采用质询 / 响应方式，但不会明文传输密码
 
@@ -286,29 +284,31 @@ URL 是采用 ASCII 字符集进行编码的
 其中，HA1 = MD5(username:realm:password), HA2 = MD5(method:digestURI)
 虽然以前认为是不可逆的加密，但是仍然存在字典攻击、用户被冒充等风险
 
-#### SSL 客户端
+##### SSL 客户端
 
 凭借客户端证书认证
 
-#### FormBase
+##### FormBase
 
 不是在 HTTP 协议中定义的，是使用 Web 应用各自实现的基于表单的认证，通过 Cookie 和 Session 来保持用户登录状态
 
-### HTTP 中的长连接和短链接
+#### HTTP 中的长连接和短链接
+
+长连接又称持续连接（persistent connection），短连接又称非持续连接（non-persistent connection）
 
 HTTP 中的长连接和短链接本质上是 TCP 的长连接和短链接
-- HTTP/1.0 中，默认是短链接，每遇到一个外部资源就建立一个对话
-- HTTP/1.1 起，默认是长连接
+- HTTP/1.0 中，默认是短链接，每遇到一个外部资源就建立一个对话（创建一个 TCP 连接）
+- HTTP/1.1 起，默认是长连接（多个请求共用一个 TCP 连接）
 
-### 中介代理与中介网关
+#### 中介代理与中介网关
 
-#### 中介代理
+##### 中介代理
 
 ![中介代理](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/HTTP-Proxy.png)
 
 代理的作用：抓包、匿名访问、过滤器
 
-#### 中介网关
+##### 中介网关
 
 ![中介网关](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/HTTP-Getway.png)
 
@@ -322,13 +322,13 @@ HTTP 中的长连接和短链接本质上是 TCP 的长连接和短链接
 - HTTPS/HTTP：客户端安全加速网关（SSL 卸载）
 - 资源网关
 
-### HTTP 缓存
+#### HTTP 缓存
 
 缓存的内容：CSS、JS、图片等更新频率不大的静态资源文件
 
-#### HTTP 缓存头部字段
+##### HTTP 缓存头部字段
 
-##### Cache-Control
+###### Cache-Control
 
 > 请求/响应头，缓存控制字段
 
@@ -339,7 +339,7 @@ HTTP 中的长连接和短链接本质上是 TCP 的长连接和短链接
 - public：客户端和代理服务器（CDN）都可以缓存
 - private：只有客户端可以缓存
 
-##### 其他头部字段
+###### 其他头部字段
 
 响应头，服务器返回：
 
@@ -352,21 +352,21 @@ HTTP 中的长连接和短链接本质上是 TCP 的长连接和短链接
 - **if-Modified-Since**：资源最新修改时间，与 **Last-Modified** 是一对，他们会进行对比
 - **if-None-Match**：缓存资源标识，与 **Etag** 是一对（其实就是上次服务器给的 Etag），他们会进行对比
 
-#### HTTP 缓存工作方式
+##### HTTP 缓存工作方式
 
-##### 场景一：让服务器与浏览器约定一个文件过期时间 Expires
+###### 场景一：让服务器与浏览器约定一个文件过期时间 Expires
 
 服务器给浏览器一个 Expires，后续请求浏览器会对比当前 **本地时间** 是否已经大于 Expires，超过过期时间再请求。
 
 问题：即使超过过期时间之后，文件可能仍然没有变化
 
-##### 场景二：约定 Expires 的基础上，再通过文件的最新修改时间进行对比 Last-Modified 与 if-Modified-Since
+###### 场景二：约定 Expires 的基础上，再通过文件的最新修改时间进行对比 Last-Modified 与 if-Modified-Since
 
 服务器给浏览器 Expires 和 Last-Modified，后续若超过 Expires 后，浏览器请求时会带上 if-Modified-Since，服务器进行对比，如果文件未修改，就返回 304 Not Modified，让浏览器使用缓存
 
 问题：浏览器可以随意修改本地时间，而且 Last-Modified 只能精确到秒
 
-##### 场景三：在上面的基础上加上 Etag/If-None-Match，再使用 max-age
+###### 场景三：在上面的基础上加上 Etag/If-None-Match，再使用 max-age
 
 max-age 使用的是 **相对时间**，因此浏览器不能通过修改本地时间的方式来影响缓存，优先级高于 Expires；
 Etag 优先级也高于 Last-Modified，因为文件只要修改过，Etag 就会发生变化
@@ -393,7 +393,7 @@ CDN缓存的工作方式：
 1. 第一次请求，CDN 和 浏览器同时缓存
 2. 浏览器缓存过期后，找 CDN 进行对比，CDN 看自己的过期没有，若自己没过期，就给发给浏览器
 
-#### 浏览器操作对 HTTP 缓存的影响
+##### 浏览器操作对 HTTP 缓存的影响
 
 | 用户操作 | Expires/Cache-Control | Last-Modified/Etag |
 | --- | --- | --- |
@@ -441,11 +441,11 @@ Range:bytes=500-600,601-999
 Content-Range:bytes(unit first byte pos)-[last byte pos]/[entity length]
 ```
 
-## HTTPS
+### HTTPS
 
-### 数字证书
+#### 数字证书
 
-#### 对称加密与非对称加密
+##### 对称加密与非对称加密
 
 ![对称加密](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Encryption.png)
 
@@ -453,7 +453,7 @@ Content-Range:bytes(unit first byte pos)-[last byte pos]/[entity length]
 
 对称加密效率高，但在密钥分发时存在安全隐患，容易被截获；非对称加密安全性高，但性能低下；因此我们可以先用非对称加密传输对称加密的密钥，之后再用对称加密来传输数据
 
-#### 数字签名与数字证书
+##### 数字签名与数字证书
 
 ![数字签名](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Digital-Signature-1.png)
 
@@ -463,7 +463,7 @@ Content-Range:bytes(unit first byte pos)-[last byte pos]/[entity length]
 
 ![数字证书](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Digital-Certificate-2.png)
 
-### HTTPS 协议概述
+#### HTTPS 协议概述
 
 > HTTPS 可以认为是 HTTP + TLS，TLS 是传输层加密协议，他的前身是 SSL 协议
 
@@ -474,7 +474,7 @@ HTTPS 功能：
     - **数据完整性**（数字签名）
     - **身份认证**（数字证书）
 
-### HTTPS 使用成本
+#### HTTPS 使用成本
 
 - 证书费用以及更新维护
 - 降低用户的访问速度
@@ -494,9 +494,9 @@ HTTPS 对性能的影响：
 HTTPS 并不能解决所有的劫持问题
 {% endnote %}
 
-## 基于 HTTP 的功能追加协议
+### 基于 HTTP 的功能追加协议
 
-### HTTP 协议的瓶颈
+#### HTTP 协议的瓶颈
 
 - 单路连接、请求低效，一条连接上只可发送 **一个** 请求，并且严格先入先出（非关键资源阻塞问题）
 - 请求只能 **从客户端开始**，客户端不可以接受除了响应以外的指令，没办法让服务器一更新，客户端就立即更新
@@ -504,7 +504,7 @@ HTTPS 并不能解决所有的劫持问题
 - 每次相互发送 **相同的头部** 造成浪费
 - 不强制使用加密
 
-### WebSocket
+#### WebSocket
 
 > 是为了解决 HTTP 长连接问题而做出的改良协议，与 HTTP 协议有交集
 
@@ -543,7 +543,7 @@ WebSocket 的主要特点：
 - 真正的 **全双工方式**，允许服务器向客户端主动推送数据
 - 减少 **通信量**
 
-### SPDY
+#### SPDY
 
 > 是谷歌开发的基于 TCP 的应用层协议，为了降低网络延迟，优化用户体验，也是对 HTTP 协议的增强
 
@@ -556,25 +556,25 @@ SPDY 的改进：
 - 压缩了 HTTP 头
 - 强制使用 SSL 传输协议
 
-### HTTP/2.0
+#### HTTP/2.0
 
-> 可以理解为 SPDY 的升级版
+> 可以理解为 SPDY 的升级版，基本目标之一是减少传送单一 Web 页面时的并行 TCP 连接，减少需要服务器需要打开与维护的套接字数量。并且要求仔细设计相关机制避免队首（Head Of Line, HOL）阻塞。
 
-#### 二进制分帧
+##### 二进制分帧
 
-> HTTP/2.0 性能增强的核心
+> HTTP/2.0 性能增强的核心，解决 HOL 阻塞。
 
 ![二进制分帧](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Binary-Framing.png)
 
-在二进制分帧层上，会将原来传输的信息分成更小的帧，并且采用二进制编码；HTTP/2.0 的通信都在一个连接上完成，这个连接可以承载任意数量的双向数据流，每个数据流都以消息的形式发送，这些消息由一个或多个帧组成，帧可以乱序发送，最后会根据每个帧上面的流标识符重新组装
+在二进制分帧层上，会将原来传输的信息分成更小的帧，并且采用二进制编码；HTTP/2.0 的通信都在一个连接上完成，这个连接可以承载任意数量的双向数据流，每个数据流都以消息的形式发送，这些消息由一个或多个帧组成，帧可以乱序发送，最后会根据每个帧上面的流标识符重新组装。
 
-#### 首部压缩
+##### 首部压缩
 
 ![首部压缩](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Header-Compression.png)
 
 使用 **首部表** 来跟踪和存储键值对，相同的数据不再通过每次响应和请求发送，通讯期间几乎不会改变 **通用的键值对**，每次只会发送新增或改变的部分头部，首部表在整个连接中有效，会不断更新
 
-#### 多路复用
+##### 多路复用
 
 ![多路复用](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Multiplex.png)
 
@@ -586,38 +586,39 @@ SPDY 的改进：
 - 由于 TCP 连接减少而使 **网络拥塞状况** 得以改观
 - 慢启动时间减少，**拥塞** 和 **丢包** 恢复速度更快
 
-#### 并行双向字节流
+##### 并行双向字节流
 
 ![并行双向字节流](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/HTTP2-1.png)
 
 - 并行交错地发送请求，请求之间互不影响
-- 并行交错地发送响应，相应之间互不影响
+- 并行交错地发送响应，响应之间互不影响
 - 只使用一个连接即可并行发送多个请求和响应
 - 消除不必要的延迟，减少页面加载的时间
 
-#### 请求优先级
+##### 请求优先级
 
-高优先级的流都应该优先发送，但也不是绝对的，不同优先级混合发送也是必须的（为了避免首部阻塞等情况）
+- 可以为每个请求报文分配 1~256 的权重，数字较大说明拥有更高的优先级
+- 可以通过指明相关报文段的 ID，说明报文段之间的关联性
 
-#### 服务器推送
+##### 服务器推送
 
 ![服务器推送](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/HTTP2-2.png)
 
-服务器可以向客户端额外推送资源
+允许服务器为一个请求发送多个响应
 
-### WebDAV
+#### WebDAV
 
 > 基于万维网的分布式创作和版本控制，用于管理 Web 服务器的文件
 
 ![WebDAV](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/WebDAV.png)
 
-### QUIC 和 HTTP/3.0
+#### QUIC 和 HTTP/3.0
 
 ![QUIC和HTTP/3.0](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/QUIC-HTTP3.0.png)
 
 HTTP/2.0 的问题：
 
-- 队头阻塞，如果出现丢包，整个 TCP 连接都需要停下来重传，因为 HTTP/1.1 是建立多个 TCP 连接，所以不会全部都需要停下来
+- 队首阻塞，如果出现丢包，整个 TCP 连接都需要停下来重传，因为 HTTP/1.1 是建立多个 TCP 连接，所以不会全部都需要停下来
 - 建立连接的握手延迟大，TCP 需要握手，对于短连接场景影响大
 
 QUIC 的特性：
@@ -630,309 +631,209 @@ QUIC 的特性：
 - **前向纠错**，会多发一些冗余的包（校验包），虽然产生了多的包，但是减少了重传带来的损失
 ![前向纠错](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/QUIC-Error-Correcting.png)
 
-# Web 安全
 
-## Web 安全概述
 
-### Web 应用
+## 电子邮件
 
-- 由动态脚本、编译过的代码等组合而成
-- 通常架设在 Web 服务器上，用户在 Web 浏览器上发送请求
-- 这些请求使用 HTTP 协议，由 Web 应用和企业后台数据库及其他动态内容通信
+- 因特网电子邮件系统总体由三个部分组成：**用户代理（User Agent）、邮件服务器（Mail Server）、简单邮件传输协议（Simple Mail Transfer Protocol, SMTP）**。
 
-### Web 应用三层架构
+- 每个接收方在邮件服务器上有一个 **邮箱（Mailbox）**。
+- 发送方的用户代理传输到发送方的邮件服务器，然后被分发到接收方的邮箱中。
 
-![Web 应用三层架构](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Web-Application.png)
-
-### WASC 的定义
-
-> WASC（Web Application Security Consortium）是一个由安全专家、行业顾问和诸多组织的代表组成的国际团体，负责为 WWW 指定广为接受的应用安全标准
-
-WASC 将应用安全威胁分为六大类：
-
-1. Authentication（验证）
-2. Authorization（授权）
-3. Client-Side Attacks（客户侧攻击）
-4. Command Execution（命令执行）
-5. Information Disclosure（信息暴露）
-6. Logical Attacks（逻辑性攻击）
-
-### OWASP 的定义
-
-> OWASP（Open Web Application Security Project）致力于发现和解决不安全 Web 应用的根本原因
-
-1. Injection（注入）
-2. Broken Authentication（失效的身份认证）
-3. Sensitive Data Exposure（敏感信息泄露）
-4. XXE, XML External Entities（XML 外部实体）
-5. Broken Access Control（失效的访问控制）
-6. Security Misconfiguration（安全配置错误）
-7. XSS, Cross-Site Scripting（跨站脚本）
-8. Insecure Deserialization（不安全的反序列化）
-9. Using Components with Known Vulnerabilities（使用含有已知漏洞的组件）
-10. Insufficient Logging & Monitoring（不足的日志记录和监控）
-
-## 验证机制安全
-
-### 什么是验证机制
-
-- 验证机制是 Web 应用中最简单的一种安全机制。一般来说，应用程序 **必须用户提交的用户名和密码，判断是否允许登录**
-- 验证机制是应用程序防御恶意攻击的 **核心机制**，处于安全防御的最前沿，如果缺乏安全有效的验证机制，其他核心安全机制（会话管理和访问控制）都无法实施
-
-![典型的用户登陆流程](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Login-Process.webp)
-
-有这样几种常用的验证技术：
-
-- 基于 HTML 表单的验证
-- 多元机制
-- 客户端 SSL 证书
-
-### 验证机制存在的安全隐患
-
-#### 弱密码
-
-许多 Web 应用程序没有或很少对用户密码强度进行控制：
-- 非常短或空白密码
-- 以常用字典词汇为密码
-- 密码与用户名完全相同
-- 长时间使用默认密码
-
-#### 暴力破解
-
-登陆功能的公开性会诱使攻击者视图猜测用户名和密码，有诸如 Burp Suite 等工具提供了一些常用的字典
-
-为了防止暴力破解，可以使用验证码，而验证码也需要注意几个问题：
-- 验证码是否真实有效
-- 验证码的复杂度
-- 应对当前诸如 OCR、打码等技术
-
-也可以设置 Cookie 和会话检测，增加失败计数器，当然 Cookie 在客户端可以随意修改
-
-此外现在常用双因子认证（你知道的 + 你拥有的）
-
-#### 忘记密码
-
-包括问题的答案、邮箱、手机验证码用明文或简单的 MD5 加密等
-
-#### 多阶登录机制
-
-多次验证检查可能会提高登录机制的安全性，但在这个过程中可能也存在更多的执行缺陷：
-- 可能会认为到达第三阶段的用户已经通过了第一二阶段
-- 可能认为每个阶段用户的身份不会变化
-- 有些问题的细节或答案没有保存在服务器上，而是放在隐藏的 HTML 字段中
-
-## 会话管理
-
-### 什么是会话管理
-
-- 会话管理在用户通过请求提交他们的证书后，**持续** 向应用程序保证用户身份的真实性
-- 由于会话管理机制发挥关键作用，且比较难以发现其漏洞，因此成为针对应用程序的恶意攻击的主要目标，攻击者若能破坏应用程序的会话管理，就能轻易避开验证机制
-
-### 会话管理的安全隐患
-
-#### 会话令牌生成漏洞
-
-通过简单的用户名、电子邮件经过简单的编码、加密生成的，不安全
-
-##### 令牌可预测
-
-令牌有一定的模式和规则、时间依赖
-
-##### 随机数强度不足
-
-计算机中的数据极少完全随机，一般通过软件使用各种技巧生成伪随机数
-
-#### 会话传输漏洞
-
-尽可能缩短一个会话的寿命可以降低攻击者截获、猜测或滥用有效会话的风险
-
-##### 会话终止攻击
-
-有一些应用程序没有有效的会话终止功能，他的有效期非常长
-
-有些时候，退出功能并不能帮助服务器终止会话，比如只是简单地删除客户端的 Cookie，我们需要让服务端的会话失效
-
-##### 会话劫持攻击
-
-攻击者通过网络嗅探、XSS 攻击等方式截获令牌
-
-### 会话管理漏洞的防御
-
-- **令牌传输过程**：令牌只能通过 HTTPS 传送，让浏览器不能通过 HTTP 传送令牌
-- **增加软硬会话过期**
-    - 软会话过期：一定时间没有交互之后，Session 失效
-    - 应会话过期：经过一定时间之后，不管用户做什么，会话都会过期
-- **提供完善的注销功能**
-
-## SQL 注入攻击
-
-Web 程序经常会建立用户提交数据的 SQL 语句，但如果建立 SQL 语句的方法不安全，则容易造成 SQL 注入漏洞
-
-### SQL 注入危害
-
-- **探知数据库的具体结构**，为进一步攻击做准备
-- **泄露数据**，尤其是机密信息、账户信息等
-- **获得更高权限**，来修改数据甚至是内部结构
-
-### SQL 注入防御
-
-- **参数化查询**：最根本性的防御
-    - 指定查询结构，用户输入预留占位符
-    - 指定占位符的内容
-
-## XSS 跨站脚本攻击
-
-攻击者通常通过注入 HTML 或 JS 脚本发动攻击，攻击成功后，攻击者可以得到私密网页内容和 Cookie 等
-
-### XSS 攻击危害
-
-- **盗号**
-- **控制数据**，读取、篡改、添加、删除敏感数据
-- **非法转账**
-- **网站挂马**
-- **控制肉鸡**
-
-### XSS 攻击分类
-
-#### 反射式 XSS 攻击
-
-又称非永久性 XSS，是目前最流行的 XSS 攻击
-
-出现在服务器直接使用客户端提交的数据，比如 URL 数据、HTML 表单等，并且没有对数据进行无害化处理，这些数据中藏着一些可执行脚本，最常见的方式就是恶意连接，其中包含了 XSS 攻击脚本
-
-#### 存储式 XSS 攻击
-
-又称永久性 XSS，危害更大
-
-攻击者将脚本上传到 Web 服务器上，使得所有访问该页面的用户都面临信息泄露的可能
-
-多发生在个人信息字段、文档或上传的文件及其他数据的名称、提交给应用程序管理员的反馈或问题、向其他用户传送的信息、在用户之间共享的上传文件内容
-
-#### 基于 DOM 的 XSS 攻击
-
-基于 DOM 的 XSS 攻击仅仅通过 JavaScript 执行，常发生在应用程序每次返回相同的静态 HTML，而客户端 JavaScript 动态生成信息，并不会跟服务端交互获取的时候
-
-### XSS 攻击载荷
-
-- **会话令牌**：XSS 攻击最普遍的方式，截取受害者的会话令牌，劫持他的会话
-- **虚拟置换**：向 Web 应用程序页面注入恶意数据（修改页面），没有修改保存在服务器上保存的内容，而是通过程序处理来显示置换
-- **注入木马**：比如突然弹出一个对话框（木马登录表单），诱导你输入用户密码
-
-### XSS 防御措施
-
-- **输入验证**
-    - 数据不是太长
-    - 数据仅包含合法字符
-    - 数据与正则表达式匹配
-    - 对不同的数据类型（比如账号、邮箱等）设置不同的规则
-- **输出编码**
-    - 对数据进行 HTML 编码，使用 HTML 实体代替字面量字符，净化可能的恶意字符
-
-## CSRF 跨站请求伪造
-
-典型的流程如下：
-1. 受害者登录 `a.com`，并且保留了登录凭证（Cookie）
-2. 攻击者诱使受害者访问 `hack.com`
-3. `hack.com` 向 `a.com` 发送请求：`a.com/act=xx` 浏览器默认会携带上 `a.com` 的 `Cookie`
-4. `a.com` 收到请求后，确认是受害者的凭证，误认为是受害者自己发送的请求
-5. `a.com` 以受害者的名义执行了 `act=x`
-
-### 几种常见的攻击类型
-
-#### GET 类型的 CSRF
-
-这个类型非常简单，一般只需要一个 HTTP 请求：
-
-```html
-<img src="http://bank.example/withraw?amount=10000&for=hacker">
+```text
+A的代理 --SMTP/HTTP--> A的邮件服务器 --SMTP--> B的邮件服务器 --HTTP/IMAP--> B的代理
 ```
 
-在受害者访问有这个 img 的页面之后，浏览器会自动向 `http://bank.example/withraw?amount=10000&for=hacker` 发送请求
 
-#### POST 类型的 CSRF
 
-这类攻击通常是使用一个自动提交的表单：
+### 推送报文（SMTP）
 
-```html
-<form action="http://bank.example/withdraw" method="POST">
-  <input type="hidden" name="account" value="xiaoming">
-  <input type="hidden" name="amount" value="10000">
-  <input type="hidden" name="for" value="hacker">
-</form>
-<script>
-  document.forms[0].submit()
-</script>
+- 发送方的代理（手机、电脑等）可以通过 SMTP 向邮件服务器推送报文。
+- 发送方的邮件服务器通过 SMTP 向接收方邮件服务器推送报文。
+- 一般不使用中间邮件服务器，而是由 **发送方邮件服务器**（STMP Client） 与 **接收方邮件服务器**（STMP Server） 直接建立的 **TCP** 连接。
+- STMP Client 与 Server 在 25 端口建立 TCP 连接之后，可以发送命令：HELO、MAIL FROM、RCPT TO、DATA、QUIT。
+
+#### 邮件报文格式（DATA）
+
+```text
+From: xxx@server.com
+To: yyy@another.com
+Subject: xxxxxx
 ```
 
-#### 链接类型的 CSRF
+### 获取报文
 
-需要用户点击链接才会触发：
+- IMAP
+- HTTP
+- POP3
 
-```html
-<a href="http://bank.example/withraw?amount=10000&for=hacker" target="_blank">
-重磅消息！！
-</a>
-```
+## DNS
 
-### CSRF 的特点
+> DNS (Domain Name System) 是：
+>
+> 1. 一个由分层的 DNS 服务器（通常是运行 BIND (Berkeley Internet Name Domain) 的 UNIX 机器）实现的分布式数据库
+> 2. 一个使得主机能够查询分布式数据库的应用层协议（使用 53 端口的 UDP）
 
-- 攻击一般发起在 **第三方网站**，而不是被攻击的网站（通常是 **跨域** 的），因此被攻击的网站无法防止攻击的发生
-- 攻击者利用受害者的登陆凭证，而不是直接盗取数据
-- 攻击者仅仅是 **利用** 受害者的登录凭证，而 **不能获取** 到这个凭证
-- 跨站请求可以用各种方式：图片、超链接、CORS、Form 表单等，部分请求可以直接嵌入第三方论坛、文章中，难以进行追踪
-- 通常是跨域的，但有时候也可以在 **本域** 进行，比如在论坛和评论区可以发图和连接，这种攻击更加危险
+DNS 的作用：
 
-### CSRF 防御措施
+- 进行主机名到 IP 的转换
+- 主机别名（host aliasing）
+- 邮件服务器别名（mail server aliasing）
+- 负载分配（load distribution）
 
-针对 CSRF 通常是跨域请求，并且攻击者只是冒用、而无法真正获得 Cookie 的特点，可以采取以下策略：
+### DNS 的分布式设计
 
-- **阻止不明外域的访问**
-    - 同源检测
-    - Samesite Cookie
-- **提交时要求附加本域才能获得的信息**
-    - CSRF Token
-    - 双重 Cookie 验证
+#### 分布式、层次数据库
 
-#### 同源检测
+- **根 DNS 服务器**。全球有超过 1000 台根服务器实体，他们是 13 个不同的根服务器副本，由 12 个不同的组织管理。根服务器提供 TLD 服务器的 IP 地址。
+- **顶级域（Top-Level Domain, TLD）服务器**。每个顶级域（com、org、edu 等）都有 TLD 服务器或服务器集群。TLD 服务器提供了权威 DNS 服务器的 IP 地址。
+- **权威 DNS 服务器**。多数大学和公司实现并维护他们自己的基本和辅助（备份）的权威 DNS 服务器。
 
-可以通过 **Origin Header** 和 **Referer Header** 来判断请求是否来自外域
+- **本地 DNS 服务器**。严格来说并不属于 DNS 服务器层次结构，一般一个居民区的 ISP 或一个机构的 ISP 都有一台本地 DNS 服务器。
 
-对于 Origin 有两个问题：
-- IE 11 不会在 CORS 请求上添加 Origin 标头
-- 302 重定向之后，Origin 不再包含在重定向之后的请求中
+##### DNS 服务器的交互
 
-对于 Referer 也有问题：
-- 每个浏览器对于 Referer 的实现可能有差别，不能保证浏览器自身没有安全漏洞
-- 攻击请求可能隐藏 Referer
+下图利用了 **递归查询（recursive query）**和 **迭代查询（iterative query）**。从 cis.poly.edu 到 dns.poly.edu 是递归查询，因为该查询以自己的名义请求，后续的 3 个查询是迭代查询。
 
-当 Origin 和 Referer 都不存在的时候，建议直接阻止访问
+![Networking-DNS-1](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Networking-DNS-1.jpg)
 
-，同源验证是一个相对简单的防范方法，能够防范绝大多数的CSRF攻击。但这有时候也有问题，比如搜索引擎来的请求也会被当做疑似 CSRF 攻击，并且安全性并不是很高
+而下图中的所有查询都是递归查询，我们通常遵循上图的查询模式：
 
-#### CSRF Token
+![Networking-DNS-2](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Networking-DNS-2.jpg)
 
-1. **将 CSRF Token 输出到页面中**，用户打开页面时，需要给用户生成一个 Token，可以将这个 Token 保存在 Session 中，同时给页面上所有的 a 标签 和 form 标签后面加入这个 Token
-2. **页面提交的请求携带这个 Token**
-3. **服务器验证 Token 是否正确**
+#### DNS 缓存
 
-#### 分布式校验
+事实上，因为缓存，只有很少部分 DNS 查询需要用到根服务器。
 
-使用一种计算出来的结果而不是随机生成的字符串作为 Token，这样在校验的时候就无需读取存储的 Token，只需要再计算一次即可
+### DNS 记录
 
-#### 双重 Cookie 验证
+- DNS 服务器存储了 **资源记录（Resource Record, RR）**
+- 资源记录是包括了下列字段的 4 元组：`(Name, Value, Type, TTL)`
+  - TTL 是缓存时间
+  - 如果 Type = A，则 Name 是主机名， Value 是 IP 地址，比如 `(relay1.bar.foo.com, 145.37.93.126, A)`
+  - 如果 Type = NS，则 Name 是域，Value 是权威 DNS 服务器的主机名，比如 `(foo.com, dns.foo.com, NS)`
+  - 如果 Type = CNAME，则 Name 是主机别名，Value 是规范主机名，比如 `(foo.com, relay1.bar.foo.com, CNAME)`
+  - 如果 Type = MX，则 Name 是主机别名，Value 是邮件服务器的规范主机名，比如 `(foo.com, mail.bar.foo.com, MX)`。通过使用 MX 记录，公司的邮件服务器可以和其他服务器使用相同的别名
 
-因为攻击者实际上无法知道 Cookie 里面的内容，所以只需要让 AJAX 和表单请求中携带一个 Cookie 中的值，后端接口验证 Cookie 中的字段与请求参数中的字段是否相同，这样可以减小后端服务器 Session 存储的压力
+### DNS 报文
 
-但是也有一些问题：
-1. 如果用户访问 `www.a.com`，后端域名为 `api.a.com`，那么在 `www.a.com` 下就拿不到 `api.a.com` 的 Cookie
-2. 于是这个认证必须种在 `a.com` 下
-3. 于是任意子域名都可以修改 `a.com` 下的 Cookie
-4. 如果某个子域名存在漏洞被 XSS 攻击，那么攻击者就可以修改 `a.com` 下的 Cookie
-5. 攻击者就可以使用自己配置的 Cookie，对用户在 `www.a.com` 下发起 CSRF 攻击
+DNS 只有查询和回答报文，并且两种报文有相同的格式：
 
-#### Samesite Cookie
+![Networking-DNS-3](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Networking-DNS-3.jpg)
 
-Google 起草了一份草案来改进 HTTP 协议，就是为 `Set-Cookie` 响应头增加 `Samesite` 属性，表明这个 Cookie 是个 **同站 Cookie**
+可以使用 `nslookup` 直接向 DNS 服务器发送查询报文。
+
+## 视频流和内容分发网
+
+### HTTP 流和 DASH
+
+- **HTTP 流**：视频只是一个普通的文件，每个文件有一个特定的 URL。接收到视频就进行播放，同时缓存该视频后面部分的帧。
+  - 缺陷：所有客户端接收到相同编码的视频
+- **DASH (Dynamic Adaptive Stream over HTTP)**：视频编码为几个不同的版本，客户动态地请求来自不同版本且长度为几秒的视频段数据块。每个视频版本存储在服务器中，HTTP 服务器有一个告示文件（manifest file），为每个版本提供一个 URL 和比特率。
+
+### 内容分发网
+
+> 内容分发网即 CDN (Content Distribution Network)
+
+- CDN 管理分布在多个地理位置的服务器，在他的服务器中存储各种 web 内容的副本，并且将每个用户请求定向到一个将提供最好用户体验的 CDN 位置
+- CDN 可以是专用 CDN（private CDN），也可以是第三方 CDN（third-party CDN）
+
+# 运输层
+
+## 多路复用与多路分解
+
+> 运输层是怎样将网络层的报文段发送给应用层的不同进程的
+
+- 一个进程拥有一个或多个 **套接字（socket）**
+- 运输层并没有直接将数据交付给进程，而是交给了某一个套接字
+- **多路分解（demultiplexing）**：将运输层报文段中的数据交付给正确的套接字
+- **多路复用（multiplexing）**：从不同套接字中收集数据块，并封装上首部信息从而生成报文段，然后发送给网络层
+
+- 用于区分套接字的特殊字段就是端口号，下面是一个典型的运输层报文段的结构：
+
+![Networking-Transport-1](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Networking-Transport-1.jpg)
+
+### 无连接和面向连接
+
+- UDP 的套接字是由**（目的 IP 地址，目的端口号）**全面标识的，不同源但相同目的的报文段会被扔给同一个套接字。
+- TCP 的套接字是由 **（源 IP 地址，源端口号，目的 IP 地址，目的端口号）**标识的，因此不同源的报文段会被扔给不同的套接字。
+
+## UDP
+
+### 报文结构
+
+![Networking-UDP-1](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Networking-UDP-1.jpg)
+
+### UDP 校验和（checksum）
+
+- 校验和：发送方将报文段中的 16 bit 字的和进行反码运算
+  - 如果有溢出，需要进行反卷（即将溢出的高位与剩下的部分做加法运算）
+- 接收方将全部的 16 bit 字（包括校验和）加在一起，得到的结果应该是 `1111 1111 1111 1111`，如果其中有 0，则代表出现了问题
+
+- UDP 提供运输层的差错检测，在系统设计中被称为 **端到端原则（end-end principle）**。因为假定 IP 是可以运河在任何第二层协议之上的，UDP 相当于提供了一层保险，但注意 UDP 无法恢复差错。
+
+## 可靠数据传输
+
+> 在 **不可靠的下层协议上** 通过 **可靠数据传输协议（reliable data transfer protocol）** 为 **上层实体** 提供 **可靠数据传输信道**。
+
+### 什么都不考虑：rdt1.0
+
+![Networking-rdt-1](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Networking-rdt-1.jpg)
+
+### 考虑比特差错：rdt2.0
+
+> 校验和、序号、ACK、重传
+
+通常使用 **自动重传请求（Automatic Repeat reQuest, ARQ）**协议来解决这个问题，ARQ协议中还需要三种功能来处理比特差错：
+- 差错检测
+- 接收方反馈（ACK、NAK）
+- 重传
+
+![Networking-rdt-2](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Networking-rdt-2.jpg)
+
+**问题：无法解决 ACK 和 NAK 分组受损的情况。**
+
+可以引入序号 0 和 1（因为还没有考虑到丢包的情况，这个 1 bit 的序号就够用了），来确认是正在重传之前的分组、还是发送了一个新的分组。
+
+此外，引入序号之后，也可以用 ACK + 序号 来代替 NAK 了，如果发送方接收到 ACK + 之前的序号，说明当前的包没有被正确接收到，则需要重传当前的包。
+
+![Networking-rdt-3](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Networking-rdt-3.jpg)
+
+![Networking-rdt-4](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Networking-rdt-4.jpg)
+
+### 考虑比特差错和丢包：rdt3.0
+
+> 定时器
+
+由于分组序号在 0 和 1 之间交替，因此又被称为 **比特交替协议（alternating-bit protocol）**
+
+![Networking-rdt-5](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Networking-rdt-5.jpg)
+
+**问题：以上讨论的实际上都是停等（stop-and-wait）协议，发送方需要收到正确的 ACK 才能做出下一步行动，否则就会一直卡在等待状态。**
+
+### 考虑流水线数据传输
+
+与停等相对应的就是流水线，分组可以看做被填充到一条流水线中，源源不断地发送过去。因此需要考虑到如下的影响：
+
+- **增加序号范围**。每个传送的分组必须有唯一序号，因为可能有多个在传输中的未确认报文
+- **可能需要缓存多个分组**。
+- **考虑解决流水线上丢失、损坏、延时过大的问题**。两种基本方法：**GBN (Go-Back-N)**，**选择重传（Selective Repeat, SR）**。
+
+#### GBN (Go-Back-N)
+
+> GBN 协议也常被称为 **滑动窗口协议（sliding-window protocol）**
+
+- 基序号 base：最早未确认分组的序号
+- 窗口大小 N：当接收到应用层序号大于 base + N 的数据包时，拒绝发送此数据包
+- 累计确认：发送方收到序号为 n 的 ACK 时，认为 n 及 n 以前的都已经被
+
+![Networking-rdt-6](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Networking-rdt-6.jpg)
+
+ ![Networking-rdt-7](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Networking-rdt-7.jpg)
+
+![Networking-rdt-8](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Networking-rdt-8.jpg)
+
+
 
 # TCP
 
@@ -1243,3 +1144,9 @@ TCP 要求延迟的时延必须小于 500ms，一般的操作系统都不会超�
 ## TCP 的 keep-alive
 
 由于 TCP 不是一个轮询的协议，他无法获知对端连接失效的情况（比如对端网络故障或宕机），**keep-alive** 则是用于探测对端的连接是否失效，但是因为探测的时间比较长，所以一般不怎么用
+
+##### DNS 解析
+
+- 系统在 HOST 文件中找 IP 地址
+- 系统向本地 DNS 服务器请求：114.114.114.114（国内移动、电信和联通通用的DNS），8.8.8.8（GOOGLE 公司提供的 DNS，该地址是全球通用）
+- 本地 DNS 服务器一层层向上请求，直到根 DNS 服务器

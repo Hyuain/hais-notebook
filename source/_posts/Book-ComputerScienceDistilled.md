@@ -4,7 +4,7 @@ date: 2021-05-09 19:48:23
 tags:
   - 读书笔记
 categories:
-  - [计算机, 概论]
+  - [计算机]
 mathjax: true
 ---
 
