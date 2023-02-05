@@ -13,4 +13,4 @@ Memos about blockchain.
 
 # Etherum
 
-<iframe src="https://xmind.works/XXsi3uwc" style="width: 100%; height: 600px; border: none;"></iframe>
+<iframe src="https://xmind.works/share/SmAWvzOo" style="width: 100%; height: 600px; border: none;"></iframe>
