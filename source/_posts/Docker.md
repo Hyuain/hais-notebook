@@ -1,8 +1,6 @@
 ---
 title: Docker
 date: 2021-03-14 10:49:35
-tags:
-  - 入门
 categories:
   - [工具]
 ---

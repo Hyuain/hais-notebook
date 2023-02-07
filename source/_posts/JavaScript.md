@@ -1,13 +1,11 @@
 ---
 title: JavaScript
 date: 2020-01-29 17:22:52
-tags:
-  - 入门
 categories:
-  - [前端, JavaScript]
+  - [前端]
 ---
 
-- JavaScript 有 7 种数据类型，3 种变量声明的方式
+- JavaScript 有 8 种数据类型，3 种变量声明的方式
 - JavaScript 的数组不是典型的数组，而是一个对象；**元素的数据类型可以不同，内存不一定连续，是通过字符串下标（而不是数字下标）获取元素**。
 
 <!-- more -->

@@ -1,10 +1,6 @@
 ---
 title: axios
 date: 2020-02-02 17:36:25
-tags:
-  - 入门
-  - 收集
-  - 杂谈
 categories:
   - [工具]
 ---

@@ -1,14 +1,11 @@
 ---
 title: Networking
 date: 2023-01-18 21:37:30
-tags:
-  - 入门
-  - 计算机网络
 categories:
   - [计算机]
 ---
 
-计算机网络自顶向下方法 + 网课。
+.
 
 <!-- more -->
 

@@ -1,11 +1,8 @@
 ---
-title: RxJS Overview
+title: RxJS
 date: 2021-05-13 14:39:12
-tags:
-- 入门
-- RxJS
 categories:
-- [前端, RxJS]
+  - [前端]
 ---
 
 One Core Type: Observable.

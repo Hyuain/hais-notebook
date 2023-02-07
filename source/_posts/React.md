@@ -1,9 +1,6 @@
 ---
 title: React
 date: 2020-02-02 16:25:06
-tags:
-  - 入门
-  - 文档
 categories:
   - [前端]
 ---
@@ -1929,6 +1926,57 @@ function withMouse(Component) {
 ```
 
 需要注意的是，使用 render prop 会导致 `React.PureComponent` 失效，因为外层组件更新的时候，render prop 的函数总是新的，除非你把它写成一个实例方法。
+
+# Redux
+
+可以看看 [这个例子](https://codesandbox.io/s/jovial-gates-wbs8e)：
+
+```js
+import { createStore } from "redux";
+
+const reducer = function(previousState, action) {
+  if (previousState === undefined) {
+    previousState = 0;
+  }
+  switch (action.type) {
+    case "INCREMENT":
+      return previousState + 1;
+    case "DECREMENT":
+      return previousState - 1;
+    default:
+      return previousState;
+  }
+};
+
+const store = createStore(reducer);
+
+const render = function() {
+  document.getElementById("value").innerHTML = store.getState();
+};
+
+render();
+
+store.subscribe(render); // 每次 dispatch 就会触发 render
+
+const addOne = function() {
+  store.dispatch({ type: "INCREMENT" });
+};
+
+const minusOne = function() {
+  store.dispatch({ type: "DECREMENT" });
+};
+
+document.getElementById("increment").addEventListener("click", addOne);
+document.getElementById("decrement").addEventListener("click", minusOne);
+document.getElementById("incrementIfOdd").addEventListener("click", () => {
+  if (store.getState() % 2 === 1) {
+    addOne();
+  }
+});
+document.getElementById("incrementAsync").addEventListener("click", () => {
+  setTimeout(addOne, 1000);
+});
+```
 
 # Vue & React
 

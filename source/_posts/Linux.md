@@ -1,11 +1,8 @@
 ---
 title: Linux
 date: 2022-05-29 16:25:00
-tags:
-  - 入门
-  - 运维
 categories:
-  - [全栈, 运维]
+  - [全栈]
 ---
 
 参考文章 [1](https://juejin.cn/post/6917096816118857736)、B 站教程等。

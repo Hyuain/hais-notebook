@@ -1,13 +1,11 @@
 ---
-title: Flutter 简单上手
+title: Flutter
 date: 2021-04-24 10:13:00
-tags:
-  - 入门
 categories:
-  - [跨端, Flutter]
+  - [跨端]
 ---
 
-这几天简单了解了一下 Flutter，以下笔记是阅读文档的笔记。
+.
 
 <!-- more -->
 

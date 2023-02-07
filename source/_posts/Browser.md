@@ -1,10 +1,8 @@
 ---
-title: Cookie
+title: Browser
 date: 2020-01-30 09:45:22
-tags:
-  - 入门
 categories:
-  - [前端, 浏览器]
+  - [前端]
 ---
 
 Cookie 是浏览器下发给浏览器的一段字符串，浏览器必须保存这个 Cookie，之后发起的相同二级域名的请求，浏览器必须附上 Cookie。

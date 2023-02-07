@@ -1,10 +1,6 @@
 ---
 title: VSCode
 date: 2020-02-02 14:13:16
-tags:
-  - 入门
-  - 效率
-  - 收集
 categories:
   - [工具]
 ---

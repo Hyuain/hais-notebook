@@ -1,10 +1,8 @@
 ---
 title: Rails
 date: 2023-01-16 11:48:41
-tags:
-  - 入门
 categories:
-  - [全栈, Ruby]
+  - [全栈]
 ---
 
 Rails 的一个项目是如何搭建起来的。
@@ -134,7 +132,7 @@ end
 
 ```bash
 bin/rails g controller users
-``` 
+```
 
 #### 渲染 JSON
 
@@ -166,7 +164,7 @@ end
 class ApplicationController < ActionController::API
   include ActionView::Layouts
 end
-``` 
+```
 
 #### Layout
 
@@ -320,7 +318,7 @@ u.authenticate('123')
 
 ```bash
 bin/rails g controller users
-``` 
+```
 
 ```ruby
 class UsersController < ApplicationController

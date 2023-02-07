@@ -1,15 +1,11 @@
 ---
 title: FAQs
 date: 2022-03-12 10:30:50
-tags:
-  - 入门
-  - 收集
-  - FAQ
 categories:
   - [Memo]
 ---
 
-收集一些问题/话题。
+.
 
 <!-- more -->
 

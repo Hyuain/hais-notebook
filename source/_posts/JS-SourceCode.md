@@ -1,10 +1,6 @@
 ---
 title: JavaScript 实现部分 API
 date: 2020-02-23 16:33:44
-tags:
-  - 入门
-  - 收集
-  - FAQ
 categories:
   - [前端]
 ---

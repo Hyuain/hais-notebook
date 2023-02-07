@@ -1,11 +1,8 @@
 ---
 title: Ruby
 date: 2022-03-13 10:05:22
-tags:
-  - 入门
-  - Ruby
 categories:
-  - [全栈, Ruby]
+  - [全栈]
 ---
 
 结合网课、Ruby 文档和《Ruby 元编程 2》。

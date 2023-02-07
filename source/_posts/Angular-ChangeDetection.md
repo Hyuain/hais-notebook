@@ -1,9 +1,6 @@
 ---
 title: 翻译：Angular 如何检查变化
 date: 2021-05-17 18:56:06
-tags:
-  - 入门
-  - 文档
 categories:
   - [前端]
 ---

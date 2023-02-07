@@ -1,14 +1,11 @@
 ---
 title: Git & GitHub
 date: 2020-01-29 20:58:04
-tags:
-  - 入门
-  - 踩坑
 categories:
   - [工具]
 ---
 
-主要记录 Git 的基本用法及一些坑的解决。
+.
 
 <!-- more -->
 

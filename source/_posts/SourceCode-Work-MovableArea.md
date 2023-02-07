@@ -1,13 +1,8 @@
 ---
 title: 小程序拖拽排序
 date: 2021-08-18 09:25:32
-tags:
-  - 源码
-  - 抄袭
-  - 优化
-  - 长列表
 categories:
-  - [源码, 工作]
+  - [源码]
 ---
 
 借助小程序的 movableArea 和 movableView 实现拖拽排序。

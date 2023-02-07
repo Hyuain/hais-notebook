@@ -1,11 +1,8 @@
 ---
 title: 翻译：RxJS 中的错误处理
 date: 2021-03-03 22:47:21
-tags:
-- 入门
-- RxJS
 categories:
-- [前端, RxJS]
+  - [前端]
 ---
 
 本文是 [RxJS Error Handling](https://blog.angular-university.io/rxjs-error-handling/) 的翻译。

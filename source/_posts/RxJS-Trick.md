@@ -1,11 +1,8 @@
 ---
 title: RxJS 小技巧
 date: 2021-05-14 18:51:12
-tags:
-- 小技巧
-- RxJS
 categories:
-- [前端, RxJS]
+  - [前端]
 ---
 
 利用 share 防止重复请求。

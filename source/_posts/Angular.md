@@ -1,14 +1,11 @@
 ---
 title: Angular
 date: 2020-03-24 15:40:32
-tags:
-  - 入门
-  - 文档
 categories:
-  - [前端, Angular]
+  - [前端]
 ---
 
-
+.
 
 <!-- more -->
 
@@ -75,7 +72,7 @@ ng generate component hero
 ng generate component hero -t 
 ```
 
-### 数据绑定
+## 数据绑定
 
 与 Vue 比较类似，Angular 这样几种数据绑定方式：
 
@@ -91,7 +88,7 @@ ng generate component hero -t
 
 其插值语法、表达式、`on`、`bind`、`bindon` 等于 Vue 类似
 
-### 管道
+## 管道
 
 Angular 自带了一些管道，可以帮助我们将输入值转换为对应的输出值，`|` 被称为 **管道操作符**：
 
@@ -109,7 +106,7 @@ Angular 自带了一些管道，可以帮助我们将输入值转换为对应的
 <p>The time is {{today | date:'shortTime'}}</p>
 ```
 
-### 指令
+## 指令
 
 Angular 自带了一些指令，比如：
 
@@ -192,13 +189,13 @@ getHeroes(): Observable<Hero[]> {
 }
 ```
 
+# Obersavble
+
 - 提供了 publishers 和 subscribers 之间传递数据的方式
 - 在 subscribe 的时候才会执行，而不是 define 的时候
 - 可以传递多个任意类型的数据
 
-<!-- more -->
-
-# 基本使用
+## 基本使用
 
 ```typescript
 // 创建一个 Observable 实例，他定义了一个 subscriber 函数
@@ -240,11 +237,11 @@ setTimeout(() => {
 }, 10000)
 ```
 
-## stream
+### stream
 
 observable 可以表示任意数据类型，我们将 observable 发布（publish）出来的数据称为流（stream）
 
-## custom fromEvent function
+### custom fromEvent function
 
 ```typescript
 function fromEvent(target, eventName) {
@@ -267,7 +264,7 @@ const subscription = fromEvent(nameInput, 'keydown')
   });
 ```
 
-## Multicasting
+### Multicasting
 
 通常一个 observable 会为每一个调用了 subscribe() 的 observer 创建一次新的、独立的执行。当 observer 调用 subscribe() 的时候，observable 会连接上一个 event handler 并将值传递给 observer。
 
@@ -391,11 +388,11 @@ setTimeout(() => {
 }, 1500);
 ```
 
-# RxJS
+## RxJS
 
 RxJS ( Reactive Extensions for JavaScript ) 是一个响应式编程（一种考虑异步数据流和数据变化）库
 
-## Create Observable
+### Create Observable
 
 RxJS 提供多种函数，可以通过多种方法从事件、Promise、计时器等创建 observable：
 
@@ -428,7 +425,7 @@ const apiData = ajax('/api/data');
 apiData.subscribe(res => console.log(res.status, res.response));
 ```
 
-## Operators
+### Operators
 
 操作符执行操作，转换原来的 observable 值，并且返回一个包含转换后的值的 observable：
 
@@ -462,7 +459,7 @@ const squareOdd = squareOddVals(nums);
 squareOdd.subscribe(console.log)
 ```
 
-## Error Handling
+### Error Handling
 
 除了 subscription 中的 error handler 之外，还可以使用 `catchError` 操作符来处理错误，通过这个操作符可以提供一个备用的解决方案，并且不中断运行。
 
@@ -498,9 +495,9 @@ const apiData = ajax('/api/data').pipe(
 );
 ```
 
-# Angular 中的 Observables
+## Angular 中的 Observables
 
-## 组件间传值
+### 组件间传值
 
 Angular 提供了 `EventEmitter` API，通过 `@Output()` 就可以发布数据，`EventEmitter` 就是基于 RxJS Subject 的。
 当 `emit()` 的时候，他会将值传递给任意订阅了的 observer 的 `next()` 方法。下面是一个例子：
@@ -537,7 +534,7 @@ export class ZippyComponent {
 }
 ```
 
-## HTTP
+### HTTP
 
 Angular 的 `HttpClient` API 也将会返回 observables，这有一些优点：
 
@@ -545,11 +542,11 @@ Angular 的 `HttpClient` API 也将会返回 observables，这有一些优点：
 - 可以通过 `unsubscribe()` 方法取消请求
 - 可以配制请求
 
-## Async pipe
+### Async pipe
 
 AsyncPipe 会 subscribe 一个 observable 或 promise，并且返回他发出的最新值
 
-## Router
+### Router
 
 `Router.events` 也是以 observables 的形式提供事件的：
 
@@ -575,35 +572,35 @@ export class RoutableComponent implements OnInit {
 }
 ```
 
-# 区分 Observables 和其他技术
+## 区分 Observables 和其他技术
 
-## Observables 和 Promises
+### Observables 和 Promises
 
 - Observables 是 declarative，当调用 `subscribe()` 的时候才会执行，而 Promise 在定义后会马上执行
 - Observables 提供多个值，而 Promises 值提供一个值
 - Observables 有链式调用和 subscribe()
 
-### 创建与订阅
+#### 创建与订阅
 
 - Observables 在 consumer subscribe 的时候才会执行，并且每个 subscription 都拥有自己独立的计算
 - Promises 在创建的时候执行，并且在创建的时候就已经开始计算结果了，每个 then 分享同样的结果，并且不能中断或者重启
 
-### 链式调用
+#### 链式调用
 
 - Observables 将转换数据与最终获取（订阅）的过程分开了，只有订阅（subscription）才会让 subscriber 函数开始计算结果
 - Promises 并不会区分中间与最后的 then
 
-### 取消
+#### 取消
 
 - Observables 可以在 subscriber 函数中返回 unsubscribe 方法，并可使用 `subscription.unsubscribe()` 进行调用
 - Promises 则无法取消
 
-### 错误处理
+#### 错误处理
 
 - Observables 会将错误传递给 subscriber 的 error handler（在调用 `subscribe()` 的时候定义）
 - Promises 将错误传递给子 Promises
 
-## Observables 与 EventHandlers
+### Observables 与 EventHandlers
 
 - 都定义了通知处理方法（notification handlers），并且通过他们来随着时间变化的处理多个值
 - subscribe 一个 observables 相当于添加一个事件监听，不同在于 observables 可以在传递给 handler 之前对数据进行转换和处理
@@ -635,3 +632,48 @@ const subscription = clicks$.subscribe(handler)
 subscription.unsubscribe()
 ```
 
+# AppRoutingModule
+
+在 Angular 中，我们通过一个分离的、顶级的模块来用于导航，通常我们将其命名为 `AppRoutingModule`，他通常在 `src/app` 文件夹的 `app-routing.module.ts` 中。
+
+```bash
+ng generate module app-routing --flat --module=app
+# --flat 是他不会再在 src/app 中新建其他的文件夹
+# --module=app 则使得其被写在 AppModule 的 imports 中
+```
+
+通常我们需要将这个文件改造成这个样子：
+
+```typescript
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { HeroesComponent } from './heroes/heroes.component';
+import { DashboardComponent } from './dashboard/dashboard.component'
+import { HeroDetailComponent } from './hero-detail/hero-detail.component'
+
+const routes: Routes = [
+  { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
+  { path: 'dashboard', component: DashboardComponent },
+  { path: 'detail/:id', component: HeroDetailComponent },
+  { path: 'heroes', component: HeroesComponent }
+]
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  // 由于我们是在应用的 root level 定义路由，因此需要使用 forRoot
+  // forRoot 方法提供了路由中需要的 service providers 和 directives
+  exports: [RouterModule]
+})
+```
+
+然后需要在 html 模板中这样写：
+
+```html
+<nav>
+  <a routerLink="/dashboard">Dashboard</a>
+  <a routerLink="/heroes">Heroes</a>
+</nav>
+<router-outlet></router-outlet>
+```
+
+我们可以通过 `+this.route.snapshot.paramMap.get('id')` 这样的方法来从当前的地址中获取到 params

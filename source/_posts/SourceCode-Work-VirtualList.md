@@ -1,13 +1,8 @@
 ---
 title: 长列表优化：小程序虚拟列表
 date: 2020-05-13 11:25:32
-tags:
-  - 源码
-  - 抄袭
-  - 优化
-  - 长列表
 categories:
-  - [源码, 工作]
+  - [源码]
 ---
 
 借助小程序的 createIntersectionObserver 来实现虚拟列表。

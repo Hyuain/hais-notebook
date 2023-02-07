@@ -1,8 +1,6 @@
 ---
 title: 读书笔记：《计算机科学精粹》
 date: 2021-05-09 19:48:23
-tags:
-  - 读书笔记
 categories:
   - [计算机]
 mathjax: true

@@ -1,11 +1,8 @@
 ---
-title: HTML 标签
+title: HTML
 date: 2020-02-02 13:33:25
-tags:
-  - 入门
-  - 自学
 categories:
-  - [前端, HTML]
+  - [前端]
 ---
 
 WWW、HTML，和一些常见重点的 HTML 标签。

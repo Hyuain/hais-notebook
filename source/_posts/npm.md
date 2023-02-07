@@ -1,11 +1,6 @@
 ---
 title: npm & yarn
 date: 2020-02-02 15:34:21
-tags:
-  - 入门
-  - 效率
-  - 收集
-  - 踩坑
 categories:
   - [工具]
 ---

@@ -1,13 +1,11 @@
 ---
 title: CSS
 date: 2020-02-01 20:12:49
-tags:
-  - 入门
 categories:
-  - [前端, CSS]
+  - [前端]
 ---
 
-整合所有 CSS 相关笔记。
+.
 
 <!-- more -->
 
