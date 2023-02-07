@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hais-notebook/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/hais-notebook/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/hais-notebook/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/hais-notebook/images/safari-pinned-tab.svg" color="#222">
+
+<link rel="stylesheet" href="/hais-notebook/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.font.im/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="/hais-notebook/lib/@fortawesome/fontawesome-free/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"hyuain.github.io","root":"/hais-notebook/","images":"/hais-notebook/images","scheme":"Gemini","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac","show_result":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/hais-notebook/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/hais-notebook/js/config.js"></script>
+
+    <meta name="description" content=".">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git &amp; GitHub">
+<meta property="og:url" content="https://hyuain.github.io/hais-notebook/2020/01/29/Git/index.html">
+<meta property="og:site_name" content="Hais Notebook">
+<meta property="og:description" content=".">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-01-29T20:58:04.000Z">
+<meta property="article:modified_time" content="2020-01-29T20:58:04.000Z">
+<meta property="article:author" content="Harvey Zhang">
+<meta property="article:tag" content="Notebook">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://hyuain.github.io/hais-notebook/2020/01/29/Git/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hyuain.github.io/hais-notebook/2020/01/29/Git/","path":"2020/01/29/Git/","title":"Git & GitHub"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Git & GitHub | Hais Notebook</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/hais-notebook/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/hais-notebook/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Hais Notebook</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/hais-notebook/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/hais-notebook/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/hais-notebook/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/hais-notebook/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#git-%E6%9C%AC%E5%9C%B0%E4%BB%93%E5%BA%93"><span class="nav-number">1.</span> <span class="nav-text">Git 本地仓库</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AD%E8%A1%8C%E9%85%8D%E7%BD%AE"><span class="nav-number">1.1.</span> <span class="nav-text">六行配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4"><span class="nav-number">1.2.</span> <span class="nav-text">命令</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#git-%E8%BF%9C%E7%A8%8B%E4%BB%93%E5%BA%93"><span class="nav-number">2.</span> <span class="nav-text">Git 远程仓库</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%AB%98%E7%BA%A7%E6%93%8D%E4%BD%9C"><span class="nav-number">2.1.</span> <span class="nav-text">高级操作</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95"><span class="nav-number">3.</span> <span class="nav-text">踩坑记录</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#git-log-%E4%B8%AD%E6%96%87%E4%B9%B1%E7%A0%81"><span class="nav-number">3.1.</span> <span class="nav-text">git log 中文乱码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git-push-clone-%E6%8A%A5%E9%94%99"><span class="nav-number">3.2.</span> <span class="nav-text">git push &#x2F; clone 报错</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95-1"><span class="nav-number">3.2.1.</span> <span class="nav-text">方法 1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95-2"><span class="nav-number">3.2.2.</span> <span class="nav-text">方法 2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95-3"><span class="nav-number">3.2.3.</span> <span class="nav-text">方法 3</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#github-%E5%8A%A0%E9%80%9F"><span class="nav-number">4.</span> <span class="nav-text">GitHub 加速</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%A8%E8%8D%90---%E9%80%9A%E8%BF%87-ssh-%E6%97%B6"><span class="nav-number">4.1.</span> <span class="nav-text">推荐 - 通过 SSH 时</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E8%BF%87-https-%E6%97%B6"><span class="nav-number">4.2.</span> <span class="nav-text">通过 HTTPS 时</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#a-little-more-on-git-protocol"><span class="nav-number">4.3.</span> <span class="nav-text">A Little More on Git Protocol</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Harvey Zhang</p>
+  <div class="site-description" itemprop="description">海鲜酱的笔记本</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/hais-notebook/archives/">
+          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/hais-notebook/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2020/01/29/Git/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
+      <meta itemprop="name" content="Harvey Zhang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hais Notebook">
+      <meta itemprop="description" content="海鲜酱的笔记本">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Git & GitHub | Hais Notebook">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Git & GitHub
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-01-29 20:58:04" itemprop="dateCreated datePublished" datetime="2020-01-29T20:58:04+00:00">2020-01-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index"><span itemprop="name">工具</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>.</p>
+<span id="more"></span>
+<h1 id="git-本地仓库">Git 本地仓库</h1>
+<h2 id="六行配置">六行配置</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name [username] </span><br><span class="line">git config --global user.email [useremail@example.com]</span><br><span class="line">git config --global push.default simple</span><br><span class="line">git config --global core.quotepath <span class="literal">false</span></span><br><span class="line">git config --global core.editor <span class="string">&quot;code --wait&quot;</span></span><br><span class="line">git config --global core.autocrlf input</span><br></pre></td></tr></table></figure>
+<h2 id="命令">命令</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>命令</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>git init</code></td>
+<td>创建 <code>.git</code> 目录，容纳代码快照</td>
+</tr>
+<tr class="even">
+<td><code>git add</code></td>
+<td>准备将文件提交进 git 目录（本地仓库），路径可以是绝对路径、相对路径、<code>.</code>（当前目录）和 <code>*</code></td>
+</tr>
+<tr class="odd">
+<td><code>git status</code></td>
+<td>查看目前的状态</td>
+</tr>
+<tr class="even">
+<td><code>git commit</code></td>
+<td>提交（实际上是复制到了.git目录）</td>
+</tr>
+<tr class="odd">
+<td><code>git commit -m "version1"</code></td>
+<td>查看更新时间</td>
+</tr>
+<tr class="even">
+<td><code>git commit -v（--verbose）</code></td>
+<td>推荐，提交理由写得更详细</td>
+</tr>
+<tr class="odd">
+<td><code>git reset --hard xxxxxx（提交号的前六位）</code></td>
+<td>这个操作会使没有 commit 过的变动消失</td>
+</tr>
+<tr class="even">
+<td><code>git log</code></td>
+<td>查看历史记录</td>
+</tr>
+<tr class="odd">
+<td><code>git reflog</code></td>
+<td>查看包括 reset 的历史记录</td>
+</tr>
+<tr class="even">
+<td><code>git branch xxx</code></td>
+<td>基于当前的commit创建一份新的分支</td>
+</tr>
+<tr class="odd">
+<td><code>git branch</code></td>
+<td>查看所有分支和当前分支</td>
+</tr>
+<tr class="even">
+<td><code>git branch -d xxx</code></td>
+<td>删除分支</td>
+</tr>
+<tr class="odd">
+<td><code>git checkout xxx</code></td>
+<td>切换分支，当前未提交的文件如果与另一个分支不冲突，切换分支的操作就不会产生影响，如果冲突，可以用git stash或合并冲突</td>
+</tr>
+<tr class="even">
+<td><code>git merge xxx</code></td>
+<td>合并分支，先到达想要保留的分支再使用</td>
+</tr>
+<tr class="odd">
+<td><code>git rm --chached xxx</code></td>
+<td>将已经被 add 的文件从缓存中删除</td>
+</tr>
+</tbody>
+</table>
+<p><code>.gitignore</code> 文件中可以输路径来忽略不想提交的文件，比如 <code>node_modules</code> <code>DS_Store</code> <code>.idea</code> <code>.vscode</code></p>
+<h1 id="git-远程仓库">Git 远程仓库</h1>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建一个私钥和公钥</span></span><br><span class="line">ssh-keygen -t rsa -b 4096 -C [useremail@example.com]</span><br><span class="line"><span class="built_in">cat</span> ~/.ssh/id_rsa.pub</span><br><span class="line"></span><br><span class="line"><span class="comment"># 测试</span></span><br><span class="line">ssh -T git@github.com</span><br><span class="line"></span><br><span class="line"><span class="comment"># 上传一个本地仓库</span></span><br><span class="line">git remote add origin [git@github.com:Hyuain/git-demo-1.git]</span><br><span class="line">git push -u origin master <span class="comment"># 一个新的分支需要写 -u 和后面的</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 下载一个远程仓库</span></span><br><span class="line">git <span class="built_in">clone</span></span><br><span class="line"><span class="comment"># git clone git@?/xxx.git：创建一个新目录，与 xxx 同名</span></span><br><span class="line"><span class="comment"># git clone git@?/xxx.git yyy：创建一个新目录，命名为 yyy</span></span><br><span class="line"><span class="comment"># git clone git@?/xxx.git .：不会新建目录，使用当前目录容纳代码和 .git</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 其他</span></span><br><span class="line"><span class="comment"># git stash：把文件藏起来</span></span><br><span class="line"><span class="comment"># git stash pop：再把文件取出来</span></span><br></pre></td></tr></table></figure>
+<h2 id="高级操作">高级操作</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">touch</span> ~/.bashrc</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;alias ga=&quot;git add&quot;&#x27;</span>&gt;&gt; ~/.bashrc</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;alias gc=&quot;git commit -v&quot;&#x27;</span>&gt;&gt; ~/.bashrc</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;alias gl=&quot;git pull&quot;&#x27;</span>&gt;&gt; ~/.bashrc</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;alias gp=&quot;git push&quot;&#x27;</span>&gt;&gt; ~/.bashrc</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;alias gco=&quot;git checkout&quot;&#x27;</span>&gt;&gt; ~/.bashrc</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;alias gst=&quot;git status -sb&quot;&#x27;</span>&gt;&gt; ~/.bashrc</span><br><span class="line"></span><br><span class="line">code ~/.bashrc</span><br><span class="line"><span class="comment"># 在文件最后加上</span></span><br><span class="line"><span class="built_in">alias</span> glog=<span class="string">&quot;git log --graph --pretty=format:&#x27;%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)&lt;%an&gt;%Creset&#x27; --abbrev-commit -- | less&quot;</span></span><br></pre></td></tr></table></figure>
+<h1 id="踩坑记录">踩坑记录</h1>
+<h2 id="git-log-中文乱码">git log 中文乱码</h2>
+<p>输入以下命令即可解决</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git config --global i18n.commitencoding utf-8</span><br><span class="line">git config --global i18n.logoutputencoding utf-8</span><br><span class="line"><span class="built_in">export</span> LESSCHARSET=utf-8</span><br></pre></td></tr></table></figure>
+<h2 id="git-push-clone-报错">git push / clone 报错</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ssh: connect to host github.com port 22: Connection timed out</span><br><span class="line">fatal: Could not <span class="built_in">read</span> from remote repository.</span><br><span class="line"></span><br><span class="line">Please make sure you have the correct access rights</span><br><span class="line">and the repository exists.</span><br></pre></td></tr></table></figure>
+<h3 id="方法-1">方法 1</h3>
+<p>防火墙添加 22 端口入站策略配置为允许，有时候不能解决问题。</p>
+<h3 id="方法-2">方法 2</h3>
+<ol type="1">
+<li>在 <code>~/.ssh</code> 存放密钥（<code>id_rsa</code> 和 <code>id_rsa.pub</code>）的文件夹，新建 <code>config</code>，内容如下：</li>
+</ol>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Host github.com</span><br><span class="line">User XXX@xx.com</span><br><span class="line">Hostname ssh.github.com</span><br><span class="line">PreferredAuthentications publickey</span><br><span class="line">IdentityFile ~/.ssh/id_rsa</span><br><span class="line">Port 443</span><br></pre></td></tr></table></figure>
+<ol start="2" type="1">
+<li>刷新 <code>config</code></li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name <span class="string">&quot;XXX&quot;</span></span><br><span class="line">git config --global user.email XXX@xx.com</span><br></pre></td></tr></table></figure>
+<ol start="3" type="1">
+<li>测试</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh -T git@github.com</span><br></pre></td></tr></table></figure>
+<p>有时候还是不能解决问题</p>
+<h3 id="方法-3">方法 3</h3>
+<ol type="1">
+<li>修改 hosts 文件，也可以进入 <a target="_blank" rel="noopener" href="https://www.ipaddress.com/">IPAddress</a> 查询这域名的 IP 地址。</li>
+</ol>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">192.30.253.112 github.com</span><br><span class="line">185.199.108.153 assets-cdn.github.com</span><br><span class="line">185.199.109.153 assets-cdn.github.com</span><br><span class="line">185.199.110.153 assets-cdn.github.com</span><br><span class="line">185.199.111.153 assets-cdn.github.com</span><br><span class="line">199.232.5.194 github.global.ssl.fastly.net</span><br></pre></td></tr></table></figure>
+<ol start="2" type="1">
+<li>刷新 DNS 缓存</li>
+</ol>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">ipconfig</span> /flushdns</span><br></pre></td></tr></table></figure>
+<h1 id="github-加速">GitHub 加速</h1>
+<h2 id="推荐---通过-ssh-时">推荐 - 通过 <code>SSH</code> 时</h2>
+<p><code>SSH</code> 的clone方式也是大家使用的最多的方式，但 <code>SSH</code> 一般情况是不走 <code>http</code>、<code>https</code> 的代理的，在终端执行 <code>export https_proxy=xxx</code>，甚至将代理软件设置为全局代理也无法令 <code>SSH</code> 通过代理。这里介绍如何使<code>SSH clone</code>时走代理： 把下面这段写进 <code>~/.ssh/config</code> 文件（因为用到私玥认证所以带了 <code>IdentityFile</code> 选项）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># linux &amp; WSL 配置</span></span><br><span class="line">Host github.com</span><br><span class="line">    User git</span><br><span class="line">    ProxyCommand /usr/bin/nc -x 127.0.0.1:7890 %h %p</span><br><span class="line">    IdentityFile ~/.ssh/id_rsa</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># GitBash 的配置</span></span><br><span class="line"> Host github.com</span><br><span class="line">     User git</span><br><span class="line">     ProxyCommand connect -H 127.0.0.1:7890 %h %p</span><br><span class="line">     IdentityFile ~/.ssh/id_rsa</span><br></pre></td></tr></table></figure>
+<p>这里 <code>127.0.0.1:7890</code> 是一个 <code>http</code> 代理，这样便能令 <code>SSH</code> clone GitHub 时通过代理，达到加速的目的。</p>
+<p>这种设置方法依赖Linux命令<a target="_blank" rel="noopener" href="https://linux.die.net/man/1/nc"><code>nc</code></a>和 <a target="_blank" rel="noopener" href="https://linux.die.net/man/5/ssh_config"><code>ssh config</code></a> <code>ProxyCommand</code>。</p>
+<blockquote>
+<ul>
+<li>使用时可能会有的报错：<code>Bad owner or permissions on /Users/username/.ssh/config</code>，解决方法参考如下：</li>
+</ul>
+</blockquote>
+<pre><code>&gt;
+&gt;   https://github.com/ddollar/heroku-accounts/issues/15
+&gt;
+&gt;   https://docs.github.com/en/github/authenticating-to-github/error-permission-denied-publickey</code></pre>
+<h2 id="通过-https-时">通过 <code>HTTPS</code> 时</h2>
+<p>通过 <code>HTTPS</code> 形式的 clone 通过代理加速很简单，和普通的网页访问的加速并没有不一样：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export HTTPS_PROXY=socks5://127.0.0.1:1080</span><br><span class="line">git clone https://github.com/lightjiao/lightjiao.github.io.git</span><br></pre></td></tr></table></figure>
+<p>另外，<code>Git</code> 本身有一个 <code>http.proxy/https.proxy</code> 的设置：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global http.proxy socks5://127.0.0.1:1080</span><br><span class="line">git config --global https.proxy socks5://127.0.0.1:1080</span><br></pre></td></tr></table></figure>
+<p>但 <code>HTTPS</code> clone的方式本身有一个缺点，每次与远端repo通讯时候都会要求填写用<code>Github</code>户名和密码，使用比较繁琐</p>
+<h2 id="a-little-more-on-git-protocol">A Little More on Git Protocol</h2>
+<p>By saying "Git Protocol", I mean a Git Server Protocal called "The Git Protocol". Its URI likes <code>git://server/project.git</code>. Note it starts with a <code>git://</code>, not <code>ssh://</code> or <code>http://</code> or something else.</p>
+<p>It's not commonly used, so you can skip this. I write this mainly for completeness of Git proxy settings.</p>
+<p>Git a has configration <code>core.gitProxy</code> dedicated for this protocol, its man reads:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">core.gitProxy</span><br><span class="line"></span><br><span class="line">A &quot;proxy command&quot; to execute (as command host port) instead of establishing direct connection to the </span><br><span class="line">remote server when using the Git protocol for fetching. If the variable value is in the </span><br><span class="line">&quot;COMMAND for DOMAIN&quot; format, the command is applied only on hostnames ending with the specified </span><br><span class="line">domain string. This variable may be set multiple times and is matched in the given order; the first </span><br><span class="line">match wins.</span><br><span class="line"></span><br><span class="line">Can be overridden by the GIT_PROXY_COMMAND environment variable (which always applies universally, </span><br><span class="line">without the special &quot;for&quot; handling).</span><br></pre></td></tr></table></figure>
+<p>You can set it by <code>git config</code>.</p>
+<p>参考来源：</p>
+<ul>
+<li>https://www.zhihu.com/question/27159393/answer/145122287</li>
+<li>https://gist.github.com/coin8086/7228b177221f6db913933021ac33bb92</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2020/01/29/Command/" rel="prev" title="命令行基础">
+                  <i class="fa fa-chevron-left"></i> 命令行基础
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2020/01/30/Browser/" rel="next" title="Browser">
+                  Browser <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Harvey Zhang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="/hais-notebook/lib/animejs/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/hais-notebook/js/comments.js"></script><script src="/hais-notebook/js/utils.js"></script><script src="/hais-notebook/js/next-boot.js"></script>
+
+  <script src="/hais-notebook/lib/hexo-generator-searchdb/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/hais-notebook/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"/hais-notebook/lib/mathjax/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/hais-notebook/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
