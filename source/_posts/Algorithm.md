@@ -557,14 +557,218 @@ class TreeNode {
 ##### 前序（中左右）
 
 ```typescript
-const traversal = (current: TreeNode, cb?: (node: TreeNode) => any) => {
+const traversal = (current: TreeNode | null, cb?: (node: TreeNode) => any) => {
   if (!current) {	return }
-  cb?.(current)
-  traversal(current.left)
-  traversal(current.right)
+  cb?.(current)							// 中
+  traversal(current.left)   // 左
+  traversal(current.right)  // 右
 }
 ```
 
-### 
+##### 中序（左中右）
+
+```typescript
+const traversal = (current: TreeNode | null, cb?: (node: TreeNode) => any) => {
+  if (!current) { return }
+  traversal(current.left)   // 左
+  cb?.(current)             // 中
+  traversal(current.right)  // 右
+}
+```
+
+##### 后序（左右中）
+
+```typescript
+const traversal = (current: TreeNode | null, cb?: (node: TreeNode) => any) => {
+  if (!current) { return }
+  traversal(current.left)   // 左
+	traversal(current.right)  // 右
+  cb?.(current)							// 中
+}
+```
+
+#### 迭代写法
+
+##### 前序（中左右）
+
+![二叉树的前序遍历（迭代法）](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Algorithm-Tree-1.gif)
+
+入栈顺序为 中、**右、左**，这样才能保证出栈顺序为 中、**左、右**
+
+```typescript
+const traversal = (root: TreeNode | null, cb?: (node: TreeNode) => any) => {
+  if (!root) { return }
+  const stack = [root]          // 中入栈
+  while (stack.length) {
+    const current = stack.pop() // 出栈，可以看出中最先出栈，然后是左，然后是右
+    cb?.(current)								// 处理
+    if (current.right) {
+      stack.push(current.right) // 右入栈
+    }
+    if (current.left) {
+      stack.push(current.left)  // 左入栈
+    }
+  }
+}
+```
+
+##### 中序（左中右）
+
+![二叉树的中序遍历（迭代法）](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Algorithm-Tree-2.gif)
+
+需要借助指针来跟踪当前访问的节点
+
+```typescript
+const traversal = (root: TreeNode | null, cb?: (node: TreeNode) => any) => {
+  if (!root) { return }
+  const current = root
+  const stack = []
+  while (current || stack.length) {
+    if (current) {
+      stack.push(current)        // 入栈
+      current = current.left     // 准备左入栈（第一次会一直入栈直到最左下角的元素，那才是处理的起点）
+    } else {
+      current = stack.pop()      // 出栈，可以看出左最先出栈，然后是中，然后是右
+      cb?.(current)							 // 处理
+      current = current.right    // 准备右入栈
+    }
+  }
+}
+```
+
+##### 后序（左右中）
+
+先写前序遍历（中左右），写的时候把左右入栈顺序颠倒，就是中右左，然后反转 result 数组就是后序遍历
+
+```typescript
+const traversal = (root: TreeNode | null): TreeNode[] => {
+  if (!root) { return }
+  const result = []
+  const stack = [root]
+  while (stack.length) {
+    const current = stack.pop()
+    result.push(current)
+    if (current.left) {
+      stack.push(current.left)
+    }
+    if (current.right) {
+      stack.push(current.right)
+    }
+  }
+  return result.reverse()
+}
+```
+
+#### 统一风格的迭代写法
+
+使用标记法，在需要处理的元素入栈之后推入 `null`，这样栈里面就有两种元素：
+
+1. 需要处理的元素，他后面会接一个 `null`
+2. 需要进一步访问其子结点的元素，他后面不会接 `null`
+
+##### 中序（左中右）
+
+```typescript
+const traversal = (root: TreeNode | null, cb?: (node: TreeNode) => any) => {
+  if (!root) { return }
+  const stack = [root]
+  while (stack.length) {
+    const current = stack.pop()
+    if (!current) {					   	// 出栈时遇到 null，说明下一个元素需要处理
+      cb?.(stack.pop())
+      continue
+    }
+    if (current.right) { stack.push(current.right) }	// 右入栈，待访问
+    stack.push(current, null)													// 中入栈，待处理
+    if (current.left) { stack.push(current.left) }    // 左入栈，待访问
+  }
+}
+```
+
+![二叉树的中序遍历（统一迭代法）](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Algorithm-Tree-3.gif)
+
+##### 前序（中左右）
+
+```typescript
+const traversal = (root: TreeNode | null, cb?: (node: TreeNode) => any) => {
+  if (!root) { return }
+  const stack = [root]
+  while (stack.length) {
+    const current = stack.pop()
+    if (!current) {
+      cb?.(stack.pop())
+      continue
+    }
+    if (current.right) { stack.push(current.right) }
+    if (current.left) { stack.push(current.left) }
+    stack.push(current, null)
+  }
+}
+```
+
+##### 后序（左右中）
+
+```typescript
+const traversal = (root: TreeNode | null, cb?: (node: TreeNode) => any) => {
+  if (!root) { return }
+  const stack = [root]
+  while (stack.length) {
+    const current = stack.pop()
+    if (!current) {
+      cb?.(stack.pop())
+      continue
+    }
+    stack.push(current, null)
+    if (current.right) { stack.push(current.right) }
+    if (current.left) { stack.push(current.left) }
+  }
+}
+```
 
 ### 广度优先
+
+> 即层序遍历
+
+#### 迭代法
+
+使用队列和一个缓存当前层的数组
+
+```typescript
+function traversal(root: TreeNode | null): number[][] {
+  if (!root) { return [] }
+  const queue: TreeNode[] = [root]
+  const res = []
+  while (queue.length) {
+    const currentLevel = []
+    const currentLevelSize = queue.length
+    for (let i = 0; i < currentLevelSize; i++) {
+      const current = queue.shift()
+      currentLevel.push(current.val)
+      if (current.left) { queue.push(current.left) }
+      if (current.right) { queue.push(current.right) }
+    }
+    res.push(currentLevel)
+  }
+  return res
+}
+```
+
+#### 递归法
+
+传入 deep 可以不管当前递归到哪里了，自己属于哪一层
+
+```typescript
+function levelOrder(root: TreeNode | null): number[][] {
+    function traversal(current: TreeNode | null, result: number[][], deep: number) {
+        if (!current) { return }
+        if (!result[deep]) { result[deep] = [] }
+        result[deep].push(current.val)
+        traversal(current.left, result, deep + 1)
+        traversal(current.right, result, deep + 1)
+    }
+    const result = []
+    traversal(root, result, 0)
+    return result
+}
+```
+

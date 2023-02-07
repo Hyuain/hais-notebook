@@ -5,11 +5,10 @@ tags:
   - 入门
   - 文档
 categories:
-  - [前端, React]
+  - [前端]
 ---
 
-- React 的安装与使用
-- JSX
+
 
 <!-- more -->
 
