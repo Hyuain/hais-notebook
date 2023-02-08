@@ -4127,9 +4127,9 @@ Y = \overline C A + CB
 <li>Unicode 已收录 13 万字符（大于 16 位），全世界通用，以后还会继续扩充；缺点：两个字节不够用了，至少要三个字节</li>
 <li>UTF-8：通过变长的存法，减小容量</li>
 </ul>
-<h3 id="种数据类型">7 种数据类型</h3>
+<h3 id="种数据类型">8 种数据类型</h3>
 <blockquote>
-<p>4 基 2 空 1 对象</p>
+<p>5 基 2 空 1 对象</p>
 </blockquote>
 <h4 id="number">Number</h4>
 <blockquote>
@@ -4139,11 +4139,21 @@ Y = \overline C A + CB
 <p><code>0</code> <code>+0</code> <code>-0</code></p>
 <p><code>Infinity</code> <code>+Infinity</code> (1/0) <code>-Infinity</code> (1/-0)</p>
 <p><code>NaN</code>（0/0，但他还是一个数字，NaN不等于NaN）</p>
+<h5 id="number.isnan-isnan">Number.isNaN &amp; isNaN</h5>
+<ul>
+<li><code>Number.isNaN</code> 更加健壮，他不会进行类型转换，他只对 <code>NaN</code> 返回 <code>true</code>，与 <code>x !== x</code> 等价</li>
+<li>全局 <code>isNaN</code> 会先将值转换为 Number 类型，对所有转换为 Number 为 <code>NaN</code> 的，也会返回 <code>true</code></li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">isNaN</span>(<span class="string">&quot;i&#x27;m a string&quot;</span>)	<span class="comment">// true</span></span><br><span class="line"><span class="built_in">isNaN</span>(<span class="literal">undefined</span>)			<span class="comment">// true</span></span><br><span class="line"><span class="built_in">isNaN</span>(&#123;&#125;)             <span class="comment">// true</span></span><br><span class="line"><span class="built_in">isNaN</span>(<span class="literal">true</span>)						<span class="comment">// false, Number(true) === 0</span></span><br><span class="line"><span class="built_in">isNaN</span>(<span class="literal">null</span>)           <span class="comment">// false, Number(null) === 0</span></span><br><span class="line"><span class="built_in">isNaN</span>(<span class="string">&quot;37.12&quot;</span>)        <span class="comment">// false, Number(&quot;37.12&quot;) === 37.12</span></span><br><span class="line"><span class="built_in">isNaN</span>(<span class="string">&quot;3122d&quot;</span>)				<span class="comment">// true</span></span><br><span class="line"><span class="built_in">isNaN</span>(<span class="string">&quot;&quot;</span>)							<span class="comment">// false, Number(&quot;&quot;) === 0</span></span><br><span class="line"><span class="built_in">isNaN</span>(<span class="string">&quot;      &quot;</span>)       <span class="comment">// false, Number(&quot;      &quot;) === 0</span></span><br></pre></td></tr></table></figure>
 <h5 id="范围和精度">范围和精度</h5>
 <figure>
 <img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/JS-Number-Range.png" alt="JSNumber的存储" /><figcaption aria-hidden="true">JSNumber的存储</figcaption>
 </figure>
-<p>范围：<code>Number.MAX_VALUE</code> 到 <code>Number.MIN_VALUE</code></p>
+<p>范围：</p>
+<ul>
+<li>能准确表示的范围在 <code>Number.MAX_SAFE_INTEGER</code> 与 <code>Number.MIN_SAFE_INTEGER</code> 之间（- 2^53 + 1 ~ 2^53 - 1）</li>
+<li>事实上能存储 <code>Number.MAX_VALUE</code> ~ <code>Number.MIN_VALUE</code> 的值（±1.7976931348623157 * 10^308），但由于只有 64 bit，所以有些值实际上是近似数</li>
+</ul>
 <p>精度：大概是 15 个十进制有效数字</p>
 <h4 id="string">String</h4>
 <blockquote>
@@ -4172,6 +4182,11 @@ Y = \overline C A + CB
 <p>每个 Symbol 都不一样</p>
 </blockquote>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 没有参数的情况</span></span><br><span class="line"><span class="keyword">let</span> s1 = <span class="title class_">Symbol</span>();</span><br><span class="line"><span class="keyword">let</span> s2 = <span class="title class_">Symbol</span>();</span><br><span class="line"></span><br><span class="line">s1 === s2 <span class="comment">// false</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 有参数的情况</span></span><br><span class="line"><span class="keyword">let</span> s1 = <span class="title class_">Symbol</span>(<span class="string">&#x27;foo&#x27;</span>);</span><br><span class="line"><span class="keyword">let</span> s2 = <span class="title class_">Symbol</span>(<span class="string">&#x27;foo&#x27;</span>);</span><br><span class="line"></span><br><span class="line">s1 === s2 <span class="comment">// false</span></span><br></pre></td></tr></table></figure>
+<h4 id="bigint">BigInt</h4>
+<blockquote>
+<p>BigInt 可以准确表示任何大小的整数值</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// the &quot;n&quot; at the end means it&#x27;s a BigInt</span></span><br><span class="line"><span class="keyword">const</span> bigInt = <span class="number">1234567890123456789012345678901234567890n</span>;</span><br></pre></td></tr></table></figure>
 <h4 id="undefined">undefined</h4>
 <p>如果声明了没有赋值，默认是 <code>undefined</code></p>
 <p>如果函数没有写 <code>return</code>，默认是 <code>undefined</code></p>
@@ -5882,7 +5897,6 @@ true
 </ul>
 <h2 id="代码题">代码题</h2>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> a = &#123;<span class="attr">name</span>: <span class="string">&#x27;x&#x27;</span>&#125;</span><br><span class="line">a.<span class="property">x</span> = a = &#123;&#125;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(a.<span class="property">x</span>) <span class="comment">// undefined</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 代码执行分为两步： 1. 确定 a 是什么；2. 执行（从右向左）</span></span><br><span class="line"><span class="comment">// 执行到 a.x 的时候，a 还是原来的地址，但是他右边的 a 已经是新的地址了</span></span><br></pre></td></tr></table></figure>
-<h1 id="section-4"></h1>
 ]]></content>
       <categories>
         <category>前端</category>
