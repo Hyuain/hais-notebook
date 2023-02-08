@@ -118,9 +118,9 @@ for(let i = 0; i < 5; i++){
 - Unicode 已收录 13 万字符（大于 16 位），全世界通用，以后还会继续扩充；缺点：两个字节不够用了，至少要三个字节
 - UTF-8：通过变长的存法，减小容量
 
-### 7 种数据类型
+### 8 种数据类型
 
-> 4 基 2 空 1 对象
+> 5 基 2 空 1 对象
 
 #### Number
 
@@ -134,11 +134,31 @@ for(let i = 0; i < 5; i++){
 
 `NaN`（0/0，但他还是一个数字，NaN不等于NaN）
 
+##### Number.isNaN & isNaN
+
+- `Number.isNaN` 更加健壮，他不会进行类型转换，他只对 `NaN` 返回 `true`，与 `x !== x` 等价
+- 全局 `isNaN` 会先将值转换为 Number 类型，对所有转换为 Number 为 `NaN` 的，也会返回 `true`
+
+```javascript
+isNaN("i'm a string")	// true
+isNaN(undefined)			// true
+isNaN({})             // true
+isNaN(true)						// false, Number(true) === 0
+isNaN(null)           // false, Number(null) === 0
+isNaN("37.12")        // false, Number("37.12") === 37.12
+isNaN("3122d")				// true
+isNaN("")							// false, Number("") === 0
+isNaN("      ")       // false, Number("      ") === 0
+```
+
 ##### 范围和精度
 
 ![JSNumber的存储](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/JS-Number-Range.png)
 
-范围：`Number.MAX_VALUE` 到 `Number.MIN_VALUE`
+范围：
+
+- 能准确表示的范围在 `Number.MAX_SAFE_INTEGER` 与 `Number.MIN_SAFE_INTEGER`  之间（- 2^53 + 1 ~ 2^53 - 1）
+- 事实上能存储 `Number.MAX_VALUE`  ~ `Number.MIN_VALUE` 的值（±1.7976931348623157 * 10^308），但由于只有 64 bit，所以有些值实际上是近似数
 
 精度：大概是 15 个十进制有效数字
 
@@ -190,6 +210,15 @@ let s1 = Symbol('foo');
 let s2 = Symbol('foo');
 
 s1 === s2 // false
+```
+
+#### BigInt
+
+> BigInt 可以准确表示任何大小的整数值
+
+```javascript
+// the "n" at the end means it's a BigInt
+const bigInt = 1234567890123456789012345678901234567890n;
 ```
 
 #### undefined
@@ -3440,4 +3469,3 @@ console.log(a.x) // undefined
 // 执行到 a.x 的时候，a 还是原来的地址，但是他右边的 a 已经是新的地址了
 ```
 
-#
