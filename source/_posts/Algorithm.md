@@ -11,6 +11,41 @@ categories:
 
 # 数组
 
+## 查找
+
+### 二分查找
+
+[LeetCode.204](https://leetcode.cn/problems/binary-search/submissions/)
+
+前提
+
+- 数组是有序的
+- 数组中无重复元素
+
+时间复杂度 O(log(n))
+
+```typescript
+const binarySearch = (nums: number[], target: number) => {
+  if (!nums.length) { return -1 }
+  let left = 0
+  let right = nums.length - 1
+  while (l <= r) {
+    let mid = Math.floor((left + right) / 2)
+    if (nums[mid] === target) {
+      return mid
+    } else if (nums[mid] > target) {
+      // 如果写成这样，意味着新的 right 需要在下一次循环被考虑
+      // 所以当 left === right 的时候，循环还不能终止
+      right = mid - 1
+    } else {
+      // 新的 left 总是需要被考虑的，所以下面这行一般没有第二种写法
+      left = mid + 1
+    }
+  }
+  return -1
+}
+```
+
 ## 排序
 
 ### 选择排序
@@ -524,6 +559,130 @@ const count = (str) => {
   return result
 }
 ```
+
+# 栈
+
+## 例题
+
+### 实现一个简单的计算器
+
+利用后缀表达和栈可以实现一个简单的计算器
+
+#### 算式的后缀表达
+
+我们平时使用的是中缀表达（Infix Notation），形式是 **操作数 运算符 操作数**，比如 1 + 1
+
+后缀表达（Postfix Notation, Reverse Polish Notation）的形式是 **操作数 操作数 运算符**，比如 1 1 +
+
+要得到后缀表达，只需要：
+
+- 操作数顺序不变
+- 操作符根据优先级加在操作数后面
+
+比如：
+
+```text
+ 10 + (44 - 1) * 3 + 9 / 2
+ 10       44       1       3       9       2
+ 10      (44       1 -)    3      (9       2 /)
+ 10     ((44       1 -)    3 *)   (9       2 /)
+(10     ((44       1 -)    3 *) +)(9       2 /)
+(10     ((44       1 -)    3 *) +)(9       2 /) +
+ 10 44 1 - 3 * + 9 2 / +
+ 
+ 1 - 2 - 5 + 6 / 5
+ 1 2 - 5 - 6 5 / +
+ 
+ (22 / 7 + 4) * (6 - 2)
+ 22 7 / 4 + 6 2 - *
+```
+
+#### 计算器的例子
+
+1. 先得到后缀表达
+
+2. 遇到操作数入栈，遇到运算符则将将前两个出栈并进行运算
+3. 将结果入栈
+
+计算 3 - 2 - 1：
+
+1. 先得到后缀表达 3 2 - 1
+
+2. push 3
+3. push 2
+4. 遇到运算符 -
+   1. pop 出 2
+   2. pop 出 3
+   3. 3 - 2 = 1
+   4. push 1
+5. push 1
+6. 遇到运算符 -
+   1. pop 出 1
+   2. pop 出 1
+   3. 1 - 1 = 0
+   4. push 0
+7. 结果是栈顶的 0
+
+# 队列
+
+## 队列的实现
+
+用环形队列可以节约内存，并且入队和出队都能得到 O(1) 的时间复杂度：
+
+![环形队列](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Algorithmn-Queue-Implementation.jpg)
+
+```typescript
+// 这里使用 TypeScript 仅供参考，提供此种实现方案的思路
+class Queue {
+  
+  // 该队列最多 9 个元素
+  private q = new Array(10)
+  private front = 0
+  private rear = 0
+  
+  constructor() {}
+  
+
+  enqueue(x) {
+    if (this.isFull()) {
+      throw new Error('Full')
+    }
+    this.q[this.rear] = x
+    if (this.rear === this.q.length - 1) {
+      this.rear = 0
+    } else {
+      this.rear++
+    }
+  }
+  
+  dequeue() {
+    if (this.isEmpty()) {
+      return
+    }
+    const x = this.q[this.front]
+    if (this.front === this.q.length - 1) {
+      this.front = 0
+    } else {
+      this.front ++
+    }
+  }
+  
+  
+  isFull() {
+    // rear 在 front 左边，表示套圈了
+    // 另外注意 rear 指向的是队尾的最后一位，是一个空元素
+    // 所以队列的最大容量是数组的长度 - 1
+    return this.rear + 1 === this.front || this.front === 0 && this.rear === this.q.length - 1
+  }
+  
+  isEmpty() {
+    // rear 和 front 相等时，定义为空
+    return this.rear === this.front
+  }
+}
+```
+
+
 
 # 二叉树
 
