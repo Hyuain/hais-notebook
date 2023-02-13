@@ -71,7 +71,7 @@ Step 3: Select `maven-archetype-quickstart`
 - Choose Spring Web, Spring Data JPA and PostgreSQL Driver.
 - Use IntelliJ to open the project. 
 
-- Since we have not installed database, ignore `spring-boot-starter-data-jpa` in `pom.xml`, and then run the project.
+- Since we have not installed database, comment out `spring-boot-starter-data-jpa` in `pom.xml`, and then run the project.
 
 - Open browser and go to localhost:8080
 
@@ -310,9 +310,9 @@ public class StudentController {
 
 Use dependency injection to inject `StudentService` into `StudentController`.
 
-### Database and Properties File
+### Create Database and Properties File
 
-Modify the `application.properties` file:
+Modify the `application.properties` file (Sometimes `username` and `password` are also needed.):
 
 ```properties
 spring.datasource.url=jdbc:postgresql://localhost:5432/student
@@ -324,5 +324,285 @@ spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
 spring.jpa.properties.hibernate.format_sql=true
 ```
 
-Install PostgreSQL.
+Install PostgreSQL. (Sometimes you need to turn on postgresql service in windows task manager.)
 
+Enter psql using `psql` command or SQL Shell (psql). Use `\l` to see existed databases.
+
+Then, create student database:
+
+```sql
+CREATE DATABASE student;
+```
+
+Use `\du` to see list of roles.
+
+Then, grant privileges:
+
+```sql
+GRANT ALL PRIVILEGES ON "student" TO [username];
+```
+
+Then, connect to student database:
+
+```bash
+\c student
+```
+
+Use `\d` to see tables in student database.
+
+Uncomment `spring-boot-starter-data-jpa` in `pom.xml`
+
+### JPA
+
+Modify `Student` class:
+
+```java
+@Entity
+@Table
+public class Student {
+    @Id
+    @SequenceGenerator(
+            name = "student_sequence",
+            sequenceName = "student_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "student_sequence"
+    )
+    private Long id;
+  	//...
+}
+```
+
+### JPA Repository
+
+Create a `StudentRepository` interface inside student package:
+
+```java
+package com.example.demo.student;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+// JpaRepository<Type, ID Type>
+@Repository
+public interface StudentRepository extends JpaRepository<Student, Long> {
+
+}
+```
+
+Inject into `StudentService` class:
+
+```java
+@Service
+public class StudentService {
+
+    private final StudentRepository studentRepository;
+
+    @Autowired
+    public StudentService(StudentRepository studentRepository) {
+        this.studentRepository = studentRepository;
+    }
+    public List<Student> getStudents() {
+        return studentRepository.findAll();
+    }
+}
+```
+
+### Saving Student
+
+Create a `StudentConfig` class inside student package:
+
+```java
+package com.example.demo.student;
+
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.List;
+
+@Configuration
+public class StudentConfig {
+
+    @Bean
+    CommandLineRunner commandLineRunner(StudentRepository repository) {
+        return args -> {
+            Student mariam = new Student(
+                    1L,
+                    "Mariam",
+                    "Mariam.jamal@gmail.com",
+                    LocalDate.of(2000, Month.JANUARY, 5),
+                    21
+            );
+            Student alex = new Student(
+                    2L,
+                    "Alex",
+                    "Alex@gmail.com",
+                    LocalDate.of(2004, Month.JANUARY, 5),
+                    21
+            );
+            repository.saveAll(
+                    List.of(mariam, alex)
+            );
+        };
+    }
+}
+
+```
+
+Restart the server, and 2 students above will be saved in student database, and can be seen using `\d`.
+
+### Transient
+
+Add `@Transient` notation to `age`, since age can be calculated.
+
+```java
+@Entity
+@Table
+public class Student {
+    @Transient
+    private Integer age;
+    //...
+    public Integer getAge() {
+        return Period.between(this.dob, LocalDate.now()).getYears();
+    }
+
+}
+```
+
+ Restart the server, and age will no longer be a column in the table.
+
+### Add Student
+
+Use `@PostMapping` in `StudentController`.
+
+`@RequestBody` can map request body to class.
+
+```java
+@PostMapping
+public void registerNewStudent(@RequestBody Student student) {
+    studentService.addNewStudent(student);
+}
+```
+
+Click the network icon to generate http-client for testing:
+
+```http
+###
+POST http://localhost:8080/api/v1/student
+Content-Type: application/json
+
+{
+  "name": "Bilal",
+  "email": "bilal.ahmed@gmail.com",
+  "dob": "1995-12-17"
+}
+```
+
+Complete `addNewStudent` method in `StudentService`:
+
+```java
+  public void addNewStudent(Student student) {
+      Optional<Student> studentOptional = studentRepository.findStudentByEmail(student.getEmail());
+      if (studentOptional.isPresent()) {
+          throw new IllegalStateException("email taken");
+      }
+      studentRepository.save(student);
+      System.out.println(student);
+  }
+```
+
+And `findStudentByEmail` method in `StudentRepository`:
+
+```java
+// @Query can be omitted
+@Query("SELECT s FROM Student s WHERE s.email = ?1")
+Optional<Student> findStudentByEmail(String email);
+```
+
+Modify `application.properties` to send error message to front end:
+
+```properties
+server.error.include-message=always
+```
+
+### Delete Student
+
+Use `@DeleteMapping` in `StudentController`:
+
+```java
+@DeleteMapping(path = "{studentId}")
+public void deleteStudent(@PathVariable("studentId") Long studentId) {
+    studentService.deleteStudent(studentId);
+}
+```
+
+Complete `StudentService`:
+
+```java
+public void deleteStudent(Long studentId) {
+    boolean exists = studentRepository.existsById(studentId);
+    if (!exists) {
+        throw new IllegalStateException("student with id " + studentId + "does not exists");
+    }
+    studentRepository.deleteById(studentId);
+}
+```
+
+### Update Student
+
+Use `@PutMapping` in `StudentController`:
+
+```java
+@PutMapping(path = "{studentId}")
+public void updateStudent(
+        @PathVariable("studentId") Long studentId,
+        @RequestParam(required = false) String name,
+        @RequestParam(required = false) String email
+) {
+    studentService.updateStudent(studentId, name, email);
+}
+```
+
+Complete `updateStudent` in `StudentService`:
+
+```java
+@Transactional
+public void updateStudent(Long studentId, String name, String email) {
+    Student student = studentRepository.findById(studentId)
+            .orElseThrow(() -> new IllegalStateException(
+                    "student with id " + studentId + " dose not exist"
+            ));
+    if (name != null && name.length() > 0 && !Objects.equals(student.getName(), name)) {
+        student.setName(name);
+    }
+    if (email != null && email.length() > 0 && !Objects.equals(student.getEmail(), email)) {
+        Optional<Student> studentOptional = studentRepository.findStudentByEmail(email);
+        if (studentOptional.isPresent()) {
+            throw new IllegalStateException("email taken");
+        }
+        student.setEmail(name);
+    }
+}
+```
+
+### Packaging
+
+Stop the servers, open Maven panel, and run `clean`. It will delete the `target` folder.
+
+Then run `install`, get the `target folder`. There is a `demo-0.0.1-SNAPSHOT.jar` file in this folder.
+
+Open the terminal:
+
+```bash
+cd target
+java -jar demo-0.0.1-SNAPSHOT.jar
+```
+
+Now the application is running.
+
+And we can change the port by adding `--server.port=8081` at the end.
