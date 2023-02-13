@@ -132,24 +132,7 @@ for(let i = 0; i < 5; i++){
 
 `Infinity` `+Infinity` (1/0) `-Infinity` (1/-0)
 
-`NaN`（0/0，但他还是一个数字，NaN不等于NaN）
-
-##### Number.isNaN & isNaN
-
-- `Number.isNaN` 更加健壮，他不会进行类型转换，他只对 `NaN` 返回 `true`，与 `x !== x` 等价
-- 全局 `isNaN` 会先将值转换为 Number 类型，对所有转换为 Number 为 `NaN` 的，也会返回 `true`
-
-```javascript
-isNaN("i'm a string")	// true
-isNaN(undefined)			// true
-isNaN({})             // true
-isNaN(true)						// false, Number(true) === 0
-isNaN(null)           // false, Number(null) === 0
-isNaN("37.12")        // false, Number("37.12") === 37.12
-isNaN("3122d")				// true
-isNaN("")							// false, Number("") === 0
-isNaN("      ")       // false, Number("      ") === 0
-```
+`NaN`（0/0，但他还是一个数字，NaN 不等于 NaN）
 
 ##### 范围和精度
 
@@ -161,6 +144,124 @@ isNaN("      ")       // false, Number("      ") === 0
 - 事实上能存储 `Number.MAX_VALUE`  ~ `Number.MIN_VALUE` 的值（±1.7976931348623157 * 10^308），但由于只有 64 bit，所以有些值实际上是近似数
 
 精度：大概是 15 个十进制有效数字
+
+##### `Number()` & `new Number()`
+
+- `Number(value)` 会将 `value` 转换为 Number 类型
+  - 几乎等价于 `+value`，除了对 Symbol 的处理有所不同
+  - 对于对象，会按照 `[@@toPrimitive]()` `valueOf` `toString()` 的顺序调用
+- `new Number()` 会创建一个 `Number` 对象，而不是属于基本类型 Number 的值，`new Number(42) !== 42` 但 `new Number(42) == 42`
+- 一般不使用 `new Number()`
+
+##### `Number.parseFloat()` & `Number.parseInt()` & `parseFloat()` & `parseInt()`
+
+- `parseFloat === Number.parseFloat`
+- `parseInt === Number.parseInt`
+- `parseFloat()` 会将字符串转换为浮点数
+  - 如果不是字符串，会先被强制转换为字符串
+  - 字符串开头的空格会被忽略
+- `parseInt()` 将字符串转换为整数
+  - 接受两个参数，第二个参数是进制
+  - 其他与 `parseFloat` 相同
+
+```javascript
+const object1 = {
+  [Symbol.toPrimitive](hint) {
+    if (hint === 'number') {
+      return 42
+    }
+    if (hint === 'string') {
+      return 99
+    }
+    return null
+  }
+}
+
+const date1 = new Date("December 17, 1995 03:24:00")
+
+// 下面展示 Number parseInt parseFloat 和 + 的类型转换
+// 如果其他没有写出来的，则表示与 Number 结果相同
+// 如果 parseFloat 没有写出来，表示与 parseInt 相同
+
+Number(true)									 // 1
+parseInt(true)								 // NaN, String(true) === 'true'
+
+Number(false)									 // 0
+parseInt(false)								 // NaN, String(false) === 'false'
+
+Number(null)         				   // 0
+parseInt(null)								 // NaN, String(null) === 'null'
+
+Number(undefined)     			   // NaN
+parseInt(undefined)						 // NaN, String(undefined) === 'undefined'
+
+Number({})            		 	   // NaN
+parseInt({})									 // NaN, String({}) === '[object Object]'
+
+Number(object1)                // 42
+parseInt(object1)							 // 99
+
+Number(date1)									 // 819199440000
+parseInt(date1)								 // NaN, String(date1) === 'Sun Dec 17 1995 03:24:00 GMT+0800 (中国标准时间)'
+
+Number(12345678901234567890n)  // 12345678901234567000
++12345678901234567890n				 // Cannot convert a BigInt value to a number
+parseInt(12345678901234567890n)// 12345678901234567000, String(12345678901234567890n) === '12345678901234567890'
+
+Number(Symbol())							 // Cannot convert a Symbol value to a number
+parseInt(Symbol())						 // Cannot convert a Symbol value to a string
+
+Number("37.12")        		     // 37.12
+parseInt("37.12")							 // 37
+parseFloat("37.12")						 // 37.12
+
+Number("3122d")				         // NaN
+parseInt("3122d")							 // 3122
+
+Number("d3122")				         // NaN
+
+Number("37.12.12")	           // NaN
+parseInt("37.12.12")	         // 37
+parseFloat("37.12.12")				 // 37.12
+
+Number("0x11")  							 // 17
+
+Number("0b11")  							 // 3
+parseInt("0b11")							 // 0
+
+Number("0o11")  							 // 9
+parseInt("0o11")							 // 0
+
+Number("")					        	 // 0
+parseInt("")                   // NaN
+
+Number("      ")               // 0
+parseInt("      ")             // NaN
+```
+
+##### `Number.isNaN()` & `isNaN()`
+
+- `Number.isNaN` 更加健壮，他不会进行类型转换，他只对 `NaN` 返回 `true`，与 `x !== x` 等价
+- 全局 `isNaN` 会先将值转换为 Number 类型，对所有转换为 Number 为 `NaN` 的，也会返回 `true`
+
+```javascript
+isNaN("i'm a string")	// true
+isNaN(undefined)			// true
+isNaN({})             // true
+isNaN(true)						// false, Number(true) === 1
+isNaN(null)           // false, Number(null) === 0
+isNaN("37.12")        // false, Number("37.12") === 37.12
+isNaN("3122d")				// true
+isNaN("")							// false, Number("") === 0
+isNaN("      ")       // false, Number("      ") === 0
+```
+
+##### `Number.prototype.toString()`
+
+- `Number` 覆盖了 `Object.prototype.toString()`
+- 可以接受一个参数，表示进制
+- 由于 `Number` 没有 `[@@toPrimitive]()` 方法，在 Number 对象强制类型转换为 String 的时候，JavaScript 都会自动调用这个 `toString()` 方法
+  - 注意 Number 基本类型发生强制类型转换时（比如 `${someNumber}`），并不会调用 `Number.prototype.toString()`，所以覆盖这个方法并不会影响到此种情况的类型转换结果
 
 #### String
 
@@ -176,11 +277,28 @@ isNaN("      ")       // false, Number("      ") === 0
 
 ##### 字符串的属性
 
-字符串本来不应该有属性，只有对象才有属性，但是这个有渊源
+字符串本来不应该有属性，只有对象才有属性，见下面的解释
 
 - 长度： `s.length`
 - 下标： `s[0]`
 - base64 转码： `window.btoa` 编码， `window.atob` 反编码
+
+##### `String()` & `new String()`
+
+- `String()` 得到的是一个字符串基本类型
+- `new String()` 得到的是一个对象
+- 会发生强制类型转换，值得注意的是：
+  - `undefined` `null` `true` `false` 都会被转换成那几个英文字母
+  - 对于对象，会按照 `[@@toPrimitive]()` `toString()` `valueOf` 的顺序调用
+
+##### String 基本类型与 String 对象
+
+>  Boolean 和 Number 有同样的问题，都有基本类型和对象的区别
+
+- String 基本类型可以通过字面量（单双引号）或者 `String()` 的返回值得到
+- String 对象可以通过 `new String()` 获得，但通常不怎么使用
+- JavaScript 会自动检查访问基本类型 String 属性、或者在基本类型上调用方法的地方，并自动将其包裹成一个对象，访问对象上的属性或方法
+- 他们在传给 `eval()` 的时候表现也有所不同：String 基本类型会被当成 JavaScript 源码，而 String 对象会被当做一个对象
 
 #### Boolean
 
@@ -254,7 +372,7 @@ null 通常表示即该处不应该有值，undefined 通常表示"缺少值"，
     <td colspan="2">Object.prototype.toString.call()</td>
   </tr>
   <tr>
-    <td rowspan="4">基本类型</td>
+    <td rowspan="5">基本类型</td>
     <td>Number</td>
     <td>1</td>
     <td>number</td>
@@ -266,7 +384,7 @@ null 通常表示即该处不应该有值，undefined 通常表示"缺少值"，
   </tr>
   <tr>
     <td>String</td>
-    <td>hello'</td>
+    <td>'hello'</td>
     <td>string</td>
     <td>√</td>
     <td>false*</td>
@@ -295,7 +413,17 @@ null 通常表示即该处不应该有值，undefined 通常表示"缺少值"，
     <td>√</td>
   </tr>
   <tr>
-    <td rowspan="3">new 基本类型</td>
+    <td>BigInt</td>
+    <td>12345678n</td>
+    <td>bigint</td>
+    <td>√</td>
+    <td>false*</td>
+    <td>○</td>
+    <td>[object BigInt]</td>
+    <td>√</td>
+  </tr>
+  <tr>
+    <td rowspan="4">new 基本类型</td>
     <td>new Number()</td>
     <td>new Number(1)</td>
     <td>object</td>
@@ -324,6 +452,10 @@ null 通常表示即该处不应该有值，undefined 通常表示"缺少值"，
     <td>√</td>
     <td>[object Boolean]**</td>
     <td>√</td>
+  </tr>
+  <tr>
+    <td>new BigInt()</td>
+    <td colspan="7">BigInt is not a constructor</td>
   </tr>
   <tr>
     <td rowspan="2">空值</td>

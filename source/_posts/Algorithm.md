@@ -931,3 +931,175 @@ function levelOrder(root: TreeNode | null): number[][] {
 }
 ```
 
+# 动态规划
+
+## 背包问题
+
+![背包问题分类](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Algorithm-Bag-1.png)
+
+### 01背包
+
+有 n 件物品和一个最多能背重量为 w 的背包。第 i 件物品的重量是 weight[i]，得到的价值是 value[i] 。**每件物品只能用一次**，求解将哪些物品装入背包里物品价值总和最大。
+
+假设物品如下：
+
+|        | 重量 | 价值 |
+| ------ | ---- | ---- |
+| 物品 0 | 1    | 15   |
+| 物品 1 | 3    | 20   |
+| 物品 2 | 4    | 30   |
+
+#### 暴力解法
+
+每个物品有两个状态，选或不选，可以用回溯法暴力求解，比如树的每一层就对应着一个物品，左节点是加了的情况，右节点是不加的情况。
+
+时间复杂度是 O(2^n)。
+
+#### 二位数组动态规划
+
+##### 1. 确定 dp 数组及下标的含义
+
+`dp[i][j]` 表示从物品 `0 ~ i` 中任意取，放进容量为 `j` 的背包，其总价值是多少。
+
+![dp[i][j]的含义](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Algorithm-Bag-2.png)
+
+##### 2. 确定递推公式
+
+- 不放物品 `i`，那么 `dp[i][j]` 就等于 `dp[i-1][j]`
+
+- 放物品 `i`，背包容量为 `j-weight[i]` 时的价值为 `dp[i-1][j-weight[i]]`，在此基础上再加上 `value[i]` 即可
+  - 注意 `j - weight[i]` 可能为负，这种情况背包容量为 j 时，只装物品 i 也装不下，`dp[i][j] = dp[i-1][j]`
+
+
+```text
+dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - weight[i]] + value[i])
+```
+
+##### 3. dp 数组的初始化
+
+- 背包容量 j 为 0 时，总价值为 0：`dp[i][0] = 0`
+- 在放第 0 个物品（i 为 0）时：
+  - 如果放不下（`j < weight[0]`），则 `dp[0][j] = 0`
+  - 如果能放下（`j >= weight[0]`），则 `dp[0][j] = value[0]`
+
+```javascript
+// 放不下的情况
+if (let j = 0; j < weight[0]; j++) {
+  dp[0][j] = 0
+}
+// 能放下的情况
+if (let j = weight[0]; j < bagweight; j++) {
+  dp[0][j] = value[0]
+}
+```
+
+其他的值初始化为什么都不影响（因为会被覆盖），我们可以先生成一个全是 0 的二维数组，然后初始化 `value[0]` （能放下物品 0 的情况）
+
+##### 4. 确定遍历的顺序
+
+根据递推公式，先遍历 i 还是 j 都不影响
+
+##### 最终代码
+
+```typescript
+const weightBagProblem = (
+  weight: number[], value: number[], size: number,
+): number => {
+  const goodsNum = weight.length
+  const dp = new Array(goodsNum)
+  	.fill(0)
+  	.map((item) => new Array(size + 1).fill(0))
+  // j = 0 的时候全部为 0
+  // i = 0 的时候能放下时为 value[0]，否则为 0
+  for (let j = weight[0]; j <= size; j++) {
+    dp[0][j] = value[0]
+  }
+  for (let i = 1; i < goodsNum; i++) {
+    for (let j = 1; j <= size; j++) {
+      if (j < weight[i]) {
+        dp[i][j] = dp[i - 1][j]
+      } else {
+        dp[i][j] = Math.max(dp[i - 1][j], dp[i - 1][j - weight[i]] + value[i])
+      }
+    }
+  }
+  return dp[goodsNum - 1][size]
+}
+```
+
+#### 一维数组动态规划（滚动数组）
+
+在二维数组中，递推公式如下：
+
+```text
+dp[i][j] = max(dp[i-1][j], dp[i - 1][j - weight[i]] + value[i])
+```
+
+如果每次把第 `i - 1` 行复制到第 `i` 行，那么公式变为这样：
+
+```text
+dp[i][j] = max(dp[i][j], dp[i][j - weight[i]] + value[i])
+```
+
+ 看出来都是同一行的数据，可以考虑用一维数组来解这个问题。
+
+##### 1. 确定 dp 数组及下标的含义
+
+`dp[j]` 表示容量为 `j` 的背包的最大价值。
+
+##### 2. 确定递推公式
+
+```text
+dp[j] = max(dp[j], dp[j - weight[i]] + value[i])
+```
+
+也是两种情况，要么放 `i`，要么不放 `i`：
+
+- 不放 `i`：`dp[j] = dp[j]`
+- 放 `i`：`dp[j] = dp[j - weight[i]] + value[i]`
+
+相当于就是上面二维数组的公式中把 `[i]` 去掉了。
+
+##### 3. dp 数组的初始化
+
+- 背包容量为 0 时，`dp[0] = 0`
+- 根据递推公式，剩下的可以随意初始化，如果题目给的价值都是正整数，那么其他项初始化为 `0` 就可以了
+
+##### 4. 确定遍历的顺序
+
+注意：
+
+- 根据递推公式，必须 `i` 在外层，`j` 在内层（相当于二维数组的逐行遍历），因为相当于要依赖上一行的运算结果
+- 遍历 `j` 的时候，一定要倒序遍历，因为顺序的话物品可能会被加入多次：
+
+```javascript
+weight[0] = 1; value[0] = 15;
+dp[1] = dp[1 - weight[0]] + value[0] = 15
+dp[2] = dp[2 - weight[0]] + value[0] = 30 // value[0] 又加入了一次
+```
+
+这个加入多次的问题在二维数组中不存在，因为：
+
+- 二维数组第 0 行是通过初始化给的，我们遍历是从 1 开始的
+- 之后每一行都是借助 **上一行** 的数据算出来的（看递推公式），所以顺序遍历本行并不会有影响
+
+一维数组中，相当于 **把上一行的数据原位重复利用**，如果顺序遍历的话，相当于后面的数据用了 **本行** 的数据，就可能会重复放入物品
+
+##### 最终代码
+
+```typescript
+const weightBagProblem = (
+	weight: number[], value: number[], size: number,
+) => {
+  const goodsNum = weight.length
+  const dp = new Array(size + 1).fill(0)
+  for (let i = 0; i < goodsNum; i++) {
+    // 这里必须从大遍历到小
+    for (let j = size; j >= weight[i]; j--) {
+      dp[j] = Math.max(dp[j], dp[j - weight[i]] + value[i])
+    }
+  }
+  return dp[size]
+}
+```
+
