@@ -275,7 +275,7 @@
 <figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> weightBagProblem = (</span><br><span class="line">  <span class="attr">weight</span>: <span class="built_in">number</span>[], <span class="attr">value</span>: <span class="built_in">number</span>[], <span class="attr">size</span>: <span class="built_in">number</span>,</span><br><span class="line">): <span class="function"><span class="params">number</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> goodsNum = weight.<span class="property">length</span></span><br><span class="line">  <span class="keyword">const</span> dp = <span class="keyword">new</span> <span class="title class_">Array</span>(goodsNum)</span><br><span class="line">  	.<span class="title function_">fill</span>(<span class="number">0</span>)</span><br><span class="line">  	.<span class="title function_">map</span>(<span class="function">(<span class="params">item</span>) =&gt;</span> <span class="keyword">new</span> <span class="title class_">Array</span>(size + <span class="number">1</span>).<span class="title function_">fill</span>(<span class="number">0</span>))</span><br><span class="line">  <span class="comment">// j = 0 的时候全部为 0</span></span><br><span class="line">  <span class="comment">// i = 0 的时候能放下时为 value[0]，否则为 0</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> j = weight[<span class="number">0</span>]; j &lt;= size; j++) &#123;</span><br><span class="line">    dp[<span class="number">0</span>][j] = value[<span class="number">0</span>]</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">1</span>; i &lt; goodsNum; i++) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> j = <span class="number">1</span>; j &lt;= size; j++) &#123;</span><br><span class="line">      <span class="keyword">if</span> (j &lt; weight[i]) &#123;</span><br><span class="line">        dp[i][j] = dp[i - <span class="number">1</span>][j]</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        dp[i][j] = <span class="title class_">Math</span>.<span class="title function_">max</span>(dp[i - <span class="number">1</span>][j], dp[i - <span class="number">1</span>][j - weight[i]] + value[i])</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> dp[goodsNum - <span class="number">1</span>][size]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h4 id="一维数组动态规划滚动数组">一维数组动态规划（滚动数组）</h4>
 <p>在二维数组中，递推公式如下：</p>
-<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">dp[i][j] = max(dp[i-1][j], dp[i - 1][j - weight[i]] + value[i])</span><br></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - weight[i]] + value[i])</span><br></pre></td></tr></table></figure>
 <p>如果每次把第 <code>i - 1</code> 行复制到第 <code>i</code> 行，那么公式变为这样：</p>
 <figure class="highlight text"><table><tr><td class="code"><pre><span class="line">dp[i][j] = max(dp[i][j], dp[i][j - weight[i]] + value[i])</span><br></pre></td></tr></table></figure>
 <p>看出来都是同一行的数据，可以考虑用一维数组来解这个问题。</p>
@@ -297,7 +297,7 @@
 <h5 id="确定遍历的顺序-1">4. 确定遍历的顺序</h5>
 <p>注意：</p>
 <ul>
-<li>根据递推公式，必须 <code>i</code> 在外层，<code>j</code> 在内层（相当于二维数组的逐行遍历），因为相当于要依赖上一行的运算结果</li>
+<li>根据递推公式，必须 <code>i</code> 在外层，<code>j</code> 在内层（相当于二维数组的逐行遍历），因为 <code>dp[i - 1][j - weight[i]]</code> 相当于要依赖上一行前几位的运算结果</li>
 <li>遍历 <code>j</code> 的时候，一定要倒序遍历，因为顺序的话物品可能会被加入多次：</li>
 </ul>
 <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">weight[<span class="number">0</span>] = <span class="number">1</span>; value[<span class="number">0</span>] = <span class="number">15</span>;</span><br><span class="line">dp[<span class="number">1</span>] = dp[<span class="number">1</span> - weight[<span class="number">0</span>]] + value[<span class="number">0</span>] = <span class="number">15</span></span><br><span class="line">dp[<span class="number">2</span>] = dp[<span class="number">2</span> - weight[<span class="number">0</span>]] + value[<span class="number">0</span>] = <span class="number">30</span> <span class="comment">// value[0] 又加入了一次</span></span><br></pre></td></tr></table></figure>
@@ -309,6 +309,58 @@
 <p>一维数组中，相当于 <strong>把上一行的数据原位重复利用</strong>，如果顺序遍历的话，相当于后面的数据用了 <strong>本行</strong> 的数据，就可能会重复放入物品</p>
 <h5 id="最终代码-1">最终代码</h5>
 <figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="title function_">weightBagProblem</span> = (<span class="params"></span></span><br><span class="line"><span class="params">	weight: <span class="built_in">number</span>[], value: <span class="built_in">number</span>[], size: <span class="built_in">number</span>,</span></span><br><span class="line"><span class="params"></span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> goodsNum = weight.<span class="property">length</span></span><br><span class="line">  <span class="keyword">const</span> dp = <span class="keyword">new</span> <span class="title class_">Array</span>(size + <span class="number">1</span>).<span class="title function_">fill</span>(<span class="number">0</span>)</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; goodsNum; i++) &#123;</span><br><span class="line">    <span class="comment">// 这里必须从大遍历到小</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> j = size; j &gt;= weight[i]; j--) &#123;</span><br><span class="line">      dp[j] = <span class="title class_">Math</span>.<span class="title function_">max</span>(dp[j], dp[j - weight[i]] + value[i])</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> dp[size]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="完全背包">完全背包</h3>
+<p>有 n 件物品和一个最多能背重量为 w 的背包。第 i 件物品的重量是 weight[i]，其价值是 value[i] 。<strong>每件物品都有无限个（也就是可以放入背包多次）</strong>，求解将哪些物品装入背包里物品价值总和最大。</p>
+<p>假设物品如下：</p>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th>重量</th>
+<th>价值</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>物品 0</td>
+<td>1</td>
+<td>15</td>
+</tr>
+<tr class="even">
+<td>物品 1</td>
+<td>3</td>
+<td>20</td>
+</tr>
+<tr class="odd">
+<td>物品 2</td>
+<td>4</td>
+<td>30</td>
+</tr>
+</tbody>
+</table>
+<h4 id="遍历顺序问题">遍历顺序问题</h4>
+<p>完全背包最核心的就是遍历顺序问题，在完全背包中需要从小到大进行遍历，因为一样物品可以被添加多次：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; goodsNum; i++) &#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> j = weight[i]; j &lt;= size; j++) &#123;</span><br><span class="line">    dp[j] = <span class="title class_">Math</span>.<span class="title function_">max</span>(dp[j], dp[j - weight[i]] + value[i])</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="求最大价值时的遍历顺序">求最大价值时的遍历顺序</h5>
+<p>另外之前 0 1 背包中，要求物品在外层，重量在内层，因为下一行需要 <code>dp[i - 1][j - weight[i]]</code>，会依赖上一行前几位的运算结果</p>
+<p>而在完全背包中，是可以重量在外层，物品在内层的。因为 <code>dp[j - weight[i]]</code>，依赖的是本行的运算结果，只有 <code>dp[0]</code> 是继承的上一行的数据，如果先遍历列，也可以拿到上一行 <code>dp[i - 1][0]</code>（因为是同一列的）</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 先遍历背包容量（列），再遍历物品（行）</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> j = <span class="number">0</span>; j &lt;= size; j++) &#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; weight.<span class="property">length</span>; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (j - weight[i] &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">      dp[j] = <span class="title class_">Math</span>.<span class="title function_">max</span>(dp[j], dp[j - weight[i]] + value[i])</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="求装满方式时的遍历顺序">求装满方式时的遍历顺序</h5>
+<p>如果是问最大价值，dp 数组里面存的是最大价值，最大价值与怎样凑成最大价值无关，因此物品、重量谁在内层谁在外层并不关键。</p>
+<p>但如果问背包的装满方式，遍历顺序就会影响很大了，得看题目问的是组合问题还是排列问题。</p>
+<p>拿零钱兑换问题（<a href="https://leetcode.cn/problems/coin-change-ii/">LeetCode.518 Coin Change II</a>）举例，给定一个总额和一堆无限多的币值，问总额有多少种组合方式。组合问题不关心顺序。</p>
+<ol type="1">
+<li>确定 dp 数组及下标的含义：<code>dp[j]</code> 表示凑成总额为 <code>j</code> 时，有多少种钱币组合方式</li>
+<li>确定递推公式：<code>dp[j] += dp[j - coins[i]]</code></li>
+<li>初始化：<code>dp[0] = 1</code>，否则后面推导出来的都是 0（但是这其实并没有什么真正的含义）。其他的初始化为 <code>0</code></li>
+<li>确定遍历顺序</li>
+</ol>
+<p>如果外层钱币（物品），内层总额（重量）：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt;= coins.<span class="property">length</span>; i++) &#123;    <span class="comment">// 物品</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = coins[i]; j &lt;= amount; j++) &#123; <span class="comment">// 重量</span></span><br><span class="line">    dp[j] += dp[j - coins[i]]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>假设 <code>coins = [1, 5]</code>，那么这种情况就是先把 1 带进去看，再把 5 带进去看，得到的方法数只会有 {1, 5}，而不会有 {5, 1}，因此 <code>dp[j]</code> 里面存的是组合数。</p>
+<p>如果交换遍历顺序：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> j = <span class="number">0</span>; j &lt;= amount; j++) &#123;        <span class="comment">// 重量</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; coins.<span class="property">length</span>; i++) &#123; <span class="comment">// 物品</span></span><br><span class="line">    <span class="keyword">if</span> (j - coins[i] &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">      dp[j] += dp[j - coins[i]]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>背包容量的每一个值，都会重新计算一遍 1 和 5，所以包含了 {1, 5} 和 {5, 1} 两种情况。，<code>dp[j]</code> 里面存的就是排列数。</p>
 ]]></content>
       <categories>
         <category>计算机</category>
@@ -3372,108 +3424,6 @@ Y = \overline C A + CB
       </categories>
   </entry>
   <entry>
-    <title>Flutter</title>
-    <url>/hais-notebook/2021/04/24/Flutter/</url>
-    <content><![CDATA[<p>.</p>
-<span id="more"></span>
-<h1 id="ui">UI</h1>
-<h2 id="widget">Widget</h2>
-<p>Widget 像其他 Web 框架的 Component、Template、DOM，用来描述 UI。</p>
-<blockquote>
-<p>当 widget 的状态改变时，它会重新构建其描述（展示的 UI），框架则会对比前后变化的不同，以确定底层渲染树从一个状态转换到下一个状态所需的最小更改。</p>
-</blockquote>
-<h3 id="root-widget">Root Widget</h3>
-<p>往 <code>runApp()</code> 里面传入一个 Widget 就可构建一个最小的 Flutter 应用，传入的这个 Widget 叫做 <code>Root Widegt</code></p>
-<figure class="highlight dart"><table><tr><td class="code"><pre><span class="line"><span class="keyword">void</span> main() &#123;</span><br><span class="line">  runApp(</span><br><span class="line">    Center(</span><br><span class="line">      child: Text(</span><br><span class="line">        <span class="string">&#x27;Hello, world!&#x27;</span>,</span><br><span class="line">        textDirection: TextDirection.ltr,</span><br><span class="line">      ),</span><br><span class="line">    ),</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<div class="note warning"><p>Root Widget 会被强制指定铺满整个屏幕。</p>
-</div>
-<h2 id="一些基础-widget">一些基础 Widget</h2>
-<ul>
-<li><code>Text</code>：创建带样式的文本</li>
-<li><code>Row</code>, <code>Column</code>：用于在水平和垂直方向进行创建类似 flex box 的东西以进行布局</li>
-<li><code>Stack</code>：类似于 CSS 层叠上下文，是按照绘制顺序将 Widget 堆叠在一起。可以将 <code>Positioned</code> 作为 child，将其相对于 <code>Stack</code> 进行定位。</li>
-<li><code>Container</code>：类似于 <code>&lt;div&gt;&lt;/div&gt;</code> 创建一个矩形，可以用 <code>BoxDecoration</code> 来加背景、边框、阴影等，还可以指定 margin、padding、变换等。</li>
-<li><code>GestureDetector</code>：本身不可见，但是可以探测到内部组件的手势事件，比如点击、拖动、缩放。</li>
-</ul>
-<h2 id="创建一个自己的-widget">创建一个自己的 Widget</h2>
-<p>可以创建一个 class，他继承了 <code>StatelessWidget</code>，这个 class 就是一个 Widget。</p>
-<figure class="highlight dart"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyAppBar</span> <span class="keyword">extends</span> <span class="title">StatelessWidget</span> </span>&#123;</span><br><span class="line">  MyAppBar(&#123;<span class="keyword">required</span> <span class="keyword">this</span>.title&#125;);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Fields in a Widget subclass are always marked &quot;final&quot;.</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">final</span> Widget title;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    <span class="keyword">return</span> Container(</span><br><span class="line">      height: <span class="number">56.0</span>, <span class="comment">// in logical pixels</span></span><br><span class="line">      padding: <span class="keyword">const</span> EdgeInsets.symmetric(horizontal: <span class="number">8.0</span>),</span><br><span class="line">      decoration: BoxDecoration(color: Colors.blue[<span class="number">500</span>]),</span><br><span class="line">      <span class="comment">// Row is a horizontal, linear layout.</span></span><br><span class="line">      child: Row(</span><br><span class="line">        <span class="comment">// &lt;Widget&gt; is the type of items in the list.</span></span><br><span class="line">        children: &lt;Widget&gt;[</span><br><span class="line">          IconButton(</span><br><span class="line">            icon: Icon(Icons.menu),</span><br><span class="line">            tooltip: <span class="string">&#x27;Navigation menu&#x27;</span>,</span><br><span class="line">            onPressed: <span class="keyword">null</span>, <span class="comment">// null disables the button</span></span><br><span class="line">          ),</span><br><span class="line">          <span class="comment">// Expanded expands its child</span></span><br><span class="line">          <span class="comment">// to fill the available space.</span></span><br><span class="line">          Expanded(</span><br><span class="line">            child: title,</span><br><span class="line">          ),</span><br><span class="line">          IconButton(</span><br><span class="line">            icon: Icon(Icons.search),</span><br><span class="line">            tooltip: <span class="string">&#x27;Search&#x27;</span>,</span><br><span class="line">            onPressed: <span class="keyword">null</span>,</span><br><span class="line">          ),</span><br><span class="line">        ],</span><br><span class="line">      ),</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="statelesswidget-和-statefulwidget"><code>StatelessWidget</code> 和 <code>StatefulWidget</code></h2>
-<ul>
-<li><code>StatelessWidget</code>：无状态 widget。接收的参数来自于它的父 widget，这些参数被储存在 final 成员变量中。当 widget 需要被 build() 时，就是用这些存储的变量为创建的 widget 生成新的参数。</li>
-<li><code>StatefulWidget</code>：有状态 widget。他有一些自己管理的状态，可以自行做出一些响应用户操作的变化。</li>
-</ul>
-<figure class="highlight dart"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&#x27;package:flutter/material.dart&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Counter</span> <span class="keyword">extends</span> <span class="title">StatefulWidget</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 这个 class 是用来接收父级传过来的属性的（就像无状态 Widget 一样，他们通常被以 final 的形式存储）</span></span><br><span class="line">  <span class="comment">// 在这个例子中，这个 class 没有接收任何参数</span></span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  _CounterState createState() =&gt; _CounterState();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">_CounterState</span> <span class="keyword">extends</span> <span class="title">State</span>&lt;<span class="title">Counter</span>&gt; </span>&#123;</span><br><span class="line">  <span class="built_in">int</span> _counter = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">void</span> _increment() &#123;</span><br><span class="line">    setState(() &#123;</span><br><span class="line">      <span class="comment">// 调用 setState 会告诉 Flutter：State 发生了变化。</span></span><br><span class="line">      <span class="comment">// 这会调用下面的 build 函数来更新视图</span></span><br><span class="line">      <span class="comment">// 如果不调用 setState，视图将不会更新</span></span><br><span class="line">      _counter++;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    <span class="comment">// 每次 setState 的时候都会调用这个函数</span></span><br><span class="line">    <span class="comment">// Flutter 已经对 build 过程进行了优化，所以可以直接重新调用 build，而不必关心局部 Widget 的更新</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;build&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> Row(</span><br><span class="line">      mainAxisAlignment: MainAxisAlignment.center,</span><br><span class="line">      children: &lt;Widget&gt;[</span><br><span class="line">        ElevatedButton(</span><br><span class="line">          <span class="comment">// 点击按钮的时候调用 _increment</span></span><br><span class="line">          onPressed: _increment,</span><br><span class="line">          child: Text(<span class="string">&#x27;Increment&#x27;</span>),</span><br><span class="line">        ),</span><br><span class="line">        SizedBox(width: <span class="number">16</span>),</span><br><span class="line">        Text(<span class="string">&#x27;Count: <span class="subst">$_counter</span>&#x27;</span>),</span><br><span class="line">      ],</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="父子-widget-的状态传递">父子 Widget 的状态传递</h2>
-<blockquote>
-<p>简单来说，就像 React。</p>
-</blockquote>
-<p>父 -&gt; 子：值 子 -&gt; 父：回调函数</p>
-<figure class="highlight dart"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 一个用于展示 count 的无状态组件</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CounterDisplay</span> <span class="keyword">extends</span> <span class="title">StatelessWidget</span> </span>&#123;</span><br><span class="line">  CounterDisplay(&#123;<span class="keyword">required</span> <span class="keyword">this</span>.count&#125;);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">final</span> <span class="built_in">int</span> count;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    <span class="keyword">return</span> Text(<span class="string">&#x27;Count: <span class="subst">$count</span>&#x27;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 一个用于增加 count 的无状态组件</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CounterIncrementor</span> <span class="keyword">extends</span> <span class="title">StatelessWidget</span> </span>&#123;</span><br><span class="line">  CounterIncrementor(&#123;<span class="keyword">required</span> <span class="keyword">this</span>.onPressed&#125;);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">final</span> VoidCallback onPressed;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    <span class="keyword">return</span> ElevatedButton(</span><br><span class="line">      onPressed: onPressed,</span><br><span class="line">      child: Text(<span class="string">&#x27;Increment&#x27;</span>),</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 父组件</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Counter</span> <span class="keyword">extends</span> <span class="title">StatefulWidget</span> </span>&#123;</span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  _CounterState createState() =&gt; _CounterState();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 父组件的状态管理部分</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">_CounterState</span> <span class="keyword">extends</span> <span class="title">State</span>&lt;<span class="title">Counter</span>&gt; </span>&#123;</span><br><span class="line">  <span class="built_in">int</span> _counter = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">void</span> _increment() &#123;</span><br><span class="line">    setState(() &#123;</span><br><span class="line">      ++_counter;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    <span class="keyword">return</span> Row(</span><br><span class="line">      mainAxisAlignment: MainAxisAlignment.center,</span><br><span class="line">      children: &lt;Widget&gt;[</span><br><span class="line">        <span class="comment">// 这是刚刚定义的用于增加 count 的无状态组件，通过回调函数将事件发给父级控制</span></span><br><span class="line">        CounterIncrementor(onPressed: _increment),</span><br><span class="line">        SizedBox(width: <span class="number">16</span>),</span><br><span class="line">        <span class="comment">// 这是刚刚定义的用于显示 count 的无状态组件，传给他 _count，让他只负责显示</span></span><br><span class="line">        CounterDisplay(count: _counter),</span><br><span class="line">      ],</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>可以看 <a href="https://flutter.cn/docs/development/ui/widgets-intro#bringing-it-all-together">官方文档的购物车例子</a></p>
-<h2 id="状态的生命周期">状态的生命周期</h2>
-<ul>
-<li><p><code>initState()</code>：在 StatefulWidget 上调用 createState() 之后，框架将新的状态对象插入到树中，然后在状态对象上调用 initState()。 State 的子类可以重写 initState 来完成只需要发生一次的工作。例如，重写 initState 来配置动画或订阅平台服务。实现 initState 需要调用父类的 super.initState 方法来开始。</p></li>
-<li><p><code>dispose()</code>：当不再需要状态对象时，框架会调用状态对象上的 dispose() 方法。可以重写dispose 方法来清理状态。例如，重写 dispose 以取消计时器或取消订阅平台服务。实现 dispose 时通常通过调用 super.dispose 来结束。</p></li>
-</ul>
-<h2 id="布局">布局</h2>
-<p>Flutter 中的布局也是使用 Widget 实现的。可以在 <a href="https://flutter.cn/docs/development/ui/widgets/layout">Flutter 布局 Widget</a> 中找。</p>
-<h1 id="状态管理">状态管理</h1>
-<h2 id="声明式-ui">声明式 UI</h2>
-<ul>
-<li>命令式（比如 Web）：如果我们要操作 UI，通常需要通过 <code>getElementBuyId</code> 之类的 API 先获取 DOM 中元素的实例和操作权，然后再调用相关的方法来修改他的颜色等属性。</li>
-<li>声明式（Flutter）：视图本身（Widget）是不可变的，通常在配置好之后，我们不能改变 Widget，如果需要改变 UI，需要通过 <code>setState()</code> 之类的方法构建一个新的 Widget。</li>
-</ul>
-<h2 id="短时状态ephemeral-state与应用状态app-state">短时状态（Ephemeral State）与应用状态（App State）</h2>
-<ul>
-<li>状态
-<ul>
-<li>广义：这个应用运行时存在于内存中的所有内容。包括应用中用到的资源，所有 Flutter 框架中有关用户界面、动画状态、纹理、字体以及其他等等的变量。</li>
-<li>狭义：是当任何时候需要<strong>重建你的用户界面</strong>时所需要的<strong>数据</strong>。因为很多广义的状态不需要我们管理（比如纹理），框架本身会替我们管理。</li>
-</ul></li>
-<li>短时状态：有时也称 <em>用户界面(UI)状态</em> 或者 <em>局部状态</em>。是可以完全包含在 <strong>一个独立 widget</strong> 中的状态。
-<ul>
-<li>一个 PageView 组件中的当前页面</li>
-<li>一个复杂动画中当前进度</li>
-<li>一个 BottomNavigationBar 中当前被选中的 tab</li>
-</ul></li>
-<li>应用状态：有时也称 <strong>共享状态</strong>。是指在应用的多个部分之间共享的一个非短时状态，并且在用户会话期间会保留这个状态。
-<ul>
-<li>用户选项</li>
-<li>登录信息</li>
-<li>一个社交应用中的通知</li>
-<li>一个电商应用中的购物车</li>
-<li>一个新闻应用中的文章已读/未读状态</li>
-</ul></li>
-</ul>
-<blockquote>
-<p>简单来说。 短时状态：用 setState 管理，别人不需要关心你的状态，类似于 React 中的 setState。 应用状态：可以用状态管理框架（比如 Redux）来管理，多个部分会共享这个状态。</p>
-</blockquote>
-<h2 id="provider">Provider</h2>
-<p>Provider 可以用于进行管理应用状态。</p>
-<h3 id="changenotifier">ChangeNotifier</h3>
-<div class="note warning"><p>ChangeNotifier 实际上是在 <code>flutter:foundation</code> 中的，不依赖其他的库，也不一定要与 Provider 一起使用。</p>
-</div>
-<figure class="highlight dart"><table><tr><td class="code"><pre><span class="line"><span class="comment">/// <span class="language-markdown">创建一个类，他继承 ChangeNotifier，负责管理状态</span></span></span><br><span class="line"><span class="comment">/// <span class="language-markdown">这里的例子是用来管理购物车中的商品</span></span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CartModel</span> <span class="keyword">extends</span> <span class="title">ChangeNotifier</span> </span>&#123;</span><br><span class="line">  <span class="comment">/// <span class="language-markdown">内部的私有变量，用来保存数据</span></span></span><br><span class="line">  <span class="keyword">final</span> <span class="built_in">List</span>&lt;Item&gt; _items = [];</span><br><span class="line"></span><br><span class="line">  <span class="comment">/// <span class="language-markdown">向外界暴露出一个不可更改的 ListView</span></span></span><br><span class="line">  UnmodifiableListView&lt;Item&gt; <span class="keyword">get</span> items =&gt; UnmodifiableListView(_items);</span><br><span class="line"></span><br><span class="line">  <span class="comment">/// <span class="language-markdown">向外界暴露出我们计算出的商品总价</span></span></span><br><span class="line">  <span class="built_in">int</span> <span class="keyword">get</span> totalPrice =&gt; _items.length * <span class="number">42</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/// <span class="language-markdown">暴露出 add 函数，用于往购物车增加商品</span></span></span><br><span class="line">  <span class="keyword">void</span> add(Item item) &#123;</span><br><span class="line">    _items.add(item);</span><br><span class="line">    <span class="comment">// 关键！调用 notifyListeners() 告诉正在监听这个 model 的 widget，让他们 rebuild</span></span><br><span class="line">    notifyListeners();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/// <span class="language-markdown">暴露出 removeAll 函数，用于清空所有商品</span></span></span><br><span class="line">  <span class="keyword">void</span> removeAll() &#123;</span><br><span class="line">    _items.clear();</span><br><span class="line">    <span class="comment">// 关键！调用 notifyListeners() 告诉正在监听这个 model 的 widget，让他们 rebuild</span></span><br><span class="line">    notifyListeners();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="changenotifierprovider">ChangeNotifierProvider</h3>
-<p><code>ChangeNotifierProvider</code> widget 可以向其子孙节点暴露一个 <code>ChangeNotifier</code> 实例。它属于 provider package。</p>
-<p>需要将 <code>ChangeNotifierProvider</code> 放在所有需要访问他的 widget 之上。</p>
-<figure class="highlight dart"><table><tr><td class="code"><pre><span class="line"><span class="keyword">void</span> main() &#123;</span><br><span class="line">  runApp(</span><br><span class="line">    ChangeNotifierProvider(</span><br><span class="line">      <span class="comment">/// <span class="language-markdown">定义了一个 builder 来创建 CartModel 实例，ChangeNotifierProvider 不会重复实例化 CartModel</span></span></span><br><span class="line">      <span class="comment">/// <span class="language-markdown">如果该实例已经不会再被调用， ChangeNotifierProvider 也会自动调用 CartModel 的 dispose() 方法。</span></span></span><br><span class="line">      create: (context) =&gt; CartModel(),</span><br><span class="line">      child: MyApp(),</span><br><span class="line">    ),</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>可以使用 <code>MultiProvider</code> 来提供多个状态：</p>
-<figure class="highlight dart"><table><tr><td class="code"><pre><span class="line"><span class="keyword">void</span> main() &#123;</span><br><span class="line">  runApp(</span><br><span class="line">    MultiProvider(</span><br><span class="line">      providers: [</span><br><span class="line">        ChangeNotifierProvider(create: (context) =&gt; CartModel()),</span><br><span class="line">        Provider(create: (context) =&gt; SomeOtherClass()),</span><br><span class="line">      ],</span><br><span class="line">      child: MyApp(),</span><br><span class="line">    ),</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="consumer">Consumer</h3>
-<p>可以通过 Consumer 来获取到数据</p>
-<figure class="highlight dart"><table><tr><td class="code"><pre><span class="line">Widget build(BuildContext context) &#123;</span><br><span class="line">  <span class="comment">// 通过 Consumer 来获取到数据</span></span><br><span class="line">  <span class="keyword">return</span> Consumer&lt;CartModel&gt;(</span><br><span class="line">  <span class="comment">/// <span class="language-markdown">当 ChangeNotifier 发生变化（调用 notifyListener()）的时候会调用 builder。</span></span></span><br><span class="line">  <span class="comment">/// <span class="language-markdown">builder 的第一个参数是 context，跟其他的 build 方法一样</span></span></span><br><span class="line">  <span class="comment">/// <span class="language-markdown">builder 的第二个参数是 ChangeNotifier 的实例，也就是 CartModel 的实例</span></span></span><br><span class="line">  <span class="comment">/// <span class="language-markdown">builder 的第三个参数是 child，用于优化目的。</span></span></span><br><span class="line">  <span class="comment">/// <span class="language-markdown">如果 Consumer 下面有一个庞大的子树（SomeExpensiveWidget），当 Model 发生改变的时候，该子树（SomeExpensiveWidget） 并不会 改变，那么你就可以仅仅创建它一次，然后通过 builder 获得该实例。</span></span></span><br><span class="line">    builder: (context, cart, child) =&gt; Stack(</span><br><span class="line">        children: [</span><br><span class="line">          <span class="comment">// 不需要每次都 rebuild 的庞大子树</span></span><br><span class="line">          child,</span><br><span class="line">          Text(<span class="string">&quot;Total price: <span class="subst">$&#123;cart.totalPrice&#125;</span>&quot;</span>),</span><br><span class="line">        ],</span><br><span class="line">      ),</span><br><span class="line">    <span class="comment">// 不需要每次都 rebuild 的庞大子树</span></span><br><span class="line">    child: SomeExpensiveWidget(),</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>一般来讲我们需要把 Consumer 放到尽可能低的位置，这样每次 Model 的变化就不会引起过量的 rebuild</p>
-<h3 id="provider.of">Provider.of</h3>
-<p>有时候我们不需要页面更新，又想要用到新的数据，这时候就可以不用 <code>Consumer</code>，而是 <code>Provider.of</code>：</p>
-<figure class="highlight dart"><table><tr><td class="code"><pre><span class="line">Widget build(BuildContext context) &#123;</span><br><span class="line">  <span class="comment">// 并且需要将 listen 设置为 false，这样当 notifyListeners 被调用的时候，并不会使 widget 被重构</span></span><br><span class="line">  Provider.of&lt;CartModel&gt;(context, listen: <span class="keyword">false</span>).removeAll();</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>跨端</category>
-      </categories>
-  </entry>
-  <entry>
     <title>Git &amp; GitHub</title>
     <url>/hais-notebook/2020/01/29/Git/</url>
     <content><![CDATA[<p>.</p>
@@ -4169,6 +4119,95 @@ Y = \overline C A + CB
     <url>/hais-notebook/2023/02/09/Java/</url>
     <content><![CDATA[<p>.</p>
 <span id="more"></span>
+<h1 id="concepts">Concepts</h1>
+<h2 id="object-oriented">Object Oriented</h2>
+<ul>
+<li><strong>Encapsulation</strong>: a class contains data and behaviors, and can hide some</li>
+<li><strong>Abstraction</strong>
+<ul>
+<li>Abstract away implementation details</li>
+<li>Isolate the impact of changes made to the code</li>
+</ul></li>
+<li><strong>Inheritance</strong>: It weakens encapsulation.</li>
+<li><strong>Polymorphism</strong>: Any object instantiated by any child class can be handled in the same way</li>
+<li><strong>Coupling and Cohesion</strong>: <em>Loose coupled, highly cohesive</em>
+<ul>
+<li><strong>Coupling</strong> (dependency): The degree to which one class knows about another class.</li>
+<li><strong>Cohesion</strong>: The degree to which a class has a single, well-focused purpose.</li>
+</ul></li>
+<li><strong>Interface/Implementation Paradigm</strong>
+<ul>
+<li>An object should <strong>reveal only the interfaces</strong> that other objects must have to interact with it.</li>
+<li>Clients of the class will not be affected by implementation change.</li>
+</ul></li>
+</ul>
+<h2 id="uml-class-diagrams">UML Class Diagrams</h2>
+<p><a href="https://www.youtube.com/watch?v=UI6lqHOVHic">UML Class Diagram Tutorial Video</a></p>
+<p><a href="https://www.visual-paradigm.com/guide/uml-unified-modeling-language/uml-class-diagram-tutorial/;WWWSESSIONID=011FBA1C6F02E5074E7D3E435507A547.www1">UML Class Diagram Tutorial</a></p>
+<h3 id="attributes">Attributes</h3>
+<ul>
+<li>Data containing values that describe each instance of that class</li>
+<li>Also called fields, variables, properties.</li>
+</ul>
+<h3 id="methods">Methods</h3>
+<ul>
+<li>Specify behavioral feature of a class.</li>
+<li>Also called operations or functions.</li>
+</ul>
+<h3 id="visibility">Visibility</h3>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">- private</span><br><span class="line">+ public</span><br><span class="line"># protected</span><br><span class="line">~ package/default</span><br></pre></td></tr></table></figure>
+<h3 id="relationship">Relationship</h3>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/ClassRelationship.jpg" alt="Class Relationship" /><figcaption aria-hidden="true">Class Relationship</figcaption>
+</figure>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/CDInheritance.jpg" alt="Inheritance" /><figcaption aria-hidden="true">Inheritance</figcaption>
+</figure>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/CDAssociation.jpg" alt="Association" /><figcaption aria-hidden="true">Association</figcaption>
+</figure>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/CDAggregation.jpg" alt="Aggregation" /><figcaption aria-hidden="true">Aggregation</figcaption>
+</figure>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/CDComposition.jpg" alt="Composition" /><figcaption aria-hidden="true">Composition</figcaption>
+</figure>
+<h3 id="example">Example</h3>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/CDExample1.jpg" alt="Class Diagram Example" /><figcaption aria-hidden="true">Class Diagram Example</figcaption>
+</figure>
+<h2 id="solid-principle">SOLID Principle</h2>
+<ul>
+<li>SRP: Single Responsibility Principle</li>
+<li>OCP: Open/Close Principle</li>
+<li>LSP: Liskov Substitution Principle</li>
+<li>IPS: Interface Segregation Principle</li>
+<li>DIP: Dependency Inversion Principle</li>
+</ul>
+<h3 id="srp-single-responsibility-principle">SRP: Single Responsibility Principle</h3>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">Animal</span><br><span class="line">- perfiomWalk()</span><br><span class="line">- performSwim()</span><br><span class="line">- performSleep()</span><br></pre></td></tr></table></figure>
+<h3 id="ocp-openclose-principle">OCP: Open/Close Principle</h3>
+<ul>
+<li>Software entities (classes, modules, functions, etc.) should be:
+<ul>
+<li>Open for extension</li>
+<li>Close for modification</li>
+</ul></li>
+<li>Be able to extend a class's behavior without modifying it.</li>
+</ul>
+<h3 id="lsp-liskov-substitution-principle">LSP: Liskov Substitution Principle</h3>
+<p>If we substitute a super class object reference with an object of <em>any</em> of its subclasses, the program should not break.</p>
+<p>If a superclass can do something, a subclass <strong>MUST</strong> also be able to do it.</p>
+<h3 id="ips-interface-segregation-principle">IPS: Interface Segregation Principle</h3>
+<p>No code should be forced to depend on methods it does not use.</p>
+<p>Splits large interfaces into smaller and more specific ones.</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Large interface</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">Zookeeper</span> &#123;</span><br><span class="line">  <span class="keyword">void</span> <span class="title function_">washAnimal</span><span class="params">()</span>;</span><br><span class="line">  <span class="keyword">void</span> <span class="title function_">feedAnimal</span><span class="params">()</span>;</span><br><span class="line">  <span class="keyword">void</span> <span class="title function_">petAnimal</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Split into ...</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">AnimalCleaner</span> &#123;</span><br><span class="line">  <span class="keyword">void</span> <span class="title function_">washAnimal</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">AnimalFeeder</span> &#123;</span><br><span class="line">  <span class="keyword">void</span> <span class="title function_">feedAnimal</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">AnimalPetter</span> &#123;</span><br><span class="line">  <span class="keyword">void</span> <span class="title function_">petAnimal</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">AnimalCarer</span> <span class="keyword">implements</span> <span class="title class_">AnimalCleaner</span>, AnimalFeeder &#123;</span><br><span class="line">	<span class="comment">//...</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">AnimalLover</span> <span class="keyword">implements</span> <span class="title class_">AnimalPetter</span> &#123;</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="dip-dependency-inversion-principle">DIP: Dependency Inversion Principle</h3>
+<p>Depend upon abstractions. Do not depend upon concrete classes.</p>
+<h2 id="convention-over-configuration-principle">Convention-Over-Configuration Principle</h2>
+<p>The convention represents the most-used way to configure the app for a specific purpose.</p>
+<p>Only need to change those places where your app needs more particular configuration.</p>
+<p>Write less code for configuration.</p>
 <h1 id="startup">Startup</h1>
 <h2 id="extension-pack-for-java-for-vscode">Extension Pack for Java for VSCode</h2>
 <ol type="1">
@@ -4184,14 +4223,149 @@ Y = \overline C A + CB
 <p>Execute the Java program:</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line">java TestCircle</span><br></pre></td></tr></table></figure>
 <p>To generate Setter and Getter methods in VSCode, in a Java source file, right-click and select <code>Source Action...</code>. And then select <code>Generate Getters and Setters</code>. The way to generate constructors is similar.</p>
-<h2 id="maven-java-projects">Maven Java Projects</h2>
+<h1 id="oo-design-in-java">OO Design in Java</h1>
+<h2 id="encapsulation">Encapsulation</h2>
+<ul>
+<li>Access Modifier
+<ul>
+<li>The keyword <code>private</code> signifies that a method or variable can be accessed only within the declaring object.</li>
+<li>All/most attributes should be declared as private.</li>
+</ul></li>
+<li>Getters and Setters</li>
+</ul>
+<h2 id="inheritance">Inheritance</h2>
+<ul>
+<li><strong>Is-a Relationship</strong>: A subclass can do anything that the superclass can do.
+<ul>
+<li><strong>Generalization</strong>: A subclass is a type of superclass (a dog <strong>is-a</strong> mammal)</li>
+</ul></li>
+</ul>
+<h3 id="method-overriding">Method Overriding</h3>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Animal</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">sound</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Horse</span> <span class="keyword">extends</span> <span class="title class_">Animal</span> &#123;</span><br><span class="line">  <span class="comment">// Not mandatory but considered as best practice for coding</span></span><br><span class="line">  <span class="comment">// Because it will let comiler to check wether Animal has sound or not</span></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">sound</span><span class="params">()</span> &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="interface-and-abstract-class">Interface and Abstract Class</h3>
+<ul>
+<li>An <strong>interface</strong> can provide <strong>NO implementation</strong> at all.
+<ul>
+<li>A class can inherit from only one parent class, but it can implement many interfaces.</li>
+</ul></li>
+<li>An <strong>abstract class</strong> can provide some implementation.</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">interface</span> <span class="title class_">Nameable</span> &#123;</span><br><span class="line">  String <span class="title function_">getName</span><span class="params">()</span>;</span><br><span class="line">  <span class="keyword">void</span> <span class="title function_">setName</span><span class="params">(String aName)</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">Mammal</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">generateHeat</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title function_">makeNoise</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br><span class="line">  </span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Dog</span> <span class="keyword">extends</span> <span class="title class_">Mammal</span> <span class="keyword">implements</span> <span class="title class_">Nameable</span> &#123;</span><br><span class="line">  String name;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">makeNoise</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setName</span> <span class="params">(String aName)</span> &#123;</span><br><span class="line">    name = aName;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">public</span> String <span class="title function_">getName</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> name;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">Dog</span> <span class="variable">D</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Dog</span>();</span><br><span class="line"><span class="type">Mammal</span> <span class="variable">M</span> <span class="operator">=</span> D;</span><br><span class="line"><span class="type">Nameable</span> <span class="variable">N</span> <span class="operator">=</span> D;</span><br></pre></td></tr></table></figure>
+<h2 id="composition">Composition</h2>
+<ul>
+<li><strong>Has-a Relationship</strong>: A dog <strong>has a</strong> head.</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Mammal</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">eat</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> Walkable &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">walk</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Dog</span> &#123;</span><br><span class="line">  <span class="type">Mammal</span> <span class="variable">m</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Mammal</span>();</span><br><span class="line">  <span class="type">Walkable</span> <span class="variable">w</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Walkable</span>();</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">performWalk</span><span class="params">()</span> &#123;</span><br><span class="line">    w.walk();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">performEat</span><span class="params">()</span> &#123;</span><br><span class="line">    m.eat();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="inverting-of-control-ioc">Inverting of Control (IoC)</h2>
+<ul>
+<li><strong>DIP</strong>: high-level modules should <strong>not</strong> depend on low-level modules.</li>
+<li><strong>Both</strong> should depend on abstractions.</li>
+</ul>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/java-before-ioc.jpg" alt="High-level module depends on low level module" /><figcaption aria-hidden="true">High-level module depends on low level module</figcaption>
+</figure>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/java-ioc.jpg" alt="Inverting of Control" /><figcaption aria-hidden="true">Inverting of Control</figcaption>
+</figure>
+<p>Create 2 interfaces: to fetch the data and export the data.</p>
+<ul>
+<li>All low-level modules must implements these interfaces</li>
+<li>High-level module (Balance Sheet Module) needs to rely on interfaces</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">IFetchData</span> &#123;</span><br><span class="line">  List&lt;Object[]&gt; fetchData();</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">IExportData</span> &#123;</span><br><span class="line">  File <span class="title function_">exportData</span><span class="params">(List&lt;Object[]&gt; listData)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">BalanceSheet</span> &#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="type">IExportData</span> <span class="variable">exportDataObj</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">  <span class="keyword">private</span> <span class="type">IFetchData</span> <span class="variable">fetchDataObj</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">public</span> Object <span class="title function_">generateBalanceSheet</span><span class="params">()</span> &#123;</span><br><span class="line">    List&lt;Object[]&gt; dataList = fetchDataObj.fetchData();</span><br><span class="line">    <span class="keyword">return</span> exportDataObj.exportData(dataList);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="dependency-injection-di">Dependency Injection (DI)</h3>
+<ul>
+<li>DI is one way to implement IoC.</li>
+<li>Decouples your class's construction from the construction of its dependencies.
+<ul>
+<li>Invert the object creation process from your module to other code or entity.</li>
+<li>Inject the object from outside.</li>
+</ul></li>
+</ul>
+<h4 id="constructor-injection">Constructor Injection</h4>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">BalanceSheet</span> &#123;</span><br><span class="line">  <span class="keyword">private</span> IExportData exportDataObj;</span><br><span class="line">  <span class="keyword">private</span> IFetchData fetchDataObj;</span><br><span class="line">  </span><br><span class="line">  BalanceSheet(IFetchData fetchData, IExportData exportData) &#123;</span><br><span class="line">    <span class="built_in">this</span>.fetchDataObj = fetchData;</span><br><span class="line">    <span class="built_in">this</span>.exportDataObj = exportData;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="setter-injection">Setter Injection</h4>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">BalanceSheet</span> &#123;</span><br><span class="line">  <span class="keyword">private</span> IExportData exportDataObj;</span><br><span class="line">  <span class="keyword">private</span> IFetchData fetchDataObj;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setExportDataObj</span><span class="params">(IExportData exportDataObj)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.exportDataObj = exportDataObj;</span><br><span class="line">    <span class="built_in">this</span>.fetchDataObj = fetchDataObj;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="ioc-containers">IoC Containers</h3>
+<ul>
+<li>A container takes care of creating, configuring, and managing objects.</li>
+<li>You just need to do configuration, and the container will take care of object instantiation and dependency management with ease.</li>
+<li>Java IoC Containers: Spring, Google Guice and Dagger.</li>
+</ul>
+<h3 id="factory-pattern">Factory Pattern</h3>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">BalanceSheet</span> &#123;</span><br><span class="line">  <span class="keyword">private</span> IFetchData fetchDataObj;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">configureFetchData</span><span class="params">(String type)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.fetchDataObj = FetchDataFactory.getFetchData(type);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">FetchDataFactory</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> IFetchData <span class="title function_">getFetchData</span><span class="params">(String type)</span> &#123;</span><br><span class="line">    <span class="type">IFetchData</span> <span class="variable">fetchData</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">if</span> (<span class="string">&quot;FROM_DB&quot;</span>.equalsIgnoreCase(type)) &#123;</span><br><span class="line">      fetchData = <span class="keyword">new</span> <span class="title class_">FetchDatabase</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">&quot;FROM_WS&quot;</span>.equalsIgnoreCase(type)) &#123;</span><br><span class="line">      fetchData = <span class="keyword">new</span> <span class="title class_">FetchWebService</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> fetchData;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="maven">Maven</h1>
 <p>Maven is a tool for building and managing your Java-based projects.</p>
-<h3 id="create-a-maven-project">Create a Maven Project</h3>
+<h2 id="project-structure">Project Structure</h2>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">|-- pom.xml</span><br><span class="line">`-- src</span><br><span class="line">  |--main</span><br><span class="line">  |  `-- java</span><br><span class="line">  |    `-- com</span><br><span class="line">  |      `-- example</span><br><span class="line">  |        `-- App.java</span><br><span class="line">  `-- test</span><br><span class="line">    `-- java</span><br><span class="line">      `-- com</span><br><span class="line">        `-- example</span><br><span class="line">          `-- AppTest.java</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>src/main/java</strong>: The source code.</li>
+<li><strong>src/main/resources</strong>: The resources such as configuration files and property files.</li>
+<li><strong>src/test/resources</strong>: The test resources such as configuration files and property files.</li>
+<li><strong>pom.xml:</strong> <strong>Project Object Model</strong>. The project's information and dependencies.
+<ul>
+<li><strong>groupId</strong>: identifies the group or organization that the dependency belongs to.</li>
+<li><strong>artifactId</strong>: the id of the artifact within the group.</li>
+<li><strong>version</strong>: the version of the dependency that the project requires.</li>
+<li><strong>scope</strong>: the scope of the dependency (whether it is required for compilation, test, runtime, etc.)</li>
+</ul></li>
+<li><strong>target</strong>: The compiled code and other files generated during the build process.</li>
+</ul>
+<h2 id="create-a-maven-project">Create a Maven Project</h2>
+<h3 id="use-vscode-extension">Use VSCode Extension</h3>
 <p>Step 1:</p>
 <p>In VSCode, press <code>Ctrl+Shift+P</code>. Search for Java, Select <code>Java: Create Java Project</code>.</p>
 <p>Alternatively, you may click <code>+</code> under the <strong>Java Project Panel</strong>.</p>
 <p>Step 2: Choose <code>Maven</code>.</p>
 <p>Step 3: Select <code>maven-archetype-quickstart</code></p>
+<h3 id="use-command">Use Command</h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mvn archetype:generate -DgroupId=com.example \</span><br><span class="line">-DartifactId=Demo2 \</span><br><span class="line">-DarchetkypeArtifactId=maven-archetype-quickstart \</span><br><span class="line">-DinteractiveMode=<span class="literal">false</span></span><br></pre></td></tr></table></figure>
+<h2 id="maven-lifecycle">Maven Lifecycle</h2>
+<p>3 build-in build lifecycles:</p>
+<ul>
+<li><strong>Default</strong>: handles project deployment.</li>
+<li><strong>Clean</strong>: handles project cleaning.</li>
+<li><strong>Site</strong>: handles the creation of project's web site.</li>
+</ul>
+<p>These are some phases in the default lifecycle:</p>
+<ul>
+<li><strong>validate</strong></li>
+<li><strong>compile</strong></li>
+<li><strong>test</strong>: unit test</li>
+<li><strong>package</strong></li>
+<li><strong>verify</strong>: integration test</li>
+<li><strong>install</strong>: install the package into local repository</li>
+<li><strong>deploy</strong></li>
+</ul>
+<h2 id="goals">Goals</h2>
+<ul>
+<li>A specific task (finer than a build phase) which contributes to the building and managing of a project.</li>
+<li>Each goal is bound to one or more phases.
+<ul>
+<li>Corresponds to a specific action that needs to be performed</li>
+<li>E.g. compiling code, running tests, and packaging the code.</li>
+</ul></li>
+<li>One or more plugins can be bounded to the goal.</li>
+</ul>
+<h2 id="plugins">Plugins</h2>
+<ul>
+<li>Perform tasks in specific goal(s).
+<ul>
+<li>E.g. automate common build tasks, such as compiling code, running tests, and packaging the code.</li>
+</ul></li>
+<li>Can be bound to one or more goals.</li>
+</ul>
+<h2 id="commands">Commands</h2>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/maven-phase-goal-plugin.jpg" alt="Maven Phases, goals and Plugins" /><figcaption aria-hidden="true">Maven Phases, goals and Plugins</figcaption>
+</figure>
+<p>A Maven command may be written in 2 forms:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mvn [phase]</span><br><span class="line">mvn [plugin]:[goal]</span><br></pre></td></tr></table></figure>
+<p>E.g.:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mvn compile            <span class="comment"># execute default lifecycle till compile phase</span></span><br><span class="line">mvn compiler:compile   <span class="comment"># only excute compiler plugin to comile</span></span><br><span class="line"></span><br><span class="line">mvn <span class="built_in">test</span></span><br><span class="line">mvn surefire:<span class="built_in">test</span>      <span class="comment"># only excute surefire plugin to test</span></span><br><span class="line"></span><br><span class="line">mvn <span class="built_in">exec</span>:java</span><br></pre></td></tr></table></figure>
+<h2 id="jar-java-archive-file">JAR (Java Archive) File</h2>
+<p>A package file format used to aggregate many Java class files and associated metadata and resources into one file for distribution.</p>
 <h1 id="spring-boot">Spring Boot</h1>
 <h2 id="simple-demo-with-rest-api">Simple Demo With Rest API</h2>
 <h3 id="spring-initializr">Spring Initializr</h3>
@@ -4280,9 +4454,76 @@ Y = \overline C A + CB
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> target</span><br><span class="line">java -jar demo-0.0.1-SNAPSHOT.jar</span><br></pre></td></tr></table></figure>
 <p>Now the application is running.</p>
 <p>And we can change the port by adding <code>--server.port=8081</code> at the end.</p>
+<h2 id="generate-a-spring-boot-project">Generate a Spring Boot Project</h2>
+<p><a href="https://start.spring.io/">Spring Initializr</a> configured into your Maven project</p>
+<ul>
+<li>The Spring app main class</li>
+<li>The Spring Boot POM parent</li>
+<li>The dependencies</li>
+<li>The Spring Boot Maven plugin</li>
+<li>The properties file</li>
+</ul>
+<h2 id="dependency-starter">Dependency Starter</h2>
+<p>A dependency starter is a group of dependencies you add to configure your app for a specific purpose.</p>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/dependency-starter.jpg" alt="Dependency Starter" /><figcaption aria-hidden="true">Dependency Starter</figcaption>
+</figure>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="the-spring-ecosystem">The Spring Ecosystem</h2>
+<ul>
+<li>Spring Core</li>
+<li>Spring Model-View-Controller (MVC): Web application development.</li>
+<li>Spring Data Access: Connect to SQL databases.</li>
+<li>Spring Testing</li>
+</ul>
+<h2 id="springbootapplication"><span class="citation" data-cites="SpringBootApplication">@SpringBootApplication</span></h2>
+<p>Enables</p>
+<ul>
+<li><strong><span class="citation" data-cites="EnableAutoConfiguration">@EnableAutoConfiguration</span></strong>: Automatically configure your Spring application based on the jar dependencies that you have added. (e.g., Configure database connection based on specified dependency)</li>
+<li><strong><span class="citation" data-cites="ComponentScan">@ComponentScan</span></strong>: Enable scan <strong><span class="citation" data-cites="Component">@Component</span></strong>.</li>
+<li><span class="citation" data-cites="*">@*</span>*Configuration**: Allow register extra beens in the context or import additional configuration classes.</li>
+</ul>
+<h2 id="spring-context">Spring Context</h2>
+<p>The place in the app's memory where we add the object instances we want Spring to manage.</p>
+<h3 id="bean"><span class="citation" data-cites="Bean">@Bean</span></h3>
+<p>A bean is an object that is instantiated, assembled, and managed by a Spring IoC container.</p>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/SpringContext.jpg" alt="Spring Context" /><figcaption aria-hidden="true">Spring Context</figcaption>
+</figure>
+<h3 id="configuration"><span class="citation" data-cites="Configuration">@Configuration</span></h3>
+<p>Configuration class is a special class to instruct Spring to do specific actions.</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ProjectConfig</span> &#123;</span><br><span class="line">  <span class="meta">@Bean</span></span><br><span class="line">  Parrot <span class="title function_">parrot</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">var</span> <span class="variable">p</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Parrot</span>();</span><br><span class="line">    p.setName(<span class="string">&quot;Koko&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> p;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="component"><span class="citation" data-cites="Component">@Component</span></h3>
+<p>Mark it as a component. Spring creates an instance of the class and adds that instance to its context.</p>
+<h2 id="dependency-injection-di-in-spring">Dependency Injection (DI) in Spring</h2>
+<h3 id="autowired"><span class="citation" data-cites="Autowired">@Autowired</span></h3>
+<p>Defines the object that needs the dependency.</p>
+<p>If there is a SMSService which implements MessageService:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SMSService</span> <span class="keyword">implements</span> <span class="title class_">MessageService</span> &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="field-based-injection">Field-Based Injection</h4>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Client</span> &#123;</span><br><span class="line">  <span class="meta">@Autowired</span></span><br><span class="line">  <span class="keyword">private</span> MessageService messageService;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="constructor-based-injection">Constructor-Based Injection</h4>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Client</span> &#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> MessageService messageService;</span><br><span class="line">  </span><br><span class="line">  <span class="meta">@Autowired</span></span><br><span class="line">  <span class="keyword">public</span> <span class="title function_">Client</span><span class="params">(MessageService messageService)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.messageService = messageService;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="setter-based-injection">Setter-Based Injection</h4>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Client</span> &#123;</span><br><span class="line">  <span class="keyword">private</span> MessageService messageService;</span><br><span class="line">  </span><br><span class="line">  <span class="meta">@Autowired(required = false)</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setMessageService</span><span class="params">(MessageService messageService)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.messageService = messageService;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="qualifier"><span class="citation" data-cites="Qualifier">@Qualifier</span></h3>
+<p>If there are multiple beans, we need use <span class="citation" data-cites="Qualifier">@Qualifier</span> to tell Spring which one is correct.</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@Qualifier(&quot;SMSService&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SMSService</span> <span class="keyword">implements</span> <span class="title class_">MessageService</span> &#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@Qualifier(&quot;EmailService&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">EmailService</span> <span class="keyword">implements</span> <span class="title class_">MessageService</span> &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="field-base-injection">Field-Base Injection</h4>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Client</span> &#123;</span><br><span class="line">  <span class="meta">@Autowired</span></span><br><span class="line">  <span class="meta">@Qualifier(&quot;SMSService&quot;)</span></span><br><span class="line">  <span class="keyword">private</span> MessageService messageService;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="constructor-based-injection-1">Constructor-Based Injection</h4>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Client</span> &#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> MessageService messageService;</span><br><span class="line">  </span><br><span class="line">  <span class="meta">@Autowired</span></span><br><span class="line">  <span class="keyword">public</span> <span class="title function_">Client</span><span class="params">(<span class="meta">@Qualifier(&quot;SMSService&quot;)</span> MessageService messageService)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.messageService = messageService;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="setter-based-injection-1">Setter-Based Injection</h4>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Client</span> &#123;</span><br><span class="line">  <span class="keyword">private</span> MessageService messageService;</span><br><span class="line">  </span><br><span class="line">  <span class="meta">@Autowired(required = false)</span></span><br><span class="line">  <span class="meta">@Qualifier(&quot;SMSService&quot;)</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setMessageService</span><span class="params">(MessageService messageService)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.messageService = messageService;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="primary"><span class="citation" data-cites="Primary">@Primary</span></h3>
+<p>We can also use <span class="citation" data-cites="Primary">@Primary</span> to indicate the default one.</p>
+<h2 id="web-service">Web Service</h2>
+<h3 id="controller"><span class="citation" data-cites="Controller">@Controller</span></h3>
+<h3 id="restcontroller"><span class="citation" data-cites="RestController">@RestController</span></h3>
+<p>Instruct Spring that all the controller's actions are REST endpoints.</p>
 ]]></content>
       <categories>
-        <category>计算机</category>
+        <category>全栈</category>
       </categories>
   </entry>
   <entry>
@@ -4398,22 +4639,13 @@ Y = \overline C A + CB
 <li>其他与 <code>parseFloat</code> 相同</li>
 </ul></li>
 </ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> object1 = &#123;</span><br><span class="line">  [<span class="title class_">Symbol</span>.<span class="property">toPrimitive</span>](hint) &#123;</span><br><span class="line">    <span class="keyword">if</span> (hint === <span class="string">&#x27;number&#x27;</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="number">42</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (hint === <span class="string">&#x27;string&#x27;</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="number">99</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">null</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> date1 = <span class="keyword">new</span> <span class="title class_">Date</span>(<span class="string">&quot;December 17, 1995 03:24:00&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 下面展示 Number parseInt parseFloat 和 + 的类型转换</span></span><br><span class="line"><span class="comment">// 如果其他没有写出来的，则表示与 Number 结果相同</span></span><br><span class="line"><span class="comment">// 如果 parseFloat 没有写出来，表示与 parseInt 相同</span></span><br><span class="line"></span><br><span class="line"><span class="title class_">Number</span>(<span class="literal">true</span>)									 <span class="comment">// 1</span></span><br><span class="line"><span class="built_in">parseInt</span>(<span class="literal">true</span>)								 <span class="comment">// NaN, String(true) === &#x27;true&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="title class_">Number</span>(<span class="literal">false</span>)									 <span class="comment">// 0</span></span><br><span class="line"><span class="built_in">parseInt</span>(<span class="literal">false</span>)								 <span class="comment">// NaN, String(false) === &#x27;false&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="title class_">Number</span>(<span class="literal">null</span>)         				   <span class="comment">// 0</span></span><br><span class="line"><span class="built_in">parseInt</span>(<span class="literal">null</span>)								 <span class="comment">// NaN, String(null) === &#x27;null&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="title class_">Number</span>(<span class="literal">undefined</span>)     			   <span class="comment">// NaN</span></span><br><span class="line"><span class="built_in">parseInt</span>(<span class="literal">undefined</span>)						 <span class="comment">// NaN, String(undefined) === &#x27;undefined&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="title class_">Number</span>(&#123;&#125;)            		 	   <span class="comment">// NaN</span></span><br><span class="line"><span class="built_in">parseInt</span>(&#123;&#125;)									 <span class="comment">// NaN, String(&#123;&#125;) === &#x27;[object Object]&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="title class_">Number</span>(object1)                <span class="comment">// 42</span></span><br><span class="line"><span class="built_in">parseInt</span>(object1)							 <span class="comment">// 99</span></span><br><span class="line"></span><br><span class="line"><span class="title class_">Number</span>(date1)									 <span class="comment">// 819199440000</span></span><br><span class="line"><span class="built_in">parseInt</span>(date1)								 <span class="comment">// NaN, String(date1) === &#x27;Sun Dec 17 1995 03:24:00 GMT+0800 (中国标准时间)&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="title class_">Number</span>(<span class="number">12345678901234567890n</span>)  <span class="comment">// 12345678901234567000</span></span><br><span class="line">+<span class="number">12345678901234567890n</span>				 <span class="comment">// Cannot convert a BigInt value to a number</span></span><br><span class="line"><span class="built_in">parseInt</span>(<span class="number">12345678901234567890n</span>)<span class="comment">// 12345678901234567000, String(12345678901234567890n) === &#x27;12345678901234567890&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="title class_">Number</span>(<span class="title class_">Symbol</span>())							 <span class="comment">// Cannot convert a Symbol value to a number</span></span><br><span class="line"><span class="built_in">parseInt</span>(<span class="title class_">Symbol</span>())						 <span class="comment">// Cannot convert a Symbol value to a string</span></span><br><span class="line"></span><br><span class="line"><span class="title class_">Number</span>(<span class="string">&quot;37.12&quot;</span>)        		     <span class="comment">// 37.12</span></span><br><span class="line"><span class="built_in">parseInt</span>(<span class="string">&quot;37.12&quot;</span>)							 <span class="comment">// 37</span></span><br><span class="line"><span class="built_in">parseFloat</span>(<span class="string">&quot;37.12&quot;</span>)						 <span class="comment">// 37.12</span></span><br><span class="line"></span><br><span class="line"><span class="title class_">Number</span>(<span class="string">&quot;3122d&quot;</span>)				         <span class="comment">// NaN</span></span><br><span class="line"><span class="built_in">parseInt</span>(<span class="string">&quot;3122d&quot;</span>)							 <span class="comment">// 3122</span></span><br><span class="line"></span><br><span class="line"><span class="title class_">Number</span>(<span class="string">&quot;d3122&quot;</span>)				         <span class="comment">// NaN</span></span><br><span class="line"></span><br><span class="line"><span class="title class_">Number</span>(<span class="string">&quot;37.12.12&quot;</span>)	           <span class="comment">// NaN</span></span><br><span class="line"><span class="built_in">parseInt</span>(<span class="string">&quot;37.12.12&quot;</span>)	         <span class="comment">// 37</span></span><br><span class="line"><span class="built_in">parseFloat</span>(<span class="string">&quot;37.12.12&quot;</span>)				 <span class="comment">// 37.12</span></span><br><span class="line"></span><br><span class="line"><span class="title class_">Number</span>(<span class="string">&quot;0x11&quot;</span>)  							 <span class="comment">// 17</span></span><br><span class="line"></span><br><span class="line"><span class="title class_">Number</span>(<span class="string">&quot;0b11&quot;</span>)  							 <span class="comment">// 3</span></span><br><span class="line"><span class="built_in">parseInt</span>(<span class="string">&quot;0b11&quot;</span>)							 <span class="comment">// 0</span></span><br><span class="line"></span><br><span class="line"><span class="title class_">Number</span>(<span class="string">&quot;0o11&quot;</span>)  							 <span class="comment">// 9</span></span><br><span class="line"><span class="built_in">parseInt</span>(<span class="string">&quot;0o11&quot;</span>)							 <span class="comment">// 0</span></span><br><span class="line"></span><br><span class="line"><span class="title class_">Number</span>(<span class="string">&quot;&quot;</span>)					        	 <span class="comment">// 0</span></span><br><span class="line"><span class="built_in">parseInt</span>(<span class="string">&quot;&quot;</span>)                   <span class="comment">// NaN</span></span><br><span class="line"></span><br><span class="line"><span class="title class_">Number</span>(<span class="string">&quot;      &quot;</span>)               <span class="comment">// 0</span></span><br><span class="line"><span class="built_in">parseInt</span>(<span class="string">&quot;      &quot;</span>)             <span class="comment">// NaN</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> object1 = &#123;</span><br><span class="line">  [<span class="title class_">Symbol</span>.<span class="property">toPrimitive</span>](hint) &#123;</span><br><span class="line">    <span class="keyword">if</span> (hint === <span class="string">&#x27;number&#x27;</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="number">42</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (hint === <span class="string">&#x27;string&#x27;</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="number">99</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">null</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> date1 = <span class="keyword">new</span> <span class="title class_">Date</span>(<span class="string">&quot;December 17, 1995 03:24:00&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 下面展示 Number parseInt parseFloat 和 + 的类型转换</span></span><br><span class="line"><span class="comment">// 如果其他没有写出来的，则表示与 Number 结果相同</span></span><br><span class="line"><span class="comment">// 如果 parseFloat 没有写出来，表示与 parseInt 相同</span></span><br><span class="line"></span><br><span class="line"><span class="title class_">Number</span>(<span class="literal">true</span>)                   <span class="comment">// 1</span></span><br><span class="line"><span class="built_in">parseInt</span>(<span class="literal">true</span>)                 <span class="comment">// NaN, String(true) === &#x27;true&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="title class_">Number</span>(<span class="literal">false</span>)                  <span class="comment">// 0</span></span><br><span class="line"><span class="built_in">parseInt</span>(<span class="literal">false</span>)                <span class="comment">// NaN, String(false) === &#x27;false&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="title class_">Number</span>(<span class="literal">null</span>)                   <span class="comment">// 0</span></span><br><span class="line"><span class="built_in">parseInt</span>(<span class="literal">null</span>)                 <span class="comment">// NaN, String(null) === &#x27;null&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="title class_">Number</span>(<span class="literal">undefined</span>)              <span class="comment">// NaN</span></span><br><span class="line"><span class="built_in">parseInt</span>(<span class="literal">undefined</span>)            <span class="comment">// NaN, String(undefined) === &#x27;undefined&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="title class_">Number</span>(&#123;&#125;)                     <span class="comment">// NaN</span></span><br><span class="line"><span class="built_in">parseInt</span>(&#123;&#125;)                   <span class="comment">// NaN, String(&#123;&#125;) === &#x27;[object Object]&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="title class_">Number</span>(object1)                <span class="comment">// 42</span></span><br><span class="line"><span class="built_in">parseInt</span>(object1)              <span class="comment">// 99</span></span><br><span class="line"></span><br><span class="line"><span class="title class_">Number</span>(date1)                  <span class="comment">// 819199440000</span></span><br><span class="line"><span class="built_in">parseInt</span>(date1)                <span class="comment">// NaN, String(date1) === &#x27;Sun Dec 17 1995 03:24:00 GMT+0800 (中国标准时间)&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="title class_">Number</span>(<span class="number">12345678901234567890n</span>)  <span class="comment">// 12345678901234567000</span></span><br><span class="line">+<span class="number">12345678901234567890n</span>         <span class="comment">// Cannot convert a BigInt value to a number</span></span><br><span class="line"><span class="built_in">parseInt</span>(<span class="number">12345678901234567890n</span>)<span class="comment">// 12345678901234567000, String(12345678901234567890n) === &#x27;12345678901234567890&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="title class_">Number</span>(<span class="title class_">Symbol</span>())               <span class="comment">// Cannot convert a Symbol value to a number</span></span><br><span class="line"><span class="built_in">parseInt</span>(<span class="title class_">Symbol</span>())             <span class="comment">// Cannot convert a Symbol value to a string</span></span><br><span class="line"></span><br><span class="line"><span class="title class_">Number</span>(<span class="string">&quot;37.12&quot;</span>)                <span class="comment">// 37.12</span></span><br><span class="line"><span class="built_in">parseInt</span>(<span class="string">&quot;37.12&quot;</span>)              <span class="comment">// 37</span></span><br><span class="line"><span class="built_in">parseFloat</span>(<span class="string">&quot;37.12&quot;</span>)            <span class="comment">// 37.12</span></span><br><span class="line"></span><br><span class="line"><span class="title class_">Number</span>(<span class="string">&quot;3122d&quot;</span>)                <span class="comment">// NaN</span></span><br><span class="line"><span class="built_in">parseInt</span>(<span class="string">&quot;3122d&quot;</span>)              <span class="comment">// 3122</span></span><br><span class="line"></span><br><span class="line"><span class="title class_">Number</span>(<span class="string">&quot;d3122&quot;</span>)                <span class="comment">// NaN</span></span><br><span class="line"></span><br><span class="line"><span class="title class_">Number</span>(<span class="string">&quot;37.12.12&quot;</span>)             <span class="comment">// NaN</span></span><br><span class="line"><span class="built_in">parseInt</span>(<span class="string">&quot;37.12.12&quot;</span>)           <span class="comment">// 37</span></span><br><span class="line"><span class="built_in">parseFloat</span>(<span class="string">&quot;37.12.12&quot;</span>)         <span class="comment">// 37.12</span></span><br><span class="line"></span><br><span class="line"><span class="title class_">Number</span>(<span class="string">&quot;0x11&quot;</span>)                 <span class="comment">// 17</span></span><br><span class="line"></span><br><span class="line"><span class="title class_">Number</span>(<span class="string">&quot;0b11&quot;</span>)                 <span class="comment">// 3</span></span><br><span class="line"><span class="built_in">parseInt</span>(<span class="string">&quot;0b11&quot;</span>)               <span class="comment">// 0</span></span><br><span class="line"></span><br><span class="line"><span class="title class_">Number</span>(<span class="string">&quot;0o11&quot;</span>)                 <span class="comment">// 9</span></span><br><span class="line"><span class="built_in">parseInt</span>(<span class="string">&quot;0o11&quot;</span>)               <span class="comment">// 0</span></span><br><span class="line"></span><br><span class="line"><span class="title class_">Number</span>(<span class="string">&quot;&quot;</span>)                     <span class="comment">// 0</span></span><br><span class="line"><span class="built_in">parseInt</span>(<span class="string">&quot;&quot;</span>)                   <span class="comment">// NaN</span></span><br><span class="line"></span><br><span class="line"><span class="title class_">Number</span>(<span class="string">&quot;      &quot;</span>)               <span class="comment">// 0</span></span><br><span class="line"><span class="built_in">parseInt</span>(<span class="string">&quot;      &quot;</span>)             <span class="comment">// NaN</span></span><br></pre></td></tr></table></figure>
 <h5 id="number.isnan-isnan"><code>Number.isNaN()</code> &amp; <code>isNaN()</code></h5>
 <ul>
 <li><code>Number.isNaN</code> 更加健壮，他不会进行类型转换，他只对 <code>NaN</code> 返回 <code>true</code>，与 <code>x !== x</code> 等价</li>
 <li>全局 <code>isNaN</code> 会先将值转换为 Number 类型，对所有转换为 Number 为 <code>NaN</code> 的，也会返回 <code>true</code></li>
 </ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">isNaN</span>(<span class="string">&quot;i&#x27;m a string&quot;</span>)	<span class="comment">// true</span></span><br><span class="line"><span class="built_in">isNaN</span>(<span class="literal">undefined</span>)			<span class="comment">// true</span></span><br><span class="line"><span class="built_in">isNaN</span>(&#123;&#125;)             <span class="comment">// true</span></span><br><span class="line"><span class="built_in">isNaN</span>(<span class="literal">true</span>)						<span class="comment">// false, Number(true) === 1</span></span><br><span class="line"><span class="built_in">isNaN</span>(<span class="literal">null</span>)           <span class="comment">// false, Number(null) === 0</span></span><br><span class="line"><span class="built_in">isNaN</span>(<span class="string">&quot;37.12&quot;</span>)        <span class="comment">// false, Number(&quot;37.12&quot;) === 37.12</span></span><br><span class="line"><span class="built_in">isNaN</span>(<span class="string">&quot;3122d&quot;</span>)				<span class="comment">// true</span></span><br><span class="line"><span class="built_in">isNaN</span>(<span class="string">&quot;&quot;</span>)							<span class="comment">// false, Number(&quot;&quot;) === 0</span></span><br><span class="line"><span class="built_in">isNaN</span>(<span class="string">&quot;      &quot;</span>)       <span class="comment">// false, Number(&quot;      &quot;) === 0</span></span><br></pre></td></tr></table></figure>
-<h5 id="number.prototype.tostring"><code>Number.prototype.toString()</code></h5>
-<ul>
-<li><code>Number</code> 覆盖了 <code>Object.prototype.toString()</code></li>
-<li>可以接受一个参数，表示进制</li>
-<li>由于 <code>Number</code> 没有 <code>[@@toPrimitive]()</code> 方法，在 Number 对象强制类型转换为 String 的时候，JavaScript 都会自动调用这个 <code>toString()</code> 方法
-<ul>
-<li>注意 Number 基本类型发生强制类型转换时（比如 <code>$&#123;someNumber&#125;</code>），并不会调用 <code>Number.prototype.toString()</code>，所以覆盖这个方法并不会影响到此种情况的类型转换结果</li>
-</ul></li>
-</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">isNaN</span>(<span class="string">&quot;i&#x27;m a string&quot;</span>) <span class="comment">// true</span></span><br><span class="line"><span class="built_in">isNaN</span>(<span class="literal">undefined</span>)      <span class="comment">// true</span></span><br><span class="line"><span class="built_in">isNaN</span>(&#123;&#125;)             <span class="comment">// true</span></span><br><span class="line"><span class="built_in">isNaN</span>(<span class="literal">true</span>)           <span class="comment">// false, Number(true) === 1</span></span><br><span class="line"><span class="built_in">isNaN</span>(<span class="literal">null</span>)           <span class="comment">// false, Number(null) === 0</span></span><br><span class="line"><span class="built_in">isNaN</span>(<span class="string">&quot;37.12&quot;</span>)        <span class="comment">// false, Number(&quot;37.12&quot;) === 37.12</span></span><br><span class="line"><span class="built_in">isNaN</span>(<span class="string">&quot;3122d&quot;</span>)        <span class="comment">// true</span></span><br><span class="line"><span class="built_in">isNaN</span>(<span class="string">&quot;&quot;</span>)             <span class="comment">// false, Number(&quot;&quot;) === 0</span></span><br><span class="line"><span class="built_in">isNaN</span>(<span class="string">&quot;      &quot;</span>)       <span class="comment">// false, Number(&quot;      &quot;) === 0</span></span><br></pre></td></tr></table></figure>
 <h4 id="string">String</h4>
 <blockquote>
 <p>每个字符两个字节（阉割版 UTF-8，两个字符定长）</p>
@@ -4435,8 +4667,8 @@ Y = \overline C A + CB
 <li><code>new String()</code> 得到的是一个对象</li>
 <li>会发生强制类型转换，值得注意的是：
 <ul>
-<li><code>undefined</code> <code>null</code> <code>true</code> <code>false</code> 都会被转换成那几个英文字母</li>
-<li>对于对象，会按照 <code>[@@toPrimitive]()</code> <code>toString()</code> <code>valueOf</code> 的顺序调用</li>
+<li><code>undefined</code> <code>null</code> 都会被转换成那几个英文字母</li>
+<li>对于对象或其他非空的基本类型，会按照 <code>[@@toPrimitive]()</code> <code>toString()</code> <code>valueOf</code> 的顺序调用</li>
 </ul></li>
 </ul>
 <h5 id="string-基本类型与-string-对象">String 基本类型与 String 对象</h5>
@@ -4453,14 +4685,14 @@ Y = \overline C A + CB
 <blockquote>
 <p>否定运算、相等运算、比较运算可以得到 bool 值</p>
 </blockquote>
-<div class="note warning"><p><strong>5 个 falsy 值</strong></p>
-<p><code>undefined</code> <code>null</code> <code>0</code> <code>NaN</code> <code>''</code></p>
+<div class="note warning"><p><strong>6 个 falsy 值</strong></p>
+<p><code>undefined</code> <code>null</code> <code>0</code> <code>NaN</code> <code>''</code> <code>document.all</code></p>
 </div>
 <h4 id="symbol">Symbol</h4>
 <blockquote>
 <p>每个 Symbol 都不一样</p>
 </blockquote>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 没有参数的情况</span></span><br><span class="line"><span class="keyword">let</span> s1 = <span class="title class_">Symbol</span>();</span><br><span class="line"><span class="keyword">let</span> s2 = <span class="title class_">Symbol</span>();</span><br><span class="line"></span><br><span class="line">s1 === s2 <span class="comment">// false</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 有参数的情况</span></span><br><span class="line"><span class="keyword">let</span> s1 = <span class="title class_">Symbol</span>(<span class="string">&#x27;foo&#x27;</span>);</span><br><span class="line"><span class="keyword">let</span> s2 = <span class="title class_">Symbol</span>(<span class="string">&#x27;foo&#x27;</span>);</span><br><span class="line"></span><br><span class="line">s1 === s2 <span class="comment">// false</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 没有参数的情况</span></span><br><span class="line"><span class="keyword">let</span> s1 = <span class="title class_">Symbol</span>();</span><br><span class="line"><span class="keyword">let</span> s2 = <span class="title class_">Symbol</span>();</span><br><span class="line"></span><br><span class="line">s1 === s2 <span class="comment">// false</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 有参数的情况</span></span><br><span class="line"><span class="keyword">let</span> s1 = <span class="title class_">Symbol</span>(<span class="string">&#x27;foo&#x27;</span>);</span><br><span class="line"><span class="keyword">let</span> s2 = <span class="title class_">Symbol</span>(<span class="string">&#x27;foo&#x27;</span>);</span><br><span class="line"></span><br><span class="line">s1 === s2 <span class="comment">// false</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">new</span> <span class="title class_">Symbol</span>(<span class="number">123</span>) <span class="comment">// TypeError: Symbol is not a constructor</span></span><br></pre></td></tr></table></figure>
 <h4 id="bigint">BigInt</h4>
 <blockquote>
 <p>BigInt 可以准确表示任何大小的整数值</p>
@@ -4578,10 +4810,10 @@ false*
 </tr>
 <tr>
 <td>
-Symbol / new Symbol()
+Symbol
 </td>
 <td>
-new Symbol()
+Symbol()
 </td>
 <td>
 symbol
@@ -4964,6 +5196,232 @@ true
 <p>跟 <code>let</code> 几乎一样，但声明时必须赋值，且不能再更改</p>
 <div class="note warning"><p>变量声明指定值的时候同时也指定了类型，但是 <strong>值和类型都可以随意变化</strong></p>
 </div>
+<h3 id="toprimitive-valueof-tostring"><code>toPrimitive</code> &amp; <code>valueOf</code> &amp; <code>toString</code></h3>
+<table>
+<tr>
+<td colspan="2">
+类型
+</td>
+<td>
+举例
+</td>
+<td>
+@<span class="citation" data-cites="toPrimitive">@toPrimitive</span>
+</td>
+<td>
+valueOf
+</td>
+<td>
+toString
+</td>
+</tr>
+<tr>
+<td rowspan="5">
+基本类型
+</td>
+<td>
+Number
+</td>
+<td>
+1
+</td>
+<td>
+-
+</td>
+<td>
+返回数字基本类型
+</td>
+<td>
+<p>
+可以接受一个参数，表示进制
+</p>
+<p>
+注意数字基本类型发生强制类型转换时（比如 <code>$&#123;someNumber&#125;</code>），并不会调用 Number.prototype.toString()，所以覆盖这个方法并不会影响到此种情况的类型转换结果
+</p>
+</td>
+</tr>
+<tr>
+<td>
+String
+</td>
+<td>
+'hello'
+</td>
+<td>
+-
+</td>
+<td>
+返回字符串基本类型
+</td>
+<td>
+与 valueOf 实现完全相同
+</td>
+</tr>
+<tr>
+<td>
+Boolean
+</td>
+<td>
+true
+</td>
+<td>
+-
+</td>
+<td>
+返回布尔基本类型
+</td>
+<td>
+返回字符串 "true" "false"
+</td>
+</tr>
+<tr>
+<td>
+Symbol
+</td>
+<td>
+Symbol()
+</td>
+<td>
+*1
+</td>
+<td>
+与 toPrimitive 效果相同
+</td>
+<td>
+*2
+</td>
+</tr>
+<tr>
+<td>
+BigInt
+</td>
+<td>
+12345678n
+</td>
+<td>
+-
+</td>
+<td>
+返回 BigInt 基本类型
+</td>
+<td>
+返回一个去掉 n 的字符串
+</td>
+</tr>
+<tr>
+<td rowspan="6">
+对象类型
+</td>
+<td>
+普通对象
+</td>
+<td>
+{a: '1', b: '2'}
+</td>
+<td>
+默认没有，可以自己定义
+</td>
+<td>
+对象自己，这是无意义的，因为 valueOf() 一般是用来转换成基本类型的，因此需要自己定义 valueOf
+</td>
+<td>
+根据 this 返回 "[object Type]"
+</td>
+</tr>
+<tr>
+<td>
+Array
+</td>
+<td>
+[1, 2, 3]
+</td>
+<td>
+-
+</td>
+<td>
+-
+</td>
+<td>
+调用 Array.prototype.join
+</td>
+</tr>
+<tr>
+<td>
+Function
+</td>
+<td>
+function() {}
+</td>
+<td>
+-
+</td>
+<td>
+-
+</td>
+<td>
+根据 this 返回函数字符串
+</td>
+</tr>
+<tr>
+<td>
+Error
+</td>
+<td>
+new Error()
+</td>
+<td>
+-
+</td>
+<td>
+-
+</td>
+<td>
+返回错误信息
+</td>
+</tr>
+<tr>
+<td>
+Date
+</td>
+<td>
+new Date()
+</td>
+<td>
+*3
+</td>
+<td>
+与 Date.prototype.getTime 效果相同
+</td>
+<td>
+返回日期字符串
+</td>
+</tr>
+<tr>
+<td>
+RegExp
+</td>
+<td>
+new RegExp()
+</td>
+<td>
+-
+</td>
+<td>
+-
+</td>
+<td>
+*4
+</td>
+</tr>
+</table>
+<p>*1. <code>Symbol.prototype[@@toPrimitive]</code> 会返回一个 Symbol 基本类型，其中的 <code>hint</code> 参数并没有被用到：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> sym = <span class="title class_">Symbol</span>(<span class="string">&quot;example&quot;</span>)</span><br><span class="line">sym === sym[<span class="title class_">Symbol</span>.<span class="property">toPrimitive</span>](); <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+<p>*2. <code>Symbol.prototype.toString</code> 需要提供一个 <code>this</code>，这个 <code>this</code> 应该是一个 Symbol 基本类型或 Symbol 对象。如果不提供正确的 <code>this</code>，它将会抛错，因为 <code>Symbol.prototype[@@toPrimitive]</code> 方法只会返回一个 Symbol 基本类型：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Symbol</span>(<span class="string">&#x27;desc&#x27;</span>).<span class="title function_">toString</span>());</span><br><span class="line"><span class="comment">// Expected output: &quot;Symbol(desc)&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Symbol</span>.<span class="property">iterator</span>.<span class="title function_">toString</span>());</span><br><span class="line"><span class="comment">// Expected output: &quot;Symbol(Symbol.iterator)</span></span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Symbol</span>.<span class="title function_">for</span>(<span class="string">&#x27;foo&#x27;</span>).<span class="title function_">toString</span>());</span><br><span class="line"><span class="comment">// Expected output: &quot;Symbol(foo)&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// console.log(Symbol(&#x27;foo&#x27;) + &#x27;bar&#x27;);</span></span><br><span class="line"><span class="comment">// Expected output: Error: Can&#x27;t convert symbol to string</span></span><br></pre></td></tr></table></figure>
+<p>*3. <code>Date.prototype[@@toPrimitive]</code> 会根据参数返回时间戳或者字符串：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Depending on timezone, your results will vary</span></span><br><span class="line"><span class="keyword">const</span> date = <span class="keyword">new</span> <span class="title class_">Date</span>(<span class="string">&#x27;20 December 2019 14:48&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(date[<span class="title class_">Symbol</span>.<span class="property">toPrimitive</span>](<span class="string">&#x27;string&#x27;</span>));</span><br><span class="line"><span class="comment">// &quot;Fri Dec 20 2019 14:48:00 GMT+0800 (中国标准时间)&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(date[<span class="title class_">Symbol</span>.<span class="property">toPrimitive</span>](<span class="string">&#x27;number&#x27;</span>));</span><br><span class="line"><span class="comment">// 1576824480000</span></span><br></pre></td></tr></table></figure>
+<p>*4. <code>RegExp.prototype.toString</code> 会返回类似 <code>/source/flag</code> 的字符串：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="keyword">new</span> <span class="title class_">RegExp</span>(<span class="string">&#x27;a+b+c&#x27;</span>));</span><br><span class="line"><span class="comment">// &quot;/a+b+c/</span></span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="keyword">new</span> <span class="title class_">RegExp</span>(<span class="string">&#x27;a+b+c&#x27;</span>).<span class="title function_">toString</span>());</span><br><span class="line"><span class="comment">// &quot;/a+b+c/&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="keyword">new</span> <span class="title class_">RegExp</span>(<span class="string">&#x27;bar&#x27;</span>, <span class="string">&#x27;g&#x27;</span>).<span class="title function_">toString</span>());</span><br><span class="line"><span class="comment">// &quot;/bar/g&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="keyword">new</span> <span class="title class_">RegExp</span>(<span class="string">&#x27;\n&#x27;</span>, <span class="string">&#x27;g&#x27;</span>).<span class="title function_">toString</span>());</span><br><span class="line"><span class="comment">// &quot;/\n/g&quot; (if your browser supports escaping)</span></span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="keyword">new</span> <span class="title class_">RegExp</span>(<span class="string">&#x27;\\n&#x27;</span>, <span class="string">&#x27;g&#x27;</span>).<span class="title function_">toString</span>());</span><br><span class="line"><span class="comment">// &quot;/\n/g&quot;</span></span><br></pre></td></tr></table></figure>
 <h2 id="运算符">运算符</h2>
 <h3 id="算术运算符">算术运算符</h3>
 <h4 id="number-1">Number</h4>
@@ -5003,11 +5461,26 @@ true
 <p>如果前面是 <strong>假的</strong>，就执行后面的</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">a = a || <span class="number">100</span> <span class="comment">// 可以用于设置保底值</span></span><br></pre></td></tr></table></figure>
 <h3 id="二进制运算符">二进制运算符</h3>
-<h4 id="或与否">或与否</h4>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">(<span class="number">0b1111</span> | <span class="number">0b1010</span>).<span class="title function_">toString</span>(<span class="number">2</span>) <span class="comment">// 1111</span></span><br><span class="line">(<span class="number">0b1111</span> &amp; <span class="number">0b1010</span>).<span class="title function_">toString</span>(<span class="number">2</span>) <span class="comment">// 1010</span></span><br><span class="line">(~<span class="number">0b1010</span>).<span class="property">toString</span> <span class="comment">// 涉及到补码，留坑</span></span><br></pre></td></tr></table></figure>
+<h4 id="或与">或与</h4>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">(<span class="number">0b1111</span> | <span class="number">0b1010</span>).<span class="title function_">toString</span>(<span class="number">2</span>) <span class="comment">// 1111</span></span><br><span class="line">(<span class="number">0b1111</span> &amp; <span class="number">0b1010</span>).<span class="title function_">toString</span>(<span class="number">2</span>) <span class="comment">// 1010</span></span><br></pre></td></tr></table></figure>
+<h4 id="否">否</h4>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">(~<span class="number">0b0101</span>).<span class="title function_">toString</span>(<span class="number">2</span>)         <span class="comment">// -110 (-6)</span></span><br></pre></td></tr></table></figure>
+<p>JavaScript 将数字存储为 64 位浮点数，但所有按位运算都以 32 位二进制数执行。在执行位运算之前，JavaScript 将数字转换为 32 位有符号整数：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000101</span> (<span class="number">5</span>)</span><br></pre></td></tr></table></figure>
+<p>然后进行位运算（比如这里的按位取反）：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="number">11111111</span> <span class="number">11111111</span> <span class="number">11111111</span> <span class="number">11111010</span> (-<span class="number">6</span>)</span><br></pre></td></tr></table></figure>
+<p>这里其实是使用的二进制补码，最高位表示 -2^32，次高位表示 +2^31，当 32 位全为 1 时，表示 - 1，可以通过“按位取反再加一”的方式快速获取他的相反数（在这里就是 6）：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000101</span> <span class="comment">// 按位取反</span></span><br><span class="line"><span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000110</span> <span class="comment">// +1，得到 6</span></span><br></pre></td></tr></table></figure>
+<p>执行按位操作后，结果将转换回 64 位 JavaScript 数，也就是 <code>-110</code></p>
+<p>另外一个有趣的例子：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">(~-<span class="number">0b0101</span>).<span class="title function_">toString</span>(<span class="number">2</span>)  <span class="comment">// 100</span></span><br></pre></td></tr></table></figure>
+<p>先获得其 32 位表达（因为有符号，因此要按位取反再加一得到补码）：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="number">11111111</span> <span class="number">11111111</span> <span class="number">11111111</span> <span class="number">11111011</span> (-<span class="number">0101</span>)</span><br></pre></td></tr></table></figure>
+<p>再进行否运算：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000100</span></span><br></pre></td></tr></table></figure>
 <h4 id="异或">异或</h4>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">(<span class="number">0b1111</span> ^ <span class="number">0b1010</span>).<span class="title function_">toString</span>(<span class="number">2</span>) <span class="comment">// 101</span></span><br></pre></td></tr></table></figure>
-<div class="note warning"><p>按位取反可以用 <code>^1</code></p>
+<div class="note warning"><p>按位取反可以用 <code>^1111</code>，有多少位就有多少个 <code>1</code></p>
 </div>
 <h4 id="左移和右移">左移和右移</h4>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">(<span class="number">0b0011</span> &gt;&gt; <span class="number">1</span>).<span class="title function_">toString</span>(<span class="number">2</span>) <span class="comment">// 1</span></span><br><span class="line">(<span class="number">0b0010</span> &lt;&lt; <span class="number">1</span>).<span class="title function_">toString</span>(<span class="number">2</span>) <span class="comment">// 100</span></span><br></pre></td></tr></table></figure>
@@ -5030,7 +5503,7 @@ true
 <p>求表达式的值或执行语句，然后 <code>void</code> 的值总为 <code>undefined</code></p>
 </blockquote>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">void</span> 表达式或语句</span><br></pre></td></tr></table></figure>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 防止假动作 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;example.com&quot;</span> <span class="attr">onclick</span>=<span class="string">&quot;console.log(hi); return false;&quot;</span>&gt;</span>点击<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 也可以用 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;javascript:void(console.log(&#x27;hi&#x27;))&quot;</span>&gt;</span>点击<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 或者 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;javascript:;&quot;</span>&gt;</span>点击<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 防止假动作 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;example.com&quot;</span> <span class="attr">onclick</span>=<span class="string">&quot;console.log(&#x27;hi&#x27;); return false;&quot;</span>&gt;</span>点击<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 也可以用 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;javascript:void(console.log(&#x27;hi&#x27;))&quot;</span>&gt;</span>点击<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 或者 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;javascript:;&quot;</span>&gt;</span>点击<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <h4 id="逗号运算符">逗号运算符</h4>
 <blockquote>
 <p>表示取后面的值</p>
@@ -5041,15 +5514,16 @@ true
 <h2 id="es6">ES6</h2>
 <p>作用域、箭头函数、默认参数、展开运算符、模板字符串、解构赋值、import export、class、for of、Generator、新的数据类型（Symbol、Map、Set）</p>
 <h2 id="generator">Generator</h2>
-<h3 id="生成器执行流程">生成器执行流程</h3>
-<p>生成器是一个带星号的“函数”（其实他并不是真正的函数），可以通过 yield 关键字暂停执行和恢复执行</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span>* <span class="title function_">gen</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;enter&#x27;</span>)</span><br><span class="line">  <span class="keyword">let</span> a = <span class="keyword">yield</span> <span class="number">1</span></span><br><span class="line">  <span class="keyword">let</span> b = <span class="keyword">yield</span> (<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">2</span></span><br><span class="line">  &#125;)</span><br><span class="line">  <span class="keyword">return</span> <span class="number">3</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> g = <span class="title function_">gen</span>()</span><br></pre></td></tr></table></figure>
+<h3 id="function">function*</h3>
+<p>生成器是一个带星号的“函数”（其实他并不是真正的函数），可以通过 <code>yield</code> 关键字暂停执行和恢复执行</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span>* <span class="title function_">gen</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;enter&#x27;</span>)</span><br><span class="line">  <span class="keyword">let</span> a = <span class="keyword">yield</span> <span class="number">1</span></span><br><span class="line">  <span class="keyword">let</span> b = <span class="keyword">yield</span> (<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">2</span></span><br><span class="line">  &#125;)</span><br><span class="line">  <span class="keyword">return</span> <span class="number">3</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> g = <span class="title function_">gen</span>()</span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;123&#x27;</span>)</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(g.<span class="title function_">next</span>())</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(g.<span class="title function_">next</span>())</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(g.<span class="title function_">next</span>())</span><br><span class="line"></span><br><span class="line"><span class="comment">// 123</span></span><br><span class="line"><span class="comment">// &#123; value: 1, done: false &#125;</span></span><br><span class="line"><span class="comment">// &#123; value: function, done: false &#125;</span></span><br><span class="line"><span class="comment">// &#123; value: 3, done: true &#125;</span></span><br></pre></td></tr></table></figure>
 <ol type="1">
 <li>调用 <code>gen()</code> 之后，程序会阻塞住，不会执行任何语句</li>
 <li>调用 <code>g.next()</code> 之后，程序会继续执行，直到遇到 <code>yield</code></li>
 <li><code>next</code> 方法会返回一个对象，有 <code>value</code> 和 <code>done</code> 属性，<code>value</code> 为 当前 <code>yield</code> 后面的结果，<code>done</code> 表示是否执行完，遇到 <code>return</code> 后，<code>done</code> 变为 <code>true</code></li>
 </ol>
 <h3 id="yield">yield*</h3>
+<p><code>yield*</code> 可以实现生成器的套娃：</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span>* <span class="title function_">gen1</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">1</span></span><br><span class="line">  <span class="keyword">yield</span>* <span class="title function_">gen2</span>()</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">4</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">function</span>* <span class="title function_">gen2</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">2</span></span><br><span class="line">  <span class="keyword">yield</span> <span class="number">3</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 会按 1 2 3 4 的顺序执行</span></span><br></pre></td></tr></table></figure>
 <h3 id="生成器的实现机制协程">生成器的实现机制：协程</h3>
 <p>一个线程可以存在多个协程，协程不受操作系统的管理，而是被具体的应用程序代码所控制，因此没有进程的上下文切换的开销，性能高。</p>
@@ -5136,10 +5610,10 @@ true
 <li><code>new</code> 后面的函数使用名词；其他的函数一般用动词开头</li>
 </ul>
 <h3 id="如何确定一个对象的原型">如何确定一个对象的原型？</h3>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">对象.<span class="property">__proto__</span> === 其构造函数.<span class="property"><span class="keyword">prototype</span></span></span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="title class_">Object</span>.<span class="title function_">getPrototypeOf</span>(对象) === 对象.<span class="property">__proto__</span> === 其构造函数.<span class="property"><span class="keyword">prototype</span></span></span><br></pre></td></tr></table></figure>
 <h3 id="数据类型与对象的分类">数据类型与对象的分类</h3>
 <blockquote>
-<p>数据类型是 JavaScript 数据的类型，一共有 7 种；</p>
+<p>数据类型是 JavaScript 数据的类型，一共有 8 种；</p>
 <p>对象的分类则有无数种，常见的有 Array、Function、Date、RegExp 等</p>
 </blockquote>
 <p>我们常见的有这几种类型的对象：</p>
@@ -5155,10 +5629,11 @@ true
 <li>共有属性：<code>'call'</code> <code>'apply'</code> <code>'bind'</code></li>
 </ul></li>
 </ul>
+<h2 id="valueof-tostring">valueOf &amp; toString</h2>
 <h2 id="其他问题">其他问题</h2>
 <blockquote>
 <p><strong>Q: window 是谁构造出来的？</strong></p>
-<p>A: 可以通过 constructor 属性看出构造者</p>
+<p>A: <code>Window</code>，可以通过 constructor 属性看出构造者</p>
 </blockquote>
 <blockquote>
 <p><strong>Q: window.Object 是谁构造的？</strong></p>
@@ -5205,12 +5680,12 @@ true
 <h2 id="数组变换">数组变换</h2>
 <p>得到新数组，原数组不变</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// map： n 变 n</span></span><br><span class="line">arr.<span class="title function_">map</span>(<span class="function"><span class="params">item</span> =&gt;</span> item * item)</span><br><span class="line"></span><br><span class="line"><span class="comment">// filter：n 变少</span></span><br><span class="line">arr.<span class="title function_">filter</span>(<span class="function"><span class="params">item</span> =&gt;</span> item % <span class="number">2</span> === <span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// reduce：n 变 1</span></span><br><span class="line">arr.<span class="title function_">reduce</span>(<span class="function">(<span class="params">sum, item</span>) =&gt;</span> sum + item, <span class="number">0</span>)</span><br><span class="line">arr.<span class="title function_">reduce</span>(<span class="function">(<span class="params">result, item</span>) =&gt;</span> result.<span class="title function_">concat</span>(item * item), [])</span><br><span class="line">arr.<span class="title function_">reduce</span>(<span class="function">(<span class="params">result, item</span>) =&gt;</span></span><br><span class="line">  result.<span class="title function_">concat</span>(item % <span class="number">2</span> === <span class="number">1</span> ? [] : item), [])</span><br></pre></td></tr></table></figure>
-<h1 id="function">Function</h1>
+<h1 id="function-1">Function</h1>
 <h2 id="定义一个函数">定义一个函数</h2>
 <h3 id="具名函数">具名函数</h3>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> 函数名(形参) &#123; 函数体 &#125;</span><br></pre></td></tr></table></figure>
 <h3 id="匿名函数">匿名函数</h3>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> a = <span class="keyword">function</span>(<span class="params">形参</span>) &#123; 函数体 &#125; <span class="comment">// 右边的部分也叫函数表达式</span></span><br><span class="line"><span class="keyword">let</span> a = <span class="keyword">function</span> <span class="title function_">fn</span>(<span class="params">形参</span>)&#123; 函数体 &#125;</span><br><span class="line"><span class="comment">// 如果函数的声明是在 = 右边</span></span><br><span class="line"><span class="comment">// fn 的作用域只能在 = 右边</span></span><br><span class="line"><span class="comment">// 别的地方不能用 fn 这个名字</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> a = <span class="keyword">function</span>(<span class="params">形参</span>) &#123; 函数体 &#125; <span class="comment">// 右边的部分也叫函数表达式</span></span><br><span class="line"><span class="keyword">let</span> a = <span class="keyword">function</span> <span class="title function_">fn</span>(<span class="params">形参</span>)&#123; 函数体 &#125;</span><br><span class="line"><span class="comment">// 如果函数的声明是在 = 右边</span></span><br><span class="line"><span class="comment">// fn 的作用域只能在 = 右边</span></span><br><span class="line"><span class="comment">// 别的地方可以用 fn 这个名字</span></span><br></pre></td></tr></table></figure>
 <h3 id="使用构造函数">使用构造函数</h3>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> a = <span class="keyword">new</span> <span class="title class_">Function</span>()</span><br></pre></td></tr></table></figure>
 <h3 id="箭头函数">箭头函数</h3>
@@ -11293,141 +11768,6 @@ true
 <p>可以查看 Raw Loader、CSS Loader 等深入学习</p>
 <div class="note warning"><p>webpack 安装的所有东西都是 --dev</p>
 </div>
-]]></content>
-      <categories>
-        <category>工具</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>axios</title>
-    <url>/hais-notebook/2020/02/02/axios/</url>
-    <content><![CDATA[<p>文档翻译 用于浏览器和 node.js 的基于 Promise 的 HTTP 客户端。</p>
-<span id="more"></span>
-<h1 id="特性">特性</h1>
-<ul>
-<li>从浏览器发起 <a href="https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest">XMLHttpRequest</a></li>
-<li>从 node.js 发起 <a href="http://nodejs.org/api/http.html">http</a> 请求</li>
-<li>支持 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a> API</li>
-<li>拦截请求和响应</li>
-<li>转换请求和响应数据</li>
-<li>取消请求</li>
-<li>JSON 数据的自动转换</li>
-<li>从客户端防范 XSRF 攻击</li>
-</ul>
-<h1 id="安装">安装</h1>
-<p>使用 npm：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ npm install axios</span><br></pre></td></tr></table></figure>
-<p>使用 bower：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ bower install axios</span><br></pre></td></tr></table></figure>
-<p>使用 yarn：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ yarn add axios</span><br></pre></td></tr></table></figure>
-<p>使用 cdn：</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;https://unpkg.com/axios/dist/axios.min.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<h1 id="例子">例子</h1>
-<h2 id="注意这是在-commonjs-中的使用方法">注意：这是在 CommonJS 中的使用方法</h2>
-<p>为了在使用 <code>require()</code> 进行导入的 CommonJS 中获得 TypeScript 输入时的智能补充和类型提示，需要使用这样的方法：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> axios = <span class="built_in">require</span>(<span class="string">&#x27;axios&#x27;</span>).<span class="property">default</span>;</span><br><span class="line"><span class="comment">// 这样 axios.&lt;method&gt; 就可以提供自动补充和参数类型了</span></span><br></pre></td></tr></table></figure>
-<p>执行一个 <code>GET</code> 请求：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> axios = <span class="built_in">require</span>(<span class="string">&#x27;axios&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 在已知 ID 的情况下请求 user</span></span><br><span class="line">axios.<span class="title function_">get</span>(<span class="string">&#x27;/user?ID=12345&#x27;</span>)</span><br><span class="line">  .<span class="title function_">then</span>(<span class="keyword">function</span> (<span class="params">response</span>) &#123;</span><br><span class="line">  <span class="comment">// 处理成功的情形</span></span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(response);</span><br><span class="line">  &#125;)</span><br><span class="line">  .<span class="title function_">catch</span>(<span class="keyword">function</span> (<span class="params">error</span>) &#123;</span><br><span class="line">  <span class="comment">// 处理失败的情形</span></span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(error);</span><br><span class="line">  &#125;)</span><br><span class="line">  .<span class="title function_">then</span>(<span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  <span class="comment">// 永远执行</span></span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 上面的请求也可以这样写：</span></span><br><span class="line">axios.<span class="title function_">get</span>(<span class="string">&#x27;/user&#x27;</span>, &#123;</span><br><span class="line">    <span class="attr">params</span>: &#123;</span><br><span class="line">      <span class="attr">ID</span>: <span class="number">12345</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">  .<span class="title function_">then</span>(<span class="keyword">function</span> (<span class="params">response</span>) &#123;</span><br><span class="line">  <span class="comment">// 处理成功的情形</span></span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(response);</span><br><span class="line">  &#125;)</span><br><span class="line">  .<span class="title function_">catch</span>(<span class="keyword">function</span> (<span class="params">error</span>) &#123;</span><br><span class="line">  <span class="comment">// 处理失败的情形</span></span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(error);</span><br><span class="line">  &#125;)</span><br><span class="line">  .<span class="title function_">then</span>(<span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  <span class="comment">// 永远执行</span></span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 想要使用 async/await？那就在你外面的函数/方法上加上 `async` 关键字</span></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">getUser</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> response = <span class="keyword">await</span> aixos.<span class="title function_">get</span>(<span class="string">&#x27;/user?ID=12345&#x27;</span>);</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(response);</span><br><span class="line">  &#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(error);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p><strong>注意：</strong><code>async/await</code> 是 ECMAScript 2017 的一部分，并且不支持 Internet Explorer 和一些更久的浏览器，所以使用的时候要注意。</p>
-</blockquote>
-<p>执行一个 <code>POST</code> 请求：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">axios.<span class="title function_">post</span>(<span class="string">&#x27;/user&#x27;</span>, &#123;</span><br><span class="line">    <span class="attr">firstName</span>: <span class="string">&#x27;Fred&#x27;</span>,</span><br><span class="line">    <span class="attr">lastName</span>: <span class="string">&#x27;Flintstone&#x27;</span></span><br><span class="line">  &#125;)</span><br><span class="line">  .<span class="title function_">then</span>(<span class="keyword">function</span> (<span class="params">response</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(response);</span><br><span class="line">  &#125;)</span><br><span class="line">  .<span class="title function_">catch</span>(<span class="keyword">function</span> (<span class="params">error</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(error);</span><br><span class="line">  &#125;)</span><br></pre></td></tr></table></figure>
-<p>执行多个并发请求：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">getUserAccount</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> axios.<span class="title function_">get</span>(<span class="string">&#x27;/user/12345&#x27;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">function</span> <span class="title function_">getUserPermission</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> axios.<span class="title function_">get</span>(<span class="string">&#x27;/user/12345/permission&#x27;</span>);</span><br><span class="line">&#125;</span><br><span class="line">axios.<span class="title function_">all</span>([<span class="title function_">getUserAccount</span>(), <span class="title function_">getUserPermission</span>()])</span><br><span class="line">  .<span class="title function_">then</span>(axios.<span class="title function_">spread</span>(<span class="keyword">function</span> (<span class="params">acct,perms</span>) &#123;</span><br><span class="line">    <span class="comment">// 两个请求都完成了</span></span><br><span class="line">  &#125;));</span><br></pre></td></tr></table></figure>
-<h1 id="axios-api">axios API</h1>
-<p>可以通过给 <code>axios</code> 传递相关的 config 来执行请求。</p>
-<p>axios(config)</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 发送一个 POST 请求</span></span><br><span class="line"><span class="title function_">axios</span>(&#123;</span><br><span class="line">  <span class="attr">method</span>: <span class="string">&#x27;post&#x27;</span>,</span><br><span class="line">  <span class="attr">url</span>: <span class="string">&#x27;/user/12345&#x27;</span>,</span><br><span class="line">  <span class="attr">data</span>: &#123;</span><br><span class="line">    <span class="attr">firstName</span>: <span class="string">&#x27;Fred&#x27;</span>,</span><br><span class="line">    <span class="attr">lastName</span>: <span class="string">&#x27;Flintstone&#x27;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 使用 GET 方法请求一个图片</span></span><br><span class="line"><span class="title function_">axios</span>(&#123;</span><br><span class="line">  <span class="attr">method</span>: <span class="string">&#x27;get&#x27;</span>,</span><br><span class="line">  <span class="attr">url</span>: <span class="string">&#x27;http://bit.ly/2mTM3nY&#x27;</span>,</span><br><span class="line">  <span class="attr">responseType</span>: <span class="string">&#x27;stream&#x27;</span></span><br><span class="line">&#125;)</span><br><span class="line">  .<span class="title function_">then</span>(<span class="keyword">function</span> (<span class="params">response</span>) &#123;</span><br><span class="line">    response.<span class="property">data</span>.<span class="title function_">pipe</span>(fs.<span class="title function_">createWriteStream</span>(<span class="string">&#x27;ada_lovelace.jpg&#x27;</span>))</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
-<p>axios(url[, config])</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 发送一个 GET 请求（默认方法）</span></span><br><span class="line"><span class="title function_">axios</span>(<span class="string">&#x27;/user/12345&#x27;</span>);</span><br></pre></td></tr></table></figure>
-<h2 id="请求方法的别名">请求方法的别名</h2>
-<p>为了方便，所有支持的请求方法都提供了别名。</p>
-<p>axios.request(config) axios.get(url[, config]) axios.delete(url[, config]) axios.head(url[, config]) axios.options(url[, config]) axios.post(url[, data[, config]]) axios.put(url[, data[, config]]) axios.patch(url[, data[, config]])</p>
-<blockquote>
-<p>注意 当使用别名时，不需要再在 config 中指定 <code>url</code> <code>method</code> 和 <code>data</code> 属性</p>
-</blockquote>
-<h2 id="并发性">并发性</h2>
-<p>有一些帮助函数来处理并发请求。</p>
-<p>axios.all(iterable) axios.spread(callback)</p>
-<h2 id="创建一个实例">创建一个实例</h2>
-<p>你可以使用自定义的 config 来创建一个 axios 实例。</p>
-<p>axios.create([config])</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> instance = axios.<span class="title function_">create</span>(&#123;</span><br><span class="line">  <span class="attr">baseURL</span>: <span class="string">&#x27;https://some-domain.com/api&#x27;</span>,</span><br><span class="line">  <span class="attr">timeout</span>: <span class="number">1000</span>,</span><br><span class="line">  <span class="attr">headers</span>: &#123;<span class="string">&#x27;X-Custom-Header&#x27;</span>: <span class="string">&#x27;foobar&#x27;</span>&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<h2 id="实例方法">实例方法</h2>
-<p>下面列举了可用的实例方法，指定的 config 会与实例的 config 合并。</p>
-<p>axios#request(config) axios#get(url[, config]) axios#delete(url[, config]) axios#head(url[, config]) axios#options(url[, config]) axios#post(url[, data[, config]]) axios#put(url[, data[, config]]) axios#patch(url[, data[, config]]) axios#getUri([config])</p>
-<h1 id="请求的-config">请求的 config</h1>
-<p>在众多的 config 选项中，只有 <code>url</code> 是必须的。如果没有指定 <code>method</code>，则默认为 <code>GET</code>。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="comment">// `url` 是被用于请求的服务器的 URL</span></span><br><span class="line">  <span class="attr">url</span>: <span class="string">&#x27;/user&#x27;</span>,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `method` 是发起请求时用的方法</span></span><br><span class="line">  <span class="attr">method</span>: <span class="string">&#x27;get&#x27;</span>, <span class="comment">// 默认值</span></span><br><span class="line">  </span><br><span class="line">  <span class="comment">// `baseURL` 将在 `url` 不是绝对路径的时候放在 `url` 的前面</span></span><br><span class="line">  <span class="comment">// 给 axios 实例设置一个 `baseURL` 就可以很方便地给实例的方法传递相对路径</span></span><br><span class="line">  <span class="attr">baseURL</span>: <span class="string">&#x27;https://some-domain.com/api/&#x27;</span>,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `transformRequest` 允许在请求发送给服务器之前变换数据</span></span><br><span class="line">  <span class="comment">// 这只适用于 &#x27;PUT&#x27; &#x27;POST&#x27; &#x27;PATCH&#x27; 和 &#x27;DELETE&#x27; 方法</span></span><br><span class="line">  <span class="comment">// 数组中最后的函数必须返回一个字符串</span></span><br><span class="line">  <span class="comment">// 或者 Buffer、ArrayBuffer、FormData 或 Stream 的实例</span></span><br><span class="line">  <span class="comment">// 你可以修改 headers 对象</span></span><br><span class="line">  <span class="attr">transformRequest</span>: [<span class="keyword">function</span> (<span class="params">data, headers</span>) &#123;</span><br><span class="line">    <span class="comment">// 做些什么来修改数据</span></span><br><span class="line">    <span class="keyword">return</span> data</span><br><span class="line">  &#125;],</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `transformResponse` 允许对响应数据在传递给 then/catch 之前进行变换</span></span><br><span class="line">  <span class="attr">transformResponse</span>: [<span class="keyword">function</span> (<span class="params">data</span>) &#123;</span><br><span class="line">    <span class="comment">// 做些什么来修改数据</span></span><br><span class="line">    <span class="keyword">return</span> data    </span><br><span class="line">  &#125;],</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// `headers` 是自定义的请求头</span></span><br><span class="line">  <span class="attr">headers</span>: &#123;<span class="string">&#x27;X-Requested-With&#x27;</span>: <span class="string">&#x27;XMLHttpRequest&#x27;</span>&#125;,</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// `params` 是请求时的 URL 参数</span></span><br><span class="line">  <span class="comment">// 必须要是一个纯粹的对象或者 URLSearchParams 对象</span></span><br><span class="line">  <span class="attr">params</span>: &#123;</span><br><span class="line">    <span class="attr">ID</span>: <span class="number">12345</span></span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `paramsSerializer` 是一个可选的函数，用来控制序列化的 `params`</span></span><br><span class="line">  <span class="comment">// （比如 https://www.npmjs.com/package/qs, http://api.jquery.com/jquery.param/）</span></span><br><span class="line">  <span class="attr">paramsSerializer</span>: <span class="keyword">function</span> (<span class="params">params</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="title class_">Qs</span>.<span class="title function_">stringify</span>(params, &#123;<span class="attr">arrayFormat</span>: <span class="string">&#x27;brackets&#x27;</span>&#125;)</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `data` 是被当做请求体发送的数据</span></span><br><span class="line">  <span class="comment">// 只适用于 &#x27;PUT&#x27; &#x27;POST&#x27; 和 &#x27;PATCH&#x27; 方法</span></span><br><span class="line">  <span class="comment">// 当没有设置 `transformRequest` 时，必须是以下几种类型之一：</span></span><br><span class="line">  <span class="comment">// - 字符串、纯粹的对象、ArrayBuffer、ArrayBufferView、URLSearchParams</span></span><br><span class="line">  <span class="comment">// - 只有浏览器可用：FormData、文件、Blob</span></span><br><span class="line">  <span class="comment">// - 只有 Node 可用： Stream、Buffer</span></span><br><span class="line">  <span class="attr">data</span>: &#123;</span><br><span class="line">    <span class="attr">firstName</span>: <span class="string">&#x27;Fred&#x27;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 发送请求数据的另一种写法</span></span><br><span class="line">  <span class="comment">// post 方法</span></span><br><span class="line">  <span class="comment">// 只有 value 被发送，key 不会</span></span><br><span class="line">  <span class="attr">data</span>: <span class="string">&#x27;Country=Brasil&amp;City=Belo Horizonte&#x27;</span>,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `timeout` 指定了请求超时的毫秒数</span></span><br><span class="line">  <span class="comment">// 如果请求超过了 `timeout`，则请求将会被放弃</span></span><br><span class="line">  <span class="attr">timeout</span>: <span class="number">1000</span>, <span class="comment">// 默认为 `0` （没有时限）</span></span><br><span class="line">  </span><br><span class="line">  <span class="comment">// `withCredentials` 指定了访问跨站点的 Access-Control 请求</span></span><br><span class="line">  <span class="comment">// 是否使用证书</span></span><br><span class="line">  <span class="attr">withCredentials</span>: <span class="literal">false</span>, <span class="comment">// 默认</span></span><br><span class="line">  </span><br><span class="line">  <span class="comment">// `adapter` 允许自定义让测试变简单的请求控制器</span></span><br><span class="line">  <span class="comment">// 返回一个 promise 并且提供一个合法的响应</span></span><br><span class="line">  <span class="attr">adapter</span>: <span class="keyword">function</span> (<span class="params">config</span>) &#123;</span><br><span class="line">    <span class="comment">/* ... */</span></span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `auth` 说明需要使用 HTTP 基本身份验证，并且提供合法的证书</span></span><br><span class="line">  <span class="comment">// 他将会 设置一个 `Authorization` 请求头</span></span><br><span class="line">  <span class="comment">// 并且会覆盖在 `headers` 中自定义的 `Authorization` 请求头</span></span><br><span class="line">  <span class="comment">// 请注意这里只能设置 HTTP 基本身份验证</span></span><br><span class="line">  <span class="comment">// 对于不记名令牌等，需要使用自定义的 `Authorization` 请求头</span></span><br><span class="line">  <span class="attr">auth</span>: &#123;</span><br><span class="line">    <span class="attr">username</span>: <span class="string">&#x27;janedoe&#x27;</span>,</span><br><span class="line">    <span class="attr">password</span>: <span class="string">&#x27;s00pers3cret&#x27;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// `responseType` 指定了服务器返回的数据类型</span></span><br><span class="line">  <span class="comment">// 包括 &#x27;arraybuffer&#x27; &#x27;document&#x27; &#x27;json&#x27; &#x27;text&#x27; &#x27;stream&#x27;</span></span><br><span class="line">  <span class="comment">// 只有浏览器可用：&#x27;blob&#x27;</span></span><br><span class="line">  <span class="attr">responseType</span>: <span class="string">&#x27;json&#x27;</span>, <span class="comment">// 默认</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// `responseEncoding` 指定了解码响应数据的编码方式</span></span><br><span class="line">  <span class="comment">// 注意：在 &#x27;stream&#x27; 或客户端请求的 `responseType` 被忽略</span></span><br><span class="line">  <span class="attr">responseEncoding</span>: <span class="string">&#x27;utf-8&#x27;</span>, <span class="comment">// 默认</span></span><br><span class="line">  </span><br><span class="line">  <span class="comment">// `xsrfCookieName` 是用来做为 xsrf 令牌值的 cookie 的名字</span></span><br><span class="line">  <span class="attr">xsrfCookieName</span>: <span class="string">&#x27;XSRF-TOKEN&#x27;</span>, <span class="comment">// 默认</span></span><br><span class="line">  </span><br><span class="line">  <span class="comment">// `xsrfHeaderName` 是保存 xsrf 令牌值的 HTTP 头的名字</span></span><br><span class="line">  <span class="attr">xsrfHeaderName</span>: <span class="string">&#x27;X-XSRF-TOKEN&#x27;</span>, <span class="comment">// 默认</span></span><br><span class="line">  </span><br><span class="line">  <span class="comment">// `onUploadProgress` 允许控制上传的事件</span></span><br><span class="line">  <span class="attr">onUploadProgress</span>: <span class="keyword">function</span> (<span class="params">progressEvent</span>) &#123;</span><br><span class="line">    <span class="comment">// 对原生事件做些什么</span></span><br><span class="line">  &#125;,</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// `onDownloadProgress` 允许控制下载的事件</span></span><br><span class="line">  <span class="attr">onUploadProgress</span>: <span class="keyword">function</span> (<span class="params">progressEvent</span>) &#123;</span><br><span class="line">    <span class="comment">// 对原生事件做些什么</span></span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `maxContentLength` 定义了以字节计量的 HTTP 响应允许的最大容量</span></span><br><span class="line">  <span class="attr">maxContentLength</span>: <span class="number">2000</span>,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `validateStatus` 定义根据 HTTP 响应的状态码</span></span><br><span class="line">  <span class="comment">// 是 resolve 还是 reject 这个 promise</span></span><br><span class="line">  <span class="comment">// 如果 `validateStatus` 返回 `true`（或设为 `null` 或 `undefined`），</span></span><br><span class="line">  <span class="comment">// 将会 resolve 这个 promise</span></span><br><span class="line">  <span class="comment">// 反之则 reject 这个 promise</span></span><br><span class="line">  <span class="attr">validateStatus</span>: <span class="keyword">function</span> (<span class="params">status</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> status &gt;= <span class="number">200</span> &amp;&amp; status &lt; <span class="number">300</span>; <span class="comment">// 默认</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `maxRedirects` 定义了在 node.js 中最大的重定向数</span></span><br><span class="line">  <span class="comment">// 如果设为 0，则不允许重定向</span></span><br><span class="line">  <span class="attr">maxRedirect</span>: <span class="number">5</span>, <span class="comment">// 默认</span></span><br><span class="line">  </span><br><span class="line">  <span class="comment">// `socketPath` 定义了在 node.js 中使用的 UNIX Socket</span></span><br><span class="line">  <span class="comment">// 比如 &#x27;/var/run/docker.sock&#x27; 来发送请求到 docker daemon</span></span><br><span class="line">  <span class="comment">// `socketPath` 与 `proxy` 中只有一个生效</span></span><br><span class="line">  <span class="comment">// 如果都被设置了，则使用 `socketPath`</span></span><br><span class="line">  <span class="attr">socketPath</span>: <span class="literal">null</span>, <span class="comment">// 默认</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// `httpAgent` 和 `httpsAgent` 分别定义了一个执行 http 和 https 请求时</span></span><br><span class="line">  <span class="comment">// 在 node.js 中的代理</span></span><br><span class="line">  <span class="comment">// 这允许诸如 `keepAlive` 之类的默认情况下不允许的选项</span></span><br><span class="line">  <span class="attr">httpAgent</span>: <span class="keyword">new</span> http.<span class="title class_">Agent</span>(&#123; <span class="attr">keepAlive</span>: <span class="literal">true</span> &#125;),</span><br><span class="line">  <span class="attr">httpsAgent</span>: <span class="keyword">new</span> https.<span class="title class_">Agent</span>(&#123; <span class="attr">keepAlive</span>: <span class="literal">true</span> &#125;),</span><br><span class="line"></span><br><span class="line">  <span class="comment">// &#x27;proxy&#x27; 定义了代理服务器的主机名和端口</span></span><br><span class="line">  <span class="comment">// 你也可以用常规的 `http_proxy` `https_proxy` 环境变量定义你的代理</span></span><br><span class="line">  <span class="comment">// 如果你正在使用环境变量来配置代理，你也可以定义 `no_proxy` 环境变量</span></span><br><span class="line">  <span class="comment">// 这是一个用逗号分隔的不应该被代理的主机列表</span></span><br><span class="line">  <span class="comment">// 用 `false` 来禁用代理，忽略环境变量</span></span><br><span class="line">  <span class="comment">// `auth` 表示在连接这个代理的时候应该使用 HTTP 基本身份验证，并提供证书</span></span><br><span class="line">  <span class="comment">// 这将会设置 `Proxy-Authorization` 请求头</span></span><br><span class="line">  <span class="comment">// 并且覆盖已经存在的在 `headers` 中自定义的 `Proxy-Authorization`</span></span><br><span class="line">  <span class="attr">proxy</span>: &#123;</span><br><span class="line">    <span class="attr">host</span>: <span class="string">&#x27;127.0.0.1&#x27;</span>,</span><br><span class="line">    <span class="attr">port</span>: <span class="number">9000</span>,</span><br><span class="line">    <span class="attr">auth</span>: &#123;</span><br><span class="line">      <span class="attr">username</span>: <span class="string">&#x27;mikeymike&#x27;</span>,</span><br><span class="line">      <span class="attr">password</span>: <span class="string">&#x27;rapunz3l&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `cancelToken` 指定了一个可以被用来取消请求的取消令牌</span></span><br><span class="line">  <span class="comment">// （查看下面的取消部分来获取更多信息）</span></span><br><span class="line">  <span class="attr">cancelToken</span>: <span class="keyword">new</span> <span class="title class_">CancelToken</span>(<span class="keyword">function</span> (<span class="params">cancel</span>) &#123;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h1 id="响应模式">响应模式</h1>
-<p>请求的响应包含了以下信息：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="comment">// `data` 是服务器提供的响应</span></span><br><span class="line">  <span class="attr">data</span>: &#123;&#125;,</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// `status` 是服务器返回的 HTTP 状态码</span></span><br><span class="line">  <span class="attr">status</span>: <span class="number">200</span>,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `statusText` 是服务器返回的 HTTP 状态信息</span></span><br><span class="line">  <span class="attr">statusText</span>: <span class="string">&#x27;OK&#x27;</span>,</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// `headers` 是服务器返回的响应头</span></span><br><span class="line">  <span class="comment">// 所有的返回头都是小写</span></span><br><span class="line">  <span class="attr">headers</span>: &#123;&#125;,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `config` 是提供给 `axios` 做请求的 config</span></span><br><span class="line">  <span class="attr">config</span>: &#123;&#125;,</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// `request` 是产生这个响应的请求</span></span><br><span class="line">  <span class="comment">// 这是 node.js 中（在重定向中）的最后一个 ClientRequest 实例</span></span><br><span class="line">  <span class="comment">// 和浏览器中的 XMLHttpRequest 实例</span></span><br><span class="line">  <span class="attr">request</span>: &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>当使用 <code>then</code> 的时候，你会收到这样的响应：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">axios.<span class="title function_">get</span>(<span class="string">&#x27;/user/12345&#x27;</span>)</span><br><span class="line">  .<span class="title function_">then</span>(<span class="keyword">function</span> (<span class="params">response</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(response.<span class="property">data</span>);</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(response.<span class="property">status</span>);</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(response.<span class="property">statusText</span>);</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(response.<span class="property">header</span>);</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(response.<span class="property">config</span>);</span><br><span class="line">  &#125;)</span><br></pre></td></tr></table></figure>
-<p>当使用 <code>catch</code> ，或者传递一个 rejection 回调作为 <code>then</code> 的第二个参数的时候，响应将在 <code>error</code> 对象中可用，就像在处理错误章节中说的一样。</p>
-<h1 id="配置的默认值">配置的默认值</h1>
-<p>你可以指定一个默认配置应用于所有的请求。</p>
-<h2 id="全局-axios-默认配置">全局 axios 默认配置</h2>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">axios.<span class="property">defaults</span>.<span class="property">baseURL</span> = <span class="string">&#x27;https://api.example.com&#x27;</span>;</span><br><span class="line">axios.<span class="property">defaults</span>.<span class="property">headers</span>.<span class="property">common</span>[<span class="string">&#x27;Authorization&#x27;</span>] = <span class="variable constant_">AUTH_TOKEN</span>;</span><br><span class="line">axios.<span class="property">defaults</span>.<span class="property">helpers</span>.<span class="property">post</span>[<span class="string">&#x27;Content-Type&#x27;</span>] = <span class="string">&#x27;application/x-www-form-urlencoded&#x27;</span>;</span><br></pre></td></tr></table></figure>
-<h2 id="自定义实例默认配置">自定义实例默认配置</h2>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 在创建实例的时候设置默认配置</span></span><br><span class="line"><span class="keyword">const</span> instance = axios.<span class="title function_">create</span>(&#123;</span><br><span class="line">  <span class="attr">baseURL</span>: <span class="string">&#x27;https://api.example.com&#x27;</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 在创建实例之后改变默认配置</span></span><br><span class="line">instance.<span class="property">defaults</span>.<span class="property">headers</span>.<span class="property">common</span>[<span class="string">&#x27;Authorization&#x27;</span>] = <span class="variable constant_">AUTH_TOKEN</span>;</span><br></pre></td></tr></table></figure>
-<h2 id="配置的优先顺序">配置的优先顺序</h2>
-<p>配置会根据优先顺序自动合并。首先是在 lib/defaults.js 里面的库默认配置，然后是实例中的 <code>defaults</code> 属性，最后是请求的 <code>config</code> 参数。后者的优先级比前者高。这里是一个例子：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 用库中提供的默认配置来创建一个实例</span></span><br><span class="line"><span class="comment">// 就这个例子来说，timeout 配置是 `0`，因为是库的默认值</span></span><br><span class="line"><span class="keyword">const</span> instance = axios.<span class="title function_">create</span>();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 覆盖库中默认的 timeout 值</span></span><br><span class="line"><span class="comment">// 现在这个实例的所有请求会在超时之前等待 2.5 秒</span></span><br><span class="line">instance.<span class="property">defaults</span>.<span class="property">timeout</span> = <span class="number">2500</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 覆盖这个请求的 timeout 值，因为我们知道他会花更长的时间</span></span><br><span class="line">instance.<span class="title function_">get</span>(<span class="string">&#x27;/longRequest&#x27;</span>, &#123;</span><br><span class="line">  <span class="attr">timeout</span>: <span class="number">5000</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<h1 id="拦截器">拦截器</h1>
-<p>你可以在请求或者响应被 <code>then</code> 或 <code>catch</code> 处理之前拦截它们。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 添加一个请求拦截器</span></span><br><span class="line">axios.<span class="property">interceptors</span>.<span class="property">request</span>.<span class="title function_">use</span>(<span class="keyword">function</span> (<span class="params">config</span>) &#123;</span><br><span class="line">  <span class="comment">// 在请求发出之前做些什么</span></span><br><span class="line">  <span class="keyword">return</span> config;</span><br><span class="line">&#125;, <span class="keyword">function</span> (<span class="params">error</span>) &#123;</span><br><span class="line">  <span class="comment">// 在请求失败的时候做些什么</span></span><br><span class="line">  <span class="keyword">return</span> <span class="title class_">Promise</span>.<span class="title function_">reject</span>(error)</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 添加一个响应拦截器</span></span><br><span class="line">axios.<span class="property">interceptors</span>.<span class="property">response</span>.<span class="title function_">use</span>(<span class="keyword">function</span> (<span class="params">response</span>) &#123;</span><br><span class="line">  <span class="comment">// 所有状态码在 2xx 范围的都会触发</span></span><br><span class="line">  <span class="comment">// 对返回的数据做些什么</span></span><br><span class="line">  <span class="keyword">return</span> response;</span><br><span class="line">&#125;, <span class="keyword">function</span> (<span class="params">error</span>) &#123;</span><br><span class="line">  <span class="comment">// 所有状态码不在 2xx 范围的都会触发</span></span><br><span class="line">  <span class="comment">// 对返回的错误做些什么</span></span><br><span class="line">  <span class="keyword">return</span> <span class="title class_">Promise</span>.<span class="title function_">reject</span>(error)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<p>如果你需要移除一个拦截器：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> myInterceptor = axios.<span class="property">interseptors</span>.<span class="property">request</span>.<span class="title function_">use</span>(<span class="keyword">function</span> (<span class="params"></span>) &#123;<span class="comment">/*...*/</span>&#125;);</span><br><span class="line">axios.<span class="property">interseptors</span>.<span class="property">request</span>.<span class="title function_">eject</span>(myInterceptor);</span><br></pre></td></tr></table></figure>
-<p>你可以给一个 axios 实例增加拦截器：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> instance = axios.<span class="title function_">create</span>();</span><br><span class="line">instance.<span class="property">interceptors</span>.<span class="property">request</span>.<span class="title function_">use</span>(<span class="keyword">function</span> (<span class="params"></span>) &#123;<span class="comment">/*...*/</span>&#125;);</span><br></pre></td></tr></table></figure>
-<h1 id="处理错误">处理错误</h1>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">axios.<span class="title function_">get</span>(<span class="string">&#x27;/user/12345&#x27;</span>)</span><br><span class="line">  .<span class="title function_">catch</span>(<span class="keyword">function</span> (<span class="params">error</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span>(error.<span class="property">response</span>) &#123;</span><br><span class="line">      <span class="comment">// 发出请求后收到一个状态码不在 2xx 范围的回复</span></span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(error.<span class="property">response</span>.<span class="property">data</span>);</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(error.<span class="property">response</span>.<span class="property">status</span>);</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(error.<span class="property">response</span>.<span class="property">headers</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (error.<span class="property">request</span>) &#123;</span><br><span class="line">      <span class="comment">// 请求发出了但是没有收到回复</span></span><br><span class="line">      <span class="comment">// `error.request` 是浏览器中 XMLHttpRequest 的实例</span></span><br><span class="line">      <span class="comment">// 也是一个 node.js 中 http.ClientRequest 的实例</span></span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(error.<span class="property">request</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="comment">// 在引发错误的请求的安装过程中发生了些状况</span></span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;Error&#x27;</span>, error.<span class="property">message</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(error.<span class="property">config</span>);</span><br><span class="line">  &#125;)</span><br></pre></td></tr></table></figure>
-<p>使用 <code>validateStatus</code> 配置选项，可以配置应该抛出错误的 HTTP 状态码。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">axios.<span class="title function_">get</span>(<span class="string">&#x27;/user/12345&#x27;</span>, &#123;</span><br><span class="line">  <span class="attr">validateStatus</span>: <span class="keyword">function</span> (<span class="params">status</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> status &lt; <span class="number">500</span>; <span class="comment">// 只 reject 状态码大于等于 500 的响应</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<p>使用 <code>toJSON</code> 可以获得关于 HTTP 错误的更多信息。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">axios.<span class="title function_">get</span>(<span class="string">&#x27;/user/12345&#x27;</span>)</span><br><span class="line">  .<span class="title function_">catch</span>(<span class="keyword">function</span> (<span class="params">error</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(error.<span class="title function_">toJSON</span>());</span><br><span class="line">  &#125;)</span><br></pre></td></tr></table></figure>
-<h1 id="取消">取消</h1>
-<p>你可以使用取消令牌来取消请求。</p>
-<blockquote>
-<p>axios 取消令牌 API 基于被弃用的 <a href="https://github.com/tc39/proposal-cancelable-promises">cancelable promises proposal</a></p>
-</blockquote>
-<p>你可以用 <code>CancelToken.source</code> 工厂函数创建一个取消令牌：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="title class_">CancelToken</span> = axios.<span class="title class_">CancelToken</span>();</span><br><span class="line"><span class="keyword">const</span> source = <span class="title class_">CancelToken</span>.<span class="title function_">source</span>();</span><br><span class="line"></span><br><span class="line">axios.<span class="title function_">get</span>(<span class="string">&#x27;/user/12345&#x27;</span>, &#123;</span><br><span class="line">  <span class="attr">cancelToken</span>: source.<span class="property">token</span></span><br><span class="line">&#125;).<span class="title function_">catch</span>(<span class="keyword">function</span> (<span class="params">thrown</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (axios.<span class="title function_">isCancel</span>(thrown)) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;Request canceled&#x27;</span>, thrown.<span class="property">message</span>);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// 处理错误</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">axios.<span class="title function_">post</span>(<span class="string">&#x27;/user/12345&#x27;</span>, &#123;</span><br><span class="line">  <span class="attr">name</span>: <span class="string">&#x27;new name&#x27;</span></span><br><span class="line">&#125;, &#123;</span><br><span class="line">  <span class="attr">cancelToken</span>: source.<span class="property">token</span></span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 取消请求（消息参数是可选的）</span></span><br><span class="line">source.<span class="title function_">cancel</span>(<span class="string">&#x27;Operation canceled by user.&#x27;</span>);</span><br></pre></td></tr></table></figure>
-<p>你也可以通过传递一个执行函数给 <code>CancelToken</code> 构造器来创建一个取消令牌：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="title class_">CancelToken</span> = axios.<span class="property">CancelToken</span>;</span><br><span class="line"><span class="keyword">let</span> cancel;</span><br><span class="line"></span><br><span class="line">axios.<span class="title function_">get</span>(<span class="string">&#x27;/user/12345&#x27;</span>, &#123;</span><br><span class="line">  <span class="attr">cancelToken</span>: <span class="keyword">new</span> <span class="title class_">CancelToken</span>(<span class="keyword">function</span> <span class="title function_">executor</span>(<span class="params">c</span>) &#123;</span><br><span class="line">    <span class="comment">// 一个执行函数接受取消函数作为参数</span></span><br><span class="line">    cancel = c;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 取消请求</span></span><br><span class="line"><span class="title function_">cancel</span>();</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>注意：你可以用同一个取消令牌取消多个请求。</p>
-</blockquote>
-<h1 id="使用-applicationx-www-form-urlencoded-表格">使用 application/x-www-form-urlencoded 表格</h1>
-<p>默认情况下，axios 会将 JavaScript 对象序列化为 <code>JSON</code>。如果需要以 <code>application/x-www-form-urlencoded</code> 的格式来发送数据，你可以下面的选项之一：</p>
-<h2 id="浏览器">浏览器</h2>
-<p>在浏览器中，你可以使用 <a href="https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams"><code>URLSearchParams</code></a> API：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> params = <span class="keyword">new</span> <span class="title class_">URLSearchParams</span>();</span><br><span class="line">params.<span class="title function_">append</span>(<span class="string">&#x27;param1&#x27;</span>, <span class="string">&#x27;value1&#x27;</span>);</span><br><span class="line">params.<span class="title function_">append</span>(<span class="string">&#x27;param2&#x27;</span>, <span class="string">&#x27;value2&#x27;</span>);</span><br><span class="line">axios.<span class="title function_">post</span>(<span class="string">&#x27;/foo&#x27;</span>, params);</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>注意并不是所有的浏览器都支持 <code>URLSearchParams</code>，但是这里有一个可用的 <a href="https://github.com/WebReflection/url-search-params">polyfill</a>（务必确认 polyfill 全局环境）</p>
-</blockquote>
-<p>你也可以用 <a href="https://github.com/ljharb/qs"><code>qs</code></a> 库进行编码：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> qs = <span class="built_in">require</span>(<span class="string">&#x27;qs&#x27;</span>);</span><br><span class="line">axios.<span class="title function_">post</span>(<span class="string">&#x27;/foo&#x27;</span>, qs.<span class="title function_">stringify</span>(&#123; <span class="string">&#x27;bar&#x27;</span>: <span class="number">123</span> &#125;));</span><br></pre></td></tr></table></figure>
-<p>或者用别的方法（ES 6）：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> qs <span class="keyword">from</span> <span class="string">&#x27;qs&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> data = &#123; <span class="string">&#x27;bar&#x27;</span>: <span class="number">123</span> &#125;;</span><br><span class="line"><span class="keyword">const</span> options = &#123;</span><br><span class="line">  <span class="attr">method</span>: <span class="string">&#x27;POST&#x27;</span>,</span><br><span class="line">  <span class="attr">headers</span>: &#123; <span class="string">&#x27;content-type&#x27;</span>: <span class="string">&#x27;application/x-www-form-urlencoded&#x27;</span> &#125;,</span><br><span class="line">  <span class="attr">data</span>: qs.<span class="title function_">stringify</span>(data),</span><br><span class="line">  url,</span><br><span class="line">&#125;;</span><br><span class="line"><span class="title function_">axios</span>(options);</span><br></pre></td></tr></table></figure>
-<h2 id="node.js">Node.js</h2>
-<p>在 node.js 中，你可以使用 <a href="https://nodejs.org/api/querystring.html"><code>querystring</code></a> 模组：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> querystring = <span class="built_in">require</span>(<span class="string">&#x27;querystring&#x27;</span>);</span><br><span class="line">axios.<span class="title function_">post</span>(<span class="string">&#x27;http://something.com/&#x27;</span>, querystring.<span class="title function_">stringify</span>(&#123; <span class="attr">foo</span>: <span class="string">&#x27;bar&#x27;</span> &#125;));</span><br></pre></td></tr></table></figure>
-<p>你也可以使用 <a href="https://github.com/ljharb/qs"><code>qs</code></a> 库。</p>
-<blockquote>
-<p>注意 如果你需要序列化嵌套对象，使用 <code>qs</code> 库是更合适的，因为 <code>querystring</code> 方法有些已知的问题（<a href="https://github.com/nodejs/node-v0.x-archive/issues/1665">https://github.com/nodejs/node-v0.x-archive/issues/1665</a>）</p>
-</blockquote>
-<h1 id="语义化版本">语义化版本</h1>
-<p>axios <code>1.0</code> 版本之后，新的 minor 版本会发布一些重大的变化。比如 <code>0.5.1</code> 和 <code>0.5.4</code> 有着同样的 API，但是 <code>0.6.0</code> 版本会有一些重要的改变。</p>
-<h1 id="promises">Promises</h1>
-<p>axios 依赖于原生 ES6 的 Promise。如果你的环境不支持 ES6 Promises，你可以 <a href="https://github.com/stefanpenner/es6-promise">polyfill</a>。</p>
-<h1 id="typescript">TypeScript</h1>
-<p>axios 包括一些 <a href="http://typescriptlang.org/">TypeScript</a> 定义。</p>
-<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> axios <span class="keyword">from</span> <span class="string">&#x27;axios&#x27;</span>;</span><br><span class="line">axios.<span class="title function_">get</span>(<span class="string">&#x27;/user?ID=12345&#x27;</span>);</span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
         <category>工具</category>
