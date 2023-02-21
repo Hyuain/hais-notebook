@@ -2,12 +2,147 @@
 title: Java
 date: 2023-02-09 17:14:22
 categories:
-  - [计算机]
+  - [全栈]
 ---
 
 .
 
 <!-- more -->
+
+# Concepts
+
+## Object Oriented
+
+- **Encapsulation**: a class contains data and behaviors, and can hide some
+- **Abstraction**
+  - Abstract away implementation details
+  - Isolate the impact of changes made to the code
+- **Inheritance**: It weakens encapsulation.
+- **Polymorphism**: Any object instantiated by any child class can be handled in the same way
+- **Coupling and Cohesion**: *Loose coupled, highly cohesive*
+  - **Coupling** (dependency): The degree to which one class knows about another class.
+  - **Cohesion**: The degree to which a class has a single, well-focused purpose.
+
+- **Interface/Implementation Paradigm**
+  - An object should **reveal only the interfaces** that other objects must have to interact with it.
+  - Clients of the class will not be affected by implementation change.
+
+
+## UML Class Diagrams
+
+[UML Class Diagram Tutorial Video](https://www.youtube.com/watch?v=UI6lqHOVHic)
+
+[UML Class Diagram Tutorial](https://www.visual-paradigm.com/guide/uml-unified-modeling-language/uml-class-diagram-tutorial/;WWWSESSIONID=011FBA1C6F02E5074E7D3E435507A547.www1)
+
+### Attributes
+
+- Data containing values that describe each instance of that class
+- Also called fields, variables, properties.
+
+### Methods
+
+- Specify behavioral feature of a class.
+- Also called operations or functions.
+
+### Visibility
+
+```text
+- private
++ public
+# protected
+~ package/default
+```
+
+### Relationship
+
+![Class Relationship](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/ClassRelationship.jpg)
+
+![Inheritance](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/CDInheritance.jpg)
+
+![Association](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/CDAssociation.jpg)
+
+![Aggregation](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/CDAggregation.jpg)
+
+![Composition](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/CDComposition.jpg)
+
+### Example
+
+![Class Diagram Example](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/CDExample1.jpg)
+
+## SOLID Principle
+
+- SRP: Single Responsibility Principle
+- OCP: Open/Close Principle
+- LSP: Liskov Substitution Principle
+- IPS: Interface Segregation Principle
+- DIP: Dependency Inversion Principle
+
+### SRP: Single Responsibility Principle
+
+```text
+Animal
+- perfiomWalk()
+- performSwim()
+- performSleep()
+```
+
+### OCP: Open/Close Principle
+
+- Software entities (classes, modules, functions, etc.) should be:
+  - Open for extension
+  - Close for modification
+- Be able to extend a class's behavior without modifying it.
+
+### LSP: Liskov Substitution Principle
+
+If we substitute a super class object reference with an object of *any* of its subclasses, the program should not break. 
+
+If a superclass can do something, a subclass **MUST** also be able to do it.
+
+### IPS: Interface Segregation Principle
+
+No code should be forced to depend on methods it does not use.
+
+Splits large interfaces into smaller and more specific ones.
+
+```java
+// Large interface
+public interface Zookeeper {
+  void washAnimal();
+  void feedAnimal();
+  void petAnimal();
+}
+
+// Split into ...
+public interface AnimalCleaner {
+  void washAnimal();
+}
+public interface AnimalFeeder {
+  void feedAnimal();
+}
+public interface AnimalPetter {
+  void petAnimal();
+}
+
+class AnimalCarer implements AnimalCleaner, AnimalFeeder {
+	//...
+}
+class AnimalLover implements AnimalPetter {
+  //...
+}
+```
+
+### DIP: Dependency Inversion Principle
+
+Depend upon abstractions. Do not depend upon concrete classes.
+
+## Convention-Over-Configuration Principle
+
+The convention represents the most-used way to configure the app for a specific purpose.
+
+Only need to change those places where your app needs more particular configuration.
+
+Write less code for configuration.
 
 # Startup
 
@@ -44,11 +179,245 @@ java TestCircle
 
 To generate Setter and Getter methods in VSCode, in a Java source file, right-click and select `Source Action...`. And then select `Generate Getters and Setters`. The way to generate constructors is similar.
 
-## Maven Java Projects
+# OO Design in Java
+
+## Encapsulation
+
+- Access Modifier
+  - The keyword `private` signifies that a method or variable can be accessed only within the declaring object.
+  - All/most attributes should be declared as private.
+-  Getters and Setters
+
+## Inheritance
+
+- **Is-a Relationship**: A subclass can do anything that the superclass can do.
+  - **Generalization**: A subclass is a type of superclass (a dog **is-a** mammal)
+
+### Method Overriding
+
+```java
+public class Animal {
+  public void sound() {
+    //...
+  }
+}
+
+public class Horse extends Animal {
+  // Not mandatory but considered as best practice for coding
+  // Because it will let comiler to check wether Animal has sound or not
+  @Override
+  public void sound() {}
+}
+```
+
+### Interface and Abstract Class
+
+- An **interface** can provide **NO implementation** at all.
+  - A class can inherit from only one parent class, but it can implement many interfaces.
+- An **abstract class** can provide some implementation.
+
+```java
+interface Nameable {
+  String getName();
+  void setName(String aName);
+}
+
+abstract class Mammal {
+  public void generateHeat() {
+    //...
+  }
+  public abstract void makeNoise();
+}
+  
+class Dog extends Mammal implements Nameable {
+  String name;
+  
+  public void makeNoise() {
+    //...
+  }
+  public void setName (String aName) {
+    name = aName;
+  }
+  public String getName() {
+    return name;
+  }
+}
+
+Dog D = new Dog();
+Mammal M = D;
+Nameable N = D;
+```
+
+## Composition
+
+- **Has-a Relationship**: A dog **has a** head.
+
+```java
+class Mammal {
+  public void eat() {
+    //...
+  }
+}
+
+public Walkable {
+  public void walk() {
+    //...
+  }
+}
+
+class Dog {
+  Mammal m = new Mammal();
+  Walkable w = new Walkable();
+  
+  public void performWalk() {
+    w.walk();
+  }
+  public void performEat() {
+    m.eat();
+  }
+}
+```
+
+## Inverting of Control (IoC)
+
+- **DIP**: high-level modules should **not** depend on low-level modules.
+- **Both** should depend on abstractions.
+
+![High-level module depends on low level module](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/java-before-ioc.jpg)
+
+![Inverting of Control](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/java-ioc.jpg)
+
+Create 2 interfaces: to fetch the data and export the data.
+
+- All low-level modules must implements these interfaces
+- High-level module (Balance Sheet Module) needs to rely on interfaces
+
+```java
+public interface IFetchData {
+  List<Object[]> fetchData();
+}
+public interface IExportData {
+  File exportData(List<Object[]> listData);
+}
+```
+
+```java
+public class BalanceSheet {
+  private IExportData exportDataObj = null;
+  private IFetchData fetchDataObj = null;
+  
+  public Object generateBalanceSheet() {
+    List<Object[]> dataList = fetchDataObj.fetchData();
+    return exportDataObj.exportData(dataList);
+  }
+}
+```
+
+### Dependency Injection (DI)
+
+- DI is one way to implement IoC.
+- Decouples your class's construction from the construction of its dependencies.
+  - Invert the object creation process from your module to other code or entity.
+  - Inject the object from outside.
+
+#### Constructor Injection
+
+```java
+public class BalanceSheet {
+  private IExportData exportDataObj;
+  private IFetchData fetchDataObj;
+  
+  BalanceSheet(IFetchData fetchData, IExportData exportData) {
+    this.fetchDataObj = fetchData;
+    this.exportDataObj = exportData;
+  }
+}
+```
+
+#### Setter Injection
+
+```java
+public class BalanceSheet {
+  private IExportData exportDataObj;
+  private IFetchData fetchDataObj;
+  
+  public void setExportDataObj(IExportData exportDataObj) {
+    this.exportDataObj = exportDataObj;
+    this.fetchDataObj = fetchDataObj;
+  }
+}
+```
+
+### IoC Containers
+
+- A container takes care of creating, configuring, and managing objects.
+- You just need to do configuration, and the container will take care of object instantiation and dependency management with ease.
+- Java IoC Containers: Spring, Google Guice and Dagger.
+
+### Factory Pattern
+
+```java
+public class BalanceSheet {
+  private IFetchData fetchDataObj;
+  
+  public void configureFetchData(String type) {
+    this.fetchDataObj = FetchDataFactory.getFetchData(type);
+  }
+}
+
+public class FetchDataFactory {
+  public static IFetchData getFetchData(String type) {
+    IFetchData fetchData = null;
+    if ("FROM_DB".equalsIgnoreCase(type)) {
+      fetchData = new FetchDatabase();
+    }
+    else if ("FROM_WS".equalsIgnoreCase(type)) {
+      fetchData = new FetchWebService();
+    }
+    else {
+      return null;
+    }
+    return fetchData;
+  }
+}
+```
+
+
+
+# Maven
 
 Maven is a tool for building and managing your Java-based projects.
 
-### Create a Maven Project
+## Project Structure
+
+```text
+|-- pom.xml
+`-- src
+  |--main
+  |  `-- java
+  |    `-- com
+  |      `-- example
+  |        `-- App.java
+  `-- test
+    `-- java
+      `-- com
+        `-- example
+          `-- AppTest.java
+```
+
+- **src/main/java**: The source code.
+- **src/main/resources**: The resources such as configuration files and property files.
+- **src/test/resources**: The test resources such as configuration files and property files.
+- **pom.xml:** **Project Object Model**. The project's information and dependencies.
+  - **groupId**: identifies the group or organization that the dependency belongs to.
+  - **artifactId**: the id of the artifact within the group.
+  - **version**: the version of the dependency that the project requires.
+  - **scope**: the scope of the dependency (whether it is required for compilation, test, runtime, etc.)
+- **target**: The compiled code and other files generated during the build process.
+
+## Create a Maven Project
+
+### Use VSCode Extension
 
 Step 1:
 
@@ -59,6 +428,74 @@ Alternatively, you may click `+` under the **Java Project Panel**.
 Step 2: Choose `Maven`.
 
 Step 3: Select `maven-archetype-quickstart`
+
+### Use Command
+
+```bash
+mvn archetype:generate -DgroupId=com.example \
+-DartifactId=Demo2 \
+-DarchetkypeArtifactId=maven-archetype-quickstart \
+-DinteractiveMode=false
+```
+
+## Maven Lifecycle
+
+3 build-in build lifecycles:
+
+- **Default**: handles project deployment.
+- **Clean**: handles project cleaning.
+- **Site**: handles the creation of project's web site.
+
+These are some phases in the default lifecycle:
+
+- **validate**
+- **compile**
+- **test**: unit test
+- **package**
+- **verify**: integration test
+- **install**: install the package into local repository
+- **deploy**
+
+## Goals
+
+- A specific task (finer than a build phase) which contributes to the building and managing of a project.
+- Each goal is bound to one or more phases.
+  - Corresponds to a specific action that needs to be performed
+  - E.g. compiling code, running tests, and packaging the code.
+- One or more plugins can be bounded to the goal.
+
+## Plugins
+
+- Perform tasks in specific goal(s).
+  - E.g. automate common build tasks, such as compiling code, running tests, and packaging the code.
+- Can be bound to one or more goals.
+
+## Commands
+
+![Maven Phases, goals and Plugins](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/maven-phase-goal-plugin.jpg)
+
+A Maven command may be written in 2 forms:
+
+```bash
+mvn [phase]
+mvn [plugin]:[goal]
+```
+
+E.g.:
+
+```bash
+mvn compile            # execute default lifecycle till compile phase
+mvn compiler:compile   # only excute compiler plugin to comile
+
+mvn test
+mvn surefire:test      # only excute surefire plugin to test
+
+mvn exec:java
+```
+
+## JAR (Java Archive) File
+
+A package file format used to aggregate many Java class files and associated metadata and resources into one file for distribution.
 
 # Spring Boot
 
@@ -606,3 +1043,196 @@ java -jar demo-0.0.1-SNAPSHOT.jar
 Now the application is running.
 
 And we can change the port by adding `--server.port=8081` at the end.
+
+## Generate a Spring Boot Project
+
+[Spring Initializr](https://start.spring.io/) configured into your Maven project
+
+- The Spring app main class
+- The Spring Boot POM parent
+- The dependencies
+- The Spring Boot Maven plugin
+- The properties file
+
+## Dependency Starter
+
+A dependency starter is a group of dependencies you add to configure your app for a specific purpose.
+
+![Dependency Starter](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/dependency-starter.jpg)
+
+```xml
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+```
+
+## The Spring Ecosystem
+
+- Spring Core
+- Spring Model-View-Controller (MVC): Web application development.
+- Spring Data Access: Connect to SQL databases.
+- Spring Testing
+
+## @SpringBootApplication
+
+Enables
+
+- **@EnableAutoConfiguration**: Automatically configure your Spring application based on the jar dependencies that you have added. (e.g., Configure database connection based on specified dependency)
+- **@ComponentScan**: Enable scan **@Component**.
+- @**Configuration**: Allow register extra beens in the context or import additional configuration classes.
+
+## Spring Context
+
+The place in the app's memory where we add the object instances we want Spring to manage.
+
+### @Bean
+
+A bean is an object that is instantiated, assembled, and managed by a Spring IoC container.
+
+![Spring Context](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/SpringContext.jpg)
+
+### @Configuration
+
+Configuration class is a special class to instruct Spring to do specific actions.
+
+```java
+@Configuration
+public class ProjectConfig {
+  @Bean
+  Parrot parrot() {
+    var p = new Parrot();
+    p.setName("Koko");
+    return p;
+  }
+
+}
+```
+
+### @Component
+
+Mark it as a component. Spring creates an instance of the class and adds that instance to its context.
+
+## Dependency Injection (DI) in Spring
+
+### @Autowired
+
+Defines the object that needs the dependency.
+
+If there is a SMSService which implements MessageService:
+
+```java
+@Component
+public class SMSService implements MessageService {
+}
+```
+
+#### Field-Based Injection
+
+```java
+@Component
+public class Client {
+  @Autowired
+  private MessageService messageService;
+}
+```
+
+#### Constructor-Based Injection
+
+```java
+@Component
+public class Client {
+  private final MessageService messageService;
+  
+  @Autowired
+  public Client(MessageService messageService) {
+    this.messageService = messageService;
+  }
+}
+```
+
+#### Setter-Based Injection
+
+```java
+@Component
+public class Client {
+  private MessageService messageService;
+  
+  @Autowired(required = false)
+  public void setMessageService(MessageService messageService) {
+    this.messageService = messageService;
+  }
+}
+```
+
+### @Qualifier
+
+If there are multiple beans, we need use @Qualifier to tell Spring which one is correct.
+
+```java
+@Component
+@Qualifier("SMSService")
+public class SMSService implements MessageService {
+}
+
+@Component
+@Qualifier("EmailService")
+public class EmailService implements MessageService {
+}
+```
+
+#### Field-Base Injection
+
+```java
+@Component
+public class Client {
+  @Autowired
+  @Qualifier("SMSService")
+  private MessageService messageService;
+}
+```
+
+#### Constructor-Based Injection
+
+```java
+@Component
+public class Client {
+  private final MessageService messageService;
+  
+  @Autowired
+  public Client(@Qualifier("SMSService") MessageService messageService) {
+    this.messageService = messageService;
+  }
+}
+```
+
+#### Setter-Based Injection
+
+```java
+@Component
+public class Client {
+  private MessageService messageService;
+  
+  @Autowired(required = false)
+  @Qualifier("SMSService")
+  public void setMessageService(MessageService messageService) {
+    this.messageService = messageService;
+  }
+}
+```
+
+### @Primary
+
+We can also use @Primary to indicate the default one.
+
+## Web Service
+
+
+
+### @Controller
+
+
+
+### @RestController
+
+Instruct Spring that all the controller's actions are REST endpoints.

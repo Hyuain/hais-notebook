@@ -183,56 +183,56 @@ const date1 = new Date("December 17, 1995 03:24:00")
 // 如果其他没有写出来的，则表示与 Number 结果相同
 // 如果 parseFloat 没有写出来，表示与 parseInt 相同
 
-Number(true)									 // 1
-parseInt(true)								 // NaN, String(true) === 'true'
+Number(true)                   // 1
+parseInt(true)                 // NaN, String(true) === 'true'
 
-Number(false)									 // 0
-parseInt(false)								 // NaN, String(false) === 'false'
+Number(false)                  // 0
+parseInt(false)                // NaN, String(false) === 'false'
 
-Number(null)         				   // 0
-parseInt(null)								 // NaN, String(null) === 'null'
+Number(null)                   // 0
+parseInt(null)                 // NaN, String(null) === 'null'
 
-Number(undefined)     			   // NaN
-parseInt(undefined)						 // NaN, String(undefined) === 'undefined'
+Number(undefined)              // NaN
+parseInt(undefined)            // NaN, String(undefined) === 'undefined'
 
-Number({})            		 	   // NaN
-parseInt({})									 // NaN, String({}) === '[object Object]'
+Number({})                     // NaN
+parseInt({})                   // NaN, String({}) === '[object Object]'
 
 Number(object1)                // 42
-parseInt(object1)							 // 99
+parseInt(object1)              // 99
 
-Number(date1)									 // 819199440000
-parseInt(date1)								 // NaN, String(date1) === 'Sun Dec 17 1995 03:24:00 GMT+0800 (中国标准时间)'
+Number(date1)                  // 819199440000
+parseInt(date1)                // NaN, String(date1) === 'Sun Dec 17 1995 03:24:00 GMT+0800 (中国标准时间)'
 
 Number(12345678901234567890n)  // 12345678901234567000
-+12345678901234567890n				 // Cannot convert a BigInt value to a number
++12345678901234567890n         // Cannot convert a BigInt value to a number
 parseInt(12345678901234567890n)// 12345678901234567000, String(12345678901234567890n) === '12345678901234567890'
 
-Number(Symbol())							 // Cannot convert a Symbol value to a number
-parseInt(Symbol())						 // Cannot convert a Symbol value to a string
+Number(Symbol())               // Cannot convert a Symbol value to a number
+parseInt(Symbol())             // Cannot convert a Symbol value to a string
 
-Number("37.12")        		     // 37.12
-parseInt("37.12")							 // 37
-parseFloat("37.12")						 // 37.12
+Number("37.12")                // 37.12
+parseInt("37.12")              // 37
+parseFloat("37.12")            // 37.12
 
-Number("3122d")				         // NaN
-parseInt("3122d")							 // 3122
+Number("3122d")                // NaN
+parseInt("3122d")              // 3122
 
-Number("d3122")				         // NaN
+Number("d3122")                // NaN
 
-Number("37.12.12")	           // NaN
-parseInt("37.12.12")	         // 37
-parseFloat("37.12.12")				 // 37.12
+Number("37.12.12")             // NaN
+parseInt("37.12.12")           // 37
+parseFloat("37.12.12")         // 37.12
 
-Number("0x11")  							 // 17
+Number("0x11")                 // 17
 
-Number("0b11")  							 // 3
-parseInt("0b11")							 // 0
+Number("0b11")                 // 3
+parseInt("0b11")               // 0
 
-Number("0o11")  							 // 9
-parseInt("0o11")							 // 0
+Number("0o11")                 // 9
+parseInt("0o11")               // 0
 
-Number("")					        	 // 0
+Number("")                     // 0
 parseInt("")                   // NaN
 
 Number("      ")               // 0
@@ -245,23 +245,16 @@ parseInt("      ")             // NaN
 - 全局 `isNaN` 会先将值转换为 Number 类型，对所有转换为 Number 为 `NaN` 的，也会返回 `true`
 
 ```javascript
-isNaN("i'm a string")	// true
-isNaN(undefined)			// true
+isNaN("i'm a string") // true
+isNaN(undefined)      // true
 isNaN({})             // true
-isNaN(true)						// false, Number(true) === 1
+isNaN(true)           // false, Number(true) === 1
 isNaN(null)           // false, Number(null) === 0
 isNaN("37.12")        // false, Number("37.12") === 37.12
-isNaN("3122d")				// true
-isNaN("")							// false, Number("") === 0
+isNaN("3122d")        // true
+isNaN("")             // false, Number("") === 0
 isNaN("      ")       // false, Number("      ") === 0
 ```
-
-##### `Number.prototype.toString()`
-
-- `Number` 覆盖了 `Object.prototype.toString()`
-- 可以接受一个参数，表示进制
-- 由于 `Number` 没有 `[@@toPrimitive]()` 方法，在 Number 对象强制类型转换为 String 的时候，JavaScript 都会自动调用这个 `toString()` 方法
-  - 注意 Number 基本类型发生强制类型转换时（比如 `${someNumber}`），并不会调用 `Number.prototype.toString()`，所以覆盖这个方法并不会影响到此种情况的类型转换结果
 
 #### String
 
@@ -288,8 +281,9 @@ isNaN("      ")       // false, Number("      ") === 0
 - `String()` 得到的是一个字符串基本类型
 - `new String()` 得到的是一个对象
 - 会发生强制类型转换，值得注意的是：
-  - `undefined` `null` `true` `false` 都会被转换成那几个英文字母
-  - 对于对象，会按照 `[@@toPrimitive]()` `toString()` `valueOf` 的顺序调用
+  - `undefined` `null` 都会被转换成那几个英文字母
+  - 对于对象或其他非空的基本类型，会按照 `[@@toPrimitive]()` `toString()` `valueOf` 的顺序调用
+  
 
 ##### String 基本类型与 String 对象
 
@@ -306,9 +300,9 @@ isNaN("      ")       // false, Number("      ") === 0
 
 {% note warning %}
 
-**5 个 falsy 值**
+**6 个 falsy 值**
 
-`undefined` `null` `0` `NaN` `''`
+`undefined` `null` `0` `NaN` `''` `document.all`
 
 {% endnote %}
 
@@ -328,6 +322,8 @@ let s1 = Symbol('foo');
 let s2 = Symbol('foo');
 
 s1 === s2 // false
+
+new Symbol(123) // TypeError: Symbol is not a constructor
 ```
 
 #### BigInt
@@ -403,8 +399,8 @@ null 通常表示即该处不应该有值，undefined 通常表示"缺少值"，
     <td>√</td>
   </tr>
   <tr>
-    <td>Symbol / new Symbol()</td>
-    <td>new Symbol()</td>
+    <td>Symbol</td>
+    <td>Symbol()</td>
     <td>symbol</td>
     <td>√</td>
     <td>false*</td>
@@ -540,6 +536,7 @@ null 通常表示即该处不应该有值，undefined 通常表示"缺少值"，
     <td>√</td>
   </tr>
 </table>
+
 *尽管我们直接使用 `1 instanceof Number` 会出现错误，但是我们可以自定义 `instanceof` 方法，让他可以判断基本类型：
 
 ```js
@@ -619,6 +616,155 @@ function is(x, y) {
 变量声明指定值的时候同时也指定了类型，但是 **值和类型都可以随意变化**
 {% endnote %}
 
+### `toPrimitive` & `valueOf` & `toString`
+
+<table>
+  <tr>
+    <td colspan="2">类型</td>
+    <td>举例</td>
+    <td>@@toPrimitive</td>
+    <td>valueOf</td>
+    <td>toString</td>
+  </tr>
+  <tr>
+    <td rowspan="5">基本类型</td>
+    <td>Number</td>
+    <td>1</td>
+    <td>-</td>
+    <td>返回数字基本类型</td>
+    <td>
+      <p>可以接受一个参数，表示进制</p>
+      <p>注意数字基本类型发生强制类型转换时（比如 `${someNumber}`），并不会调用 Number.prototype.toString()，所以覆盖这个方法并不会影响到此种情况的类型转换结果</p>
+    </td>
+  </tr>
+  <tr>
+    <td>String</td>
+    <td>'hello'</td>
+    <td>-</td>
+    <td>返回字符串基本类型</td>
+    <td>与 valueOf 实现完全相同</td>
+  </tr>
+  <tr>
+    <td>Boolean</td>
+    <td>true</td>
+    <td>-</td>
+    <td>返回布尔基本类型</td>
+    <td>返回字符串 "true" "false"</td>
+  </tr>
+  <tr>
+    <td>Symbol</td>
+    <td>Symbol()</td>
+    <td>*1</td>
+    <td>与 toPrimitive 效果相同</td>
+    <td>*2</td>
+  </tr>
+  <tr>
+    <td>BigInt</td>
+    <td>12345678n</td>
+    <td>-</td>
+    <td>返回 BigInt 基本类型</td>
+    <td>返回一个去掉 n 的字符串</td>
+  </tr>
+  <tr>
+    <td rowspan="6">对象类型</td>
+    <td>普通对象</td>
+    <td>{a: '1', b: '2'}</td>
+    <td>默认没有，可以自己定义</td>
+    <td>对象自己，这是无意义的，因为 valueOf() 一般是用来转换成基本类型的，因此需要自己定义 valueOf</td>
+    <td>根据 this 返回 "[object Type]"</td>
+  </tr>
+  <tr>
+    <td>Array</td>
+    <td>[1, 2, 3]</td>
+    <td>-</td>
+    <td>-</td>
+    <td>调用 Array.prototype.join</td>
+  </tr>
+  <tr>
+    <td>Function</td>
+    <td>function() {}</td>
+    <td>-</td>
+    <td>-</td>
+    <td>根据 this 返回函数字符串</td>
+  </tr>
+  <tr>
+    <td>Error</td>
+    <td>new Error()</td>
+    <td>-</td>
+    <td>-</td>
+    <td>返回错误信息</td>
+  </tr>
+  <tr>
+    <td>Date</td>
+    <td>new Date()</td>
+    <td>*3</td>
+    <td>与 Date.prototype.getTime 效果相同</td>
+    <td>返回日期字符串</td>
+  </tr>
+  <tr>
+    <td>RegExp</td>
+    <td>new RegExp()</td>
+    <td>-</td>
+    <td>-</td>
+    <td>*4</td>
+  </tr>
+</table>
+
+*1. `Symbol.prototype[@@toPrimitive]` 会返回一个 Symbol 基本类型，其中的 `hint` 参数并没有被用到：
+
+```js
+const sym = Symbol("example")
+sym === sym[Symbol.toPrimitive](); // true
+```
+
+*2. `Symbol.prototype.toString` 需要提供一个 `this`，这个 `this` 应该是一个 Symbol 基本类型或 Symbol 对象。如果不提供正确的 `this`，它将会抛错，因为 `Symbol.prototype[@@toPrimitive]` 方法只会返回一个 Symbol 基本类型：
+
+```js
+console.log(Symbol('desc').toString());
+// Expected output: "Symbol(desc)"
+
+console.log(Symbol.iterator.toString());
+// Expected output: "Symbol(Symbol.iterator)
+
+console.log(Symbol.for('foo').toString());
+// Expected output: "Symbol(foo)"
+
+// console.log(Symbol('foo') + 'bar');
+// Expected output: Error: Can't convert symbol to string
+```
+
+*3. `Date.prototype[@@toPrimitive]` 会根据参数返回时间戳或者字符串：
+
+```js
+// Depending on timezone, your results will vary
+const date = new Date('20 December 2019 14:48');
+
+console.log(date[Symbol.toPrimitive]('string'));
+// "Fri Dec 20 2019 14:48:00 GMT+0800 (中国标准时间)"
+
+console.log(date[Symbol.toPrimitive]('number'));
+// 1576824480000
+```
+
+*4. `RegExp.prototype.toString` 会返回类似 `/source/flag` 的字符串：
+
+```js
+console.log(new RegExp('a+b+c'));
+// "/a+b+c/
+
+console.log(new RegExp('a+b+c').toString());
+// "/a+b+c/"
+
+console.log(new RegExp('bar', 'g').toString());
+// "/bar/g"
+
+console.log(new RegExp('\n', 'g').toString());
+// "/\n/g" (if your browser supports escaping)
+
+console.log(new RegExp('\\n', 'g').toString());
+// "/\n/g"
+```
+
 ## 运算符
 
 ### 算术运算符
@@ -690,12 +836,56 @@ a = a || 100 // 可以用于设置保底值
 
 ### 二进制运算符
 
-#### 或与否
+#### 或与
 
 ```js
 (0b1111 | 0b1010).toString(2) // 1111
 (0b1111 & 0b1010).toString(2) // 1010
-(~0b1010).toString // 涉及到补码，留坑
+```
+
+#### 否
+
+```javascript
+(~0b0101).toString(2)         // -110 (-6)
+```
+
+JavaScript 将数字存储为 64 位浮点数，但所有按位运算都以 32 位二进制数执行。在执行位运算之前，JavaScript 将数字转换为 32 位有符号整数：
+
+```javascript
+00000000 00000000 00000000 00000101 (5)
+```
+
+然后进行位运算（比如这里的按位取反）：
+
+```javascript
+11111111 11111111 11111111 11111010 (-6)
+```
+
+这里其实是使用的二进制补码，最高位表示 -2^32，次高位表示 +2^31，当 32 位全为 1 时，表示 - 1，可以通过“按位取反再加一”的方式快速获取他的相反数（在这里就是 6）：
+
+```javascript
+00000000 00000000 00000000 00000101 // 按位取反
+00000000 00000000 00000000 00000110 // +1，得到 6
+```
+
+执行按位操作后，结果将转换回 64 位 JavaScript 数，也就是 `-110`
+
+另外一个有趣的例子：
+
+```js
+(~-0b0101).toString(2)  // 100
+```
+
+先获得其 32 位表达（因为有符号，因此要按位取反再加一得到补码）：
+
+```js
+11111111 11111111 11111111 11111011 (-0101)
+```
+
+再进行否运算：
+
+```js
+00000000 00000000 00000000 00000100
 ```
 
 #### 异或
@@ -706,7 +896,7 @@ a = a || 100 // 可以用于设置保底值
 
 {% note warning %}
 
-按位取反可以用 `^1`
+按位取反可以用 `^1111`，有多少位就有多少个 `1`
 
 {% endnote %}
 
@@ -771,7 +961,7 @@ void 表达式或语句
 
 ```html
 <!-- 防止假动作 -->
-<a href="example.com" onclick="console.log(hi); return false;">点击</a>
+<a href="example.com" onclick="console.log('hi'); return false;">点击</a>
 
 <!-- 也可以用 -->
 <a href="javascript:void(console.log('hi'))">点击</a>
@@ -802,9 +992,9 @@ let f = x => (console.log('hi'), x + 1)
 
 ## Generator
 
-### 生成器执行流程
+### function*
 
-生成器是一个带星号的“函数”（其实他并不是真正的函数），可以通过 yield 关键字暂停执行和恢复执行
+生成器是一个带星号的“函数”（其实他并不是真正的函数），可以通过 `yield` 关键字暂停执行和恢复执行
 
 ```js
 function* gen() {
@@ -817,6 +1007,16 @@ function* gen() {
 }
 
 var g = gen()
+
+console.log('123')
+console.log(g.next())
+console.log(g.next())
+console.log(g.next())
+
+// 123
+// { value: 1, done: false }
+// { value: function, done: false }
+// { value: 3, done: true }
 ```
 
 1. 调用 `gen()` 之后，程序会阻塞住，不会执行任何语句
@@ -824,6 +1024,8 @@ var g = gen()
 3. `next` 方法会返回一个对象，有 `value` 和 `done` 属性，`value` 为 当前 `yield` 后面的结果，`done` 表示是否执行完，遇到 `return` 后，`done` 变为 `true`
 
 ### yield*
+
+`yield*` 可以实现生成器的套娃：
 
 ```js
 function* gen1() {
@@ -1078,12 +1280,12 @@ const z = NEW(X, 3, 4)
 ### 如何确定一个对象的原型？
 
 ```js
-对象.__proto__ === 其构造函数.prototype
+Object.getPrototypeOf(对象) === 对象.__proto__ === 其构造函数.prototype
 ```
 
 ### 数据类型与对象的分类
 
-> 数据类型是 JavaScript 数据的类型，一共有 7 种；
+> 数据类型是 JavaScript 数据的类型，一共有 8 种；
 >
 > 对象的分类则有无数种，常见的有 Array、Function、Date、RegExp 等
 
@@ -1097,11 +1299,15 @@ const z = NEW(X, 3, 4)
   - 自身属性：`'name'` `'length'`
   - 共有属性：`'call'` `'apply'` `'bind'`
 
+## valueOf & toString
+
+
+
 ## 其他问题
 
 > **Q: window 是谁构造出来的？**
 >
-> A: 可以通过 constructor 属性看出构造者
+> A: `Window`，可以通过 constructor 属性看出构造者
 
 > **Q: window.Object 是谁构造的？**
 >
@@ -1318,7 +1524,7 @@ let a = function(形参) { 函数体 } // 右边的部分也叫函数表达式
 let a = function fn(形参){ 函数体 }
 // 如果函数的声明是在 = 右边
 // fn 的作用域只能在 = 右边
-// 别的地方不能用 fn 这个名字
+// 别的地方可以用 fn 这个名字
 ```
 
 ### 使用构造函数
