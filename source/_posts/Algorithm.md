@@ -623,6 +623,119 @@ const count = (str) => {
    4. push 0
 7. 结果是栈顶的 0
 
+#### Code
+
+```js
+class Stack {
+  array = []
+  constructor() {}
+  push(value) {
+    return this.array.push(value)
+  }
+  pop() {
+    return this.array.pop()
+  }
+  get size() {
+    return this.array.length
+  }
+  get top() {
+    return this.array[this.array.length - 1]
+  }
+}
+```
+
+```js
+const priorityMap = new Map([
+  ['(', 0],
+  ['+', 1],
+  ['-', 1],
+  ['*', 2],
+  ['/', 2],
+  [')', 3],
+])
+
+// '1+2' -> ['1', '+', '2']
+const splitString = (s) => {
+  return s.split(/(\(|\)|\+|-|\*|\/)/).reduce((acc, cur) => {
+    if (!cur.trim()) {
+      return acc
+    }
+    return acc.concat(cur.trim())
+  }, [])
+}
+
+// ['1', '+', '2'] -> [1, 2, '+']
+const infix2Postfix = (infix) => {
+  const postfix = []
+  const stack = new Stack()
+  // -1 -> 0-1
+  if (infix[0] === '-') {
+    infix.unshift('0')
+  }
+  infix.forEach((item) => {
+    if (!priorityMap.has(item)) {
+      // 数字直接加进结果
+      postfix.push(Number(item))
+    } else if (item === '(') {
+      // 左括号入栈，待处理
+      stack.push(item)
+    } else if (item === ')') {
+      // 遇到右括号，一直pop，直到对应的左括号
+      // 相当于一段的完结，后面低优先级的运算符放在一段的最末位
+      while (stack.top !== '(') {
+        postfix.push(stack.pop())
+      }
+      // pop掉多余的左括号
+      stack.pop()
+    } else {
+      // 遇到 + - * /，如果stack.top优先级大于等于当前位，就把stack.top给pop出来
+      // 注意这里的等于，因为当优先级相同的时候，stack.top在前面出现，也应该pop出来
+      while (stack.size && priorityMap.get(stack.top) >= priorityMap.get(item)) {
+        postfix.push(stack.pop())
+      }
+      // 当前位入栈
+      stack.push(item)
+    }
+  })
+  // 整体的结束，与括号结束类似，剩下的低优先级的运算符放在末尾
+  while (stack.size) {
+    postfix.push(stack.pop())
+  }
+  return postfix
+}
+
+// [1, 2, '+'] -> 3
+const calcPostfix = (postfix) => {
+  const stack = new Stack()
+  postfix.forEach((item) => {
+    if (typeof item === 'number') {
+      // 数字直接入栈
+      stack.push(item)
+    } else {
+      // 遇到运算符，出栈两个数组，与运算符一起做运算
+      const r = stack.pop()
+      const l = stack.pop()
+      if (item === '+') {
+        stack.push(l + r)
+      } else if (item === '-') {
+        stack.push(l - r)
+      } else if (item === '*') {
+        stack.push(l * r)
+      } else if (item === '/') {
+        stack.push(l / r)
+      }
+    }
+  })
+  return stack.top
+} 
+
+const calc = (s) => {
+  const splited = splitString(s)
+  const postfix = infix2Postfix(splited)
+  return calcPostfix(postfix)
+}
+```
+
 # 队列
 
 ## 队列的实现
@@ -681,8 +794,6 @@ class Queue {
   }
 }
 ```
-
-
 
 # 二叉树
 
@@ -930,6 +1041,64 @@ function levelOrder(root: TreeNode | null): number[][] {
     return result
 }
 ```
+
+## 二叉搜索树
+
+### Search
+
+```typescript
+const search = (root: TreeNode | null, target: any) => {
+  let current = root
+  while (current) {
+    if (current.value === target) {
+      return current
+    }
+    current = current.value < target ? current.right : current.left
+  }
+  return null
+}
+```
+
+### Insertion
+
+```typescript
+const insert = (root: TreeNode | null, node: TreeNode) => {
+  if (!root) {
+    return node
+  }
+  let current = root
+  let prev
+  // find a node to insert
+  while (current) {
+    prev = current
+    if (node.value < current.value) {
+      current = current.left
+    } else if (node.value > current.value) {
+      current = current.right
+    } else {
+      // already exist
+      return root
+    }
+  }
+  if (node.value < prev) {
+    prev.left = node.value
+  } else {
+    prev.right = node.value
+  }
+}
+```
+
+### Deletion
+
+- 如果没有子节点：直接删除
+- 如果有一个子节点：用子结点替代该节点
+- 如果有两个子结点：删除右子树最小节点 x，然后用 x 替代该节点
+  - 称 x 为继任者，x 是比该节点大一位的节点
+  - 也可以用比 x 节点小一位的节点（左子树的最大节点）来替代，但是这样得到的树高度差会更大（？）
+
+
+
+
 
 # 动态规划
 

@@ -5,7 +5,7 @@ categories:
   - [全栈]
 ---
 
-.
+Object Oriented Design, Java, Maven, Spring Boot.
 
 <!-- more -->
 
@@ -18,7 +18,7 @@ categories:
   - Abstract away implementation details
   - Isolate the impact of changes made to the code
 - **Inheritance**: It weakens encapsulation.
-- **Polymorphism**: Any object instantiated by any child class can be handled in the same way
+- **Polymorphism**: 
 - **Coupling and Cohesion**: *Loose coupled, highly cohesive*
   - **Coupling** (dependency): The degree to which one class knows about another class.
   - **Cohesion**: The degree to which a class has a single, well-focused purpose.
@@ -1080,7 +1080,7 @@ Enables
 
 - **@EnableAutoConfiguration**: Automatically configure your Spring application based on the jar dependencies that you have added. (e.g., Configure database connection based on specified dependency)
 - **@ComponentScan**: Enable scan **@Component**.
-- @**Configuration**: Allow register extra beens in the context or import additional configuration classes.
+- **@Configuration**: Allow register extra beans in the context or import additional configuration classes.
 
 ## Spring Context
 
@@ -1225,14 +1225,271 @@ public class Client {
 
 We can also use @Primary to indicate the default one.
 
-## Web Service
+## Web Server
 
+REST Endpoints in Spring:
 
+1. The **client** makes an *HTTP request*.
+2. **Tomcat** accepts the request, and delivers it to the **Spring app**. **Dispatcher servlet** gets the HTTP request and manages the flow.
+3. The **dispatcher servlet** finds out what **method** of the **controller** to call depending on the *path* and *HTTP method* of the request. (It uses the **handler mapping**).
+4. The **dispatcher servlet** calls the **method**. After execution, the **controller method** returns the value to be sent to the client in the *HTTP response body*.
+5. Through **Tomcat**, the *HTTP response* is returned to the **client**.
+6. The **client** gets the *HTTP response data*.
 
 ### @Controller
 
+**@ResponseBody** tells the dispatcher servlet that the controller's action **doesn't return a view** but the **data sent directly in the HTTP response**.
 
+```java
+@Controller
+public class HelloController {
+  
+  @GetMapping("/hello")
+  @ResponseBody
+  public String hello() {
+    return "Hello!"
+  }
+}
+```
 
 ### @RestController
 
-Instruct Spring that all the controller's actions are REST endpoints.
+- Instruct Spring that all the controller's actions are REST endpoints.
+
+- Avoid  repeating the **@ResponseBody** annotation.
+
+```java
+public class Country {
+  private String name;
+  private int population;
+  //...
+}
+```
+
+```java
+@RestController
+public class HelloController {
+  
+  private static Logger logger = Logger.getLogger(HelloController.class.getName());
+  
+  @GetMapping("/hello")
+  public String hello() {
+    return "Hello!"
+  }
+  
+  // Spring will create a string representation of the object
+  // and formats it as JSON objects
+  @GetMapping("/france") {
+    Contry c = Country.of("France", 67);
+    return c;
+    // { "name": "France", "population": 67 }
+  }
+  
+  // ResponseEntity allows you to specify the response body, status, and headers on the HTTP response.
+  @GetMapping("/france")
+  public ResponseEntity<Country> france() {
+    Country c = country.of("France", 67);
+    return ResponseEntity
+      .status(HttpStatus.OK)
+      .body(c)
+  }
+  
+  @PostMapping("/payment")
+  public ResponseEntity<PaymentDetails> makePayment(
+    // @RequestBody will try to decode the JSON string into an instance of  your parameter type
+    @RequestBody PaymentDetails paymentDetails
+  ) {
+    logger.info("Received payment " + paymentDetails.getAmount());
+    return ResponseEntity
+      .status(HttpStatus.ACCEPTED)
+      .body(paymentDetails)
+  }
+}
+```
+
+### Spring Data
+
+- A high-level layer over various way to implement the persistence.
+  - Provides a common set of interfaces (contracts) you extend to define the app's persistence capabilities.
+- Spring Data gives your app the possibility to implement only the operations it needs.
+  - Interface segregation principle.
+
+![Spring Data Layer](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/SpringData-2.jpg)
+
+![Spring Data Interfaces](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/SpringData-1.jpg)
+
+#### Interfaces Architecture
+
+##### CrudRepository
+
+CRUD: Creating, Retrieving, Updating and Deleting.
+
+![CrudRepository](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/CrudRepository.jpg)
+
+##### PagingAndSortingRepostiroy
+
+Extends **CrudRepository** and adds operations related to sorting and paging.
+
+##### JpaRepository
+
+- **JPA (Java Persistence API)**: Provides a specification for persisting, reading, and managing data from your Java object to relational tables in database.
+- **JpaRepository**: Adds operations related to JPA. (E.g. Hibernate ORM framework implements JpaRepository interface)
+- **Hibernate**
+  - An **Object-relational mapping (ORM)** solution for Java environments.
+  - Map application domain model objects to the relational database tables.
+
+```text
+Java Class  <-------->  Hibernate (an ORM framework)  <-------->  Database Table
+```
+
+#### Using Spring Data
+
+Add dependencies in **pom.xml**:
+
+```xml
+<dependency>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-starter-data-jdbc</artifactId>
+</dependency>
+```
+
+Define a entity class to model data:
+
+```java
+@Entity
+public class Account {
+  @Id
+  private long id;
+  private String name;
+  private BigDecimal amount;
+  
+  //...
+}
+```
+
+Implement the Spring Data repository by defining an interface that extends one of the Repository interfaces:
+
+```java
+public interface AccountRepository
+  extends JpaRepository<Account, Long> {
+  
+  // Spring creates the SQL query automatically
+  // You can also use the @Query annotion to specify the SQL query
+  @Query("SELECT * FROM account WHERE name = :name")
+  List<Account> findAccountsByName(String name);
+}
+```
+
+Inject the repository in your service class:
+
+```java
+@Service
+public class TransferService {
+  
+  @Autowired
+  private final AccountRepository accountRepository;
+}
+```
+
+#### Hibernate
+
+##### Mapping a collection
+
+```java
+@Enity
+public class Item {
+  @Id
+  @GeneratedValue(generator = Constants.ID_GENERATOR)
+  protected Long id;
+  
+  @ElementCollection
+  @CollectionTable(name = "IMAGE")
+  @Column(name = "FILENAME")
+  protected List<String> images = new ArrayList<String>();
+  
+  //...
+}
+```
+
+##### Table Per Hierarchy
+
+- **Discriminator Column**: An extra column is created in the table to identitfy the class.
+
+```java
+@Entity
+@Table(name = "employee")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "type", discriminatiorType = DiscriminatorType.STRING)
+@DiscriminatorValue(value = "employee")
+public class Employee {
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @Column(name = "id")
+  private int id;
+  
+  @Column(name = "name")
+  private String name;
+  
+  //...
+}
+```
+
+```java
+@Entity
+@DiscriminatorValue("regularemployee")
+public class RegularEmployee extends Employee {
+  @Column(name = "salary")
+  private float salary;
+  
+  @Column(name = "bonus")
+  private int bonus;
+  
+  //...
+}
+```
+
+```java
+@Entity
+@DiscriminatorValue("contracteemployee")
+public class ContractEmployee extends Employee {
+  @Column(name = "pay_per_hour")
+  private float payPerHour;
+  
+  @Column(name = "contract_duration")
+  private String contract_duration;
+  
+  //...
+}
+```
+
+##### Many to many relationship
+
+```java
+@Entity
+@Table(name = "Employee")
+public class Employee {
+  //...
+  @ManyToMany(cascade = { CascadeType.ALL })
+  @JoinTable(
+    name = "EmployProject",
+    joinColumns = { @JoinColumn(name = "employee_id") },
+    inverseJoinColumns = { @JoinColumn(name = "project_id") }
+  )
+  Set<Project> projects = new HashSet<>();
+  
+  //...
+}
+```
+
+```java
+@Entity
+@Table(name = "Project")
+public class Project {
+  //...
+  @ManyToMany(mappedBy = "projects")
+  private Set<Employee> employees = new HashSet<>();
+  
+  //...
+}
+```
+
