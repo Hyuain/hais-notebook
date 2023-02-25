@@ -140,6 +140,9 @@
 </ol></li>
 <li><p>结果是栈顶的 0</p></li>
 </ol>
+<h4 id="code">Code</h4>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Stack</span> &#123;</span><br><span class="line">  array = []</span><br><span class="line">  <span class="title function_">constructor</span>(<span class="params"></span>) &#123;&#125;</span><br><span class="line">  <span class="title function_">push</span>(<span class="params">value</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="variable language_">this</span>.<span class="property">array</span>.<span class="title function_">push</span>(value)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="title function_">pop</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="variable language_">this</span>.<span class="property">array</span>.<span class="title function_">pop</span>()</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">get</span> <span class="title function_">size</span>() &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="variable language_">this</span>.<span class="property">array</span>.<span class="property">length</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">get</span> <span class="title function_">top</span>() &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="variable language_">this</span>.<span class="property">array</span>[<span class="variable language_">this</span>.<span class="property">array</span>.<span class="property">length</span> - <span class="number">1</span>]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> priorityMap = <span class="keyword">new</span> <span class="title class_">Map</span>([</span><br><span class="line">  [<span class="string">&#x27;(&#x27;</span>, <span class="number">0</span>],</span><br><span class="line">  [<span class="string">&#x27;+&#x27;</span>, <span class="number">1</span>],</span><br><span class="line">  [<span class="string">&#x27;-&#x27;</span>, <span class="number">1</span>],</span><br><span class="line">  [<span class="string">&#x27;*&#x27;</span>, <span class="number">2</span>],</span><br><span class="line">  [<span class="string">&#x27;/&#x27;</span>, <span class="number">2</span>],</span><br><span class="line">  [<span class="string">&#x27;)&#x27;</span>, <span class="number">3</span>],</span><br><span class="line">])</span><br><span class="line"></span><br><span class="line"><span class="comment">// &#x27;1+2&#x27; -&gt; [&#x27;1&#x27;, &#x27;+&#x27;, &#x27;2&#x27;]</span></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">splitString</span> = (<span class="params">s</span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">return</span> s.<span class="title function_">split</span>(<span class="regexp">/(\(|\)|\+|-|\*|\/)/</span>).<span class="title function_">reduce</span>(<span class="function">(<span class="params">acc, cur</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (!cur.<span class="title function_">trim</span>()) &#123;</span><br><span class="line">      <span class="keyword">return</span> acc</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> acc.<span class="title function_">concat</span>(cur.<span class="title function_">trim</span>())</span><br><span class="line">  &#125;, [])</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// [&#x27;1&#x27;, &#x27;+&#x27;, &#x27;2&#x27;] -&gt; [1, 2, &#x27;+&#x27;]</span></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">infix2Postfix</span> = (<span class="params">infix</span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> postfix = []</span><br><span class="line">  <span class="keyword">const</span> stack = <span class="keyword">new</span> <span class="title class_">Stack</span>()</span><br><span class="line">  <span class="comment">// -1 -&gt; 0-1</span></span><br><span class="line">  <span class="keyword">if</span> (infix[<span class="number">0</span>] === <span class="string">&#x27;-&#x27;</span>) &#123;</span><br><span class="line">    infix.<span class="title function_">unshift</span>(<span class="string">&#x27;0&#x27;</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  infix.<span class="title function_">forEach</span>(<span class="function">(<span class="params">item</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (!priorityMap.<span class="title function_">has</span>(item)) &#123;</span><br><span class="line">      <span class="comment">// 数字直接加进结果</span></span><br><span class="line">      postfix.<span class="title function_">push</span>(<span class="title class_">Number</span>(item))</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (item === <span class="string">&#x27;(&#x27;</span>) &#123;</span><br><span class="line">      <span class="comment">// 左括号入栈，待处理</span></span><br><span class="line">      stack.<span class="title function_">push</span>(item)</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (item === <span class="string">&#x27;)&#x27;</span>) &#123;</span><br><span class="line">      <span class="comment">// 遇到右括号，一直pop，直到对应的左括号</span></span><br><span class="line">      <span class="comment">// 相当于一段的完结，后面低优先级的运算符放在一段的最末位</span></span><br><span class="line">      <span class="keyword">while</span> (stack.<span class="property">top</span> !== <span class="string">&#x27;(&#x27;</span>) &#123;</span><br><span class="line">        postfix.<span class="title function_">push</span>(stack.<span class="title function_">pop</span>())</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// pop掉多余的左括号</span></span><br><span class="line">      stack.<span class="title function_">pop</span>()</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="comment">// 遇到 + - * /，如果stack.top优先级大于等于当前位，就把stack.top给pop出来</span></span><br><span class="line">      <span class="comment">// 注意这里的等于，因为当优先级相同的时候，stack.top在前面出现，也应该pop出来</span></span><br><span class="line">      <span class="keyword">while</span> (stack.<span class="property">size</span> &amp;&amp; priorityMap.<span class="title function_">get</span>(stack.<span class="property">top</span>) &gt;= priorityMap.<span class="title function_">get</span>(item)) &#123;</span><br><span class="line">        postfix.<span class="title function_">push</span>(stack.<span class="title function_">pop</span>())</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 当前位入栈</span></span><br><span class="line">      stack.<span class="title function_">push</span>(item)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">  <span class="comment">// 整体的结束，与括号结束类似，剩下的低优先级的运算符放在末尾</span></span><br><span class="line">  <span class="keyword">while</span> (stack.<span class="property">size</span>) &#123;</span><br><span class="line">    postfix.<span class="title function_">push</span>(stack.<span class="title function_">pop</span>())</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> postfix</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// [1, 2, &#x27;+&#x27;] -&gt; 3</span></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">calcPostfix</span> = (<span class="params">postfix</span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> stack = <span class="keyword">new</span> <span class="title class_">Stack</span>()</span><br><span class="line">  postfix.<span class="title function_">forEach</span>(<span class="function">(<span class="params">item</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> item === <span class="string">&#x27;number&#x27;</span>) &#123;</span><br><span class="line">      <span class="comment">// 数字直接入栈</span></span><br><span class="line">      stack.<span class="title function_">push</span>(item)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="comment">// 遇到运算符，出栈两个数组，与运算符一起做运算</span></span><br><span class="line">      <span class="keyword">const</span> r = stack.<span class="title function_">pop</span>()</span><br><span class="line">      <span class="keyword">const</span> l = stack.<span class="title function_">pop</span>()</span><br><span class="line">      <span class="keyword">if</span> (item === <span class="string">&#x27;+&#x27;</span>) &#123;</span><br><span class="line">        stack.<span class="title function_">push</span>(l + r)</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (item === <span class="string">&#x27;-&#x27;</span>) &#123;</span><br><span class="line">        stack.<span class="title function_">push</span>(l - r)</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (item === <span class="string">&#x27;*&#x27;</span>) &#123;</span><br><span class="line">        stack.<span class="title function_">push</span>(l * r)</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (item === <span class="string">&#x27;/&#x27;</span>) &#123;</span><br><span class="line">        stack.<span class="title function_">push</span>(l / r)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">  <span class="keyword">return</span> stack.<span class="property">top</span></span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">calc</span> = (<span class="params">s</span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> splited = <span class="title function_">splitString</span>(s)</span><br><span class="line">  <span class="keyword">const</span> postfix = <span class="title function_">infix2Postfix</span>(splited)</span><br><span class="line">  <span class="keyword">return</span> <span class="title function_">calcPostfix</span>(postfix)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h1 id="队列">队列</h1>
 <h2 id="队列的实现">队列的实现</h2>
 <p>用环形队列可以节约内存，并且入队和出队都能得到 O(1) 的时间复杂度：</p>
@@ -206,6 +209,21 @@
 <h4 id="递归法">递归法</h4>
 <p>传入 deep 可以不管当前递归到哪里了，自己属于哪一层</p>
 <figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">levelOrder</span>(<span class="params">root: TreeNode | <span class="literal">null</span></span>): <span class="built_in">number</span>[][] &#123;</span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">traversal</span>(<span class="params">current: TreeNode | <span class="literal">null</span>, result: <span class="built_in">number</span>[][], deep: <span class="built_in">number</span></span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!current) &#123; <span class="keyword">return</span> &#125;</span><br><span class="line">        <span class="keyword">if</span> (!result[deep]) &#123; result[deep] = [] &#125;</span><br><span class="line">        result[deep].<span class="title function_">push</span>(current.<span class="property">val</span>)</span><br><span class="line">        <span class="title function_">traversal</span>(current.<span class="property">left</span>, result, deep + <span class="number">1</span>)</span><br><span class="line">        <span class="title function_">traversal</span>(current.<span class="property">right</span>, result, deep + <span class="number">1</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">const</span> result = []</span><br><span class="line">    <span class="title function_">traversal</span>(root, result, <span class="number">0</span>)</span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="二叉搜索树">二叉搜索树</h2>
+<h3 id="search">Search</h3>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="title function_">search</span> = (<span class="params">root: TreeNode | <span class="literal">null</span>, target: <span class="built_in">any</span></span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">let</span> current = root</span><br><span class="line">  <span class="keyword">while</span> (current) &#123;</span><br><span class="line">    <span class="keyword">if</span> (current.<span class="property">value</span> === target) &#123;</span><br><span class="line">      <span class="keyword">return</span> current</span><br><span class="line">    &#125;</span><br><span class="line">    current = current.<span class="property">value</span> &lt; target ? current.<span class="property">right</span> : current.<span class="property">left</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">null</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="insertion">Insertion</h3>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="title function_">insert</span> = (<span class="params">root: TreeNode | <span class="literal">null</span>, node: TreeNode</span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">if</span> (!root) &#123;</span><br><span class="line">    <span class="keyword">return</span> node</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">let</span> current = root</span><br><span class="line">  <span class="keyword">let</span> prev</span><br><span class="line">  <span class="comment">// find a node to insert</span></span><br><span class="line">  <span class="keyword">while</span> (current) &#123;</span><br><span class="line">    prev = current</span><br><span class="line">    <span class="keyword">if</span> (node.<span class="property">value</span> &lt; current.<span class="property">value</span>) &#123;</span><br><span class="line">      current = current.<span class="property">left</span></span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (node.<span class="property">value</span> &gt; current.<span class="property">value</span>) &#123;</span><br><span class="line">      current = current.<span class="property">right</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="comment">// already exist</span></span><br><span class="line">      <span class="keyword">return</span> root</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (node.<span class="property">value</span> &lt; prev) &#123;</span><br><span class="line">    prev.<span class="property">left</span> = node.<span class="property">value</span></span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    prev.<span class="property">right</span> = node.<span class="property">value</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="deletion">Deletion</h3>
+<ul>
+<li>如果没有子节点：直接删除</li>
+<li>如果有一个子节点：用子结点替代该节点</li>
+<li>如果有两个子结点：删除右子树最小节点 x，然后用 x 替代该节点
+<ul>
+<li>称 x 为继任者，x 是比该节点大一位的节点</li>
+<li>也可以用比 x 节点小一位的节点（左子树的最大节点）来替代，但是这样得到的树高度差会更大（？）</li>
+</ul></li>
+</ul>
 <h1 id="动态规划">动态规划</h1>
 <h2 id="背包问题">背包问题</h2>
 <figure>
@@ -3776,6 +3794,283 @@ Y = \overline C A + CB
       </categories>
   </entry>
   <entry>
+    <title>Identity &amp; Auth0</title>
+    <url>/hais-notebook/2023/02/22/Identity/</url>
+    <content><![CDATA[<p>From <a href="https://auth0.com/docs/get-started/identity-fundamentals">Auth0 Docs</a>. <a href="https://auth0.com/docs/glossary">Glossary</a></p>
+<span id="more"></span>
+<h1 id="identity-fundamentals">Identity Fundamentals</h1>
+<p><strong>Identity and Access Management (IAM)</strong> provides control over <strong>user validation</strong> and <strong>resource access</strong>.</p>
+<p>IAM ensures that the <strong>right people</strong> access the <strong>right digital resource</strong> at the <strong>right time</strong> and for the <strong>right reason</strong>.</p>
+<p>IAM usually combines these capabilities:</p>
+<ul>
+<li>Seamless signup and login experiences</li>
+<li>Multiple source of user identities</li>
+<li>Multi-factor authentication (MFA)</li>
+<li>Step-up authentication</li>
+<li>Attack protection</li>
+<li>Role-based access control (RBAC)</li>
+</ul>
+<h2 id="basic-concepts">Basic Concepts</h2>
+<ul>
+<li><strong>Digital resource</strong>: Combination of applications and data, e.g. web applications, APIs, platforms, devices, or databases.</li>
+<li>The core of IAM is <strong>identity</strong>.
+<ul>
+<li>In IAM, a <strong>user account</strong> is a <strong>digital identity</strong> (Set of attributes that define a particular user).</li>
+<li>User account can also represent non-humans, such as software, IoT devices, or robotics.</li>
+</ul></li>
+</ul>
+<h3 id="authentication-authorization">Authentication &amp; Authorization</h3>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"><strong>Authentication</strong></th>
+<th style="text-align: left;"><strong>Authorization</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Determines whether users are who they claim to be</td>
+<td style="text-align: left;">Determines what users can and cannot access</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Challenges the user to validate credentials (for example, through passwords, answers to security questions, or facial recognition)</td>
+<td style="text-align: left;">Verifies whether access is allowed through policies and rules</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Usually done before authorization</td>
+<td style="text-align: left;">Usually done after successful authentication</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Generally, transmits info through an ID Token</td>
+<td style="text-align: left;">Generally, transmits info through an Access Token</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Generally governed by the OpenID Connect (OIDC) protocol</td>
+<td style="text-align: left;">Generally governed by the OAuth 2.0 framework</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Example: Employees in a company are required to authenticate through the network before accessing their company email</td>
+<td style="text-align: left;">Example: After an employee successfully authenticates, the system determines what information the employees are allowed to access</td>
+</tr>
+</tbody>
+</table>
+<h3 id="identity-providers">Identity Providers</h3>
+<p>An identity provider creates, maintains, and manages identity information, and can provide authentication services to other applications. E.g., Google Account, Facebook, LinkedIn, Microsoft Active Directory and Swedish BankID.</p>
+<p>Identity Providers don't share your authentication credentials with the app that rely on them.</p>
+<h3 id="authentication-factors">Authentication Factors</h3>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Factor type</th>
+<th style="text-align: left;">Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Knowledge (something you know)</td>
+<td style="text-align: left;">Pin, password</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Possession (something you have)</td>
+<td style="text-align: left;">Mobile phone, encryption key device</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Inherence (something you are)</td>
+<td style="text-align: left;">Fingerprint, facial recognition, iris scan</td>
+</tr>
+</tbody>
+</table>
+<h2 id="protocols">Protocols</h2>
+<p>Some specifications and protocols that provide guidance on how to:</p>
+<ul>
+<li>Design IAM systems to manage identity</li>
+<li>Move personal data securely</li>
+<li>Decide who can access resources</li>
+</ul>
+<p>These IAM industry standards are considered to the most secure, reliable, and practical to implement:</p>
+<h3 id="oauth-2.0-protocol">OAuth 2.0 Protocol</h3>
+<p>Lets an app access resources hosted by other web apps on behalf of a user without ever sharing the user's credentials.</p>
+<p>It allows third-party developers to rely on large social platforms like Facebook, Google and Twitter for login.</p>
+<ul>
+<li><strong>Resource Owner</strong>: Entity that can grant access to a protected resource. (<strong>end-user</strong>).</li>
+<li><strong>Client</strong>: <strong>Application</strong> requesting access to protected resource on behalf of the <strong>Resource Owner</strong>.</li>
+<li><strong>Resource Server</strong>: Server hosting the protected resource. (<strong>the API</strong> you want to access).</li>
+<li><strong>Authorization Server</strong>: Server that authenticates the <strong>Resource Owner</strong> and issues <strong>Access Tokens</strong> after getting proper authorization (e.g. Auth0).</li>
+<li><strong>User Agent</strong>: Agent used by <strong>Resource Owner</strong> to interact with the Client (e.g. a browser or a native application).</li>
+</ul>
+<h4 id="grant-types">Grant Types</h4>
+<p>OAuth 2.0 defines flows to get an access token, these flows are called grant types.</p>
+<h5 id="client-credentials-flow">Client Credentials Flow</h5>
+<ul>
+<li>Machine-to-machine (M2M) applications (CLIs, daemons, services running on back-end).</li>
+<li>No username &amp; password.</li>
+<li>Pass <strong>Client ID</strong> and <strong>Client Secret</strong> to authenticate and get a token.</li>
+</ul>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Client_Credentials_flow.png" alt="Client Credentials Flow" /><figcaption aria-hidden="true">Client Credentials Flow</figcaption>
+</figure>
+<h5 id="authorization-code-flow">Authorization Code Flow</h5>
+<ul>
+<li>Server-side web applications</li>
+<li>Exchange an <strong>Authorization Code</strong> for a token, also pass along <strong>Client Secret</strong></li>
+</ul>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/auth-sequence-auth-code.png" alt="Authorization Code Flow" /><figcaption aria-hidden="true">Authorization Code Flow</figcaption>
+</figure>
+<p>In short:</p>
+<ol type="1">
+<li><strong>The user</strong> click login on the <strong>web app</strong>, and the web app request authorization from <strong>Authorization Server</strong>.</li>
+<li><strong>Authorization Server</strong> asks the <strong>user</strong> for authorization and get <strong>Authorization Code</strong>. And redirect to the <strong>web app</strong>.</li>
+<li>Server-side web application gets the <strong>Authorization Code</strong>, and send it to <strong>Authorization Server</strong> with <strong>Client Secret</strong>, to get the token.</li>
+</ol>
+<h5 id="resource-owner-password-flow">Resource Owner Password Flow</h5>
+<ul>
+<li>Must not be used by third-party clients. Only highly-trusted applications can use this flow.</li>
+<li>Requests users provide credentials (username and password), typically using an interactive form.</li>
+<li>Even if the application is highly-trusted, this flow should only be used when redirect-based flows (like Authorization Code Flow) cannot be used.</li>
+</ul>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/ROP_Grant.png" alt="Resource Owner Password" /><figcaption aria-hidden="true">Resource Owner Password</figcaption>
+</figure>
+<h5 id="authorization-code-flow-with-proof-key-for-code-exchange-pkce">Authorization Code Flow with Proof Key for Code Exchange (PKCE)</h5>
+<ul>
+<li><strong>Public Clients</strong> (Native and Single-Page Applications).</li>
+</ul>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/auth-sequence-auth-code-pkce.png" alt="Authorization Code Flow with PKCE" /><figcaption aria-hidden="true">Authorization Code Flow with PKCE</figcaption>
+</figure>
+<p>In short:</p>
+<ol type="1">
+<li>There is no <strong>Client ID</strong> and <strong>Client Secret</strong> stored in the app.</li>
+<li>The <strong>app</strong> generates cryptographically-random <strong>Code Verifier</strong>, and from this generates <strong>Code Challenge</strong>.</li>
+<li><strong>Authorization Server</strong> stores <strong>Code Chanllenge</strong> and issue <strong>Authorization Code</strong> like normal Authorization Code Flow.</li>
+<li>The <strong>app</strong> send the <strong>Authorization Code</strong> and <strong>Code Verifier</strong> to <strong>Authorization Server</strong>, where the <strong>Code Verifier</strong> and <strong>Code Challenge</strong> will be validated.</li>
+</ol>
+<h5 id="implicit-flow-with-form-post">Implicit Flow with Form Post</h5>
+<ul>
+<li>No <strong>Access Token</strong> (like JWT, to access some API), only ID Token (just for the client itself).</li>
+<li>For front-end centered applications (maybe there are no backend)</li>
+<li>Implicit Flow can also not be done with form post, it can also get token through redirected fragment.</li>
+</ul>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/auth-sequence-implicit-form-post.png" alt="Implicit Flow with Form Post" /><figcaption aria-hidden="true">Implicit Flow with Form Post</figcaption>
+</figure>
+<h5 id="device-authorization-flow">Device Authorization Flow</h5>
+<ul>
+<li>Input-constrained devices asks the user to go to a link on their computer or smartphone and authorize the device.</li>
+</ul>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/auth-sequence-device-auth.png" alt="Device Authorization Flow" /><figcaption aria-hidden="true">Device Authorization Flow</figcaption>
+</figure>
+<h4 id="endpoints">Endpoints</h4>
+<h5 id="authorization-endpoint">Authorization Endpoint</h5>
+<blockquote>
+<p><code>/authorize</code></p>
+</blockquote>
+<ul>
+<li>Interact with <strong>resource owner</strong> and <strong>get the authorization</strong> to access the protected resource.</li>
+<li>E.g. 3rd party app uses Google Account to login.
+<ul>
+<li>First, the app will redirect to Google to <strong>authenticate</strong>.</li>
+<li>Then you will get a consent screen, where you asked to <strong>authorize</strong> the app to access some of your data (email address and contacts, etc.).</li>
+</ul></li>
+</ul>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 80%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>response_type</code></td>
+<td style="text-align: left;">Tells the authorization server which grant to execute.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>response_mode</code></td>
+<td style="text-align: left;">(Optional) How the result of the authorization request is formatted. Values:<br />- <code>query</code>: for Authorization Code grant. <code>302 Found</code> triggers redirect.<br />- <code>fragment</code>: for Implicit grant. <code>302 Found</code> triggers redirect.<br />- <code>form_post</code>: <code>200 OK</code> with response parameters embedded in an HTML form as hidden parameters.<br />- <code>web_message</code>: For Silent Authentication. Uses HTML5 web messaging.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>client_id</code></td>
+<td style="text-align: left;">The ID of the application that asks for authorization.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>redirect_uri</code></td>
+<td style="text-align: left;">Holds a URL. A successful response from this endpoint results in a redirect to this URL.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>scope</code></td>
+<td style="text-align: left;">A space-delimited list of permissions that the application requires.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>state</code></td>
+<td style="text-align: left;">An opaque value, used for security purposes. If this request parameter is set in the request, then it is returned to the application as part of the <code>redirect_uri</code>.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>connection</code></td>
+<td style="text-align: left;">Specifies the connection type for Passwordless connections</td>
+</tr>
+</tbody>
+</table>
+<h5 id="token-endpoint">Token Endpoint</h5>
+<blockquote>
+<p><code>/oauth/token</code></p>
+</blockquote>
+<ul>
+<li>Used by the <strong>application</strong> to get an <strong>Access Token</strong> or a <strong>Refresh Token</strong>.</li>
+<li><strong>Implicit Flow</strong>: not used. Because an access token is issued directly through authorization endpoint.</li>
+<li><strong>Authorization Code Flow</strong>: The app exchanges <strong>authorization code</strong> for access token.</li>
+<li><strong>Client Credentials Flow, Resource Owner Password Flow</strong>: The app authenticates using a set of credentials and get an access token.</li>
+</ul>
+<h4 id="state-parameters">State Parameters</h4>
+<ul>
+<li>Allows you to restore the previous state of your application.</li>
+<li>To mitigate CSRF attacks.</li>
+</ul>
+<h3 id="open-id-connect-oidc-protocol">Open ID Connect (OIDC) Protocol</h3>
+<ul>
+<li><p>A simple identity layer that sits on the top of OAuth 2.0.</p>
+<ul>
+<li><p>While OAuth 2.0 is about resource access and sharing, OIDC is about user authentication.</p></li>
+<li><p>OIDC makes it easy to verify a user's identity and obtain basic profile information from the identity provider.</p></li>
+</ul></li>
+<li><p>Uses <strong>JSON Web Tokens (JWTs)</strong>.</p>
+<ul>
+<li>JWTs contain <strong>claims</strong> (statements, such as name or email address) about an entity and additional metadata.</li>
+<li>OpenID Connect Specification defines a set of standard claims, including name, email, gender, and so on.</li>
+<li>You can also create custom claims and add them to your tokens.</li>
+</ul></li>
+</ul>
+<h3 id="security-assertion-markup-language-saml">Security Assertion Markup Language (SAML)</h3>
+<p>SAML is an open-standard, XML-based data format for authentication and authorization between two entities without a password:</p>
+<ul>
+<li><strong>Service Provider</strong> (SP): Agrees to trust the identity provider to authenticate users.</li>
+<li><strong>Identity Provider</strong> (IP): Authenticates users and provides to SP an authentication assertion that indicates a user has been authenticated.</li>
+</ul>
+<h3 id="web-services-federation-ws-fed">Web Services Federation (WS-Fed)</h3>
+<p>Developed by Microsoft. It defines the way security tokens can be transported between different entities to exchange identity and authorization information.</p>
+<h2 id="tokens">Tokens</h2>
+<h3 id="json-web-tokens-jwts">JSON Web Tokens (JWTs)</h3>
+<p>JWTs are digitally signed.</p>
+<p>They can be used to pass the identity of authenticated users between the identity provider and the service requesting the authentication.</p>
+<p>They also can be authenticated and encrypted.</p>
+<h1 id="auth0">Auth0</h1>
+<h2 id="authenticate">Authenticate</h2>
+]]></content>
+      <categories>
+        <category>全栈</category>
+      </categories>
+  </entry>
+  <entry>
     <title>Internet Security</title>
     <url>/hais-notebook/2023/01/18/InternetSecurity/</url>
     <content><![CDATA[<p>.</p>
@@ -4117,7 +4412,7 @@ Y = \overline C A + CB
   <entry>
     <title>Java</title>
     <url>/hais-notebook/2023/02/09/Java/</url>
-    <content><![CDATA[<p>.</p>
+    <content><![CDATA[<p>Object Oriented Design, Java, Maven, Spring Boot.</p>
 <span id="more"></span>
 <h1 id="concepts">Concepts</h1>
 <h2 id="object-oriented">Object Oriented</h2>
@@ -4129,7 +4424,7 @@ Y = \overline C A + CB
 <li>Isolate the impact of changes made to the code</li>
 </ul></li>
 <li><strong>Inheritance</strong>: It weakens encapsulation.</li>
-<li><strong>Polymorphism</strong>: Any object instantiated by any child class can be handled in the same way</li>
+<li><strong>Polymorphism</strong>:</li>
 <li><strong>Coupling and Cohesion</strong>: <em>Loose coupled, highly cohesive</em>
 <ul>
 <li><strong>Coupling</strong> (dependency): The degree to which one class knows about another class.</li>
@@ -4481,7 +4776,7 @@ Y = \overline C A + CB
 <ul>
 <li><strong><span class="citation" data-cites="EnableAutoConfiguration">@EnableAutoConfiguration</span></strong>: Automatically configure your Spring application based on the jar dependencies that you have added. (e.g., Configure database connection based on specified dependency)</li>
 <li><strong><span class="citation" data-cites="ComponentScan">@ComponentScan</span></strong>: Enable scan <strong><span class="citation" data-cites="Component">@Component</span></strong>.</li>
-<li><span class="citation" data-cites="*">@*</span>*Configuration**: Allow register extra beens in the context or import additional configuration classes.</li>
+<li><strong><span class="citation" data-cites="Configuration">@Configuration</span></strong>: Allow register extra beans in the context or import additional configuration classes.</li>
 </ul>
 <h2 id="spring-context">Spring Context</h2>
 <p>The place in the app's memory where we add the object instances we want Spring to manage.</p>
@@ -4517,10 +4812,84 @@ Y = \overline C A + CB
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Client</span> &#123;</span><br><span class="line">  <span class="keyword">private</span> MessageService messageService;</span><br><span class="line">  </span><br><span class="line">  <span class="meta">@Autowired(required = false)</span></span><br><span class="line">  <span class="meta">@Qualifier(&quot;SMSService&quot;)</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setMessageService</span><span class="params">(MessageService messageService)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.messageService = messageService;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="primary"><span class="citation" data-cites="Primary">@Primary</span></h3>
 <p>We can also use <span class="citation" data-cites="Primary">@Primary</span> to indicate the default one.</p>
-<h2 id="web-service">Web Service</h2>
+<h2 id="web-server">Web Server</h2>
+<p>REST Endpoints in Spring:</p>
+<ol type="1">
+<li>The <strong>client</strong> makes an <em>HTTP request</em>.</li>
+<li><strong>Tomcat</strong> accepts the request, and delivers it to the <strong>Spring app</strong>. <strong>Dispatcher servlet</strong> gets the HTTP request and manages the flow.</li>
+<li>The <strong>dispatcher servlet</strong> finds out what <strong>method</strong> of the <strong>controller</strong> to call depending on the <em>path</em> and <em>HTTP method</em> of the request. (It uses the <strong>handler mapping</strong>).</li>
+<li>The <strong>dispatcher servlet</strong> calls the <strong>method</strong>. After execution, the <strong>controller method</strong> returns the value to be sent to the client in the <em>HTTP response body</em>.</li>
+<li>Through <strong>Tomcat</strong>, the <em>HTTP response</em> is returned to the <strong>client</strong>.</li>
+<li>The <strong>client</strong> gets the <em>HTTP response data</em>.</li>
+</ol>
 <h3 id="controller"><span class="citation" data-cites="Controller">@Controller</span></h3>
+<p><strong><span class="citation" data-cites="ResponseBody">@ResponseBody</span></strong> tells the dispatcher servlet that the controller's action <strong>doesn't return a view</strong> but the <strong>data sent directly in the HTTP response</strong>.</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HelloController</span> &#123;</span><br><span class="line">  </span><br><span class="line">  <span class="meta">@GetMapping(&quot;/hello&quot;)</span></span><br><span class="line">  <span class="meta">@ResponseBody</span></span><br><span class="line">  <span class="keyword">public</span> String <span class="title function_">hello</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;Hello!&quot;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="restcontroller"><span class="citation" data-cites="RestController">@RestController</span></h3>
-<p>Instruct Spring that all the controller's actions are REST endpoints.</p>
+<ul>
+<li><p>Instruct Spring that all the controller's actions are REST endpoints.</p></li>
+<li><p>Avoid repeating the <strong><span class="citation" data-cites="ResponseBody">@ResponseBody</span></strong> annotation.</p></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Country</span> &#123;</span><br><span class="line">  <span class="keyword">private</span> String name;</span><br><span class="line">  <span class="keyword">private</span> <span class="type">int</span> population;</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HelloController</span> &#123;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="type">Logger</span> <span class="variable">logger</span> <span class="operator">=</span> Logger.getLogger(HelloController.class.getName());</span><br><span class="line">  </span><br><span class="line">  <span class="meta">@GetMapping(&quot;/hello&quot;)</span></span><br><span class="line">  <span class="keyword">public</span> String <span class="title function_">hello</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;Hello!&quot;</span></span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// Spring will create a string representation of the object</span></span><br><span class="line">  <span class="comment">// and formats it as JSON objects</span></span><br><span class="line">  <span class="meta">@GetMapping(&quot;/france&quot;)</span> &#123;</span><br><span class="line">    <span class="type">Contry</span> <span class="variable">c</span> <span class="operator">=</span> Country.of(<span class="string">&quot;France&quot;</span>, <span class="number">67</span>);</span><br><span class="line">    <span class="keyword">return</span> c;</span><br><span class="line">    <span class="comment">// &#123; &quot;name&quot;: &quot;France&quot;, &quot;population&quot;: 67 &#125;</span></span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// ResponseEntity allows you to specify the response body, status, and headers on the HTTP response.</span></span><br><span class="line">  <span class="meta">@GetMapping(&quot;/france&quot;)</span></span><br><span class="line">  <span class="keyword">public</span> ResponseEntity&lt;Country&gt; <span class="title function_">france</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">Country</span> <span class="variable">c</span> <span class="operator">=</span> country.of(<span class="string">&quot;France&quot;</span>, <span class="number">67</span>);</span><br><span class="line">    <span class="keyword">return</span> ResponseEntity</span><br><span class="line">      .status(HttpStatus.OK)</span><br><span class="line">      .body(c)</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="meta">@PostMapping(&quot;/payment&quot;)</span></span><br><span class="line">  <span class="keyword">public</span> ResponseEntity&lt;PaymentDetails&gt; <span class="title function_">makePayment</span><span class="params">(</span></span><br><span class="line"><span class="params">    // <span class="meta">@RequestBody</span> will <span class="keyword">try</span> to decode the JSON string into an instance of  your parameter type</span></span><br><span class="line"><span class="params">    <span class="meta">@RequestBody</span> PaymentDetails paymentDetails</span></span><br><span class="line"><span class="params">  )</span> &#123;</span><br><span class="line">    logger.info(<span class="string">&quot;Received payment &quot;</span> + paymentDetails.getAmount());</span><br><span class="line">    <span class="keyword">return</span> ResponseEntity</span><br><span class="line">      .status(HttpStatus.ACCEPTED)</span><br><span class="line">      .body(paymentDetails)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="spring-data">Spring Data</h3>
+<ul>
+<li>A high-level layer over various way to implement the persistence.
+<ul>
+<li>Provides a common set of interfaces (contracts) you extend to define the app's persistence capabilities.</li>
+</ul></li>
+<li>Spring Data gives your app the possibility to implement only the operations it needs.
+<ul>
+<li>Interface segregation principle.</li>
+</ul></li>
+</ul>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/SpringData-2.jpg" alt="Spring Data Layer" /><figcaption aria-hidden="true">Spring Data Layer</figcaption>
+</figure>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/SpringData-1.jpg" alt="Spring Data Interfaces" /><figcaption aria-hidden="true">Spring Data Interfaces</figcaption>
+</figure>
+<h4 id="interfaces-architecture">Interfaces Architecture</h4>
+<h5 id="crudrepository">CrudRepository</h5>
+<p>CRUD: Creating, Retrieving, Updating and Deleting.</p>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/CrudRepository.jpg" alt="CrudRepository" /><figcaption aria-hidden="true">CrudRepository</figcaption>
+</figure>
+<h5 id="pagingandsortingrepostiroy">PagingAndSortingRepostiroy</h5>
+<p>Extends <strong>CrudRepository</strong> and adds operations related to sorting and paging.</p>
+<h5 id="jparepository">JpaRepository</h5>
+<ul>
+<li><strong>JPA (Java Persistence API)</strong>: Provides a specification for persisting, reading, and managing data from your Java object to relational tables in database.</li>
+<li><strong>JpaRepository</strong>: Adds operations related to JPA. (E.g. Hibernate ORM framework implements JpaRepository interface)</li>
+<li><strong>Hibernate</strong>
+<ul>
+<li>An <strong>Object-relational mapping (ORM)</strong> solution for Java environments.</li>
+<li>Map application domain model objects to the relational database tables.</li>
+</ul></li>
+</ul>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">Java Class  &lt;--------&gt;  Hibernate (an ORM framework)  &lt;--------&gt;  Database Table</span><br></pre></td></tr></table></figure>
+<h4 id="using-spring-data">Using Spring Data</h4>
+<p>Add dependencies in <strong>pom.xml</strong>:</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-data-jdbc<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>Define a entity class to model data:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Account</span> &#123;</span><br><span class="line">  <span class="meta">@Id</span></span><br><span class="line">  <span class="keyword">private</span> <span class="type">long</span> id;</span><br><span class="line">  <span class="keyword">private</span> String name;</span><br><span class="line">  <span class="keyword">private</span> BigDecimal amount;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Implement the Spring Data repository by defining an interface that extends one of the Repository interfaces:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">AccountRepository</span></span><br><span class="line">  <span class="keyword">extends</span> <span class="title class_">JpaRepository</span>&lt;Account, Long&gt; &#123;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// Spring creates the SQL query automatically</span></span><br><span class="line">  <span class="comment">// You can also use the @Query annotion to specify the SQL query</span></span><br><span class="line">  <span class="meta">@Query(&quot;SELECT * FROM account WHERE name = :name&quot;)</span></span><br><span class="line">  List&lt;Account&gt; <span class="title function_">findAccountsByName</span><span class="params">(String name)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Inject the repository in your service class:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TransferService</span> &#123;</span><br><span class="line">  </span><br><span class="line">  <span class="meta">@Autowired</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> AccountRepository accountRepository;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="hibernate">Hibernate</h4>
+<h5 id="mapping-a-collection">Mapping a collection</h5>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Enity</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Item</span> &#123;</span><br><span class="line">  <span class="meta">@Id</span></span><br><span class="line">  <span class="meta">@GeneratedValue(generator = Constants.ID_GENERATOR)</span></span><br><span class="line">  <span class="keyword">protected</span> Long id;</span><br><span class="line">  </span><br><span class="line">  <span class="meta">@ElementCollection</span></span><br><span class="line">  <span class="meta">@CollectionTable(name = &quot;IMAGE&quot;)</span></span><br><span class="line">  <span class="meta">@Column(name = &quot;FILENAME&quot;)</span></span><br><span class="line">  <span class="keyword">protected</span> List&lt;String&gt; images = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;String&gt;();</span><br><span class="line">  </span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="table-per-hierarchy">Table Per Hierarchy</h5>
+<ul>
+<li><strong>Discriminator Column</strong>: An extra column is created in the table to identitfy the class.</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="meta">@Table(name = &quot;employee&quot;)</span></span><br><span class="line"><span class="meta">@Inheritance(strategy = InheritanceType.SINGLE_TABLE)</span></span><br><span class="line"><span class="meta">@DiscriminatorColumn(name = &quot;type&quot;, discriminatiorType = DiscriminatorType.STRING)</span></span><br><span class="line"><span class="meta">@DiscriminatorValue(value = &quot;employee&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Employee</span> &#123;</span><br><span class="line">  <span class="meta">@Id</span></span><br><span class="line">  <span class="meta">@GeneratedValue(strategy = GenerationType.AUTO)</span></span><br><span class="line">  <span class="meta">@Column(name = &quot;id&quot;)</span></span><br><span class="line">  <span class="keyword">private</span> <span class="type">int</span> id;</span><br><span class="line">  </span><br><span class="line">  <span class="meta">@Column(name = &quot;name&quot;)</span></span><br><span class="line">  <span class="keyword">private</span> String name;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="meta">@DiscriminatorValue(&quot;regularemployee&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">RegularEmployee</span> <span class="keyword">extends</span> <span class="title class_">Employee</span> &#123;</span><br><span class="line">  <span class="meta">@Column(name = &quot;salary&quot;)</span></span><br><span class="line">  <span class="keyword">private</span> <span class="type">float</span> salary;</span><br><span class="line">  </span><br><span class="line">  <span class="meta">@Column(name = &quot;bonus&quot;)</span></span><br><span class="line">  <span class="keyword">private</span> <span class="type">int</span> bonus;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="meta">@DiscriminatorValue(&quot;contracteemployee&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ContractEmployee</span> <span class="keyword">extends</span> <span class="title class_">Employee</span> &#123;</span><br><span class="line">  <span class="meta">@Column(name = &quot;pay_per_hour&quot;)</span></span><br><span class="line">  <span class="keyword">private</span> <span class="type">float</span> payPerHour;</span><br><span class="line">  </span><br><span class="line">  <span class="meta">@Column(name = &quot;contract_duration&quot;)</span></span><br><span class="line">  <span class="keyword">private</span> String contract_duration;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="many-to-many-relationship">Many to many relationship</h5>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="meta">@Table(name = &quot;Employee&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Employee</span> &#123;</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">  <span class="meta">@ManyToMany(cascade = &#123; CascadeType.ALL &#125;)</span></span><br><span class="line">  <span class="meta">@JoinTable(</span></span><br><span class="line"><span class="meta">    name = &quot;EmployProject&quot;,</span></span><br><span class="line"><span class="meta">    joinColumns = &#123; @JoinColumn(name = &quot;employee_id&quot;) &#125;,</span></span><br><span class="line"><span class="meta">    inverseJoinColumns = &#123; @JoinColumn(name = &quot;project_id&quot;) &#125;</span></span><br><span class="line"><span class="meta">  )</span></span><br><span class="line">  Set&lt;Project&gt; projects = <span class="keyword">new</span> <span class="title class_">HashSet</span>&lt;&gt;();</span><br><span class="line">  </span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="meta">@Table(name = &quot;Project&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Project</span> &#123;</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">  <span class="meta">@ManyToMany(mappedBy = &quot;projects&quot;)</span></span><br><span class="line">  <span class="keyword">private</span> Set&lt;Employee&gt; employees = <span class="keyword">new</span> <span class="title class_">HashSet</span>&lt;&gt;();</span><br><span class="line">  </span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
         <category>全栈</category>
