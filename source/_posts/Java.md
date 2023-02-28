@@ -125,7 +125,7 @@ public interface AnimalPetter {
 }
 
 class AnimalCarer implements AnimalCleaner, AnimalFeeder {
-	//...
+  //...
 }
 class AnimalLover implements AnimalPetter {
   //...
@@ -530,14 +530,14 @@ import java.util.List;
 @RestController
 public class DemoApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(DemoApplication.class, args);
-	}
+  public static void main(String[] args) {
+    SpringApplication.run(DemoApplication.class, args);
+  }
 
-	@GetMapping("/xx")
-	public List<String> hello() {
-		return List.of("Hello World", "123");
-	}
+  @GetMapping("/xx")
+  public List<String> hello() {
+    return List.of("Hello World", "123");
+  }
 
 }
 ```
@@ -560,7 +560,7 @@ public class Student {
     private LocalDate dob;
     private Integer age;
 
-  	// Use Ctrl+Insert to generate construtors, getters, setters, toString quickly
+    // Use Ctrl+Insert to generate construtors, getters, setters, toString quickly
     public Student() {
     }
 
@@ -635,18 +635,18 @@ public class Student {
 And then go to `DemoApplication`
 
 ```java
-	@GetMapping("/xx")
-	public List<Student> hello() {
-		return List.of(
-				new Student(
-						1L,
-						"Mariam",
-						"Mariam.jamal@gmail.com",
-						LocalDate.of(2000, Month.JANUARY, 5),
-						21
-				)
-		);
-	}
+  @GetMapping("/xx")
+  public List<Student> hello() {
+    return List.of(
+        new Student(
+            1L,
+            "Mariam",
+            "Mariam.jamal@gmail.com",
+            LocalDate.of(2000, Month.JANUARY, 5),
+            21
+        )
+    );
+  }
 ```
 
 ### API Layer
@@ -808,7 +808,7 @@ public class Student {
             generator = "student_sequence"
     )
     private Long id;
-  	//...
+    //...
 }
 ```
 
@@ -1062,7 +1062,7 @@ A dependency starter is a group of dependencies you add to configure your app fo
 
 ```xml
 <dependency>
-	<groupId>org.springframework.boot</groupId>
+  <groupId>org.springframework.boot</groupId>
   <artifactId>spring-boot-starter-web</artifactId>
 </dependency>
 ```
