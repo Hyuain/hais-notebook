@@ -1303,16 +1303,80 @@ listRef.current.lastChild.scrollIntoView()
 
 这样就可以拿到最新的 DOM 了。
 
-# Hooks
+## Effects
 
-像 `useState` 这种 `use` 开头的函数被称为 Hook。
+- Effects 说的是不由某个特定的事件触发，而是由 **渲染本身** 触发的副作用。
+- Effects 专门是指用来跟除了 React 以外的系统，比如浏览器 API、第三方组件、网络等进行同步。**如果我们只是基于某些 State 而改变另一些 State，可能不需要使用 Effect。**
+- Effects 在渲染之后执行，这是一个同步 React 组件和外部系统的好时机。
 
-Hook 是只在 React 渲染的时候才可用的特殊函数。
+```jsx
+function VideoPlayer({ src, isPlaying }) {
+  const ref = useRef(null);
 
-Hooks 只能在函数或自定义 Hooks 的顶层调用，不能放在条件、循环或其他嵌套函数中。
+  useEffect(() => {
+    // 1. 声明 Effect
+    if (isPlaying) {
+      ref.current.play();
+    } else {
+      ref.current.pause();
+    }
+    // 2. 确认依赖，首次渲染及 isPlaying 改变的时候执行
+  }, [isPlaying]);
 
-- 因为 Hooks 依赖于组件在每次渲染时调用 Hooks 的稳定顺序。
-- React 会为每一个组件维护一个 **状态对数组** 和 **当前的状态对序号**（初始为 0），每次调用 `useState` 的时候，序号就会增加一个，这样就知道 `useState` 每个对应的都是谁了。
+  return <video ref={ref} src={src} loop playsInline />;
+}
+```
+
+
+
+### 什么是副作用
+
+对环境的改变就是副作用，比如改变 `document.title`
+
+### 模拟生命周期
+
+- 模拟 `componentDidMount`（第一次渲染）
+
+```jsx harmony
+React.useEffect(() => {
+  // do something
+}, [])
+```
+
+- 模拟 `componentDidUpdate`（更新时执行）
+
+```jsx harmony
+React.useEffect(() => {
+  // do something
+}, [n])
+// 这样的话第一次渲染也会执行，可以使用自定义 Hook 来解决
+const useUpdate = (fn, dep) => {
+  const [updateCount, setUpdateCount] = React.useState(0)
+  React.useEffect(() => {
+    setUpdateCount(count => count + 1)
+  }, [dep])
+  React.useEffect(() => {
+    if (updateCount > 1) {
+      fn()
+    }
+  }, [updateCount, fn])
+}
+useUpdate(() => {
+  // do something
+}, n)
+```
+
+- 模拟 `componentWillUnmount`（将要销毁时执行）
+
+```jsx harmony
+React.useEffect(() => {
+  return () => {
+    // do something
+  }
+}, [n])
+```
+
+## ****
 
 ## useEffect
 
@@ -1364,6 +1428,17 @@ React.useEffect(() => {
   }
 }, [n])
 ```
+
+# Hooks
+
+像 `useState` 这种 `use` 开头的函数被称为 Hook。
+
+Hook 是只在 React 渲染的时候才可用的特殊函数。
+
+Hooks 只能在函数或自定义 Hooks 的顶层调用，不能放在条件、循环或其他嵌套函数中。
+
+- 因为 Hooks 依赖于组件在每次渲染时调用 Hooks 的稳定顺序。
+- React 会为每一个组件维护一个 **状态对数组** 和 **当前的状态对序号**（初始为 0），每次调用 `useState` 的时候，序号就会增加一个，这样就知道 `useState` 每个对应的都是谁了。
 
 ## useLayoutEffect
 
