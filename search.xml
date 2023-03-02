@@ -2553,6 +2553,175 @@ z = 8x + 12y
       </categories>
   </entry>
   <entry>
+    <title>命令行基础</title>
+    <url>/hais-notebook/2020/01/29/Command/</url>
+    <content><![CDATA[<p>主要记录命令行的基本用法。</p>
+<span id="more"></span>
+<h1 id="文件的增删改查">文件的增删改查</h1>
+<h2 id="查">查</h2>
+<table>
+<thead>
+<tr class="header">
+<th>命令</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>cd ~</code></td>
+<td>~ 表示用户目录</td>
+</tr>
+<tr class="even">
+<td><code>pwd</code></td>
+<td>Print Work Directory，展示当前的绝对路径</td>
+</tr>
+<tr class="odd">
+<td><code>ls</code></td>
+<td>List，查看当前目录文件内容（默认不显示以 <code>.</code> 开头的文件）</td>
+</tr>
+<tr class="even">
+<td><code>ls [file path]</code></td>
+<td>查看文件路径内容</td>
+</tr>
+<tr class="odd">
+<td><code>ls -l</code></td>
+<td>查看更新时间</td>
+</tr>
+<tr class="even">
+<td><code>cat</code></td>
+<td>Concatenate，打印文件内容</td>
+</tr>
+<tr class="odd">
+<td><code>head</code></td>
+<td>展示前 10 行文件，或者 <code>-n [数字]</code></td>
+</tr>
+<tr class="even">
+<td><code>tail</code></td>
+<td>展示后 10 行文件</td>
+</tr>
+<tr class="odd">
+<td><code>less</code></td>
+<td>进入一个可滚动的界面，按上、下（或 J、K ）滚动，按 Q 退出</td>
+</tr>
+</tbody>
+</table>
+<h2 id="增">增</h2>
+<table>
+<thead>
+<tr class="header">
+<th>命令</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>touch</code></td>
+<td>创建空文件，可以同时创建多个文件；或者修改文件的更新时间</td>
+</tr>
+<tr class="even">
+<td><code>echo</code></td>
+<td>返回你 <code>echo</code> 的东西</td>
+</tr>
+<tr class="odd">
+<td><code>echo [content] &gt; 4.txt</code></td>
+<td>创建有内容的文件，会覆盖之前的内容</td>
+</tr>
+<tr class="even">
+<td><code>echo [content] &gt;&gt; 4.txt</code></td>
+<td>追加内容</td>
+</tr>
+<tr class="odd">
+<td><code>echo -e "[content]\n" &gt;&gt; 4.txt</code></td>
+<td>有换行的内容</td>
+</tr>
+<tr class="even">
+<td><code>mkdir</code></td>
+<td>创建目录，可以同时创建多个目录</td>
+</tr>
+<tr class="odd">
+<td><code>mkdir -p a/b/c/d</code></td>
+<td>创建多级目录</td>
+</tr>
+<tr class="even">
+<td><code>cp [filename] [new filename]</code></td>
+<td>复制文件</td>
+</tr>
+<tr class="odd">
+<td><code>cp -r [dir] [new dir]</code></td>
+<td>复制目录</td>
+</tr>
+</tbody>
+</table>
+<h2 id="删">删</h2>
+<table>
+<thead>
+<tr class="header">
+<th>命令</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>rm</code></td>
+<td>删除</td>
+</tr>
+<tr class="even">
+<td><code>rm -r</code></td>
+<td>删除目录</td>
+</tr>
+<tr class="odd">
+<td><code>rm -rf</code></td>
+<td>强制删除（不管里面有没有内容）</td>
+</tr>
+</tbody>
+</table>
+<h2 id="改">改</h2>
+<table>
+<thead>
+<tr class="header">
+<th>命令</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>code</code></td>
+<td>使用 VSCode 打开</td>
+</tr>
+<tr class="even">
+<td><code>start</code></td>
+<td>使用默认程序打开</td>
+</tr>
+<tr class="odd">
+<td><code>mv [filename] .</code></td>
+<td>移动到当前目录</td>
+</tr>
+<tr class="even">
+<td><code>mv [filename] [new filename]</code></td>
+<td>重命名文件</td>
+</tr>
+</tbody>
+</table>
+<h2 id="命令的组合">命令的组合</h2>
+<ul>
+<li>成功返回 <code>0</code>，失败返回 <code>error</code> 和非 <code>0</code> 值，通过 <code>echo $?</code> 查看</li>
+<li><code>&amp;&amp;</code>：第一条命令后才会执行后面的</li>
+<li><code>;</code>：不管前面是否成功都会执行后面的</li>
+</ul>
+<h2 id="把命令变成文件">把命令变成文件</h2>
+<ul>
+<li>MAC上需要执行：<code>chmod +x [filename]</code>，赋予执行权限</li>
+<li>执行命令：<code>./[filename]</code> 或者 <code>sh [filename]</code></li>
+<li>如果加入 <code>PATH</code>，就可以不用输入文件路径，也不用输入 <code>./</code>，输入文件名就能执行</li>
+<li>命令行的本质就是可执行文件</li>
+<li>windows 会优先去找 <code>.exe</code> 的文件</li>
+</ul>
+]]></content>
+      <categories>
+        <category>工具</category>
+      </categories>
+  </entry>
+  <entry>
     <title>Topics From Chromium Blogs</title>
     <url>/hais-notebook/2022/06/16/ChromiumBlogs/</url>
     <content><![CDATA[<p>Read some articles in chromium blogs or relative wikis, and take these memos.</p>
@@ -2864,175 +3033,6 @@ z = 8x + 12y
 ]]></content>
       <categories>
         <category>Memo</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>命令行基础</title>
-    <url>/hais-notebook/2020/01/29/Command/</url>
-    <content><![CDATA[<p>主要记录命令行的基本用法。</p>
-<span id="more"></span>
-<h1 id="文件的增删改查">文件的增删改查</h1>
-<h2 id="查">查</h2>
-<table>
-<thead>
-<tr class="header">
-<th>命令</th>
-<th>含义</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>cd ~</code></td>
-<td>~ 表示用户目录</td>
-</tr>
-<tr class="even">
-<td><code>pwd</code></td>
-<td>Print Work Directory，展示当前的绝对路径</td>
-</tr>
-<tr class="odd">
-<td><code>ls</code></td>
-<td>List，查看当前目录文件内容（默认不显示以 <code>.</code> 开头的文件）</td>
-</tr>
-<tr class="even">
-<td><code>ls [file path]</code></td>
-<td>查看文件路径内容</td>
-</tr>
-<tr class="odd">
-<td><code>ls -l</code></td>
-<td>查看更新时间</td>
-</tr>
-<tr class="even">
-<td><code>cat</code></td>
-<td>Concatenate，打印文件内容</td>
-</tr>
-<tr class="odd">
-<td><code>head</code></td>
-<td>展示前 10 行文件，或者 <code>-n [数字]</code></td>
-</tr>
-<tr class="even">
-<td><code>tail</code></td>
-<td>展示后 10 行文件</td>
-</tr>
-<tr class="odd">
-<td><code>less</code></td>
-<td>进入一个可滚动的界面，按上、下（或 J、K ）滚动，按 Q 退出</td>
-</tr>
-</tbody>
-</table>
-<h2 id="增">增</h2>
-<table>
-<thead>
-<tr class="header">
-<th>命令</th>
-<th>含义</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>touch</code></td>
-<td>创建空文件，可以同时创建多个文件；或者修改文件的更新时间</td>
-</tr>
-<tr class="even">
-<td><code>echo</code></td>
-<td>返回你 <code>echo</code> 的东西</td>
-</tr>
-<tr class="odd">
-<td><code>echo [content] &gt; 4.txt</code></td>
-<td>创建有内容的文件，会覆盖之前的内容</td>
-</tr>
-<tr class="even">
-<td><code>echo [content] &gt;&gt; 4.txt</code></td>
-<td>追加内容</td>
-</tr>
-<tr class="odd">
-<td><code>echo -e "[content]\n" &gt;&gt; 4.txt</code></td>
-<td>有换行的内容</td>
-</tr>
-<tr class="even">
-<td><code>mkdir</code></td>
-<td>创建目录，可以同时创建多个目录</td>
-</tr>
-<tr class="odd">
-<td><code>mkdir -p a/b/c/d</code></td>
-<td>创建多级目录</td>
-</tr>
-<tr class="even">
-<td><code>cp [filename] [new filename]</code></td>
-<td>复制文件</td>
-</tr>
-<tr class="odd">
-<td><code>cp -r [dir] [new dir]</code></td>
-<td>复制目录</td>
-</tr>
-</tbody>
-</table>
-<h2 id="删">删</h2>
-<table>
-<thead>
-<tr class="header">
-<th>命令</th>
-<th>含义</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>rm</code></td>
-<td>删除</td>
-</tr>
-<tr class="even">
-<td><code>rm -r</code></td>
-<td>删除目录</td>
-</tr>
-<tr class="odd">
-<td><code>rm -rf</code></td>
-<td>强制删除（不管里面有没有内容）</td>
-</tr>
-</tbody>
-</table>
-<h2 id="改">改</h2>
-<table>
-<thead>
-<tr class="header">
-<th>命令</th>
-<th>含义</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>code</code></td>
-<td>使用 VSCode 打开</td>
-</tr>
-<tr class="even">
-<td><code>start</code></td>
-<td>使用默认程序打开</td>
-</tr>
-<tr class="odd">
-<td><code>mv [filename] .</code></td>
-<td>移动到当前目录</td>
-</tr>
-<tr class="even">
-<td><code>mv [filename] [new filename]</code></td>
-<td>重命名文件</td>
-</tr>
-</tbody>
-</table>
-<h2 id="命令的组合">命令的组合</h2>
-<ul>
-<li>成功返回 <code>0</code>，失败返回 <code>error</code> 和非 <code>0</code> 值，通过 <code>echo $?</code> 查看</li>
-<li><code>&amp;&amp;</code>：第一条命令后才会执行后面的</li>
-<li><code>;</code>：不管前面是否成功都会执行后面的</li>
-</ul>
-<h2 id="把命令变成文件">把命令变成文件</h2>
-<ul>
-<li>MAC上需要执行：<code>chmod +x [filename]</code>，赋予执行权限</li>
-<li>执行命令：<code>./[filename]</code> 或者 <code>sh [filename]</code></li>
-<li>如果加入 <code>PATH</code>，就可以不用输入文件路径，也不用输入 <code>./</code>，输入文件名就能执行</li>
-<li>命令行的本质就是可执行文件</li>
-<li>windows 会优先去找 <code>.exe</code> 的文件</li>
-</ul>
-]]></content>
-      <categories>
-        <category>工具</category>
       </categories>
   </entry>
   <entry>
@@ -10225,16 +10225,13 @@ new RegExp()
 <p>可以通过 <code>flushSync</code> 来让 React 在其包裹的代码执行完成之后，<strong>同步地</strong> 更新 DOM：</p>
 <figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line"><span class="title function_">flushSync</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="title function_">setTodos</span>([ ...todos, newTodo ])</span><br><span class="line">&#125;)</span><br><span class="line">listRef.<span class="property">current</span>.<span class="property">lastChild</span>.<span class="title function_">scrollIntoView</span>()</span><br></pre></td></tr></table></figure>
 <p>这样就可以拿到最新的 DOM 了。</p>
-<h1 id="hooks">Hooks</h1>
-<p>像 <code>useState</code> 这种 <code>use</code> 开头的函数被称为 Hook。</p>
-<p>Hook 是只在 React 渲染的时候才可用的特殊函数。</p>
-<p>Hooks 只能在函数或自定义 Hooks 的顶层调用，不能放在条件、循环或其他嵌套函数中。</p>
+<h2 id="effects">Effects</h2>
 <ul>
-<li>因为 Hooks 依赖于组件在每次渲染时调用 Hooks 的稳定顺序。</li>
-<li>React 会为每一个组件维护一个 <strong>状态对数组</strong> 和 <strong>当前的状态对序号</strong>（初始为 0），每次调用 <code>useState</code> 的时候，序号就会增加一个，这样就知道 <code>useState</code> 每个对应的都是谁了。</li>
+<li>Effects 说的是不由某个特定的事件触发，而是由 <strong>渲染本身</strong> 触发的副作用。</li>
+<li>Effects 专门是指用来跟除了 React 以外的系统，比如浏览器 API、第三方组件、网络等进行同步。<strong>如果我们只是基于某些 State 而改变另一些 State，可能不需要使用 Effect。</strong></li>
+<li>Effects 在渲染之后执行，这是一个同步 React 组件和外部系统的好时机。</li>
 </ul>
-<h2 id="useeffect">useEffect</h2>
-<p>若同时有多个 useEffect，则他们将会依次执行</p>
+<figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">VideoPlayer</span>(<span class="params">&#123; src, isPlaying &#125;</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> ref = <span class="title function_">useRef</span>(<span class="literal">null</span>);</span><br><span class="line"></span><br><span class="line">  <span class="title function_">useEffect</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// 1. 声明 Effect</span></span><br><span class="line">    <span class="keyword">if</span> (isPlaying) &#123;</span><br><span class="line">      ref.<span class="property">current</span>.<span class="title function_">play</span>();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      ref.<span class="property">current</span>.<span class="title function_">pause</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 2. 确认依赖，首次渲染及 isPlaying 改变的时候执行</span></span><br><span class="line">  &#125;, [isPlaying]);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="language-xml"><span class="tag">&lt;<span class="name">video</span> <span class="attr">ref</span>=<span class="string">&#123;ref&#125;</span> <span class="attr">src</span>=<span class="string">&#123;src&#125;</span> <span class="attr">loop</span> <span class="attr">playsInline</span> /&gt;</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="什么是副作用">什么是副作用</h3>
 <p>对环境的改变就是副作用，比如改变 <code>document.title</code></p>
 <h3 id="模拟生命周期">模拟生命周期</h3>
@@ -10250,6 +10247,32 @@ new RegExp()
 <li>模拟 <code>componentWillUnmount</code>（将要销毁时执行）</li>
 </ul>
 <figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="title class_">React</span>.<span class="title function_">useEffect</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// do something</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;, [n])</span><br></pre></td></tr></table></figure>
+<h2 id="section">****</h2>
+<h2 id="useeffect">useEffect</h2>
+<p>若同时有多个 useEffect，则他们将会依次执行</p>
+<h3 id="什么是副作用-1">什么是副作用</h3>
+<p>对环境的改变就是副作用，比如改变 <code>document.title</code></p>
+<h3 id="模拟生命周期-1">模拟生命周期</h3>
+<ul>
+<li>模拟 <code>componentDidMount</code>（第一次渲染）</li>
+</ul>
+<figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="title class_">React</span>.<span class="title function_">useEffect</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// do something</span></span><br><span class="line">&#125;, [])</span><br></pre></td></tr></table></figure>
+<ul>
+<li>模拟 <code>componentDidUpdate</code>（更新时执行）</li>
+</ul>
+<figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="title class_">React</span>.<span class="title function_">useEffect</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// do something</span></span><br><span class="line">&#125;, [n])</span><br><span class="line"><span class="comment">// 这样的话第一次渲染也会执行，可以使用自定义 Hook 来解决</span></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">useUpdate</span> = (<span class="params">fn, dep</span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> [updateCount, setUpdateCount] = <span class="title class_">React</span>.<span class="title function_">useState</span>(<span class="number">0</span>)</span><br><span class="line">  <span class="title class_">React</span>.<span class="title function_">useEffect</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="title function_">setUpdateCount</span>(<span class="function"><span class="params">count</span> =&gt;</span> count + <span class="number">1</span>)</span><br><span class="line">  &#125;, [dep])</span><br><span class="line">  <span class="title class_">React</span>.<span class="title function_">useEffect</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (updateCount &gt; <span class="number">1</span>) &#123;</span><br><span class="line">      <span class="title function_">fn</span>()</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;, [updateCount, fn])</span><br><span class="line">&#125;</span><br><span class="line"><span class="title function_">useUpdate</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// do something</span></span><br><span class="line">&#125;, n)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>模拟 <code>componentWillUnmount</code>（将要销毁时执行）</li>
+</ul>
+<figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="title class_">React</span>.<span class="title function_">useEffect</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// do something</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;, [n])</span><br></pre></td></tr></table></figure>
+<h1 id="hooks">Hooks</h1>
+<p>像 <code>useState</code> 这种 <code>use</code> 开头的函数被称为 Hook。</p>
+<p>Hook 是只在 React 渲染的时候才可用的特殊函数。</p>
+<p>Hooks 只能在函数或自定义 Hooks 的顶层调用，不能放在条件、循环或其他嵌套函数中。</p>
+<ul>
+<li>因为 Hooks 依赖于组件在每次渲染时调用 Hooks 的稳定顺序。</li>
+<li>React 会为每一个组件维护一个 <strong>状态对数组</strong> 和 <strong>当前的状态对序号</strong>（初始为 0），每次调用 <code>useState</code> 的时候，序号就会增加一个，这样就知道 <code>useState</code> 每个对应的都是谁了。</li>
+</ul>
 <h2 id="uselayouteffect">useLayoutEffect</h2>
 <p>useEffect 将会在渲染完成之后被执行，因此有时候可能会出现闪烁，而 useLayoutEffect 将会在渲染完成之前（生成 DOM 之后）被执行</p>
 <p>但是因为很多很时候我们不需要直接操作 DOM，不需要改变最后渲染的结果（外观），而且 useLayoutEffect 可能会延迟用户看到渲染完成结果的时间，因此优先使用 useEffect</p>
