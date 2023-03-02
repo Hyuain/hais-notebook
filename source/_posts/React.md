@@ -9,6 +9,8 @@ categories:
 
 <!-- more -->
 
+2023.03.02 所有类组件的部分都单独转移到 Class Component 下
+
 # Startup
 
 ## 引入 React
@@ -240,7 +242,7 @@ messageCount && <p>New messages</p>
 
 ## Component
 
-### 元素（Element）与组件（Component）
+### Element & Component
 
 ```js
 const div = React.createElement('div',...) // React 元素
@@ -257,7 +259,7 @@ Vue 中，一个 **构造选项** 就可以表示一个组件
 
 {% endnote %}
 
-### 两种组件
+### Two Types of Components
 
 - 函数组件：
 
@@ -285,307 +287,21 @@ class Welcome extends React.component {
 
 可以看看 [这个例子](https://codesandbox.io/s/tender-nightingale-eu1ne)
 
-### React 中的标签会被翻译成什么？
+### React.creatElement
 
 `<div/>` 会被翻译成 `React.createElement('div')`
 
 `<Welcome/>` 会被翻译成 `React.createElement(Welcome)`
 
-#### `React.creatElement`
+`React.createElement` 做了下面这些事情：
 
 - 如果传入一个字符串 `'div'` ，则会创建一个 `div`
+
 - 如果传入一个函数，则会调用该函数，获取其返回值
+
 - 如果传入一个类，则会在前面加类前面加 `new` （执行 constructor），获取一个组件的对象，然后调用对象的 render 方法，获取其返回值
 
-### 类组件
-
-#### 创建类组件
-
-有两种方式创建类组件：
-
-- ES 5 方式（过时）
-
-```jsx harmony
-import React from 'react'
-
-const A = React.createClass({
-  render() {
-    return (
-      <div>hi</div>
-    )
-  }
-})
-
-export default A
-```
-
-- ES 6 方式（使用 class）
-
-```jsx harmony
-import React from 'react'
-
-class B extends React.Component {
-  constructor(props) {
-    super(props)
-  }
-  // 其实如果不在 constructor 里面加其他的东西，上面几行是可以省略掉的
-  render() {
-    return (
-      <div>hi</div>
-    )
-  }
-}
-
-export default B
-```
-
-#### Props
-
-```jsx harmony
-class Parent extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {name: 'harvey'}
-  }
-  onClick = () => {}
-  render() {
-    return (
-      <Child name={this.state.name}
-             onClick={this.onClick}>hi</Child>
-      // 外部数据会被包装为一个对象：
-      // {name: 'harvey', onClick:..., children: 'hi'} 
-    )
-  }
-}
-
-class Child extends React.Component {
-  constructor(props) {
-    super(props) // 这样会将 props 放到 this 上，这就是 props 的初始化
-  }
-  render() {
-    // 这样读取 props
-    return (
-      <div onClick={this.props.onClick}>
-        {this.props.name}
-        <div>
-          {this.props.children}
-        </div>
-      </div>
-    )
-  }
-}
-```
-
-{% note warning %}
-
-不允许修改 Props
-
-{% endnote %}
-
-##### `componentWillReceiveProps`
-
-会在 Props 变化的时候调用，目前已经不用了，并更名为 `UNSAFE_componentWillReceiveProps`
-
-```js
-componentWillReceiveProps(nextProps, nextContext) {
-  //...
-}
-```
-
-##### Props 的作用
-
-- 接受外部的数据：只能读不能写
-- 接受外部的函数：在恰当时机调用
-
-#### State
-
-```jsx harmony
-class Parent extends React.Component {
-  constructor(props) {
-    super(props)
-    // 初始化 State
-    this.state = {x: 1}
-  }
-  onClick = () => {
-    // 修改 State，注意 setState 不会立即修改 State，会在 set 成功之后调用 fn
-    // 因此最后 this.state.x 不会 +2
-    this.setState({
-      x: this.state.x + 1
-    }, fn)
-    this.setState({
-      x: this.state.x + 1
-    }, fn)
-  }
-  onClick2 = () => {
-    // 第二种写法，这种情况下 this.state.x 会 +2
-    this.setState((prevState) => ({
-      x: prevState.x + 1
-    }), fn)
-    this.setState((prevState) => ({
-      x: prevState.x + 1
-    }), fn)
-  }
-  render() {
-    return (
-      // 读取 State
-      <div onClick={this.onClick}>{this.state.x}</div>
-    )
-  }
-}
-```
-
-修改 state 的时候会进行 **Shallow Merge**，新旧 state 进行一级合并
-
-#### React Lifecycle
-
-![React LifeCycle](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/React-LifeCycle.png)
-
-- **`constructor(props)`**：用于初始化 state 和为事件处理函数绑定实例（`bind(this)`）
-- `static getDerivedStateFromProps(props, state)`：会在调用 render 方法之前调用，并且在初始挂载及后续更新时都会被调用。它应返回一个对象来更新 state，如果返回 null 则不更新任何内容
-- **`shouldComponentUpdate()`**：判断 React 组件的输出是否受当前 state 或 props 更改的影响
-- **`render()`**：当 state 或 props 发生变化时调用，可以通过 `shouldComponentUpdate` 调解调用时机
-- `getSnapshotBeforeUpdate(prevProps, prevState)`：会在最近一次渲染输出之前调用。它使得组件能在发生更改之前从 DOM 中捕获一些信息（例如，滚动位置）
-- **`componentDidMount()`**：会在组件挂载后（插入 DOM 树中）立即调用
-- **`componentDidUpdate(prevProps, prevState, snapshot)`**： 会在更新后会被立即调用。首次渲染不会执行此方法
-- **`componentWillUnmount()`**：会在组件卸载及销毁之前直接调用
-- `static getDerivedStateFromError(error)`：此生命周期会在后代组件抛出错误后被调用。 它将抛出的错误作为参数，并返回一个值以更新 state
-- `componentDidCatch(error, info)`：此生命周期在后代组件抛出错误后被调用
-
-##### `constructor`
-
-- 初始化 props
-- 初始化 state，但此时不能调用 `setState`
-- 用来写 `bind this`
-
-```jsx harmony
-constructor() {
-  this.onClick = this.onClick.bind(this)
-}
-// 也可以用新语法代替
-```
-
-##### `shouldComponentUpdate`
-
-- 返回 true 表示不阻止 UI 更新
-
-- 返回 false 表示阻止 UI 更新
-
-```jsx harmony
-shouldComponentUpdate(nextProps, nextState)
-```
-
-###### `React.PureComponent`
-
-会在 `render` 之前对新旧 state 和 props 进行浅对比（只比较一层），来控制是否 `render`，只要有任何一个 key 的值不同，就会 `render`
-
-##### `render`
-
-用于展示视图，可以用 `<React.Fragment>` 将多个标签括起来
-
-可以在 `render` 中写
-
-- if / else
-- map
-
-##### `componentDidMount`
-
-- 在元素插入页面之后执行代码，这些代码通常依赖 DOM
-- 同时官方推荐将加载数据的 AJAX 请求写在这里
-- 首次渲染 **会** 执行这个钩子
-
-此外，推荐在使用 Ref 之前先赋值为一个 `undefined`
-
-##### `componentDidUpdate`
-
-- 在视图更新后执行代码
-- 此处也可以发起 AJAX 请求，通常是用于更新数据
-- 首次渲染 **不会** 执行这个钩子
-- 在这里 `setState` 可能会引起无限循环，除非用 `if` 进行限制
-- `shouldComponentUpdate` 返回 `false` 时不会调用
-
-```jsx harmony
-compoentDidUpdate(prevProps, prevState, snapshot)
-```
-
-##### `componentWillUnmount`
-
-- 组件将要被移除页面并销毁时，执行代码
-- Unmount 过的组件不会再次 Mount
-- 通常需要在这里取消监听、计时器、AJAX 请求等
-
-### 函数组件
-
-#### 创建函数组件
-
-```jsx harmony
-// 箭头函数
-const Hello1 = (props) => {
-  return <div>{props.message}</div>
-}
-
-// 箭头函数缩写
-const Hello2 = props => <div>{props.message}</div>
-
-// 普通函数
-function Hello3(props) {
-  return <div>{props.message}</div>
-}
-```
-
-#### 函数组件没有 state
-
-使用 `useState`
-
-```jsx harmony
-const [x, setX] = React.useState(0)
-```
-
-#### 函数组件没有生命周期
-
-使用 `useEffect`
-
-- 模拟 `componentDidMount`（第一次渲染）
-
-```jsx harmony
-React.useEffect(() => {
-  // do something
-}, [])
-```
-
-- 模拟 `componentDidUpdate`（更新时执行）
-
-```jsx harmony
-React.useEffect(() => {
-  // do something
-}, [n])
-// 这样的话第一次渲染也会执行，可以使用自定义 Hook 来解决
-const useUpdate = (fn, dep) => {
-  const [updateCount, setUpdateCount] = React.useState(0)
-  React.useEffect(() => {
-    setUpdateCount(count => count + 1)
-  }, [dep])
-  React.useEffect(() => {
-    if (updateCount > 1) {
-      fn()
-    }
-  }, [updateCount, fn])
-}
-useUpdate(() => {
-  // do something
-}, n)
-```
-
-- 模拟 `componentWillUnmount`（将要销毁时执行）
-
-```jsx harmony
-React.useEffect(() => {
-  return () => {
-    // do something
-  }
-}, [n])
-```
-
-## Props
+### Props
 
 可以查看 [CodeSandbox 上的这个例子](https://codesandbox.io/s/billowing-wind-d8kzw)：
 
@@ -704,131 +420,6 @@ render() {
 }
 ```
 
-# Interactivity
-
-## Event
-
-### 类组件的事件
-
-可以这样写事件
-
-```jsx harmony
-class MyComponent extends React.Component {
-  constructor() {
-    super()
-    this.state = {
-      n: 0
-    }    
-  }  
-  // 这样写的 addN 是挂在原型上的  
-  addN() {
-    this.setState((state) => {
-      const n = state.n + 1
-      return { n }      
-    })
-  }
-  render() {
-    return (
-      <div>
-        n: {this.state.n}            
-        <button onClick={() => this.addN()}> n + 1 </button>
-        {/*   这样最安全最好懂，箭头函数的 this 不会变   */}
-      </div>
-    )
-  }  
-}
-```
-
-我们不能在 JSX 里面这样写：
-
-```jsx harmony
-<button onClick={this.addN}> n + 1 </button>
-{/*   这里面 addN 的 this 会变成 window   */}
-```
-
-因为在点击的时候 React 实际上运行的是 `button.onClick.call(null,event)`，`this` 被 React 改了，当然我们可以通过 `bind` 来绑定 `this`
-
-```jsx harmony
-<button onClick={this.addN.bind(this)}> n + 1 </button>
-```
-
-也可以给箭头函数取个名字再来调用：
-
-```jsx harmony
-class MyComponent extends React.Component {
-  constructor() { ... }  
-  addN() { ... }
-  _addN() {
-    () => {
-      this.addN()
-    }
-  }
-  render() {
-    return (
-      <div>
-        n: {this.state.n}            
-        <button onClick={this._addN}> n + 1 </button>
-      </div>
-    )
-  }  
-}
-```
-
-为了解决这个问题，我们可以将 `addN` 写在 `constructor` 里面：
-
-```jsx harmony
-class MyComponent extends React.Component {
-  constructor() {
-    super()
-    this.state = {
-      n: 0
-    }
-    // 这样 addN 就是挂在每个实例对象上了  
-    this.addN = () => {
-      this.setState((state) => {
-        const n = state.n + 1
-        return { n }      
-      })
-    }
-  }
-  render() {
-    return (
-      <div>
-        n: {this.state.n}            
-        <button onClick={this.addN}> n + 1 </button>
-      </div>
-    )
-  }  
-}
-```
-
-下面这种写法本质与上面的一样，只是 ES 6 的语法糖：
-
-```jsx harmony
-class MyComponent extends React.Component {
-  constructor() {
-    super()
-    this.state = {
-      n: 0
-    }
-  }
-  addN = () => {
-    this.setState((state) => {
-      const n = state.n + 1
-      return { n }      
-    })
-  }
-  render() {
-    return (
-      <div>
-        n: {this.state.n}            
-        <button onClick={this.addN}> n + 1 </button>
-      </div>
-    )
-  }  
-}
-```
-
 ## Render and Commit
 
 React 处理 UI 有三步：
@@ -842,6 +433,7 @@ React 处理 UI 有三步：
 两个原因：
 
 1. 组件首次渲染：通过 `createRoot` 和 `render` 方法。
+
    ```jsx
    import { createRoot } from 'react-dom/client'
    const root = createRoot(document.getElementById('root'))
@@ -895,62 +487,13 @@ function Image() {
 - 首次渲染时，React 会使用 `appendChild()` 将所有创建的 DOM 节点放到页面上；
 - 重新渲染时，React 只会执行在渲染阶段计算出来的少量变动到 DOM 上。
 
-
-
-# Hooks
-
-像 `useState` 这种 `use` 开头的函数被称为 Hook。
-
-Hook 是只在 React 渲染的时候才可用的特殊函数。
-
-Hooks 只能在函数或自定义 Hooks 的顶层调用，不能放在条件、循环或其他嵌套函数中。
-
-- 因为 Hooks 依赖于组件在每次渲染时调用 Hooks 的稳定顺序。
-- React 会为每一个组件维护一个 **状态对数组** 和 **当前的状态对序号**（初始为 0），每次调用 `useState` 的时候，序号就会增加一个，这样就知道 `useState` 每个对应的都是谁了。
-
-## State
-
-可以查看 [CodeSandbox 上的这个例子](https://codesandbox.io/s/silly-diffie-9yk38)。
-
-### 类组件
+# Manage State
 
 ```jsx
-class Son extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      n: 0,
-      m: 0
-    };
-  }
-  addN() {
-    this.setState(state => {
-      const n = state.n + 1;
-      return { n };
-    });
-    // 用函数写 setState，因为 setState 是异步的，他会等一会儿再改变 state,如果用函数就能很清楚的知道哪个是新的 n，哪个是旧的 n
-  }
-  addM() {
-    this.setState({ m: this.state.m + 1 });
-    // 类组件会自动合并第一层属性
-  }
-  render() {
-    return (
-      <div className="Son">
-        儿子 n: {this.state.n}
-        <button onClick={() => this.addN()}>n+1</button>
-        m: {this.state.m}
-        <button onClick={() => this.addM()}>m+1</button>
-        <Grandson />
-      </div>
-    );
-  }
-}
+const [n, setN] = useState(0)
 ```
 
-### 函数组件
-
-使用 `useState`：
+可以查看 [CodeSandbox 上的这个例子](https://codesandbox.io/s/silly-diffie-9yk38)。
 
 ```jsx
 const Grandson = () => {
@@ -973,23 +516,19 @@ const Grandson = () => {
 };
 ```
 
-#### useState
-
 {% note warning %}
 
 注意与 class 组件的 setState 不同，他是 **不能** 只更新对象的某个部分的；
 
-并且，如果对象修改前后的地址不变，则不会触发重新渲染
+并且，如果对象修改前后的地址不变，则不会触发重新渲染；
+
+可以使用 use-immer 库来简单地写出不更改原有对象和数组的代码
 
 {% endnote %}
 
-```jsx harmony
-const [n, setN] = useState(0)
-```
+## useState
 
-##### useState 怎么知道谁是谁
-
-> 为什么 State 没有名字也不会搞混呢？
+> 为什么 useState 的时候没给名字也不会搞混呢？
 
 以下面这段代码举例：
 
@@ -1004,9 +543,9 @@ const [n, setN] = useState(0)
  }
 ```
 
-首先会初始化两个空数组：`setters` 和 `state`，将指针指向 `0`。
+首先会初始化两个空数组：`setters` 和 `state`，将 `cursor` 指向 `0`。
 
-第一次渲染时，每次遇到 `useState`，会 push **一个 setter 函数** 进 setters 数组，和一个 **state** 进入 state 数组（这都基于指针的位置）：
+第一次渲染时，每次遇到 `useState`，会 push **一个 setter 函数** 进 setters 数组，和一个 **state** 进入 state 数组（这都基于 `cursor` 的位置）：
 
 ```
  cusor = 0
@@ -1017,15 +556,15 @@ const [n, setN] = useState(0)
  cursor++
  
  const [lastName, setLastName] = useState("Yardley");
- STATE = ["Yardley"]
- SETTERS = [setLastName]
+ STATE = ["Rudi", "Yardley"]
+ SETTERS = [setFirstName, setLastName]
 ```
 
-之后的每次渲染中，指针都将重新指向 `0`，并且依次从每个数组中读取数据。
+之后的每次渲染中，`cursor` 都将重新指向 `0`，并且依次从每个数组中读取数据。
 
 如果 setter 被调用了，他就会将 state 中对应的某一项更新。
 
-##### 尝试自己实现一个 useState
+### myUseState
 
 ```jsx harmony
 let _state = []
@@ -1057,7 +596,7 @@ if (n % 2 === 1) {
 
 每个函数组件对应一个 React 节点，每个节点将会保存 state（`memorizedState`） 和 index（链表）
 
-##### State 是快照
+## State as Snapshot
 
 **每次渲染的 state 是固定的，调用 set 函数的时候，使用的还是此次渲染的值。**
 
@@ -1088,7 +627,7 @@ setNumber(0 + 1);
 setNumber(0 + 1);
 ```
 
-##### Batching
+## Batching
 
 为了减少无效的重复渲染，React 会在等待所有的事件处理函数结束，才会重渲染并更新 state。这被称为批处理（**batching**）。
 
@@ -1102,9 +641,9 @@ setColor('blue');
 
 只有 `setColor('blue')` 生效了。
 
-##### State 更新队列
+## State Updating Queue
 
-可以给 setter 传一个函数，这个函数被称为 **updater function**。
+可以给 setter 传一个函数，这个函数被称为 **Updater Function**。
 
 ```jsx
 import { useState } from 'react';
@@ -1154,189 +693,202 @@ export default function Counter() {
 
 当事件处理函数完成，React 会触发重渲染。在重渲染中，React 会处理这个队列。所以 **updater functions 必须是纯函数**。不能在 updater functions 里面 setState 或执行其他副作用。
 
-#### 实现一个贯穿始终的状态
+## Preserving and Resetting State
 
-使用 useState 的话每次重新渲染会产生不同的 state，如果非要实现一个贯穿始终状态，除了使用全局变量 `window` 以外，还有这两种方法：
+> React 是如何保存函数组件的 State 的？
 
-##### 使用 useRef
+- 就像 DOM 和 CSSOM 一样，React 创建了一棵 UI 树。React 会根据这棵 UI 树去渲染 DOM。
+- 每个组件都有独立的 State，但是这个 State 并不是存在于组件内部的，而是跟组件在 UI 树上的位置绑定的。
+- 当 React 移除某个组件的时候，State 也随之销毁了。
+- 同样的组件在同样的位置会有相同的 State（即使看起来是销毁了重建了一个）。
+- 不同的组件会重置整个子树的 State。
+  - 不要在组件里面定义组件，因为这样做的话，外层组件每次渲染都会创建一个 **不同** 的内层组件，导致内层组件状态丢失。
+- 如果想要在组件移除之后仍然保持 State。
+  - 一开始就全部渲染出来，通过 CSS 来控制是否显示：适合简单的 UI，渲染超级大的树会有性能问题；
+  - 提升 State 到父组件去管理：最通用的方法；
+  - 使用除了 State 以外的数据源：`localStorage` 等。
 
-```jsx harmony
-const nRef = React.useRef(0) // {current: 0}
-// 之后使用 nRef.current
+### Same component at the same position preserves state
+
+**同样的组件在 UI 树上的同一个位置将会有相同的 State：**
+
+```jsx
+const App = () => {
+  const [isFancy, setIsFancy] = useState(false)
+  // Counter 里面的 State 将会被保留
+  // 因为这里一直有一个 Counter 在同样的位置
+  return (<>
+  	{isFancy
+      ? <Counter isFancy={true} />
+      : <Counter isFancy={false} />}
+  </>)
+}
 ```
 
-但是修改 `nRef.current` 不会让组件重新渲染，因此页面上的数据不会同步改变（但是 Vue 3 可以）
+注意是在 **UI 树** 的同一个位置，并不是在 JSX 中的同一个位置（React 并不知道我们在哪里写条件判断，他只关心我们返回的这棵树）！
 
-可以像这样手动让他更新：
+比如下面这种情况下，State 也是保留的（都是 `<Counter />` 在 `<div>` 的第一个子节点）：
 
-```jsx harmony
-const update = React.useState(null)[1]
-// 这样修改 nRef.current
-const onClick = () => {
-  nRef.current += 1
-  update(nRef.current)
-} 
+```jsx
+export default function App() {
+  const [isFancy, setIsFancy] = useState(false);
+  if (isFancy) {
+    return (
+      <div>
+        <Counter isFancy={true} />
+      </div>
+    );
+  }
+  return (
+    <div>
+      <Counter isFancy={false} />
+      <label>
+        <input
+          type="checkbox"
+          checked={isFancy}
+          onChange={e => {
+            setIsFancy(e.target.checked)
+          }}
+        />
+        Use fancy styling
+      </label>
+    </div>
+  );
+}
 ```
 
-##### 使用 useContext
+### Reset state at same position
 
-详见 Context 部分
+有两个方法可以重置同样位置的 State。
 
-### setState 的注意事项
+方法一是将他们在不同位置渲染：
 
-- `this.state.n += 1` 无效，UI 不会自动更新，需要用 `setState`
-- `setState` 不会马上改变 `state`，是异步更新的，推荐使用 `setState(函数)`
-- 不推荐 `this.setState(this.state)`，因为 React 不推荐我们修改旧的 `state`（不可变数据）
+```jsx
+export default function Scoreboard() {
+  const [isPlayerA, setIsPlayerA] = useState(true);
+  return (
+    <div>
+      {isPlayerA &&
+        <Counter person="Taylor" />
+      }
+      {!isPlayerA &&
+        <Counter person="Sarah" />
+      }
+      <button onClick={() => {
+        setIsPlayerA(!isPlayerA);
+      }}>
+        Next player!
+      </button>
+    </div>
+  );
+}
+```
 
-#### 复杂 state
+`isPlayer` 为 `true` 时，第一个位置是 `Counter`，第二个位置为空；`isPlayer` 为 `false` 时，第一个位置为空，第二个位置是 `Counter`。
 
-- 类组件的 `setState` 会自动合并第一层，建议使用 `Object.assign` 或者 `...sate`
-- 函数组件不会自动合并，建议分开写
+每个 `Counter` 的 State 都会在组件从 DOM 中移除的时候销毁。
+
+**更加普遍是方法是使用 Key 来让 React 区分不同的组件**：
+
+- 默认情况下，React 使用在父节点下的顺序来区分组件；
+- Key 会显式地告诉 React 这是一个 *特别* 的组件。
+
+```jsx
+export default function Scoreboard() {
+  const [isPlayerA, setIsPlayerA] = useState(true);
+  return (
+    <div>
+      {isPlayerA ? (
+        <Counter key="Taylor" person="Taylor" />
+      ) : (
+        <Counter key="Sarah" person="Sarah" />
+      )}
+      <button onClick={() => {
+        setIsPlayerA(!isPlayerA);
+      }}>
+        Next player!
+      </button>
+    </div>
+  );
+}
+```
+
+注意 Keys 不是全局唯一的，他只是指明了组件在父结点下面的位置。
+
+## Reducer
+
+当组件变得庞大，可能会有多个事件处理函数用不同的方式来 set 某个 State，State 的更新逻辑也会变得散乱。
+
+这个时候可以将 State 相关的逻辑抽离出来放到一个单独的函数中，这个函数就称为 **Reducer**。
+
+```jsx
+// 创建初始状态
+const initial = {
+  n: 0
+}
+// 创建 reducer
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'added':
+      return {...state, n: state.n + action.number}
+    case 'squared':
+      return {...state, n: state.n * 2}
+    default:
+      throw new Error('unknown type')
+  }
+}
+const App = () => {
+  // 使用 useReducer
+  const [state, dispatch] = useReducer(reducer, initial)
+  const onClick = () => {
+    dispatch({
+      // action 对象
+      // action 对象可以随便定义，但习惯上会有一个 type
+      // type 表示了用户意图
+      type:'added', number: 1
+    })
+  }
+  return (
+    <>
+      <div>{n: state.n}</div>
+      <button onClick={onClick}>+1</button>
+    </>
+  )
+}
+```
+
+Reduce 的词源实际上是数组的 `reduce()` 方法，该方法使用 *result* 和 *current*，返回 *next result*。这与 React 的 Reduce 有异曲同工之妙。
+
+使用 Reducer 的时候需要注意：
+
+- **Reducers 必须是纯函数**。
+  - 与 State Updater Functions 类似，Reducers 是在渲染过程中执行的（Actions 都会入队，下次渲染再执行）。
+  - 不能发请求，不能用 setTimeout，也不能有其他副作用。
+  - 不能修改原来的对象和数组。
+- **每个 Action 都描述了一个用户意图，尽管他可能导致了数据中的多个更改**。
+  - 比如用户重置了一个表单，最好是发出一个 `rest_form` action，而不是好几个分开的 `set_field` action，这有利于 Debug。
 
 ## Context
 
-Context 类似于 Vue 的 provide / eject，使得数据可以跨层传递，而不必显式地通过组件树逐层传递 props。
+Context 类似于 Vue / Angular 的 Provide / Eject，使得数据可以跨层传递，而不必显式地通过组件树逐层传递 props。
 
-```jsx harmony
-const MyContext = React.createContext('defaultValue')
-class App extends React.Component {
-  render() {
-    return (
-      <MyContext value="someValue">
-        <ButtonWrapper/>
-      </MyContext>
-    )
-  }
-}
-function ButtonWrapper() {
-  return (
-    <div>
-      <Button/>
-    </div>
-  )
-}
-class MyButton extends React.Component {
-  static contextType = MyContext
-  render() {
-    return <Button themeColor={this.context}/>
-  }
-}
-```
+像 CSS 属性继承，下面的组件都会得到这个 Context，只能用过上层新的 Context Provider 才能覆盖更上层传下来的值。不同的 Context 不会相互覆盖。
 
-除了 Context 之外还有一种避免中间组件显式传递底层组件的各种属性值的方法：直接将底层组件作为属性传递下去。
+**只是需要将属性传递很多层并不意味着需要使用 Context**，在使用 Context 之前还需要考虑一些替代方法：
 
-### 类组件
+- **使用 Props**。这样会比较清晰哪个组件使用了什么数据。
 
-#### React.createContext
+- **提取组件，然后把 JSX 作为 children 传给他们**。这样可以越过中间不需要知道这个数据的层。
 
-```jsx harmony
-const MyContext = React.createContext(defaultValue)
-```
+  ```jsx
+  <Layout posts={posts} />
+  // 改为
+  <Layout><Posts posts={posts} /></Layout>
+  ```
 
-一旦有一个组件订阅了这个 Context 对象，这个组件会从组件树中寻找最近的匹配的 `Provider` 中读取 context 值；如果没有匹配到，则使用 `defaultValue`。需要注意的是，就算给 Provider 传递的是 `undefined`，`defaultValue` 也不会生效。
+Context 的典型使用场景：主题、账号、路由、状态管理。
 
-#### Context.Provider
-
-```jsx harmony
-<MyContext.Provider value={/* SomeValue */}>
-  <Child/>
-</MyContext.Provider>
-```
-
-当 Provider 的 `value` 值发生变化时，内部所有的消费组件都会重新渲染，不受制于 `shouldComponentUpdate`，变化与否通过 `Object.is` 判定。
-
-比如在下面这种情况时：
-
-```jsx harmony
-class App extends React.component {
-  render() {
-    return (
-      <Provider value={{something: 'something'}}>
-        <Child/>
-      </Provider>
-    )
-  }
-}
-```
-
-一旦 Provider 的父组件 App 进行重新渲染，每次 value 就会被赋值为新的对象，会引起所有下面的 consumer 组件的重新渲染。为了防止这么做，需要使用 state：
-
-```jsx harmony
-class App extends React.component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      value: {something: 'something'}
-    }
-  }
-  render() {
-    return (
-      <Provider value={this.state.value}>
-        <Child/>
-      </Provider>
-    )
-  }
-}
-```
-
-#### Class.contextType
-
-```jsx harmony
-class MyClass extends React.Component {
-  componentDidMount() {
-    let value = this.context
-  }
-  componentDidUpdate() {
-    let value = this.context
-  }
-  componentWillUnmount() {
-    let value = this.context
-  }
-  render() {
-    let value = this.context
-  }
-}
-MyClass.contextType = MyContext
-```
-
-通过挂载在 class 上的 `contextType` 属性获取一个 Context 对象，可以通过 `this.context` 来消费最近 Context 上的那个值，可以在包括 render 在内的任何生命周期中访问到他。
-
-也可以通过 `static` 来初始化 `contextType`：
-
-```jsx harmony
-class MyClass extends React.Component {
-  static contextType = MyContext
-  render() {
-    let value = this.context
-  }
-}
-```
-
-#### Context.Consumer
-
-```jsx harmony
-<MyContext.Consumer>
-  {value => /* 基于 context 值进行渲染*/}
-</MyContext.Consumer>
-```
-
-在函数式组件中，我们需要这样使用 context，中间的部分接受一个 context 值，返回一个 React 节点
-
-#### Context.displayName
-
-修改在 React DevTools 中显示的名字
-
-```jsx harmony
-const MyContext = React.createContext(/* someValue */)
-MyContext.displayName = 'MyDisplayName'
-
-<MyContext.Provider> // 在 DevTools 中显示 "MyDisplayName.Provider"
-<MyContext.Consumer> // 在 DevTools 中显示 "MyDisplayName.Consumer"
-```
-
-### 函数组件
-
-使用 `useContext`：
+第一个例子：
 
 ```jsx
 // 创建一个 context
@@ -1361,259 +913,70 @@ const Child = () => {
 }
 ```
 
-## Refs
+第二个例子：
 
-### 类组件
+```jsx
+const LevelContext = createContext(0)
 
-#### React.createRef
-
-可以这样创建一个属性 `myRef`，然后传递给 DOM 元素 `div`，后续就可以使用 `this.myRef.current` 访问到这个 `div`
-
-```jsx harmony
-class MyComp extends React.Component {
-  constructor(props) {
-    super(props)
-    this.myRef = React.createRef()
-  }
-  render() {
-    return (
-      <div ref={this.myRef}></div>
-    )
-  }
-}
-```
-
-当 Ref 用于普通 HTML 元素时，`this.myRef.current` 为 HTML 元素：
-
-```jsx harmony
-class MyComp extends React.Component {
-  constructor(props) {
-    super(props)
-    this.textInput = React.createRef()
-  }
-  focusEvent = () => {
-    this.textInput.current.focus()
-  }
-  render() {
-    return (
-      <div ref={this.myRef}>
-        <input type="text" ref={this.textInput}/>
-        <button onClick={this.focusEvent}>Focus</button>
-      </div>
-    )
-  }
-}
-```
-
-当 Ref 用于自定义 class 组件时，`this.myRef.current` 为组件的实例：
-
-```jsx harmony
-class MyComp extends React.Component {
-  constructor(props) {
-    super(props)
-    this.textInput = React.createRef()
-  }
-  componentDidMount() {
-    // 可以调用到 Child 组件里面的 focusTextInput 方法
-    this.textInput.current.focusTextInput()
-  }
-  render() {
-    return (
-      <Child ref={this.textInput}/>
-    )
-  }
-}
-class Child extends React.Component {
-  // ...
-}
-```
-
-注意，不能在函数组件 **上** 使用 ref（函数组件没有实例，ref.current 没办法指向函数组件），但是可以在函数组件 **里面** 使用 ref。
-
-#### 回调 Refs
-
-在这种方式中，传递的不是 `createRef()` 创建 `ref` 属性，而是一个函数。这个函数中接受 React 组件实例或者 HTML DOM 元素作为参数。
-
-```jsx harmony
-class MyComp extends React.Component {
-  constructor(props) {
-    super(props)
-    this.textInput = null
-  }
-  setTextInputRef = element => {
-    this.textInput = element
-  }
-  focusTextInput = () => {
-    // 使用原生 DOM API 使得 textInput 获得焦点
-    if (this.textInput) this.textInput.focus()
-  }
-  componentDidMount() {
-    this.focusTextInput()
-  }
-  render() {
-    // 给 ref 属性传一个一个回调函数，React 组件挂载式会调用回调函数并传入 element
-    return (
-      <div>
-        <input type="text" ref={this.setTextInputRef}/>
-        <button onClick={this.focusTextInput}>Focus</button>
-      </div>
-    )
-  }
-}
-```
-
-同样的，你可以让 `textInput` 指向一个 class 组件，但仍然不能让其指向一个函数组件（因为函数组件没有实例）；但是你可以给函数组件传递一个回调，并将其赋值给函数组件内部的 `ref` 属性，React 在挂载的时候将调用这个回调，并传入 `element` 作为参数：
-
-```jsx harmony
-class MyComp extends React.Component {
-  constructor(props) {
-    super(props)
-    this.textInput = null
-  }  
-  render() {
-    return (
-      <div>
-        <Child inputRef={el => this.textInput = el}/>
-      </div>
-    )
-  }
-}
-function Child() {
+const Page = () => {
   return (
-    <div>
-      <input type="text" ref={props.inputRef}/>
-    </div>
-  )
-}
-```
+    <Section>
+      <Heading>Title</Heading>
+      <Section>
+        <Heading>Heading</Heading>
+        <Heading>Heading</Heading>
+        <Heading>Heading</Heading>
+        <Section>
+          <Heading>Sub-heading</Heading>
+          <Heading>Sub-heading</Heading>
+          <Heading>Sub-heading</Heading>
+          <Section>
+            <Heading>Sub-sub-heading</Heading>
+            <Heading>Sub-sub-heading</Heading>
+            <Heading>Sub-sub-heading</Heading>
+          </Section>
+        </Section>
+      </Section>
+    </Section>
+  );
 
-↑ 在 `forWardRef` 出现之前，函数组件需要借用回调函数达到 Ref 转发的目的
-
-### 函数组件
-
-- 可以不使用 `React.creatRef`，而使用 `useRef`
-- 可以不使用回调函数手动转发 Ref，而使用 `forwardRef`，他允许组件接收 ref 并将其向下传递，最终可以使得 ref 指向最底层的 HTML DOM
-
-```jsx harmony
-const MyComp = () => {
-  // const myRef = React.createRef()
-  const myRef = useRef(null)
-  
+const Section = ({ children }) => {
+  const level = useContext(LevelContext);
   return (
-    <Child ref={myRef}> I am a Button </Child>
-  )
+    <section className="section">
+      <LevelContext.Provider value={level + 1}>
+        {children}
+      </LevelContext.Provider>
+    </section>
+  );
 }
-const Child = React.forwardRef((props, ref) => (
-  <button ref={ref} className="button-wrapper">
-    {props.children}
-  </button>
-))
-```
 
-通过这样的方式，我们在 MyComp 中就可以通过 `myRef.current` 获取到原生的 button 了
-
-### 高阶组件的 Ref 转发
-
-有时候我们会使用高阶组件：
-
-```jsx harmony
-function logProps(Component) {
-  return class extends React.Component {
-    componentDidUpdate(prevProps) {
-      console.log('old props: ', prevProps)
-      console.log('new props: ', this.props)
-    }
-    render() {
-      return <Component {...this.props}/>
-    }
-  }
-}
-class Child extends React.Component {
-  // ...
-}
-export default logProps(Child)
-```
-
-需要注意的是，如果对 HOC 添加 ref，该 ref 将会引用到其外层的容器组件，而不是被包裹的组件：
-
-```jsx harmony
-import Child from './Child'
-
-class MyComp extends React.Component {
-  constructor(props) {
-    super(props)
-    this.textInput = React.createRef()
-  }
-  render() {
-    return (
-      // 按照以前的逻辑，这里的 ref 应该指向组件 Child
-      // 但实际上，这里的 ref 指向的并不是 Child，而是他外面的 LogProps
-      <Child ref={this.textInput}/>
-    )
-  }
-}
-```
-
-因此，我们需要使用 `React.forward` 来将 ref 透传下去（就像之前函数组件使用 `React.forward` 将 ref 透传，指向了最终的 HTML DOM 元素一样），使得 ref 指向原来被包裹的组件：
-
-```jsx harmony
-function logProps(Component) {
-  class LongProps extends React.Component {
-    componentDidUpdate(prevProps) {
-      console.log('old props: ', prevProps)
-      console.log('new props: ', this.props)
-    }
-    render() {
-      const {forwardedRef, ...rest} = this.props
-      return <Component ref={forwardedRef} {...rest}/>
-    }
-  }
-  return React.fowardRef((props, ref) => {
-    return <LongProps {...props} forwardedRef={ref}/>  
-  })
-}
-class Child extends React.Component {
-  // ...
-}
-export default logProps(Child)
-```
-
-## useReducer
-
-```jsx harmony
-// 创建初始状态
-const initial = {
-  n: 0
-}
-// 创建 reducer
-const reducer = (state, action) => {
-  switch (action.type) {
-    case 'add':
-      return {...state, n: state.n + action.number}
-    case 'multi':
-      return {...state, n: state.n * 2}
+const Heading = ({ children }) => {
+  const level = useContext(LevelContext);
+  switch (level) {
+    case 0:
+      throw Error('Heading must be inside a Section!');
+    case 1:
+      return <h1>{children}</h1>;
+    case 2:
+      return <h2>{children}</h2>;
+    case 3:
+      return <h3>{children}</h3>;
+    case 4:
+      return <h4>{children}</h4>;
+    case 5:
+      return <h5>{children}</h5>;
+    case 6:
+      return <h6>{children}</h6>;
     default:
-      throw new Error('unknown type')
+      throw Error('Unknown level: ' + level);
   }
-}
-const App = () => {
-  // 使用 useReducer
-  const [state, dispatch] = useReducer(reducer, initial)
-  const onClick = () => {
-    dispatch({type:'add', number: 1})
-  }
-  return (
-    <>
-      <div>{n: state.n}</div>
-      <button onClick={onClick}>+1</button>
-    </>
-  )
 }
 ```
 
-### 使用 useReducer 替代 redux
+## myRedux
 
-```jsx harmony
+````jsx
 // 创建数据初始状态
 const store = {
   user: null,
@@ -1663,7 +1026,77 @@ const User = () => {
     </div>
   )
 }
+````
+
+也可以将 `useContext` 封装起来：
+
+```jsx
+export function useStore() {
+  return useContext(Context)
+}
 ```
+
+# Escape Hatches
+
+## Refs
+
+### 实现一个贯穿始终的状态
+
+使用 useState 的话每次重新渲染会产生不同的 state，如果非要实现一个贯穿始终状态，除了使用全局变量 `window` 以外，还有这两种方法：
+
+#### 使用 useRef
+
+```jsx harmony
+const nRef = React.useRef(0) // {current: 0}
+// 之后使用 nRef.current
+```
+
+但是修改 `nRef.current` 不会让组件重新渲染，因此页面上的数据不会同步改变（但是 Vue 3 可以）
+
+可以像这样手动让他更新：
+
+```jsx harmony
+const update = React.useState(null)[1]
+// 这样修改 nRef.current
+const onClick = () => {
+  nRef.current += 1
+  update(nRef.current)
+} 
+```
+
+### 函数组件
+
+- 可以不使用 `React.creatRef`，而使用 `useRef`
+- 可以不使用回调函数手动转发 Ref，而使用 `forwardRef`，他允许组件接收 ref 并将其向下传递，最终可以使得 ref 指向最底层的 HTML DOM
+
+```jsx harmony
+const MyComp = () => {
+  // const myRef = React.createRef()
+  const myRef = useRef(null)
+  
+  return (
+    <Child ref={myRef}> I am a Button </Child>
+  )
+}
+const Child = React.forwardRef((props, ref) => (
+  <button ref={ref} className="button-wrapper">
+    {props.children}
+  </button>
+))
+```
+
+通过这样的方式，我们在 MyComp 中就可以通过 `myRef.current` 获取到原生的 button 了
+
+# Hooks
+
+像 `useState` 这种 `use` 开头的函数被称为 Hook。
+
+Hook 是只在 React 渲染的时候才可用的特殊函数。
+
+Hooks 只能在函数或自定义 Hooks 的顶层调用，不能放在条件、循环或其他嵌套函数中。
+
+- 因为 Hooks 依赖于组件在每次渲染时调用 Hooks 的稳定顺序。
+- React 会为每一个组件维护一个 **状态对数组** 和 **当前的状态对序号**（初始为 0），每次调用 `useState` 的时候，序号就会增加一个，这样就知道 `useState` 每个对应的都是谁了。
 
 ## useEffect
 
@@ -2102,7 +1535,766 @@ function onRenderCallback(
 }
 ```
 
-# Render Props
+
+
+# Redux
+
+可以看看 [这个例子](https://codesandbox.io/s/jovial-gates-wbs8e)：
+
+```js
+import { createStore } from "redux";
+
+const reducer = function(previousState, action) {
+  if (previousState === undefined) {
+    previousState = 0;
+  }
+  switch (action.type) {
+    case "INCREMENT":
+      return previousState + 1;
+    case "DECREMENT":
+      return previousState - 1;
+    default:
+      return previousState;
+  }
+};
+
+const store = createStore(reducer);
+
+const render = function() {
+  document.getElementById("value").innerHTML = store.getState();
+};
+
+render();
+
+store.subscribe(render); // 每次 dispatch 就会触发 render
+
+const addOne = function() {
+  store.dispatch({ type: "INCREMENT" });
+};
+
+const minusOne = function() {
+  store.dispatch({ type: "DECREMENT" });
+};
+
+document.getElementById("increment").addEventListener("click", addOne);
+document.getElementById("decrement").addEventListener("click", minusOne);
+document.getElementById("incrementIfOdd").addEventListener("click", () => {
+  if (store.getState() % 2 === 1) {
+    addOne();
+  }
+});
+document.getElementById("incrementAsync").addEventListener("click", () => {
+  setTimeout(addOne, 1000);
+});
+```
+
+# Class Component
+
+## Creation
+
+有两种方式创建类组件：
+
+- ES 5 方式（过时）
+
+```jsx harmony
+import React from 'react'
+
+const A = React.createClass({
+  render() {
+    return (
+      <div>hi</div>
+    )
+  }
+})
+
+export default A
+```
+
+- ES 6 方式（使用 class）
+
+```jsx harmony
+import React from 'react'
+
+class B extends React.Component {
+  constructor(props) {
+    super(props)
+  }
+  // 其实如果不在 constructor 里面加其他的东西，上面几行是可以省略掉的
+  render() {
+    return (
+      <div>hi</div>
+    )
+  }
+}
+
+export default B
+```
+
+## Props
+
+```jsx harmony
+class Parent extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {name: 'harvey'}
+  }
+  onClick = () => {}
+  render() {
+    return (
+      <Child name={this.state.name}
+             onClick={this.onClick}>hi</Child>
+      // 外部数据会被包装为一个对象：
+      // {name: 'harvey', onClick:..., children: 'hi'} 
+    )
+  }
+}
+
+class Child extends React.Component {
+  constructor(props) {
+    super(props) // 这样会将 props 放到 this 上，这就是 props 的初始化
+  }
+  render() {
+    // 这样读取 props
+    return (
+      <div onClick={this.props.onClick}>
+        {this.props.name}
+        <div>
+          {this.props.children}
+        </div>
+      </div>
+    )
+  }
+}
+```
+
+{% note warning %}
+
+不允许修改 Props
+
+{% endnote %}
+
+### `componentWillReceiveProps`
+
+会在 Props 变化的时候调用，目前已经不用了，并更名为 `UNSAFE_componentWillReceiveProps`
+
+```js
+componentWillReceiveProps(nextProps, nextContext) {
+  //...
+}
+```
+
+### Props 的作用
+
+- 接受外部的数据：只能读不能写
+- 接受外部的函数：在恰当时机调用
+
+## State
+
+- 类组件修改 state 的时候会进行 **Shallow Merge**，新旧 state 进行一级合并
+
+- `this.state.n += 1` 无效，UI 不会自动更新，需要用 `setState`
+- `setState` 不会马上改变 `state`，是异步更新的，推荐使用 `setState(函数)`
+- 不推荐 `this.setState(this.state)`，因为 React 不推荐我们修改旧的 `state`（不可变数据）
+
+```jsx
+class Son extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      n: 0,
+      m: 0
+    };
+  }
+  addN() {
+    this.setState(state => {
+      const n = state.n + 1;
+      return { n };
+    });
+    // 用函数写 setState，因为 setState 是异步的，他会等一会儿再改变 state,如果用函数就能很清楚的知道哪个是新的 n，哪个是旧的 n
+  }
+  addM() {
+    this.setState({ m: this.state.m + 1 });
+    // 类组件会自动合并第一层属性
+  }
+  render() {
+    return (
+      <div className="Son">
+        儿子 n: {this.state.n}
+        <button onClick={() => this.addN()}>n+1</button>
+        m: {this.state.m}
+        <button onClick={() => this.addM()}>m+1</button>
+        <Grandson />
+      </div>
+    );
+  }
+}
+```
+
+```jsx harmony
+class Parent extends React.Component {
+  constructor(props) {
+    super(props)
+    // 初始化 State
+    this.state = {x: 1}
+  }
+  onClick = () => {
+    // 修改 State，注意 setState 不会立即修改 State，会在 set 成功之后调用 fn
+    // 因此最后 this.state.x 不会 +2
+    this.setState({
+      x: this.state.x + 1
+    }, fn)
+    this.setState({
+      x: this.state.x + 1
+    }, fn)
+  }
+  onClick2 = () => {
+    // 第二种写法，这种情况下 this.state.x 会 +2
+    this.setState((prevState) => ({
+      x: prevState.x + 1
+    }), fn)
+    this.setState((prevState) => ({
+      x: prevState.x + 1
+    }), fn)
+  }
+  render() {
+    return (
+      // 读取 State
+      <div onClick={this.onClick}>{this.state.x}</div>
+    )
+  }
+}
+```
+
+## Lifecycle
+
+![React LifeCycle](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/React-LifeCycle.png)
+
+- **`constructor(props)`**：用于初始化 state 和为事件处理函数绑定实例（`bind(this)`）
+- `static getDerivedStateFromProps(props, state)`：会在调用 render 方法之前调用，并且在初始挂载及后续更新时都会被调用。它应返回一个对象来更新 state，如果返回 null 则不更新任何内容
+- **`shouldComponentUpdate()`**：判断 React 组件的输出是否受当前 state 或 props 更改的影响
+- **`render()`**：当 state 或 props 发生变化时调用，可以通过 `shouldComponentUpdate` 调解调用时机
+- `getSnapshotBeforeUpdate(prevProps, prevState)`：会在最近一次渲染输出之前调用。它使得组件能在发生更改之前从 DOM 中捕获一些信息（例如，滚动位置）
+- **`componentDidMount()`**：会在组件挂载后（插入 DOM 树中）立即调用
+- **`componentDidUpdate(prevProps, prevState, snapshot)`**： 会在更新后会被立即调用。首次渲染不会执行此方法
+- **`componentWillUnmount()`**：会在组件卸载及销毁之前直接调用
+- `static getDerivedStateFromError(error)`：此生命周期会在后代组件抛出错误后被调用。 它将抛出的错误作为参数，并返回一个值以更新 state
+- `componentDidCatch(error, info)`：此生命周期在后代组件抛出错误后被调用
+
+### `constructor`
+
+- 初始化 props
+- 初始化 state，但此时不能调用 `setState`
+- 用来写 `bind this`
+
+```jsx harmony
+constructor() {
+  this.onClick = this.onClick.bind(this)
+}
+// 也可以用新语法代替
+```
+
+### `shouldComponentUpdate`
+
+- 返回 true 表示不阻止 UI 更新
+
+- 返回 false 表示阻止 UI 更新
+
+```jsx harmony
+shouldComponentUpdate(nextProps, nextState)
+```
+
+#### `React.PureComponent`
+
+会在 `render` 之前对新旧 state 和 props 进行浅对比（只比较一层），来控制是否 `render`，只要有任何一个 key 的值不同，就会 `render`
+
+### `render`
+
+用于展示视图，可以用 `<React.Fragment>` 将多个标签括起来
+
+可以在 `render` 中写
+
+- if / else
+- map
+
+### `componentDidMount`
+
+- 在元素插入页面之后执行代码，这些代码通常依赖 DOM
+- 同时官方推荐将加载数据的 AJAX 请求写在这里
+- 首次渲染 **会** 执行这个钩子
+
+此外，推荐在使用 Ref 之前先赋值为一个 `undefined`
+
+### `componentDidUpdate`
+
+- 在视图更新后执行代码
+- 此处也可以发起 AJAX 请求，通常是用于更新数据
+- 首次渲染 **不会** 执行这个钩子
+- 在这里 `setState` 可能会引起无限循环，除非用 `if` 进行限制
+- `shouldComponentUpdate` 返回 `false` 时不会调用
+
+```jsx harmony
+compoentDidUpdate(prevProps, prevState, snapshot)
+```
+
+### `componentWillUnmount`
+
+- 组件将要被移除页面并销毁时，执行代码
+- Unmount 过的组件不会再次 Mount
+- 通常需要在这里取消监听、计时器、AJAX 请求等
+
+## Event
+
+可以这样写事件
+
+```jsx harmony
+class MyComponent extends React.Component {
+  constructor() {
+    super()
+    this.state = {
+      n: 0
+    }    
+  }  
+  // 这样写的 addN 是挂在原型上的  
+  addN() {
+    this.setState((state) => {
+      const n = state.n + 1
+      return { n }      
+    })
+  }
+  render() {
+    return (
+      <div>
+        n: {this.state.n}            
+        <button onClick={() => this.addN()}> n + 1 </button>
+        {/*   这样最安全最好懂，箭头函数的 this 不会变   */}
+      </div>
+    )
+  }  
+}
+```
+
+我们不能在 JSX 里面这样写：
+
+```jsx harmony
+<button onClick={this.addN}> n + 1 </button>
+{/*   这里面 addN 的 this 会变成 window   */}
+```
+
+因为在点击的时候 React 实际上运行的是 `button.onClick.call(null,event)`，`this` 被 React 改了，当然我们可以通过 `bind` 来绑定 `this`
+
+```jsx harmony
+<button onClick={this.addN.bind(this)}> n + 1 </button>
+```
+
+也可以给箭头函数取个名字再来调用：
+
+```jsx harmony
+class MyComponent extends React.Component {
+  constructor() { ... }  
+  addN() { ... }
+  _addN() {
+    () => {
+      this.addN()
+    }
+  }
+  render() {
+    return (
+      <div>
+        n: {this.state.n}            
+        <button onClick={this._addN}> n + 1 </button>
+      </div>
+    )
+  }  
+}
+```
+
+为了解决这个问题，我们可以将 `addN` 写在 `constructor` 里面：
+
+```jsx harmony
+class MyComponent extends React.Component {
+  constructor() {
+    super()
+    this.state = {
+      n: 0
+    }
+    // 这样 addN 就是挂在每个实例对象上了  
+    this.addN = () => {
+      this.setState((state) => {
+        const n = state.n + 1
+        return { n }      
+      })
+    }
+  }
+  render() {
+    return (
+      <div>
+        n: {this.state.n}            
+        <button onClick={this.addN}> n + 1 </button>
+      </div>
+    )
+  }  
+}
+```
+
+下面这种写法本质与上面的一样，只是 ES 6 的语法糖：
+
+```jsx harmony
+class MyComponent extends React.Component {
+  constructor() {
+    super()
+    this.state = {
+      n: 0
+    }
+  }
+  addN = () => {
+    this.setState((state) => {
+      const n = state.n + 1
+      return { n }      
+    })
+  }
+  render() {
+    return (
+      <div>
+        n: {this.state.n}            
+        <button onClick={this.addN}> n + 1 </button>
+      </div>
+    )
+  }  
+}
+```
+
+## Context
+
+```jsx
+const MyContext = React.createContext('defaultValue')
+class App extends React.Component {
+  render() {
+    return (
+      <MyContext value="someValue">
+        <ButtonWrapper/>
+      </MyContext>
+    )
+  }
+}
+function ButtonWrapper() {
+  return (
+    <div>
+      <Button/>
+    </div>
+  )
+}
+class MyButton extends React.Component {
+  static contextType = MyContext
+  render() {
+    return <Button themeColor={this.context}/>
+  }
+}
+```
+
+### React.createContext
+
+```jsx harmony
+const MyContext = React.createContext(defaultValue)
+```
+
+一旦有一个组件订阅了这个 Context 对象，这个组件会从组件树中寻找最近的匹配的 `Provider` 中读取 context 值；如果没有匹配到，则使用 `defaultValue`。需要注意的是，就算给 Provider 传递的是 `undefined`，`defaultValue` 也不会生效。
+
+### Context.Provider
+
+```jsx harmony
+<MyContext.Provider value={/* SomeValue */}>
+  <Child/>
+</MyContext.Provider>
+```
+
+当 Provider 的 `value` 值发生变化时，内部所有的消费组件都会重新渲染，不受制于 `shouldComponentUpdate`，变化与否通过 `Object.is` 判定。
+
+比如在下面这种情况时：
+
+```jsx harmony
+class App extends React.component {
+  render() {
+    return (
+      <Provider value={{something: 'something'}}>
+        <Child/>
+      </Provider>
+    )
+  }
+}
+```
+
+一旦 Provider 的父组件 App 进行重新渲染，每次 value 就会被赋值为新的对象，会引起所有下面的 consumer 组件的重新渲染。为了防止这么做，需要使用 state：
+
+```jsx harmony
+class App extends React.component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      value: {something: 'something'}
+    }
+  }
+  render() {
+    return (
+      <Provider value={this.state.value}>
+        <Child/>
+      </Provider>
+    )
+  }
+}
+```
+
+### Class.contextType
+
+```jsx harmony
+class MyClass extends React.Component {
+  componentDidMount() {
+    let value = this.context
+  }
+  componentDidUpdate() {
+    let value = this.context
+  }
+  componentWillUnmount() {
+    let value = this.context
+  }
+  render() {
+    let value = this.context
+  }
+}
+MyClass.contextType = MyContext
+```
+
+通过挂载在 class 上的 `contextType` 属性获取一个 Context 对象，可以通过 `this.context` 来消费最近 Context 上的那个值，可以在包括 render 在内的任何生命周期中访问到他。
+
+也可以通过 `static` 来初始化 `contextType`：
+
+```jsx harmony
+class MyClass extends React.Component {
+  static contextType = MyContext
+  render() {
+    let value = this.context
+  }
+}
+```
+
+### Context.Consumer
+
+```jsx harmony
+<MyContext.Consumer>
+  {value => /* 基于 context 值进行渲染*/}
+</MyContext.Consumer>
+```
+
+在函数式组件中，我们需要这样使用 context，中间的部分接受一个 context 值，返回一个 React 节点
+
+### Context.displayName
+
+修改在 React DevTools 中显示的名字
+
+```jsx harmony
+const MyContext = React.createContext(/* someValue */)
+MyContext.displayName = 'MyDisplayName'
+
+<MyContext.Provider> // 在 DevTools 中显示 "MyDisplayName.Provider"
+<MyContext.Consumer> // 在 DevTools 中显示 "MyDisplayName.Consumer"
+```
+
+
+
+## Refs
+
+### React.createRef
+
+可以这样创建一个属性 `myRef`，然后传递给 DOM 元素 `div`，后续就可以使用 `this.myRef.current` 访问到这个 `div`
+
+```jsx harmony
+class MyComp extends React.Component {
+  constructor(props) {
+    super(props)
+    this.myRef = React.createRef()
+  }
+  render() {
+    return (
+      <div ref={this.myRef}></div>
+    )
+  }
+}
+```
+
+当 Ref 用于普通 HTML 元素时，`this.myRef.current` 为 HTML 元素：
+
+```jsx harmony
+class MyComp extends React.Component {
+  constructor(props) {
+    super(props)
+    this.textInput = React.createRef()
+  }
+  focusEvent = () => {
+    this.textInput.current.focus()
+  }
+  render() {
+    return (
+      <div ref={this.myRef}>
+        <input type="text" ref={this.textInput}/>
+        <button onClick={this.focusEvent}>Focus</button>
+      </div>
+    )
+  }
+}
+```
+
+当 Ref 用于自定义 class 组件时，`this.myRef.current` 为组件的实例：
+
+```jsx harmony
+class MyComp extends React.Component {
+  constructor(props) {
+    super(props)
+    this.textInput = React.createRef()
+  }
+  componentDidMount() {
+    // 可以调用到 Child 组件里面的 focusTextInput 方法
+    this.textInput.current.focusTextInput()
+  }
+  render() {
+    return (
+      <Child ref={this.textInput}/>
+    )
+  }
+}
+class Child extends React.Component {
+  // ...
+}
+```
+
+注意，不能在函数组件 **上** 使用 ref（函数组件没有实例，ref.current 没办法指向函数组件），但是可以在函数组件 **里面** 使用 ref。
+
+### 回调 Refs
+
+在这种方式中，传递的不是 `createRef()` 创建 `ref` 属性，而是一个函数。这个函数中接受 React 组件实例或者 HTML DOM 元素作为参数。
+
+```jsx harmony
+class MyComp extends React.Component {
+  constructor(props) {
+    super(props)
+    this.textInput = null
+  }
+  setTextInputRef = element => {
+    this.textInput = element
+  }
+  focusTextInput = () => {
+    // 使用原生 DOM API 使得 textInput 获得焦点
+    if (this.textInput) this.textInput.focus()
+  }
+  componentDidMount() {
+    this.focusTextInput()
+  }
+  render() {
+    // 给 ref 属性传一个一个回调函数，React 组件挂载式会调用回调函数并传入 element
+    return (
+      <div>
+        <input type="text" ref={this.setTextInputRef}/>
+        <button onClick={this.focusTextInput}>Focus</button>
+      </div>
+    )
+  }
+}
+```
+
+同样的，你可以让 `textInput` 指向一个 class 组件，但仍然不能让其指向一个函数组件（因为函数组件没有实例）；但是你可以给函数组件传递一个回调，并将其赋值给函数组件内部的 `ref` 属性，React 在挂载的时候将调用这个回调，并传入 `element` 作为参数：
+
+```jsx harmony
+class MyComp extends React.Component {
+  constructor(props) {
+    super(props)
+    this.textInput = null
+  }  
+  render() {
+    return (
+      <div>
+        <Child inputRef={el => this.textInput = el}/>
+      </div>
+    )
+  }
+}
+function Child() {
+  return (
+    <div>
+      <input type="text" ref={props.inputRef}/>
+    </div>
+  )
+}
+```
+
+↑ 在 `forWardRef` 出现之前，函数组件需要借用回调函数达到 Ref 转发的目的
+
+### 高阶组件的 Ref 转发
+
+有时候我们会使用高阶组件：
+
+```jsx harmony
+function logProps(Component) {
+  return class extends React.Component {
+    componentDidUpdate(prevProps) {
+      console.log('old props: ', prevProps)
+      console.log('new props: ', this.props)
+    }
+    render() {
+      return <Component {...this.props}/>
+    }
+  }
+}
+class Child extends React.Component {
+  // ...
+}
+export default logProps(Child)
+```
+
+需要注意的是，如果对 HOC 添加 ref，该 ref 将会引用到其外层的容器组件，而不是被包裹的组件：
+
+```jsx harmony
+import Child from './Child'
+
+class MyComp extends React.Component {
+  constructor(props) {
+    super(props)
+    this.textInput = React.createRef()
+  }
+  render() {
+    return (
+      // 按照以前的逻辑，这里的 ref 应该指向组件 Child
+      // 但实际上，这里的 ref 指向的并不是 Child，而是他外面的 LogProps
+      <Child ref={this.textInput}/>
+    )
+  }
+}
+```
+
+因此，我们需要使用 `React.forward` 来将 ref 透传下去（就像之前函数组件使用 `React.forward` 将 ref 透传，指向了最终的 HTML DOM 元素一样），使得 ref 指向原来被包裹的组件：
+
+```jsx harmony
+function logProps(Component) {
+  class LongProps extends React.Component {
+    componentDidUpdate(prevProps) {
+      console.log('old props: ', prevProps)
+      console.log('new props: ', this.props)
+    }
+    render() {
+      const {forwardedRef, ...rest} = this.props
+      return <Component ref={forwardedRef} {...rest}/>
+    }
+  }
+  return React.fowardRef((props, ref) => {
+    return <LongProps {...props} forwardedRef={ref}/>  
+  })
+}
+class Child extends React.Component {
+  // ...
+}
+export default logProps(Child)
+```
+
+
+
+## Render Props
 
 目的：封装组件，提高可复用性，可以这样使用：
 
@@ -2175,57 +2367,6 @@ function withMouse(Component) {
 ```
 
 需要注意的是，使用 render prop 会导致 `React.PureComponent` 失效，因为外层组件更新的时候，render prop 的函数总是新的，除非你把它写成一个实例方法。
-
-# Redux
-
-可以看看 [这个例子](https://codesandbox.io/s/jovial-gates-wbs8e)：
-
-```js
-import { createStore } from "redux";
-
-const reducer = function(previousState, action) {
-  if (previousState === undefined) {
-    previousState = 0;
-  }
-  switch (action.type) {
-    case "INCREMENT":
-      return previousState + 1;
-    case "DECREMENT":
-      return previousState - 1;
-    default:
-      return previousState;
-  }
-};
-
-const store = createStore(reducer);
-
-const render = function() {
-  document.getElementById("value").innerHTML = store.getState();
-};
-
-render();
-
-store.subscribe(render); // 每次 dispatch 就会触发 render
-
-const addOne = function() {
-  store.dispatch({ type: "INCREMENT" });
-};
-
-const minusOne = function() {
-  store.dispatch({ type: "DECREMENT" });
-};
-
-document.getElementById("increment").addEventListener("click", addOne);
-document.getElementById("decrement").addEventListener("click", minusOne);
-document.getElementById("incrementIfOdd").addEventListener("click", () => {
-  if (store.getState() % 2 === 1) {
-    addOne();
-  }
-});
-document.getElementById("incrementAsync").addEventListener("click", () => {
-  setTimeout(addOne, 1000);
-});
-```
 
 # Vue & React
 
