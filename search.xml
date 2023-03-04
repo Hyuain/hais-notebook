@@ -2553,175 +2553,6 @@ z = 8x + 12y
       </categories>
   </entry>
   <entry>
-    <title>命令行基础</title>
-    <url>/hais-notebook/2020/01/29/Command/</url>
-    <content><![CDATA[<p>主要记录命令行的基本用法。</p>
-<span id="more"></span>
-<h1 id="文件的增删改查">文件的增删改查</h1>
-<h2 id="查">查</h2>
-<table>
-<thead>
-<tr class="header">
-<th>命令</th>
-<th>含义</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>cd ~</code></td>
-<td>~ 表示用户目录</td>
-</tr>
-<tr class="even">
-<td><code>pwd</code></td>
-<td>Print Work Directory，展示当前的绝对路径</td>
-</tr>
-<tr class="odd">
-<td><code>ls</code></td>
-<td>List，查看当前目录文件内容（默认不显示以 <code>.</code> 开头的文件）</td>
-</tr>
-<tr class="even">
-<td><code>ls [file path]</code></td>
-<td>查看文件路径内容</td>
-</tr>
-<tr class="odd">
-<td><code>ls -l</code></td>
-<td>查看更新时间</td>
-</tr>
-<tr class="even">
-<td><code>cat</code></td>
-<td>Concatenate，打印文件内容</td>
-</tr>
-<tr class="odd">
-<td><code>head</code></td>
-<td>展示前 10 行文件，或者 <code>-n [数字]</code></td>
-</tr>
-<tr class="even">
-<td><code>tail</code></td>
-<td>展示后 10 行文件</td>
-</tr>
-<tr class="odd">
-<td><code>less</code></td>
-<td>进入一个可滚动的界面，按上、下（或 J、K ）滚动，按 Q 退出</td>
-</tr>
-</tbody>
-</table>
-<h2 id="增">增</h2>
-<table>
-<thead>
-<tr class="header">
-<th>命令</th>
-<th>含义</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>touch</code></td>
-<td>创建空文件，可以同时创建多个文件；或者修改文件的更新时间</td>
-</tr>
-<tr class="even">
-<td><code>echo</code></td>
-<td>返回你 <code>echo</code> 的东西</td>
-</tr>
-<tr class="odd">
-<td><code>echo [content] &gt; 4.txt</code></td>
-<td>创建有内容的文件，会覆盖之前的内容</td>
-</tr>
-<tr class="even">
-<td><code>echo [content] &gt;&gt; 4.txt</code></td>
-<td>追加内容</td>
-</tr>
-<tr class="odd">
-<td><code>echo -e "[content]\n" &gt;&gt; 4.txt</code></td>
-<td>有换行的内容</td>
-</tr>
-<tr class="even">
-<td><code>mkdir</code></td>
-<td>创建目录，可以同时创建多个目录</td>
-</tr>
-<tr class="odd">
-<td><code>mkdir -p a/b/c/d</code></td>
-<td>创建多级目录</td>
-</tr>
-<tr class="even">
-<td><code>cp [filename] [new filename]</code></td>
-<td>复制文件</td>
-</tr>
-<tr class="odd">
-<td><code>cp -r [dir] [new dir]</code></td>
-<td>复制目录</td>
-</tr>
-</tbody>
-</table>
-<h2 id="删">删</h2>
-<table>
-<thead>
-<tr class="header">
-<th>命令</th>
-<th>含义</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>rm</code></td>
-<td>删除</td>
-</tr>
-<tr class="even">
-<td><code>rm -r</code></td>
-<td>删除目录</td>
-</tr>
-<tr class="odd">
-<td><code>rm -rf</code></td>
-<td>强制删除（不管里面有没有内容）</td>
-</tr>
-</tbody>
-</table>
-<h2 id="改">改</h2>
-<table>
-<thead>
-<tr class="header">
-<th>命令</th>
-<th>含义</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>code</code></td>
-<td>使用 VSCode 打开</td>
-</tr>
-<tr class="even">
-<td><code>start</code></td>
-<td>使用默认程序打开</td>
-</tr>
-<tr class="odd">
-<td><code>mv [filename] .</code></td>
-<td>移动到当前目录</td>
-</tr>
-<tr class="even">
-<td><code>mv [filename] [new filename]</code></td>
-<td>重命名文件</td>
-</tr>
-</tbody>
-</table>
-<h2 id="命令的组合">命令的组合</h2>
-<ul>
-<li>成功返回 <code>0</code>，失败返回 <code>error</code> 和非 <code>0</code> 值，通过 <code>echo $?</code> 查看</li>
-<li><code>&amp;&amp;</code>：第一条命令后才会执行后面的</li>
-<li><code>;</code>：不管前面是否成功都会执行后面的</li>
-</ul>
-<h2 id="把命令变成文件">把命令变成文件</h2>
-<ul>
-<li>MAC上需要执行：<code>chmod +x [filename]</code>，赋予执行权限</li>
-<li>执行命令：<code>./[filename]</code> 或者 <code>sh [filename]</code></li>
-<li>如果加入 <code>PATH</code>，就可以不用输入文件路径，也不用输入 <code>./</code>，输入文件名就能执行</li>
-<li>命令行的本质就是可执行文件</li>
-<li>windows 会优先去找 <code>.exe</code> 的文件</li>
-</ul>
-]]></content>
-      <categories>
-        <category>工具</category>
-      </categories>
-  </entry>
-  <entry>
     <title>Topics From Chromium Blogs</title>
     <url>/hais-notebook/2022/06/16/ChromiumBlogs/</url>
     <content><![CDATA[<p>Read some articles in chromium blogs or relative wikis, and take these memos.</p>
@@ -3033,6 +2864,175 @@ z = 8x + 12y
 ]]></content>
       <categories>
         <category>Memo</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>命令行基础</title>
+    <url>/hais-notebook/2020/01/29/Command/</url>
+    <content><![CDATA[<p>主要记录命令行的基本用法。</p>
+<span id="more"></span>
+<h1 id="文件的增删改查">文件的增删改查</h1>
+<h2 id="查">查</h2>
+<table>
+<thead>
+<tr class="header">
+<th>命令</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>cd ~</code></td>
+<td>~ 表示用户目录</td>
+</tr>
+<tr class="even">
+<td><code>pwd</code></td>
+<td>Print Work Directory，展示当前的绝对路径</td>
+</tr>
+<tr class="odd">
+<td><code>ls</code></td>
+<td>List，查看当前目录文件内容（默认不显示以 <code>.</code> 开头的文件）</td>
+</tr>
+<tr class="even">
+<td><code>ls [file path]</code></td>
+<td>查看文件路径内容</td>
+</tr>
+<tr class="odd">
+<td><code>ls -l</code></td>
+<td>查看更新时间</td>
+</tr>
+<tr class="even">
+<td><code>cat</code></td>
+<td>Concatenate，打印文件内容</td>
+</tr>
+<tr class="odd">
+<td><code>head</code></td>
+<td>展示前 10 行文件，或者 <code>-n [数字]</code></td>
+</tr>
+<tr class="even">
+<td><code>tail</code></td>
+<td>展示后 10 行文件</td>
+</tr>
+<tr class="odd">
+<td><code>less</code></td>
+<td>进入一个可滚动的界面，按上、下（或 J、K ）滚动，按 Q 退出</td>
+</tr>
+</tbody>
+</table>
+<h2 id="增">增</h2>
+<table>
+<thead>
+<tr class="header">
+<th>命令</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>touch</code></td>
+<td>创建空文件，可以同时创建多个文件；或者修改文件的更新时间</td>
+</tr>
+<tr class="even">
+<td><code>echo</code></td>
+<td>返回你 <code>echo</code> 的东西</td>
+</tr>
+<tr class="odd">
+<td><code>echo [content] &gt; 4.txt</code></td>
+<td>创建有内容的文件，会覆盖之前的内容</td>
+</tr>
+<tr class="even">
+<td><code>echo [content] &gt;&gt; 4.txt</code></td>
+<td>追加内容</td>
+</tr>
+<tr class="odd">
+<td><code>echo -e "[content]\n" &gt;&gt; 4.txt</code></td>
+<td>有换行的内容</td>
+</tr>
+<tr class="even">
+<td><code>mkdir</code></td>
+<td>创建目录，可以同时创建多个目录</td>
+</tr>
+<tr class="odd">
+<td><code>mkdir -p a/b/c/d</code></td>
+<td>创建多级目录</td>
+</tr>
+<tr class="even">
+<td><code>cp [filename] [new filename]</code></td>
+<td>复制文件</td>
+</tr>
+<tr class="odd">
+<td><code>cp -r [dir] [new dir]</code></td>
+<td>复制目录</td>
+</tr>
+</tbody>
+</table>
+<h2 id="删">删</h2>
+<table>
+<thead>
+<tr class="header">
+<th>命令</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>rm</code></td>
+<td>删除</td>
+</tr>
+<tr class="even">
+<td><code>rm -r</code></td>
+<td>删除目录</td>
+</tr>
+<tr class="odd">
+<td><code>rm -rf</code></td>
+<td>强制删除（不管里面有没有内容）</td>
+</tr>
+</tbody>
+</table>
+<h2 id="改">改</h2>
+<table>
+<thead>
+<tr class="header">
+<th>命令</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>code</code></td>
+<td>使用 VSCode 打开</td>
+</tr>
+<tr class="even">
+<td><code>start</code></td>
+<td>使用默认程序打开</td>
+</tr>
+<tr class="odd">
+<td><code>mv [filename] .</code></td>
+<td>移动到当前目录</td>
+</tr>
+<tr class="even">
+<td><code>mv [filename] [new filename]</code></td>
+<td>重命名文件</td>
+</tr>
+</tbody>
+</table>
+<h2 id="命令的组合">命令的组合</h2>
+<ul>
+<li>成功返回 <code>0</code>，失败返回 <code>error</code> 和非 <code>0</code> 值，通过 <code>echo $?</code> 查看</li>
+<li><code>&amp;&amp;</code>：第一条命令后才会执行后面的</li>
+<li><code>;</code>：不管前面是否成功都会执行后面的</li>
+</ul>
+<h2 id="把命令变成文件">把命令变成文件</h2>
+<ul>
+<li>MAC上需要执行：<code>chmod +x [filename]</code>，赋予执行权限</li>
+<li>执行命令：<code>./[filename]</code> 或者 <code>sh [filename]</code></li>
+<li>如果加入 <code>PATH</code>，就可以不用输入文件路径，也不用输入 <code>./</code>，输入文件名就能执行</li>
+<li>命令行的本质就是可执行文件</li>
+<li>windows 会优先去找 <code>.exe</code> 的文件</li>
+</ul>
+]]></content>
+      <categories>
+        <category>工具</category>
       </categories>
   </entry>
   <entry>
@@ -10230,8 +10230,74 @@ new RegExp()
 <li>Effects 说的是不由某个特定的事件触发，而是由 <strong>渲染本身</strong> 触发的副作用。</li>
 <li>Effects 专门是指用来跟除了 React 以外的系统，比如浏览器 API、第三方组件、网络等进行同步。<strong>如果我们只是基于某些 State 而改变另一些 State，可能不需要使用 Effect。</strong></li>
 <li>Effects 在渲染之后执行，这是一个同步 React 组件和外部系统的好时机。</li>
+<li>由于闭包，每次执行 Effect 都有自己的 State。</li>
 </ul>
+<h3 id="useeffect">useEffect</h3>
+<p>书写 Effect 需要三步：</p>
+<ol type="1">
+<li>声明 Effect；</li>
+<li>确认依赖，什么时候执行该 Effect：
+<ol type="1">
+<li>不加依赖表示每次渲染都执行，<code>[]</code> 表示首次渲染执行（mount）；</li>
+<li>Refs 通常被忽略（因为他每次都是同一个引用），但父组件传过来的 Ref 有时需要加进去，因为子组件不知道是否每次传来的都是同一个 Ref；</li>
+</ol></li>
+<li>如果需要，增加清理函数。</li>
+</ol>
 <figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">VideoPlayer</span>(<span class="params">&#123; src, isPlaying &#125;</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> ref = <span class="title function_">useRef</span>(<span class="literal">null</span>);</span><br><span class="line"></span><br><span class="line">  <span class="title function_">useEffect</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// 1. 声明 Effect</span></span><br><span class="line">    <span class="keyword">if</span> (isPlaying) &#123;</span><br><span class="line">      ref.<span class="property">current</span>.<span class="title function_">play</span>();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      ref.<span class="property">current</span>.<span class="title function_">pause</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 2. 确认依赖，首次渲染及 isPlaying 改变的时候执行</span></span><br><span class="line">  &#125;, [isPlaying]);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="language-xml"><span class="tag">&lt;<span class="name">video</span> <span class="attr">ref</span>=<span class="string">&#123;ref&#125;</span> <span class="attr">src</span>=<span class="string">&#123;src&#125;</span> <span class="attr">loop</span> <span class="attr">playsInline</span> /&gt;</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果在 Effect 中使用连接网络、开启计时器等时，可能需要在组件卸载（unmount）的时候进行清理，否则再次 mount 的时候可能会又开启好多重复的计时器。</p>
+<p><strong>为了帮助及时发现问题，Strict Mode 下，React 会在开发环境中组件 mount 之后立即 remount 一下。</strong></p>
+<figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line"><span class="title function_">useEffect</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> connection = <span class="title function_">createConnection</span>();</span><br><span class="line">  connection.<span class="title function_">connect</span>();</span><br><span class="line">  <span class="comment">// 这个函数会在组件 unmount 的时候执行</span></span><br><span class="line">  <span class="comment">// 这个函数也会在下一次重渲染时 Effect 执行之前执行</span></span><br><span class="line">  <span class="keyword">return</span> <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    connection.<span class="title function_">disconnect</span>();</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;, []);</span><br></pre></td></tr></table></figure>
+<h3 id="data-fetching-in-effects">Data Fetching in Effects</h3>
+<p>在 Effects 中获取数据是一种非常常见的方法，但他也有一些缺陷：</p>
+<ul>
+<li><strong>在服务端渲染时无法使用。</strong>浏览器需要下载所有的 JavaScript 代码再获取数据，比较低效。</li>
+<li><strong>容易产生“网络瀑布流”。</strong>父组件获取数据，再渲染子组件，子组件再获取数据，串行结构会比较慢。</li>
+<li><strong>无法预加载或缓存数据。</strong></li>
+<li><strong>容易产生诸如竞态条件（Race Conditions）之类的 BUG。</strong></li>
+</ul>
+<p>这其实是在 mount 的时候获取数据的库的通病，通常推荐以下方法解决：</p>
+<ul>
+<li>使用框架（Next、Gatsby、Remix、Razzle）继承的数据获取机制；</li>
+<li>使用或搭建一个客户端缓存，比如可以用 React Query、useSWR、React Router 6.4+ 等库。</li>
+</ul>
+<h4 id="race-conditions">Race Conditions</h4>
+<p>有时候会遇到这样的情况，组件接受一个 <code>id</code> 参数，当 <code>id</code> 改变的时候，就调用接口获取数据。此时，若接口返回的速度慢于 <code>id</code> 改变的速度，<strong>屏幕上获取到的数据就会不停的变化</strong>，最终停止为 <strong>最后返回的数据</strong>（不一定是最后一次 <code>id</code> 对应的数据）。</p>
+<p>下面这段代码模拟了这种情况：</p>
+<figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line"><span class="title function_">useEffect</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> <span class="title function_">fetchData</span> = <span class="keyword">async</span> (<span class="params"></span>) =&gt; &#123;</span><br><span class="line">    <span class="built_in">setTimeout</span>(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">      <span class="keyword">const</span> response = <span class="keyword">await</span> <span class="title function_">fetch</span>(</span><br><span class="line">        <span class="string">`https://swapi.dev/api/people/<span class="subst">$&#123;props.id&#125;</span>/`</span></span><br><span class="line">      );</span><br><span class="line">      <span class="keyword">const</span> newData = <span class="keyword">await</span> response.<span class="title function_">json</span>();</span><br><span class="line">      <span class="title function_">setFetchedId</span>(props.<span class="property">id</span>);</span><br><span class="line">      <span class="title function_">setData</span>(newData);</span><br><span class="line">    &#125;, <span class="title class_">Math</span>.<span class="title function_">round</span>(<span class="title class_">Math</span>.<span class="title function_">random</span>() * <span class="number">12000</span>));</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="title function_">fetchData</span>();</span><br><span class="line">&#125;, [props.<span class="property">id</span>]);</span><br></pre></td></tr></table></figure>
+<p>此时可以通过加 cleanup 函数的方式来解决。</p>
+<p>第一种方法，是添加 <code>active</code> 或 <code>ignore</code> 标记来忽略掉之前几次的返回：</p>
+<figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line"><span class="title function_">useEffect</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">let</span> active = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> <span class="title function_">fetchData</span> = <span class="keyword">async</span> (<span class="params"></span>) =&gt; &#123;</span><br><span class="line">    <span class="built_in">setTimeout</span>(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">      <span class="keyword">const</span> response = <span class="keyword">await</span> <span class="title function_">fetch</span>(<span class="string">`https://swapi.dev/api/people/<span class="subst">$&#123;props.id&#125;</span>/`</span>);</span><br><span class="line">      <span class="keyword">const</span> newData = <span class="keyword">await</span> response.<span class="title function_">json</span>();</span><br><span class="line">      <span class="keyword">if</span> (active) &#123;</span><br><span class="line">        <span class="title function_">setFetchedId</span>(props.<span class="property">id</span>);</span><br><span class="line">        <span class="title function_">setData</span>(newData);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;, <span class="title class_">Math</span>.<span class="title function_">round</span>(<span class="title class_">Math</span>.<span class="title function_">random</span>() * <span class="number">12000</span>));</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="title function_">fetchData</span>();</span><br><span class="line">  <span class="keyword">return</span> <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    active = <span class="literal">false</span>;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;, [props.<span class="property">id</span>]);</span><br></pre></td></tr></table></figure>
+<p>当 <code>props.id</code> 发生变化后，前面几次请求对应的 <code>active</code> 会被置为 <code>false</code>，并且他们的请求结果会被忽略。</p>
+<p>第二种方法是直接中断前面的请求，比如通过 <code>abort</code>：</p>
+<figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line"><span class="title function_">useEffect</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> abortController = <span class="keyword">new</span> <span class="title class_">AbortController</span>();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> <span class="title function_">fetchData</span> = <span class="keyword">async</span> (<span class="params"></span>) =&gt; &#123;</span><br><span class="line">    <span class="built_in">setTimeout</span>(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">const</span> response = <span class="keyword">await</span> <span class="title function_">fetch</span>(<span class="string">`https://swapi.dev/api/people/<span class="subst">$&#123;id&#125;</span>/`</span>, &#123;</span><br><span class="line">          <span class="attr">signal</span>: abortController.<span class="property">signal</span>,</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="keyword">const</span> newData = <span class="keyword">await</span> response.<span class="title function_">json</span>();</span><br><span class="line"></span><br><span class="line">        <span class="title function_">setFetchedId</span>(id);</span><br><span class="line">        <span class="title function_">setData</span>(newData);</span><br><span class="line">      &#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">        <span class="keyword">if</span> (error.<span class="property">name</span> === <span class="string">&#x27;AbortError&#x27;</span>) &#123;</span><br><span class="line">          <span class="comment">// Aborting a fetch throws an error</span></span><br><span class="line">          <span class="comment">// So we can&#x27;t update state afterwards</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// Handle other request errors here</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;, <span class="title class_">Math</span>.<span class="title function_">round</span>(<span class="title class_">Math</span>.<span class="title function_">random</span>() * <span class="number">12000</span>));</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="title function_">fetchData</span>();</span><br><span class="line">  <span class="keyword">return</span> <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    abortController.<span class="title function_">abort</span>();</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;, [id]);</span><br></pre></td></tr></table></figure>
+<h3 id="you-might-not-need-an-effect">You Might Not Need an Effect</h3>
+<p>Effect 是用来跟外部系统交互的地方，如果我们不需要同步外部系统，通常是不需要 Effect 的。比如：</p>
+<ul>
+<li><strong>不需要通过 Effect 来转换数据。</strong>比如想要 filter 一个列表，每次列表变动时我就让他自动执行 filter。然而，<strong>这是低效的</strong>。当我们更新组件的 State，React 会执行渲染函数并计算，然后 commit 到 DOM、更新视图，然后才会执行 Effects。如果 Effect 又要立即更新 State，整个过程都会重新执行一遍。<strong>为了减少不必要的渲染过程，在组件最开头就转换数据，这些转换代码会在 State 改变的时候自动重新执行。</strong></li>
+<li><strong>不要用 Effects 来处理用户事件。</strong>因为这样你就会找不到具体是哪里触发的事件了。</li>
+</ul>
+<p>下面是一些具体的列子：</p>
+<p><strong>更新一些基于 Props 或 State 的 State</strong></p>
+<figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">Form</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> [firstName, setFirstName] = <span class="title function_">useState</span>(<span class="string">&#x27;Taylor&#x27;</span>);</span><br><span class="line">  <span class="keyword">const</span> [lastName, setLastName] = <span class="title function_">useState</span>(<span class="string">&#x27;Swift&#x27;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 🔴 Avoid: redundant state and unnecessary Effect</span></span><br><span class="line">  <span class="keyword">const</span> [fullName, setFullName] = <span class="title function_">useState</span>(<span class="string">&#x27;&#x27;</span>);</span><br><span class="line">  <span class="title function_">useEffect</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="title function_">setFullName</span>(firstName + <span class="string">&#x27; &#x27;</span> + lastName);</span><br><span class="line">  &#125;, [firstName, lastName]);</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">Form</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> [firstName, setFirstName] = <span class="title function_">useState</span>(<span class="string">&#x27;Taylor&#x27;</span>);</span><br><span class="line">  <span class="keyword">const</span> [lastName, setLastName] = <span class="title function_">useState</span>(<span class="string">&#x27;Swift&#x27;</span>);</span><br><span class="line">  <span class="comment">// ✅ Good: calculated during rendering</span></span><br><span class="line">  <span class="keyword">const</span> fullName = firstName + <span class="string">&#x27; &#x27;</span> + lastName;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>缓存一些复杂的计算</strong></p>
+<figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">TodoList</span>(<span class="params">&#123; todos, filter &#125;</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> [newTodo, setNewTodo] = <span class="title function_">useState</span>(<span class="string">&#x27;&#x27;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 🔴 Avoid: redundant state and unnecessary Effect</span></span><br><span class="line">  <span class="keyword">const</span> [visibleTodos, setVisibleTodos] = <span class="title function_">useState</span>([]);</span><br><span class="line">  <span class="title function_">useEffect</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="title function_">setVisibleTodos</span>(<span class="title function_">getFilteredTodos</span>(todos, filter));</span><br><span class="line">  &#125;, [todos, filter]);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">TodoList</span>(<span class="params">&#123; todos, filter &#125;</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> [newTodo, setNewTodo] = <span class="title function_">useState</span>(<span class="string">&#x27;&#x27;</span>);</span><br><span class="line">  <span class="comment">// ✅ This is fine if getFilteredTodos() is not slow.</span></span><br><span class="line">  <span class="keyword">const</span> visibleTodos = <span class="title function_">getFilteredTodos</span>(todos, filter);</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line"><span class="comment">// `useMemo` 会让 React 记住其回调的返回结果，并且不会在 `todos` 和 `filter` 没有变化的时候重复执行。</span></span><br><span class="line"><span class="comment">// `useMemo` 包裹的函数将会在 **渲染（rendering）** 时执行，因此需要是纯函数。</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">TodoList</span>(<span class="params">&#123; todos, filter &#125;</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> [newTodo, setNewTodo] = <span class="title function_">useState</span>(<span class="string">&#x27;&#x27;</span>);</span><br><span class="line">  <span class="keyword">const</span> visibleTodos = <span class="title function_">useMemo</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// ✅ Does not re-run unless todos or filter change</span></span><br><span class="line">    <span class="keyword">return</span> <span class="title function_">getFilteredTodos</span>(todos, filter);</span><br><span class="line">  &#125;, [todos, filter]);</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>当 Props 改变的时候重置所有的 State</strong></p>
+<figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">function</span> <span class="title function_">ProfilePage</span>(<span class="params">&#123; userId &#125;</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> [comment, setComment] = <span class="title function_">useState</span>(<span class="string">&#x27;&#x27;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 🔴 Avoid: Resetting state on prop change in an Effect</span></span><br><span class="line">  <span class="title function_">useEffect</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="title function_">setComment</span>(<span class="string">&#x27;&#x27;</span>);</span><br><span class="line">  &#125;, [userId]);</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">function</span> <span class="title function_">ProfilePage</span>(<span class="params">&#123; userId &#125;</span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;<span class="name">Profile</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">      <span class="attr">userId</span>=<span class="string">&#123;userId&#125;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">      <span class="attr">key</span>=<span class="string">&#123;userId&#125;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">    /&gt;</span></span></span><br><span class="line">  );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">Profile</span>(<span class="params">&#123; userId &#125;</span>) &#123;</span><br><span class="line">  <span class="comment">// ✅ This and any other state below will reset on key change automatically</span></span><br><span class="line">  <span class="keyword">const</span> [comment, setComment] = <span class="title function_">useState</span>(<span class="string">&#x27;&#x27;</span>);</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>当某个 Prop 改变的时候改变 State</strong></p>
+<figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">List</span>(<span class="params">&#123; items &#125;</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> [isReverse, setIsReverse] = <span class="title function_">useState</span>(<span class="literal">false</span>);</span><br><span class="line">  <span class="keyword">const</span> [selection, setSelection] = <span class="title function_">useState</span>(<span class="literal">null</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 🔴 Avoid: Adjusting state on prop change in an Effect</span></span><br><span class="line">  <span class="title function_">useEffect</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="title function_">setSelection</span>(<span class="literal">null</span>);</span><br><span class="line">  &#125;, [items]);</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">List</span>(<span class="params">&#123; items &#125;</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> [isReverse, setIsReverse] = <span class="title function_">useState</span>(<span class="literal">false</span>);</span><br><span class="line">  <span class="keyword">const</span> [selection, setSelection] = <span class="title function_">useState</span>(<span class="literal">null</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Better: Adjust the state while rendering</span></span><br><span class="line">  <span class="keyword">const</span> [prevItems, setPrevItems] = <span class="title function_">useState</span>(items);</span><br><span class="line">  <span class="comment">// 因为当 React 遇到下面代码的时候就会在本次组件函数执行完成之后立即重新执行</span></span><br><span class="line">  <span class="comment">// 在这个时候，React 还没有渲染他的子组件，也没有更新 DOM</span></span><br><span class="line">  <span class="comment">// 为了减少级联，React 只允许在渲染时更新自己组件的 State，而不能更新其他组件的 State</span></span><br><span class="line">  <span class="keyword">if</span> (items !== prevItems) &#123;</span><br><span class="line">    <span class="title function_">setPrevItems</span>(items);</span><br><span class="line">    <span class="title function_">setSelection</span>(<span class="literal">null</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">List</span>(<span class="params">&#123; items &#125;</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> [isReverse, setIsReverse] = <span class="title function_">useState</span>(<span class="literal">false</span>);</span><br><span class="line">  <span class="keyword">const</span> [selectedId, setSelectedId] = <span class="title function_">useState</span>(<span class="literal">null</span>);</span><br><span class="line">  <span class="comment">// ✅ Best: Calculate everything during rendering</span></span><br><span class="line">  <span class="keyword">const</span> selection = items.<span class="title function_">find</span>(<span class="function"><span class="params">item</span> =&gt;</span> item.<span class="property">id</span> === selectedId) ?? <span class="literal">null</span>;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>在事件处理函数中共享逻辑</strong></p>
+<figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">ProductPage</span>(<span class="params">&#123; product, addToCart &#125;</span>) &#123;</span><br><span class="line">  <span class="comment">// 🔴 Avoid: Event-specific logic inside an Effect</span></span><br><span class="line">  <span class="comment">// Effect 只能用于“展示”本身就触发了事件，而不能用于本来就是有清晰事件触发者的情况</span></span><br><span class="line">  <span class="title function_">useEffect</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (product.<span class="property">isInCart</span>) &#123;</span><br><span class="line">      <span class="title function_">showNotification</span>(<span class="string">`Added <span class="subst">$&#123;product.name&#125;</span> to the shopping cart!`</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;, [product]);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">handleBuyClick</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="title function_">addToCart</span>(product);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">handleCheckoutClick</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="title function_">addToCart</span>(product);</span><br><span class="line">    <span class="title function_">navigateTo</span>(<span class="string">&#x27;/checkout&#x27;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">ProductPage</span>(<span class="params">&#123; product, addToCart &#125;</span>) &#123;</span><br><span class="line">  <span class="comment">// ✅ Good: Event-specific logic is called from event handlers</span></span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">buyProduct</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="title function_">addToCart</span>(product);</span><br><span class="line">    <span class="title function_">showNotification</span>(<span class="string">`Added <span class="subst">$&#123;product.name&#125;</span> to the shopping cart!`</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">handleBuyClick</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="title function_">buyProduct</span>();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">handleCheckoutClick</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="title function_">buyProduct</span>();</span><br><span class="line">    <span class="title function_">navigateTo</span>(<span class="string">&#x27;/checkout&#x27;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>发送一个 POST 请求</strong></p>
+<figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">Form</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> [firstName, setFirstName] = <span class="title function_">useState</span>(<span class="string">&#x27;&#x27;</span>);</span><br><span class="line">  <span class="keyword">const</span> [lastName, setLastName] = <span class="title function_">useState</span>(<span class="string">&#x27;&#x27;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// ✅ Good: This logic should run because the component was displayed</span></span><br><span class="line">  <span class="title function_">useEffect</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="title function_">post</span>(<span class="string">&#x27;/analytics/event&#x27;</span>, &#123; <span class="attr">eventName</span>: <span class="string">&#x27;visit_form&#x27;</span> &#125;);</span><br><span class="line">  &#125;, []);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 🔴 Avoid: Event-specific logic inside an Effect</span></span><br><span class="line">  <span class="keyword">const</span> [jsonToSubmit, setJsonToSubmit] = <span class="title function_">useState</span>(<span class="literal">null</span>);</span><br><span class="line">  <span class="title function_">useEffect</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (jsonToSubmit !== <span class="literal">null</span>) &#123;</span><br><span class="line">      <span class="title function_">post</span>(<span class="string">&#x27;/api/register&#x27;</span>, jsonToSubmit);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;, [jsonToSubmit]);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">handleSubmit</span>(<span class="params">e</span>) &#123;</span><br><span class="line">    e.<span class="title function_">preventDefault</span>();</span><br><span class="line">    <span class="title function_">setJsonToSubmit</span>(&#123; firstName, lastName &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">Form</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> [firstName, setFirstName] = <span class="title function_">useState</span>(<span class="string">&#x27;&#x27;</span>);</span><br><span class="line">  <span class="keyword">const</span> [lastName, setLastName] = <span class="title function_">useState</span>(<span class="string">&#x27;&#x27;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// ✅ Good: This logic runs because the component was displayed</span></span><br><span class="line">  <span class="title function_">useEffect</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="title function_">post</span>(<span class="string">&#x27;/analytics/event&#x27;</span>, &#123; <span class="attr">eventName</span>: <span class="string">&#x27;visit_form&#x27;</span> &#125;);</span><br><span class="line">  &#125;, []);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">handleSubmit</span>(<span class="params">e</span>) &#123;</span><br><span class="line">    e.<span class="title function_">preventDefault</span>();</span><br><span class="line">    <span class="comment">// ✅ Good: Event-specific logic is in the event handler</span></span><br><span class="line">    <span class="title function_">post</span>(<span class="string">&#x27;/api/register&#x27;</span>, &#123; firstName, lastName &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>计算链</strong></p>
 <h3 id="什么是副作用">什么是副作用</h3>
 <p>对环境的改变就是副作用，比如改变 <code>document.title</code></p>
 <h3 id="模拟生命周期">模拟生命周期</h3>
@@ -10248,7 +10314,7 @@ new RegExp()
 </ul>
 <figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="title class_">React</span>.<span class="title function_">useEffect</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// do something</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;, [n])</span><br></pre></td></tr></table></figure>
 <h2 id="section">****</h2>
-<h2 id="useeffect">useEffect</h2>
+<h2 id="useeffect-1">useEffect</h2>
 <p>若同时有多个 useEffect，则他们将会依次执行</p>
 <h3 id="什么是副作用-1">什么是副作用</h3>
 <p>对环境的改变就是副作用，比如改变 <code>document.title</code></p>
