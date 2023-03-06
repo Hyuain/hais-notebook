@@ -1307,8 +1307,10 @@ listRef.current.lastChild.scrollIntoView()
 
 - Effects 说的是不由某个特定的事件触发，而是由 **渲染本身** 触发的副作用。
 - Effects 专门是指用来跟除了 React 以外的系统，比如浏览器 API、第三方组件、网络等进行同步。**如果我们只是基于某些 State 而改变另一些 State，可能不需要使用 Effect。**
-- Effects 在渲染之后执行，这是一个同步 React 组件和外部系统的好时机。
+- **Effects 在渲染之后执行**，这是一个同步 React 组件和外部系统的好时机。
 - 由于闭包，每次执行 Effect 都有自己的 State。
+- **每个 Effect 都应该描述了一个独立的同步事件**，不应该把不同的任务写在一个 Effect 中。
+- React 通过 `Object.is` 来判断依赖是否发生了变化。
 
 ### useEffect
 
@@ -1317,7 +1319,9 @@ listRef.current.lastChild.scrollIntoView()
 1. 声明 Effect；
 2. 确认依赖，什么时候执行该 Effect：
    1. 不加依赖表示每次渲染都执行，`[]` 表示首次渲染执行（mount）；
-   2. Refs 通常被忽略（因为他每次都是同一个引用），但父组件传过来的 Ref 有时需要加进去，因为子组件不知道是否每次传来的都是同一个 Ref；
+   2. 依赖应该只加那些 **Reactive** 值（响应式的），Props、States 以及 **其他所有在组件内部定义的数据** 都是 Reactive（因为他们是在渲染过程中计算出来的，并且属于 React 数据流的一员，是可能改变的）；
+   3. `loaction.pathname` 这样的 Mutable 值不能被加入依赖。因为他可能在 React 数据流外部随意改变且不会触发重渲染。同时在渲染时读取 Mutable 数据也破坏了函数组件的纯粹性。最好使用 `useSyncExternalStore` 来订阅外部数据的变化；
+   4. `ref.current` 这样的 Mutable 值也不能作为依赖。由 `useRef` 返回的 Ref 对象可以作为依赖，但是其 `current` 值是故意设置为 Mutable 的，他的变化不会触发重渲染。
 3. 如果需要，增加清理函数。
 
 ```jsx
@@ -1367,6 +1371,38 @@ useEffect(() => {
 
 - 使用框架（Next、Gatsby、Remix、Razzle）继承的数据获取机制；
 - 使用或搭建一个客户端缓存，比如可以用 React Query、useSWR、React Router 6.4+ 等库。
+
+以下是一个手动封装获取数据方法的简单例子：
+
+```jsx
+function SearchReasults({ query }) {
+  const [page, setPage] = useState(1)
+  const params = new URLSearchParams({ query, page })
+  const results = useData(`/api/search?${params}`)
+  
+  function handleNextPageClick() {
+    setPage(page + 1)
+  }
+}
+
+function useData(url) {
+  const [data, setData] = useState(null)
+  useEffect(() => {
+    let ignore = false
+    fetch(url)
+      .then(res => res.json())
+      .then(json => {
+        if (!ignore) {
+          setData(json)
+        }
+      })
+    return () => {
+      ignore = true
+    }
+  }, [url])
+  return data
+}
+```
 
 #### Race Conditions
 
@@ -1692,106 +1728,279 @@ function Form() {
 
 **计算链**
 
+```jsx
+function Game() {
+  const [card, setCard] = useState(null);
+  const [goldCardCount, setGoldCardCount] = useState(0);
+  const [round, setRound] = useState(1);
+  const [isGameOver, setIsGameOver] = useState(false);
 
-
-### 什么是副作用
-
-对环境的改变就是副作用，比如改变 `document.title`
-
-### 模拟生命周期
-
-- 模拟 `componentDidMount`（第一次渲染）
-
-```jsx harmony
-React.useEffect(() => {
-  // do something
-}, [])
-```
-
-- 模拟 `componentDidUpdate`（更新时执行）
-
-```jsx harmony
-React.useEffect(() => {
-  // do something
-}, [n])
-// 这样的话第一次渲染也会执行，可以使用自定义 Hook 来解决
-const useUpdate = (fn, dep) => {
-  const [updateCount, setUpdateCount] = React.useState(0)
-  React.useEffect(() => {
-    setUpdateCount(count => count + 1)
-  }, [dep])
-  React.useEffect(() => {
-    if (updateCount > 1) {
-      fn()
+  // 🔴 Avoid: Chains of Effects that adjust the state solely to trigger each other
+  useEffect(() => {
+    if (card !== null && card.gold) {
+      setGoldCardCount(c => c + 1);
     }
-  }, [updateCount, fn])
-}
-useUpdate(() => {
-  // do something
-}, n)
-```
+  }, [card]);
 
-- 模拟 `componentWillUnmount`（将要销毁时执行）
-
-```jsx harmony
-React.useEffect(() => {
-  return () => {
-    // do something
-  }
-}, [n])
-```
-
-## ****
-
-## useEffect
-
-若同时有多个 useEffect，则他们将会依次执行
-
-### 什么是副作用
-
-对环境的改变就是副作用，比如改变 `document.title`
-
-### 模拟生命周期
-
-- 模拟 `componentDidMount`（第一次渲染）
-
-```jsx harmony
-React.useEffect(() => {
-  // do something
-}, [])
-```
-
-- 模拟 `componentDidUpdate`（更新时执行）
-
-```jsx harmony
-React.useEffect(() => {
-  // do something
-}, [n])
-// 这样的话第一次渲染也会执行，可以使用自定义 Hook 来解决
-const useUpdate = (fn, dep) => {
-  const [updateCount, setUpdateCount] = React.useState(0)
-  React.useEffect(() => {
-    setUpdateCount(count => count + 1)
-  }, [dep])
-  React.useEffect(() => {
-    if (updateCount > 1) {
-      fn()
+  useEffect(() => {
+    if (goldCardCount > 3) {
+      setRound(r => r + 1)
+      setGoldCardCount(0);
     }
-  }, [updateCount, fn])
-}
-useUpdate(() => {
-  // do something
-}, n)
+  }, [goldCardCount]);
+
+  useEffect(() => {
+    if (round > 5) {
+      setIsGameOver(true);
+    }
+  }, [round]);
+
+  useEffect(() => {
+    alert('Good game!');
+  }, [isGameOver]);
+
+  function handlePlaceCard(nextCard) {
+    if (isGameOver) {
+      throw Error('Game already ended.');
+    } else {
+      setCard(nextCard);
+    }
+  }
+
+  // ...
 ```
 
-- 模拟 `componentWillUnmount`（将要销毁时执行）
+```jsx
+function Game() {
+  const [card, setCard] = useState(null);
+  const [goldCardCount, setGoldCardCount] = useState(0);
+  const [round, setRound] = useState(1);
 
-```jsx harmony
-React.useEffect(() => {
-  return () => {
-    // do something
+  // ✅ Calculate what you can during rendering
+  const isGameOver = round > 5;
+
+  function handlePlaceCard(nextCard) {
+    if (isGameOver) {
+      throw Error('Game already ended.');
+    }
+
+    // ✅ Calculate all the next state in the event handler
+    setCard(nextCard);
+    if (nextCard.gold) {
+      if (goldCardCount <= 3) {
+        setGoldCardCount(goldCardCount + 1);
+      } else {
+        setGoldCardCount(0);
+        setRound(round + 1);
+        if (round === 5) {
+          alert('Good game!');
+        }
+      }
+    }
   }
-}, [n])
+
+  // ...
+```
+
+**应用初始化**
+
+```jsx
+function App() {
+  // 🔴 Avoid: Effects with logic that should only ever run once
+  useEffect(() => {
+    loadDataFromLocalStorage();
+    checkAuthToken();
+  }, []);
+  // ...
+}
+```
+
+```jsx
+let didInit = false;
+
+function App() {
+  useEffect(() => {
+    if (!didInit) {
+      didInit = true;
+      // ✅ Only runs once per app load
+      loadDataFromLocalStorage();
+      checkAuthToken();
+    }
+  }, []);
+  // ...
+}
+```
+
+```jsx
+if (typeof window !== 'undefined') { // Check if we're running in the browser.
+   // ✅ Only runs once per app load
+  checkAuthToken();
+  loadDataFromLocalStorage();
+}
+
+function App() {
+  // ...
+}
+```
+
+**通知父组件 State 变化**
+
+```jsx
+function Toggle({ onChange }) {
+  const [isOn, setIsOn] = useState(false);
+
+  // 🔴 Avoid: The onChange handler runs too late
+  useEffect(() => {
+    onChange(isOn);
+  }, [isOn, onChange])
+
+  function handleClick() {
+    setIsOn(!isOn);
+  }
+
+  function handleDragEnd(e) {
+    if (isCloserToRightEdge(e)) {
+      setIsOn(true);
+    } else {
+      setIsOn(false);
+    }
+  }
+
+  // ...
+}
+```
+
+```jsx
+function Toggle({ onChange }) {
+  const [isOn, setIsOn] = useState(false);
+
+  function updateToggle(nextIsOn) {
+    // ✅ Good: Perform all updates during the event that caused them
+    setIsOn(nextIsOn);
+    onChange(nextIsOn);
+  }
+
+  function handleClick() {
+    updateToggle(!isOn);
+  }
+
+  function handleDragEnd(e) {
+    if (isCloserToRightEdge(e)) {
+      updateToggle(true);
+    } else {
+      updateToggle(false);
+    }
+  }
+
+  // ...
+}
+```
+
+```jsx
+// ✅ Also good: the component is fully controlled by its parent
+function Toggle({ isOn, onChange }) {
+  function handleClick() {
+    onChange(!isOn);
+  }
+
+  function handleDragEnd(e) {
+    if (isCloserToRightEdge(e)) {
+      onChange(true);
+    } else {
+      onChange(false);
+    }
+  }
+
+  // ...
+}
+```
+
+**给父组件传值**
+
+```jsx
+function Parent() {
+  const [data, setData] = useState(null);
+  // ...
+  return <Child onFetched={setData} />;
+}
+
+function Child({ onFetched }) {
+  const data = useSomeAPI();
+  // 🔴 Avoid: Passing data to the parent in an Effect
+  useEffect(() => {
+    if (data) {
+      onFetched(data);
+    }
+  }, [onFetched, data]);
+  // ...
+}
+```
+
+```jsx
+function Parent() {
+  const data = useSomeAPI();
+  // ...
+  // ✅ Good: Passing data down to the child
+  return <Child data={data} />;
+}
+
+function Child({ data }) {
+  // ...
+}
+```
+
+**订阅外部数据**
+
+```jsx
+function useOnlineStatus() {
+  // Not ideal: Manual store subscription in an Effect
+  const [isOnline, setIsOnline] = useState(true);
+  useEffect(() => {
+    function updateState() {
+      setIsOnline(navigator.onLine);
+    }
+
+    updateState();
+
+    window.addEventListener('online', updateState);
+    window.addEventListener('offline', updateState);
+    return () => {
+      window.removeEventListener('online', updateState);
+      window.removeEventListener('offline', updateState);
+    };
+  }, []);
+  return isOnline;
+}
+
+function ChatIndicator() {
+  const isOnline = useOnlineStatus();
+  // ...
+}
+```
+
+```jsx
+function subscribe(callback) {
+  window.addEventListener('online', callback);
+  window.addEventListener('offline', callback);
+  return () => {
+    window.removeEventListener('online', callback);
+    window.removeEventListener('offline', callback);
+  };
+}
+
+function useOnlineStatus() {
+  // ✅ Good: Subscribing to an external store with a built-in Hook
+  return useSyncExternalStore(
+    subscribe, // React won't resubscribe for as long as you pass the same function
+    () => navigator.onLine, // How to get the value on the client
+    () => true // How to get the value on the server
+  );
+}
+
+function ChatIndicator() {
+  const isOnline = useOnlineStatus();
+  // ...
+}
 ```
 
 # Hooks
@@ -1849,7 +2058,10 @@ const App = () => {
 }
 ```
 
-## Custom Hook
+## Custom Hooks
+
+- 自定义 Hooks 里面的代码会在每次重渲染的过程中执行。就像组件函数一样，Hooks 也应该是纯函数，Hooks 实际上就是组件的一部分。
+- 由于自定义 Hooks 在每次重渲染的时候都会随着组件函数一起执行，他们总是可以使用到最新的 Props 和 State。
 
 ```jsx harmony
 const useList = () => {
@@ -1865,75 +2077,6 @@ const useList = () => {
   }
 }
 ```
-
-# Higher-Order Component
-
-React 中经常会使用高阶组件（HOC, Higher-Order Component）来复用组件逻辑，它是一种设计模式。
-具体来说，高阶组件是参数为组件，返回值为新组建的函数：
-
-```jsx harmony
-const EnhancedComponent = higherOrderComponent(WrappedComponent)
-```
-
-## HOC 的使用场景
-
-### 修改 props
-
-```jsx harmony
-function enhance(WrappedComponent) {
-  return class EnhancedComponent extends React.Component {
-    render() {
-      let props = {
-        ...this.props,
-        // 增加 message 这个 Prop
-        message: 'Hello'
-      }
-      return <WrappedComponent {...props}/>
-    }
-  }
-}
-```
-
-### 渲染劫持
-
-```jsx harmony
-function enhance(WrappedComponent) {
-  return class EnhancedComponent extends React.Component {
-    render() {
-      if (!this.props.data) {
-        return <div>loading...</div>
-      }
-      return <WrappedComponent {...this.props}/>
-    }
-  }
-}
-```
-
-## HOC 的例子
-
-### React Redux
-
-通过 HOC 监听 redux store，然后把下级组件需要的 state、action creator 绑定到 WrappedComponent 的 props 上
-
-### logger 和 debugger
-
-```jsx harmony
-function logProps(WrappedComponent) {
-  return class extends React.Component {
-    componentWillReceiveProps(nextProps) {
-      console.log(`WrappedComponent: ${WrappedComponent.displayName}, Current props: `, this.props)
-      console.log(`WrappedComponent: ${WrappedComponent.displayName}, Next props: `, nextProps)
-    }
-    render() {
-      return <WrappedComponent {...this.props}/>
-    }
-  }
-}
-```
-
-### 页面权限管理
-
-通过 HOC 对组件进行包裹，当用户跳转到其他页面的时候，检查用户是否含有对应的权限，如果有的话，渲染页面，如果没有的话，跳转到其他页面
 
 # Reconciliation
 
@@ -2175,8 +2318,6 @@ function onRenderCallback(
   // 合计或记录渲染时间
 }
 ```
-
-
 
 # Redux
 
@@ -3008,6 +3149,75 @@ function withMouse(Component) {
 ```
 
 需要注意的是，使用 render prop 会导致 `React.PureComponent` 失效，因为外层组件更新的时候，render prop 的函数总是新的，除非你把它写成一个实例方法。
+
+## Higher-Order Component
+
+React 中经常会使用高阶组件（HOC, Higher-Order Component）来复用组件逻辑，它是一种设计模式。
+具体来说，高阶组件是参数为组件，返回值为新组建的函数：
+
+```jsx harmony
+const EnhancedComponent = higherOrderComponent(WrappedComponent)
+```
+
+### HOC 的使用场景
+
+#### 修改 props
+
+```jsx harmony
+function enhance(WrappedComponent) {
+  return class EnhancedComponent extends React.Component {
+    render() {
+      let props = {
+        ...this.props,
+        // 增加 message 这个 Prop
+        message: 'Hello'
+      }
+      return <WrappedComponent {...props}/>
+    }
+  }
+}
+```
+
+#### 渲染劫持
+
+```jsx harmony
+function enhance(WrappedComponent) {
+  return class EnhancedComponent extends React.Component {
+    render() {
+      if (!this.props.data) {
+        return <div>loading...</div>
+      }
+      return <WrappedComponent {...this.props}/>
+    }
+  }
+}
+```
+
+### HOC 的例子
+
+#### React Redux
+
+通过 HOC 监听 redux store，然后把下级组件需要的 state、action creator 绑定到 WrappedComponent 的 props 上
+
+#### logger 和 debugger
+
+```jsx harmony
+function logProps(WrappedComponent) {
+  return class extends React.Component {
+    componentWillReceiveProps(nextProps) {
+      console.log(`WrappedComponent: ${WrappedComponent.displayName}, Current props: `, this.props)
+      console.log(`WrappedComponent: ${WrappedComponent.displayName}, Next props: `, nextProps)
+    }
+    render() {
+      return <WrappedComponent {...this.props}/>
+    }
+  }
+}
+```
+
+#### 页面权限管理
+
+通过 HOC 对组件进行包裹，当用户跳转到其他页面的时候，检查用户是否含有对应的权限，如果有的话，渲染页面，如果没有的话，跳转到其他页面
 
 # Vue & React
 
