@@ -2817,7 +2817,17 @@ router.load()
 
 #### History
 
-在 HTML5 之前，浏览器就已经有了 history 对象，但早期的只有 `go` `forward` `back` 这些方法，用于多页面之间的跳转，HTML 5 中新加入了：
+在 HTML5 之前，浏览器就已经有了 history 对象，但早期的只有 `go` `forward` `back` 这些方法：
+
+```js
+history.go() // 控制浏览器前进或后退几步
+history.forward() // history.go(1)
+history.back() // history.go(-1)
+history.length
+history.state // 查看页面栈顶端的元素
+```
+
+用于多页面之间的跳转，HTML 5 中新加入了：
 
 ```js
 history.pushState() // 添加新的状态到历史状态栈

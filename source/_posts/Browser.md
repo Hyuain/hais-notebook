@@ -5,11 +5,77 @@ categories:
   - [前端]
 ---
 
-Cookie 是浏览器下发给浏览器的一段字符串，浏览器必须保存这个 Cookie，之后发起的相同二级域名的请求，浏览器必须附上 Cookie。
+浏览器是前端代码赖以生存的环境，本文将重点关注与工程和生产相关的 Cookie、同源策略、浏览器架构等内容。
 
 <!-- more -->
 
 # Cookie
+
+Cookie 是浏览器下发给浏览器的一段字符串，浏览器必须保存这个 Cookie，之后发起的相同二级域名的请求，浏览器必须附上 Cookie。
+
+## 创建 Cookie
+
+服务端接收到 HTTP 请求后，可以返回一个或多个 `Set-Cookie` 响应头。
+
+服务端像这样设置响应头：
+
+```http
+Set-Cookie: <cookie-name>=<cookie-value>
+```
+
+```http
+HTTP/2.0 200 OK
+Content-Type: text/html
+Set-Cookie: yummy_cookie=choco
+Set-Cookie: tasty_cookie=strawberry
+
+[page content]
+```
+
+然后浏览器会在请求中带上这个 Cookie：
+
+```http
+GET /sample_page.html HTTP/2.0
+Host: www.example.org
+Cookie: yummy_cookie=choco; tasty_cookie=strawberry
+```
+
+### 设置 Cookie 有效期
+
+有两种方式定义 Cookie 有效期：
+
+- Session Cookies：当前会话结束时会被删除。浏览器自己会定义”会话结束“。一些浏览器会使用会话恢复（Session Restoring），这会导致 Cookies 长期有效。
+- Permanent Cookies：在 `Expires` 或 `Max-Age` 结束后删除。
+
+```http
+Set-Cookie: id=a3fWa; Expires=Thu, 31 Oct 2021 07:28:00 GMT;
+```
+
+注意 `Expires` 是浏览器时间，不是服务器时间。
+
+### Cookie 访问限制
+
+- `Secure`：可以防止部分非法的第三方访问，但实际上仍然可以通过硬盘或 JavaScript 拿到此 Cookie。有此属性的 Cookie 只能被通过 HTTPS 协议发送，不能使用 HTTP（localhost 除外），这是为了减少中间人攻击。
+- `HttpOnly`：让 Cookie 不能被 JavaScript 的 `Document.cookie` API 访问到。这可以减少 XSS 攻击。
+
+```http
+Set-Cookie: id=a3fWa; Expires=Thu, 21 Oct 2021 07:28:00 GMT; Secure; HttpOnly
+```
+
+### 设置 Cookie 的发送者
+
+- `Domain`：规定了哪些 hosts 可以接受此 Cookie（可设置子域名）。
+  - 如果服务器没有设置该属性，浏览器将默认为设置该 Cookie 的那个域名（不包括子域名）。
+  - 设置子域名后校验会更加严格：比如如果只设置了 `Domain=mozilla.org`，那么 `developer.mozillar.org` 也可以访问他。
+- `Path`：与 `Domain` 类似，指明了路径的约束条件。如果设置了 `Path=/docs`，则：
+  - `/docs` `/docs/` `/docs/Web/` `/docs/Web/HTTP` 可以访问；
+  - `/` `/docsets` `/fr/docs` 无法访问。
+  - Path 属性可以用来隔离 Cookie，但不能依赖 Path 属性来保证安全性。
+- `SameSite`：指定是否在跨网站的请求中发送 Cookie，减少 CSRF，默认是 `Lax`。
+  - `SameSite=Strict`：浏览器只能从 Cookie 的 Origin 发送 Cookie；
+  - `SameSite=Lax`：与 `Strict` 类似，但浏览器也可以先从别的地方跳转到 Origin 一样的网站，再发送 Cookie；
+  - `SameSite=None`：浏览器可以发送跨域 Cookie，但必须同时使用 `Secure`。
+  - 
 
 ## Cookie 防篡改
 

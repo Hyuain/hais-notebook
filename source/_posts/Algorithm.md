@@ -1044,6 +1044,83 @@ const calc = (s) => {
 }
 ```
 
+### 用栈实现队列
+
+[LeetCode.232](https://leetcode.cn/problems/implement-queue-using-stacks/)
+
+思路一：用两个栈（Main 和 Helper），每当需要取队列第一个元素的时候，把 Main 的全部 Pop 出来，放到 Helper 里面，这样就是倒着的了。操作完成之后再倒回去。会有很多无用操作。
+
+思路二：Main 倒进 Helper 之后可以不用再倒回去了，就放在里面。可以理解为一个为输入栈 In，另一个为输出栈 Out。当需要取第一个元素的时候，如果 Out 不为空，直接 Push，如果为空，则将 In 的全部倒入 Out，再 Push。
+
+```typescript
+class Queue {
+  private inStack = new Stack()
+  private outStack = new Stack()
+  constructor() {}
+  
+  push(x: number): void {
+    this.inStack.push(x)
+  }
+  
+  pop(): number {
+    if (this.outStack.isEmpty()) {
+      while (!this.inStack.isEmpty()) {
+        this.outStack.push(this.inStack.pop())
+      }
+    }
+    return this.outStack.pop()
+  }
+  
+  peek(): number {
+    const res = this.pop()
+    this.push(res)
+    return res
+  }
+  
+  isEmpty(): boolean {
+    return this.inStack.isEmpty() && this.outStack.isEmpty()
+  }
+}
+```
+
+### 用队列实现栈
+
+[LeetCode.225](https://leetcode.cn/problems/implement-stack-using-queues/)
+
+思路一：用两个队列（Main 和 Helper），每次需要取最末尾的元素时，将 Main 的一直出队去 Helper 到最后一个之前，然后出队最后一个。然后再把 Helper 的弄回来。
+
+思路二：用一个队列，要取最末尾的元素时，将前面的元素出队再入队，排到后面去，直到遇到最后一个元素。
+
+```typescript
+class Stack() {
+  private q = new Queue()
+  constructor() {}
+  
+  push(x: number): void {
+    this.q.push(x)
+  }
+
+  pop(): number {
+    let size = this.q.size()
+    while (size > 1) {
+      this.q.push(this.q.pop())
+      size--
+    }
+    return this.q.pop()
+  }
+  
+  top(): number {
+    const x = this.pop()
+    this.push(x)
+    return x
+  }
+
+  isEmpty(): boolean {
+    return this.q.isEmpty()
+  }
+}
+```
+
 # 队列
 
 ## 队列的实现
