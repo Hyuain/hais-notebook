@@ -260,7 +260,13 @@
 <p>在 CPU 中的大小比较实际上是做减法运算，然后将结果的正负保存在标志寄存器中</p>
 <h3 id="基址寄存器和变址寄存器">基址寄存器和变址寄存器</h3>
 <p>基址寄存器的值不变化，而变址寄存器的值变化（相当于数组索引的数值），可以综合使用这两个寄存器来表示数组，比如：</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> 实际地址 = 基址寄存器的值 + 变址寄存器的值</span><br><span class="line">    ↓           ↓             ↓</span><br><span class="line">10000000  =  10000000  +  00000000</span><br><span class="line">10000001  =            +  00000001</span><br><span class="line">10000002  =            +  00000002</span><br><span class="line">  ....                      ....</span><br><span class="line">1000FFFF  =            +  0000FFFF</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text"> 实际地址 = 基址寄存器的值 + 变址寄存器的值
+    ↓           ↓             ↓
+10000000  =  10000000  +  00000000
+10000001  =            +  00000001
+10000002  =            +  00000002
+  ....                      ....
+1000FFFF  =            +  0000FFFF<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h1 id="二进制">二进制</h1>
 <h2 id="移位运算">移位运算</h2>
 <ul>
@@ -271,7 +277,7 @@
 <p>二进制最高位其实是符号位，为 <code>0</code> 时表示整数，为 <code>1</code> 时表示负数，但是需要注意的是：<code>1</code> 是 <code>00000001</code>，但 <code>-1</code> 并不是 <code>10000001</code>，而是 <code>11111111</code></p>
 <h4 id="补码的计算">补码的计算</h4>
 <p>按位取反，再 +1：</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-1  -&gt;  00000001  -&gt;  11111110  -&gt;  11111111</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">-1  ->  00000001  ->  11111110  ->  11111111<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <h4 id="补码的作用">补码的作用</h4>
 <p>计算机内的减法运算其实都是用加法运算实现的，这也是使用二进制补码来表示负数的重要原因之一，比如对于运算 <code>1 - 1</code>（也就是 <code>1 + (- 1)</code>），答案应该为 <code>0</code> ；但若用 <code>10000001</code> 表示 <code>-1</code>，则运算结果为 <code>10000010</code>，是不正确的</p>
 <p>如果使用补码来表示 -1，即 <code>11111111</code>，则运算结果为正确的 <code>00000000</code>，最高位的 <code>1</code> 溢出舍弃</p>
@@ -290,11 +296,17 @@
 <p>逻辑运算有四种：非（NOT）、与（AND）、或（OR）、异或（XOR/EOR）</p>
 <h2 id="二进制小数">二进制小数</h2>
 <p>二进制小数存在精度问题，因为二进制位只能表示以 1/2、1/4、1/8、1/16 等位权组合而成的小数，这导致很多十进制小数是没办法用有限的二进制小数表示的</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">0.0000  -&gt;  0</span><br><span class="line">0.0001  -&gt;  0.0625</span><br><span class="line">0.0010  -&gt;  0.125</span><br><span class="line">0.0011  -&gt;  0.1875</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">0.0000  ->  0
+0.0001  ->  0.0625
+0.0010  ->  0.125
+0.0011  ->  0.1875
+...<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="浮点数">浮点数</h3>
 <p>计算机内部无法直接使用像 <code>1011.0011</code> 这样的带小数点的表现形式，通常的编程语言提供了两种表示小数的数据类型：<strong>单精度浮点数</strong> 和 <strong>双精度浮点数</strong>，前者用 32 位，后者用 64 位来表示全体小数</p>
 <p>浮点数用 <strong>符号</strong>、<strong>尾数</strong>、<strong>基数</strong> 和 <strong>指数</strong> 这四部分来表示小数：</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"> ±    m  ×  n   ^   e</span><br><span class="line"> ↓    ↓     ↓       ↓</span><br><span class="line">符号  尾数  基数     指数</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text"> ±    m  ×  n   ^   e
+ ↓    ↓     ↓       ↓
+符号  尾数  基数     指数<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <p>其中符号部分占 1 位，指数部分占 8/11 位，尾数部分占 23/52 位（IEEE 规定）</p>
 <h4 id="正则表达式和-excess-系统">正则表达式和 EXCESS 系统</h4>
 <p>尾数部分使用 <strong>正则表达式</strong> 来表示，二进制数规定尾数部分一定满足 “<strong>小数点前面的值固定为 1</strong>”，这样我们就可以不保存小数点前面的值了</p>

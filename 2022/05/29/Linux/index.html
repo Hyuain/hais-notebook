@@ -263,7 +263,8 @@
 </ul>
 <h1 id="path">PATH</h1>
 <p>Linux 上一些目录里的文件，是可以被默认找到的，这些目录的集合，就叫做 PATH。PATH 也是一个环境变量，我们可以额通过命令查看 PATH：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="variable">$PATH</span></span><br><span class="line"><span class="comment"># /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin</span></span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token builtin class-name">echo</span> <span class="token environment constant">$PATH</span>
+<span class="token comment"># /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <h1 id="linux-一切皆文件">Linux 一切皆文件</h1>
 <p>在 Linux 中，对命令、文档、设备、目录、套接字的操作都是一致的。开发驱动程序中使用的一些函数，其实和读写文件没什么两样。</p>
 <h2 id="当前路径pwd">当前路径：<code>pwd</code></h2>
@@ -272,7 +273,8 @@
 </blockquote>
 <div class="note warning"><p>在执行一些危险命令时，时常确认当前目录是是个好习惯。</p>
 </div>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">pwd</span></span><br><span class="line"><span class="comment"># /root</span></span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token builtin class-name">pwd</span>
+<span class="token comment"># /root</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <p>当默认使用 root 登录之后，就会停留在 <code>/root</code> 目录中，Linux 中的目录层次，是通过 <code>/</code> 进行划分的。</p>
 <h2 id="文件系统的用户标准">文件系统的用户标准</h2>
 <blockquote>
@@ -370,7 +372,8 @@
 </tbody>
 </table>
 <h2 id="查看文件列表ls">查看文件列表：<code>ls</code></h2>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ls 可以接受路径参数，不用跳转到那里去就能输出相关信息</span></span><br><span class="line"><span class="built_in">ls</span> /</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># ls 可以接受路径参数，不用跳转到那里去就能输出相关信息</span>
+<span class="token function">ls</span> /<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -401,7 +404,12 @@
 </tr>
 </tbody>
 </table>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">lrwxrwxrwx   1 root root         7 Apr 20 18:39 bin -&gt; usr/bin</span><br><span class="line">drwxr-xr-x   3 root root      4096 Apr 20 18:54 boot</span><br><span class="line">drwxr-xr-x  18 root root      3880 May 29 16:48 dev</span><br><span class="line">drwxr-xr-x  88 root root      4096 May 23 17:14 etc</span><br><span class="line">drwxr-xr-x   3 root root      4096 May 23 17:03 home</span><br><span class="line">lrwxrwxrwx   1 root root         7 Apr 20 18:39 lib -&gt; usr/lib</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">lrwxrwxrwx   1 root root         7 Apr 20 18:39 bin -> usr/bin
+drwxr-xr-x   3 root root      4096 Apr 20 18:54 boot
+drwxr-xr-x  18 root root      3880 May 29 16:48 dev
+drwxr-xr-x  88 root root      4096 May 23 17:14 etc
+drwxr-xr-x   3 root root      4096 May 23 17:03 home
+lrwxrwxrwx   1 root root         7 Apr 20 18:39 lib -> usr/lib<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <ul>
 <li>第一列：第一个字母是文件类型，后面表示文件权限</li>
 <li>第二列：普通文件表示链接数，目录表示是子文件数</li>
@@ -413,7 +421,10 @@
 </ul>
 <h3 id="隐藏文件">隐藏文件</h3>
 <p>直接在 <code>/root</code> 目录里执行 <code>ls -al</code> 可以看到更多的东西，这些额外的东西就是隐藏文件，他们都是以 <code>.</code> 开头，并且以配置文件居多。</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">drwx------  5 root root 4096 May 29 16:55  .</span><br><span class="line">drwxr-xr-x 18 root root 4096 May 23 16:52  ..</span><br><span class="line">-rw-------  1 root root 1196 May 29 19:45  .bash_history</span><br><span class="line">-rw-r--r--  1 root root 3106 Dec  5  2019  .bashrc</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">drwx------  5 root root 4096 May 29 16:55  .
+drwxr-xr-x 18 root root 4096 May 23 16:52  ..
+-rw-------  1 root root 1196 May 29 19:45  .bash_history
+-rw-r--r--  1 root root 3106 Dec  5  2019  .bashrc<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 <p>并且还有两个特殊的目录—— <code>.</code> 和 <code>..</code>。前者表示当前目录，后者表示上层目录。</p>
 <p>也可以使用 <code>ll</code>，他相当于 <code>ls -al</code>。</p>
 <h2 id="切换目录cd">切换目录：<code>cd</code></h2>
@@ -444,10 +455,24 @@
 </tbody>
 </table>
 <h2 id="创建目录mkdir">创建目录：<code>mkdir</code></h2>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> -p a1/b2/c3/d4/e5/f6/&#123;g7,g8,g9,g10&#125;</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">mkdir</span> <span class="token parameter variable">-p</span> a1/b2/c3/d4/e5/f6/<span class="token punctuation">&#123;</span>g7,g8,g9,g10<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p><code>-p</code> 可以让我们一次性创建多层目录，<code>&#123;&#125;</code> 可以一次性创建多个目录</p>
 <h2 id="文件操作touch-rm-cp-mv">文件操作：<code>touch</code> <code>rm</code> <code>cp</code> <code>mv</code></h2>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建文件</span></span><br><span class="line"><span class="built_in">touch</span> long.txt</span><br><span class="line"><span class="built_in">touch</span> haha.txt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 复制文件</span></span><br><span class="line"><span class="built_in">cp</span> haha.txt xixi.txt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 移动文件</span></span><br><span class="line"><span class="built_in">mv</span> long.txt short.txt</span><br><span class="line"><span class="built_in">mv</span> haha.txt a1/</span><br><span class="line"><span class="built_in">mv</span> xixi.txt a1/b2</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除文件</span></span><br><span class="line"><span class="built_in">rm</span> short.txt</span><br><span class="line"><span class="built_in">rm</span> -rvf a1/</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 创建文件</span>
+<span class="token function">touch</span> long.txt
+<span class="token function">touch</span> haha.txt
+
+<span class="token comment"># 复制文件</span>
+<span class="token function">cp</span> haha.txt xixi.txt
+
+<span class="token comment"># 移动文件</span>
+<span class="token function">mv</span> long.txt short.txt
+<span class="token function">mv</span> haha.txt a1/
+<span class="token function">mv</span> xixi.txt a1/b2
+
+<span class="token comment"># 删除文件</span>
+<span class="token function">rm</span> short.txt
+<span class="token function">rm</span> <span class="token parameter variable">-rvf</span> a1/<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="复制文件cp">复制文件：<code>cp</code></h3>
 <table>
 <thead>
@@ -582,15 +607,40 @@
 </tbody>
 </table>
 <p>Linux 上文件可以没有后缀，他的后缀其实没有什么实际的意义，我们可以通过 <code>file</code> 命令查看文件的具体类型：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">file /etc</span><br><span class="line"><span class="comment"># /etc: directory</span></span><br><span class="line">file /etc/group</span><br><span class="line"><span class="comment"># /etc/group: ASCII text</span></span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">file</span> /etc
+<span class="token comment"># /etc: directory</span>
+<span class="token function">file</span> /etc/group
+<span class="token comment"># /etc/group: ASCII text</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 <h2 id="创建一个文件">创建一个文件</h2>
 <h3 id="生成数字序列seq">生成数字序列：<code>seq</code></h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">seq</span> 10 20 &gt;&gt; spring</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">seq</span> <span class="token number">10</span> <span class="token number">20</span> <span class="token operator">>></span> spring<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p><code>&gt;</code> 是将前面命令的输出重定向到其他地方；<code>&gt;&gt;</code> 类似，并且是在原来文件的基础上追加内容</p>
 <h3 id="查看内容cat">查看内容：<code>cat</code></h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cat</span> -n spring</span><br><span class="line"><span class="comment"># 1	10</span></span><br><span class="line"><span class="comment"># 2	11</span></span><br><span class="line"><span class="comment"># 3	12</span></span><br><span class="line"><span class="comment"># 4	13</span></span><br><span class="line"><span class="comment"># 5	14</span></span><br><span class="line"><span class="comment"># 6	15</span></span><br><span class="line"><span class="comment"># 7	16</span></span><br><span class="line"><span class="comment"># 8	17</span></span><br><span class="line"><span class="comment"># 9	18</span></span><br><span class="line"><span class="comment"># 10	19</span></span><br><span class="line"><span class="comment"># 11	20</span></span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">cat</span> <span class="token parameter variable">-n</span> spring
+<span class="token comment"># 1	10</span>
+<span class="token comment"># 2	11</span>
+<span class="token comment"># 3	12</span>
+<span class="token comment"># 4	13</span>
+<span class="token comment"># 5	14</span>
+<span class="token comment"># 6	15</span>
+<span class="token comment"># 7	16</span>
+<span class="token comment"># 8	17</span>
+<span class="token comment"># 9	18</span>
+<span class="token comment"># 10	19</span>
+<span class="token comment"># 11	20</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p><code>-n</code> 会显示行号。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 合并 a 文件和 b 文件到 c 文件</span></span><br><span class="line"><span class="built_in">cat</span> a b &gt;&gt; c</span><br><span class="line"></span><br><span class="line"><span class="comment"># 把 a 文件内容作为输入，使用管道处理</span></span><br><span class="line"><span class="built_in">cat</span> a | cmd</span><br><span class="line"></span><br><span class="line"><span class="comment"># 写入内容到指定文件</span></span><br><span class="line"><span class="built_in">cat</span> &gt; index.html &lt;&lt;<span class="string">EOF</span></span><br><span class="line"><span class="string">&lt;html&gt;</span></span><br><span class="line"><span class="string">  &lt;head&gt;&lt;title&gt;&lt;/title&gt;&lt;/head&gt;</span></span><br><span class="line"><span class="string">&lt;/html&gt;</span></span><br><span class="line"><span class="string">EOF</span></span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 合并 a 文件和 b 文件到 c 文件</span>
+<span class="token function">cat</span> a b <span class="token operator">>></span> c
+
+<span class="token comment"># 把 a 文件内容作为输入，使用管道处理</span>
+<span class="token function">cat</span> a <span class="token operator">|</span> cmd
+
+<span class="token comment"># 写入内容到指定文件</span>
+<span class="token function">cat</span> <span class="token operator">></span> index.html <span class="token operator">&lt;&lt;</span><span class="token string">EOF
+&lt;html>
+  &lt;head>&lt;title>&lt;/title>&lt;/head>
+&lt;/html>
+EOF</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="平和地查看内容less-head-tail">平和地查看内容：<code>less</code> <code>head</code> <code>tail</code></h3>
 <p>如果文件非常大，使用 <code>cat</code> 就会在终端上疯狂输出，这时候我们可以使用另外的方案。</p>
 <h4 id="less"><code>less</code></h4>
@@ -667,9 +717,20 @@
 </tbody>
 </table>
 <h4 id="head-tail"><code>head</code> <code>tail</code></h4>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 显示头三行</span></span><br><span class="line"><span class="built_in">head</span> -n 3 spring</span><br><span class="line"></span><br><span class="line"><span class="comment"># 显示尾三行</span></span><br><span class="line"><span class="built_in">tail</span> -n 3 spring</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 显示头三行</span>
+<span class="token function">head</span> <span class="token parameter variable">-n</span> <span class="token number">3</span> spring
+
+<span class="token comment"># 显示尾三行</span>
+<span class="token function">tail</span> <span class="token parameter variable">-n</span> <span class="token number">3</span> spring<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p><code>tail -f</code> 表示循环读取，可以用来在控制终端实时监控文件变化，来查看一些滚动日志，可以配合 <code>grep</code> 命令达到过滤效果</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 滚动查看系统日志</span></span><br><span class="line"><span class="built_in">tail</span> -f /var/log/messages</span><br><span class="line"></span><br><span class="line"><span class="comment"># 滚动查看包含 info 字样的日志信息</span></span><br><span class="line"><span class="built_in">tail</span> -f /var/log/messages | grep info</span><br><span class="line"></span><br><span class="line"><span class="comment"># 滚动监控到重新创建的文件，比如一些按天滚动的</span></span><br><span class="line"><span class="built_in">tail</span> -F</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 滚动查看系统日志</span>
+<span class="token function">tail</span> <span class="token parameter variable">-f</span> /var/log/messages
+
+<span class="token comment"># 滚动查看包含 info 字样的日志信息</span>
+<span class="token function">tail</span> <span class="token parameter variable">-f</span> /var/log/messages <span class="token operator">|</span> <span class="token function">grep</span> info
+
+<span class="token comment"># 滚动监控到重新创建的文件，比如一些按天滚动的</span>
+<span class="token function">tail</span> <span class="token parameter variable">-F</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="查找文件find">查找文件：<code>find</code></h3>
 <table>
 <thead>
@@ -717,7 +778,24 @@
 </tr>
 </tbody>
 </table>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 全局找 decorator 文件</span></span><br><span class="line">find / -name decorator.py -<span class="built_in">type</span> f</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除当前目录中的所有 class 文件</span></span><br><span class="line">find . | grep .class$ | xargs <span class="built_in">rm</span> -rvf</span><br><span class="line"></span><br><span class="line"><span class="comment"># 找到 /root 下一天前访问的文件</span></span><br><span class="line">find /root -atime 1 -<span class="built_in">type</span> f</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查找十分钟内更新过的文件</span></span><br><span class="line">find /root -cmin -10</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查找输入 root 用户的文件</span></span><br><span class="line">find /root -user root</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查找大于 1MB 的文件，进行清理</span></span><br><span class="line"></span><br><span class="line">find /root -size +1024k -<span class="built_in">type</span> f | xargs <span class="built_in">rm</span> -f</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 全局找 decorator 文件</span>
+<span class="token function">find</span> / <span class="token parameter variable">-name</span> decorator.py <span class="token parameter variable">-type</span> f
+
+<span class="token comment"># 删除当前目录中的所有 class 文件</span>
+<span class="token function">find</span> <span class="token builtin class-name">.</span> <span class="token operator">|</span> <span class="token function">grep</span> .class$ <span class="token operator">|</span> <span class="token function">xargs</span> <span class="token function">rm</span> <span class="token parameter variable">-rvf</span>
+
+<span class="token comment"># 找到 /root 下一天前访问的文件</span>
+<span class="token function">find</span> /root <span class="token parameter variable">-atime</span> <span class="token number">1</span> <span class="token parameter variable">-type</span> f
+
+<span class="token comment"># 查找十分钟内更新过的文件</span>
+<span class="token function">find</span> /root <span class="token parameter variable">-cmin</span> <span class="token parameter variable">-10</span>
+
+<span class="token comment"># 查找输入 root 用户的文件</span>
+<span class="token function">find</span> /root <span class="token parameter variable">-user</span> root
+
+<span class="token comment"># 查找大于 1MB 的文件，进行清理</span>
+
+<span class="token function">find</span> /root <span class="token parameter variable">-size</span> +1024k <span class="token parameter variable">-type</span> f <span class="token operator">|</span> <span class="token function">xargs</span> <span class="token function">rm</span> <span class="token parameter variable">-f</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
     </div>
 

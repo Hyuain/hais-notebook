@@ -343,7 +343,17 @@
 </blockquote>
 <p>URL 实际上是 URI 的一个子集，除识别资源外还提供定位资源的方法。</p>
 <p>下面是一个 URI 的组成：</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">                    hierarchical part</span><br><span class="line">        ┌───────────────────┴─────────────────────┐</span><br><span class="line">                    authority               path</span><br><span class="line">        ┌───────────────┴───────────────┐┌───┴────┐</span><br><span class="line">  abc://username:password@example.com:123/path/data?key=value&amp;key2=value2#fragid1</span><br><span class="line">  └┬┘   └───────┬───────┘ └────┬────┘ └┬┘           └─────────┬─────────┘ └──┬──┘</span><br><span class="line">scheme  user information     host     port                  query         fragment</span><br><span class="line"></span><br><span class="line">  urn:example:mammal:monotreme:echidna</span><br><span class="line">  └┬┘ └──────────────┬───────────────┘</span><br><span class="line">scheme              path</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">                    hierarchical part
+        ┌───────────────────┴─────────────────────┐
+                    authority               path
+        ┌───────────────┴───────────────┐┌───┴────┐
+  abc://username:password@example.com:123/path/data?key=value&amp;key2=value2#fragid1
+  └┬┘   └───────┬───────┘ └────┬────┘ └┬┘           └─────────┬─────────┘ └──┬──┘
+scheme  user information     host     port                  query         fragment
+
+  urn:example:mammal:monotreme:echidna
+  └┬┘ └──────────────┬───────────────┘
+scheme              path<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>举一个我们常见的 URL（URI） 的例子：</p>
 <p>https://zh.wikipedia.org/w/index.php?title=Special:随机页面#5</p>
 <ol type="1">
@@ -356,15 +366,29 @@
 </ol>
 <h4 id="http-报文结构">HTTP 报文结构</h4>
 <h5 id="请求报文">请求报文</h5>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">【请求行】POST（请求方法） /webTours/login.pl（请求 URI） HTTP/1.1（HTTP 协议及版本）</span><br><span class="line">【请求头】用键值对来传递参数，包括 Host、Accept、Content-Type 等</span><br><span class="line"></span><br><span class="line">【请求体】</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">【请求行】POST（请求方法） /webTours/login.pl（请求 URI） HTTP/1.1（HTTP 协议及版本）
+【请求头】用键值对来传递参数，包括 Host、Accept、Content-Type 等
+
+【请求体】<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 <p>可以用 curl 构造请求：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">curl -X -POST <span class="comment"># 设置请求动词</span></span><br><span class="line">curl -H <span class="string">&#x27;Accept: text/html&#x27;</span> <span class="comment"># -H 也可以写成 --header</span></span><br><span class="line">curl -H <span class="string">&#x27;Content-Type: text/plain;charset=utf-8&#x27;</span> -d <span class="string">&#x27;请求体内容&#x27;</span> <span class="comment"># -d 也可以写成 --data</span></span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">curl</span> <span class="token parameter variable">-X</span> <span class="token parameter variable">-POST</span> <span class="token comment"># 设置请求动词</span>
+<span class="token function">curl</span> <span class="token parameter variable">-H</span> <span class="token string">'Accept: text/html'</span> <span class="token comment"># -H 也可以写成 --header</span>
+<span class="token function">curl</span> <span class="token parameter variable">-H</span> <span class="token string">'Content-Type: text/plain;charset=utf-8'</span> <span class="token parameter variable">-d</span> <span class="token string">'请求体内容'</span> <span class="token comment"># -d 也可以写成 --data</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <p>可以用 Node.js 读取请求：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">request.<span class="property">method</span></span><br><span class="line">request.<span class="property">url</span> <span class="comment">// 路径，带参数</span></span><br><span class="line">request.<span class="property">path</span> <span class="comment">// 纯路径</span></span><br><span class="line">request.<span class="property">query</span> <span class="comment">// 只有查询参数</span></span><br><span class="line">request.<span class="property">headers</span>[<span class="string">&#x27;Accept&#x27;</span>]</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript">request<span class="token punctuation">.</span>method
+request<span class="token punctuation">.</span>url <span class="token comment">// 路径，带参数</span>
+request<span class="token punctuation">.</span>path <span class="token comment">// 纯路径</span>
+request<span class="token punctuation">.</span>query <span class="token comment">// 只有查询参数</span>
+request<span class="token punctuation">.</span>headers<span class="token punctuation">[</span><span class="token string">'Accept'</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h5 id="响应报文">响应报文</h5>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">【响应行】HTTP/1.1（报文协议及版本） 200 Ok（状态码及状态描述）</span><br><span class="line">【响应头】</span><br><span class="line"></span><br><span class="line">【响应体】</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">【响应行】HTTP/1.1（报文协议及版本） 200 Ok（状态码及状态描述）
+【响应头】
+
+【响应体】<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 <p>可以用 Node.js 设置响应：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">response.<span class="property">statusCode</span> = <span class="number">200</span></span><br><span class="line">response.<span class="title function_">setHeader</span>(<span class="string">&#x27;Content-Type&#x27;</span>, <span class="string">&#x27;text/html&#x27;</span>)</span><br><span class="line">response.<span class="title function_">write</span>(<span class="string">&#x27;内容&#x27;</span>) <span class="comment">// 内容可以追加</span></span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript">response<span class="token punctuation">.</span>statusCode <span class="token operator">=</span> <span class="token number">200</span>
+response<span class="token punctuation">.</span><span class="token function">setHeader</span><span class="token punctuation">(</span><span class="token string">'Content-Type'</span><span class="token punctuation">,</span> <span class="token string">'text/html'</span><span class="token punctuation">)</span>
+response<span class="token punctuation">.</span><span class="token function">write</span><span class="token punctuation">(</span><span class="token string">'内容'</span><span class="token punctuation">)</span> <span class="token comment">// 内容可以追加</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <div class="note warning"><p>注意 <code>path</code> 都是以 <code>/</code> 开头的</p>
 </div>
 <h4 id="http-报文头">HTTP 报文头</h4>
@@ -621,10 +645,14 @@
 <p>主要是通过请求头中的 <strong>Range</strong> 和响应头中的 <strong>Content-Range</strong> 实现的，并且若使用断点续传模式返回的状态码都是 206 Partial Content</p>
 <h4 id="range">Range</h4>
 <p>用于请求头中，指定第一个字节的位置和最后一个字节的位置：</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Range:(unit=first byte pos)-[last byte pos]</span><br><span class="line">Range:bytes=0-499</span><br><span class="line">Range:bytes=-500</span><br><span class="line">Range:bytes=500-</span><br><span class="line">Range:bytes=500-600,601-999</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">Range:(unit=first byte pos)-[last byte pos]
+Range:bytes=0-499
+Range:bytes=-500
+Range:bytes=500-
+Range:bytes=500-600,601-999<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h4 id="content-range">Content-Range</h4>
 <p>用于响应头中，返回当前接受的范围和文件总大小：</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Content-Range:bytes(unit first byte pos)-[last byte pos]/[entity length]</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">Content-Range:bytes(unit first byte pos)-[last byte pos]/[entity length]<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <h3 id="https">HTTPS</h3>
 <h4 id="数字证书">数字证书</h4>
 <h5 id="对称加密与非对称加密">对称加密与非对称加密</h5>
@@ -691,7 +719,14 @@
 <p>HTTP 的生命周期是由 Request/Response 确定的，一个 Request 与 一个 Response 对应，且 Response 是被动的。</p>
 <p>WebSocket 是持久化协议，</p>
 <p>一个典型的 WebSocket 握手：</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">GET /chat HTTP/1.1</span><br><span class="line">Host: server.example.com</span><br><span class="line">Upgrade: websocket</span><br><span class="line">Connection: Upgrade</span><br><span class="line">Sec-WebSocket-Key: x3JJHMbDL1EzLkh9GBhXDw==   浏览器随机生成的 Base64</span><br><span class="line">Sec-WebSocket-Protocol: chat, superchat  用来区分同一个 URL 下不同的服务所需要的协议 </span><br><span class="line">Sec-WebSocket-Version: 13</span><br><span class="line">Origin: http://example.com</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">GET /chat HTTP/1.1
+Host: server.example.com
+Upgrade: websocket
+Connection: Upgrade
+Sec-WebSocket-Key: x3JJHMbDL1EzLkh9GBhXDw==   浏览器随机生成的 Base64
+Sec-WebSocket-Protocol: chat, superchat  用来区分同一个 URL 下不同的服务所需要的协议 
+Sec-WebSocket-Version: 13
+Origin: http://example.com<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>传统的轮询方式：</p>
 <ul>
 <li>AJAX 轮询：浏览器每隔几秒发一次请求，询问服务器有没有新消息</li>
@@ -802,7 +837,7 @@
 <li><p>每个接收方在邮件服务器上有一个 <strong>邮箱（Mailbox）</strong>。</p></li>
 <li><p>发送方的用户代理传输到发送方的邮件服务器，然后被分发到接收方的邮箱中。</p></li>
 </ul>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">A的代理 --SMTP/HTTP--&gt; A的邮件服务器 --SMTP--&gt; B的邮件服务器 --HTTP/IMAP--&gt; B的代理</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">A的代理 --SMTP/HTTP--> A的邮件服务器 --SMTP--> B的邮件服务器 --HTTP/IMAP--> B的代理<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <h3 id="推送报文smtp">推送报文（SMTP）</h3>
 <ul>
 <li>发送方的代理（手机、电脑等）可以通过 SMTP 向邮件服务器推送报文。</li>
@@ -811,7 +846,9 @@
 <li>STMP Client 与 Server 在 25 端口建立 TCP 连接之后，可以发送命令：HELO、MAIL FROM、RCPT TO、DATA、QUIT。</li>
 </ul>
 <h4 id="邮件报文格式data">邮件报文格式（DATA）</h4>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">From: xxx@server.com</span><br><span class="line">To: yyy@another.com</span><br><span class="line">Subject: xxxxxx</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">From: xxx@server.com
+To: yyy@another.com
+Subject: xxxxxx<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <h3 id="获取报文">获取报文</h3>
 <ul>
 <li>IMAP</li>
@@ -1110,7 +1147,7 @@
 <p>常用的可选项有： - Timestamp：TCP 时间戳 - MSS：TCP 允许的从对方接收的最大报文段 - SACK：选择确认选项 - Window Scale：窗口缩放</p>
 <h5 id="timestamp">Timestamp</h5>
 <p>Timestamp 一共占 10 个字节：</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kind(1 Byte) + length(1 Byte) + info(8 Bytes)</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">kind(1 Byte) + length(1 Byte) + info(8 Bytes)<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>其中 <code>kind=8</code> <code>length=10</code>，<code>info</code> 由 <code>timestamp</code> 和 <code>timestamp echo</code> 两部分构成，各占四个字节</p>
 <p>TCP 的时间戳主要解决两个问题： - 计算往返时延（RTT, Round-Trip Time） - 防止序列号回绕</p>
 <h6 id="计算-rtt">计算 RTT</h6>
@@ -1132,16 +1169,16 @@
 <li>TCP 仅为传输一次的报文段测量 SampleRTT，不会测量重传报文段的 SampleRTT</li>
 <li>TCP 会维持一个 SampleRTT 的均值（称为 EstimatedRTT）</li>
 </ul>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">EstimatedRTT = α * SampleRTT + (1 - α) * EstimatedRTT</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">EstimatedRTT = α * SampleRTT + (1 - α) * EstimatedRTT<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>α 即为 <strong>平滑因子</strong>，建议值是 0.125</p>
 <h5 id="测量-rtt-变化">测量 RTT 变化</h5>
 <blockquote>
 <p>RTT 变化定义为 DevRTT</p>
 </blockquote>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DevRTT = (1 - β) * DevRTT + β * |SampleRTT - EstimatedRTT|</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">DevRTT = (1 - β) * DevRTT + β * |SampleRTT - EstimatedRTT|<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>β 的建议值是 0.25</p>
 <h5 id="设置和管理超时时间">设置和管理超时时间</h5>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TimeoutInterval = µ * EstimatedRTT + ∂ * DevRTT </span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">TimeoutInterval = µ * EstimatedRTT + ∂ * DevRTT <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>µ 建议值取 1, ∂ 建议值取 4</p>
 <h4 id="超时重传策略">超时重传策略</h4>
 <p>下面是大多数 TCP 实现中做的一些修改，有的在协议中只是提供了一些建议。</p>
@@ -1240,7 +1277,7 @@
 <h5 id="拥塞窗口">拥塞窗口</h5>
 <p>除了接收窗口 rwnd 以外，发送端另外还需维护 <strong>拥塞窗口（congestion window）</strong> 变量（即 <strong>cwnd</strong>），限制其发送速率</p>
 <p>发送方中未被确认的数据量不会超过 rwnd 与 cwnd 的最小值</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LastByteSent - LastByteAcked = min(rwnd, cwnd)</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">LastByteSent - LastByteAcked = min(rwnd, cwnd)<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>通过调整 cwnd 就可以调整发送速率，通过用拥塞控制算法可以调整 cwnd</p>
 <h5 id="拥塞控制算法">拥塞控制算法</h5>
 <p>拥塞控制算法分为 <strong>慢启动、拥塞避免、快速恢复</strong> 三部分，其中前两个部分是 TCP 的强制部分，快速恢复是推荐部分</p>

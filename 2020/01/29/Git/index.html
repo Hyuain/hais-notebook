@@ -241,7 +241,12 @@
 <span id="more"></span>
 <h1 id="git-本地仓库">Git 本地仓库</h1>
 <h2 id="六行配置">六行配置</h2>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name [username] </span><br><span class="line">git config --global user.email [useremail@example.com]</span><br><span class="line">git config --global push.default simple</span><br><span class="line">git config --global core.quotepath <span class="literal">false</span></span><br><span class="line">git config --global core.editor <span class="string">&quot;code --wait&quot;</span></span><br><span class="line">git config --global core.autocrlf input</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> config <span class="token parameter variable">--global</span> user.name <span class="token punctuation">[</span>username<span class="token punctuation">]</span> 
+<span class="token function">git</span> config <span class="token parameter variable">--global</span> user.email <span class="token punctuation">[</span>useremail@example.com<span class="token punctuation">]</span>
+<span class="token function">git</span> config <span class="token parameter variable">--global</span> push.default simple
+<span class="token function">git</span> config <span class="token parameter variable">--global</span> core.quotepath <span class="token boolean">false</span>
+<span class="token function">git</span> config <span class="token parameter variable">--global</span> core.editor <span class="token string">"code --wait"</span>
+<span class="token function">git</span> config <span class="token parameter variable">--global</span> core.autocrlf input<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h2 id="命令">命令</h2>
 <table>
 <colgroup>
@@ -319,45 +324,99 @@
 </table>
 <p><code>.gitignore</code> 文件中可以输路径来忽略不想提交的文件，比如 <code>node_modules</code> <code>DS_Store</code> <code>.idea</code> <code>.vscode</code></p>
 <h1 id="git-远程仓库">Git 远程仓库</h1>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建一个私钥和公钥</span></span><br><span class="line">ssh-keygen -t rsa -b 4096 -C [useremail@example.com]</span><br><span class="line"><span class="built_in">cat</span> ~/.ssh/id_rsa.pub</span><br><span class="line"></span><br><span class="line"><span class="comment"># 测试</span></span><br><span class="line">ssh -T git@github.com</span><br><span class="line"></span><br><span class="line"><span class="comment"># 上传一个本地仓库</span></span><br><span class="line">git remote add origin [git@github.com:Hyuain/git-demo-1.git]</span><br><span class="line">git push -u origin master <span class="comment"># 一个新的分支需要写 -u 和后面的</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 下载一个远程仓库</span></span><br><span class="line">git <span class="built_in">clone</span></span><br><span class="line"><span class="comment"># git clone git@?/xxx.git：创建一个新目录，与 xxx 同名</span></span><br><span class="line"><span class="comment"># git clone git@?/xxx.git yyy：创建一个新目录，命名为 yyy</span></span><br><span class="line"><span class="comment"># git clone git@?/xxx.git .：不会新建目录，使用当前目录容纳代码和 .git</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 其他</span></span><br><span class="line"><span class="comment"># git stash：把文件藏起来</span></span><br><span class="line"><span class="comment"># git stash pop：再把文件取出来</span></span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 创建一个私钥和公钥</span>
+ssh-keygen <span class="token parameter variable">-t</span> rsa <span class="token parameter variable">-b</span> <span class="token number">4096</span> <span class="token parameter variable">-C</span> <span class="token punctuation">[</span>useremail@example.com<span class="token punctuation">]</span>
+<span class="token function">cat</span> ~/.ssh/id_rsa.pub
+
+<span class="token comment"># 测试</span>
+<span class="token function">ssh</span> <span class="token parameter variable">-T</span> git@github.com
+
+<span class="token comment"># 上传一个本地仓库</span>
+<span class="token function">git</span> remote <span class="token function">add</span> origin <span class="token punctuation">[</span>git@github.com:Hyuain/git-demo-1.git<span class="token punctuation">]</span>
+<span class="token function">git</span> push <span class="token parameter variable">-u</span> origin master <span class="token comment"># 一个新的分支需要写 -u 和后面的</span>
+
+<span class="token comment"># 下载一个远程仓库</span>
+<span class="token function">git</span> clone
+<span class="token comment"># git clone git@?/xxx.git：创建一个新目录，与 xxx 同名</span>
+<span class="token comment"># git clone git@?/xxx.git yyy：创建一个新目录，命名为 yyy</span>
+<span class="token comment"># git clone git@?/xxx.git .：不会新建目录，使用当前目录容纳代码和 .git</span>
+
+<span class="token comment"># 其他</span>
+<span class="token comment"># git stash：把文件藏起来</span>
+<span class="token comment"># git stash pop：再把文件取出来</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h2 id="高级操作">高级操作</h2>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">touch</span> ~/.bashrc</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;alias ga=&quot;git add&quot;&#x27;</span>&gt;&gt; ~/.bashrc</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;alias gc=&quot;git commit -v&quot;&#x27;</span>&gt;&gt; ~/.bashrc</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;alias gl=&quot;git pull&quot;&#x27;</span>&gt;&gt; ~/.bashrc</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;alias gp=&quot;git push&quot;&#x27;</span>&gt;&gt; ~/.bashrc</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;alias gco=&quot;git checkout&quot;&#x27;</span>&gt;&gt; ~/.bashrc</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;alias gst=&quot;git status -sb&quot;&#x27;</span>&gt;&gt; ~/.bashrc</span><br><span class="line"></span><br><span class="line">code ~/.bashrc</span><br><span class="line"><span class="comment"># 在文件最后加上</span></span><br><span class="line"><span class="built_in">alias</span> glog=<span class="string">&quot;git log --graph --pretty=format:&#x27;%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)&lt;%an&gt;%Creset&#x27; --abbrev-commit -- | less&quot;</span></span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">touch</span> ~/.bashrc
+<span class="token builtin class-name">echo</span> <span class="token string">'alias ga="git add"'</span><span class="token operator">>></span> ~/.bashrc
+<span class="token builtin class-name">echo</span> <span class="token string">'alias gc="git commit -v"'</span><span class="token operator">>></span> ~/.bashrc
+<span class="token builtin class-name">echo</span> <span class="token string">'alias gl="git pull"'</span><span class="token operator">>></span> ~/.bashrc
+<span class="token builtin class-name">echo</span> <span class="token string">'alias gp="git push"'</span><span class="token operator">>></span> ~/.bashrc
+<span class="token builtin class-name">echo</span> <span class="token string">'alias gco="git checkout"'</span><span class="token operator">>></span> ~/.bashrc
+<span class="token builtin class-name">echo</span> <span class="token string">'alias gst="git status -sb"'</span><span class="token operator">>></span> ~/.bashrc
+
+code ~/.bashrc
+<span class="token comment"># 在文件最后加上</span>
+<span class="token builtin class-name">alias</span> <span class="token assign-left variable">glog</span><span class="token operator">=</span><span class="token string">"git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)&lt;%an>%Creset' --abbrev-commit -- | less"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h1 id="踩坑记录">踩坑记录</h1>
 <h2 id="git-log-中文乱码">git log 中文乱码</h2>
 <p>输入以下命令即可解决</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git config --global i18n.commitencoding utf-8</span><br><span class="line">git config --global i18n.logoutputencoding utf-8</span><br><span class="line"><span class="built_in">export</span> LESSCHARSET=utf-8</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> config <span class="token parameter variable">--global</span> i18n.commitencoding utf-8
+<span class="token function">git</span> config <span class="token parameter variable">--global</span> i18n.logoutputencoding utf-8
+<span class="token builtin class-name">export</span> <span class="token assign-left variable">LESSCHARSET</span><span class="token operator">=</span>utf-8<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <h2 id="git-push-clone-报错">git push / clone 报错</h2>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ssh: connect to host github.com port 22: Connection timed out</span><br><span class="line">fatal: Could not <span class="built_in">read</span> from remote repository.</span><br><span class="line"></span><br><span class="line">Please make sure you have the correct access rights</span><br><span class="line">and the repository exists.</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">ssh: connect to <span class="token function">host</span> github.com port <span class="token number">22</span>: Connection timed out
+fatal: Could not <span class="token builtin class-name">read</span> from remote repository.
+
+Please <span class="token function">make</span> sure you have the correct access rights
+and the repository exists.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="方法-1">方法 1</h3>
 <p>防火墙添加 22 端口入站策略配置为允许，有时候不能解决问题。</p>
 <h3 id="方法-2">方法 2</h3>
 <ol type="1">
 <li>在 <code>~/.ssh</code> 存放密钥（<code>id_rsa</code> 和 <code>id_rsa.pub</code>）的文件夹，新建 <code>config</code>，内容如下：</li>
 </ol>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Host github.com</span><br><span class="line">User XXX@xx.com</span><br><span class="line">Hostname ssh.github.com</span><br><span class="line">PreferredAuthentications publickey</span><br><span class="line">IdentityFile ~/.ssh/id_rsa</span><br><span class="line">Port 443</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">Host github.com
+User XXX@xx.com
+Hostname ssh.github.com
+PreferredAuthentications publickey
+IdentityFile ~/.ssh/id_rsa
+Port 443<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <ol start="2" type="1">
 <li>刷新 <code>config</code></li>
 </ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name <span class="string">&quot;XXX&quot;</span></span><br><span class="line">git config --global user.email XXX@xx.com</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> config <span class="token parameter variable">--global</span> user.name <span class="token string">"XXX"</span>
+<span class="token function">git</span> config <span class="token parameter variable">--global</span> user.email XXX@xx.com<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <ol start="3" type="1">
 <li>测试</li>
 </ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh -T git@github.com</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">ssh</span> <span class="token parameter variable">-T</span> git@github.com<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>有时候还是不能解决问题</p>
 <h3 id="方法-3">方法 3</h3>
 <ol type="1">
 <li>修改 hosts 文件，也可以进入 <a target="_blank" rel="noopener" href="https://www.ipaddress.com/">IPAddress</a> 查询这域名的 IP 地址。</li>
 </ol>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">192.30.253.112 github.com</span><br><span class="line">185.199.108.153 assets-cdn.github.com</span><br><span class="line">185.199.109.153 assets-cdn.github.com</span><br><span class="line">185.199.110.153 assets-cdn.github.com</span><br><span class="line">185.199.111.153 assets-cdn.github.com</span><br><span class="line">199.232.5.194 github.global.ssl.fastly.net</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">192.30.253.112 github.com
+185.199.108.153 assets-cdn.github.com
+185.199.109.153 assets-cdn.github.com
+185.199.110.153 assets-cdn.github.com
+185.199.111.153 assets-cdn.github.com
+199.232.5.194 github.global.ssl.fastly.net<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <ol start="2" type="1">
 <li>刷新 DNS 缓存</li>
 </ol>
-<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">ipconfig</span> /flushdns</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-cmd" data-language="cmd"><code class="language-cmd">ipconfig &#x2F;flushdns<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <h1 id="github-加速">GitHub 加速</h1>
 <h2 id="推荐---通过-ssh-时">推荐 - 通过 <code>SSH</code> 时</h2>
 <p><code>SSH</code> 的clone方式也是大家使用的最多的方式，但 <code>SSH</code> 一般情况是不走 <code>http</code>、<code>https</code> 的代理的，在终端执行 <code>export https_proxy=xxx</code>，甚至将代理软件设置为全局代理也无法令 <code>SSH</code> 通过代理。这里介绍如何使<code>SSH clone</code>时走代理： 把下面这段写进 <code>~/.ssh/config</code> 文件（因为用到私玥认证所以带了 <code>IdentityFile</code> 选项）</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># linux &amp; WSL 配置</span></span><br><span class="line">Host github.com</span><br><span class="line">    User git</span><br><span class="line">    ProxyCommand /usr/bin/nc -x 127.0.0.1:7890 %h %p</span><br><span class="line">    IdentityFile ~/.ssh/id_rsa</span><br></pre></td></tr></table></figure>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># GitBash 的配置</span></span><br><span class="line"> Host github.com</span><br><span class="line">     User git</span><br><span class="line">     ProxyCommand connect -H 127.0.0.1:7890 %h %p</span><br><span class="line">     IdentityFile ~/.ssh/id_rsa</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># linux &amp; WSL 配置</span>
+Host github.com
+    User <span class="token function">git</span>
+    ProxyCommand /usr/bin/nc <span class="token parameter variable">-x</span> <span class="token number">127.0</span>.0.1:7890 %h %p
+    IdentityFile ~/.ssh/id_rsa<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># GitBash 的配置</span>
+ Host github.com
+     User <span class="token function">git</span>
+     ProxyCommand connect <span class="token parameter variable">-H</span> <span class="token number">127.0</span>.0.1:7890 %h %p
+     IdentityFile ~/.ssh/id_rsa<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>这里 <code>127.0.0.1:7890</code> 是一个 <code>http</code> 代理，这样便能令 <code>SSH</code> clone GitHub 时通过代理，达到加速的目的。</p>
 <p>这种设置方法依赖Linux命令<a target="_blank" rel="noopener" href="https://linux.die.net/man/1/nc"><code>nc</code></a>和 <a target="_blank" rel="noopener" href="https://linux.die.net/man/5/ssh_config"><code>ssh config</code></a> <code>ProxyCommand</code>。</p>
 <blockquote>
@@ -371,15 +430,26 @@
 &gt;   https://docs.github.com/en/github/authenticating-to-github/error-permission-denied-publickey</code></pre>
 <h2 id="通过-https-时">通过 <code>HTTPS</code> 时</h2>
 <p>通过 <code>HTTPS</code> 形式的 clone 通过代理加速很简单，和普通的网页访问的加速并没有不一样：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export HTTPS_PROXY=socks5://127.0.0.1:1080</span><br><span class="line">git clone https://github.com/lightjiao/lightjiao.github.io.git</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">export HTTPS_PROXY&#x3D;socks5:&#x2F;&#x2F;127.0.0.1:1080
+git clone https:&#x2F;&#x2F;github.com&#x2F;lightjiao&#x2F;lightjiao.github.io.git<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <p>另外，<code>Git</code> 本身有一个 <code>http.proxy/https.proxy</code> 的设置：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global http.proxy socks5://127.0.0.1:1080</span><br><span class="line">git config --global https.proxy socks5://127.0.0.1:1080</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">git config --global http.proxy socks5:&#x2F;&#x2F;127.0.0.1:1080
+git config --global https.proxy socks5:&#x2F;&#x2F;127.0.0.1:1080<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <p>但 <code>HTTPS</code> clone的方式本身有一个缺点，每次与远端repo通讯时候都会要求填写用<code>Github</code>户名和密码，使用比较繁琐</p>
 <h2 id="a-little-more-on-git-protocol">A Little More on Git Protocol</h2>
 <p>By saying "Git Protocol", I mean a Git Server Protocal called "The Git Protocol". Its URI likes <code>git://server/project.git</code>. Note it starts with a <code>git://</code>, not <code>ssh://</code> or <code>http://</code> or something else.</p>
 <p>It's not commonly used, so you can skip this. I write this mainly for completeness of Git proxy settings.</p>
 <p>Git a has configration <code>core.gitProxy</code> dedicated for this protocol, its man reads:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">core.gitProxy</span><br><span class="line"></span><br><span class="line">A &quot;proxy command&quot; to execute (as command host port) instead of establishing direct connection to the </span><br><span class="line">remote server when using the Git protocol for fetching. If the variable value is in the </span><br><span class="line">&quot;COMMAND for DOMAIN&quot; format, the command is applied only on hostnames ending with the specified </span><br><span class="line">domain string. This variable may be set multiple times and is matched in the given order; the first </span><br><span class="line">match wins.</span><br><span class="line"></span><br><span class="line">Can be overridden by the GIT_PROXY_COMMAND environment variable (which always applies universally, </span><br><span class="line">without the special &quot;for&quot; handling).</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">core.gitProxy
+
+A &quot;proxy command&quot; to execute (as command host port) instead of establishing direct connection to the 
+remote server when using the Git protocol for fetching. If the variable value is in the 
+&quot;COMMAND for DOMAIN&quot; format, the command is applied only on hostnames ending with the specified 
+domain string. This variable may be set multiple times and is matched in the given order; the first 
+match wins.
+
+Can be overridden by the GIT_PROXY_COMMAND environment variable (which always applies universally, 
+without the special &quot;for&quot; handling).<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>You can set it by <code>git config</code>.</p>
 <p>参考来源：</p>
 <ul>
