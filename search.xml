@@ -3470,9 +3470,8 @@ Y = \overline C A + CB
     <url>/hais-notebook/2021/03/20/DataBase/</url>
     <content><![CDATA[<p>什么是数据库、Node.js 连接数据库、SQL、范式、表设计、缓存字段、事务、存储引擎</p>
 <span id="more"></span>
-<h1 id="startup">Startup</h1>
-<h2 id="什么是数据库">什么是数据库</h2>
-<h3 id="数据库-database">数据库 Database</h3>
+<h1 id="introduction">Introduction</h1>
+<h2 id="database">Database</h2>
 <blockquote>
 <p>将大量数据保存起来，通过计算机加工而成的可以进行高效访问的数据集合称为数据库</p>
 </blockquote>
@@ -3481,7 +3480,7 @@ Y = \overline C A + CB
 <li>关系型数据库</li>
 <li>面向对象数据库、XML 数据库、键值存储系统（Redis）、层次数据库</li>
 </ul>
-<h3 id="数据库管理系统-dbms">数据库管理系统 DBMS</h3>
+<h2 id="database-management-system-dbms">Database Management System (DBMS)</h2>
 <blockquote>
 <p>用来管理数据库的系统被称为数据库管理系统</p>
 </blockquote>
@@ -3491,6 +3490,195 @@ Y = \overline C A + CB
 <p>DBMS 大概结构如下：</p>
 <figure class="highlight text"><table><tr><td class="code"><pre><span class="line">数据库（硬盘/内存中存数据的地方）</span><br><span class="line">           ↑ 读/写</span><br><span class="line">Server 服务端（数据提供者）</span><br><span class="line"> 请求的数据 ↓ ↑ SQL语句 </span><br><span class="line">Client 客户端（数据使用者）</span><br></pre></td></tr></table></figure>
 <p>我们使用的 MySQL 命令，就是一个客户端，MySQL 背后其实还有一个 Server 在 24 小时不间断运行着</p>
+<h2 id="data-model">Data Model</h2>
+<blockquote>
+<p>定义了数据库的逻辑结构，定义了数据是怎样联系在一起的、他们在系统中是怎样被处理和存储的</p>
+</blockquote>
+<h3 id="relational-model">Relational Model</h3>
+<p>所有的数据都存储在不同的 <strong>表（Table）</strong> 中：</p>
+<ul>
+<li>Attributes / Fileds / Columns</li>
+<li>Tuples / Records / Rows</li>
+</ul>
+<p>不同的表可以通过 <strong>公共属性（Common Attribute）</strong> 联系在一起。</p>
+<h3 id="schema-and-instances">Schema and Instances</h3>
+<ul>
+<li>Physical Schema：整体的物理架构。</li>
+<li>Logical Schema：整体的逻辑架构，类似于表的标题。</li>
+<li>Instance：在某一时间点的具体数据。</li>
+</ul>
+<h2 id="database-engine">Database Engine</h2>
+<blockquote>
+<p>DBMS 用来从数据库创建、读取、更新、删除数据的底层模块</p>
+</blockquote>
+<ul>
+<li>Storage Manager：与操作系统文件管理器交互，并提供高效的数据存储、读取和更新
+<ul>
+<li>Authorization and Integrity Manager</li>
+<li>Transaction Manager</li>
+<li>File Manager</li>
+</ul></li>
+<li>Query Processor：包括 DDL 解释器、DML 编译器、查询执行引擎</li>
+<li>Transaction Management：在系统出现错误后，保证数据库的一致性，如果一个事务内的某个操作出现错误，可以将该事务内之前已经执行的操作回滚
+<ul>
+<li>Concurrency-Control Manager：控制并行事务之间的交互</li>
+</ul></li>
+</ul>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/DatabaseStructure.jpg" alt="DatabaseStructure" /><figcaption aria-hidden="true">DatabaseStructure</figcaption>
+</figure>
+<h1 id="relational-model-1">Relational Model</h1>
+<h2 id="terminologies">Terminologies</h2>
+<h3 id="relation-schema-instance">Relation Schema &amp; Instance</h3>
+<blockquote>
+<p>关系模式定义了表格中的 <strong>属性（Attributes）</strong> 和 <strong>域（Domains）</strong>，关系实例是指关系数据库中具体的数据记录。</p>
+</blockquote>
+<p>定义 <span class="math inline">\(A_1, A_2, \dots, A_n\)</span> 为 Attributes，<span class="math inline">\(R=(A_1,A_2,\dots,A_n)\)</span> 是 Relation Schema，<span class="math inline">\(r(R)\)</span> 表示 R 下的一个 Relation Instance，<span class="math inline">\(t\)</span> 可以用来表示 <span class="math inline">\(r\)</span> 中的一个元组（一行）。</p>
+<p>比如：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line"># A Relation Schema</span><br><span class="line">instructor = (ID, name, dept_name, salary)</span><br><span class="line"># A Relation Instance: A specific instructor table</span><br><span class="line"># An Element: A specific instructor</span><br></pre></td></tr></table></figure>
+<h3 id="attribute-domain">Attribute &amp; Domain</h3>
+<blockquote>
+<p>域（Domain）表示某个属性的取值范围，比如 <span class="math inline">\(salary=\{1000,\dots, 10000\}\cup\{null\}\)</span></p>
+</blockquote>
+<p>属性一般要求是 <strong>原子的（atomic）</strong>，即不可分的。比如整数、字符串是原子的，集合和数组是非原子的。</p>
+<p>null 是一个特殊值，所有域都有，表示某个值是 unkown。</p>
+<h3 id="database-schema">Database Schema</h3>
+<blockquote>
+<p>数据库模式是指一个数据库中存储的数据结构的定义，数据库实例是数据库中数据在某个时间点的快照。数据库模式包括多个关系模式。</p>
+</blockquote>
+<h3 id="keys">Keys</h3>
+<blockquote>
+<p>超键（Superkey）是能够唯一标识关系中每一个元素的属性集合，候选键（Candidate Key）是最小的超键。</p>
+</blockquote>
+<p>如果 <span class="math inline">\(K \subseteq R\)</span>，且 <span class="math inline">\(K\)</span> 能够确定 <span class="math inline">\(r(R)\)</span> 中的每一个元素，则称 <span class="math inline">\(K\)</span> 为 Superkey，比如 <span class="math inline">\(\{ID, name\}\)</span>。</p>
+<p>超键去除所有冗余的属性之后就是 Candidate Key，比如 <span class="math inline">\(\{ID\}\)</span>，通常我们将 Candidate Key 作为主键（Primary Key）。</p>
+<p>外键（Foreign Key）约束指的是确保一个表中的数据必须在另一个表中存在，以维护表之间的引用完整性，比如：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">instructor(ID, name, dept_name, salary);</span><br><span class="line">department(depart_name, building, budget);</span><br></pre></td></tr></table></figure>
+<h2 id="relational-query-language">Relational Query Language</h2>
+<ul>
+<li><strong>Procedural Data Manipulation Language (Procedural DML)</strong>：需要确定需要什么数据，以及 <strong>怎样获取这些数据</strong>，具有更强的编程能力，比如关系代数（Relational Algebra）。</li>
+<li><strong>Declarative DML (non-Procedural DML)</strong>：不需要指明怎样获取数据，比如 SQL (Structured Query Language)。</li>
+</ul>
+<h3 id="relational-algebra">Relational Algebra</h3>
+<p>基本操作符：</p>
+<table>
+<thead>
+<tr class="header">
+<th>含义</th>
+<th>操作符$$</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Select</td>
+<td><span class="math inline">\(\sigma\)</span></td>
+</tr>
+<tr class="even">
+<td>Project</td>
+<td><span class="math inline">\(\Pi\)</span></td>
+</tr>
+<tr class="odd">
+<td>Union</td>
+<td><span class="math inline">\(\cup\)</span></td>
+</tr>
+<tr class="even">
+<td>Intersection</td>
+<td><span class="math inline">\(\cap\)</span></td>
+</tr>
+<tr class="odd">
+<td>Difference</td>
+<td><span class="math inline">\(-\)</span></td>
+</tr>
+<tr class="even">
+<td>Cattersian Product</td>
+<td><span class="math inline">\(\times\)</span></td>
+</tr>
+<tr class="odd">
+<td>Rename</td>
+<td><span class="math inline">\(\rho\)</span></td>
+</tr>
+<tr class="even">
+<td>Join</td>
+<td><span class="math inline">\(\Join\)</span></td>
+</tr>
+<tr class="odd">
+<td>Assignment</td>
+<td><span class="math inline">\(\leftarrow\)</span></td>
+</tr>
+</tbody>
+</table>
+<h4 id="select">Select</h4>
+<p><span class="math display">\[
+\sigma_p(r)
+\]</span></p>
+<p>其中 <span class="math inline">\(p\)</span> 称为选择谓词（Selection Predicate），比如： <span class="math display">\[
+\sigma_{dept\_name=&quot;Physics&quot;}(instrucotr)
+\]</span> 可以在其中加入比较运算符 <span class="math inline">\(= \neq &gt; &lt; \geq \leq\)</span> ，逻辑运算符 与 <span class="math inline">\(\and\)</span> 或 <span class="math inline">\(\or\)</span> 非 <span class="math inline">\(\neg\)</span>： <span class="math display">\[
+\sigma_{dept\_name=&quot;Physics&quot; \and salary&gt;9000}(instrucotr)
+\]</span></p>
+<h4 id="project">Project</h4>
+<blockquote>
+<p>只会留下指定的列</p>
+</blockquote>
+<p><span class="math display">\[
+\Pi_{A_1, A_2, \dots, A_k}(r)
+\]</span></p>
+<p><span class="math inline">\(A_1, A_2, \dots, A_k\)</span> 是需要的属性名，比如 <span class="math display">\[
+\Pi_{ID, name, salary}(instructor)
+\]</span></p>
+<h4 id="composition">Composition</h4>
+<p>关系代数操作符的运算结果是 Relation（表），因此可以将几个操作符像函数一样组合起来： <span class="math display">\[
+r&#39;&#39;=G(F(r)):r&#39;=F(r);r&#39;&#39;=G(r&#39;)
+\]</span> 比如： <span class="math display">\[
+\Pi_{name}(\sigma_{dept\_name=&quot;Physics&quot;}(instrucotr))
+\]</span></p>
+<h4 id="catersian-product">Catersian Product</h4>
+<blockquote>
+<p>将两个表的数据组合起来</p>
+</blockquote>
+<p><span class="math display">\[
+r_1 \times r_2
+\]</span></p>
+<p>比如： <span class="math display">\[
+instructor \times teaches
+\]</span> <img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/RelationalAlgebraCartesianProduct.png" alt="Cartesian Product" /></p>
+<h4 id="join">Join</h4>
+<blockquote>
+<p>两个表按照规则有意义的组合起来（Catersian Product 会产生很多无意义的数据），相当于只取了匹配规则的值。</p>
+</blockquote>
+<p><span class="math display">\[
+r \Join_\theta s = \sigma_\theta(r \times s)
+\]</span></p>
+<p>比如： <span class="math display">\[
+instructor \Join_{instructor.id=teaches.id} teaches =
+\sigma_{constructor.id=teaches.id}(instructor \times teaches)
+\]</span></p>
+<h4 id="union">Union</h4>
+<p><span class="math display">\[
+r \cup s
+\]</span></p>
+<p><span class="math inline">\(r, s\)</span> 必须有同样多的属性，并且属性的列必须一一对应，比如第二列与第二列类型相同，比如： <span class="math display">\[
+\Pi_{source\_id}(\sigma_{semester=&quot;Fall&quot; \and year=2017}(section)) \cup \Pi_{source\_id}(\sigma_{semester=&quot;Spring&quot; \and year=2018}(section))
+\]</span></p>
+<h4 id="intersection">Intersection</h4>
+<p>要求与 Union 相同，比如： <span class="math display">\[
+\Pi_{source\_id}(\sigma_{semester=&quot;Fall&quot; \and year=2017}(section)) \cap \Pi_{source\_id}(\sigma_{semester=&quot;Spring&quot; \and year=2018}(section))
+\]</span></p>
+<h4 id="set-difference">Set Difference</h4>
+<p>要求与 Union 相同。比如： <span class="math display">\[
+\Pi_{source\_id}(\sigma_{semester=&quot;Fall&quot; \and year=2017}(section)) - \Pi_{source\_id}(\sigma_{semester=&quot;Spring&quot; \and year=2018}(section))
+\]</span></p>
+<h4 id="assignment">Assignment</h4>
+<p><span class="math display">\[
+variable \larr E
+\]</span></p>
+<h4 id="rename">Rename</h4>
+<p><span class="math display">\[
+\rho_X(E)
+\]</span></p>
+<p>其中 <span class="math inline">\(E\)</span> 是旧名字，<span class="math inline">\(X\)</span> 是新名字，比如： <span class="math display">\[
+\rho_{MyEmployee}(Employee)
+\]</span></p>
 <h2 id="创建数据库">创建数据库</h2>
 <p><a href="https://dev.mysql.com/downloads/mysql/">下载 MySQL</a>、<a href="https://dev.mysql.com/downloads/workbench">下载 MySQL WorkBench</a></p>
 <p>使用 Docker <a href="/hais-notebook/2021/03/14/Docker/" title="Docker">Docker</a></p>
