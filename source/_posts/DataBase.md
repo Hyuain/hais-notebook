@@ -9,11 +9,9 @@ categories:
 
 <!-- more -->
 
-# Startup
+# Introduction
 
-## 什么是数据库
-
-### 数据库 Database
+## Database
 
 > 将大量数据保存起来，通过计算机加工而成的可以进行高效访问的数据集合称为数据库
 
@@ -22,7 +20,7 @@ categories:
 - 关系型数据库
 - 面向对象数据库、XML 数据库、键值存储系统（Redis）、层次数据库
 
-### 数据库管理系统 DBMS
+## Database Management System (DBMS)
 
 > 用来管理数据库的系统被称为数据库管理系统
 
@@ -39,6 +37,217 @@ Client 客户端（数据使用者）
 ```
 
 我们使用的 MySQL 命令，就是一个客户端，MySQL 背后其实还有一个 Server 在 24 小时不间断运行着
+
+## Data Model
+
+> 定义了数据库的逻辑结构，定义了数据是怎样联系在一起的、他们在系统中是怎样被处理和存储的
+
+### Relational Model
+
+所有的数据都存储在不同的 **表（Table）** 中：
+
+- Attributes / Fileds / Columns
+- Tuples / Records / Rows
+
+不同的表可以通过 **公共属性（Common Attribute）** 联系在一起。
+
+### Schema and Instances
+
+- Physical Schema：整体的物理架构。
+- Logical Schema：整体的逻辑架构，类似于表的标题。
+- Instance：在某一时间点的具体数据。
+
+## Database Engine
+
+> DBMS 用来从数据库创建、读取、更新、删除数据的底层模块
+
+- Storage Manager：与操作系统文件管理器交互，并提供高效的数据存储、读取和更新
+  - Authorization and Integrity Manager
+  - Transaction Manager
+  - File Manager
+- Query Processor：包括 DDL 解释器、DML 编译器、查询执行引擎
+- Transaction Management：在系统出现错误后，保证数据库的一致性，如果一个事务内的某个操作出现错误，可以将该事务内之前已经执行的操作回滚
+  - Concurrency-Control Manager：控制并行事务之间的交互
+
+![DatabaseStructure](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/DatabaseStructure.jpg)
+
+
+
+# Relational Model
+
+## Terminologies
+
+### Relation Schema & Instance
+
+> 关系模式定义了表格中的 **属性（Attributes）** 和 **域（Domains）**，关系实例是指关系数据库中具体的数据记录。
+
+定义 $A_1, A_2, \dots, A_n$ 为 Attributes，$R=(A_1,A_2,\dots,A_n)$ 是 Relation Schema，$r(R)$ 表示 R 下的一个 Relation Instance，$t$ 可以用来表示 $r$ 中的一个元组（一行）。
+
+比如：
+
+```text
+# A Relation Schema
+instructor = (ID, name, dept_name, salary)
+# A Relation Instance: A specific instructor table
+# An Element: A specific instructor
+```
+
+### Attribute & Domain
+
+> 域（Domain）表示某个属性的取值范围，比如 $salary=\{1000,\dots, 10000\}\cup\{null\}$
+
+属性一般要求是 **原子的（atomic）**，即不可分的。比如整数、字符串是原子的，集合和数组是非原子的。
+
+null 是一个特殊值，所有域都有，表示某个值是 unkown。
+
+### Database Schema
+
+> 数据库模式是指一个数据库中存储的数据结构的定义，数据库实例是数据库中数据在某个时间点的快照。数据库模式包括多个关系模式。
+
+### Keys
+
+> 超键（Superkey）是能够唯一标识关系中每一个元素的属性集合，候选键（Candidate Key）是最小的超键。
+
+如果 $K \subseteq R$，且 $K$ 能够确定 $r(R)$ 中的每一个元素，则称 $K$ 为 Superkey，比如 $\{ID, name\}$。
+
+超键去除所有冗余的属性之后就是 Candidate Key，比如 $\{ID\}$，通常我们将 Candidate Key 作为主键（Primary Key）。
+
+外键（Foreign Key）约束指的是确保一个表中的数据必须在另一个表中存在，以维护表之间的引用完整性，比如：
+
+```text
+instructor(ID, name, dept_name, salary);
+department(depart_name, building, budget);
+```
+
+## Relational Query Language
+
+- **Procedural Data Manipulation Language (Procedural DML)**：需要确定需要什么数据，以及 **怎样获取这些数据**，具有更强的编程能力，比如关系代数（Relational Algebra）。
+- **Declarative DML (non-Procedural DML)**：不需要指明怎样获取数据，比如 SQL (Structured Query Language)。
+
+### Relational Algebra
+
+基本操作符：
+
+| 含义               | 操作符$$     |
+| ------------------ | ------------ |
+| Select             | $\sigma$     |
+| Project            | $\Pi$        |
+| Union              | $\cup$       |
+| Intersection       | $\cap$       |
+| Difference         | $-$          |
+| Cattersian Product | $\times$     |
+| Rename             | $\rho$       |
+| Join               | $\Join$      |
+| Assignment         | $\leftarrow$ |
+
+#### Select
+
+$$
+\sigma_p(r)
+$$
+
+其中 $p$ 称为选择谓词（Selection Predicate），比如：
+$$
+\sigma_{dept\_name="Physics"}(instrucotr)
+$$
+可以在其中加入比较运算符 $= \neq > < \geq \leq$ ，逻辑运算符 与 $\and$ 或 $\or$ 非 $\neg$：
+$$
+\sigma_{dept\_name="Physics" \and salary>9000}(instrucotr)
+$$
+
+#### Project
+
+>  只会留下指定的列
+
+$$
+\Pi_{A_1, A_2, \dots, A_k}(r)
+$$
+
+$A_1, A_2, \dots, A_k$ 是需要的属性名，比如
+$$
+\Pi_{ID, name, salary}(instructor)
+$$
+
+#### Composition
+
+关系代数操作符的运算结果是 Relation（表），因此可以将几个操作符像函数一样组合起来：
+$$
+r''=G(F(r)):r'=F(r);r''=G(r')
+$$
+比如：
+$$
+\Pi_{name}(\sigma_{dept\_name="Physics"}(instrucotr))
+$$
+
+#### Catersian Product
+
+> 将两个表的数据组合起来
+
+$$
+r_1 \times r_2
+$$
+
+比如：
+$$
+instructor \times teaches
+$$
+![Cartesian Product](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/RelationalAlgebraCartesianProduct.png)
+
+#### Join
+
+> 两个表按照规则有意义的组合起来（Catersian Product 会产生很多无意义的数据），相当于只取了匹配规则的值。
+
+$$
+r \Join_\theta s = \sigma_\theta(r \times s)
+$$
+
+比如：
+$$
+instructor \Join_{instructor.id=teaches.id} teaches =
+\sigma_{constructor.id=teaches.id}(instructor \times teaches)
+$$
+
+#### Union
+
+$$
+r \cup s
+$$
+
+$r, s$ 必须有同样多的属性，并且属性的列必须一一对应，比如第二列与第二列类型相同，比如：
+$$
+\Pi_{source\_id}(\sigma_{semester="Fall" \and year=2017}(section)) \cup \Pi_{source\_id}(\sigma_{semester="Spring" \and year=2018}(section))
+$$
+
+#### Intersection
+
+要求与 Union 相同，比如：
+$$
+\Pi_{source\_id}(\sigma_{semester="Fall" \and year=2017}(section)) \cap \Pi_{source\_id}(\sigma_{semester="Spring" \and year=2018}(section))
+$$
+
+#### Set Difference
+
+要求与 Union 相同。比如：
+$$
+\Pi_{source\_id}(\sigma_{semester="Fall" \and year=2017}(section)) - \Pi_{source\_id}(\sigma_{semester="Spring" \and year=2018}(section))
+$$
+
+#### Assignment
+
+$$
+variable \larr E
+$$
+
+#### Rename
+
+$$
+\rho_X(E)
+$$
+
+其中 $E$ 是旧名字，$X$ 是新名字，比如：
+$$
+\rho_{MyEmployee}(Employee)
+$$
 
 ## 创建数据库
 
