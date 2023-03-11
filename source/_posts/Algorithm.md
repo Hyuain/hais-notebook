@@ -209,7 +209,7 @@ const partition = (numbers, l, r) => {
   // |左边部分|右边部分|未遍历数组|pivot|
   // i 表示 pivot 左边部分的末尾的下一项（即右边数组的第一项）
   let i = l
-  // j 表示未遍历数组的最后一项
+  // j 表示未遍历数组的第一项
   for (let j = l; j < r; j++) {
     if (numbers[j] < pivot) {
       // 如果该项小于 pivot，应该放到左边部分中，于是 j 和 i 互换
@@ -586,40 +586,43 @@ Array.prototype.unique = function() {
 
 ## 例题
 
-### 电话号码的组合（公式运算）
+### 电话号码的组合
 
 [LeetCode.17](https://leetcode.cn/problems/letter-combinations-of-a-phone-number/)
 
-```js
-const telComb = (str) => {
-  const map = ['', 1, 'abc', 'def', 'ghi', 'jkl', 'mno', 'pqrs', 'tuv', 'wxyz']
-  const num = str.split('')
-  // 保存键盘映射后的字母内容，比如 23 => ['abc', 'def']
-  const code = []
-  num.forEach(item => {
-    if (map[item]) {
-      code.push(map[item])
-    }
-  })
-  const combine = (arr) => {
+Given a string containing digits from 2-9 inclusive, return all possible letter combinations that the number could represent. Return the answer in any order.
+
+A mapping of digits to letters (just like on the telephone buttons) is given below. Note that 1 does not map to any letters.
+
+<details>
+  #回溯
+  ```typescript
+  function letterCombinations(digits: string): string[] {
+    const letters = [
+      "", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"
+    ]
     const result = []
-    for (let i = 0; i < arr[0].length; i++) {
-      for (let j = 0; j < arr[1].length; j++) {
-        result.push(`${arr[0][i]}${arr[1][j]}`)
+    const currentChosenLetters = []
+    function trackingback() {
+      if (currentChosenLetters.length === digits.length) {
+        if (currentChosenLetters.length) {
+          result.push(currentChosenLetters.join(""))
+        }
+        return
+      }
+      const currentAvaliableLetters = letters[digits[currentChosenLetters.length]]
+      for (let i = 0; i < currentAvaliableLetters.length; i++) {
+        currentChosenLetters.push(currentAvaliableLetters[i])
+        trackingback()
+        currentChosenLetters.pop()
       }
     }
-    // 递归的精髓，用临时结果 result 替换掉前面两项
-    arr.splice(0, 2, result)
-    if (arr.length > 1) {
-      combine(arr)
-    } else {
-      return result
-    }
-    return arr[0]
-  }
-  return combine(code)
-}
-```
+    trackingback()
+    return result
+  };
+  ```
+</details>
+
 
 ### 卡牌分组 （归类运算）
 
@@ -1481,10 +1484,6 @@ const insert = (root: TreeNode | null, node: TreeNode) => {
   - 称 x 为继任者，x 是比该节点大一位的节点
   - 也可以用比 x 节点小一位的节点（左子树的最大节点）来替代，但是这样得到的树高度差会更大（？）
 
-
-
-
-
 # 动态规划
 
 ## 背包问题
@@ -1736,3 +1735,32 @@ for (let j = 0; j <= amount; j++) {        // 重量
 ```
 
 背包容量的每一个值，都会重新计算一遍 1 和 5，所以包含了 {1, 5} 和 {5, 1} 两种情况。，`dp[j]` 里面存的就是排列数。
+
+## 例题
+
+### 整数拆分
+
+[LeetCode.343](https://leetcode.cn/problems/integer-break/)
+
+Given an integer n, break it into the sum of k positive integers, where k >= 2, and maximize the product of those integers.
+
+Return the maximum product you can get.
+
+<detail>
+#双重循环
+```typescript
+function integerBreak(n: number): number {
+  const dp = new Array(n)
+  // dp[i] = max(dp[i],max(dp[i-j]*j,(i-j)*j))
+  // 1, 2, 4, 6, 9
+  dp[2] = 1
+  for (let i = 3; i <= n; i++) {
+    for (let j = 1; j < i - 1; j++) {
+      dp[i] = Math.max(dp[i] || 0, Math.max(dp[i - j] * j, (i - j) * j))
+    }
+  }
+  console.log(dp)
+  return dp[n]
+};
+```
+</detail>

@@ -38,25 +38,6 @@ Client 客户端（数据使用者）
 
 我们使用的 MySQL 命令，就是一个客户端，MySQL 背后其实还有一个 Server 在 24 小时不间断运行着
 
-## Data Model
-
-> 定义了数据库的逻辑结构，定义了数据是怎样联系在一起的、他们在系统中是怎样被处理和存储的
-
-### Relational Model
-
-所有的数据都存储在不同的 **表（Table）** 中：
-
-- Attributes / Fileds / Columns
-- Tuples / Records / Rows
-
-不同的表可以通过 **公共属性（Common Attribute）** 联系在一起。
-
-### Schema and Instances
-
-- Physical Schema：整体的物理架构。
-- Logical Schema：整体的逻辑架构，类似于表的标题。
-- Instance：在某一时间点的具体数据。
-
 ## Database Engine
 
 > DBMS 用来从数据库创建、读取、更新、删除数据的底层模块
@@ -72,8 +53,6 @@ Client 客户端（数据使用者）
 ![DatabaseStructure](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/DatabaseStructure.jpg)
 
 
-
-# Relational Model
 
 ## Terminologies
 
@@ -119,12 +98,7 @@ instructor(ID, name, dept_name, salary);
 department(depart_name, building, budget);
 ```
 
-## Relational Query Language
-
-- **Procedural Data Manipulation Language (Procedural DML)**：需要确定需要什么数据，以及 **怎样获取这些数据**，具有更强的编程能力，比如关系代数（Relational Algebra）。
-- **Declarative DML (non-Procedural DML)**：不需要指明怎样获取数据，比如 SQL (Structured Query Language)。
-
-### Relational Algebra
+# Relational Algebra
 
 基本操作符：
 
@@ -140,7 +114,7 @@ department(depart_name, building, budget);
 | Join               | $\Join$      |
 | Assignment         | $\leftarrow$ |
 
-#### Select
+## Select
 
 $$
 \sigma_p(r)
@@ -155,7 +129,7 @@ $$
 \sigma_{dept\_name="Physics" \and salary>9000}(instrucotr)
 $$
 
-#### Project
+## Project
 
 >  只会留下指定的列
 
@@ -168,7 +142,7 @@ $$
 \Pi_{ID, name, salary}(instructor)
 $$
 
-#### Composition
+## Composition
 
 关系代数操作符的运算结果是 Relation（表），因此可以将几个操作符像函数一样组合起来：
 $$
@@ -179,7 +153,7 @@ $$
 \Pi_{name}(\sigma_{dept\_name="Physics"}(instrucotr))
 $$
 
-#### Catersian Product
+## Catersian Product
 
 > 将两个表的数据组合起来
 
@@ -193,7 +167,7 @@ instructor \times teaches
 $$
 ![Cartesian Product](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/RelationalAlgebraCartesianProduct.png)
 
-#### Join
+## Join
 
 > 两个表按照规则有意义的组合起来（Catersian Product 会产生很多无意义的数据），相当于只取了匹配规则的值。
 
@@ -207,7 +181,7 @@ instructor \Join_{instructor.id=teaches.id} teaches =
 \sigma_{constructor.id=teaches.id}(instructor \times teaches)
 $$
 
-#### Union
+## Union
 
 $$
 r \cup s
@@ -218,27 +192,27 @@ $$
 \Pi_{source\_id}(\sigma_{semester="Fall" \and year=2017}(section)) \cup \Pi_{source\_id}(\sigma_{semester="Spring" \and year=2018}(section))
 $$
 
-#### Intersection
+## Intersection
 
 要求与 Union 相同，比如：
 $$
 \Pi_{source\_id}(\sigma_{semester="Fall" \and year=2017}(section)) \cap \Pi_{source\_id}(\sigma_{semester="Spring" \and year=2018}(section))
 $$
 
-#### Set Difference
+## Set Difference
 
 要求与 Union 相同。比如：
 $$
 \Pi_{source\_id}(\sigma_{semester="Fall" \and year=2017}(section)) - \Pi_{source\_id}(\sigma_{semester="Spring" \and year=2018}(section))
 $$
 
-#### Assignment
+## Assignment
 
 $$
 variable \larr E
 $$
 
-#### Rename
+## Rename
 
 $$
 \rho_X(E)
@@ -248,6 +222,430 @@ $$
 $$
 \rho_{MyEmployee}(Employee)
 $$
+
+# Structured Query Language (SQL)
+
+SQL 包括了：
+
+- Data Manipulation Language (DML)：提供操作数据的方法，比如 INSERT、 UPDATE 和 DELETE 等
+- Data Definition Language (DDL)：提供描述和管理数据库的方法，比如 CREATE、ALTER 和 DROP 等
+
+## Create Table
+
+```sql
+CREATE TABLE r
+	(A1 D1, A2, D2, ..., An Dn,
+	integrity-constraint1,
+	...,
+  integrity-constriantk)
+```
+
+`r` 是表的名字，`Ai` 表示 `r` 的 schema 中属性的名字，`Di` 表示 `Ai` 值域的数据类型，比如：
+
+```sql
+CREATE TABLE instructor (
+  ID        char(5),
+  name      varchar(20),
+  dept_name varchar(20),
+  salary    numeric(8,2));
+```
+
+### Integrity Constraints
+
+```sql
+PRIMARY KEY (A1, A2,..., An)
+FOREIGN KEY (A1, A2,..., An) REFERENCES r
+NOT NULL
+```
+
+比如：
+
+```sql
+CREATE TABLE instructor (
+  ID          char(5),
+  name        varchar(20) NOT NULL,
+  dept_name   varchar(20),
+  salary      numeric(8,2),
+  PRIMARY KEY (ID),
+  FOREIGN KEY (dept_name) REFERENCES department(dept_name));
+```
+
+## Upate Table
+
+```sql
+-- Insert
+INSERT INTO instructor VALUES ('10211', 'Smith', 'Biology', 66000);
+
+-- Delete
+DELETE FROM student [WHERE Calause];
+
+-- Drop
+DROP TABLE student;
+
+-- Alter (Add/Drop an attribute to a relation)
+ALTER TABLE student ADD age numeric(3,0);
+ALTER TABLE student DROP age;
+```
+
+## Query
+
+```sql
+SELECT A1, A2, ..., An
+FROM r1, r2, ..., rm
+WHERE P
+```
+
+`Ai` 是属性，`ri` 是表，`P` 是查询谓词。注意 SQL 是大小写不敏感的。
+
+### SELECT Clause
+
+可以使用 `DISTINCT` 去掉重复的行，比如：
+
+```sql
+SELECT DISTINCT dept_name
+FROM instructor;
+```
+
+`*` 表示所有属性。
+
+注意也可以使用字符串字面量：
+
+```sql
+-- 返回一行包含 '123' 的数据表，表名为 '123'
+SELECT '123';
+-- 可以给这个返回的数据表重命名
+SELECT '123' AS FOO;
+-- 返回与 instructor 行数一样多的数据表
+SELECT '123' FROM instructor;
+```
+
+可以使用算术运算符，也可以使用 `AS` 来重命名：
+
+```sql
+SELECT ID, name, salary/12 AS monthly_salary
+FROM instructor;
+```
+
+### WHERE Clause
+
+可以在 `WHERE` 语句中使用逻辑运算符和比较运算符：
+
+```sql
+SELECT name
+FROM instructor
+WHERE dept_name = 'Comp.Sci.' AND salary > 70000;
+```
+
+此外还可以使用 `BETWEEN`：
+
+```sql
+SELECT name
+FROM instructor
+WHERE salary BETWEEN 9000 AND 10000;
+```
+
+元组比较：
+
+```sql
+SELECT name, course_id
+FROM instructor, teaches
+WHERE (instructor.ID, dept_name) = (teaches.ID, 'Biology')
+-- 这里 instructor.ID 和 teaches.ID 比较，dept_name 和 'Biology' 比较
+```
+
+### FROM Clause
+
+`FROM` 会使用对应表的 Cartesian Product，比如下面是在 $instructor \times teaches$ 中进行查找：
+
+```sql
+SELECT *
+FROM instructor, teaches;
+```
+
+通过 Cartesian Product，可以得到所有可能的两表的组合，单独使用可能没什么用，但是经常会与 `WHERE` 语句一同使用：
+
+```sql
+SELECT *
+FROM Products, Categories
+WHERE Products.CategoryID = Categories.CategoryID;
+```
+
+### String Operation
+
+可以用 `LIKE` 来进行字符串匹配，并且有两个通配符：
+
+- `%` 表示任意字串
+- `_` 表示任意字符
+
+比如，在所有的 `instructor` 中找到名字包含 `dar` 的：
+
+```sql
+SELECT name
+FROM instructor
+WHERE name LIKE '%dar%';
+```
+
+如果我们真的想搜索百分号，我们可以使用 `ESCAPE`：
+
+```sql
+LIKE '100\%' ESCAPE '\'
+```
+
+通过指定 `\` 为 Escape Character，告诉系统 `\%` 是 `%` 字面量，而不是通配符。
+
+还有一些特殊的用法：
+
+```sql
+-- 匹配有且只有三个字符的项
+'___'
+
+-- 匹配至少有三个字符的项
+'___%'
+```
+
+### Ordering
+
+默认会按字母升序（`ASC`）排列，可以指定 `DESC` 让其按照降序排列：
+
+```sql
+SELECT DISTINCT name
+FROM instructor
+ORDER BY name
+```
+
+也可以根据多个字段进行排序：
+
+```sql
+ORDER BY dept_name, name
+ORDER BY salary ASC, name DESC
+```
+
+### Set Operation
+
+```sql
+(SELECT course_id FROM section WHERE sem = 'Fall' AND year = 2017)
+UNION
+(SELECT course_id FROM section WHERE sem = 'Spring' AND year = 2018)
+```
+
+还有交集 `INTERSECT`，差 `EXCEPT`。
+
+Set Operation 会自动去除重复的项，如果需要保留重复项，可以使用：
+
+```sql
+UNION ALL
+INTERSECT ALL
+EXCEPT ALL
+```
+
+### NULL
+
+所有与 `NULL` 的计算都会返回 `NULL`，比如 `5 + NULL` 会返回 `NULL`。
+
+`IS NULL` 可以用来检查是否是 `NULL`：
+
+```sql
+SELECT name
+FROM instructor
+WHERE salary IS NULL;
+```
+
+### Aggregate Function
+
+>  聚合函数可以执行计算并返回单个值作为结果： `AVG` `MIN` `MAX` `SUM` `COUNT`
+
+得到 COMP instructors 的平均工资：
+
+```sql
+SELECT AVG(salary)
+FROM instructor
+WHERE dept_name = 'Comp.Sci.';
+```
+
+得到在 Spring 2018 教书的 instructors 数量：
+
+```sql
+SELECT COUNT(DISTINCT ID)
+FROM teaches
+WHERE semester = 'Spring' AND year = 2018;
+```
+
+得到行的总数：
+
+```sql
+SELECT COUNT(*)
+FROM course;
+```
+
+使用 `GROUP BY` 可以进行分组，比如找到每个系的 instructors 的平均工资：
+
+```sql
+SELECT dept_name, AVG(salary)
+FROM instructor
+GROUP BY dept_name;
+```
+
+注意在 Aggregate Functions 之外的 `SELECT` 语句中的属性必须要出现在 `GROUP BY` 中，比如：
+
+```sql
+-- error
+SELECT dept_name, ID, AVG(salary)
+FROM instructor
+GROUP BY dept_name;
+
+-- correct
+SELECT dept_name, ID, AVG(salary)
+FROM instructor
+GROUP BY dept_name, ID;
+```
+
+#### HAVING Clause
+
+> 用于筛选分组
+
+同为筛选，不过与 `WHERE` 有所不同：
+
+- `WHERE` 是用来筛选行的，`HAVING` 是用来筛选分组的
+- `WHERE` 放在 `FROM` 之后，`HAVING` 放在 `GROUP BY` 之后
+
+比如，下面这条语句可以查询 `sales_table` 表中每个产品类别的总销售额：
+
+```sql
+SELECT category, SUM(sales) AS total_sales
+FROM sales_table
+GROUP BY category;
+```
+
+如果只选择总销售额大于 1000 的产品类别，可以使用 `HAVING` 来过滤结果：
+
+```sql
+SELECT category, SUM(sales) AS total_sales
+FROM sales_table
+GROUP BY category
+HAVING SUM(sales) > 1000;
+```
+
+如果进选择销售额发生在 2019 的产品类别，可以在 `WHERE` 中添加筛选条件：
+
+```sql
+SELECT category, SUM(sales) AS total_sales
+FROM sales_table
+WHERE YEAR(sales_date) = 2019
+GROUP BY category
+HAVING SUM(sales) > 1000;
+```
+
+### Nested Subquery
+
+```sql
+SELECT A1, A2, ..., An
+FROM r1, r2, ..., rm
+WHERE P
+```
+
+其中 `r1` 可以是子查询（一个 SELECT-FROM-WHERE 表达式），`Ai` 可以是产生一个值的子查询，`P` 则可以按照以下规则定义：
+
+```text
+B <operation> (subquery)
+```
+
+#### Subqueries in WHERE
+
+找到在 Fall 2017 和 Spring 2018 开的课（使用 `IN`）：
+
+```sql
+SELECT DISTINCT course_id
+FROM section
+WHERE semester = 'Fall' AND year = 2017 AND
+  course_id IN (SELECT course_id
+                FROM section
+                WHERE semester = 'Spring' AND year = 2018);
+```
+
+找到在 Fall 2017 但不在 Spring 2018 开的课（使用 `NOT IN`）：
+
+```sql
+SELECT DISTINCT course_id
+FROM section
+WHERE semester = 'Fall' AND year = 2017 AND
+  course_id NOT IN (SELECT course_id
+                    FROM section
+                    WHERE semester = 'Spring' AND year = 2018);
+```
+
+找到比至少一个 Biology department 的 instructor 工资更高的 instructors 的名字：
+
+```sql
+SELECT DISTINCT name
+FROM instructor
+WHERE salary > (
+  SELECT MIN(salary)
+  FROM instructor
+  WHERE dept_name = 'Biology'
+);
+
+-- 可以这样写
+SELECT DISTINCT T.name
+FROM instructor as T, instructor as S
+WHERE T.salary > S.salary AND S.dept name = 'Biology';
+
+-- 效果等同于用 SOME
+SELECT DISTINCT name
+FROM instructor
+WHERE salray > SOME (SELECT salary
+                     FROM instructor
+                     WHERE dept_name = 'Biology');
+```
+
+`SOME` 表示至少属于对于其中一个成立，比如：
+
+```sql
+(5 < SOME {0, 5, 6}) = ture   -- 5 < 6
+(5 < SOME {0, 5}) = false     -- 5 > 0 且 5 = 5
+(5 = SOME {0, 5}) = true      -- 5 = 5
+(5 != SOME {0, 5}) = true     -- 5 != 0
+```
+
+找到比所有 Biology department 的 instructor 工资都高的 instructors 的名字：
+
+```sql
+SELECT DISTINCT name
+FROM instructor
+WHERE salary > (SELECT MAX(salary)
+                FROM instructor
+                WHERE dept_name = 'Biology');
+                
+-- 效果等同于用 ALL
+SELECT DISTINCT name
+FROM instructor
+WHERE salray > ALL (SELECT salary
+                    FROM instructor
+                    WHERE dept_name = 'Biology');
+```
+
+`ALL` 表示至少对于所有的都成立。
+
+#### Subqueries in FROM
+
+从 departments 的平均工资中找到哪些高于 42000 的：
+
+```sql
+SELECT dept_name, avg_salary
+FROM (SELECT dept_name, AVG(salary) AS avg_salary
+      FROM instructor
+      GROUP BY dept_name)
+WHERE avg_salary > 42000;
+
+-- 也可以这样写
+SELECT dept_name, avg_salary
+FROM (SELECT dept_name, AVG(salary)
+      FROM instructor
+      GROUP BY dept_name
+      AS dept_avg(dept_name, avg_salary))
+WHERE avg_salary > 42000;
+```
+
+# Quick Start
 
 ## 创建数据库
 
@@ -293,20 +691,6 @@ connection.end()
 
 ## 常见的 SQL 命令
 
-### 操作 database/table
-
-```sql
--- 增
-CREATE DATABASE IF NOT EXISTS harvey DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
--- （MySQL 才需要使用 utf8mb4，并且在后面写 COLLATE）
-
--- 删
-DROP database_name;
-
--- 查
-use lzblog;
-```
-
 ### 操作记录
 
 ```sql
@@ -331,8 +715,6 @@ SELECT * FROM users WHERE name='harvey' AND `password`='123';
 SELECT * FROM users WHERE name='harvey' OR `password`='123';
 SELECT * FROM users WHERE name LIKCE '%ve%' ORDER BY id DESC;
 ```
-
-
 
 - 增：`INSERT INTO user (name, age) VALUES ('harvey', 20);`
 - 删：`DELETE FROM user WHERE name='harvey';`
