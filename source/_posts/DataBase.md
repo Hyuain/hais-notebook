@@ -274,10 +274,32 @@ CREATE TABLE instructor (
 
 ```sql
 -- Insert
-INSERT INTO instructor VALUES ('10211', 'Smith', 'Biology', 66000);
+INSERT INTO instructor
+VALUES ('10211', 'Smith', 'Biology', 66000);
+INSERT INTO instructor (ID, name, dept_name)
+VALUES ('10211', 'Smith', 'Biology');
 
 -- Delete
 DELETE FROM student [WHERE Calause];
+DELETE FROM instructor
+WHERE dept_name in (SELECT dept_name
+                    FROM department
+                    WHERE building = 'Watson');
+-- 每当删除一个之后，avg 就会变化，所以要提前存好最开始的 avg
+DECLARE @avg_salary numeric(8, 2)
+SET @avg_salary = (SELECT AVG(salary) FROM instructor)
+DELETE FROM instructor
+WHERE salary < @avg_salary;
+
+-- Update
+UPDATE instructor
+SET salary = salary * 1.05
+WHERE salary < 70000;
+UPDATE instructor
+SET salary = CASE
+               WHEN salary <= 10000 THEN salray * 1.05
+               ELSE salary * 1.03
+             END;
 
 -- Drop
 DROP TABLE student;
@@ -644,6 +666,35 @@ FROM (SELECT dept_name, AVG(salary)
       AS dept_avg(dept_name, avg_salary))
 WHERE avg_salary > 42000;
 ```
+
+#### WITH
+
+可以用 `WITH` 定义临时关系，比如查找所有跟最大 budget 相同的 department：
+
+```sql
+WITH max_budget(value) AS
+        (SElECT MAX(budget) FROM department)
+SELECT department.name
+FROM department, max_budget
+WHERE department.budget = max_budget.value;
+```
+
+找到所有总 salary 高于平均的 department：
+
+```sql
+WITH dept_total(dept_name, value) AS
+       (SELECT dept_name, SUM(salary)
+        FROM instructor
+        GROUP BY dept_name),
+     dept_total_avg(value) AS
+       (SELECT AVG(value)
+        FROM dept_total)
+SELECT dept_name
+FROM dept_total, dept_total_avg
+WHERE dept_total.value > dept_total_avg.value;
+```
+
+
 
 # Quick Start
 

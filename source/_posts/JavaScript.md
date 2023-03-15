@@ -59,6 +59,45 @@ categories:
 
 2015 年 12 月，Chrome 中国占有率达到 37%，超越 IE。
 
+# Script Element
+
+当浏览器解析到没有指定 `async` `defer` 或 `type="module"` 属性的 `script` 标签，以及没有 `type="module"` 的行内代码时，他会立即获取并执行代码的内容，完成后再继续解析页面剩下的内容。
+
+- `async`：减少 JavaScript 阻塞解析进程，与 `defer` 有类似的效果。
+  - 对于经典代码：`async` 存在时，浏览器会在解析其他部分的同时去获取代码内容，当获取到代码内容之后立即执行（执行会阻塞解析）；
+  - 对于 Module：`async` 存在时，代码和他的所有依赖都会被推入一个延迟队列。浏览器会在解析其他部分的同时去获取代码，获取完成之后立即执行。
+- `crossorigin`
+  - 没有这个属性时，默认跳过 CORS，此时的代码传给 `window.error` 的信息是有限制的；
+  - 值为空 / 不合法 / `anoymous` 时，请求会带上 CORS 请求头（Origin），证书标志位置为 `same-origin`，并且不会有用户证书的交换；
+  - 值为 `user-credentials` 时，请求会带上 CORS 请求头，证书标志位置为 `include`，并且总是会交换用户证书（比如 Cookie、客户端的 SSL 证书、HTTP 验证）。
+
+- `defer`：减少 JavaScript 阻塞解析进程，其代码会在浏览器解析完之后进行，但在代码执行完成之后才会触发 `DOMContentLoaded` 事件。
+  - 当没有 `src` 属性时，不会有任何效果；
+  - 对于 Module 不会有任何效果，因为 Module 本来就是延迟执行的。
+
+- `fetchpriority`：`high` `low` `auto`，定义了获取代码的相对优先级。
+- `integrity`：存储了一些行内的元数据，浏览器可以用来验证代码内容是否被篡改。
+- `nomodule`：表示下面的代码不能在支持 ES Modules 的代码中使用，可以用来提供对老旧浏览器的 fallback 代码。
+- `nonce`：只能用一次的加密随机数。
+- `referrerpolicy`：指定请求代码或代码请求资源时的 Referrer
+  - `no-referrer`：不应该设置 Referrer 请求头；
+  - `no-referrer-when-downgrade`：非 HTTPS 请求不应该设置 Referrer；
+  - `origin`：Refererrer 应该限制为 Origin（Scheme + Host + Port）；
+  - `origin-when-cross-origin`：给其他源发送的 Referrer 应该限制为 Origin，在同源中导航应该总是携带 Path；
+  - `same-origin`：跨域请求不携带 Referrer；
+  - `strcit-origin`：只会在同样的安全等级（HTTPS→HTTPS）时才会将 Origin 设置为 Referrer 发出去；
+  - 空值 / `scrit-origin-when-cross-origin`：默认值，同源时发送一个完整的 URL，只有在同样的安全等级（HTTPS→HTTPS）时才会发送 Referrer；
+  - `unsafe-url`：Referrer 会包含 Origin 和 Path。
+
+- `type`：指定了代码的类型
+  - 未设置 / 空值 / JavaScript MIME type：经典代码，此时最好省略 `type`，而不是设置一个 MIME type（比如 `application/javascript` 等，他们大多已废弃或非标准）；
+  - `module`：会被当做 JavaScript Module，里面的代码会被延迟到 HTML 解析完之后执行；
+  - `importmap`：表明代码包含了一个 Import Map。Import Map 是一个开发者可以用来控制浏览器如何解析引入 JavaScript 模组时的模组说明符的 JSON 对象。
+
+- `blocking`：说明一些操作需要在获取该代码时被阻塞。
+  - `render`：渲染应该被阻塞。
+
+
 # Basic Syntax
 
 ## 表达式
@@ -966,6 +1005,7 @@ void 表达式或语句
 <!-- 也可以用 -->
 <a href="javascript:void(console.log('hi'))">点击</a>
 
+
 <!-- 或者 -->
 <a href="javascript:;">点击</a>
 ```
@@ -1509,7 +1549,7 @@ arr.reduce((result, item) =>
 
 # Function
 
-## 定义一个函数
+## Define a Function
 
 ### 具名函数
 
@@ -1546,40 +1586,6 @@ let a = new Function()
 x => ({ name: '...' }) // 如果要返回对象，就要加圆括号
 ```
 
-### 函数提升
-
-函数可以先使用再声明，因为 function 会跑到最前面
-
-但是 `let fn = function(){}` 不是函数提升，他不能先使用再声明，因为这句话是赋值，右边的匿名函数不会提升
-
-## 作用域
-
-- **全局变量与局部变量**：在 **顶级作用域** 声明的变量是全局变量（比如 window 上的变量是全局变量）；其他的都是局部变量
-- **就近原则**：如果有多个作用域有同名变量 `a`，那么查找 `a` 的声明时，就向上取最近的作用域
-- **作用域的确定与函数的执行无关（JavaScript 的作用域为静态作用域），但变量的值在函数执行的时候才能确定**
-
-### 闭包
-
-> 函数用到了外部的变量，则函数+这个变量=闭包，作用域遵循就近原则
-
-闭包的作用：隐藏局部变量，暴露操作函数
-
-```js
-const createAdd = () => {
-  let n = 0
-  return () => {
-    n += 1
-    console.log(n)
-  }
-}
-
-const add = createAdd()
-add() // 1
-add() // 2
-```
-
-闭包的缺点：容易内存泄露。注意，虽然闭包并不会造成内存泄露，真实原因是 JS 引擎的实现有问题。
-
 ## 参数
 
 ### 参数传递
@@ -1598,12 +1604,12 @@ add() // 2
 
 ```js
 function add(x) {
-	return x + arguments[1]
+  return x + arguments[1]
 }
 add(1, 2) // 3
 
 function add(x, y, z) {
-	return x + y
+  return x + y
 }
 add(3, 4) // 7
 ```
@@ -1619,7 +1625,7 @@ add(3, 4) // 7
 - 递归很容易把栈压满：爆栈
 - 调用栈最长有多少？Chrome 12578；Firefox 26773；Node 12536
 
-## this 和 arguments
+## this & arguments
 
 > 关于 this 更多的内容可以看看这篇文章—— [再看 this](https://hais-teatime.com/post/2019-12-24-this/)。
 
@@ -1686,6 +1692,323 @@ fn.call( {name:'hai'} ) // window
 ```js
 +/-/1*/! function (){ var a = 2; console.log(a) } ()
 // 声明了一个全局函数，立即调用
+```
+
+# Execution Context
+
+[JavaScript Execution Context](https://www.freecodecamp.org/news/execution-context-how-javascript-works-behind-the-scenes/)
+
+> 当浏览器遇到 `<script>` 标签或包含 JavaScript 的属性（比如 `onclick`）的时候，会把这些 JavaScript 代码交给 JavaScript Engine。JavaScript Engine 随即创建一个执行 JavaScript 代码的环境，被称为执行上下文（Execution Context）。
+
+执行上下文有两种：
+
+- **全局执行上下文（Global Execution Context, GEC）**。基本的、默认的执行上下文，所有不在函数里面的代码都在这里运行。对于所有的 JavaScript 文件，只有产生一个 GEC。
+- **函数执行上下文（Function Execution Context, FEC）**。当函数被调用的时候，JavaScript Engine 会在 GEC 中为每一个函数创建一个 FEC。
+
+## Creation
+
+EC 会与与一个对象相关联，该对象被称为 Execution Context Object (ECO)。
+
+EC 的创建被分为三个阶段，在这三个阶段中，ECO 上面的属性会被逐步定义。
+
+### Creation of the Variable Object (VO)
+
+> 变量对象（Variable Object, VO）是 EC 内部的 Object-Like 容器，他存储了 EC 中的变量和函数定义。
+
+在 GEC 中，每一个用 `var` 声明的变量都会有一个对应的属性在 VO 中（这个属性指向那个变量），并且值为 `undefined`。
+
+同样，每一个函数也会有一个对应的属性在 VO 中（属性指向那个函数），并且函数会被存储在内存中，这意味着函数声明的时候就已经在 VO 中是可访问的了。
+
+*FEC 不会创建 VO（存疑）*，而会创建一个 Array-Like 对象，称为 `argument`，该对象包含了所有需要提供给函数的参数。
+
+这个在执行代码之前的，存储变量和函数声明的过程被称为 **提升（Hoisting）**。
+
+#### Hoisting
+
+> JavaScript 中的函数和变量会被提升
+
+##### Function Hoisting
+
+函数提升使得在 JavaScript 中可以先调用函数，再进行定义：
+
+```js
+getAge() // 'called'
+function getAge() { console.log('called') }
+```
+
+##### Variable Hoisting
+
+使用 `var` 声明的变量会被存到当前 EC 的 VO 中，并且初始值为 `undefiend`。因此，与函数不同，如果在赋值之前使用变量，会得到 `undefined`：
+
+```js
+console.log(greetings) // condefined
+var greetings = 'Hi!'
+```
+
+##### Ground Rules of Hoisting
+
+提升只对函数定义有用，对函数表达式无效，比如按照下面的方式定义，函数不会被提升：
+
+```js
+getAge() // TypeError: getAge is not a function
+var getAge = function() { console.log('called') }
+```
+
+使用 `let` 和 `const` 定义的变量不会被提升，在定义他们之前调用，会得到 `ReferenceError`。
+
+### Creation of the Scope Chain
+
+> VO 创建完毕之后，会创建 **作用域链 (Scope Chain)**。作用域决定了一片代码如何被另一片代码访问。
+
+作用域解决了这些问题：
+
+- 一片代码从哪里可以被访问？从哪里不能被访问？
+- 什么可以访问他？什么不能访问？
+
+每个 FEC 都会创建自己的作用域。在其中，他定义的函数和变量可以通过 **作用域规则（Scoping）** 来访问。
+
+**词法作用域规则（Lexical Scoping）**：当个函数定义在另一个函数中，里面的函数可以访问定义在外面函数的变量。作用域的概念带来了 **闭包（Closure）** 现象。
+
+**作用域链（Scope Chain）**：JavaScript Engine 从最里面的 EC 的作用域向外查找。
+
+### Setting "this"
+
+> JavaScript 中的 `this` 表明了 EC 属于谁。
+
+#### "this" in GEC
+
+GEC 中的 `this` 指向全局对象，即 `window`，因此用 `var` 声明的函数会被绑定到 `window` 上：
+
+```js
+var occupation = "Frontend Developer"; 
+function addOne(x) { 
+  console.log(x + 1) 
+}
+
+// 与下面的代码类似
+window.occupation = "Frontend Developer"; 
+window.addOne = (x) => { 
+  console.log(x + 1)
+};
+```
+
+#### "this" in FEC
+
+FEC 中没有创建 `this` 对象，他内部的 `this` 会访问到 **函数定义的环境**。
+
+比如 GEC 中定义的函数中的 `this` 指向 `window`：
+
+```js
+var msg = "I will rule the world!"; 
+function printMsg() { 
+    console.log(this.msg); 
+} 
+printMsg(); // logs "I will rule the world!" to the console.
+```
+
+对象中定义的则会指向对象，需要通过 `theObject.thePropertyOrMethodDefinedInIt` 这样来引用：
+
+```js
+var msg = "I will rule the world!"; 
+const Victor = {
+    msg: "Victor will rule the world!", 
+    printMsg() { console.log(this.msg) }, 
+}; 
+Victor.printMsg(); // logs "Victor will rule the world!" to the console.
+const x = Victor.printMsg;
+x(); // logs "I will rule the world!" to the console.
+```
+
+## Execution
+
+JavaScript Engine 再一次读取当前 EC 的代码，并更新其中的变量在 VO 中的值。然后代码被解析器解析，转移为机器码，然后执行。
+
+### Execution Stack
+
+> **执行栈** 又称 **调用栈（Call Stack）**，用于跟踪代码生命周期中创建的所有的 EC。
+>
+> JavaScript 是单线程语言，因此他一次只能执行一个任务，由将要被执行的 EC 堆起来的栈，就被称为 **执行栈**。
+
+当代码被加载到浏览器之后，GEC 被作为默认 EC 创建出来，并被放到 ES 的底部。
+
+当函数被调用的时候，会创建一个新的 FEC，并放到 ES 的顶部。
+
+ES 顶部的 EC 被称为活动 EC，他总是会被 JS Engine 最先执行。
+
+当活动 EC 的所有代码都执行完毕，JS Engine 将其出栈，并将栈顶指向下一个 EC。
+
+#### Example
+
+```js
+var name = "Victor";
+function first() {
+  var a = "Hi!";
+  second();
+  console.log(`${a} ${name}`);
+}
+function second() {
+  var b = "Hey!";
+  third();
+  console.log(`${b} ${name}`);
+}
+function third() {
+  var c = "Hello!";
+  console.log(`${c} ${name}`);
+}
+first();
+```
+
+最开始，会创建一个 GEC 放到栈底：
+
+```text
+[GEC]
+```
+
+`name` `first` `second` `third` 都会放到 GEC 的 VO 中。
+
+当 JS Engine 遇到 `first` 函数调用的时候，会创建一个新的 FEC，并推入栈中：
+
+```text
+[FEC: frist]
+[GEC]
+```
+
+`a` 保存在 FEC 中。然后 `second` 函数被调用，`first` 函数的执行会被暂停，直到 `second` 执行完毕，然后一个新的 FEC 又被推入栈中：
+
+```text
+[FEC: second]
+[FEC: frist]
+[GEC]
+```
+
+`b` 保存在 `second` 的 FEC 中。然后 `third` 被调用，又推一个 FEC 进入 ES：
+
+```text
+[FEC: third]
+[FEC: second]
+[FEC: frist]
+[GEC]
+```
+
+ `c` 保存在 `third` 的 FEC 中。
+
+然后 `third` 执行完毕，`return`，他的 FEC 出栈，继续执行 `second`。以此类推，直到所有代码执行完毕，GEC 出栈。
+
+# Scope & Closures
+
+## Scope
+
+- **静态作用域 / 词法作用域（Static Scope / Lexical Scope）**：JavaScript 的作用域为静态作用域（也称词法作用域），作用域的确定与函数的执行无关。（但变量的值在函数执行的时候才能确定）
+
+- **就近原则**：如果有多个作用域有同名变量 `a`，那么查找 `a` 的声明时，就向上取最近的作用域
+
+- **块级作用域与函数作用域**：
+
+  - `let` `const` 是 **块级作用域**，他们只在同一个代码块 `{}` 内可访问；
+  - `var` 是 **函数作用域** 。
+
+- **全局作用域与模块作用域**：
+
+  - 对于 `let` 和 `const` 来说，全局作用域的变量需要在代码的最上方定义；
+    ```html
+    <script>
+      const foo = "foo";
+    </script>
+    <script>
+      console.log(foo); // "foo"
+      function bar() {
+        if (true) {
+          console.log(foo);
+        }
+      }
+      bar(); // "foo"
+    </script>
+    ```
+
+  - 每个模块（Module）都有自己的作用域，只能在模块内访问。
+    ```html
+    <script type="module">
+      const foo = "foo";
+    </script>
+    <script>
+      console.log(foo); // Uncaught ReferenceError: foo is not defined
+    </script>
+    ```
+
+  - 对于 `var` 来说，由于变量提升，`var` 会绑定到 `window` 上。但定义在 Module 内部的 `var` 并不会绑定到 `window` 上，也不能被 Module 外部访问。
+
+### Closures
+
+> 函数用到了外部的变量，则函数+这个变量=闭包（闭包维持了这个变量的引用，使得函数可以访问他外部的变量），作用域遵循就近原则
+
+闭包的作用：隐藏局部变量，暴露操作函数
+
+闭包的缺点：容易内存泄露。注意，虽然闭包并不会造成内存泄露，真实原因是 JS 引擎的实现有问题。
+
+#### Examples
+
+回调函数
+
+```js
+function getCarsByMake(make) {
+  // filter 的回调函数引用了外部的 make
+  return cars.filter(x => x.make === make)
+}
+```
+
+保存状态
+
+```js
+function makePerson(name) {
+  let _name = name
+  return {
+    setName: (newName) => (_name = newName),
+    getName: () => _name,
+  }
+}
+const me = makePerson('Zach')
+console.log(me.getName())   // 'Zach'
+me.setName('Zach Snoek')
+console.log(me.getName())   // 'Zach Snoek'
+```
+
+私有方法
+
+```js
+function makePerson(name) {
+  let _name = name
+  function privateSetName(newName) {
+    _name = newName
+  }
+  return {
+    setName: (newName) => privateSetName(newName),
+    getName: () => _name,
+  }
+}
+```
+
+React Event Handlers
+
+```jsx
+function Counter({ initialCount }) {
+  const [count, setCount] = React.useState(initialCount);
+  return (
+    <>
+      <button onClick={() => setCount(initialCount)}>Reset</button>
+      <button onClick={() => setCount((prevCount) => prevCount - 1)}>
+        -
+      </button>
+      <button onClick={() => setCount((prevCount) => prevCount + 1)}>
+        +
+      </button>
+      <button onClick={() => alert(count)}>Show count</button>
+    </>
+  );
+}
+
+function App() {
+  return <Counter initialCount={0} />;
+}
 ```
 
 # JavaScript World
@@ -2122,11 +2445,11 @@ JSON 中，不支持函数和变量
 ```js
 let object
 try {
-	object = JSON.parse(`{'name':'harvey'}`)
+  object = JSON.parse(`{'name':'harvey'}`)
 } catch (error) {
-	console.log('出错了，错误详情是：')
-	console.log(error)
-	object = {'name': 'no name'}
+  console.log('出错了，错误详情是：')
+  console.log(error)
+  object = {'name': 'no name'}
 }
 console.log(object)
 ```
@@ -2998,9 +3321,9 @@ const throttle = (fn, interval = 300) => {
   let canRun = true
   return function() {
     if (!canRun) return
+    fn.apply(this, arguments)
     canRun = false
     setTimeout(() => {
-      fn.apply(this, arguments)
       canRun = true
     }, interval)
   }
@@ -3575,13 +3898,34 @@ console.log(parseUrl("http://www.xiyanghui.com/product/list?id=123456&sort=disco
 
 浏览器中的 EventLoop 有 2 个阶段：**宏任务** 和 **微任务**
 
-1. 第一个 **宏任务**：整段脚本。执行过程中的 **同步代码** 直接执行，**宏任务** 进入宏任务队列，**微任务** 进入微任务队列
+1.  **第一个宏任务**：整段脚本。执行过程中的 **同步代码** 直接执行，**宏任务** 进入宏任务队列，**微任务** 进入微任务队列
 2. 当前 **宏任务** 执行完出队，检查 **微任务** 队列，若有则依次执行，直至微任务队列为空
-3. 执行浏览器 **UI 线程** 的渲染工作
+3. 微任务执行完成之后，执行浏览器 **UI 线程** 的渲染工作
 4. 检查是否有 **Web worker** 任务，有则执行
 5. 执行队首新的 **宏任务**，回到 2 循环至宏任务队列为空
 
+宏任务有：
+
+- 用户交互事件（点击、滚动、鼠标移动等）
+- 网络请求完成
+- 计时器
+- 页面生命周期
+- 浏览器自身的事件（浏览器窗口大小变化、浏览器关闭事件）
+- JavaScript 代码执行（如果任务是通过函数调用产生的，那么函数本身也会作为宏任务）
+
+微任务：
+
+- Promise
+
+注意：
+
+1. 任务执行过程中，**浏览器不会渲染**（如果执行时间太长，有的浏览器会提示说“页面无响应”）
+2. 微任务会在其他所有的宏任务执行之前执行，包括用户事件。这保证了浏览器环境在各个微任务执行的时候保持一致（鼠标指针不会发生变化、没有新的网络数据）
+3. 可以通过 `queueMicrotask` 手动将一些任务移动到微任务队列中。
+
 #### 一些例子
+
+##### 下列代码的打印顺序
 
 ```js
 async function async1() {
@@ -3605,6 +3949,97 @@ new Promise(function(resolve) {
 })
 console.log('script end') // 5
 ```
+
+##### 拆分复杂的计算任务
+
+比如语法高亮就是 CPU 密集型的复杂计算，需要分析代码、创建高亮元素、加进 document。下面用一个遍历来模拟这个计算过程：
+
+```js
+let i = 0;
+let start = Date.now();
+function count() {
+  // do a heavy job
+  for (let j = 0; j < 1e9; j++) {
+    i++;
+  }
+  alert("Done in " + (Date.now() - start) + 'ms');
+}
+count();
+```
+
+可以把他用 `setTimeout` 拆分到下次执行，让别的任务（比如 `onclick` 有时间进行）：
+
+```js
+let i = 0;
+let start = Date.now();
+function count() {
+  // do a piece of the heavy job (*)
+  do {
+    i++;
+  } while (i % 1e6 != 0);
+  if (i == 1e9) {
+    alert("Done in " + (Date.now() - start) + 'ms');
+  } else {
+    setTimeout(count); // schedule the new call (**)
+  }
+}
+count();
+```
+
+#####  进度条
+
+如果我们按照下面这样写代码，是看不到进度条变化的，因为他会在所有的代码执行完成之后才会更新 DOM：
+
+```html
+<div id="progress"></div>
+<script>
+  function count() {
+    for (let i = 0; i < 1e6; i++) {
+      i++;
+      progress.innerHTML = i;
+    }
+  }
+  count();
+</script>
+```
+
+得这样写才行：
+
+```html
+<div id="progress"></div>
+<script>
+  let i = 0;
+  function count() {
+    // do a piece of the heavy job (*)
+    do {
+      i++;
+      progress.innerHTML = i;
+    } while (i % 1e3 != 0);
+    if (i < 1e7) {
+      setTimeout(count);
+    }
+  }
+  count();
+</script>
+```
+
+##### 延迟用户事件到冒泡完成之后
+
+可以通过 `setTimout` 延迟发送一个自定义事件，这样他就会在本轮事件冒泡结束之后进行了。
+
+```js
+menu.onclick = function() {
+  // ...
+  // create a custom event with the clicked menu item data
+  let customEvent = new CustomEvent("menu-open", {
+    bubbles: true
+  });
+  // dispatch the custom event asynchronously
+  setTimeout(() => menu.dispatchEvent(customEvent));
+};
+```
+
+
 
 ### Node.js 中的 EventLoop
 

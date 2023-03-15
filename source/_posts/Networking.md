@@ -155,27 +155,28 @@ response.write('内容') // 内容可以追加
 - **Referer**：一般会带上此字段，告诉服务器是从哪个页面链接过来的
 - **User-Agent**：告诉 HTTP 服务器，客户端使用的操作系统和浏览器名称和版本
 - **Content-Type**：说明了报文体对象的媒体类型
-    **text/html**：HTML
-    **text/plain**：纯文本
-    **text/xml**：XML
-    **image/gif**：GIF图像
-    **image/jpeg**：JPG图像
-    **image/png**：PNG图像
-    **application/xhtml+xml**：XHTML
-    **application/xml**：XML
-    **application/atom+xml**：Atom XML
-    **application/json**：JSON
-    **application/pdf**：PDF
-    **application/msword**：WORD 
-    **application/octet-stream**：二进制数据流
-    **application/x-www-form-urlencoded**：表单提交
+    - **text/html**：HTML
+    - **text/plain**：纯文本
+    - **text/xml**：XML
+    - **image/gif**：GIF图像
+    - **image/jpeg**：JPG图像
+    - **image/png**：PNG图像
+    - **application/xhtml+xml**：XHTML
+    - **application/xml**：XML
+    - **application/atom+xml**：Atom XML
+    - **application/json**：JSON
+    - **application/pdf**：PDF
+    - **application/msword**：WORD 
+    - **application/octet-stream**：二进制数据流
+    - **application/x-www-form-urlencoded**：表单提交
+    
 
 #### HTTP 请求方法
 
 - **GET**：请求访问已被 URI 识别的资源
     - 提交的内容是 URL 的一部分，长度限制、安全性
 - **POST**：与 GET 功能类似，一般用来传输实体的主体，主要目的是提交数据，不是获取响应主体的内容
-- **PUT**：与 POST 最大的不同是，PUT 是幂等（不管重复多少次操作，都是实现相同的结果）的，POST 是不幂等的，因此一般创建对象用 POST，更新对象用 PUT，但是 PUT 没有验证机制，有安全性问题，所以一般还是用 POST
+- **PUT**：与 POST 最大的不同是，PUT 是幂等（不管重复多少次操作，都是实现相同的结果）的，POST 是不幂等的，因此一般创建对象用 POST，更新对象用 PUT
 - **HEAD**：类似于GET，只不过返回的响应中没有具体的内容，用于获取报头（测试超链接的有效性）
 - **DELETE**：请求删除资源，与 PUT 相反，并且没有验证机制，因此现在一般不用
 - **OPTIONS**：用来查询针对请求 URI 指定的资源支持的方法

@@ -130,11 +130,11 @@ float: left | right;
 
 ### 如何形成 BFC
 
-1. `float: left`
-2. `position: absolute`
-3. `overflow: hidden`，经常使用
-4. `display: inline-block`
-5. `display: table-cell`
+1. 根元素
+2. `float: left`
+3. `position: absolute / fixed`
+4. `overflow !== visible`，经常使用
+5. `display: inline-block / table`
 
 # Layout
 
