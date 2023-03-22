@@ -103,7 +103,7 @@ department(depart_name, building, budget);
 
 基本操作符：
 
-| 含义               | 操作符$$     |
+| 含义               | 操作符       |
 | ------------------ | ------------ |
 | Select             | $\sigma$     |
 | Project            | $\Pi$        |
