@@ -6574,23 +6574,24 @@ variable \larr E
 <pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">ALTER</span> <span class="token keyword">TABLE</span> table_name <span class="token keyword">ADD</span> <span class="token keyword">constraint</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <h2 id="constraints-on-a-single-relation">Constraints on a Single Relation</h2>
 <ul>
-<li><p><code>PRIMARY KEY (A1, A2,..., An)</code> 指定主键。</p></li>
-<li><p><code>NOT NULL</code> 表示某个属性不能为 <code>NULL</code>。</p></li>
-<li><p><code>UNIQUE (A1, A2, ... Am)</code> 指定这些属性形成了一个 Candidate Key，注意 Candidate Keys 是可以为 NULL 的（Primary Key 不能）。</p></li>
-<li><p><code>CHECK (P)</code></p>
+<li><p>主键约束：<code>PRIMARY KEY (A1, A2,..., An)</code> 指定主键。</p></li>
+<li><p>非空约束：<code>NOT NULL</code> 表示某个属性不能为 <code>NULL</code>。</p></li>
+<li><p>唯一约束：<code>UNIQUE (A1, A2, ... Am)</code> 指定这些属性形成了一个 Candidate Key，注意 Candidate Keys 是可以为 NULL 的（Primary Key 不能）。</p></li>
+<li><p>检查约束：<code>CHECK (P)</code></p>
 <pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> section
   <span class="token punctuation">(</span>course_id <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
    semester <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
    <span class="token keyword">CHECK</span> <span class="token punctuation">(</span>semester <span class="token operator">in</span> <span class="token punctuation">(</span><span class="token string">'Fall'</span><span class="token punctuation">,</span> <span class="token string">'Winter'</span><span class="token punctuation">,</span> <span class="token string">'Spring'</span><span class="token punctuation">,</span> <span class="token string">'Summer'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></li>
 </ul>
 <h2 id="referential-integrity">Referential Integrity</h2>
-<p>确保出现在一个表中的</p>
-<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span> <span class="token punctuation">(</span>A1<span class="token punctuation">,</span> A2<span class="token punctuation">,</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">,</span> An<span class="token punctuation">)</span>
-<span class="token keyword">FOREIGN</span> <span class="token keyword">KEY</span> <span class="token punctuation">(</span>A1<span class="token punctuation">,</span> A2<span class="token punctuation">,</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">,</span> An<span class="token punctuation">)</span> <span class="token keyword">REFERENCES</span> r
-<span class="token operator">NOT</span> <span class="token boolean">NULL</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>外键约束：外键是指一个表中的一个字段，它引用另一个表中的主键。外键约束确保数据的引用完整性，防止引用不存在的记录。</p>
+<p>A 是一组属性，R 和 S 是两个表，他们都含有 A，并且 A 是 S 的主键。如果 R 中出现的所有 A 都在 S 中出现，那么 A 称为 R 的外键。</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">FOREIGN</span> <span class="token keyword">KEY</span> <span class="token punctuation">(</span>A1<span class="token punctuation">,</span> A2<span class="token punctuation">,</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">,</span> An<span class="token punctuation">)</span> <span class="token keyword">REFERENCES</span> r<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>比如：</p>
-<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h2 id="section"></h2>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">FOREIGN</span> <span class="token keyword">KEY</span> <span class="token punctuation">(</span>dept_name<span class="token punctuation">)</span> <span class="token keyword">REFERENCES</span> department<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>默认情况下，外键引用了另外一个表的主键。SQL 也允许具体指定哪些属性：</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">FOREIGN</span> <span class="token keyword">KEY</span> <span class="token punctuation">(</span>dept_name<span class="token punctuation">)</span> <span class="token keyword">REFERENCES</span> <span class="token punctuation">(</span>dept_name<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>正常情况下，如果外键约束被违反了，此次操作会被拒绝。我们可以用 `CASCADE</p>
 <h1 id="quick-start">Quick Start</h1>
 <h2 id="创建数据库">创建数据库</h2>
 <p><a href="https://dev.mysql.com/downloads/mysql/">下载 MySQL</a>、<a href="https://dev.mysql.com/downloads/workbench">下载 MySQL WorkBench</a></p>
