@@ -153,7 +153,7 @@ $$
 \Pi_{name}(\sigma_{dept\_name="Physics"}(instrucotr))
 $$
 
-## Catersian Product
+## Cartesian Product
 
 > 将两个表的数据组合起来
 
@@ -188,6 +188,8 @@ r \cup s
 $$
 
 $r, s$ 必须有同样多的属性，并且属性的列必须一一对应，比如第二列与第二列类型相同，比如：
+
+重复的行会被删掉。
 $$
 \Pi_{source\_id}(\sigma_{semester="Fall" \and year=2017}(section)) \cup \Pi_{source\_id}(\sigma_{semester="Spring" \and year=2018}(section))
 $$
@@ -250,64 +252,225 @@ CREATE TABLE instructor (
   salary    numeric(8,2));
 ```
 
-### Integrity Constraints
-
-```sql
-PRIMARY KEY (A1, A2,..., An)
-FOREIGN KEY (A1, A2,..., An) REFERENCES r
-NOT NULL
-```
-
-比如：
-
-```sql
-CREATE TABLE instructor (
-  ID          char(5),
-  name        varchar(20) NOT NULL,
-  dept_name   varchar(20),
-  salary      numeric(8,2),
-  PRIMARY KEY (ID),
-  FOREIGN KEY (dept_name) REFERENCES department(dept_name));
-```
-
 ## Upate Table
 
+### Insert
+
 ```sql
--- Insert
 INSERT INTO instructor
 VALUES ('10211', 'Smith', 'Biology', 66000);
+
 INSERT INTO instructor (ID, name, dept_name)
 VALUES ('10211', 'Smith', 'Biology');
+```
 
--- Delete
+### Delete
+
+```sql
 DELETE FROM student [WHERE Calause];
+
 DELETE FROM instructor
-WHERE dept_name in (SELECT dept_name
+WHERE dept_name IN (SELECT dept_name
                     FROM department
                     WHERE building = 'Watson');
+
 -- 每当删除一个之后，avg 就会变化，所以要提前存好最开始的 avg
 DECLARE @avg_salary numeric(8, 2)
 SET @avg_salary = (SELECT AVG(salary) FROM instructor)
+
 DELETE FROM instructor
 WHERE salary < @avg_salary;
+```
 
--- Update
+### Update
+
+```sql
 UPDATE instructor
 SET salary = salary * 1.05
 WHERE salary < 70000;
+
 UPDATE instructor
 SET salary = CASE
                WHEN salary <= 10000 THEN salray * 1.05
                ELSE salary * 1.03
              END;
+```
 
--- Drop
+### Drop
+
+```sql
 DROP TABLE student;
+```
 
--- Alter (Add/Drop an attribute to a relation)
+### Alter
+
+> Add/Drop an attribute to a relation
+
+```sql
 ALTER TABLE student ADD age numeric(3,0);
+
 ALTER TABLE student DROP age;
 ```
+
+### Join
+
+Join 实际上就是 Catersian Product，但对输入的数据有些条件，对也会选择性地输出一些属性。
+
+![JOIN](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/sql-join.png)
+
+#### Natrual Join
+
+会匹配所有的共同属性，并且每个共同属性只保留一列。
+
+![Natural Join](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/DS-NaturalJoin.png)
+
+列出学生和他们参与的课程的 course_id：
+
+```sql
+SELECT name, course_id
+FROM student, takes
+WHERE student.ID = takes.ID;
+```
+
+$$
+\Pi_{name, course_id}(\sigma_{student.id=teaches.id}(student \times takes))
+$$
+
+可以使用 `NATRUAL JOIN` 来写：
+
+```sql
+SELECT A1, A2, ... An
+FROM r1 NATRUAL JOIN r2 NATRUAL JOIN ... NATRUAL JOIN rn
+WHERE P (optional);
+```
+
+```sql
+SELECT name, course_id
+FROM student NATRUAL JOIN takes;
+```
+
+也可以用 `INNER JOIN` 来写，但是需要用 `ON` 来指定怎样匹配：
+
+```sql
+SELECT name, course_id
+FROM student, INNER JOIN takes
+ON student.ID = takes.ID;
+```
+
+$$
+\Pi_{name, course_id}(student \Join_{student.id=takes.id} takes)
+$$
+
+注意有的属性可能只是名字相同，但并没有实际的联系，这时 `NATURAL JOIN` 就会把他们错误地连接起来，比如：
+
+`student(ID, dept_name), takes(ID, course_id), course(course_id, dept_name)` 中列出所有的 student.name 以及他们参与的 course.title：
+
+```sql
+SELECT name, title
+FROM student NATRUAL JOIN takes, course
+WHERE takes.course_id = course.course_id;
+```
+
+下面的写法是错误的：
+
+```sql
+SELECT name, title
+FROM student NATRUAL JOIN takes NATRUAL JOIN course;
+```
+
+因为 student 中有 `dept_name`，course 中也有 `dept_name`，但其含义是不一样的：student 中的指的是 student 的 dept，course 中的指的是 course 的。
+
+如果这样写的话，`NATRUAL JOIN` 会错误地将两个 `dept_name` 配对起来，从而只保留 student.dept_name 和 course.dept_name 相同的行。
+
+可以通过 `JOIN`（大部分数据库系统中 `JOIN` 和 `INNER JOIN` 是等价的） 和 `USING` 来指明需要相同的列，来避免歧义：
+
+```sql
+SELECT name, title
+FROM (student NATRUAL JOIN takes) JOIN course USING(course_id)
+```
+
+#### Inner Join
+
+就是 Relational Algebra 中的 Join 运算。
+
+![Inner Join](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/DS-InnerJoin.png)
+
+`INNER JOIN` 和 `NATRUAL JOIN` 的不同在于：
+
+- `NATRUAL JOIN` 会自动匹配所有的共同属性，并且只保留一个共同属性
+- `INNER JOIN` 需要用户指明需要匹配的属性，并且会保留所有的共同属性（包括指定的属性）
+
+此外，注意使用 `NATRUAL/INNER JOIN` 的关系的先后顺序是有影响的，写在左边表的就会出现在结果的左边
+
+#### Outer Join
+
+Natrual Join 和 Inner Join 最后得到的实际上是 **交集**，比如 student 中有 ID 为 70555 的行，但 takes 中没有，如果将他们 Inner Join on ID，则会忽略该行。
+
+Outer Join 则不会忽略这些只有一个表中有，而另一个表中没有的行，具体有三种 Outer Join：LEFT、RIGHT、FULL。
+
+下面用这个例子来讲解三种 Outer Join，以及他们与 Inner Join 的不同：
+
+**Course**
+
+| course_id  | title       | dept_name  | credits |
+| ---------- | ----------- | ---------- | ------- |
+| BIO-301    | Genetics    | Biology    | 4       |
+| CS-190     | Game Design | Comp. Sci. | 4       |
+| **CS-315** | Robotics    | Comp. Sci. | 3       |
+
+**Prereq**
+
+| course_id  | prereq_id |
+| ---------- | --------- |
+| BIO-301    | BIO-101   |
+| CS-190     | CS-101    |
+| **CS-347** | CS-101    |
+
+注意上述表中，Course 中没有 course_id 为 CS-347 的项，Prereq 中没有 course_id 为 CS-315 的项。
+
+**Course NATRAL JOIN Prereq**
+
+| course_id | title       | dept_name  | credits | prereq_id |
+| --------- | ----------- | ---------- | ------- | --------- |
+| BIO-301   | Genetics    | Biology    | 4       | BIO-101   |
+| CS-190    | Game Design | Comp. Sci. | 4       | CS-101    |
+
+##### Left Outer Join
+
+> Relational Algebra 中可以使用符号 ⟕ 表示
+
+Left Outer Join 保证了左边的表是完整的：
+
+| course_id  | title        | dept_name      | credits | prereq_id |
+| ---------- | ------------ | -------------- | ------- | --------- |
+| BIO-301    | Genetics     | Biology        | 4       | BIO-101   |
+| CS-190     | Game Design  | Comp. Sci.     | 4       | CS-101    |
+| **CS-315** | **Robotics** | **Comp. Sci.** | **3**   | **NULL**  |
+
+##### Right Outer Join
+
+> Relational Algebra 中可以使用符号 ⟖ 表示
+
+Right Outer Join 保证了右边的表是完整的：
+
+| course_id  | title       | dept_name  | credits  | prereq_id  |
+| ---------- | ----------- | ---------- | -------- | ---------- |
+| BIO-301    | Genetics    | Biology    | 4        | BIO-101    |
+| CS-190     | Game Design | Comp. Sci. | 4        | CS-101     |
+| **CS-347** | **NULL**    | **NULL**   | **NULL** | **CS-101** |
+
+##### Full Outer Join
+
+> Relational Algebra 中可以使用符号 ⟗ 表示
+
+Right Outer Join 保证了两个表的完整性，*R* ⟗ *S* = (*R* ⟕ *S*) ∪ (*R* ⟖ *S*)：
+
+| course_id  | title        | dept_name      | credits  | prereq_id  |
+| ---------- | ------------ | -------------- | -------- | ---------- |
+| BIO-301    | Genetics     | Biology        | 4        | BIO-101    |
+| CS-190     | Game Design  | Comp. Sci.     | 4        | CS-101     |
+| **CS-315** | **Robotics** | **Comp. Sci.** | **3**    | **NULL**   |
+| **CS-347** | **NULL**     | **NULL**       | **NULL** | **CS-101** |
 
 ## Query
 
@@ -350,7 +513,7 @@ FROM instructor;
 
 ### WHERE Clause
 
-可以在 `WHERE` 语句中使用逻辑运算符和比较运算符：
+可以在 `WHERE` 语句中使用逻辑运算符和比较运算符，`<>` 表示不等于：
 
 ```sql
 SELECT name
@@ -358,7 +521,7 @@ FROM instructor
 WHERE dept_name = 'Comp.Sci.' AND salary > 70000;
 ```
 
-此外还可以使用 `BETWEEN`：
+此外还可以使用 `BETWEEN`（两端都包含）：
 
 ```sql
 SELECT name
@@ -390,6 +553,18 @@ FROM instructor, teaches;
 SELECT *
 FROM Products, Categories
 WHERE Products.CategoryID = Categories.CategoryID;
+```
+
+### Rename Operation
+
+使用 `AS` 可以对关系（表）或者属性重命名：
+
+找到 Comp. Sci. 中所有的至少比一个 instructor 工资高的 instructor.name。
+
+```sql
+SELECT DISTINCT T.name
+FROM instructor AS T, instructor AS S
+WHERE T.salary > S.salray AND S.dept_name = 'Comp. Sci.'
 ```
 
 ### String Operation
@@ -673,7 +848,7 @@ WHERE avg_salary > 42000;
 
 ```sql
 WITH max_budget(value) AS
-        (SElECT MAX(budget) FROM department)
+  (SElECT MAX(budget) FROM department)
 SELECT department.name
 FROM department, max_budget
 WHERE department.budget = max_budget.value;
@@ -694,7 +869,134 @@ FROM dept_total, dept_total_avg
 WHERE dept_total.value > dept_total_avg.value;
 ```
 
+## View
 
+View 是给某人看的虚拟的表，通常可以用来对特定的用户隐藏一些特定的信息。
+
+### View Definition
+
+> 定义 View 并不是创建了一个新的表，而只是保存了这个表达式。
+
+```sql
+CREATE VIEW V as <query expression>
+```
+
+```sql
+CREATE VIEW faculty AS
+  SELECT ID, name, dept_name
+  FROM instructor;
+
+SELECT name
+FROM faculty
+WHERE dept_name = 'Biology'
+
+CREATE VIEW departments_total_salary(dept_name, total_salary) AS
+  SELECT dept_name, SUM(salary)
+  FROM instructor
+  GROUP BY dept_name;
+```
+
+View 可以用来定义另一个 View，于是形成了 View Chain，如果 View 依赖了自己，则称为递归。
+
+View Exapnsion：比如 View v1 可以写作 Expression e1，e1 中可能也使用了一个 View，将里面的 View 展开成 Expression 的过程称为   View Expansion。
+
+### Materialized View
+
+> 一些数据库系统允许将 View 的结果存下来，他们的结果存下来之后就不会改变了，这种 View 称为 Materialized View
+
+```sql
+CREATE MATERIALIZED VIEW faculty AS
+  SELECT ID, name, dept_name
+  FROM instructor;
+```
+
+### View Update
+
+他会将数据插入到原来的表中，比如：
+
+```sql
+CREATE VIEW faculty AS
+  SELECT ID, name, dept_name
+  FROM instructors;
+```
+
+```sql
+INSERT INTO faculty
+VALUES ('30765', 'Green', 'Music');
+```
+
+如果 instructors 中有更多的属性，比如 salary，那么可以：
+
+1. 拒绝这次操作；
+2. 将新行的 salary 设置为 NULL（更广泛使用）。
+
+```sql
+CREATE VIEW history_instructors AS
+  SELECT *
+  FROM instructors
+  WHERE dept_name = 'History';
+```
+
+如果我们往 hisoty_instructors 中插入 `('25566', 'Brown', 'Biology', 10000)`，那么 instructors 中会出现这行，而 history_instructors 中则不会。
+
+# Integrity Constraints
+
+完整性约束（比如 `PRIMARY KEY` `NOT NULL` 等）保证了数据的一致性，确保数据库里面的值是合法的。
+
+可以在创建数据库的时候设置：
+
+```sql
+CREATE TABLE instructor (
+  ID          char(5),
+  name        varchar(20) NOT NULL,
+  dept_name   varchar(20),
+  salary      numeric(8,2),
+  PRIMARY KEY (ID),
+  FOREIGN KEY (dept_name) REFERENCES department(dept_name));
+```
+
+也可以通过这样增加：
+
+```sql
+ALTER TABLE table_name ADD constraint;
+```
+
+## Constraints on a Single Relation
+
+- `PRIMARY KEY (A1, A2,..., An)` 指定主键。
+
+- `NOT NULL` 表示某个属性不能为 `NULL`。
+
+- `UNIQUE (A1, A2, ... Am)` 指定这些属性形成了一个 Candidate Key，注意 Candidate Keys 是可以为 NULL 的（Primary Key 不能）。
+
+- `CHECK (P)`
+
+  ```sql
+  CREATE TABLE section
+    (course_id varchar(8),
+     semester varchar(8),
+     CHECK (semester in ('Fall', 'Winter', 'Spring', 'Summer')))
+  ```
+
+## Referential Integrity
+
+确保出现在一个表中的
+
+
+
+```sql
+PRIMARY KEY (A1, A2,..., An)
+FOREIGN KEY (A1, A2,..., An) REFERENCES r
+NOT NULL
+```
+
+比如：
+
+```sql
+
+```
+
+##
 
 # Quick Start
 
@@ -702,7 +1004,7 @@ WHERE dept_total.value > dept_total_avg.value;
 
 [下载 MySQL](https://dev.mysql.com/downloads/mysql/)、[下载 MySQL WorkBench](https://dev.mysql.com/downloads/workbench)
 
-使用 Docker {% post_link Docker %}
+使用 Docker {% post_link Container %}
 
 ## 用 Node.js 连接数据库
 
@@ -739,98 +1041,6 @@ connection.end()
 ```
 
 # References
-
-## 常见的 SQL 命令
-
-### 操作记录
-
-```sql
--- 增
-INSERT INTO users (name, age, `password`) VALUES ('harvey', 20, 123);
-
--- 删
-DELETE FROM users WHERE name='harvey'
--- 一般采用软删除
-UPDATE users SET state='0' WHERE username='harvey'
-SELECT * FROM users WHERE state<>'0'
-
--- 改
-UPDATE users SET age=24 WHERE name='harvey'
--- You are using safe update mode and you tried to update a table without a WHERE that uses a KEY column.
-SET SQL_SAFE_UPDATES = 0
-
--- 查
-SELECT * FROM users LIMIT 10;
-SELECT id, name FROM users;
-SELECT * FROM users WHERE name='harvey' AND `password`='123';
-SELECT * FROM users WHERE name='harvey' OR `password`='123';
-SELECT * FROM users WHERE name LIKCE '%ve%' ORDER BY id DESC;
-```
-
-- 增：`INSERT INTO user (name, age) VALUES ('harvey', 20);`
-- 删：`DELETE FROM user WHERE name='harvey';`
-- 改：`UPDATE user SET age=24 WHERE name='harvey';`
-- 查：`SELECT * FROM user LIMIT 10;`
-
-#### 用 JOIN 将表连接起来
-
-有时候我们需要拆表、建立关联表等，这时候怎样将数据连起来查询呢？使用 JOIN。
-
-![JOIN](https://www.runoob.com/wp-content/uploads/2019/01/sql-join.png)
-
-##### INNER JOIN (JOIN)
-
-借助两个表中含义相同的列（table 1 中的 columnA、table2 中的 columnB），将两个表关联起来，但是只显示 columnA、columnB 两列中有交集的部分。
-
-```sql
-SELECT column_name(s)
-FROM table1
-INNER JOIN table2
-ON table1.columnA=table2.columnB;
-```
-
-例子可以看[这里](https://www.runoob.com/sql/sql-join-inner.html)
-
-##### LEFT JOIN (LEFT OUTER JOIN)
-
-借助两个表中含义相同的列（table 1 中的 columnA、table2 中的 columnB），将两个表关联起来，保证左边的表（table1，或者说 columnA）数据显示完整，不存在的记录设为 NULL。
-
-```sql
-SELECT column_name(s)
-FROM table1
-LEFT JOIN table2
-ON table1.columnA=table2.columnB;
-```
-
-例子可以看[这里](https://www.runoob.com/sql/sql-join-left.html)
-
-##### RIGHT JOIN (RIGHT OUTER JOIN)
-
-借助两个表中含义相同的列（table 1 中的 columnA、table2 中的 columnB），将两个表关联起来，保证右边的表（table2，或者说 columnB）数据显示完整，不存在的记录设为 NULL。
-
-```sql
-SELECT column_name(s)
-FROM table1
-RIGHT JOIN table2
-ON table1.columnA=table2.columnB;
-```
-
-例子可以看[这里](https://www.runoob.com/sql/sql-join-right.html)
-
-##### FULL JOIN (FULL OUTER JOIN)
-
-> MySQL 中不支持 FULL OUTER JOIN
-
-借助两个表中含义相同的列（table 1 中的 columnA、table2 中的 columnB），将两个表关联起来，保证两边的数据都完整，不存在的记录设为 NULL。
-
-```sql
-SELECT column_name(s)
-FROM table1
-FULL OUTER JOIN table2
-ON table1.columnA=table2.columnB;
-```
-
-例子可以看[这里](https://www.runoob.com/sql/sql-join-full.html)
 
 ## MySQL 的数据类型
 

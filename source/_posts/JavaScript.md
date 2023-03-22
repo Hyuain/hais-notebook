@@ -100,7 +100,7 @@ categories:
 
 # Basic Syntax
 
-## 表达式
+## Expressions
 
 - 表达式一般都有值，语句可能有也可能没有
 - 语句一般会改变环境（声明、赋值），逗号表示语句没完
@@ -147,9 +147,9 @@ for(let i = 0; i < 5; i++){
 { a:1 } // a 是一个 label，值是 1
 ```
 
-## 值
+## Values
 
-### 字符存储
+### Storage
 
 - 如何存数字？十进制转二进制，用十六进制（HEX）表示二进制
 - 如何存字符？转换为数字，48 号表示 0，65 号表示 A，97 号表示 a
@@ -157,7 +157,7 @@ for(let i = 0; i < 5; i++){
 - Unicode 已收录 13 万字符（大于 16 位），全世界通用，以后还会继续扩充；缺点：两个字节不够用了，至少要三个字节
 - UTF-8：通过变长的存法，减小容量
 
-### 8 种数据类型
+### 8 Data Types
 
 > 5 基 2 空 1 对象
 
@@ -394,7 +394,18 @@ null 通常表示即该处不应该有值，undefined 通常表示"缺少值"，
 
 {% endnote %}
 
-### 数据类型检测
+### Type Casting
+
+JavaScript 中的运算符会自带隐式类型转换，规则如下：
+
+- `-` `* ` `/` `%` 会穿换成数值后计算
+- `+`
+  - 数字 + 字符串 = 字符串，从左到右运算；+ 字符串 = 数字
+  - 数字 + 对象，`toPrimitive` `valueOf` `toString`
+  - 数字 + Boolean / `null` = 数字
+  - 数字 + `undefined` = `NaN`
+
+### Type Checking
 
 #### `typeof` `instanceof` `toString` 的比较
 
@@ -627,7 +638,7 @@ function is(x, y) {
 }
 ```
 
-### 3 种变量声明的方式
+### Variable Declaration
 
 #### var
 
@@ -804,7 +815,7 @@ console.log(new RegExp('\\n', 'g').toString());
 // "/\n/g"
 ```
 
-## 运算符
+## Operators
 
 ### 算术运算符
 
@@ -1169,7 +1180,7 @@ getGenPromise(g).then(data1 => {
 
 # Object
 
-## 创建对象
+## Creation
 
 对象有以下这样几种写法：
 
@@ -1199,9 +1210,9 @@ console.log({
 - 奇怪的属性名： `1e2` 会变成 `'100'`， `.234` 会变成 `'0.234'`， `0xFF` 会变成 `'255'`
 - 变量也可以作为属性名，比如：`let obj = { [p1]: 'harvey' }`，这样就会用 `p1` 里面的值了，**中括号里面的东西都会先求值**
 
-## 对象的属性
+## Properties
 
-### 隐藏的属性
+### Hidden Properties
 
 - **每一个** 对象都有一个隐藏属性 `__proto__`，这个属性存着 **一个对象的地址**，这个对象包含了这类对象（普通对象、数组、函数等）的 **共有属性**
 
@@ -1211,7 +1222,7 @@ console.log({
 
 - 比如 `obj = {}`，他的原型的地址就存储在 `obj.__proto__` 中，而`obj.__proto__` 也是一个对象，因此他也有原型，但我们规定，他的原型值为 `null`
 
-### 属性的删除
+### Deletion
 
 有以下两种删除对象属性的方法：
 
@@ -1223,7 +1234,7 @@ console.log({
 1. `'name' in obj`，检查 `'name'` 是不是 `obj` 的属性名，如果是用上面的第一种方法删除，检查的结果将是 `true`；如果是第二种方法删除，则会返回 `false`；注意属性名有引号（因为属性名实际上是字符串）
 2. `'name' in obj && obj.name === undefined`，检查是否含有属性名且值为 `undefined`，如果是上面第一种方法删除，则会返回 `true`
 
-### 属性的查看
+### Get Properties
 
 - `Object.keys(obj)`，查看 `obj` 的 **自身** 属性名
 - `Object.values(obj)`，查看 `obj` 的  **自身** 属性值
@@ -1238,7 +1249,7 @@ console.log({
 
 {% endnote %}
 
-### 添加或修改属性
+### Adding & Editing
 
 直接赋值：
 
@@ -1266,7 +1277,7 @@ let person = Object.create(common)
 person.__proto__ = common // 原型链增加一个环节
 ```
 
-## 对象的原型
+##  Prototype
 
 {% note warning %}
 
@@ -1307,7 +1318,7 @@ function NEW(fun, ...args) {
 const z = NEW(X, 3, 4)
 ```
 
-### 构造函数 `X`
+### Constructor Function X
 
 - `X` 自身用于添加新对象的**自身的属性**
 - `X.prototype` 负责保存对象的**共用属性**
@@ -1317,33 +1328,123 @@ const z = NEW(X, 3, 4)
 - 所有构造函数首字母大写，被构造出来的对象首字母小写
 - `new` 后面的函数使用名词；其他的函数一般用动词开头
 
-### 如何确定一个对象的原型？
+### Prototype Chain
 
 ```js
-Object.getPrototypeOf(对象) === 对象.__proto__ === 其构造函数.prototype
+Object.getPrototypeOf(对象) === 对象.__proto__ === 其构造函数.prototype === 对象.constructor.prototype
 ```
 
-### 数据类型与对象的分类
+普通对象的原型链：
 
-> 数据类型是 JavaScript 数据的类型，一共有 8 种；
->
-> 对象的分类则有无数种，常见的有 Array、Function、Date、RegExp 等
+```js
+let obj = new Object({ name: 'Harvey', age: '22' })
+// Object 构造了 obj
+obj.__proto__ === Object.prototype
+```
 
-我们常见的有这几种类型的对象：
+```text
+obj -> Object.prototype
+```
 
-- 数组对象
-  - 自身属性：`'0'` `'1'` `'2'` `'length'`
-  - 共有属性：`'push'` `'pop'` `'shift'` `'unshift'` `'join'`
+数组的原型链：
 
-- 函数对象
-  - 自身属性：`'name'` `'length'`
-  - 共有属性：`'call'` `'apply'` `'bind'`
+```js
+let arr = new Array(1,2,3)
+// Array 构造了 arr
+arr.__proto__ === Array.prototype
+arr.__proto__.__proto__ === Object.prototype
+Array.prototype.__proto__ === Object.prototype
+```
 
-## valueOf & toString
+```text
+arr -> Array.prototype -> Object.prototype
+```
 
+函数的原型链：
 
+```js
+let fn = new Function( (), { console.log('hi') } )
+fn.__proto__ === Function.prototype
+```
 
-## 其他问题
+```text
+fn -> Function.prototype -> Object.prototype
+```
+
+### Inheritance
+
+平时说的继承，其实是构造函数 `prototype` 之间的继承：
+
+```js
+function Person(姓名) {
+  this.姓名 = 姓名
+}
+
+Person.prototype.自我介绍 = function() {
+  console.log(`你好，我是 ${this.姓名}`)
+}
+
+function Student(姓名, 学号){
+  Person.call(this, 姓名) // 调用父级构造函数
+  this.学号 = 学号
+}
+
+Student.prototype = Object.create(Person.prototype) // 建立原型链
+
+Student.prototype.constructor = Student // 解决 constructor 问题
+/*
+{
+  name: "Student",
+
+  prototype: {
+
+    constructor: ƒ Student(姓名, 学号),
+    // Student.prototype 里面的 constructor 就是 Student
+
+    __proto__:{
+      // Student.prototype 里面的 __proto__ 是 Person.prototype
+      自我介绍: ƒ (),
+      constructor: ƒ Person(姓名),
+      __proto__: Object,
+    }
+
+  },
+
+  __proto__: ƒ () // Function
+}
+*/
+
+Student.prototype.报数 = function() {
+  console.log(`我的学号是 ${this.学号}`)
+}
+
+let 小红 = new Student('小红', 345678)
+/*
+{
+  姓名: "小红"
+  学号: 345678
+  __proto__: {
+
+    constructor: ƒ Student(姓名, 学号)
+    // 小红 是由 Student 构造的
+    // 小红.__proto__ 跟 Student.prototype 是一样的
+
+    __proto__: {
+      自我介绍: ƒ ()
+      constructor: ƒ Person(姓名)
+      __proto__: Object
+    }
+
+  }
+}
+*/
+
+小红.自我介绍()
+小红.报数()
+// ‘你好，我是 小红’
+```
+
+## "window"
 
 > **Q: window 是谁构造出来的？**
 >
@@ -1937,7 +2038,25 @@ first();
 
   - 对于 `var` 来说，由于变量提升，`var` 会绑定到 `window` 上。但定义在 Module 内部的 `var` 并不会绑定到 `window` 上，也不能被 Module 外部访问。
 
-### Closures
+### Examples
+
+```js
+let foo = function() { console.log(1) };
+(function foo() {
+    foo = 10  // 非匿名自执行函数，函数变量为 只读 状态，无法修改。由于foo在函数中只为可读，因此赋值无效
+    console.log(foo) // ƒ foo() { foo = 10 ; console.log(foo) }
+}())
+foo() // console.log(1)
+```
+
+```js
+(function foo() {
+  console.log(1)
+}())
+foo // foo is not defined
+```
+
+## Closures
 
 > 函数用到了外部的变量，则函数+这个变量=闭包（闭包维持了这个变量的引用，使得函数可以访问他外部的变量），作用域遵循就近原则
 
@@ -1945,7 +2064,7 @@ first();
 
 闭包的缺点：容易内存泄露。注意，虽然闭包并不会造成内存泄露，真实原因是 JS 引擎的实现有问题。
 
-#### Examples
+### Examples
 
 回调函数
 
@@ -2878,6 +2997,144 @@ drawImage(img, sx, sy, swidth, sheight, x, y, width, height)
 - `width`：可选。要使用的图像的宽度（伸展或缩小图像）
 - `height`：可选。要使用的图像的高度（伸展或缩小图像）
 
+# Modules
+
+## CommonJS
+
+CommonJS 是一套实现 JavaScript 模组的标准，最早在 2009 年被提出。
+
+- 用于 NodeJS，浏览器不支持 CommonJS
+- NodeJS 过去只支持 CommonJS，现在也支持 ESModules 了
+
+首先需要使用 `npm init -y` 创建一个 `npm` 项目，然后创建 `main.js` 文件：
+
+```js
+const testFunction = () => {
+    console.log('Im the main function')
+}
+
+testFunction()
+```
+
+然后新建一个 `mod1.js` 文件：
+
+```js
+const mod1Function = () => console.log('Mod1 is alive!')
+// module.exports 用来声明想要导出的东西
+module.exports = mod1Function
+```
+
+然后便可以在 `main.js` 中这样使用：
+
+```js
+// require 用来声明引入的东西
+mod1Function = require('./mod1.js')
+
+const testFunction = () => {
+    console.log('Im the main function')
+    mod1Function()
+}
+
+testFunction()
+```
+
+也可以这样导出两个函数：
+
+```js
+const mod1Function = () => console.log('Mod1 is alive!')
+const mod1Function2 = () => console.log('Mod1 is rolling, baby!')
+
+module.exports = { mod1Function, mod1Function2 }
+```
+
+然后这样引入：
+
+```js
+({ mod1Function, mod1Function2 } = require('./mod1.js'))
+
+const testFunction = () => {
+    console.log('Im the main function')
+    mod1Function()
+    mod1Function2()
+}
+
+testFunction()
+```
+
+### CommonJS in Browser
+
+浏览器不兼容 CommonJS 的根本原因在于缺少四个 NodeJS 环境的变量：`module` `exports` `require` `gloabl`。
+
+我们可以通过提供这四个变量，让浏览器加载 CommonJS 模块，详见 Webpack {% post_link Webpack %}
+
+## Asynchronous Module Definition
+
+> AMD 采用异步的方式加载模块，模块的加载不影响后面语句的进行，所有依赖模块的语句都定义在一个回调函数中
+
+AMD 也采用 `require()` 加载模块，但不同于 CommonJS，还需要传给他一个回调函数：
+
+```js
+require([module], callback)
+```
+
+## ESModules
+
+ESModules 是 ES2015 中引入的一个新标准，旨在标准化 JavaScript 模块在浏览器中的实现。
+
+我们需要在项目 `pakage.json` 文件中增加 `"type": "module"` 字段来在其中使用 ESModules，否则会得到一个错误提示：
+
+```text
+SyntaxError: Cannot use import statement outside a module
+```
+
+然后我们便可以在 `main.js` 中使用 `import` 语句来引入：
+
+```js
+import { mod1Function } from './mod1.js'
+
+const testFunction = () => {
+    console.log('Im the main function')
+    mod1Function()
+}
+
+testFunction()
+```
+
+在 `mod1.js` 中使用 `export` 语句来导出：
+
+```js
+const mod1Function = () => console.log('Mod1 is alive!')
+export { mod1Function }
+```
+
+此外还有一些小技巧，比如具名引入：
+
+```js
+import { mod1Function as funct1, mod1Function2 as funct2 } from './mod1.js'
+import * as mod1 from './mod1.js' 
+```
+
+默认导出：
+
+```js
+export default mod1Function
+```
+
+如果我们想要在浏览器中使用的话，需要在 `script` 标签上增加 `type="module"`，否则也会得到错误提示。
+
+可以通过 `import()` 表达式进行动态导入：
+
+```js
+import(modulePath)
+  .then(obj => <module object>)
+  .catch(err => <loading error, e.g. if no such module>)
+```
+
+> Refs:
+>
+> 1. [浏览器加载 CommonJS 模块的原理与实现](https://www.ruanyifeng.com/blog/2015/05/commonjs-in-browser.html)
+> 2. [Modules in JavaScript – CommonJS and ESmodules Explained](https://www.freecodecamp.org/news/modules-in-javascript/#:~:text=CommonJS%20is%20a%20set%20of,support%20the%20use%20of%20CommonJS.)
+
 # Extra Topics
 
 ## Promise
@@ -3296,39 +3553,7 @@ router.load()
 
 ## 函数防抖与函数节流
 
-### 函数防抖
-
-等了一段时间，没有新的人上车了再发车：任务频繁触发的情况下，只有任务触发的间隔超过指定间隔的时候，任务才会执行
-
-```js
-const debounce = (fn, delay = 300) => {
-  let timer = null
-  return function() {
-    clearTimeout(timer)
-    timer = setTimeout(() => {
-      fn.apply(this, arguments)
-    }, delay)
-  }
-}
-```
-
-### 函数节流
-
-冷却时间：指定时间间隔内只会执行一次任务
-
-```js
-const throttle = (fn, interval = 300) => {
-  let canRun = true
-  return function() {
-    if (!canRun) return
-    fn.apply(this, arguments)
-    canRun = false
-    setTimeout(() => {
-      canRun = true
-    }, interval)
-  }
-}
-```
+见 [Hais Utils](https://hais-teatime.com/hais-utils)
 
 ## 如何用正则实现 `trim()`
 

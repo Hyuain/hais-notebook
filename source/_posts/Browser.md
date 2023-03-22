@@ -414,3 +414,14 @@ document.body.addEventListener('touchstart', event => {
 
 ![](https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/25.png)
 
+# 跨页面通信
+
+> Browsing Context 是浏览器显示 Document 的环境。现代浏览器中，主要是指 Tab，也可以指 Window、frame 或者 iframe。
+
+参考资料: [面试官：前端跨页面通信，你知道哪些方法？](https://juejin.cn/post/6844903811232825357)
+
+## 同源页面
+
+### BroadcastChannel
+
+浏览器
