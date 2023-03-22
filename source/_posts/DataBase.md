@@ -3,6 +3,7 @@ title: 数据库
 date: 2021-03-20 11:08:35
 categories:
   - [全栈]
+mathjax: true
 ---
 
 什么是数据库、Node.js 连接数据库、SQL、范式、表设计、缓存字段、事务、存储引擎
@@ -963,13 +964,13 @@ ALTER TABLE table_name ADD constraint;
 
 ## Constraints on a Single Relation
 
-- `PRIMARY KEY (A1, A2,..., An)` 指定主键。
+- 主键约束：`PRIMARY KEY (A1, A2,..., An)` 指定主键。
 
-- `NOT NULL` 表示某个属性不能为 `NULL`。
+- 非空约束：`NOT NULL` 表示某个属性不能为 `NULL`。
 
-- `UNIQUE (A1, A2, ... Am)` 指定这些属性形成了一个 Candidate Key，注意 Candidate Keys 是可以为 NULL 的（Primary Key 不能）。
+- 唯一约束：`UNIQUE (A1, A2, ... Am)` 指定这些属性形成了一个 Candidate Key，注意 Candidate Keys 是可以为 NULL 的（Primary Key 不能）。
 
-- `CHECK (P)`
+- 检查约束：`CHECK (P)`
 
   ```sql
   CREATE TABLE section
@@ -980,23 +981,27 @@ ALTER TABLE table_name ADD constraint;
 
 ## Referential Integrity
 
-确保出现在一个表中的
+外键约束：外键是指一个表中的一个字段，它引用另一个表中的主键。外键约束确保数据的引用完整性，防止引用不存在的记录。
 
-
+A 是一组属性，R 和 S 是两个表，他们都含有 A，并且 A 是 S 的主键。如果 R 中出现的所有 A 都在 S 中出现，那么 A 称为 R 的外键。
 
 ```sql
-PRIMARY KEY (A1, A2,..., An)
 FOREIGN KEY (A1, A2,..., An) REFERENCES r
-NOT NULL
 ```
 
 比如：
 
 ```sql
-
+FOREIGN KEY (dept_name) REFERENCES department
 ```
 
-##
+默认情况下，外键引用了另外一个表的主键。SQL 也允许具体指定哪些属性：
+
+```sql
+FOREIGN KEY (dept_name) REFERENCES (dept_name)
+```
+
+正常情况下，如果外键约束被违反了，此次操作会被拒绝。我们可以用 `CASCADE
 
 # Quick Start
 
