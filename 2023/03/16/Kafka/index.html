@@ -18,28 +18,32 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"hyuain.github.io","root":"/hais-notebook/","images":"/hais-notebook/images","scheme":"Gemini","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac","show_result":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/hais-notebook/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/hais-notebook/js/config.js"></script>
 
-    <meta name="description" content=".">
+    <meta name="description" content="Kafka is an open-source stream-processing software for collecting, processing, storing, and analyzing data at scale.">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Blockchain">
-<meta property="og:url" content="https://hyuain.github.io/hais-notebook/2023/01/16/Blockchain/index.html">
+<meta property="og:title" content="Kafka">
+<meta property="og:url" content="https://hyuain.github.io/hais-notebook/2023/03/16/Kafka/index.html">
 <meta property="og:site_name" content="Hais Notebook">
-<meta property="og:description" content=".">
+<meta property="og:description" content="Kafka is an open-source stream-processing software for collecting, processing, storing, and analyzing data at scale.">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-01-16T14:38:30.000Z">
-<meta property="article:modified_time" content="2023-01-16T14:38:30.000Z">
+<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/KafkaPartitionKey.png">
+<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/KafkaPartitionAllocation-1.png">
+<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/KafkaPartitionAllocation-2.png">
+<meta property="article:published_time" content="2023-03-16T15:12:44.000Z">
+<meta property="article:modified_time" content="2023-03-16T15:12:44.000Z">
 <meta property="article:author" content="Harvey Zhang">
 <meta property="article:tag" content="Notebook">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/KafkaPartitionKey.png">
 
 
-<link rel="canonical" href="https://hyuain.github.io/hais-notebook/2023/01/16/Blockchain/">
+<link rel="canonical" href="https://hyuain.github.io/hais-notebook/2023/03/16/Kafka/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hyuain.github.io/hais-notebook/2023/01/16/Blockchain/","path":"2023/01/16/Blockchain/","title":"Blockchain"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hyuain.github.io/hais-notebook/2023/03/16/Kafka/","path":"2023/03/16/Kafka/","title":"Kafka"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Blockchain | Hais Notebook</title>
+<title>Kafka | Hais Notebook</title>
   
 
 
@@ -140,7 +144,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#etherum"><span class="nav-number">1.</span> <span class="nav-text">Etherum</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#basic-concepts"><span class="nav-number">1.</span> <span class="nav-text">Basic Concepts</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#partitions"><span class="nav-number">2.</span> <span class="nav-text">Partitions</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#partition-key"><span class="nav-number">2.1.</span> <span class="nav-text">Partition Key</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#partition-allocation"><span class="nav-number">2.2.</span> <span class="nav-text">Partition Allocation</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#fault-tolerant"><span class="nav-number">3.</span> <span class="nav-text">Fault-Tolerant</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -186,7 +190,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2023/01/16/Blockchain/">
+    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2023/03/16/Kafka/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
@@ -199,12 +203,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="Blockchain | Hais Notebook">
+      <meta itemprop="name" content="Kafka | Hais Notebook">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Blockchain
+          Kafka
         </h1>
 
         <div class="post-meta-container">
@@ -215,7 +219,7 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2023-01-16 14:38:30" itemprop="dateCreated datePublished" datetime="2023-01-16T14:38:30+00:00">2023-01-16</time>
+      <time title="创建时间：2023-03-16 15:12:44" itemprop="dateCreated datePublished" datetime="2023-03-16T15:12:44+00:00">2023-03-16</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -223,7 +227,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/hais-notebook/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/" itemprop="url" rel="index"><span itemprop="name">计算机</span></a>
+          <a href="/hais-notebook/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">前端</span></a>
         </span>
     </span>
 
@@ -237,11 +241,92 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <p>.</p>
+        <p>Kafka is an open-source stream-processing software for collecting, processing, storing, and analyzing data at scale.</p>
 <span id="more"></span>
-<h1 id="etherum">Etherum</h1>
-<iframe src="https://xmind.works/share/SmAWvzOo" style="width: 100%; height: 600px; border: none;">
-</iframe>
+<p>Kafka can be used in following cases:</p>
+<ul>
+<li>Messaging</li>
+<li>Website Activity Tracking</li>
+<li>Log aggregation</li>
+<li>Stream Processing</li>
+</ul>
+<h1 id="basic-concepts">Basic Concepts</h1>
+<p><strong>Producer</strong>: <strong>Client applications</strong> that publish events to Kakfa.</p>
+<p><strong>Broker</strong>:</p>
+<ul>
+<li><strong>A server</strong> which has Kafka running on it.</li>
+<li>Responsible for the communication between multiple services.</li>
+<li>Multiple brokers would form a <strong>Kafka Cluster</strong>.</li>
+</ul>
+<p><strong>Consumer</strong>:</p>
+<ul>
+<li><strong>Client application</strong> which subscribe to (read and process) these events.</li>
+<li>Consumers can work together as a <strong>Consumer Group</strong>.</li>
+</ul>
+<p><strong>Consumer Group</strong>:</p>
+<ul>
+<li>Multiple consumer groups can read from the same log, each maintaining their position based on the offset they have read / processed.</li>
+</ul>
+<p><strong>Event</strong>:</p>
+<ul>
+<li>An event records the fact that "something happened" in the world or in your business.</li>
+<li><em>Headers, Key, Timestamp, Value</em>.</li>
+</ul>
+<p><strong>Topic</strong>:</p>
+<ul>
+<li>Events are organized and durably stored in topics.</li>
+<li>E.g. "payments", "user details".</li>
+<li>A stream is considered to be a single topic of data (regardless of the number of partitions).</li>
+</ul>
+<p><strong>Offset</strong>:</p>
+<ul>
+<li>Keep a track of which events have already been consumed.</li>
+<li><strong>An index</strong> pointing to the latest consumed message.</li>
+</ul>
+<p><strong>Horizontal Scaling</strong>:</p>
+<ul>
+<li>Different partitions may spread over different Kafka brokers.</li>
+<li>Distributed placement of data achieves scalability.</li>
+</ul>
+<h1 id="partitions">Partitions</h1>
+<p>A topic can be further divided into partitions in order to attain higher throughput.</p>
+<p>Partitions are spread across the available brokers.</p>
+<p><strong>1 Partition -&gt; Only 1 Consumer in 1 Consumer Group</strong> (ensure the message from one client will be processed in order).</p>
+<p><strong>1 Consumer -&gt; 1 / More Partitions</strong>.</p>
+<h2 id="partition-key">Partition Key</h2>
+<p>Messages are written to a partition:</p>
+<ul>
+<li>Append-Only.</li>
+<li>Read in order from beginning to end.</li>
+</ul>
+<p><strong>Events with the same partition key (e.g. a customer or vehicle ID) are written to the same partition.</strong></p>
+<ul>
+<li>E.g. <code>hash(key) = key % no_of_partitions</code></li>
+</ul>
+<p>Kafka guarantees: Any consumer of a given topic-partition will always <strong>read that partition's event in exactly the same order as they were written</strong>.</p>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/KafkaPartitionKey.png" alt="Kafka Partition Key" /><figcaption aria-hidden="true">Kafka Partition Key</figcaption>
+</figure>
+<h2 id="partition-allocation">Partition Allocation</h2>
+<p><strong>2 consumers</strong> in the same consumer group (with the same group ID) have <strong>subscribed to the same topic</strong>:</p>
+<ul>
+<li>None of these 2 consumers would receive the same messages.</li>
+<li>Helps attain consumption rate.</li>
+</ul>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/KafkaPartitionAllocation-1.png" alt="Kafka Partition Allocation" /><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/KafkaPartitionAllocation-2.png" alt="Kafka Partition Allocation" /></p>
+<h1 id="fault-tolerant">Fault-Tolerant</h1>
+<p><strong>Group Coordinator</strong>:</p>
+<ul>
+<li>Group Coordinator is a broker responsible for receiving heartbeats from the consumers.</li>
+<li>Triggering a <strong>rebalance</strong> of work whenever consumer is marked as dead.</li>
+</ul>
+<p><strong>Replication</strong>:</p>
+<ul>
+<li><strong>Leader</strong>: A partition is owned by a single broker in the cluster.</li>
+<li><strong>Followers</strong>: A replicated partition is assigned to additional brokers. One of the followers can take over leadership if there is a broker failure.</li>
+<li>All producers must connect to the leader in order to publish messages.</li>
+<li>Consumers may fetch from either the leader or one of the followers.</li>
+</ul>
 
     </div>
 
@@ -255,14 +340,11 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/hais-notebook/2023/01/16/Rails/" rel="prev" title="Rails">
-                  <i class="fa fa-chevron-left"></i> Rails
+                <a href="/hais-notebook/2023/03/08/Container/" rel="prev" title="Containers">
+                  <i class="fa fa-chevron-left"></i> Containers
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/hais-notebook/2023/01/17/Book-StructureAndInterpretationOfComputerPrograms/" rel="next" title="读书笔记：《计算机程序的构造和解释》">
-                  读书笔记：《计算机程序的构造和解释》 <i class="fa fa-chevron-right"></i>
-                </a>
             </div>
           </div>
     </footer>
