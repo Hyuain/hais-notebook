@@ -90,14 +90,19 @@ WWW、HTML，和一些常见重点的 HTML 标签。
     - `title` 鼠标悬浮显示的内容
 
 {% note warning %}
+
 **为什么会有默认样式？**
+
 因为 HTML 被发明的时候，还没有CSS
+
 **怎么看默认样式？**
+
 开发者工具 -> Elments -> Styles -> user agent stylesheet
+
 **CSS Reset?**
-[Andy Bell](https://dev.to/hankchizljaw/a-modern-css-reset-6p3)
-[Meyerweb](https://meyerweb.com/eric/tools/css/reset/)
-[Frank Fang](https://gist.github.com/FrankFang/df5e57a0799823ed89a960a642b3a1e2)
+
+[Andy Bell](https://dev.to/hankchizljaw/a-modern-css-reset-6p3), [Meyerweb](https://meyerweb.com/eric/tools/css/reset/), [Frank Fang](https://gist.github.com/FrankFang/df5e57a0799823ed89a960a642b3a1e2)
+
 {% endnote %}
 
 ```bash

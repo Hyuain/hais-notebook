@@ -667,6 +667,78 @@ const cardGroup = (arr) => {
 
 # 字符串
 
+## 大数运算
+
+### 大数相加
+
+```ts
+function addStrings(num1: string, num2: string): string {
+    const arr1 = num1.split('')
+    const arr2 = num2.split('')
+    const results = []
+    let carry = 0
+    while (arr1.length || arr2.length) {
+        const n1 = Number(arr1.pop()) || 0
+        const n2 = Number(arr2.pop()) || 0
+        let result = n1 + n2 + carry
+        carry = Math.floor(result / 10)
+        result = result % 10
+        results.unshift(result)
+    }
+    if (carry) {
+        results.unshift(carry)
+    }
+    return results.join('')
+};
+```
+
+### 大数相减
+
+```ts
+function minusString(num1: string, num2: string): string {
+  if (num1 === num2) {
+    return '0';
+  }
+  const isNum1Bigger = compare(num1, num2);
+  // 让 arr1 永远是大的那个数
+  const [arr1, arr2] = isNum1Bigger
+    ? [num1.split(''), num2.split('')]
+    : [num2.split(''), num1.split('')];
+  let borrow = 0;
+  const results = [];
+  while (arr1.length || arr2.length) {
+    const n1 = Number(arr1.pop()) || 0;
+    const n2 = Number(arr2.pop()) || 0;
+    let result = n1 - n2 - borrow;
+    if (result < 0) {
+      result += 10;
+      borrow = 1;
+    } else {
+      borrow = 0;
+    }
+    results.unshift(result);
+  }
+  const firstNoneZeroIndex = results.findIndex((item) => item);
+  return `${isNum1Bigger ? '' : '-'}${results
+    .slice(firstNoneZeroIndex)
+    .join('')}`;
+}
+
+function compare(num1: string, num2: string): boolean {
+  if (num1.length !== num2.length) {
+    return num1.length > num2.length;
+  }
+  for (let i = 0; i < num1.length; i++) {
+    if (num1[i] > num2[i]) {
+      return true;
+    } else if (num1[i] < num2[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+```
+
 ## 例题
 
 ### 反转字符串中的单词
@@ -1764,3 +1836,25 @@ function integerBreak(n: number): number {
 };
 ```
 </detail>
+
+# 将结果对 1e9 + 7 取模
+
+由于有的语言对大数并没有进行特殊处理，所以无法进行高精度的大数运算，有的题目便会要求将结果对 1e9 + 7 取模，这样就不用考虑大数运算的问题了。
+
+但是，**不能只是单纯地对结果取模**，因为这样就没有意义了，并不能避免大数运算带来的问题。
+
+此外，还有几个注意点：
+
+1. 取模之后就不能用 Max 比较最大值了，因此有的题就不能用动态规划了（但是仍然可以使用 Sum）
+
+2. 注意是否真的取模了：
+   ```js
+   // 用 += 的时候注意
+   for(int i = 1; i <= n ; i ++) {
+       res += i % (1e9 + 7); // 实际上并没有对 res 取模，只是取模了 i
+   }
+   
+   // 由于 * 和 % 是从左到右运算的，因此需要加上括号
+   res = res % mod + pre[i][j] % mod * a[i][j] % mod;
+   ```
+

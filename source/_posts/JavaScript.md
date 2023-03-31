@@ -4477,3 +4477,30 @@ console.log(a.x) // undefined
 // 执行到 a.x 的时候，a 还是原来的地址，但是他右边的 a 已经是新的地址了
 ```
 
+# Outlines
+
+- Script Element
+  - async
+  - defer
+  - module
+- Basic Syntax
+  - 标识符
+  - 数据类型
+    - Number
+      - 范围和精度
+      - Number()
+      - new Number()
+      - Number.parseFloat(), parseFloat()
+      - Number.parseInt(), parseInt()
+      - Number.isNaN(), isNaN
+    - String
+    - Boolean
+    - Symbol
+    - BigInt
+    - undefined
+    - Null
+    - Object
+    - 类型转换
+  - myInstanceOf
+  - Object.is()
+  - toPrimitive & valueOf & toString

@@ -233,6 +233,24 @@ SQL 包括了：
 - Data Manipulation Language (DML)：提供操作数据的方法，比如 INSERT、 UPDATE 和 DELETE 等
 - Data Definition Language (DDL)：提供描述和管理数据库的方法，比如 CREATE、ALTER 和 DROP 等
 
+## Data Types
+
+### Large-Object Type
+
+> 当查询返回一个大对象时，他不会返回这个对象本身，而是返回一个指针
+
+- **blob**: 大的二进制文件
+- **clob**: 一大堆字符的集合
+
+### User-Defined Type
+
+```sql
+CREATE TYPE Dollars AS numeric(12,2)
+
+CREATE TABLE department
+  (budget Dollars);
+```
+
 ## Create Table
 
 ```sql
@@ -940,7 +958,7 @@ CREATE VIEW history_instructors AS
 
 如果我们往 hisoty_instructors 中插入 `('25566', 'Brown', 'Biology', 10000)`，那么 instructors 中会出现这行，而 history_instructors 中则不会。
 
-# Integrity Constraints
+## Integrity Constraints
 
 完整性约束（比如 `PRIMARY KEY` `NOT NULL` 等）保证了数据的一致性，确保数据库里面的值是合法的。
 
@@ -962,7 +980,7 @@ CREATE TABLE instructor (
 ALTER TABLE table_name ADD constraint;
 ```
 
-## Constraints on a Single Relation
+### Constraints on a Single Relation
 
 - 主键约束：`PRIMARY KEY (A1, A2,..., An)` 指定主键。
 
@@ -978,8 +996,11 @@ ALTER TABLE table_name ADD constraint;
      semester varchar(8),
      CHECK (semester in ('Fall', 'Winter', 'Spring', 'Summer')))
   ```
+  
+  - `CHECK (P)` 中的 P 可以是任意的选择谓词，比如 `CHECK (time_slot_id IN (SELECT time_slot_id FROM time_slot))`
+    - 这个条件不只在行插入或者修改的时候检查，也会在 `time_slot` 表改变的时候进行检查
 
-## Referential Integrity
+### Referential Integrity
 
 外键约束：外键是指一个表中的一个字段，它引用另一个表中的主键。外键约束确保数据的引用完整性，防止引用不存在的记录。
 
@@ -1001,7 +1022,37 @@ FOREIGN KEY (dept_name) REFERENCES department
 FOREIGN KEY (dept_name) REFERENCES (dept_name)
 ```
 
-正常情况下，如果外键约束被违反了，此次操作会被拒绝。我们可以用 `CASCADE
+正常情况下，如果外键约束被违反了，此次操作会被拒绝。
+
+如果使用 `CASCADE`，那么当主表中的行被删除之后，所有引用了该指的表都会被删除，比如：
+
+```sql
+CREATE TABLE course(
+  ...
+  dept_name varchar(20),
+  FOREIGN KEY (dept_name) REFERENCES department
+  ON DELETE CASCADE
+  ON UPDATE CASCADE,
+  ...
+)
+```
+
+除了 `CASCADE` 以外，也可以使用 `SET NULL` 或者 `SET DEFAULT`。
+
+## Index
+
+一些查询只会涉及到表中的一小部分数据，此时对整个表都进行查找的话效率是很低的，可以通过属性上的 `INDEX` 来让查找的时候只查找这部分数据：
+
+```sql
+CREATE INDEX <name> ON <relation-name> (attribute);
+```
+
+```sql
+CREATE TABLE student
+  (ID varchar(5),)
+```
+
+
 
 # Quick Start
 
