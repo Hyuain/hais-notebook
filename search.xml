@@ -5331,6 +5331,58 @@ console<span class="token punctuation">.</span><span class="token function">log<
 <li><strong>Ship</strong>: Push image.</li>
 <li><strong>Run</strong>: Pull image and run.</li>
 </ol>
+<h2 id="installation">Installation</h2>
+<ul>
+<li>进入 <a href="https://hub.docker.com/">Docker Hub 官方网站</a> 注册并下载</li>
+<li>确保 <code>docker --version</code> 返回版本号</li>
+<li>在 Docker Engine 中设置国内镜像，<a href="http://guide.daocloud.io/dcs/daocloud-9153151.html">可以点这里查看教程</a></li>
+</ul>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">&#123;</span>
+  <span class="token property">"registry-mirrors"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token string">"https://docker.mirrors.ustc.edu.cn"</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"insecure-registries"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><strong>常见的 docker 命令：</strong></p>
+<ul>
+<li><code>docker run</code> 启动新容器</li>
+<li><code>docker ps -a</code> 查看所有的容器（Containers）</li>
+<li><code>docker kill &lt;id|name&gt;</code> 关闭对应的容器</li>
+<li><code>docker restart &lt;id|name&gt;</code> 重启关闭的容器</li>
+<li><code>docker rm &lt;id|name&gt;</code> 删除对应的容器</li>
+<li><code>docker container prune</code> 删除无用的容器，以节省空间</li>
+</ul>
+<p>注意：用 docker 运行的容器，默认不会 <a href="persistence-in-docker">持久化</a>，容器被删掉，数据也就没了</p>
+<h1 id="example-run-a-mysql-database">Example: Run a MySQL Database</h1>
+<ol start="0" type="1">
+<li><p>进入 Docker 上面 <a href="https://hub.docker.com/_/mysql">MySQL 的主页</a></p></li>
+<li><p>运行命令创建容器：</p></li>
+</ol>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">docker</span> run <span class="token parameter variable">--name</span> some-mysql <span class="token parameter variable">-e</span> <span class="token assign-left variable">MYSQL_ROOT_PASSWORD</span><span class="token operator">=</span>my-secret-pw <span class="token parameter variable">-d</span> mysql:tag
+<span class="token comment"># -d 表示守护进程形式，不会随意关掉</span>
+<span class="token comment"># -p 用来设置端口映射 本机端口号:虚拟机端口号</span>
+<span class="token function">docker</span> run <span class="token parameter variable">--name</span> mysql-demo1 <span class="token parameter variable">-e</span> <span class="token assign-left variable">MYSQL_ROOT_PASSWORD</span><span class="token operator">=</span><span class="token number">123456</span> <span class="token parameter variable">-p</span> <span class="token number">3306</span>:3306 <span class="token parameter variable">-d</span> mysql:latest<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<ol start="2" type="1">
+<li>进入 Docker 容器</li>
+</ol>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">docker</span> <span class="token builtin class-name">exec</span> <span class="token parameter variable">-it</span> mysql-demo1 <span class="token function">bash</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<ol start="3" type="1">
+<li>使用 MySQL 命令进入数据库</li>
+</ol>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># -u root：以 ROOT 用户进入</span>
+<span class="token comment"># -p 直接回车，然后输入密码</span>
+mysql <span class="token parameter variable">-u</span> root <span class="token parameter variable">-p</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<ol start="4" type="1">
+<li>使用 SQL 语句操作</li>
+</ol>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token comment"># 查看有哪些数据库</span>
+<span class="token keyword">show</span> <span class="token keyword">databases</span><span class="token punctuation">;</span>
+<span class="token comment"># 进入其中一个数据库</span>
+<span class="token keyword">use</span> <span class="token operator">&lt;</span>数据库名称<span class="token operator">></span><span class="token punctuation">;</span>
+<span class="token comment"># 看有哪些表</span>
+<span class="token keyword">show</span> <span class="token keyword">tables</span><span class="token punctuation">;</span>
+<span class="token comment"># 查看表内容</span>
+<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token operator">&lt;</span>表名称<span class="token operator">></span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h1 id="example-run-a-python-flask-app">Example: Run a Python Flask App</h1>
 <h2 id="a-python-flask-app">A Python Flask App</h2>
 <p><code>app.py</code></p>
@@ -5533,7 +5585,7 @@ redis<span aria-hidden="true" class="line-numbers-rows"><span></span><span></spa
 <span class="token function">docker</span> run <span class="token parameter variable">-d</span> <span class="token parameter variable">--name</span> web <span class="token parameter variable">-p</span> <span class="token number">5000</span>:5000 <span class="token parameter variable">--net</span> my-network myapp<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>Access python flask app: <code>http://localhost:5000</code></p>
 <p>Check container logs <code>docker logs redis</code></p>
-<h2 id="docker-compose">Docker-compose</h2>
+<h2 id="docker-compose">Docker Compose</h2>
 <p>A tool for defining and running multi-containers docker application (application stack).</p>
 <p>Create a <code>docker-compose.yml</code> file:</p>
 <pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">version</span><span class="token punctuation">:</span> <span class="token string">"3.9"</span>
@@ -5546,7 +5598,7 @@ redis<span aria-hidden="true" class="line-numbers-rows"><span></span><span></spa
     <span class="token key atrule">image</span><span class="token punctuation">:</span> <span class="token string">"redis:alpine"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>Run the containers:</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">docker</span> compose up<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h2 id="pruning">Pruning</h2>
+<h1 id="pruning">Pruning</h1>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># Stop and remove containers</span>
 <span class="token function">docker</span> container <span class="token function">rm</span> <span class="token parameter variable">-f</span> <span class="token punctuation">[</span>container_id<span class="token punctuation">]</span>
 <span class="token comment"># Use prune command to cleanup all the stopped containers</span>
@@ -5563,6 +5615,41 @@ redis<span aria-hidden="true" class="line-numbers-rows"><span></span><span></spa
 <span class="token function">docker</span> volume prune
 <span class="token function">docker</span> system <span class="token function">df</span>
 <span class="token function">docker</span> system <span class="token function">df</span> <span class="token parameter variable">-a</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="example-escape-project">Example: ESCAPE Project</h1>
+<p>ESCAPE Project 是一个简单的例子，他包含以下五个部分：</p>
+<ul>
+<li>使用 Vue 的前端</li>
+<li>使用 Rails 的后端</li>
+<li>Redis Database</li>
+<li>PostgreSQL Database</li>
+<li>GPT-2 ChatBot Server</li>
+</ul>
+<h2 id="delpoyment-of-frontend">Delpoyment of Frontend</h2>
+<p>思路：打包完成之后用 NGINX 起一个服务器，访问 dist 文件夹；NGINX 同时还起到反向代理的作用，让请求访问到对应的后端容器。</p>
+<p>Dockerfile 如下：</p>
+<pre class="line-numbers language-docker" data-language="docker"><code class="language-docker"><span class="token comment"># Stage 0: 基于 Nodejs 镜像打包应用</span>
+<span class="token instruction"><span class="token keyword">FROM</span> node:16</span>
+<span class="token instruction"><span class="token keyword">WORKDIR</span> /app</span>
+<span class="token comment"># 将安装依赖所需要的东西先复制进容器</span>
+<span class="token instruction"><span class="token keyword">COPY</span> package*.json ./</span>
+<span class="token instruction"><span class="token keyword">COPY</span> pnpm-lock.yaml ./</span>
+<span class="token comment"># 安装依赖</span>
+<span class="token instruction"><span class="token keyword">RUN</span> npm install pnpm -g</span>
+<span class="token instruction"><span class="token keyword">RUN</span> pnpm install</span>
+<span class="token comment"># 复制项目源代码</span>
+<span class="token instruction"><span class="token keyword">COPY</span> . .</span>
+<span class="token comment"># 打包项目</span>
+<span class="token instruction"><span class="token keyword">RUN</span> pnpm run build</span>
+
+<span class="token comment"># Stage 1: 下载 nginx 用来启动服务器</span>
+<span class="token instruction"><span class="token keyword">FROM</span> nginx:1.23.4</span>
+<span class="token comment"># 将 dist 文件夹复制进容器的 /usr/share/nginx/html 目录下</span>
+<span class="token comment"># --from 用于指示</span>
+<span class="token instruction"><span class="token keyword">COPY</span> <span class="token options"><span class="token property">--from</span><span class="token punctuation">=</span><span class="token string">0</span></span> /app/dist /usr/share/nginx/html</span>
+<span class="token comment"># </span>
+<span class="token instruction"><span class="token keyword">COPY</span> nginx.conf /etc/nginx/conf.d/default.conf</span>
+<span class="token instruction"><span class="token keyword">EXPOSE</span> 8888</span>
+<span class="token instruction"><span class="token keyword">CMD</span> [<span class="token string">"nginx"</span>, <span class="token string">"-g"</span>, <span class="token string">"daemon off;"</span>]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 ]]></content>
       <categories>
         <category>计算机</category>
@@ -5935,8 +6022,14 @@ instructor = (ID, name, dept_name, salary)
 <blockquote>
 <p>域（Domain）表示某个属性的取值范围，比如 <span class="math inline">\(salary=\{1000,\dots, 10000\}\cup\{null\}\)</span></p>
 </blockquote>
+<p>属性类型可以分为：</p>
+<ul>
+<li><strong>SImple &amp; Composite</strong>：比如 ID 是简单属性，Address 是复合属性（包含门牌号、街道、城市、国家等）</li>
+<li><strong>Single-Valued &amp; Multi-Valued</strong>：比如 Age 是 Single-Valued，Phone Numbers 是 Multi-Valued（人可以有很多电话号码）</li>
+<li><strong>Derived</strong>：比如 Age 可以从 DateOfBirth 推算出来。</li>
+</ul>
 <p>属性一般要求是 <strong>原子的（atomic）</strong>，即不可分的。比如整数、字符串是原子的，集合和数组是非原子的。</p>
-<p>null 是一个特殊值，所有域都有，表示某个值是 unkown。</p>
+<p>NULL 是一个特殊值，所有域都有，表示某个值是 unkown。</p>
 <h3 id="database-schema">Database Schema</h3>
 <blockquote>
 <p>数据库模式是指一个数据库中存储的数据结构的定义，数据库实例是数据库中数据在某个时间点的快照。数据库模式包括多个关系模式。</p>
@@ -6004,8 +6097,8 @@ department(depart_name, building, budget);<span aria-hidden="true" class="line-n
 \]</span></p>
 <p>其中 <span class="math inline">\(p\)</span> 称为选择谓词（Selection Predicate），比如： <span class="math display">\[
 \sigma_{dept\_name=&quot;Physics&quot;}(instrucotr)
-\]</span> 可以在其中加入比较运算符 <span class="math inline">\(= \neq &gt; &lt; \geq \leq\)</span> ，逻辑运算符 与 <span class="math inline">\(\and\)</span> 或 <span class="math inline">\(\or\)</span> 非 <span class="math inline">\(\neg\)</span>： <span class="math display">\[
-\sigma_{dept\_name=&quot;Physics&quot; \and salary&gt;9000}(instrucotr)
+\]</span> 可以在其中加入比较运算符 <span class="math inline">\(= \neq &gt; &lt; \geq \leq\)</span> ，逻辑运算符 与 <span class="math inline">\(\land\)</span> 或 <span class="math inline">\(\lor\)</span> 非 <span class="math inline">\(\neg\)</span>： <span class="math display">\[
+\sigma_{dept\_name=&quot;Physics&quot; \land salary&gt;9000}(instrucotr)
 \]</span></p>
 <h2 id="project">Project</h2>
 <blockquote>
@@ -6050,15 +6143,15 @@ r \cup s
 \]</span></p>
 <p><span class="math inline">\(r, s\)</span> 必须有同样多的属性，并且属性的列必须一一对应，比如第二列与第二列类型相同，比如：</p>
 <p>重复的行会被删掉。 <span class="math display">\[
-\Pi_{source\_id}(\sigma_{semester=&quot;Fall&quot; \and year=2017}(section)) \cup \Pi_{source\_id}(\sigma_{semester=&quot;Spring&quot; \and year=2018}(section))
+\Pi_{source\_id}(\sigma_{semester=&quot;Fall&quot; \land year=2017}(section)) \cup \Pi_{source\_id}(\sigma_{semester=&quot;Spring&quot; \land year=2018}(section))
 \]</span></p>
 <h2 id="intersection">Intersection</h2>
 <p>要求与 Union 相同，比如： <span class="math display">\[
-\Pi_{source\_id}(\sigma_{semester=&quot;Fall&quot; \and year=2017}(section)) \cap \Pi_{source\_id}(\sigma_{semester=&quot;Spring&quot; \and year=2018}(section))
+\Pi_{source\_id}(\sigma_{semester=&quot;Fall&quot; \land year=2017}(section)) \cap \Pi_{source\_id}(\sigma_{semester=&quot;Spring&quot; \land year=2018}(section))
 \]</span></p>
 <h2 id="set-difference">Set Difference</h2>
 <p>要求与 Union 相同。比如： <span class="math display">\[
-\Pi_{source\_id}(\sigma_{semester=&quot;Fall&quot; \and year=2017}(section)) - \Pi_{source\_id}(\sigma_{semester=&quot;Spring&quot; \and year=2018}(section))
+\Pi_{source\_id}(\sigma_{semester=&quot;Fall&quot; \land year=2017}(section)) - \Pi_{source\_id}(\sigma_{semester=&quot;Spring&quot; \land year=2018}(section))
 \]</span></p>
 <h2 id="assignment">Assignment</h2>
 <p><span class="math display">\[
@@ -6742,6 +6835,193 @@ variable \larr E
 <pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">INDEX</span> <span class="token operator">&lt;</span>name<span class="token operator">></span> <span class="token keyword">ON</span> <span class="token operator">&lt;</span>relation<span class="token operator">-</span>name<span class="token operator">></span> <span class="token punctuation">(</span>attribute<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> student
   <span class="token punctuation">(</span>ID <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h1 id="entity-relationship-model-erm">Entity Relationship Model (ERM)</h1>
+<p>ERM 主要用来帮助设计设计库，描述表之间的关系，独立于数据库硬件和软件的具体实现，主要有三个核心概念：</p>
+<ul>
+<li><strong>Entity Sets</strong>: 实体集
+<ul>
+<li>Entity 是客观存在并可相互区别的事物。每个 Entity 可以表示为一组属性，比如 <code>instrucot = (ID, name, street, city, salary)</code>，<code>course  = (course_id, title, credits)</code>。</li>
+<li>Entity Set 是一堆同样类型、同样属性的实体的集合，比如 Persons、Cities、Movies。</li>
+<li>一些属性组成了实体集的主键，主键可以将实体集中的每个实体区分开来。</li>
+</ul></li>
+<li><strong>Relationship Sets</strong>: 关系集
+<ul>
+<li>Relationship 是一些实体之间的联系。定义 <span class="math inline">\({(e_1, \cdots ,e_n|e_1 \in E_1, \cdots, e_n \in E_n)}\)</span> 中的 <span class="math inline">\((e_1, \cdots ,e_n)\)</span> 就是一个关系。</li>
+<li>Relationship Set 是不同实体集的实体间的数学联系，里面存了好多关系。关系集中除了来自于各个实体的属性之外，还可以拥有自己的属性。</li>
+<li>Degree of a relationship（关系的度）是关系集中包涉及到的的实体集的数量。</li>
+</ul></li>
+<li><strong>Attributes</strong>: 属性</li>
+</ul>
+<h2 id="cardinality-constraint">Cardinality Constraint</h2>
+<p><strong>基数约束（Cardinality Constraint）</strong> 是用来表示实体可以有多少实体与另一实体集的实体存在联系，一共有四种形态：</p>
+<ul>
+<li>1:1（一对一）：Student<em>WorksOn</em>Thesis, Department<em>Has</em>Dean</li>
+<li>1:n（一对多）：Building<em>Has</em>Room, Lecturer<em>Teaches</em>Course</li>
+<li>n:1（多对一）：Room<em>LocatedIn</em>Building, Course<em>ToughtBy</em>Lecturer</li>
+<li>n:m（多对多）：Student<em>Takes</em>Course, Student<em>Has</em>Advisor</li>
+</ul>
+<p>区分 1:n/n:1 和 n:m：反过来问题</p>
+<ul>
+<li>A building may have multiple rooms...
+<ul>
+<li>... but can room be in multiple buildings? <em>No -&gt; BuildingHasRoom is 1:n</em></li>
+</ul></li>
+<li>A department can be located in multiple buildings...
+<ul>
+<li>... but can a building host multiple departments? <em>Yes -&gt; DepartmentLocatedInBujilding is n:m</em></li>
+</ul></li>
+</ul>
+<p>此外两个来自同一个实体集的实体也可以形成关系：</p>
+<ul>
+<li>Person<em>MarriedTo</em>Person (1:1)</li>
+<li>Person<em>IsFatherOf</em>Person (1:n)</li>
+<li>Person<em>Has</em>Father (n:1)</li>
+<li>Person<em>IsParentOf</em>Person (n:m)</li>
+</ul>
+<h2 id="redundant-attribute">Redundant Attribute</h2>
+<p>比如有两个实体集：</p>
+<ul>
+<li>Instructor(ID, name, <em>dept_name</em>, salary)</li>
+<li>Department(dept_name, buidling, budget)</li>
+</ul>
+<p>并且将他们用一个关系集联系起来：Instructor<em>BelongsTo</em>Department (ID, dept_name)</p>
+<p><strong>此时 Instructor.dept_name 就是冗余属性，可以去掉。</strong></p>
+<h2 id="weak-entity-set">Weak Entity Set</h2>
+<p>考虑另外一个例子：</p>
+<ul>
+<li>实体集 Building(building_name, address)</li>
+<li>实体集 Room(number, <em>building_name</em>, capacity)</li>
+<li>关系集 Room<em>In</em>Building(number, building_name)</li>
+</ul>
+<p><strong>这时，如果删除了 Room.building_name，就无法区分 Room 中的每一个房间了。</strong></p>
+<p><strong>弱实体集（Weak Entity Set）</strong> 是一种特殊的实体集，他没有能有效区分每个实体的属性他需要 <strong>一个额外的关系集</strong> 来帮助他区分每个实体。这个额外的关系集叫做 <strong>识别关系集（Identifying Relation Set）</strong>。</p>
+<ul>
+<li><p>弱实体没有主键，相对的，他有一个 <strong>识别实体（Identifying Entity）</strong>和一个 <strong>判别器（Discriminator）</strong>。在上述例子中，Buidling 就是识别实体，number 是判别器。</p></li>
+<li><p>弱实体集的存在 <strong>依赖于（Existence Dependent）</strong> 识别实体集，反过来我们称识别实体集 <strong>拥有（Own）</strong> 这个弱实体集。</p></li>
+</ul>
+<h2 id="entity-relationship-diagram-erd">Entity Relationship Diagram (ERD)</h2>
+<p>实体关系图是 ERM 的图形化表达，以下是一个简单的 ER 图：</p>
+<blockquote>
+<p><strong>注意 ERD 可能有很多种画法，要具体问题具体分析。</strong></p>
+</blockquote>
+<p><strong>第一步：用矩形表示实体集，矩形里面列出实体集的属性，主键会加上下划线。</strong></p>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/ERDiagram-1.png" /></p>
+<p><strong>第二步：用菱形表示关系集。</strong></p>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/ERDiagram-2.png" /></p>
+<p><strong>第三步：可以加上关系集中的其他属性。</strong></p>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/ERDiagram-3.png" alt="img" /><figcaption aria-hidden="true">img</figcaption>
+</figure>
+<h3 id="role">Role</h3>
+<p>同一个实体集可以出现在同一个关系集中多次，每次可以扮演不同的角色：</p>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/ERDiagram-4.png" /></p>
+<p>图中的 course_id 和 prereq_id 就被称为 Roles。</p>
+<h3 id="cardinality">Cardinality</h3>
+<p>用不同类型端点来表示基数约束，其中有箭头的表示一，没有箭头的表示多，比如：</p>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/ERDiagram-5.png" alt="一个老师对一个学生" /><figcaption aria-hidden="true">一个老师对一个学生</figcaption>
+</figure>
+<figure>
+<img src="C:\Users\Harvey\Desktop\ERDiagram-6.png" alt="一个老师对多个学生" /><figcaption aria-hidden="true">一个老师对多个学生</figcaption>
+</figure>
+<p>也可以直接写上具体的最小和最大基数：</p>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/ERDiagram-8.png" /></p>
+<p>上图表示每个 student 都有一个 instrucotr (1..1)，每个 instructor 可以指导零或多个 student (0..*)</p>
+<h3 id="total-partial-participation">Total &amp; Partial Participation</h3>
+<p>用双线表示 <strong>完全参与</strong>（该实体集中的每个实体都对应了关系集中的至少一条关系），单线表示 <strong>部分参与</strong>（一些实体可能不在关系集中），比如：</p>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/ERDiagram-7.png" /></p>
+<p>每个 student 都必须在 advisor 中出现（每个 student 都必须至少有一个 instructor），而有部分 instructor 可能没有 student。</p>
+<h3 id="attribute">Attribute</h3>
+<p>用缩进表示 Composite Attribute，比如：</p>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">name
+  first_name
+  middle_name
+  last_name
+address
+  street
+    street_number
+    street_name
+    apt_number
+  city
+  state
+  zip<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>用大括号表示 Multi-Valued Attribute，比如：</p>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">&#123; phone_number &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>用函数表示 Derived Attribute，比如：</p>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">age()<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="weak-entity-set-1">Weak Entity Set</h3>
+<p>用双菱形表示识别关系集 Identifying Relationship Set，用虚下划线表示判别器 Discriminator。</p>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/ERDiagram-9.png" /></p>
+<h3 id="specialization">Specialization</h3>
+<blockquote>
+<p>Specialization 简单来讲就是继承关系，与 Specialization 相对应的概念是 Generalization。</p>
+</blockquote>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/ERDiagram-10.png" alt="ERDiagram-10" /><figcaption aria-hidden="true">ERDiagram-10</figcaption>
+</figure>
+<ul>
+<li><p>Overlapping &amp; Disjoint</p>
+<ul>
+<li><p>Overlapping：Person 可以是 Employee，同时也可以是 Student；</p></li>
+<li><p>Disjoint：Employee 只能是 Instructor 或 Secretary 中的一个。</p></li>
+</ul></li>
+<li><p>Partial &amp; Total Specialization</p>
+<ul>
+<li>Partial：比如 Employee 可以是 Instructor、Secretary 或者没有其他特异功能的普通 Employee，默认情况；</li>
+<li>Total：比如 Person 必须是 Employee 或者 Student，不能是别的任何类别，通常需要特殊指定。</li>
+</ul></li>
+</ul>
+<h3 id="example">Example</h3>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/ERDiagram-11.png" /></p>
+<h2 id="relation-schemas">Relation Schemas</h2>
+<p>可以将 ERD 转换为 <strong>关系模式（Relation Schemas）</strong>。</p>
+<h3 id="rpresenting-entity-set">Rpresenting Entity Set</h3>
+<p>强实体集直接转换成表：building(<u>name</u>, address)</p>
+<p>弱实体集转换成的表需要包含他的识别实体集的主键：room(<u>name</u>, <u>number</u>, capacity)</p>
+<h3 id="representing-relationship-set">Representing Relationship Set</h3>
+<p>多对多：取实体集的主键，联合起来作为关系集的主键，可以再加一些其他的属性，比如 advisor = (<u>studentID</u>, <u>instructorID</u>, date)</p>
+<p>一对多：</p>
+<ul>
+<li>可以取实体集的主键（并再加一些属性），并且把 <em>多</em> 的那个实体集的主键作为关系集的主键，比如 insDept = (<u>insID</u>, deptName)</li>
+<li>也可以关系集合并到将 <em>多</em> 的那边的实体集里面去，比如 instructor = (<u>ID</u>, name, salary, dept_name)</li>
+</ul>
+<p>一对一：</p>
+<ul>
+<li>可以取实体集的主键（并再加一些属性），并且任选一边的主键作为关系集的主键，比如 advisor = (<u>instructorID</u>, studentID) 或者 advisor = (instructorID, <u>studentID</u>)</li>
+<li>将关系集合并到任意一边去，比如 instructor = (<u>ID</u>, name, salary, <em>studentID</em>) 或者 student = (<u>ID</u>, name, totCred, <em>instructorID</em>)</li>
+</ul>
+<h3 id="representing-attribute">Representing Attribute</h3>
+<ul>
+<li>Composite Attributes：展开存放</li>
+<li>Multi-Valued Attributes：忽略，用一个单独的表存放</li>
+<li>Derived Attribute：忽略</li>
+</ul>
+<h4 id="multi-valued-attribute">Multi-Valued Attribute</h4>
+<p>需要一个单独的表用来表达，比如 instructor 中的 phoneNumber，需要用一个新表：instPhone = (<u>ID</u>, <u>phoneNumber</u>)。</p>
+<p>原来的一组值就会变成新表中的单独的几行，比如原来的 instructorID 123 有 phoneNumber 1234 和 5678，那么就需要存为两行 (123, 1234) 和 (123, 5678)。</p>
+<h4 id="derived-attribute">Derived Attribute</h4>
+<p>我们可以创建 View 来表达，比如 Age：</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">VIEW</span> instructorAge <span class="token keyword">AS</span>
+  <span class="token keyword">SELECT</span> ID<span class="token punctuation">,</span> <span class="token function">NOW</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> dateOfBirth <span class="token keyword">AS</span> age
+  <span class="token keyword">FROM</span> instructor<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h3 id="representing-higher-arity-relation">Representing Higher Arity Relation</h3>
+<p>表达多元关系时，可以将多个实体集的主键都放进来，比如 projGuide = (instructorID, studentID, projectID)</p>
+<h3 id="representing-specialization">Representing Specialization</h3>
+<p>表达继承关系时，有两种方法，下列我们用 Person(ID, name, street, city)、Employee(ID, salary)、Student(ID, totCredits) 来举例，Employee 和 Student 都继承了 Person。</p>
+<p><strong>方法一：创建三个表，共享他们的主键，同时公共属性只存在高级的实体中。</strong></p>
+<ul>
+<li>person = (<u>ID</u>, name, street, city)</li>
+<li>employee = (<u>ID</u>, salary)</li>
+<li>student = (<u>ID</u>, totCredits)</li>
+</ul>
+<p>该方法的缺陷是如果要拿到 Employee 和 Student 中的完整信息，需要再去访问 Person 表，相当于一次性要访问一个表。</p>
+<p><strong>方法二：创建三个表，共享他们的主键，公共属性存在于所有实体中。</strong></p>
+<ul>
+<li>person = (<u>ID</u>, name, street, city)</li>
+<li>employee = (<u>ID</u>, name, street, city, salary)</li>
+<li>student = (<u>ID</u>, name, street, city, totCredits)</li>
+</ul>
+<p>缺陷是产生了冗余的信息（如果一个人既是 Employee，也是 Student）</p>
 <h1 id="quick-start">Quick Start</h1>
 <h2 id="创建数据库">创建数据库</h2>
 <p><a href="https://dev.mysql.com/downloads/mysql/">下载 MySQL</a>、<a href="https://dev.mysql.com/downloads/workbench">下载 MySQL WorkBench</a></p>
@@ -6875,61 +7155,6 @@ connection<span class="token punctuation">.</span><span class="token function">e
 ]]></content>
       <categories>
         <category>全栈</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>Docker</title>
-    <url>/hais-notebook/2021/03/14/Docker/</url>
-    <content><![CDATA[<p>数据库的基本知识以及用 Docker 来安装数据库。</p>
-<span id="more"></span>
-<h1 id="用-docker-来安装数据库">用 Docker 来安装数据库</h1>
-<h2 id="安装-docker">安装 Docker</h2>
-<ul>
-<li>进入 <a href="https://hub.docker.com/">Docker Hub 官方网站</a> 注册并下载</li>
-<li>确保 <code>docker --version</code> 返回版本号</li>
-<li>在 Docker Engine 中设置国内镜像，<a href="http://guide.daocloud.io/dcs/daocloud-9153151.html">可以点这里查看教程</a> <pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">&#123;</span>
-  <span class="token property">"registry-mirrors"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-    <span class="token string">"https://docker.mirrors.ustc.edu.cn"</span>
-  <span class="token punctuation">]</span><span class="token punctuation">,</span>
-  <span class="token property">"insecure-registries"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
-</ul>
-<h2 id="docker-安装-mysql">Docker 安装 MySQL</h2>
-<ul>
-<li>进入 Docker 上面 <a href="https://hub.docker.com/_/mysql">MySQL 的主页</a></li>
-<li>运行命令创建容器： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">docker</span> run <span class="token parameter variable">--name</span> some-mysql <span class="token parameter variable">-e</span> <span class="token assign-left variable">MYSQL_ROOT_PASSWORD</span><span class="token operator">=</span>my-secret-pw <span class="token parameter variable">-d</span> mysql:tag
-<span class="token comment"># -d 表示守护进程形式，不会随意关掉</span>
-<span class="token comment"># -p 用来设置端口映射 本机端口号:虚拟机端口号</span>
-<span class="token function">docker</span> run <span class="token parameter variable">--name</span> mysql-demo1 <span class="token parameter variable">-e</span> <span class="token assign-left variable">MYSQL_ROOT_PASSWORD</span><span class="token operator">=</span><span class="token number">123456</span> <span class="token parameter variable">-p</span> <span class="token number">3306</span>:3306 <span class="token parameter variable">-d</span> mysql:latest<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></li>
-</ul>
-<p>常见的 docker 命令：</p>
-<ul>
-<li><code>docker run</code> 启动新容器</li>
-<li><code>docker ps -a</code> 查看所有的容器（Containers）</li>
-<li><code>docker kill &lt;id|name&gt;</code> 关闭对应的容器</li>
-<li><code>docker restart &lt;id|name&gt;</code> 重启关闭的容器</li>
-<li><code>docker rm &lt;id|name&gt;</code> 删除对应的容器</li>
-<li><code>docker container prune</code> 删除无用的容器，以节省空间</li>
-</ul>
-<p>注意：用 docker 运行的容器，默认不会持久化，容器被删掉，数据也就没了</p>
-<h2 id="docker-连接-mysql">Docker 连接 MySQL</h2>
-<ol type="1">
-<li>进入 Docker 容器，相当于一个 Linux 虚拟机： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">docker</span> <span class="token builtin class-name">exec</span> <span class="token parameter variable">-it</span> mysql-demo1 <span class="token function">bash</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></li>
-<li>使用 MySQL 命令进入数据库 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># -u root：以 ROOT 用户进入</span>
-<span class="token comment"># -p 直接回车，然后输入密码</span>
-mysql <span class="token parameter variable">-u</span> root <span class="token parameter variable">-p</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></li>
-<li>使用 SQL 语句操作 <pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token comment"># 查看有哪些数据库</span>
-<span class="token keyword">show</span> <span class="token keyword">databases</span><span class="token punctuation">;</span>
-<span class="token comment"># 进入其中一个数据库</span>
-<span class="token keyword">use</span> <span class="token operator">&lt;</span>数据库名称<span class="token operator">></span><span class="token punctuation">;</span>
-<span class="token comment"># 看有哪些表</span>
-<span class="token keyword">show</span> <span class="token keyword">tables</span><span class="token punctuation">;</span>
-<span class="token comment"># 查看表内容</span>
-<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token operator">&lt;</span>表名称<span class="token operator">></span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
-</ol>
-]]></content>
-      <categories>
-        <category>工具</category>
       </categories>
   </entry>
   <entry>
@@ -8780,6 +9005,23 @@ foo<span class="token punctuation">.</span><span class="token function">fn</span
 <h3 id="bytecode">Bytecode</h3>
 <p>Javac compiler compiles the java source code into bytecode.</p>
 <p>The byte code is saved in a .class file.</p>
+<h2 id="data-transfer-object-dto">Data Transfer Object (DTO)</h2>
+<p>DTO 是一种设计模式，在软件工程（尤其是分布式系统）中被广泛运用，用来在不同的 Layer、Component 之间交换数据。</p>
+<p>Java 中的 DTO 就是一些简单的类，有一些属性、Getters 和 Setters，作为数据的轻量容器来使用。</p>
+<p>在 Spring 中，DTOs 一般用来表达 RESTful APIs 的请求和响应数据，他们可以很轻松地使用 Bean Validation API 来进行校验（比如 <span class="citation" data-cites="NotNull">@NotNull</span>、<span class="citation" data-cites="Size">@Size</span>、<span class="citation" data-cites="Email">@Email</span> 等）。</p>
+<p><strong>DTO 主要用于：</strong></p>
+<ul>
+<li>在客户端与服务端之间交换数据。</li>
+<li>在不同的应用之间交换数据。</li>
+</ul>
+<p><strong>DTO 的好处：</strong></p>
+<ul>
+<li>封装，当数据结构发生改变的时候，只有相关的 DTO 需要改变。</li>
+<li>关注点分离，将数据表达和数据处理分开。</li>
+<li>提升性能，在分布式系统中，DTO 可以减少不同组件之间的数据传输。</li>
+</ul>
+<p><strong>DTO 的命名：</strong></p>
+<p>一般 DTO 需要反映他的用途，比如 UserCreateDTO、UserUpdateDTO、UserDetailsDTO。</p>
 <h1 id="basic-syntax">Basic Syntax</h1>
 <h1 id="startup">Startup</h1>
 <h2 id="extension-pack-for-java-for-vscode">Extension Pack for Java for VSCode</h2>
@@ -9548,7 +9790,14 @@ POST http://localhost:8080/api/v1/student
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="component"><span class="citation" data-cites="Component">@Component</span></h3>
 <p>Mark it as a component. Spring creates an instance of the class and adds that instance to its context.</p>
-<h2 id="dependency-injection-di-in-spring">Dependency Injection (DI) in Spring</h2>
+<h3 id="controlleradvice"><span class="citation" data-cites="ControllerAdvice">@ControllerAdvice</span></h3>
+<p><span class="citation" data-cites="ControllerAdivce">@ControllerAdivce</span> 是 <span class="citation" data-cites="Component">@Component</span> 的一个特殊化（Specialization），用 <span class="citation" data-cites="ControllerAdvice进行注解的类也会在应用启动时">@ControllerAdvice进行注解的类也会在应用启动时</span> Spring 扫描 Components 的时候被检测到并注册。</p>
+<p>ControllerAdivce 类提供了集中处理多个 Controllers 错误和其他问题的场所，在该类中可以：</p>
+<ul>
+<li>处理全局错误：使用 <span class="citation" data-cites="ExceptionHandler">@ExceptionHandler</span> 定义全局处理错误方法。</li>
+<li>绑定 Model Attribute：使用 <span class="citation" data-cites="ModelAttribute">@ModelAttribute</span> 绑定在多个 Controller 中通用的属性，可以用来存储用户信息、应用设置等。</li>
+<li>配置数据绑定：使用 <span class="citation" data-cites="InitBinder">@InitBinder</span> 配置多个 Controller 之间通用的数据绑定设置，比如自定义编辑器、格式化器、校验器等。</li>
+</ul>
 <h3 id="autowired"><span class="citation" data-cites="Autowired">@Autowired</span></h3>
 <p>Defines the object that needs the dependency.</p>
 <p>If there is a SMSService which implements MessageService:</p>
@@ -9840,6 +10089,82 @@ POST http://localhost:8080/api/v1/student
   
   <span class="token comment">//...</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="pramater-validation">Pramater Validation</h1>
+<h2 id="tools">Tools</h2>
+<ul>
+<li><code>javax.validation</code> 和 <code>jakarta.validation</code> 是两个 Bean Validation 规范，他们都定义了一些标准的 Annotaions 和 API，后者可以看做前者的延续。他们并没有提供校验功能的具体实现，只提供了标准接口。</li>
+<li>Hibernate Validator 提供了校验功能的具体实现。</li>
+<li>当我们使用 SpringBoot 的时候，可以引入 <code>spring-boot-starter-validation</code>，他会自动帮我们引入恰当的 Hibernate Validaotr。</li>
+<li>当使用 Spring Boot 2.5.x 及以下版本时，Starter 会自动引入 Hibernate Validator 6.x（使用 <code>javax.validation</code>）；当使用 Spring Boot 2.6.x 及以上版本时，Starter 会自动引入 Hibernate Validator 7.x（使用 <code>jakarta.validation</code>）</li>
+</ul>
+<h2 id="usage">Usage</h2>
+<p><strong>1. 在 <code>pom.xml</code> 中添加 <code>spring-boot-starter-validation</code></strong></p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>org.springframework.boot<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>spring-boot-starter-validation<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p><strong>2. 在 <a href="#data-transfer-object-dto">UserCreateDTO</a> 中添加 Annotaions</strong></p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">import</span> <span class="token import"><span class="token namespace">jakarta<span class="token punctuation">.</span>validation<span class="token punctuation">.</span>constraints<span class="token punctuation">.</span></span><span class="token class-name">Email</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">jakarta<span class="token punctuation">.</span>validation<span class="token punctuation">.</span>constraints<span class="token punctuation">.</span></span><span class="token class-name">NotBlank</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">jakarta<span class="token punctuation">.</span>validation<span class="token punctuation">.</span>constraints<span class="token punctuation">.</span></span><span class="token class-name">Size</span></span><span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">UserCreateDTO</span> <span class="token punctuation">&#123;</span>
+
+    <span class="token annotation punctuation">@NotBlank</span>
+    <span class="token annotation punctuation">@Size</span><span class="token punctuation">(</span>min <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">,</span> max <span class="token operator">=</span> <span class="token number">50</span><span class="token punctuation">)</span>
+    <span class="token keyword">private</span> <span class="token class-name">String</span> name<span class="token punctuation">;</span>
+
+    <span class="token annotation punctuation">@NotBlank</span>
+    <span class="token annotation punctuation">@Email</span>
+    <span class="token annotation punctuation">@Size</span><span class="token punctuation">(</span>min <span class="token operator">=</span> <span class="token number">5</span><span class="token punctuation">,</span> max <span class="token operator">=</span> <span class="token number">50</span><span class="token punctuation">)</span>
+    <span class="token keyword">private</span> <span class="token class-name">String</span> email<span class="token punctuation">;</span>
+
+    <span class="token comment">// Getters and setters</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><strong>3. 在 UserController 中添加 <span class="citation" data-cites="Valid">@Valid</span></strong></p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">import</span> <span class="token import"><span class="token namespace">jakarta<span class="token punctuation">.</span>validation<span class="token punctuation">.</span></span><span class="token class-name">Valid</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>http<span class="token punctuation">.</span></span><span class="token class-name">HttpStatus</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>http<span class="token punctuation">.</span></span><span class="token class-name">ResponseEntity</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>web<span class="token punctuation">.</span>bind<span class="token punctuation">.</span>annotation<span class="token punctuation">.</span></span><span class="token class-name">PostMapping</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>web<span class="token punctuation">.</span>bind<span class="token punctuation">.</span>annotation<span class="token punctuation">.</span></span><span class="token class-name">RequestBody</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>web<span class="token punctuation">.</span>bind<span class="token punctuation">.</span>annotation<span class="token punctuation">.</span></span><span class="token class-name">RequestMapping</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>web<span class="token punctuation">.</span>bind<span class="token punctuation">.</span>annotation<span class="token punctuation">.</span></span><span class="token class-name">RestController</span></span><span class="token punctuation">;</span>
+
+<span class="token annotation punctuation">@RestController</span>
+<span class="token annotation punctuation">@RequestMapping</span><span class="token punctuation">(</span><span class="token string">"/api/users"</span><span class="token punctuation">)</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">UserController</span> <span class="token punctuation">&#123;</span>
+
+    <span class="token annotation punctuation">@PostMapping</span>
+    <span class="token keyword">public</span> <span class="token class-name">ResponseEntity</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token operator">?</span><span class="token punctuation">></span></span> <span class="token function">createUser</span><span class="token punctuation">(</span><span class="token annotation punctuation">@Valid</span> <span class="token annotation punctuation">@RequestBody</span> <span class="token class-name">UserCreateDTO</span> userCreateDTO<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token comment">// Perform the actual user creation logic here</span>
+        <span class="token comment">// For example, you can call a service method to save the user to the database</span>
+
+        <span class="token keyword">return</span> <span class="token class-name">ResponseEntity</span><span class="token punctuation">.</span><span class="token function">status</span><span class="token punctuation">(</span><span class="token class-name">HttpStatus</span><span class="token punctuation">.</span><span class="token constant">CREATED</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">body</span><span class="token punctuation">(</span><span class="token string">"User created successfully"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><strong>4. 使用 <a href="#controlleradvice">ControllerAdvice Class</a> 处理校验错误</strong></p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">import</span> <span class="token import"><span class="token namespace">org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>http<span class="token punctuation">.</span></span><span class="token class-name">HttpStatus</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>http<span class="token punctuation">.</span></span><span class="token class-name">ResponseEntity</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>web<span class="token punctuation">.</span>bind<span class="token punctuation">.</span></span><span class="token class-name">MethodArgumentNotValidException</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>web<span class="token punctuation">.</span>bind<span class="token punctuation">.</span>annotation<span class="token punctuation">.</span></span><span class="token class-name">ControllerAdvice</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>web<span class="token punctuation">.</span>bind<span class="token punctuation">.</span>annotation<span class="token punctuation">.</span></span><span class="token class-name">ExceptionHandler</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>web<span class="token punctuation">.</span>bind<span class="token punctuation">.</span>annotation<span class="token punctuation">.</span></span><span class="token class-name">ResponseStatus</span></span><span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">java<span class="token punctuation">.</span>util<span class="token punctuation">.</span></span><span class="token class-name">HashMap</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">java<span class="token punctuation">.</span>util<span class="token punctuation">.</span></span><span class="token class-name">Map</span></span><span class="token punctuation">;</span>
+
+<span class="token annotation punctuation">@ControllerAdvice</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">GlobalExceptionHandler</span> <span class="token punctuation">&#123;</span>
+
+    <span class="token annotation punctuation">@ExceptionHandler</span><span class="token punctuation">(</span><span class="token class-name">MethodArgumentNotValidException</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span>
+    <span class="token annotation punctuation">@ResponseStatus</span><span class="token punctuation">(</span><span class="token class-name">HttpStatus</span><span class="token punctuation">.</span><span class="token constant">BAD_REQUEST</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> <span class="token class-name">ResponseEntity</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token operator">?</span><span class="token punctuation">></span></span> <span class="token function">handleMethodArgumentNotValid</span><span class="token punctuation">(</span><span class="token class-name">MethodArgumentNotValidException</span> ex<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">></span></span> errors <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HashMap</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        ex<span class="token punctuation">.</span><span class="token function">getBindingResult</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getFieldErrors</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span>error <span class="token operator">-></span>
+            errors<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>error<span class="token punctuation">.</span><span class="token function">getField</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> error<span class="token punctuation">.</span><span class="token function">getDefaultMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token class-name">ResponseEntity</span><span class="token punctuation">.</span><span class="token function">status</span><span class="token punctuation">(</span><span class="token class-name">HttpStatus</span><span class="token punctuation">.</span><span class="token constant">BAD_REQUEST</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">body</span><span class="token punctuation">(</span>errors<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 ]]></content>
       <categories>
         <category>全栈</category>
@@ -15590,7 +15915,24 @@ Origin: http://example.com<span aria-hidden="true" class="line-numbers-rows"><sp
 <li><strong>没有队头阻塞的多路复用</strong> <img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/TCP-Blocking.png" alt="TCP队头阻塞" /> <img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/QUIC-No-Blocking.png" alt="QUIC没有队头阻塞" /></li>
 <li><strong>前向纠错</strong>，会多发一些冗余的包（校验包），虽然产生了多的包，但是减少了重传带来的损失 <img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/QUIC-Error-Correcting.png" alt="前向纠错" /></li>
 </ul>
-<h2 id="电子邮件">电子邮件</h2>
+<h2 id="https-1">HTTPS</h2>
+<h3 id="two-things-https-does">Two Things HTTPS Does</h3>
+<p>HTTPS 做了两件非常重要的事情：</p>
+<ol type="1">
+<li><strong>Authentication</strong>：网站被第三方认证了（Authenticated）、网站的身份也已经被确认过了。比如 https://www.amazon.com 确保你真的在访问 amazon.com。</li>
+<li><strong>Encryption</strong>：你与网站之间传输的数据是经过加密的。</li>
+</ol>
+<p>可以经常听到 HTTPS 与 <strong>SSL</strong> 和 <strong>TLS</strong>，下面使他们之间大体的关系：</p>
+<ul>
+<li><strong>Secure Sockets Layer (SSL)</strong> 和 <strong>Transport Layer Security (TLS)</strong> 指的是 HTTPS 用来在服务器与浏览器之间沟通的安全连接类型。</li>
+<li>SSL 是一个相对较老的技术，并且已经被 TLS 取代了。</li>
+<li>使用上，很多人会将其混用，因此会容易听到 SSL/TLS、SSL/TLS 认证之类的说法。</li>
+</ul>
+<h4 id="authentication">Authentication</h4>
+<blockquote>
+<p>身份验证（Authentication）保证了我们访问的是正确的网站。</p>
+</blockquote>
+<h2 id="email">Email</h2>
 <ul>
 <li><p>因特网电子邮件系统总体由三个部分组成：<strong>用户代理（User Agent）、邮件服务器（Mail Server）、简单邮件传输协议（Simple Mail Transfer Protocol, SMTP）</strong>。</p></li>
 <li><p>每个接收方在邮件服务器上有一个 <strong>邮箱（Mailbox）</strong>。</p></li>
@@ -17383,31 +17725,93 @@ psql <span class="token parameter variable">-U</span> username <span class="toke
 <p>亮部、暗部、中间调的分布（直方图）</p>
 </blockquote>
 <ul>
-<li><p>低调：细节集中在暗部</p>
+<li><strong>低调</strong>：细节集中在暗部，以浅灰色至黑色以及偏低亮度为主。更加沉稳、压抑、神秘、故事感强烈。沉重、悲怆、痛苦、惆怅。
 <ul>
-<li><p>情绪：压抑</p></li>
-<li><p>光的分配：暗部 &gt; 中间调 &gt; 亮部</p>
+<li>光的分配：暗部 &gt; 中间调 &gt; 亮部
 <ul>
 <li>前期需要确保正确的曝光，把信息集中在暗部偏右边一点（而不是集中在最左边，这样就找不回来细节了）</li>
 <li>暗部占比多、亮部占比少，需要缩小灯光的范围</li>
 </ul></li>
-<li><p>色彩</p></li>
-<li><p>低长调：有高光、中间调、暗部（直方图从左到右都有分布）</p></li>
-<li><p>低中调：没有高光（或高光很少），只有中间调和暗部</p></li>
-<li><p>低短调：没有高光，中间调很短</p></li>
+<li>低长调：有高光、中间调、暗部（直方图从左到右都有分布）。与高长调相反，白色较少黑色较多，明度较低，容易有氛围感。</li>
+<li>低中调：没有高光（或高光很少），只有中间调和暗部。深沉、神秘、稳重、凝重。</li>
+<li>低短调：没有高光，中间调很短。神秘、恐怖、深不可测。</li>
 </ul></li>
-<li><p>高调：细节集中在亮部</p>
+<li><strong>高调</strong>：细节集中在亮部，中性灰到白。清晰、明亮、视觉上轻松、说明性更强。明朗、幸福、甜蜜、欢愉。
 <ul>
-<li>高长调</li>
-<li>高中调</li>
-<li>高短调</li>
+<li>高长调：青春阳光。</li>
+<li>高中调：相对高长调给人更加柔和的感觉，唯美、干净、明亮、愉快。</li>
+<li>高短调：纯洁、高尚、文艺、天真、浪漫。</li>
 </ul></li>
-<li><p>中调：细节集中在中部</p>
+<li><strong>中调</strong>：细节集中在中部，浓淡相间、层次丰富。柔和、文艺、平稳唯美、回忆感、情绪平缓。有利于立体感、质感的形成和表现。
 <ul>
-<li>中长调</li>
-<li>中中调</li>
-<li>中短调</li>
+<li>中长调：层次感强、细节多、整体柔和。</li>
+<li>中中调：柔和、舒适、唯美，有一些意境。</li>
+<li>中短调：平和、安静、捎带文艺和唯美。</li>
 </ul></li>
+<li>例子
+<ul>
+<li>强反差：硬光、张力</li>
+</ul></li>
+</ul>
+<h1 id="阴影">阴影</h1>
+<blockquote>
+<p>光比：高光和阴影的明度亮暗差别</p>
+</blockquote>
+<ul>
+<li><strong>阴影的面积</strong>：光比大的时候，黑暗占比大，人眼在黑暗的情况下对光会更加敏感
+<ul>
+<li>阴影占比小：更具有说明性，解释物体的特性，突出商品的构造、材质、面部妆造等，没有那么强的调性</li>
+<li>阴影占比大：更具艺术感，有故事性，突出的是画面的临场感、氛围感，关注是什么人做什么事、内容情节</li>
+</ul></li>
+<li><strong>阴影的明度</strong>：可以结合阴影的明度来实现不同的表现手法
+<ul>
+<li>小面积的阴影或者边缘高光勾勒出立体感，同时不破坏画面的说明性</li>
+<li>当面积和明度反差大的时候，画面更适合强调氛围、故事调性、角色调性</li>
+</ul></li>
+<li><strong>阴影的硬度</strong>（软光、硬光）：交界线越清晰越硬
+<ul>
+<li>最大的硬光源是太阳</li>
+<li>阴影和交界线硬会给人一种一清二楚、明明白白、世态炎凉的感觉</li>
+<li>硬光用来塑造角色形状，也可以软硬结合（如果全是软光，画面会非常平）</li>
+</ul></li>
+</ul>
+<h1 id="张力">张力</h1>
+<p>使用 <strong>对比、反差</strong> 控制张力，张力是有方向的（动作更大、冲突更大、矛盾更大，线条更紧绷）</p>
+<ul>
+<li><strong>人体张力</strong>：有方向性、动作趋势，力量感，后期可以通过强化线条肢体关系来强化张力</li>
+<li><strong>黑白张力</strong>：黑白电影、摄影、素描的黑白关系明确富有层次</li>
+<li><strong>色彩张力</strong>：米山舞</li>
+<li><strong>构图张力</strong>：动静对比</li>
+</ul>
+<h1 id="构图">构图</h1>
+<p><strong>构图目的：</strong></p>
+<ol type="1">
+<li>引导主体方向</li>
+<li>突出主体</li>
+<li>带线索</li>
+</ol>
+<p><strong>关键点：</strong></p>
+<ul>
+<li>规律性</li>
+<li>平衡性</li>
+</ul>
+<p><strong>常用构图：</strong></p>
+<ul>
+<li><strong>三分构图</strong>
+<ul>
+<li>把主体放在任意三分点上</li>
+<li>用主体占据两个三分点</li>
+<li>让主体占据画面的三分之一</li>
+<li>让主体的眼睛位于三分线上</li>
+</ul></li>
+<li><strong>中心构图</strong></li>
+<li><strong>对称构图</strong></li>
+<li><strong>三角形构图</strong>：三个元素构成一个三角形</li>
+<li><strong>框架构图</strong>：偷窥视角，有一个框框住了主体</li>
+<li><strong>对角线</strong>：并不一定是整个画面的对角线，比如按照45°网格排列元素也是对角线构图</li>
+<li><strong>斜构图</strong>（通常不超过45°）</li>
+<li><strong>引导线</strong></li>
+<li><strong>重复构图</strong></li>
 </ul>
 <h1 id="曝光正确原理">曝光正确原理</h1>
 <h2 id="曝光模式">曝光模式</h2>
@@ -22655,6 +23059,77 @@ observable<span class="token punctuation">.</span><span class="token function">s
 ]]></content>
       <categories>
         <category>前端</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Software Engineering</title>
+    <url>/hais-notebook/2023/04/10/SoftwareEngineering/</url>
+    <content><![CDATA[<p>.</p>
+<span id="more"></span>
+<h1 id="devops">DevOps</h1>
+<blockquote>
+<p>DevOps = Development + Operation = New Mindset + New Tools + New Skills</p>
+</blockquote>
+<p>DevOps 主要是通过一系列的原则、工具、方法来提高开发与运维的写作，通过快速发布新功能、修复和优化来缩短开发周期。</p>
+<p>敏捷开发加速了业务需求 -&gt; 开发，DevOps 则加速了开发 -&gt; 运维。</p>
+<p><strong>DevOps 运用到的技术与工具：</strong></p>
+<ul>
+<li><strong>Continuous Integration</strong>：持续集成
+<ul>
+<li><strong>Source Code Management</strong>：源代码管理，Git、SVN、CVS、ClearCase</li>
+<li><strong>Build Process</strong>：构建，Maven、Gradle、Rake、JUnit、Sonar</li>
+<li><strong>Continuous Integration</strong>：持续集成，Jenkins、GitLab CI、Travis、Nexus</li>
+<li><strong>Test Automation</strong>：自动化测试，包括单元测试、服务测试、UI 测试等</li>
+</ul></li>
+<li><strong>Continuous Delivery</strong>：持续交付
+<ul>
+<li><strong>Deployment Automation</strong>：自动化部署，Chef、Puppet、Docker、Heroku、Open Stack、AWS Cloud Formation、Rancher、Flyway</li>
+</ul></li>
+<li><strong>Microservices</strong>：微服务</li>
+<li><strong>Infrastructure as Code</strong>：基础设置及代码
+<ul>
+<li>使用机器可读的定义文件来管理开发、测试和生产环境</li>
+</ul></li>
+<li><strong>Monitoring and Logging</strong>：监测与日志
+<ul>
+<li>让开发者查看生产环境指标，Nagios、Zabbix、Prometheus、Logstash、Graylog</li>
+</ul></li>
+<li><strong>Communication and Collaboration</strong>：沟通与协作
+<ul>
+<li>Knowledge Sharing：知识库，Rocket Chat、GitLab wiki、Redmine、Trello</li>
+</ul></li>
+</ul>
+<p><strong>DevOps 表现指标：</strong></p>
+<ul>
+<li><strong>Delivery Lead Time</strong>：交付前时间，包括代码实现、测试、提交更改到生产系统，越短越好</li>
+<li><strong>Deployment Frequency</strong>：部署频率，越高越好</li>
+<li><strong>Change Fail Percentage</strong>：变更导致需要回滚或紧急修复的比率，越低越好</li>
+<li><strong>Mean Time to Restore (MTTR)</strong>：从突发事件中恢复的平均时间，越短越好</li>
+</ul>
+<h2 id="ci-cd">CI &amp; CD</h2>
+<ul>
+<li><strong>Continuous Integration</strong>
+<ul>
+<li>每个开发人员开发开发自己负责的部分</li>
+<li>需要持续地将自己的代码与其他的人的代码集成起来</li>
+<li>需要对集成后的代码进行单元测试、集成测试、回归测试</li>
+</ul></li>
+<li><strong>Continuous Delivery</strong>
+<ul>
+<li>持续交付并不是说尽可能快地部署所有变更，而是让所有变更在任何时刻都被保证是可部署的</li>
+<li>指的是部署在任何时间、任何平台部署任意版本的能力和基础设施</li>
+</ul></li>
+<li><strong>From CI to CD</strong>
+<ul>
+<li>集成所有该项目相关的工作，以及所有构成该服务、应用或系统的代码</li>
+<li>验证构建完成无错误，将应用交付给 QA（代码从开发环境交付到测试环境）</li>
+<li>在模拟环境下进行冒烟测试、接受性测试、系统稳定性测试，提供给运维一些必要的脚本和测试数据来进行接受性测试和性能测试</li>
+<li>在类生产环境中进行测试</li>
+</ul></li>
+</ul>
+]]></content>
+      <categories>
+        <category>计算机</category>
       </categories>
   </entry>
   <entry>
