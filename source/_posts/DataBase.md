@@ -1155,7 +1155,7 @@ ERM 主要用来帮助设计设计库，描述表之间的关系，独立于数�
 
 ![一个老师对一个学生](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/ERDiagram-5.png)
 
-![一个老师对多个学生](C:\Users\Harvey\Desktop\ERDiagram-6.png)
+![一个老师对多个学生](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/ERDiagram-6)
 
 也可以直接写上具体的最小和最大基数：
 
