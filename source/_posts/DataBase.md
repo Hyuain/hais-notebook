@@ -76,9 +76,15 @@ instructor = (ID, name, dept_name, salary)
 
 > 域（Domain）表示某个属性的取值范围，比如 $salary=\{1000,\dots, 10000\}\cup\{null\}$
 
+属性类型可以分为：
+
+- **SImple & Composite**：比如 ID 是简单属性，Address 是复合属性（包含门牌号、街道、城市、国家等）
+- **Single-Valued & Multi-Valued**：比如 Age 是 Single-Valued，Phone Numbers 是 Multi-Valued（人可以有很多电话号码）
+- **Derived**：比如 Age 可以从 DateOfBirth 推算出来。
+
 属性一般要求是 **原子的（atomic）**，即不可分的。比如整数、字符串是原子的，集合和数组是非原子的。
 
-null 是一个特殊值，所有域都有，表示某个值是 unkown。
+NULL 是一个特殊值，所有域都有，表示某个值是 unkown。
 
 ### Database Schema
 
@@ -125,9 +131,9 @@ $$
 $$
 \sigma_{dept\_name="Physics"}(instrucotr)
 $$
-可以在其中加入比较运算符 $= \neq > < \geq \leq$ ，逻辑运算符 与 $\and$ 或 $\or$ 非 $\neg$：
+可以在其中加入比较运算符 $= \neq > < \geq \leq$ ，逻辑运算符 与 $\land$ 或 $\lor$ 非 $\neg$：
 $$
-\sigma_{dept\_name="Physics" \and salary>9000}(instrucotr)
+\sigma_{dept\_name="Physics" \land salary>9000}(instrucotr)
 $$
 
 ## Project
@@ -192,21 +198,21 @@ $r, s$ 必须有同样多的属性，并且属性的列必须一一对应，比�
 
 重复的行会被删掉。
 $$
-\Pi_{source\_id}(\sigma_{semester="Fall" \and year=2017}(section)) \cup \Pi_{source\_id}(\sigma_{semester="Spring" \and year=2018}(section))
+\Pi_{source\_id}(\sigma_{semester="Fall" \land year=2017}(section)) \cup \Pi_{source\_id}(\sigma_{semester="Spring" \land year=2018}(section))
 $$
 
 ## Intersection
 
 要求与 Union 相同，比如：
 $$
-\Pi_{source\_id}(\sigma_{semester="Fall" \and year=2017}(section)) \cap \Pi_{source\_id}(\sigma_{semester="Spring" \and year=2018}(section))
+\Pi_{source\_id}(\sigma_{semester="Fall" \land year=2017}(section)) \cap \Pi_{source\_id}(\sigma_{semester="Spring" \land year=2018}(section))
 $$
 
 ## Set Difference
 
 要求与 Union 相同。比如：
 $$
-\Pi_{source\_id}(\sigma_{semester="Fall" \and year=2017}(section)) - \Pi_{source\_id}(\sigma_{semester="Spring" \and year=2018}(section))
+\Pi_{source\_id}(\sigma_{semester="Fall" \land year=2017}(section)) - \Pi_{source\_id}(\sigma_{semester="Spring" \land year=2018}(section))
 $$
 
 ## Assignment
@@ -1052,7 +1058,246 @@ CREATE TABLE student
   (ID varchar(5),)
 ```
 
+# Entity Relationship Model (ERM)
 
+ERM 主要用来帮助设计设计库，描述表之间的关系，独立于数据库硬件和软件的具体实现，主要有三个核心概念：
+
+- **Entity Sets**: 实体集
+  - Entity 是客观存在并可相互区别的事物。每个 Entity 可以表示为一组属性，比如 `instrucot = (ID, name, street, city, salary)`，`course  = (course_id, title, credits)`。
+  - Entity Set 是一堆同样类型、同样属性的实体的集合，比如 Persons、Cities、Movies。
+  - 一些属性组成了实体集的主键，主键可以将实体集中的每个实体区分开来。
+- **Relationship Sets**: 关系集
+  - Relationship 是一些实体之间的联系。定义 ${(e_1, \cdots ,e_n|e_1 \in E_1, \cdots, e_n \in E_n)}$ 中的 $(e_1, \cdots ,e_n)$ 就是一个关系。
+  - Relationship Set 是不同实体集的实体间的数学联系，里面存了好多关系。关系集中除了来自于各个实体的属性之外，还可以拥有自己的属性。
+  - Degree of a relationship（关系的度）是关系集中包涉及到的的实体集的数量。
+- **Attributes**: 属性
+
+## Cardinality Constraint
+
+**基数约束（Cardinality Constraint）** 是用来表示实体可以有多少实体与另一实体集的实体存在联系，一共有四种形态：
+
+- 1:1（一对一）：Student*WorksOn*Thesis, Department*Has*Dean
+- 1:n（一对多）：Building*Has*Room, Lecturer*Teaches*Course
+- n:1（多对一）：Room*LocatedIn*Building, Course*ToughtBy*Lecturer
+- n:m（多对多）：Student*Takes*Course, Student*Has*Advisor
+
+区分 1:n/n:1 和 n:m：反过来问题
+
+- A building may have multiple rooms...
+  - ... but can room be in multiple buildings? *No -> BuildingHasRoom is 1:n*
+- A department can be located in multiple buildings...
+  - ... but can a building host multiple departments? *Yes -> DepartmentLocatedInBujilding is n:m*
+
+此外两个来自同一个实体集的实体也可以形成关系：
+
+- Person*MarriedTo*Person (1:1)
+- Person*IsFatherOf*Person (1:n)
+- Person*Has*Father (n:1)
+- Person*IsParentOf*Person (n:m)
+
+## Redundant Attribute
+
+比如有两个实体集：
+
+- Instructor(ID, name, *dept_name*, salary)
+- Department(dept_name, buidling, budget)
+
+并且将他们用一个关系集联系起来：Instructor*BelongsTo*Department (ID, dept_name)
+
+**此时 Instructor.dept_name 就是冗余属性，可以去掉。**
+
+## Weak Entity Set
+
+考虑另外一个例子：
+
+- 实体集 Building(building_name, address)
+- 实体集 Room(number, *building_name*, capacity)
+- 关系集 Room*In*Building(number, building_name)
+
+**这时，如果删除了 Room.building_name，就无法区分 Room 中的每一个房间了。**
+
+**弱实体集（Weak Entity Set）** 是一种特殊的实体集，他没有能有效区分每个实体的属性他需要 **一个额外的关系集** 来帮助他区分每个实体。这个额外的关系集叫做 **识别关系集（Identifying Relation Set）**。
+
+- 弱实体没有主键，相对的，他有一个 **识别实体（Identifying Entity）**和一个 **判别器（Discriminator）**。在上述例子中，Buidling 就是识别实体，number 是判别器。
+
+- 弱实体集的存在 **依赖于（Existence Dependent）** 识别实体集，反过来我们称识别实体集 **拥有（Own）** 这个弱实体集。
+
+
+## Entity Relationship Diagram (ERD)
+
+实体关系图是 ERM 的图形化表达，以下是一个简单的 ER 图：
+
+> **注意 ERD 可能有很多种画法，要具体问题具体分析。**
+
+**第一步：用矩形表示实体集，矩形里面列出实体集的属性，主键会加上下划线。**
+
+![](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/ERDiagram-1.png)
+
+**第二步：用菱形表示关系集。**
+
+![](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/ERDiagram-2.png)
+
+**第三步：可以加上关系集中的其他属性。**
+
+![img](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/ERDiagram-3.png)
+
+### Role
+
+同一个实体集可以出现在同一个关系集中多次，每次可以扮演不同的角色：
+
+![](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/ERDiagram-4.png)
+
+图中的 course_id 和 prereq_id 就被称为 Roles。
+
+### Cardinality
+
+用不同类型端点来表示基数约束，其中有箭头的表示一，没有箭头的表示多，比如：
+
+![一个老师对一个学生](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/ERDiagram-5.png)
+
+![一个老师对多个学生](C:\Users\Harvey\Desktop\ERDiagram-6.png)
+
+也可以直接写上具体的最小和最大基数：
+
+![](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/ERDiagram-8.png)
+
+上图表示每个 student 都有一个 instrucotr (1..1)，每个 instructor 可以指导零或多个 student (0..*)
+
+### Total & Partial Participation
+
+用双线表示 **完全参与**（该实体集中的每个实体都对应了关系集中的至少一条关系），单线表示 **部分参与**（一些实体可能不在关系集中），比如：
+
+![](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/ERDiagram-7.png)
+
+每个 student 都必须在 advisor 中出现（每个 student 都必须至少有一个 instructor），而有部分 instructor 可能没有 student。
+
+### Attribute
+
+用缩进表示 Composite Attribute，比如：
+
+```text
+name
+  first_name
+  middle_name
+  last_name
+address
+  street
+    street_number
+    street_name
+    apt_number
+  city
+  state
+  zip
+```
+
+用大括号表示 Multi-Valued Attribute，比如：
+
+```text
+{ phone_number }
+```
+
+用函数表示 Derived Attribute，比如：
+
+```text
+age()
+```
+
+### Weak Entity Set
+
+用双菱形表示识别关系集 Identifying Relationship Set，用虚下划线表示判别器 Discriminator。
+
+![](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/ERDiagram-9.png)
+
+### Specialization
+
+> Specialization 简单来讲就是继承关系，与 Specialization 相对应的概念是 Generalization。
+
+![ERDiagram-10](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/ERDiagram-10.png)
+
+- Overlapping & Disjoint
+
+  - Overlapping：Person 可以是 Employee，同时也可以是 Student；
+
+  - Disjoint：Employee 只能是 Instructor 或 Secretary 中的一个。
+
+- Partial & Total Specialization
+
+  - Partial：比如 Employee 可以是 Instructor、Secretary 或者没有其他特异功能的普通 Employee，默认情况；
+  - Total：比如 Person 必须是 Employee 或者 Student，不能是别的任何类别，通常需要特殊指定。
+
+### Example
+
+![](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/ERDiagram-11.png)
+
+## Relation Schemas
+
+可以将 ERD 转换为 **关系模式（Relation Schemas）**。
+
+### Rpresenting Entity Set
+
+强实体集直接转换成表：building(<u>name</u>, address)
+
+弱实体集转换成的表需要包含他的识别实体集的主键：room(<u>name</u>, <u>number</u>, capacity)
+
+### Representing Relationship Set
+
+多对多：取实体集的主键，联合起来作为关系集的主键，可以再加一些其他的属性，比如 advisor = (<u>studentID</u>, <u>instructorID</u>, date)
+
+一对多：
+
+- 可以取实体集的主键（并再加一些属性），并且把 *多* 的那个实体集的主键作为关系集的主键，比如 insDept = (<u>insID</u>, deptName)
+- 也可以关系集合并到将 *多* 的那边的实体集里面去，比如 instructor = (<u>ID</u>, name, salary, dept_name)
+
+一对一：
+
+- 可以取实体集的主键（并再加一些属性），并且任选一边的主键作为关系集的主键，比如 advisor = (<u>instructorID</u>, studentID) 或者 advisor = (instructorID, <u>studentID</u>)
+- 将关系集合并到任意一边去，比如 instructor = (<u>ID</u>, name, salary, *studentID*) 或者 student = (<u>ID</u>, name, totCred, *instructorID*)
+
+### Representing Attribute
+
+- Composite Attributes：展开存放
+- Multi-Valued Attributes：忽略，用一个单独的表存放
+- Derived Attribute：忽略
+
+#### Multi-Valued Attribute
+
+需要一个单独的表用来表达，比如 instructor 中的 phoneNumber，需要用一个新表：instPhone = (<u>ID</u>, <u>phoneNumber</u>)。
+
+原来的一组值就会变成新表中的单独的几行，比如原来的 instructorID 123 有 phoneNumber 1234 和 5678，那么就需要存为两行 (123, 1234) 和 (123, 5678)。
+
+#### Derived Attribute
+
+我们可以创建 View 来表达，比如 Age：
+
+```sql
+CREATE VIEW instructorAge AS
+  SELECT ID, NOW() - dateOfBirth AS age
+  FROM instructor
+```
+
+### Representing Higher Arity Relation
+
+表达多元关系时，可以将多个实体集的主键都放进来，比如 projGuide = (instructorID, studentID, projectID)
+
+### Representing Specialization
+
+表达继承关系时，有两种方法，下列我们用 Person(ID, name, street, city)、Employee(ID, salary)、Student(ID, totCredits) 来举例，Employee 和 Student 都继承了 Person。
+
+**方法一：创建三个表，共享他们的主键，同时公共属性只存在高级的实体中。**
+
+- person = (<u>ID</u>, name, street, city)
+- employee = (<u>ID</u>, salary)
+- student = (<u>ID</u>, totCredits)
+
+该方法的缺陷是如果要拿到 Employee 和 Student 中的完整信息，需要再去访问 Person 表，相当于一次性要访问一个表。
+
+**方法二：创建三个表，共享他们的主键，公共属性存在于所有实体中。**
+
+- person = (<u>ID</u>, name, street, city)
+- employee = (<u>ID</u>, name, street, city, salary)
+- student = (<u>ID</u>, name, street, city, totCredits)
+
+缺陷是产生了冗余的信息（如果一个人既是 Employee，也是 Student）
 
 # Quick Start
 

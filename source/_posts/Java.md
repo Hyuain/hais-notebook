@@ -3,6 +3,7 @@ title: Java
 date: 2023-02-09 17:14:22
 categories:
   - [全栈]
+
 ---
 
 Object Oriented Design, Java, Maven, Spring Boot.
@@ -190,9 +191,30 @@ Javac compiler compiles the java source code into bytecode.
 
 The byte code is saved in a .class file.
 
+## Data Transfer Object (DTO)
+
+DTO 是一种设计模式，在软件工程（尤其是分布式系统）中被广泛运用，用来在不同的 Layer、Component 之间交换数据。
+
+Java 中的 DTO 就是一些简单的类，有一些属性、Getters 和 Setters，作为数据的轻量容器来使用。
+
+在 Spring 中，DTOs 一般用来表达 RESTful APIs 的请求和响应数据，他们可以很轻松地使用 Bean Validation API 来进行校验（比如 @NotNull、@Size、@Email 等）。
+
+**DTO 主要用于：**
+
+- 在客户端与服务端之间交换数据。
+- 在不同的应用之间交换数据。
+
+**DTO 的好处：**
+
+- 封装，当数据结构发生改变的时候，只有相关的 DTO 需要改变。
+- 关注点分离，将数据表达和数据处理分开。
+- 提升性能，在分布式系统中，DTO 可以减少不同组件之间的数据传输。
+
+**DTO 的命名：**
+
+一般 DTO 需要反映他的用途，比如 UserCreateDTO、UserUpdateDTO、UserDetailsDTO。
+
 # Basic Syntax
-
-
 
 # Startup
 
@@ -236,7 +258,7 @@ To generate Setter and Getter methods in VSCode, in a Java source file, right-cl
 - Access Modifier
   - The keyword `private` signifies that a method or variable can be accessed only within the declaring object.
   - All/most attributes should be declared as private.
--  Getters and Setters
+- Getters and Setters
 
 ## Inheritance
 
@@ -1163,7 +1185,15 @@ public class ProjectConfig {
 
 Mark it as a component. Spring creates an instance of the class and adds that instance to its context.
 
-## Dependency Injection (DI) in Spring
+### @ControllerAdvice
+
+@ControllerAdivce 是 @Component 的一个特殊化（Specialization），用 @ControllerAdvice进行注解的类也会在应用启动时 Spring 扫描 Components 的时候被检测到并注册。
+
+ControllerAdivce 类提供了集中处理多个 Controllers 错误和其他问题的场所，在该类中可以：
+
+- 处理全局错误：使用 @ExceptionHandler 定义全局处理错误方法。
+- 绑定 Model Attribute：使用 @ModelAttribute 绑定在多个 Controller 中通用的属性，可以用来存储用户信息、应用设置等。
+- 配置数据绑定：使用 @InitBinder 配置多个 Controller 之间通用的数据绑定设置，比如自定义编辑器、格式化器、校验器等。
 
 ### @Autowired
 
@@ -1543,3 +1573,96 @@ public class Project {
 }
 ```
 
+# Pramater Validation
+
+## Tools
+
+- `javax.validation` 和 `jakarta.validation` 是两个 Bean Validation 规范，他们都定义了一些标准的 Annotaions 和 API，后者可以看做前者的延续。他们并没有提供校验功能的具体实现，只提供了标准接口。
+- Hibernate Validator 提供了校验功能的具体实现。
+- 当我们使用 SpringBoot 的时候，可以引入 `spring-boot-starter-validation`，他会自动帮我们引入恰当的 Hibernate Validaotr。
+- 当使用 Spring Boot 2.5.x 及以下版本时，Starter 会自动引入 Hibernate Validator 6.x（使用 `javax.validation`）；当使用 Spring Boot 2.6.x 及以上版本时，Starter 会自动引入 Hibernate Validator 7.x（使用 `jakarta.validation`）
+
+## Usage
+
+**1. 在 `pom.xml` 中添加 `spring-boot-starter-validation`**
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-validation</artifactId>
+</dependency>
+```
+
+ **2. 在 [UserCreateDTO](#data-transfer-object-dto) 中添加 Annotaions**
+
+```java
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
+public class UserCreateDTO {
+
+    @NotBlank
+    @Size(min = 1, max = 50)
+    private String name;
+
+    @NotBlank
+    @Email
+    @Size(min = 5, max = 50)
+    private String email;
+
+    // Getters and setters
+}
+```
+
+**3. 在 UserController 中添加 @Valid**
+
+```java
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api/users")
+public class UserController {
+
+    @PostMapping
+    public ResponseEntity<?> createUser(@Valid @RequestBody UserCreateDTO userCreateDTO) {
+        // Perform the actual user creation logic here
+        // For example, you can call a service method to save the user to the database
+
+        return ResponseEntity.status(HttpStatus.CREATED).body("User created successfully");
+    }
+}
+```
+
+**4. 使用 [ControllerAdvice Class](#controlleradvice) 处理校验错误**
+
+```java
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@ControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<?> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getFieldErrors().forEach(error ->
+            errors.put(error.getField(), error.getDefaultMessage()));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+    }
+}
+```

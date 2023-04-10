@@ -28,6 +28,72 @@ Docker is a platform for developers and sysadmins to develop, deploy, and run ap
 2. **Ship**: Push image.
 3. **Run**: Pull image and run.
 
+## Installation
+
+- 进入 [Docker Hub 官方网站](https://hub.docker.com/) 注册并下载
+- 确保 `docker --version` 返回版本号
+- 在 Docker Engine 中设置国内镜像，[可以点这里查看教程](http://guide.daocloud.io/dcs/daocloud-9153151.html)
+
+```json
+{
+  "registry-mirrors": [
+    "https://docker.mirrors.ustc.edu.cn"
+  ],
+  "insecure-registries": []
+}
+```
+
+**常见的 docker 命令：**
+
+- `docker run` 启动新容器
+- `docker ps -a` 查看所有的容器（Containers）
+- `docker kill <id|name>` 关闭对应的容器
+- `docker restart <id|name>` 重启关闭的容器
+- `docker rm <id|name>` 删除对应的容器
+- `docker container prune` 删除无用的容器，以节省空间
+
+注意：用 docker 运行的容器，默认不会 [持久化](persistence-in-docker)，容器被删掉，数据也就没了
+
+# Example: Run a MySQL Database
+
+0. 进入 Docker 上面 [MySQL 的主页](https://hub.docker.com/_/mysql)
+
+1. 运行命令创建容器：
+
+```bash
+docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:tag
+# -d 表示守护进程形式，不会随意关掉
+# -p 用来设置端口映射 本机端口号:虚拟机端口号
+docker run --name mysql-demo1 -e MYSQL_ROOT_PASSWORD=123456 -p 3306:3306 -d mysql:latest
+```
+
+2. 进入 Docker 容器
+
+```bash
+docker exec -it mysql-demo1 bash
+```
+
+3. 使用 MySQL 命令进入数据库
+
+```bash
+# -u root：以 ROOT 用户进入
+# -p 直接回车，然后输入密码
+mysql -u root -p
+```
+
+4. 使用 SQL 语句操作
+
+```sql
+# 查看有哪些数据库
+show databases;
+# 进入其中一个数据库
+use <数据库名称>;
+# 看有哪些表
+show tables;
+# 查看表内容
+select * from <表名称>;
+```
+
 # Example: Run a Python Flask App
 
 ## A Python Flask App
@@ -408,7 +474,7 @@ Access python flask app: `http://localhost:5000`
 
 Check container logs `docker logs redis`
 
-## Docker-compose
+## Docker Compose
 
 A tool for defining and running multi-containers docker application (application stack).
 
@@ -431,7 +497,7 @@ Run the containers:
 docker compose up
 ```
 
-## Pruning
+# Pruning
 
 ```bash
 # Stop and remove containers
@@ -450,5 +516,47 @@ docker image prune
 docker volume prune
 docker system df
 docker system df -a
+```
+
+# Example: ESCAPE Project
+
+ESCAPE Project 是一个简单的例子，他包含以下五个部分：
+
+- 使用 Vue 的前端
+- 使用 Rails 的后端
+- Redis Database
+- PostgreSQL Database
+- GPT-2 ChatBot Server
+
+## Delpoyment of Frontend
+
+思路：打包完成之后用 NGINX 起一个服务器，访问 dist 文件夹；NGINX 同时还起到反向代理的作用，让请求访问到对应的后端容器。
+
+Dockerfile 如下：
+
+```dockerfile
+# Stage 0: 基于 Nodejs 镜像打包应用
+FROM node:16
+WORKDIR /app
+# 将安装依赖所需要的东西先复制进容器
+COPY package*.json ./
+COPY pnpm-lock.yaml ./
+# 安装依赖
+RUN npm install pnpm -g
+RUN pnpm install
+# 复制项目源代码
+COPY . .
+# 打包项目
+RUN pnpm run build
+
+# Stage 1: 下载 nginx 用来启动服务器
+FROM nginx:1.23.4
+# 将 dist 文件夹复制进容器的 /usr/share/nginx/html 目录下
+# --from 用于指示
+COPY --from=0 /app/dist /usr/share/nginx/html
+# 
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 8888
+CMD ["nginx", "-g", "daemon off;"]
 ```
 

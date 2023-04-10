@@ -631,7 +631,28 @@ QUIC 的特性：
 
 
 
-## 电子邮件
+## HTTPS
+
+### Two Things HTTPS Does
+
+HTTPS 做了两件非常重要的事情：
+
+1. **Authentication**：网站被第三方认证了（Authenticated）、网站的身份也已经被确认过了。比如 https://www.amazon.com 确保你真的在访问 amazon.com。
+1. **Encryption**：你与网站之间传输的数据是经过加密的。
+
+可以经常听到 HTTPS 与 **SSL** 和 **TLS**，下面使他们之间大体的关系：
+
+- **Secure Sockets Layer (SSL)** 和 **Transport Layer Security (TLS)** 指的是 HTTPS 用来在服务器与浏览器之间沟通的安全连接类型。
+- SSL 是一个相对较老的技术，并且已经被 TLS 取代了。
+- 使用上，很多人会将其混用，因此会容易听到 SSL/TLS、SSL/TLS 认证之类的说法。
+
+#### Authentication
+
+> 身份验证（Authentication）保证了我们访问的是正确的网站。
+
+
+
+## Email
 
 - 因特网电子邮件系统总体由三个部分组成：**用户代理（User Agent）、邮件服务器（Mail Server）、简单邮件传输协议（Simple Mail Transfer Protocol, SMTP）**。
 
