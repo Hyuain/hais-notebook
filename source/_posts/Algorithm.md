@@ -5,11 +5,90 @@ categories:
   - [计算机]
 ---
 
-.
+本文介绍了常见的数据结构、算法、一些典型例题及代码题中的特殊需要关注的地方。
+
+按照章节来讲主要分为：
+
+- 开始（复杂度）
+- 数据结构（数组、字符串、栈、队列、链表、哈希表、二叉树、堆）
+  - 数组：数组的基本操作、二分查找、排序算法、数组去重
+  - 字符串：大数运算
+  - 栈：栈的数组实现时间复杂度、单调栈、用栈实现队列、用队列实现栈
+  - 队列：用数组实现环形队列
+  - 二叉树：特殊的二叉树、遍历、二叉搜索树
+  - 堆：堆与优先级队列及其实现
+- 算法（动态规划）
+  - 动态规划：背包问题
+- 其他注意事项（对 1e9 + 7 取模）
 
 <!-- more -->
 
+# 复杂度
+
+**最好情况与最坏情况**：通常我们只考虑最坏的情况。我们通常很难定义出 *平均情况*，而且也很难知道平均情况出现的概率。
+
+**渐进分析**：描述函数在极限附近的行为，在算法分析中指分析数据集特别大的时候的性能
+
+- 对于大多数算法，运行时间取决于输入的数据集大小
+- 关注运行时间虽数据集增大而增加的增长率，而不是执行时间的绝对值
+- 在书写代码之前预估执行时间
+
+例如下面的伪代码用于找到数组的最大元素：
+
+```text
+arrayMax(A: array, n: lengthOfArray)
+  currentMax = A[0]          // c1
+  for (i from 1 to n - 1)    // (n - 1) * c2
+    if (A[i] > currentMax)   // (n - 1) * c3
+      currentMax = A[i]      // (n - 1) * c4 at most
+  return currentMax          // c5
+```
+
+估计算法运行时间：T(n) = (n - 1) * (c2 + c3 + c4) + c1 + c5
+
+## 大 O 表示法
+
+**定义：存在 $g$，使得 $f(n) = O(g(n))$ 中 $n \rightarrow \infty$ 时，$f$ 的增长率小于等于 $g$ 的倍数。**
+
+或者表示为：存在正的常数 $c$ 和 $n_0$，使得 $f(n) = O(g(n))$ 中，对于每一个 $n \ge n_0$ 都有 $0 \le f(n) \le cg(n)$。
+
+比如 $f(n) = 3n^2+5$。那么有 $g(n) = n^2$，$f(n) = O(n^2)$，当 $n$ 趋于正无穷时， $f(n)$ 一定小于 $4g(n)$。
+
+**大 O 表示法是一种讨论算法执行耗时的标准方法，他给出了计算复杂度的上界（最坏情况）。**
+
+在大 O 表示法中，有一些常用的 **基本函数**，他们的大小关系如下：
+$$
+O(1) < O(log(n)) < O(n) < O (nlog(n)) < O(n^2) < O(n^3) < O(2^n) < O(n!) < O(n^n)
+$$
+**简化规则**：
+
+- 忽略常数项：$3 = O(1)$，$3n = O(n)$
+
+- 将常数个项组合起来：$3$ 个 $O(n)$ 仍然等于 $O(n)$
+- 将 m 个项组合起来：$m$ 个 $O(1)$ 等于 $O(m)$
+- 忽略相对更小的项：$O(n^2) + O(n) = O(n^2)$
+
+**加法和乘法规则**：若 $T_1(n) = O(f(n))$，$T_2(n) = O(g(n))$
+
+- $T_1 + T_2 = O(\max(f(n), g(n)))$
+- $T_1 \cdot T_2 = O(f(n) \cdot g(n))$ 
+
 # 数组
+
+> 存放在连续内存空间上的相同类型数据的集合
+
+- 数组的下标从 0 开始
+- 数组的内存空间地址是连续的
+
+## 数组操作
+
+| 操作 | 时间复杂度 |
+| ---- | ---------- |
+| 访问 | O(1)       |
+| 查找 | O(n)       |
+| 插入 | O(n)       |
+| 追加 | O(1)       |
+| 删除 | O(n)       |
 
 ## 查找
 
@@ -24,6 +103,7 @@ categories:
 
 时间复杂度 O(log(n))
 
+<detail>
 ```typescript
 const binarySearch = (nums: number[], target: number) => {
   if (!nums.length) { return -1 }
@@ -45,6 +125,7 @@ const binarySearch = (nums: number[], target: number) => {
   return -1
 }
 ```
+</detail>
 
 ## 排序
 
@@ -811,6 +892,21 @@ const count = (str) => {
 
 # 栈
 
+> 后进先出（Last In First Out, LIFO）
+
+## 栈的实现
+
+一般可以用数组来实现栈，其对应的时间复杂度如下：
+
+| 操作    | 时间复杂度 |
+| ------- | ---------- |
+| Push    | O(1)       |
+| Pop     | O(1)       |
+| Top     | O(1)       |
+| Search* | O(n)       |
+
+*栈一般也不提供搜索操作
+
 ## 单调栈
 
 一维数组，要寻找任一元素的右边或左边第一个比自己大或自己小的位置。
@@ -1198,7 +1294,11 @@ class Stack() {
 
 # 队列
 
+> 先进先出（First In First Out, FIFO）
+
 ## 队列的实现
+
+使用数组实现时，可以将 front 的指针一直指向 0，rear 的指针指向队尾元素；也可以将 rear 的指针一直指向 0，front 指针一直指向队尾元素。但因为数组删除的时间复杂度是 O(n)，所以这两种方法不能同时保证 O(1) 的入队和出队复杂度。
 
 用环形队列可以节约内存，并且入队和出队都能得到 O(1) 的时间复杂度：
 
@@ -1254,6 +1354,34 @@ class Queue {
   }
 }
 ```
+
+# 链表
+
+- 最后一个节点的 next 指针指向 null
+- 通常有 head 指针表示第一个节点，有时候 tail 指针表示最后一个节点
+- 双向链表的结点同时有 next 指针和 prev 指针
+
+## 链表操作
+
+| 操作  | 时间复杂度 |
+| ----- | ---------- |
+| 访问  | O(1)       |
+| 插入* | O(1)       |
+| 删除* | O(1)       |
+
+*注意如果插入和删除并不知道元素到底在哪里，需要从头开始查找的话，复杂度是 O(n)
+
+# 哈希表
+
+考虑我们有一堆 Key-Value 值，比如 Key 是 id，Value 是姓名，怎么才能实现快速通过 id 获取到姓名呢？
+
+首先如果 id 本来就是数字，那么可以用数组来实现，id 即为数组的 index，这样就可以通过数组的 index 直接拿到姓名了。
+
+但是这样的话如果 id 分布比较分散，比如对于两个值 1 和 100，我们为了能将他们存起来，需要分配一个长度至少为 101 的数组，index 从 0 取值到 100，这样中间就有大量空间浪费掉了。
+
+**哈希函数是一个特定的编码函数， 可以将 Key 转换为一个索引值，这样就可以节约大量空间。**
+
+比如定义一个简单的哈希函数 `H(k) = k % m`，那么就有 `H(293) = 3`，将这个 id 为 293 的项存在 index 为 3 的位置即可。
 
 # 二叉树
 
@@ -1555,6 +1683,144 @@ const insert = (root: TreeNode | null, node: TreeNode) => {
 - 如果有两个子结点：删除右子树最小节点 x，然后用 x 替代该节点
   - 称 x 为继任者，x 是比该节点大一位的节点
   - 也可以用比 x 节点小一位的节点（左子树的最大节点）来替代，但是这样得到的树高度差会更大（？）
+
+# 堆
+
+## 优先级队列与堆
+
+**优先级队列（Priority Queue）是一个抽象数据类型（Abstract Data Type, ADT）**，他支持插入元素、删除具有最大或最小优先级的元素。他可以用很多数据结构来实现，比如堆、二叉搜索树、数组等。
+
+**堆（Heap）是一个具体的数据结构**，可以用来实现优先级队列。有很多种堆，比如二叉堆、斐波那契堆、二项堆等，他们都有自己的特点，并且都可以被用来实现优先级队列。有两种特别的堆，大顶堆（Max-Heap）和小顶堆（Min-Heap），大顶堆中父结点的优先级高于子结点，小顶堆中则相反。
+
+JavaScript 中并没有提供原生的堆函数，我们可以手动实现一个堆：
+
+<detail>
+
+```typescript
+// Heap 的每一项是 [key, value]
+type IHeapItem<K = any, V = any> = [K, V]
+
+class Heap<K = any, V = any> {
+  // 二叉堆实际上是一棵树，但保证了节点的顺序
+  private tree: IHeapItem<K, V>[] = []
+  private compareFn: (a: IHeapItem<K, V>, b: IHeapItem<K, V>) => number
+
+  constructor(compareFn: (a: IHeapItem<K, V>, b: IHeapItem<K, V>) => number) {
+      this.compareFn = compareFn
+  }
+
+  // 向堆底添加元素
+  public push(item: IHeapItem<K, V>) {
+    // 先将新的 HeapItem 直接放到堆的最底部
+    this.tree.push(item)
+    // 拿到刚刚 push 的 HeapItem 的 index
+    let index = this.size() - 1
+    // 拿到新的 HeapItem 的父结点的 index
+    let parent = Math.floor((index - 1) / 2)
+    // 将 index 往上浮
+    // 注意 compare 的传参，因为 index 是要从最底下往上浮
+    while (parent >= 0 && this.compare(parent, index) > 0) {
+      [this.tree[parent], this.tree[index]] = [this.tree[index], this.tree[parent]]
+      index = parent
+      parent = Math.floor((index - 1) / 2)
+    }
+  }
+
+  // 弹出堆顶元素
+  public pop(): IHeapItem<K, V> {
+    if (this.size() <= 1) {
+      return this.tree.pop()
+    }
+    const top = this.top()
+    // 将堆底最后一个元素弹出，替代掉堆顶的元素
+    const bottom = this.tree.pop()
+    this.tree[0] = bottom
+    // 将新的堆顶下沉
+    let index = 0
+    // left 是左孩子，left + 1 是右孩子
+    let left = 1
+    // 找到要下沉到哪里，如果左孩子比右孩子更低，那么应该跟右孩子进行比较
+    // 否则可能出现该节点比左孩子高，比右孩子低的情况（本应该节点比两个孩子都高）
+    let searchChild = this.compare(left, left + 1) > 0 ? left + 1 : left
+    // 注意 compare 的传参，因为要把 index 向下沉
+    while (searchChild !== undefined && this.compare(index, searchChild) > 0) {
+      [this.tree[index], this.tree[searchChild]] = [this.tree[searchChild], this.tree[index]]
+      index = searchChild
+      left = 2 * searchChild + 1
+      searchChild = this.compare(left, left + 1) > 0 ? left + 1 : left 
+    }
+    return top
+  }
+
+    public top() {
+      return this.tree[0]
+    }
+
+    public size() {
+      return this.tree.length
+    }
+
+    // 返回正数时，指示 index1 应该在 index2 的下方，应该把 index1 往下沉，反之则代表 index2 需要往下沉
+    // 注意这与这是大顶堆还是小顶堆是没关系的，不管是大顶堆还是小顶堆，都是正数表示 index1 需要往下沉
+    private compare(index1: number, index2: number): number {
+      // 讨论越界情况，保证 undfined 值总是在最下面
+      // 当 index1 越界了，应该把 index1 所代表的 undefined 值往下沉
+      if (this.tree[index1] === undefined) { return 1 }
+      // 当 index2 越界了，应该把 index2 所代表的 undefined 值往下沉
+      if (this.tree[index2] === undefined) { return -1 }
+      // 正常情况由传入的 compareFn 决定
+      // 比如如果是小顶堆，应该写作类似 (a, b) => a[1] - b[1]，这样当 a 的值 > b 的值时，a 就会往下沉
+      return this.compareFn(this.tree[index1], this.tree[index2])
+    }
+}
+```
+
+</detail>
+
+## 例题
+
+### 前 K 个高频元素
+
+[LeetCode.347](https://leetcode.cn/problems/top-k-frequent-elements/)
+
+Given an integer array nums and an integer k, return the k most frequent elements. You may return the answer in any order.
+
+Example 1:
+
+Input: nums = [1,1,1,2,2,3], k = 2
+
+Output: [1,2]
+
+<detail>
+#二叉堆
+
+```typescript
+function topKFrequent(nums: number[], k: number): number[] {
+  // 哈希表统计元素数量 O(n)
+  const map = new Map()
+  for (let i = 0; i < nums.length; i++) {
+    map.set(nums[i], (map.get(nums[i]) || 0) + 1)
+  }
+  // 遍历哈希表，用二叉堆（优先级队列）统计出前 k 个值
+  // 这里用的是小顶堆，因为如果堆的size超过k，是把堆顶的那个值给扔掉
+  // 如果是大顶堆就是把最大值扔掉了，我们要逐步扔掉比较小的值，把大的值沉在堆底
+  const heap = new Heap<number, number>((a, b) => a[1] - b[1])
+  for (const entry of map.entries()) {
+    heap.push(entry)
+    if (heap.size() > k) {
+      heap.pop()
+    }
+  }
+  // 将堆剩下的输出到 result 数组中
+  const result = []
+  while (heap.size()) {
+    result.push(heap.pop()[0])
+  }
+  return result
+}
+```
+
+</detail>
 
 # 动态规划
 

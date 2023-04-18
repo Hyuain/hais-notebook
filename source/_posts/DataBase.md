@@ -1139,7 +1139,7 @@ ERM 主要用来帮助设计设计库，描述表之间的关系，独立于数�
 
 **第三步：可以加上关系集中的其他属性。**
 
-![img](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/ERDiagram-3.png)
+![](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/ERDiagram-3.png)
 
 ### Role
 

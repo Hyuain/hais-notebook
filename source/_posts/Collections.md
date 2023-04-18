@@ -21,9 +21,11 @@ categories:
 
 面试笔记：https://hackmd.io/7GUfnRgESMuRUAG-7kdapQ
 
+HTTPS：https://www.thesslstore.com/blog/how-does-https-work/
+
 八股：
 
-- 非对称加密，对称加密，HTTPS具体的实现
+- 非对称加密，对称加密
 
 - 寻找最大子串
 

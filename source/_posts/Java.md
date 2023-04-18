@@ -14,20 +14,17 @@ Object Oriented Design, Java, Maven, Spring Boot.
 
 ## Object Oriented
 
-- **Encapsulation**: a class contains data and behaviors, and can hide some
-- **Abstraction**
-  - Abstract away implementation details
-  - Isolate the impact of changes made to the code
-- **Inheritance**: It weakens encapsulation.
-- **Polymorphism**: 
-- **Coupling and Cohesion**: *Loose coupled, highly cohesive*
-  - **Coupling** (dependency): The degree to which one class knows about another class.
-  - **Cohesion**: The degree to which a class has a single, well-focused purpose.
+- **Encapsulation**: 封装，一个 Class 包含了他的数据和行为，并隐藏他不想要外界访问的内容。
+- **Abstraction**：抽象，将实现细节抽象，隔离代码改变带来的影响。
+- **Inheritance**: 继承，这一定程度上破坏了封装。继承是一种方法，可以用来创建“子类使用父类方法和属性”这一体系结构。
+- **Polymorphism**: 多态，不同类的对象被当作一个共同的超类的对象来对待。多态主要聚焦于灵活地使用继承的方法，允许一个 Interface 表达不同的对象。意味着可以调用不同 Classes 的同样的方法。
+- **Coupling and Cohesion**: *Loose coupled, highly cohesive*，高内聚、低耦合。
+  - **Coupling** (dependency): 一个 Class 对另一个 Class 了解多深。
+  - **Cohesion**: 一个 Class 有独立、高度聚焦的目标的程度。
 
 - **Interface/Implementation Paradigm**
-  - An object should **reveal only the interfaces** that other objects must have to interact with it.
-  - Clients of the class will not be affected by implementation change.
-
+  - 一个对象应该 **只暴露给其他对象交互用的接口**。
+  - Class 的客户不应该受到 Class 内部具体实现改变的影响。
 
 ## UML Class Diagrams
 
@@ -37,13 +34,11 @@ Object Oriented Design, Java, Maven, Spring Boot.
 
 ### Attributes
 
-- Data containing values that describe each instance of that class
-- Also called fields, variables, properties.
+类的实例的数据，也称为 fields, variables, properties。
 
 ### Methods
 
-- Specify behavioral feature of a class.
-- Also called operations or functions.
+规定了 Class 的行为，也称为 operations 或 functions.
 
 ### Visibility
 
@@ -72,11 +67,11 @@ Object Oriented Design, Java, Maven, Spring Boot.
 
 ## SOLID Principle
 
-- SRP: Single Responsibility Principle
-- OCP: Open/Close Principle
-- LSP: Liskov Substitution Principle
-- IPS: Interface Segregation Principle
-- DIP: Dependency Inversion Principle
+- **SRP**: Single Responsibility Principle
+- **OCP**: Open/Close Principle
+- **LSP**: Liskov Substitution Principle
+- **IPS**: Interface Segregation Principle
+- **DIP**: Dependency Inversion Principle
 
 ### SRP: Single Responsibility Principle
 
@@ -89,22 +84,18 @@ Animal
 
 ### OCP: Open/Close Principle
 
-- Software entities (classes, modules, functions, etc.) should be:
+- 软件实体（模组、类、函数等）应该：
   - Open for extension
   - Close for modification
-- Be able to extend a class's behavior without modifying it.
+- 可以在不修改他的基础上拓展某个类的行为。
 
 ### LSP: Liskov Substitution Principle
 
-If we substitute a super class object reference with an object of *any* of its subclasses, the program should not break. 
-
-If a superclass can do something, a subclass **MUST** also be able to do it.
+用子类替换掉某个超类，程序将不会被中断。**如果超类可以一件事，那么子类一定也可以做这件事。**
 
 ### IPS: Interface Segregation Principle
 
-No code should be forced to depend on methods it does not use.
-
-Splits large interfaces into smaller and more specific ones.
+代码不应该强制依赖于一个他根本没有使用的方法。需要将大的 Interfaces 切分成更小的、更精确的 Interfaces：
 
 ```java
 // Large interface
@@ -135,7 +126,9 @@ class AnimalLover implements AnimalPetter {
 
 ### DIP: Dependency Inversion Principle
 
-Depend upon abstractions. Do not depend upon concrete classes.
+依赖于抽象，而不是依赖于某个具体的类。
+
+具体的实现细节应该依赖于他的抽象。
 
 ## Convention-Over-Configuration Principle
 
@@ -255,15 +248,15 @@ To generate Setter and Getter methods in VSCode, in a Java source file, right-cl
 
 ## Encapsulation
 
-- Access Modifier
-  - The keyword `private` signifies that a method or variable can be accessed only within the declaring object.
-  - All/most attributes should be declared as private.
-- Getters and Setters
+- **Access Modifier**
+  - `private` 关键字表示该方法或变量只能在声明该变量的对象内部访问。
+  - 所有/大多数属性都应该用声明为私有的。
+- **Getters and Setters**
 
 ## Inheritance
 
-- **Is-a Relationship**: A subclass can do anything that the superclass can do.
-  - **Generalization**: A subclass is a type of superclass (a dog **is-a** mammal)
+- **Is-a Relationship**: 子类（subclass）可以做所有其父类（superclass）可以做的事情。
+  - **Generalization**: 子类是父类的类型，比如 Dog **is-a** Mammal。
 
 ### Method Overriding
 
@@ -284,9 +277,9 @@ public class Horse extends Animal {
 
 ### Interface and Abstract Class
 
-- An **interface** can provide **NO implementation** at all.
-  - A class can inherit from only one parent class, but it can implement many interfaces.
-- An **abstract class** can provide some implementation.
+- **Interface 不能提供实现细节。**
+  - 一个 Class 只能继承自一个父类，但是可以实现（Implement）多个 Interfaces。
+- **Abstract Class 可以提供部分实现细节。** 
 
 ```java
 interface Nameable {
@@ -352,17 +345,19 @@ class Dog {
 
 ## Inverting of Control (IoC)
 
-- **DIP**: high-level modules should **not** depend on low-level modules.
-- **Both** should depend on abstractions.
+根据依赖反转原则（DIP）
+
+- 高级的模组不应该依赖于低级的模组，而是应该依赖于抽象
+- 低级的模组的实现也应该依赖于抽象
 
 ![High-level module depends on low level module](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/java-before-ioc.jpg)
 
 ![Inverting of Control](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/java-ioc.jpg)
 
-Create 2 interfaces: to fetch the data and export the data.
+创建两个 Interfaces 来获取并导出数据：
 
-- All low-level modules must implements these interfaces
-- High-level module (Balance Sheet Module) needs to rely on interfaces
+- 所有低级模组必须实现他们的 Interfaces。
+- 高级模组（Balance Sheet Module）需要依赖于这些 Interfaces。
 
 ```java
 public interface IFetchData {
@@ -387,10 +382,11 @@ public class BalanceSheet {
 
 ### Dependency Injection (DI)
 
-- DI is one way to implement IoC.
-- Decouples your class's construction from the construction of its dependencies.
-  - Invert the object creation process from your module to other code or entity.
-  - Inject the object from outside.
+依赖注入（DI） 是一种实现控制反转（IoC）的方式。
+
+将类的构造和他依赖的构造解耦：
+- 将对象的创建过程改交给别的代码或实例负责；
+- 然后从外部注入创建好的对象。
 
 #### Constructor Injection
 
@@ -415,15 +411,14 @@ public class BalanceSheet {
   
   public void setExportDataObj(IExportData exportDataObj) {
     this.exportDataObj = exportDataObj;
-    this.fetchDataObj = fetchDataObj;
   }
 }
 ```
 
 ### IoC Containers
 
-- A container takes care of creating, configuring, and managing objects.
-- You just need to do configuration, and the container will take care of object instantiation and dependency management with ease.
+- IoC 容器负责对象的创建、配置和管理；
+- 只需要做一些配置，容器会自己负责对象的初始化和依赖管理；
 - Java IoC Containers: Spring, Google Guice and Dagger.
 
 ### Factory Pattern
@@ -454,13 +449,9 @@ public class FetchDataFactory {
 }
 ```
 
-
-
 # Maven
 
-Maven is a tool for building and managing your Java-based projects.
-
-## Project Structure
+Maven 是 Java 项目的构建与管理工具。
 
 ```text
 |-- pom.xml
@@ -477,15 +468,15 @@ Maven is a tool for building and managing your Java-based projects.
           `-- AppTest.java
 ```
 
-- **src/main/java**: The source code.
-- **src/main/resources**: The resources such as configuration files and property files.
-- **src/test/resources**: The test resources such as configuration files and property files.
-- **pom.xml:** **Project Object Model**. The project's information and dependencies.
-  - **groupId**: identifies the group or organization that the dependency belongs to.
-  - **artifactId**: the id of the artifact within the group.
-  - **version**: the version of the dependency that the project requires.
-  - **scope**: the scope of the dependency (whether it is required for compilation, test, runtime, etc.)
-- **target**: The compiled code and other files generated during the build process.
+- **src/main/java**: 源代码。
+- **src/main/resources**: 资源，比如 configuration files 和 property files。
+- **src/test/resources**: 测试需要的资源，比如 configuration files 和 property files。
+- **pom.xml:** **Project Object Model**. 项目信息和依赖。
+  - **groupId**: 区分依赖所属的 group 或 organization。
+  - **artifactId**: 该工具在 group 内的 id。
+  - **version**: 项目所需的依赖版本。
+  - **scope**: 依赖的范围（比如是编译、测试、运行时所需）。
+- **target**: 编译后的代码和其它构建过程中产生的文件。
 
 ## Create a Maven Project
 
@@ -512,62 +503,62 @@ mvn archetype:generate -DgroupId=com.example \
 
 ## Maven Lifecycle
 
-3 build-in build lifecycles:
+三个内置的生命周期：
 
-- **Default**: handles project deployment.
-- **Clean**: handles project cleaning.
-- **Site**: handles the creation of project's web site.
+- **Default**: 用于项目部署。
+- **Clean**: 用于项目清理。
+- **Site**: 用于创建项目网站。
 
-These are some phases in the default lifecycle:
+Default 生命周期的一些 Phases：
 
 - **validate**
 - **compile**
-- **test**: unit test
+- **test**: 单元测试
 - **package**
-- **verify**: integration test
-- **install**: install the package into local repository
+- **verify**: 集成测试
+- **install**: 将包安装到本地仓库
 - **deploy**
 
 ## Goals
 
-- A specific task (finer than a build phase) which contributes to the building and managing of a project.
-- Each goal is bound to one or more phases.
-  - Corresponds to a specific action that needs to be performed
-  - E.g. compiling code, running tests, and packaging the code.
-- One or more plugins can be bounded to the goal.
+- Goal 是一个特定的任务（比 Phase 更小），用来构建和管理项目。
+- 每个 Goal 都与一个或多个 Phases 绑定。
+  - 与一个需要执行的特定的行为相关；
+  - 比如编译代码、运行测试、打包代码等。
+- 有一个或多个 Plugin 与 Goal 绑定。
 
 ## Plugins
 
-- Perform tasks in specific goal(s).
-  - E.g. automate common build tasks, such as compiling code, running tests, and packaging the code.
-- Can be bound to one or more goals.
+- 执行特定 Goal(s) 中的任务。
+  - 比如自动化一些通用的构建任务，像编译代码、运行测试、打包代码等。
+- 可以与一个或多个 Goal 绑定。
 
 ## Commands
 
 ![Maven Phases, goals and Plugins](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/maven-phase-goal-plugin.jpg)
 
-A Maven command may be written in 2 forms:
+Maven 命令有两种形式：
 
 ```bash
 mvn [phase]
 mvn [plugin]:[goal]
 ```
 
-E.g.:
+比如：
 
 ```bash
-mvn compile            # execute default lifecycle till compile phase
-mvn compiler:compile   # only excute compiler plugin to comile
+mvn compile            # 执行 Default 生命周期直到 compile 为止的所有 Phase
+mvn compiler:compile   # 只使用 compiler 插件来进行 compile
 
 mvn test
-mvn surefire:test      # only excute surefire plugin to test
+mvn surefire:test      # 只使用 surefire 插件来进行 test
 
 mvn exec:java
 ```
 
 ## JAR (Java Archive) File
 
-A package file format used to aggregate many Java class files and associated metadata and resources into one file for distribution.
+一种包文件格式，将一些 Java 的类文件、相关元数据和资源打包成一个文件方便分发。
 
 # Spring Boot
 
@@ -1118,7 +1109,7 @@ And we can change the port by adding `--server.port=8081` at the end.
 
 ## Generate a Spring Boot Project
 
-[Spring Initializr](https://start.spring.io/) configured into your Maven project
+[Spring Initializr](https://start.spring.io/) 为我们的 Maven 项目做了基本配置
 
 - The Spring app main class
 - The Spring Boot POM parent
@@ -1128,7 +1119,7 @@ And we can change the port by adding `--server.port=8081` at the end.
 
 ## Dependency Starter
 
-A dependency starter is a group of dependencies you add to configure your app for a specific purpose.
+Dependency Starter 是我们添加的配置应用的一组依赖。
 
 ![Dependency Starter](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/dependency-starter.jpg)
 
@@ -1148,11 +1139,11 @@ A dependency starter is a group of dependencies you add to configure your app fo
 
 ## @SpringBootApplication
 
-Enables
+@SpringBootApplication 启用了：
 
-- **@EnableAutoConfiguration**: Automatically configure your Spring application based on the jar dependencies that you have added. (e.g., Configure database connection based on specified dependency)
-- **@ComponentScan**: Enable scan **@Component**.
-- **@Configuration**: Allow register extra beans in the context or import additional configuration classes.
+- **@EnableAutoConfiguration**: 根据添加的依赖自动配置 Spring 应用，比如根据特定的依赖配置数据库连接。
+- **@ComponentScan**: 启用扫描 **@Component**.
+- **@Configuration**: 允许在 Context 中注册额外的 Beans，或导入额外的 Configuration Classes。
 
 ## Spring Context
 
@@ -1573,7 +1564,7 @@ public class Project {
 }
 ```
 
-# Pramater Validation
+# Parameter Validation
 
 ## Tools
 
