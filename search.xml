@@ -3,9 +3,100 @@
   <entry>
     <title>数据结构与算法</title>
     <url>/hais-notebook/2022/02/05/Algorithm/</url>
-    <content><![CDATA[<p>.</p>
+    <content><![CDATA[<p>本文介绍了常见的数据结构、算法、一些典型例题及代码题中的特殊需要关注的地方。</p>
+<p>按照章节来讲主要分为：</p>
+<ul>
+<li>开始（复杂度）</li>
+<li>数据结构（数组、字符串、栈、队列、链表、哈希表、二叉树、堆）
+<ul>
+<li>数组：数组的基本操作、二分查找、排序算法、数组去重</li>
+<li>字符串：大数运算</li>
+<li>栈：栈的数组实现时间复杂度、单调栈、用栈实现队列、用队列实现栈</li>
+<li>队列：用数组实现环形队列</li>
+<li>二叉树：特殊的二叉树、遍历、二叉搜索树</li>
+<li>堆：堆与优先级队列及其实现</li>
+</ul></li>
+<li>算法（动态规划）
+<ul>
+<li>动态规划：背包问题</li>
+</ul></li>
+<li>其他注意事项（对 1e9 + 7 取模）</li>
+</ul>
 <span id="more"></span>
+<h1 id="复杂度">复杂度</h1>
+<p><strong>最好情况与最坏情况</strong>：通常我们只考虑最坏的情况。我们通常很难定义出 <em>平均情况</em>，而且也很难知道平均情况出现的概率。</p>
+<p><strong>渐进分析</strong>：描述函数在极限附近的行为，在算法分析中指分析数据集特别大的时候的性能</p>
+<ul>
+<li>对于大多数算法，运行时间取决于输入的数据集大小</li>
+<li>关注运行时间虽数据集增大而增加的增长率，而不是执行时间的绝对值</li>
+<li>在书写代码之前预估执行时间</li>
+</ul>
+<p>例如下面的伪代码用于找到数组的最大元素：</p>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">arrayMax(A: array, n: lengthOfArray)
+  currentMax = A[0]          // c1
+  for (i from 1 to n - 1)    // (n - 1) * c2
+    if (A[i] > currentMax)   // (n - 1) * c3
+      currentMax = A[i]      // (n - 1) * c4 at most
+  return currentMax          // c5<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>估计算法运行时间：T(n) = (n - 1) * (c2 + c3 + c4) + c1 + c5</p>
+<h2 id="大-o-表示法">大 O 表示法</h2>
+<p><strong>定义：存在 <span class="math inline">\(g\)</span>，使得 <span class="math inline">\(f(n) = O(g(n))\)</span> 中 <span class="math inline">\(n \rightarrow \infty\)</span> 时，<span class="math inline">\(f\)</span> 的增长率小于等于 <span class="math inline">\(g\)</span> 的倍数。</strong></p>
+<p>或者表示为：存在正的常数 <span class="math inline">\(c\)</span> 和 <span class="math inline">\(n_0\)</span>，使得 <span class="math inline">\(f(n) = O(g(n))\)</span> 中，对于每一个 <span class="math inline">\(n \ge n_0\)</span> 都有 <span class="math inline">\(0 \le f(n) \le cg(n)\)</span>。</p>
+<p>比如 <span class="math inline">\(f(n) = 3n^2+5\)</span>。那么有 <span class="math inline">\(g(n) = n^2\)</span>，<span class="math inline">\(f(n) = O(n^2)\)</span>，当 <span class="math inline">\(n\)</span> 趋于正无穷时， <span class="math inline">\(f(n)\)</span> 一定小于 <span class="math inline">\(4g(n)\)</span>。</p>
+<p><strong>大 O 表示法是一种讨论算法执行耗时的标准方法，他给出了计算复杂度的上界（最坏情况）。</strong></p>
+<p>在大 O 表示法中，有一些常用的 <strong>基本函数</strong>，他们的大小关系如下： <span class="math display">\[
+O(1) &lt; O(log(n)) &lt; O(n) &lt; O (nlog(n)) &lt; O(n^2) &lt; O(n^3) &lt; O(2^n) &lt; O(n!) &lt; O(n^n)
+\]</span> <strong>简化规则</strong>：</p>
+<ul>
+<li><p>忽略常数项：<span class="math inline">\(3 = O(1)\)</span>，<span class="math inline">\(3n = O(n)\)</span></p></li>
+<li><p>将常数个项组合起来：<span class="math inline">\(3\)</span> 个 <span class="math inline">\(O(n)\)</span> 仍然等于 <span class="math inline">\(O(n)\)</span></p></li>
+<li><p>将 m 个项组合起来：<span class="math inline">\(m\)</span> 个 <span class="math inline">\(O(1)\)</span> 等于 <span class="math inline">\(O(m)\)</span></p></li>
+<li><p>忽略相对更小的项：<span class="math inline">\(O(n^2) + O(n) = O(n^2)\)</span></p></li>
+</ul>
+<p><strong>加法和乘法规则</strong>：若 <span class="math inline">\(T_1(n) = O(f(n))\)</span>，<span class="math inline">\(T_2(n) = O(g(n))\)</span></p>
+<ul>
+<li><span class="math inline">\(T_1 + T_2 = O(\max(f(n), g(n)))\)</span></li>
+<li><span class="math inline">\(T_1 \cdot T_2 = O(f(n) \cdot g(n))\)</span></li>
+</ul>
 <h1 id="数组">数组</h1>
+<blockquote>
+<p>存放在连续内存空间上的相同类型数据的集合</p>
+</blockquote>
+<ul>
+<li>数组的下标从 0 开始</li>
+<li>数组的内存空间地址是连续的</li>
+</ul>
+<h2 id="数组操作">数组操作</h2>
+<table>
+<thead>
+<tr class="header">
+<th>操作</th>
+<th>时间复杂度</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>访问</td>
+<td>O(1)</td>
+</tr>
+<tr class="even">
+<td>查找</td>
+<td>O(n)</td>
+</tr>
+<tr class="odd">
+<td>插入</td>
+<td>O(n)</td>
+</tr>
+<tr class="even">
+<td>追加</td>
+<td>O(1)</td>
+</tr>
+<tr class="odd">
+<td>删除</td>
+<td>O(n)</td>
+</tr>
+</tbody>
+</table>
 <h2 id="查找">查找</h2>
 <h3 id="二分查找">二分查找</h3>
 <p><a href="https://leetcode.cn/problems/binary-search/submissions/">LeetCode.204</a></p>
@@ -15,7 +106,7 @@
 <li>数组中无重复元素</li>
 </ul>
 <p>时间复杂度 O(log(n))</p>
-<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">const</span> <span class="token function-variable function">binarySearch</span> <span class="token operator">=</span> <span class="token punctuation">(</span>nums<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> target<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+<p><detail> <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">const</span> <span class="token function-variable function">binarySearch</span> <span class="token operator">=</span> <span class="token punctuation">(</span>nums<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> target<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
   <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>nums<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">1</span> <span class="token punctuation">&#125;</span>
   <span class="token keyword">let</span> left <span class="token operator">=</span> <span class="token number">0</span>
   <span class="token keyword">let</span> right <span class="token operator">=</span> nums<span class="token punctuation">.</span>length <span class="token operator">-</span> <span class="token number">1</span>
@@ -33,7 +124,7 @@
     <span class="token punctuation">&#125;</span>
   <span class="token punctuation">&#125;</span>
   <span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">1</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre> </detail></p>
 <h2 id="排序">排序</h2>
 <h3 id="选择排序">选择排序</h3>
 <p>每次从剩下的部分选择最小的排到前面来，O(n^2)</p>
@@ -638,6 +729,38 @@
   <span class="token keyword">return</span> result
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h1 id="栈">栈</h1>
+<blockquote>
+<p>后进先出（Last In First Out, LIFO）</p>
+</blockquote>
+<h2 id="栈的实现">栈的实现</h2>
+<p>一般可以用数组来实现栈，其对应的时间复杂度如下：</p>
+<table>
+<thead>
+<tr class="header">
+<th>操作</th>
+<th>时间复杂度</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Push</td>
+<td>O(1)</td>
+</tr>
+<tr class="even">
+<td>Pop</td>
+<td>O(1)</td>
+</tr>
+<tr class="odd">
+<td>Top</td>
+<td>O(1)</td>
+</tr>
+<tr class="even">
+<td>Search*</td>
+<td>O(n)</td>
+</tr>
+</tbody>
+</table>
+<p>*栈一般也不提供搜索操作</p>
 <h2 id="单调栈">单调栈</h2>
 <p>一维数组，要寻找任一元素的右边或左边第一个比自己大或自己小的位置。</p>
 <p>比如 <code>[73, 74, 75, 71, 71, 72, 76, 73]</code> 为例，输出下一个 <strong>大于</strong> 自己的位置，输出应该是 <code>[1, 2, 6, 5, 5, 1, -1, -1]</code>。</p>
@@ -983,7 +1106,11 @@ result: [1, 2, '*', '+', 4, '-']<span aria-hidden="true" class="line-numbers-row
   <span class="token punctuation">&#125;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h1 id="队列">队列</h1>
+<blockquote>
+<p>先进先出（First In First Out, FIFO）</p>
+</blockquote>
 <h2 id="队列的实现">队列的实现</h2>
+<p>使用数组实现时，可以将 front 的指针一直指向 0，rear 的指针指向队尾元素；也可以将 rear 的指针一直指向 0，front 指针一直指向队尾元素。但因为数组删除的时间复杂度是 O(n)，所以这两种方法不能同时保证 O(1) 的入队和出队复杂度。</p>
 <p>用环形队列可以节约内存，并且入队和出队都能得到 O(1) 的时间复杂度：</p>
 <figure>
 <img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Algorithmn-Queue-Implementation.jpg" alt="环形队列" /><figcaption aria-hidden="true">环形队列</figcaption>
@@ -1036,6 +1163,42 @@ result: [1, 2, '*', '+', 4, '-']<span aria-hidden="true" class="line-numbers-row
     <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span>rear <span class="token operator">===</span> <span class="token keyword">this</span><span class="token punctuation">.</span>front
   <span class="token punctuation">&#125;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="链表">链表</h1>
+<ul>
+<li>最后一个节点的 next 指针指向 null</li>
+<li>通常有 head 指针表示第一个节点，有时候 tail 指针表示最后一个节点</li>
+<li>双向链表的结点同时有 next 指针和 prev 指针</li>
+</ul>
+<h2 id="链表操作">链表操作</h2>
+<table>
+<thead>
+<tr class="header">
+<th>操作</th>
+<th>时间复杂度</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>访问</td>
+<td>O(1)</td>
+</tr>
+<tr class="even">
+<td>插入*</td>
+<td>O(1)</td>
+</tr>
+<tr class="odd">
+<td>删除*</td>
+<td>O(1)</td>
+</tr>
+</tbody>
+</table>
+<p>*注意如果插入和删除并不知道元素到底在哪里，需要从头开始查找的话，复杂度是 O(n)</p>
+<h1 id="哈希表">哈希表</h1>
+<p>考虑我们有一堆 Key-Value 值，比如 Key 是 id，Value 是姓名，怎么才能实现快速通过 id 获取到姓名呢？</p>
+<p>首先如果 id 本来就是数字，那么可以用数组来实现，id 即为数组的 index，这样就可以通过数组的 index 直接拿到姓名了。</p>
+<p>但是这样的话如果 id 分布比较分散，比如对于两个值 1 和 100，我们为了能将他们存起来，需要分配一个长度至少为 101 的数组，index 从 0 取值到 100，这样中间就有大量空间浪费掉了。</p>
+<p><strong>哈希函数是一个特定的编码函数， 可以将 Key 转换为一个索引值，这样就可以节约大量空间。</strong></p>
+<p>比如定义一个简单的哈希函数 <code>H(k) = k % m</code>，那么就有 <code>H(293) = 3</code>，将这个 id 为 293 的项存在 index 为 3 的位置即可。</p>
 <h1 id="二叉树">二叉树</h1>
 <h2 id="定义">定义</h2>
 <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">class</span> <span class="token class-name">TreeNode</span> <span class="token punctuation">&#123;</span>
@@ -1274,6 +1437,121 @@ result: [1, 2, '*', '+', 4, '-']<span aria-hidden="true" class="line-numbers-row
 <li>也可以用比 x 节点小一位的节点（左子树的最大节点）来替代，但是这样得到的树高度差会更大（？）</li>
 </ul></li>
 </ul>
+<h1 id="堆">堆</h1>
+<h2 id="优先级队列与堆">优先级队列与堆</h2>
+<p><strong>优先级队列（Priority Queue）是一个抽象数据类型（Abstract Data Type, ADT）</strong>，他支持插入元素、删除具有最大或最小优先级的元素。他可以用很多数据结构来实现，比如堆、二叉搜索树、数组等。</p>
+<p><strong>堆（Heap）是一个具体的数据结构</strong>，可以用来实现优先级队列。有很多种堆，比如二叉堆、斐波那契堆、二项堆等，他们都有自己的特点，并且都可以被用来实现优先级队列。有两种特别的堆，大顶堆（Max-Heap）和小顶堆（Min-Heap），大顶堆中父结点的优先级高于子结点，小顶堆中则相反。</p>
+<p>JavaScript 中并没有提供原生的堆函数，我们可以手动实现一个堆：</p>
+<p><detail></p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// Heap 的每一项是 [key, value]</span>
+<span class="token keyword">type</span> <span class="token class-name">IHeapItem<span class="token operator">&lt;</span><span class="token constant">K</span> <span class="token operator">=</span> <span class="token builtin">any</span><span class="token punctuation">,</span> <span class="token constant">V</span> <span class="token operator">=</span> <span class="token builtin">any</span><span class="token operator">></span></span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token constant">K</span><span class="token punctuation">,</span> <span class="token constant">V</span><span class="token punctuation">]</span>
+
+<span class="token keyword">class</span> <span class="token class-name">Heap<span class="token operator">&lt;</span><span class="token constant">K</span> <span class="token operator">=</span> <span class="token builtin">any</span><span class="token punctuation">,</span> <span class="token constant">V</span> <span class="token operator">=</span> <span class="token builtin">any</span><span class="token operator">></span></span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">// 二叉堆实际上是一棵树，但保证了节点的顺序</span>
+  <span class="token keyword">private</span> tree<span class="token operator">:</span> IHeapItem<span class="token operator">&lt;</span><span class="token constant">K</span><span class="token punctuation">,</span> <span class="token constant">V</span><span class="token operator">></span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token keyword">private</span> <span class="token function-variable function">compareFn</span><span class="token operator">:</span> <span class="token punctuation">(</span>a<span class="token operator">:</span> IHeapItem<span class="token operator">&lt;</span><span class="token constant">K</span><span class="token punctuation">,</span> <span class="token constant">V</span><span class="token operator">></span><span class="token punctuation">,</span> b<span class="token operator">:</span> IHeapItem<span class="token operator">&lt;</span><span class="token constant">K</span><span class="token punctuation">,</span> <span class="token constant">V</span><span class="token operator">></span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token builtin">number</span>
+
+  <span class="token function">constructor</span><span class="token punctuation">(</span><span class="token function-variable function">compareFn</span><span class="token operator">:</span> <span class="token punctuation">(</span>a<span class="token operator">:</span> IHeapItem<span class="token operator">&lt;</span><span class="token constant">K</span><span class="token punctuation">,</span> <span class="token constant">V</span><span class="token operator">></span><span class="token punctuation">,</span> b<span class="token operator">:</span> IHeapItem<span class="token operator">&lt;</span><span class="token constant">K</span><span class="token punctuation">,</span> <span class="token constant">V</span><span class="token operator">></span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token builtin">number</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token keyword">this</span><span class="token punctuation">.</span>compareFn <span class="token operator">=</span> compareFn
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token comment">// 向堆底添加元素</span>
+  <span class="token keyword">public</span> <span class="token function">push</span><span class="token punctuation">(</span>item<span class="token operator">:</span> IHeapItem<span class="token operator">&lt;</span><span class="token constant">K</span><span class="token punctuation">,</span> <span class="token constant">V</span><span class="token operator">></span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 先将新的 HeapItem 直接放到堆的最底部</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>tree<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span>
+    <span class="token comment">// 拿到刚刚 push 的 HeapItem 的 index</span>
+    <span class="token keyword">let</span> index <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1</span>
+    <span class="token comment">// 拿到新的 HeapItem 的父结点的 index</span>
+    <span class="token keyword">let</span> parent <span class="token operator">=</span> Math<span class="token punctuation">.</span><span class="token function">floor</span><span class="token punctuation">(</span><span class="token punctuation">(</span>index <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">/</span> <span class="token number">2</span><span class="token punctuation">)</span>
+    <span class="token comment">// 将 index 往上浮</span>
+    <span class="token comment">// 注意 compare 的传参，因为 index 是要从最底下往上浮</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span>parent <span class="token operator">>=</span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">compare</span><span class="token punctuation">(</span>parent<span class="token punctuation">,</span> index<span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token punctuation">[</span><span class="token keyword">this</span><span class="token punctuation">.</span>tree<span class="token punctuation">[</span>parent<span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>tree<span class="token punctuation">[</span>index<span class="token punctuation">]</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token keyword">this</span><span class="token punctuation">.</span>tree<span class="token punctuation">[</span>index<span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>tree<span class="token punctuation">[</span>parent<span class="token punctuation">]</span><span class="token punctuation">]</span>
+      index <span class="token operator">=</span> parent
+      parent <span class="token operator">=</span> Math<span class="token punctuation">.</span><span class="token function">floor</span><span class="token punctuation">(</span><span class="token punctuation">(</span>index <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">/</span> <span class="token number">2</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token comment">// 弹出堆顶元素</span>
+  <span class="token keyword">public</span> <span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> IHeapItem<span class="token operator">&lt;</span><span class="token constant">K</span><span class="token punctuation">,</span> <span class="token constant">V</span><span class="token operator">></span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&lt;=</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span>tree<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">const</span> top <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">top</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token comment">// 将堆底最后一个元素弹出，替代掉堆顶的元素</span>
+    <span class="token keyword">const</span> bottom <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>tree<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>tree<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span> bottom
+    <span class="token comment">// 将新的堆顶下沉</span>
+    <span class="token keyword">let</span> index <span class="token operator">=</span> <span class="token number">0</span>
+    <span class="token comment">// left 是左孩子，left + 1 是右孩子</span>
+    <span class="token keyword">let</span> left <span class="token operator">=</span> <span class="token number">1</span>
+    <span class="token comment">// 找到要下沉到哪里，如果左孩子比右孩子更低，那么应该跟右孩子进行比较</span>
+    <span class="token comment">// 否则可能出现该节点比左孩子高，比右孩子低的情况（本应该节点比两个孩子都高）</span>
+    <span class="token keyword">let</span> searchChild <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">compare</span><span class="token punctuation">(</span>left<span class="token punctuation">,</span> left <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">0</span> <span class="token operator">?</span> left <span class="token operator">+</span> <span class="token number">1</span> <span class="token operator">:</span> left
+    <span class="token comment">// 注意 compare 的传参，因为要把 index 向下沉</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span>searchChild <span class="token operator">!==</span> <span class="token keyword">undefined</span> <span class="token operator">&amp;&amp;</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">compare</span><span class="token punctuation">(</span>index<span class="token punctuation">,</span> searchChild<span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token punctuation">[</span><span class="token keyword">this</span><span class="token punctuation">.</span>tree<span class="token punctuation">[</span>index<span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>tree<span class="token punctuation">[</span>searchChild<span class="token punctuation">]</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token keyword">this</span><span class="token punctuation">.</span>tree<span class="token punctuation">[</span>searchChild<span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>tree<span class="token punctuation">[</span>index<span class="token punctuation">]</span><span class="token punctuation">]</span>
+      index <span class="token operator">=</span> searchChild
+      left <span class="token operator">=</span> <span class="token number">2</span> <span class="token operator">*</span> searchChild <span class="token operator">+</span> <span class="token number">1</span>
+      searchChild <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">compare</span><span class="token punctuation">(</span>left<span class="token punctuation">,</span> left <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">0</span> <span class="token operator">?</span> left <span class="token operator">+</span> <span class="token number">1</span> <span class="token operator">:</span> left 
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">return</span> top
+  <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">public</span> <span class="token function">top</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span>tree<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">public</span> <span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span>tree<span class="token punctuation">.</span>length
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">// 返回正数时，指示 index1 应该在 index2 的下方，应该把 index1 往下沉，反之则代表 index2 需要往下沉</span>
+    <span class="token comment">// 注意这与这是大顶堆还是小顶堆是没关系的，不管是大顶堆还是小顶堆，都是正数表示 index1 需要往下沉</span>
+    <span class="token keyword">private</span> <span class="token function">compare</span><span class="token punctuation">(</span>index1<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">,</span> index2<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span> <span class="token punctuation">&#123;</span>
+      <span class="token comment">// 讨论越界情况，保证 undfined 值总是在最下面</span>
+      <span class="token comment">// 当 index1 越界了，应该把 index1 所代表的 undefined 值往下沉</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>tree<span class="token punctuation">[</span>index1<span class="token punctuation">]</span> <span class="token operator">===</span> <span class="token keyword">undefined</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token keyword">return</span> <span class="token number">1</span> <span class="token punctuation">&#125;</span>
+      <span class="token comment">// 当 index2 越界了，应该把 index2 所代表的 undefined 值往下沉</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>tree<span class="token punctuation">[</span>index2<span class="token punctuation">]</span> <span class="token operator">===</span> <span class="token keyword">undefined</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">1</span> <span class="token punctuation">&#125;</span>
+      <span class="token comment">// 正常情况由传入的 compareFn 决定</span>
+      <span class="token comment">// 比如如果是小顶堆，应该写作类似 (a, b) => a[1] - b[1]，这样当 a 的值 > b 的值时，a 就会往下沉</span>
+      <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">compareFn</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>tree<span class="token punctuation">[</span>index1<span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>tree<span class="token punctuation">[</span>index2<span class="token punctuation">]</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p></detail></p>
+<h2 id="例题-3">例题</h2>
+<h3 id="前-k-个高频元素">前 K 个高频元素</h3>
+<p><a href="https://leetcode.cn/problems/top-k-frequent-elements/">LeetCode.347</a></p>
+<p>Given an integer array nums and an integer k, return the k most frequent elements. You may return the answer in any order.</p>
+<p>Example 1:</p>
+<p>Input: nums = [1,1,1,2,2,3], k = 2</p>
+<p>Output: [1,2]</p>
+<p><detail> #二叉堆</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">topKFrequent</span><span class="token punctuation">(</span>nums<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> k<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">// 哈希表统计元素数量 O(n)</span>
+  <span class="token keyword">const</span> map <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Map</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> nums<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    map<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span>nums<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">(</span>map<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>nums<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">||</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token comment">// 遍历哈希表，用二叉堆（优先级队列）统计出前 k 个值</span>
+  <span class="token comment">// 这里用的是小顶堆，因为如果堆的size超过k，是把堆顶的那个值给扔掉</span>
+  <span class="token comment">// 如果是大顶堆就是把最大值扔掉了，我们要逐步扔掉比较小的值，把大的值沉在堆底</span>
+  <span class="token keyword">const</span> heap <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Heap<span class="token operator">&lt;</span><span class="token builtin">number</span><span class="token punctuation">,</span> <span class="token builtin">number</span><span class="token operator">></span></span><span class="token punctuation">(</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span> b<span class="token punctuation">)</span> <span class="token operator">=></span> a<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">-</span> b<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">const</span> entry <span class="token keyword">of</span> map<span class="token punctuation">.</span><span class="token function">entries</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    heap<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>entry<span class="token punctuation">)</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>heap<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">></span> k<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      heap<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token comment">// 将堆剩下的输出到 result 数组中</span>
+  <span class="token keyword">const</span> result <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token keyword">while</span> <span class="token punctuation">(</span>heap<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    result<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>heap<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token keyword">return</span> result
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p></detail></p>
 <h1 id="动态规划">动态规划</h1>
 <h2 id="背包问题">背包问题</h2>
 <figure>
@@ -1493,7 +1771,7 @@ dp<span class="token punctuation">[</span><span class="token number">2</span><sp
   <span class="token punctuation">&#125;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>背包容量的每一个值，都会重新计算一遍 1 和 5，所以包含了 {1, 5} 和 {5, 1} 两种情况。，<code>dp[j]</code> 里面存的就是排列数。</p>
-<h2 id="例题-3">例题</h2>
+<h2 id="例题-4">例题</h2>
 <h3 id="整数拆分">整数拆分</h3>
 <p><a href="https://leetcode.cn/problems/integer-break/">LeetCode.343</a></p>
 <p>Given an integer n, break it into the sum of k positive integers, where k &gt;= 2, and maximize the product of those integers.</p>
@@ -5110,9 +5388,10 @@ console<span class="token punctuation">.</span><span class="token function">log<
 <p>提示工程：https://learningprompt.wiki/</p>
 <p>香港建筑数据库：https://geodata.gov.hk/gs/datasets</p>
 <p>面试笔记：https://hackmd.io/7GUfnRgESMuRUAG-7kdapQ</p>
+<p>HTTPS：https://www.thesslstore.com/blog/how-does-https-work/</p>
 <p>八股：</p>
 <ul>
-<li><p>非对称加密，对称加密，HTTPS具体的实现</p></li>
+<li><p>非对称加密，对称加密</p></li>
 <li><p>寻找最大子串</p></li>
 <li><p>HardMan()</p></li>
 </ul>
@@ -6909,9 +7188,7 @@ variable \larr E
 <p><strong>第二步：用菱形表示关系集。</strong></p>
 <p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/ERDiagram-2.png" /></p>
 <p><strong>第三步：可以加上关系集中的其他属性。</strong></p>
-<figure>
-<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/ERDiagram-3.png" alt="img" /><figcaption aria-hidden="true">img</figcaption>
-</figure>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/ERDiagram-3.png" /></p>
 <h3 id="role">Role</h3>
 <p>同一个实体集可以出现在同一个关系集中多次，每次可以扮演不同的角色：</p>
 <p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/ERDiagram-4.png" /></p>
@@ -8858,38 +9135,28 @@ foo<span class="token punctuation">.</span><span class="token function">fn</span
 <h1 id="concepts">Concepts</h1>
 <h2 id="object-oriented">Object Oriented</h2>
 <ul>
-<li><strong>Encapsulation</strong>: a class contains data and behaviors, and can hide some</li>
-<li><strong>Abstraction</strong>
+<li><strong>Encapsulation</strong>: 封装，一个 Class 包含了他的数据和行为，并隐藏他不想要外界访问的内容。</li>
+<li><strong>Abstraction</strong>：抽象，将实现细节抽象，隔离代码改变带来的影响。</li>
+<li><strong>Inheritance</strong>: 继承，这一定程度上破坏了封装。继承是一种方法，可以用来创建“子类使用父类方法和属性”这一体系结构。</li>
+<li><strong>Polymorphism</strong>: 多态，不同类的对象被当作一个共同的超类的对象来对待。多态主要聚焦于灵活地使用继承的方法，允许一个 Interface 表达不同的对象。意味着可以调用不同 Classes 的同样的方法。</li>
+<li><strong>Coupling and Cohesion</strong>: <em>Loose coupled, highly cohesive</em>，高内聚、低耦合。
 <ul>
-<li>Abstract away implementation details</li>
-<li>Isolate the impact of changes made to the code</li>
-</ul></li>
-<li><strong>Inheritance</strong>: It weakens encapsulation.</li>
-<li><strong>Polymorphism</strong>:</li>
-<li><strong>Coupling and Cohesion</strong>: <em>Loose coupled, highly cohesive</em>
-<ul>
-<li><strong>Coupling</strong> (dependency): The degree to which one class knows about another class.</li>
-<li><strong>Cohesion</strong>: The degree to which a class has a single, well-focused purpose.</li>
+<li><strong>Coupling</strong> (dependency): 一个 Class 对另一个 Class 了解多深。</li>
+<li><strong>Cohesion</strong>: 一个 Class 有独立、高度聚焦的目标的程度。</li>
 </ul></li>
 <li><strong>Interface/Implementation Paradigm</strong>
 <ul>
-<li>An object should <strong>reveal only the interfaces</strong> that other objects must have to interact with it.</li>
-<li>Clients of the class will not be affected by implementation change.</li>
+<li>一个对象应该 <strong>只暴露给其他对象交互用的接口</strong>。</li>
+<li>Class 的客户不应该受到 Class 内部具体实现改变的影响。</li>
 </ul></li>
 </ul>
 <h2 id="uml-class-diagrams">UML Class Diagrams</h2>
 <p><a href="https://www.youtube.com/watch?v=UI6lqHOVHic">UML Class Diagram Tutorial Video</a></p>
 <p><a href="https://www.visual-paradigm.com/guide/uml-unified-modeling-language/uml-class-diagram-tutorial/;WWWSESSIONID=011FBA1C6F02E5074E7D3E435507A547.www1">UML Class Diagram Tutorial</a></p>
 <h3 id="attributes">Attributes</h3>
-<ul>
-<li>Data containing values that describe each instance of that class</li>
-<li>Also called fields, variables, properties.</li>
-</ul>
+<p>类的实例的数据，也称为 fields, variables, properties。</p>
 <h3 id="methods">Methods</h3>
-<ul>
-<li>Specify behavioral feature of a class.</li>
-<li>Also called operations or functions.</li>
-</ul>
+<p>规定了 Class 的行为，也称为 operations 或 functions.</p>
 <h3 id="visibility">Visibility</h3>
 <pre class="line-numbers language-text" data-language="text"><code class="language-text">- private
 + public
@@ -8917,11 +9184,11 @@ foo<span class="token punctuation">.</span><span class="token function">fn</span
 </figure>
 <h2 id="solid-principle">SOLID Principle</h2>
 <ul>
-<li>SRP: Single Responsibility Principle</li>
-<li>OCP: Open/Close Principle</li>
-<li>LSP: Liskov Substitution Principle</li>
-<li>IPS: Interface Segregation Principle</li>
-<li>DIP: Dependency Inversion Principle</li>
+<li><strong>SRP</strong>: Single Responsibility Principle</li>
+<li><strong>OCP</strong>: Open/Close Principle</li>
+<li><strong>LSP</strong>: Liskov Substitution Principle</li>
+<li><strong>IPS</strong>: Interface Segregation Principle</li>
+<li><strong>DIP</strong>: Dependency Inversion Principle</li>
 </ul>
 <h3 id="srp-single-responsibility-principle">SRP: Single Responsibility Principle</h3>
 <pre class="line-numbers language-text" data-language="text"><code class="language-text">Animal
@@ -8930,19 +9197,17 @@ foo<span class="token punctuation">.</span><span class="token function">fn</span
 - performSleep()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="ocp-openclose-principle">OCP: Open/Close Principle</h3>
 <ul>
-<li>Software entities (classes, modules, functions, etc.) should be:
+<li>软件实体（模组、类、函数等）应该：
 <ul>
 <li>Open for extension</li>
 <li>Close for modification</li>
 </ul></li>
-<li>Be able to extend a class's behavior without modifying it.</li>
+<li>可以在不修改他的基础上拓展某个类的行为。</li>
 </ul>
 <h3 id="lsp-liskov-substitution-principle">LSP: Liskov Substitution Principle</h3>
-<p>If we substitute a super class object reference with an object of <em>any</em> of its subclasses, the program should not break.</p>
-<p>If a superclass can do something, a subclass <strong>MUST</strong> also be able to do it.</p>
+<p>用子类替换掉某个超类，程序将不会被中断。<strong>如果超类可以一件事，那么子类一定也可以做这件事。</strong></p>
 <h3 id="ips-interface-segregation-principle">IPS: Interface Segregation Principle</h3>
-<p>No code should be forced to depend on methods it does not use.</p>
-<p>Splits large interfaces into smaller and more specific ones.</p>
+<p>代码不应该强制依赖于一个他根本没有使用的方法。需要将大的 Interfaces 切分成更小的、更精确的 Interfaces：</p>
 <pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">// Large interface</span>
 <span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">Zookeeper</span> <span class="token punctuation">&#123;</span>
   <span class="token keyword">void</span> <span class="token function">washAnimal</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -8968,7 +9233,8 @@ foo<span class="token punctuation">.</span><span class="token function">fn</span
   <span class="token comment">//...</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="dip-dependency-inversion-principle">DIP: Dependency Inversion Principle</h3>
-<p>Depend upon abstractions. Do not depend upon concrete classes.</p>
+<p>依赖于抽象，而不是依赖于某个具体的类。</p>
+<p>具体的实现细节应该依赖于他的抽象。</p>
 <h2 id="convention-over-configuration-principle">Convention-Over-Configuration Principle</h2>
 <p>The convention represents the most-used way to configure the app for a specific purpose.</p>
 <p>Only need to change those places where your app needs more particular configuration.</p>
@@ -9046,18 +9312,18 @@ foo<span class="token punctuation">.</span><span class="token function">fn</span
 <h1 id="oo-design-in-java">OO Design in Java</h1>
 <h2 id="encapsulation">Encapsulation</h2>
 <ul>
-<li>Access Modifier
+<li><strong>Access Modifier</strong>
 <ul>
-<li>The keyword <code>private</code> signifies that a method or variable can be accessed only within the declaring object.</li>
-<li>All/most attributes should be declared as private.</li>
+<li><code>private</code> 关键字表示该方法或变量只能在声明该变量的对象内部访问。</li>
+<li>所有/大多数属性都应该用声明为私有的。</li>
 </ul></li>
-<li>Getters and Setters</li>
+<li><strong>Getters and Setters</strong></li>
 </ul>
 <h2 id="inheritance">Inheritance</h2>
 <ul>
-<li><strong>Is-a Relationship</strong>: A subclass can do anything that the superclass can do.
+<li><strong>Is-a Relationship</strong>: 子类（subclass）可以做所有其父类（superclass）可以做的事情。
 <ul>
-<li><strong>Generalization</strong>: A subclass is a type of superclass (a dog <strong>is-a</strong> mammal)</li>
+<li><strong>Generalization</strong>: 子类是父类的类型，比如 Dog <strong>is-a</strong> Mammal。</li>
 </ul></li>
 </ul>
 <h3 id="method-overriding">Method Overriding</h3>
@@ -9075,11 +9341,11 @@ foo<span class="token punctuation">.</span><span class="token function">fn</span
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="interface-and-abstract-class">Interface and Abstract Class</h3>
 <ul>
-<li>An <strong>interface</strong> can provide <strong>NO implementation</strong> at all.
+<li><strong>Interface 不能提供实现细节。</strong>
 <ul>
-<li>A class can inherit from only one parent class, but it can implement many interfaces.</li>
+<li>一个 Class 只能继承自一个父类，但是可以实现（Implement）多个 Interfaces。</li>
 </ul></li>
-<li>An <strong>abstract class</strong> can provide some implementation.</li>
+<li><strong>Abstract Class 可以提供部分实现细节。</strong></li>
 </ul>
 <pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">interface</span> <span class="token class-name">Nameable</span> <span class="token punctuation">&#123;</span>
   <span class="token class-name">String</span> <span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -9138,9 +9404,10 @@ foo<span class="token punctuation">.</span><span class="token function">fn</span
   <span class="token punctuation">&#125;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h2 id="inverting-of-control-ioc">Inverting of Control (IoC)</h2>
+<p>根据依赖反转原则（DIP）</p>
 <ul>
-<li><strong>DIP</strong>: high-level modules should <strong>not</strong> depend on low-level modules.</li>
-<li><strong>Both</strong> should depend on abstractions.</li>
+<li>高级的模组不应该依赖于低级的模组，而是应该依赖于抽象</li>
+<li>低级的模组的实现也应该依赖于抽象</li>
 </ul>
 <figure>
 <img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/java-before-ioc.jpg" alt="High-level module depends on low level module" /><figcaption aria-hidden="true">High-level module depends on low level module</figcaption>
@@ -9148,10 +9415,10 @@ foo<span class="token punctuation">.</span><span class="token function">fn</span
 <figure>
 <img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/java-ioc.jpg" alt="Inverting of Control" /><figcaption aria-hidden="true">Inverting of Control</figcaption>
 </figure>
-<p>Create 2 interfaces: to fetch the data and export the data.</p>
+<p>创建两个 Interfaces 来获取并导出数据：</p>
 <ul>
-<li>All low-level modules must implements these interfaces</li>
-<li>High-level module (Balance Sheet Module) needs to rely on interfaces</li>
+<li>所有低级模组必须实现他们的 Interfaces。</li>
+<li>高级模组（Balance Sheet Module）需要依赖于这些 Interfaces。</li>
 </ul>
 <pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">IFetchData</span> <span class="token punctuation">&#123;</span>
   <span class="token class-name">List</span><span class="token operator">&lt;</span><span class="token class-name">Object</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">></span> <span class="token function">fetchData</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -9169,14 +9436,8 @@ foo<span class="token punctuation">.</span><span class="token function">fn</span
   <span class="token punctuation">&#125;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="dependency-injection-di">Dependency Injection (DI)</h3>
-<ul>
-<li>DI is one way to implement IoC.</li>
-<li>Decouples your class's construction from the construction of its dependencies.
-<ul>
-<li>Invert the object creation process from your module to other code or entity.</li>
-<li>Inject the object from outside.</li>
-</ul></li>
-</ul>
+<p>依赖注入（DI） 是一种实现控制反转（IoC）的方式。</p>
+<p>将类的构造和他依赖的构造解耦： - 将对象的创建过程改交给别的代码或实例负责； - 然后从外部注入创建好的对象。</p>
 <h4 id="constructor-injection">Constructor Injection</h4>
 <pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">BalanceSheet</span> <span class="token punctuation">&#123;</span>
   <span class="token keyword">private</span> <span class="token class-name">IExportData</span> exportDataObj<span class="token punctuation">;</span>
@@ -9194,13 +9455,12 @@ foo<span class="token punctuation">.</span><span class="token function">fn</span
   
   <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setExportDataObj</span><span class="token punctuation">(</span><span class="token class-name">IExportData</span> exportDataObj<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
     <span class="token keyword">this</span><span class="token punctuation">.</span>exportDataObj <span class="token operator">=</span> exportDataObj<span class="token punctuation">;</span>
-    <span class="token keyword">this</span><span class="token punctuation">.</span>fetchDataObj <span class="token operator">=</span> fetchDataObj<span class="token punctuation">;</span>
   <span class="token punctuation">&#125;</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="ioc-containers">IoC Containers</h3>
 <ul>
-<li>A container takes care of creating, configuring, and managing objects.</li>
-<li>You just need to do configuration, and the container will take care of object instantiation and dependency management with ease.</li>
+<li>IoC 容器负责对象的创建、配置和管理；</li>
+<li>只需要做一些配置，容器会自己负责对象的初始化和依赖管理；</li>
 <li>Java IoC Containers: Spring, Google Guice and Dagger.</li>
 </ul>
 <h3 id="factory-pattern">Factory Pattern</h3>
@@ -9228,8 +9488,7 @@ foo<span class="token punctuation">.</span><span class="token function">fn</span
   <span class="token punctuation">&#125;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h1 id="maven">Maven</h1>
-<p>Maven is a tool for building and managing your Java-based projects.</p>
-<h2 id="project-structure">Project Structure</h2>
+<p>Maven 是 Java 项目的构建与管理工具。</p>
 <pre class="line-numbers language-text" data-language="text"><code class="language-text">|-- pom.xml
 `-- src
   |--main
@@ -9243,17 +9502,17 @@ foo<span class="token punctuation">.</span><span class="token function">fn</span
         `-- example
           `-- AppTest.java<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <ul>
-<li><strong>src/main/java</strong>: The source code.</li>
-<li><strong>src/main/resources</strong>: The resources such as configuration files and property files.</li>
-<li><strong>src/test/resources</strong>: The test resources such as configuration files and property files.</li>
-<li><strong>pom.xml:</strong> <strong>Project Object Model</strong>. The project's information and dependencies.
+<li><strong>src/main/java</strong>: 源代码。</li>
+<li><strong>src/main/resources</strong>: 资源，比如 configuration files 和 property files。</li>
+<li><strong>src/test/resources</strong>: 测试需要的资源，比如 configuration files 和 property files。</li>
+<li><strong>pom.xml:</strong> <strong>Project Object Model</strong>. 项目信息和依赖。
 <ul>
-<li><strong>groupId</strong>: identifies the group or organization that the dependency belongs to.</li>
-<li><strong>artifactId</strong>: the id of the artifact within the group.</li>
-<li><strong>version</strong>: the version of the dependency that the project requires.</li>
-<li><strong>scope</strong>: the scope of the dependency (whether it is required for compilation, test, runtime, etc.)</li>
+<li><strong>groupId</strong>: 区分依赖所属的 group 或 organization。</li>
+<li><strong>artifactId</strong>: 该工具在 group 内的 id。</li>
+<li><strong>version</strong>: 项目所需的依赖版本。</li>
+<li><strong>scope</strong>: 依赖的范围（比如是编译、测试、运行时所需）。</li>
 </ul></li>
-<li><strong>target</strong>: The compiled code and other files generated during the build process.</li>
+<li><strong>target</strong>: 编译后的代码和其它构建过程中产生的文件。</li>
 </ul>
 <h2 id="create-a-maven-project">Create a Maven Project</h2>
 <h3 id="use-vscode-extension">Use VSCode Extension</h3>
@@ -9268,57 +9527,57 @@ foo<span class="token punctuation">.</span><span class="token function">fn</span
 <span class="token parameter variable">-DarchetkypeArtifactId</span><span class="token operator">=</span>maven-archetype-quickstart <span class="token punctuation">\</span>
 <span class="token parameter variable">-DinteractiveMode</span><span class="token operator">=</span>false<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 <h2 id="maven-lifecycle">Maven Lifecycle</h2>
-<p>3 build-in build lifecycles:</p>
+<p>三个内置的生命周期：</p>
 <ul>
-<li><strong>Default</strong>: handles project deployment.</li>
-<li><strong>Clean</strong>: handles project cleaning.</li>
-<li><strong>Site</strong>: handles the creation of project's web site.</li>
+<li><strong>Default</strong>: 用于项目部署。</li>
+<li><strong>Clean</strong>: 用于项目清理。</li>
+<li><strong>Site</strong>: 用于创建项目网站。</li>
 </ul>
-<p>These are some phases in the default lifecycle:</p>
+<p>Default 生命周期的一些 Phases：</p>
 <ul>
 <li><strong>validate</strong></li>
 <li><strong>compile</strong></li>
-<li><strong>test</strong>: unit test</li>
+<li><strong>test</strong>: 单元测试</li>
 <li><strong>package</strong></li>
-<li><strong>verify</strong>: integration test</li>
-<li><strong>install</strong>: install the package into local repository</li>
+<li><strong>verify</strong>: 集成测试</li>
+<li><strong>install</strong>: 将包安装到本地仓库</li>
 <li><strong>deploy</strong></li>
 </ul>
 <h2 id="goals">Goals</h2>
 <ul>
-<li>A specific task (finer than a build phase) which contributes to the building and managing of a project.</li>
-<li>Each goal is bound to one or more phases.
+<li>Goal 是一个特定的任务（比 Phase 更小），用来构建和管理项目。</li>
+<li>每个 Goal 都与一个或多个 Phases 绑定。
 <ul>
-<li>Corresponds to a specific action that needs to be performed</li>
-<li>E.g. compiling code, running tests, and packaging the code.</li>
+<li>与一个需要执行的特定的行为相关；</li>
+<li>比如编译代码、运行测试、打包代码等。</li>
 </ul></li>
-<li>One or more plugins can be bounded to the goal.</li>
+<li>有一个或多个 Plugin 与 Goal 绑定。</li>
 </ul>
 <h2 id="plugins">Plugins</h2>
 <ul>
-<li>Perform tasks in specific goal(s).
+<li>执行特定 Goal(s) 中的任务。
 <ul>
-<li>E.g. automate common build tasks, such as compiling code, running tests, and packaging the code.</li>
+<li>比如自动化一些通用的构建任务，像编译代码、运行测试、打包代码等。</li>
 </ul></li>
-<li>Can be bound to one or more goals.</li>
+<li>可以与一个或多个 Goal 绑定。</li>
 </ul>
 <h2 id="commands">Commands</h2>
 <figure>
 <img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/maven-phase-goal-plugin.jpg" alt="Maven Phases, goals and Plugins" /><figcaption aria-hidden="true">Maven Phases, goals and Plugins</figcaption>
 </figure>
-<p>A Maven command may be written in 2 forms:</p>
+<p>Maven 命令有两种形式：</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">mvn <span class="token punctuation">[</span>phase<span class="token punctuation">]</span>
 mvn <span class="token punctuation">[</span>plugin<span class="token punctuation">]</span>:<span class="token punctuation">[</span>goal<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>E.g.:</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">mvn compile            <span class="token comment"># execute default lifecycle till compile phase</span>
-mvn compiler:compile   <span class="token comment"># only excute compiler plugin to comile</span>
+<p>比如：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">mvn compile            <span class="token comment"># 执行 Default 生命周期直到 compile 为止的所有 Phase</span>
+mvn compiler:compile   <span class="token comment"># 只使用 compiler 插件来进行 compile</span>
 
 mvn <span class="token builtin class-name">test</span>
-mvn surefire:test      <span class="token comment"># only excute surefire plugin to test</span>
+mvn surefire:test      <span class="token comment"># 只使用 surefire 插件来进行 test</span>
 
 mvn exec:java<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h2 id="jar-java-archive-file">JAR (Java Archive) File</h2>
-<p>A package file format used to aggregate many Java class files and associated metadata and resources into one file for distribution.</p>
+<p>一种包文件格式，将一些 Java 的类文件、相关元数据和资源打包成一个文件方便分发。</p>
 <h1 id="spring-boot">Spring Boot</h1>
 <h2 id="simple-demo-with-rest-api">Simple Demo With Rest API</h2>
 <h3 id="spring-initializr">Spring Initializr</h3>
@@ -9738,7 +9997,7 @@ POST http://localhost:8080/api/v1/student
 <p>Now the application is running.</p>
 <p>And we can change the port by adding <code>--server.port=8081</code> at the end.</p>
 <h2 id="generate-a-spring-boot-project">Generate a Spring Boot Project</h2>
-<p><a href="https://start.spring.io/">Spring Initializr</a> configured into your Maven project</p>
+<p><a href="https://start.spring.io/">Spring Initializr</a> 为我们的 Maven 项目做了基本配置</p>
 <ul>
 <li>The Spring app main class</li>
 <li>The Spring Boot POM parent</li>
@@ -9747,7 +10006,7 @@ POST http://localhost:8080/api/v1/student
 <li>The properties file</li>
 </ul>
 <h2 id="dependency-starter">Dependency Starter</h2>
-<p>A dependency starter is a group of dependencies you add to configure your app for a specific purpose.</p>
+<p>Dependency Starter 是我们添加的配置应用的一组依赖。</p>
 <figure>
 <img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/dependency-starter.jpg" alt="Dependency Starter" /><figcaption aria-hidden="true">Dependency Starter</figcaption>
 </figure>
@@ -9763,11 +10022,11 @@ POST http://localhost:8080/api/v1/student
 <li>Spring Testing</li>
 </ul>
 <h2 id="springbootapplication"><span class="citation" data-cites="SpringBootApplication">@SpringBootApplication</span></h2>
-<p>Enables</p>
+<p><span class="citation" data-cites="SpringBootApplication">@SpringBootApplication</span> 启用了：</p>
 <ul>
-<li><strong><span class="citation" data-cites="EnableAutoConfiguration">@EnableAutoConfiguration</span></strong>: Automatically configure your Spring application based on the jar dependencies that you have added. (e.g., Configure database connection based on specified dependency)</li>
-<li><strong><span class="citation" data-cites="ComponentScan">@ComponentScan</span></strong>: Enable scan <strong><span class="citation" data-cites="Component">@Component</span></strong>.</li>
-<li><strong><span class="citation" data-cites="Configuration">@Configuration</span></strong>: Allow register extra beans in the context or import additional configuration classes.</li>
+<li><strong><span class="citation" data-cites="EnableAutoConfiguration">@EnableAutoConfiguration</span></strong>: 根据添加的依赖自动配置 Spring 应用，比如根据特定的依赖配置数据库连接。</li>
+<li><strong><span class="citation" data-cites="ComponentScan">@ComponentScan</span></strong>: 启用扫描 <strong><span class="citation" data-cites="Component">@Component</span></strong>.</li>
+<li><strong><span class="citation" data-cites="Configuration">@Configuration</span></strong>: 允许在 Context 中注册额外的 Beans，或导入额外的 Configuration Classes。</li>
 </ul>
 <h2 id="spring-context">Spring Context</h2>
 <p>The place in the app's memory where we add the object instances we want Spring to manage.</p>
@@ -10089,7 +10348,7 @@ POST http://localhost:8080/api/v1/student
   
   <span class="token comment">//...</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h1 id="pramater-validation">Pramater Validation</h1>
+<h1 id="parameter-validation">Parameter Validation</h1>
 <h2 id="tools">Tools</h2>
 <ul>
 <li><code>javax.validation</code> 和 <code>jakarta.validation</code> 是两个 Bean Validation 规范，他们都定义了一些标准的 Annotaions 和 API，后者可以看做前者的延续。他们并没有提供校验功能的具体实现，只提供了标准接口。</li>
@@ -15355,7 +15614,7 @@ immutableObj<span class="token punctuation">.</span><span class="token function"
     <url>/hais-notebook/2023/01/18/Networking/</url>
     <content><![CDATA[<p>.</p>
 <span id="more"></span>
-<h1 id="协议栈">协议栈</h1>
+<h1 id="protocol-stack">Protocol Stack</h1>
 <ul>
 <li>应用层：FTP、DNS、HTTP</li>
 <li>传输层：TCP、UDP</li>
@@ -15363,13 +15622,12 @@ immutableObj<span class="token punctuation">.</span><span class="token function"
 <li>链路层：DOCSIS</li>
 <li>物理层：与双绞铜线、同轴电缆、光纤等相关</li>
 </ul>
-<h1 id="应用层">应用层</h1>
+<h1 id="application-layer">Application Layer</h1>
 <h2 id="http">HTTP</h2>
 <blockquote>
 <p>Web 的应用层协议是超文本传输协议（HyperText Transfer Protocol, HTTP）</p>
 </blockquote>
-<h3 id="http-概述">HTTP 概述</h3>
-<h4 id="http-历史">HTTP 历史</h4>
+<h3 id="http-history">HTTP History</h3>
 <ul>
 <li>HTTP 0.9：1991，只有 GET、只能传HTML，没有 CSS、JS，每个HTTP请求都是短连接</li>
 <li>HTTP 1.0：1996，有了 POST、HEAD……</li>
@@ -15738,28 +15996,6 @@ Range:bytes=500-600,601-999<span aria-hidden="true" class="line-numbers-rows"><s
 <p>用于响应头中，返回当前接受的范围和文件总大小：</p>
 <pre class="line-numbers language-text" data-language="text"><code class="language-text">Content-Range:bytes(unit first byte pos)-[last byte pos]/[entity length]<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <h3 id="https">HTTPS</h3>
-<h4 id="数字证书">数字证书</h4>
-<h5 id="对称加密与非对称加密">对称加密与非对称加密</h5>
-<figure>
-<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Encryption.png" alt="对称加密" /><figcaption aria-hidden="true">对称加密</figcaption>
-</figure>
-<figure>
-<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/AsymEncryption.png" alt="非对称加密" /><figcaption aria-hidden="true">非对称加密</figcaption>
-</figure>
-<p>对称加密效率高，但在密钥分发时存在安全隐患，容易被截获；非对称加密安全性高，但性能低下；因此我们可以先用非对称加密传输对称加密的密钥，之后再用对称加密来传输数据</p>
-<h5 id="数字签名与数字证书">数字签名与数字证书</h5>
-<figure>
-<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Digital-Signature-1.png" alt="数字签名" /><figcaption aria-hidden="true">数字签名</figcaption>
-</figure>
-<figure>
-<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Digital-Signature-2.png" alt="数字签名" /><figcaption aria-hidden="true">数字签名</figcaption>
-</figure>
-<figure>
-<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Digital-Certificate-1.png" alt="数字证书" /><figcaption aria-hidden="true">数字证书</figcaption>
-</figure>
-<figure>
-<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Digital-Certificate-2.png" alt="数字证书" /><figcaption aria-hidden="true">数字证书</figcaption>
-</figure>
 <h4 id="https-协议概述">HTTPS 协议概述</h4>
 <blockquote>
 <p>HTTPS 可以认为是 HTTP + TLS，TLS 是传输层加密协议，他的前身是 SSL 协议</p>
@@ -15916,6 +16152,9 @@ Origin: http://example.com<span aria-hidden="true" class="line-numbers-rows"><sp
 <li><strong>前向纠错</strong>，会多发一些冗余的包（校验包），虽然产生了多的包，但是减少了重传带来的损失 <img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/QUIC-Error-Correcting.png" alt="前向纠错" /></li>
 </ul>
 <h2 id="https-1">HTTPS</h2>
+<blockquote>
+<p><a href="https://www.thesslstore.com/blog/how-does-https-work">How Does HTTPS Work?</a></p>
+</blockquote>
 <h3 id="two-things-https-does">Two Things HTTPS Does</h3>
 <p>HTTPS 做了两件非常重要的事情：</p>
 <ol type="1">
@@ -15932,6 +16171,127 @@ Origin: http://example.com<span aria-hidden="true" class="line-numbers-rows"><sp
 <blockquote>
 <p>身份验证（Authentication）保证了我们访问的是正确的网站。</p>
 </blockquote>
+<p>浏览器上的 URL 栏并不能总是保证我们访问了正确的网站，攻击者可以通过 <a href="#dns-poisoning">DNS 下毒</a>、恶意软件等手段让我们的浏览器访问到错误的网站——即使浏览器的地址栏显示的是正确的 URL。</p>
+<p>浏览器通过 SSL/TLS 证书（Certificate）和颁发证书的权威机构（Certificate Authority）来认证访问的 HTTPS 网站，主要有这样几步：</p>
+<p><strong>第一步：网站获取证书</strong></p>
+<p>网站需要获取由第三方可信证书机构颁发的 SSL 证书，这个证书就像网站的护照，他会包含一些信息：</p>
+<ul>
+<li>网站的 URL</li>
+<li>一个公钥，该公钥对应着一个该网站才有的私钥</li>
+<li>证书颁发机构</li>
+<li>证书过期时间</li>
+<li>运行网站的合法组织（可选）</li>
+</ul>
+<p>网站所有者需要做以下几步来获取证书：</p>
+<ol type="1">
+<li>生成一个公钥和一个私钥</li>
+<li>通过一些特定的流程向某个证书颁发机构证明他们是这个网站的真正所有者</li>
+<li>如果是 OV 和 EV SSL 证书，网站拥有者还需要证明他们是一个真正的、合法的注册组织</li>
+</ol>
+<p>网站所有者获取证书之后，会将其安装在 Web 服务器上，然后用户每次通过 https://URL 访问网站时，就会自动向用户提供证书。</p>
+<p><strong>第二步：浏览器索取证书</strong></p>
+<p>当我们访问一个 HTTPS 网站时，网站会给浏览器发送一个 SSL/TLS 证书，可以点一下浏览器地址栏旁边小锁进行查看。</p>
+<p>有的证书会展示公司的详情，这类证书被称为 OV (Organization Validation) 或 EV (Extended Validation) 证书，这类证书的公司详情也是被认证过的。</p>
+<p><strong>第三步：浏览器验证证书</strong></p>
+<p>网站出示了证书并不能代表浏览器就能信任他，这些证书还需要通过校验来确保他们的准确性和真实性。更确切地说，浏览器需要确认：</p>
+<ol type="1">
+<li>网站的 SSL 证书颁发机构在浏览器的信任机构列表中（浏览器使用证书颁发机构的数字签名来实时确认网站的证书颁发机构）</li>
+<li>SSL 证书对于正在访问的域名或 URL 来说是有效的</li>
+<li>SSL 证书当下是有效的，并没有过期或废弃</li>
+</ol>
+<p><strong>总的来说，浏览器会向网站索要并检查证书，就像机场安检员检查护照一样。</strong></p>
+<h4 id="encryption">Encryption</h4>
+<p>HTTPS 会对浏览器和网站之间的所有信息进行加密，确保第三方不能读取数据。</p>
+<h3 id="public-key-infrastructure-pki">Public Key Infrastructure (PKI)</h3>
+<p>HTTPS、SSL、TLS 都是在 Public Key Infrastructure (PKI) 的基础上运行的，PKI 就像是他们的引擎。</p>
+<p>PKI 由五个部分组成：</p>
+<ol type="1">
+<li>数字证书（Digital Certificates），比如 SSL 证书</li>
+<li>公钥私钥对（Public Keys &amp; Private Keys）</li>
+<li>证书颁发机构（Certificate Authorities）</li>
+<li>数字签名（Digital Signatures）</li>
+<li>根存储（Root Stores）</li>
+</ol>
+<h4 id="public-keys-private-keys">Public Keys &amp; Private Keys</h4>
+<h5 id="asymmetric-and-symmetric-encryption">Asymmetric and Symmetric Encryption</h5>
+<p>对称加密用同样的私钥进行加密和解密，非对称加密则使用一个公钥/私钥对进行加密。</p>
+<p>对称加密效率高，但在密钥分发时存在安全隐患，容易被截获；非对称加密安全性高，但性能低下；因此我们可以先用非对称加密传输对称加密的密钥，之后再用对称加密来传输数据。</p>
+<p>如果我们有某个网站的证书和公钥，我们就可以发送只有该网站才能解读的信息。这也意味着我们访问的的确是正版网站，因为只有正版网站才能解读我们的信息。</p>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Encryption.png" alt="对称加密" /><figcaption aria-hidden="true">对称加密</figcaption>
+</figure>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/AsymEncryption.png" alt="非对称加密" /><figcaption aria-hidden="true">非对称加密</figcaption>
+</figure>
+<h4 id="digital-signatures">Digital Signatures</h4>
+<p>数字签名是用来证明某个应用程序或文档是从某人或某处来的。<strong>如果我们有作者的公钥，我们可以用该公钥来验证他们用私钥签名的东西。</strong></p>
+<p>这个机制非常重要，浏览器用他来确认到底是哪个 CA 颁发了这个 SSL 证书。如果浏览器有 CA 的公钥，那么浏览器就可以确认该证书确实是由该 CA 颁发的。浏览器通过 Root Stores 拿到 CA 的公钥。</p>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Digital-Signature-1.png" alt="Alice将用自己私钥签名后的信息发送给Bob" /><figcaption aria-hidden="true">Alice将用自己私钥签名后的信息发送给Bob</figcaption>
+</figure>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Digital-Signature-2.png" alt="Bob用Alice的公钥验证信息" /><figcaption aria-hidden="true">Bob用Alice的公钥验证信息</figcaption>
+</figure>
+<h4 id="certificate-authorities">Certificate Authorities</h4>
+<p>如上文所说，CA 是颁发 SSL 证书的可信机构。</p>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Digital-Certificate-1.png" alt="CA用自己的私钥给证书签名" /><figcaption aria-hidden="true">CA用自己的私钥给证书签名</figcaption>
+</figure>
+<h4 id="digital-certificates">Digital Certificates</h4>
+<p>上文已经讲述过了，他就像网站和组织的护照一样。</p>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Digital-Certificate-2.png" alt="Bob用CA的公钥验证数字证书" /><figcaption aria-hidden="true">Bob用CA的公钥验证数字证书</figcaption>
+</figure>
+<h4 id="root-stores">Root Stores</h4>
+<p>每个设备都有 Root Store 或者 Trust Store，里面保存了他信任的所有 CA 的数字证书和相关的公钥。每个设备都有一个默认的信任 CA 列表，我们也可以手动更改这个列表。</p>
+<p>以某个 SSL 证书为例，他可能有多个层次：</p>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">DigiCert High Assurance EV Root CA
+  - DigCert SHA2 Extended Validation Server CA
+    - www.thesslstore.com<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<ol type="1">
+<li>顶级证书 DigiCert High Assurance EV Root CA 是根证书（Root Certificate），这个证书应该被预装在设备的 Root Sotre 中；</li>
+<li>中间的证书被称为 Intermediate Certificate，他被根证书签名（可以用 DigiCert High Assurance EV Root CA 的公钥验证他，这个公钥作为根证书的一部分也被预装在设备中），因此浏览器也可以信任他；</li>
+<li>最下面的 www.thesslstore.com 是网站的 SSL 证书。当我们连接的时候，Web 服务器将该证书发送给浏览器，浏览器用此证书中的 DigCert SHA2 Extended Validation Server CA 的签名来验证该证书。</li>
+</ol>
+<p>这三个证书被称为“信任链”，浏览器通过这样的方式来确认该 SSL 证书是有效且可信的。</p>
+<h3 id="enable-https-on-your-website">Enable HTTPS on Your Website</h3>
+<p>Apache、NGINX、IIS、cPanel、Plesk 等都支持 HTTPS，所以不需要单独安装其他软件，只需要安装 SSL 证书并更新网站设置。</p>
+<p><strong>第一步：获取 SSL/TLS 证书</strong></p>
+<blockquote>
+<p>如果颁发证书的 CA 并没有被浏览器自动标记为信任，访问时就会提示 Your connection is not private。</p>
+</blockquote>
+<ol type="1">
+<li>创建一个 <strong>证书签名请求（Certificate Signing Request, CSR）</strong>，一般可以在 Web Hosting Control Panel（比如 cPanel）上创建该请求，同时也会创建一个公钥私钥对；</li>
+<li>将 CSR 提交给 SSL 提供商或 CA；</li>
+<li>完成 CA 的验证过程。这会根据证书的类型不同而发生改变，但是至少需要证明你是该域名的拥有者。</li>
+</ol>
+<p><strong>第二步：在网站上安装 SSL 证书</strong></p>
+<p>通常可以在 Web Hosting Control Panel 上安装。</p>
+<p><strong>第三步：更新网站设置使用 HTTPS</strong></p>
+<ol type="1">
+<li>更改 CMS 来对所有的页面使用 https://；</li>
+<li>对 http://URL 设置 301 重定向到 https://URL；</li>
+<li>确保所有的图片等静态资源、CSS 文件、JavaScript 文件通过 https:// 加载</li>
+</ol>
+<h3 id="the-tls-handshake">The TLS Handshake</h3>
+<p>当我们访问 HTTPS 网站的时候，浏览器会验证该网站并加密数据。为了做到这些，浏览器和服务器之间会建立一个安全连接，该安全连接的建立过程被称为 SSL/TLS Handshake。</p>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/SSL_Handshake_10-Steps.gif" alt="SSL/TLS Handshake" /><figcaption aria-hidden="true">SSL/TLS Handshake</figcaption>
+</figure>
+<p>下面的握手过程是基于 TLS 1.2 的，关于 TLS 1.3 及更多信息参考 <a href="https://www.thesslstore.com/blog/explaining-ssl-handshake/">Taking a Closer Look at the SSL/TLS Handshake</a>。</p>
+<p><strong>Steps 1-2: Hello &amp; Cipher Suites</strong></p>
+<p>服务器和浏览器发送 Hello 并协商使用何种加密协议簇（Cipher Suite），更多关于加密协议簇的信息参考 <a href="https://www.thesslstore.com/blog/cipher-suites-algorithms-security-settings/">Cipher Suites: Ciphers, Algorithms and Negotiating Security Settings</a>。</p>
+<p><strong>Steps 3-5: Certificate &amp; Key Exchange</strong></p>
+<p>服务器将 SSL 证书、中间证书和相关的公钥发送给浏览器，浏览器根据证书上面的签名和已经信任的根证书来验证 SSL 证书。如果验证失败，连接会被终端并显示错误信息。</p>
+<p>如果上述检查都通过了，我们就拥有了一个安全的通信通道：</p>
+<ul>
+<li>浏览器验证了服务器的 SSL 证书，因此服务器被验证了</li>
+<li>浏览器拥有了服务器的公钥，浏览器可以加密发送给浏览器的消息了</li>
+</ul>
+<p>但是当前的安全连接只是单向的，服务器不能加密发送给浏览器的信息，因为服务器还没有浏览器的公钥。</p>
+<p><strong>Steps 6-10: Setting Up Symmetric Encryption</strong></p>
+<p>对称加密效率是高于浏览器的，因此浏览器和服务器现在会创建一个新的、共享的密钥（该密钥取决于加密协议簇）</p>
+<p>当共享的会话密钥创建好之后，TLS Handshake 就结束了。浏览器和服务器会使用该密钥来加密和解密他们之间传输的所有数据。</p>
 <h2 id="email">Email</h2>
 <ul>
 <li><p>因特网电子邮件系统总体由三个部分组成：<strong>用户代理（User Agent）、邮件服务器（Mail Server）、简单邮件传输协议（Simple Mail Transfer Protocol, SMTP）</strong>。</p></li>
@@ -16462,7 +16822,18 @@ Subject: xxxxxx<span aria-hidden="true" class="line-numbers-rows"><span></span><
 <p>一些场景收到之后会马上回复： - 收到了大于一个 frame 的报文，且需要调整窗口大小 - TCP 处于 quickack 模式（通过 <code>tcp_in_quickack_mode</code> 设置） - 发现了乱序包</p>
 <h3 id="tcp-的-keep-alive">TCP 的 keep-alive</h3>
 <p>由于 TCP 不是一个轮询的协议，他无法获知对端连接失效的情况（比如对端网络故障或宕机），<strong>keep-alive</strong> 则是用于探测对端的连接是否失效，但是因为探测的时间比较长，所以一般不怎么用</p>
-<h1 id="网络层数据平面">网络层：数据平面</h1>
+<h1 id="network-security">Network Security</h1>
+<h2 id="dns-poisoning">DNS Poisoning</h2>
+<blockquote>
+<p>简单来说，DNS 服务器（缓存）被攻击了，导致浏览器得到了一个错误的 IP 地址</p>
+</blockquote>
+<p>发现 DNS 中毒攻击：</p>
+<ul>
+<li>网络流量原因不明突然下降</li>
+<li>以客户的身份（可以换一台电脑、用 VPN 改变位置等）尝试访问网站，看是不是被重定向到奇怪的位置</li>
+</ul>
+<p>Further Reading：</p>
+<p><a href="https://www.thesslstore.com/blog/dns-poisoning-attacks-a-guide-for-website-admins/">DNS Poisoning Attacks: A Guide for Website Admins</a></p>
 ]]></content>
       <categories>
         <category>计算机</category>
@@ -17793,7 +18164,8 @@ psql <span class="token parameter variable">-U</span> username <span class="toke
 <p><strong>关键点：</strong></p>
 <ul>
 <li>规律性</li>
-<li>平衡性</li>
+<li>平衡性 / 打破平衡</li>
+<li>突出异类</li>
 </ul>
 <p><strong>常用构图：</strong></p>
 <ul>
@@ -17809,9 +18181,9 @@ psql <span class="token parameter variable">-U</span> username <span class="toke
 <li><strong>三角形构图</strong>：三个元素构成一个三角形</li>
 <li><strong>框架构图</strong>：偷窥视角，有一个框框住了主体</li>
 <li><strong>对角线</strong>：并不一定是整个画面的对角线，比如按照45°网格排列元素也是对角线构图</li>
-<li><strong>斜构图</strong>（通常不超过45°）</li>
-<li><strong>引导线</strong></li>
-<li><strong>重复构图</strong></li>
+<li><strong>斜构图</strong>（通常不超过45°）：让画面失去平衡，平时不怎么用（因为会不平衡），可用于增加动作张力</li>
+<li><strong>引导线</strong>：突出异类</li>
+<li><strong>重复构图</strong>：突出异类</li>
 </ul>
 <h1 id="曝光正确原理">曝光正确原理</h1>
 <h2 id="曝光模式">曝光模式</h2>
@@ -23066,39 +23438,109 @@ observable<span class="token punctuation">.</span><span class="token function">s
     <url>/hais-notebook/2023/04/10/SoftwareEngineering/</url>
     <content><![CDATA[<p>.</p>
 <span id="more"></span>
+<h1 id="software-engineering">Software Engineering</h1>
+<h2 id="software-development-lifecycle">Software Development Lifecycle</h2>
+<h3 id="waterfall-software-development-lifecycle">Waterfall Software Development Lifecycle</h3>
+<p>在瀑布式中，软件开发被分为几个不同的阶段，每个阶段依次进行：需求分析、设计、编写代码、集成、测试、部署</p>
+<h3 id="requirements">Requirements</h3>
+<h4 id="types-of-requirements">Types of Requirements</h4>
+<p><strong>功能性需求（Functional Requirements）</strong>：定义系统需要完成什么（What）</p>
+<p><strong>非功能性需求（Non-functional Requirements）</strong>：定义系统完成得多好（How well），有几种类型：</p>
+<ul>
+<li><strong>Usability</strong>：易用性</li>
+<li><strong>Performance</strong>：性能，系统对于特定的用户行为在特定的载荷下的响应速度</li>
+<li><strong>Scalability</strong>：拓展性，系统面对持续增加的数据、功能、用户的适应性</li>
+<li><strong>Availability</strong>：可用性，在给定的时间点，系统可被用户访问的可能性</li>
+<li><strong>Reliability</strong>：可靠性，在给定的时间段和预定义的条件下，系统或他的元素正常运作的可能性</li>
+<li><strong>Maintainability</strong>：可维护性</li>
+<li><strong>Security</strong>：安全性</li>
+<li><strong>Compatibility</strong>：兼容性，对老版本兼容、对旧系统兼容</li>
+</ul>
+<h3 id="unified-modeling-language-uml">Unified Modeling Language (UML)</h3>
+<p>UML 提供了一种标准可视化系统设计的标准方法，其中包含了很多种图表，主要分为静态的 Structure Diagram 和动态的 Behavior Diagram。</p>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/02-uml-diagram-types.png" /></p>
+<h3 id="design">Design</h3>
+<p>主要分为 <strong>面向对象（Object-Oriented Design, OOD）</strong> 和 <strong>面向过程（Procedure-Oriented Design, POD）</strong>。</p>
+<h3 id="testing">Testing</h3>
+<h4 id="unit-testing">Unit Testing</h4>
+<blockquote>
+<p>对每个单元进行独立和分离的测试（与其他的单元分开）</p>
+</blockquote>
+<ul>
+<li>假设其他的部分都是正常的</li>
+<li>使用假函数来代替实际调用其他单元</li>
+</ul>
+<p>自动化测试：测试框架（JUnit）+ CI 工具（GitHub Action）</p>
+<h4 id="integration-testing">Integration Testing</h4>
+<blockquote>
+<p>将不同的部分集成起来作为一个组来进行测试</p>
+</blockquote>
+<h4 id="system-testing">System Testing</h4>
+<blockquote>
+<p>确保系统完成了所有需求文档上规定的需求</p>
+</blockquote>
+<h4 id="acceptance-testing">Acceptance Testing</h4>
+<blockquote>
+<p>终端用户检验系统是否符合验收标准</p>
+</blockquote>
+<p>验收标准（Acceptance Criteria）包括功能、性能、接口质量、软件整体质量、安全性</p>
+<p>验收通常包括 Alpha Test、Beta Test 等</p>
+<h3 id="deployment">Deployment</h3>
+<h4 id="big-bang-deployment">"Big Bang" deployment</h4>
+<p>所有用户在同一时间全部迁移到新系统，风险高，不能简单回滚。</p>
+<h4 id="rolling-upgrade">Rolling Upgrade</h4>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/SE-RollingUpgrade.png" /></p>
+<h4 id="blue-green-deployment">Blue-Green Deployment</h4>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/SE-BlueGreen.png" /></p>
+<h4 id="canary-deployment">Canary Deployment</h4>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/SE-Canary.png" /></p>
+<h4 id="visioned-deloyment">Visioned Deloyment</h4>
+<p>保持所有版本的可用性，API 开发者经常会采取这样的方式，但是需要消耗更多的资源</p>
+<h3 id="maintenance">Maintenance</h3>
+<p>软件维护主要有以下几类：</p>
+<ul>
+<li><strong>Corrective Maintenance</strong>：纠正性维护，纠正发现的问题</li>
+<li><strong>Adaptive Maintenance</strong>：适应性维护，保持软件在变化的环境中可用</li>
+<li><strong>Positive Maintenance</strong>：完善维护，交付后对产品进行修改，提高性能或可维护性</li>
+<li><strong>Preventive Maintenance</strong>：预防性维护，预防潜在的故障</li>
+</ul>
+<h2 id="scalability">Scalability</h2>
+<p>可拓展性指的是调整系统的容量，用性价比高的方式满足需求，处理更多的用户、客户端、数据、事务、请求等。同时需要让向下扩展与向上拓展一样简单。</p>
+<p><strong>Vertical Scaling (Scaling Up)</strong></p>
+<ul>
+<li>提升虚拟机的规格</li>
+<li>不需要对应用做出修改</li>
+</ul>
+<p><strong>Horizontal Scaling (Scaling Out)</strong></p>
+<ul>
+<li>一般来讲更加便宜，运行复数个小虚拟机比运行一个大虚拟机更省钱</li>
+<li>增加新的实例，比如虚拟机或数据库副本</li>
+</ul>
+<h2 id="availability">Availability</h2>
+<p><span class="math display">\[
+Availability = \frac{Uptime}{Uptime + Downtime} = \frac{MTTF}{MTTF+MTTR} = \frac{MTTF}{MTBF}
+\]</span></p>
+<p><strong>MTBF (Mean Time Between Failure)</strong>：两次错误发生之间的时间</p>
+<p><strong>MTTF (Mean Time to Failure)</strong>：错误修好之后到下一次错误之前的时间</p>
+<p><strong>MTTR (Mean Time to Repair)</strong>：修复错误的时间</p>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/SE-MTTF.png" /></p>
+<p>系统间的依赖会降低可用性、冗余组件则会增加可用性，比如：</p>
+<p>一个系统有两个独立的组件，每个的可用性 99.9%，那么系统的可用性是 100% - 0.1% * 0.1% = 99.99%</p>
+<h2 id="maintainability">Maintainability</h2>
+<p>可维护性会影响代码改变的频率</p>
+<h2 id="microservices">Microservices</h2>
+<h3 id="scaling-microservices">Scaling Microservices</h3>
+<p><strong>Functional Decomposition (Y Axis)</strong>：将功能拆分，让根据每个功能的特点进行拓展</p>
+<p><strong>Horizontal Duplication (X Axis)</strong>：部署多个、独立的实例，通过负载均衡来分配流量</p>
+<p><strong>Data Partitioning (Z Axis)</strong>：将数据通过某种方法分开。可以在数据库维度分开，也可以将数据分到不同的微服务实例中。每个服务器只拿一部分数据。通过 Shading Key 来决定去哪个服务器找我们要的数据。</p>
+<h1 id="agile-product-ownership">Agile Product Ownership</h1>
 <h1 id="devops">DevOps</h1>
 <blockquote>
-<p>DevOps = Development + Operation = New Mindset + New Tools + New Skills</p>
+<p>DevOps = Development ∩ Operation = New Mindset + New Tools + New Skills</p>
 </blockquote>
-<p>DevOps 主要是通过一系列的原则、工具、方法来提高开发与运维的写作，通过快速发布新功能、修复和优化来缩短开发周期。</p>
+<p>DevOps 主要是通过一系列的原则、工具、方法来提高开发与运维的协作，通过快速发布新功能、修复和优化来缩短开发周期。</p>
 <p>敏捷开发加速了业务需求 -&gt; 开发，DevOps 则加速了开发 -&gt; 运维。</p>
-<p><strong>DevOps 运用到的技术与工具：</strong></p>
-<ul>
-<li><strong>Continuous Integration</strong>：持续集成
-<ul>
-<li><strong>Source Code Management</strong>：源代码管理，Git、SVN、CVS、ClearCase</li>
-<li><strong>Build Process</strong>：构建，Maven、Gradle、Rake、JUnit、Sonar</li>
-<li><strong>Continuous Integration</strong>：持续集成，Jenkins、GitLab CI、Travis、Nexus</li>
-<li><strong>Test Automation</strong>：自动化测试，包括单元测试、服务测试、UI 测试等</li>
-</ul></li>
-<li><strong>Continuous Delivery</strong>：持续交付
-<ul>
-<li><strong>Deployment Automation</strong>：自动化部署，Chef、Puppet、Docker、Heroku、Open Stack、AWS Cloud Formation、Rancher、Flyway</li>
-</ul></li>
-<li><strong>Microservices</strong>：微服务</li>
-<li><strong>Infrastructure as Code</strong>：基础设置及代码
-<ul>
-<li>使用机器可读的定义文件来管理开发、测试和生产环境</li>
-</ul></li>
-<li><strong>Monitoring and Logging</strong>：监测与日志
-<ul>
-<li>让开发者查看生产环境指标，Nagios、Zabbix、Prometheus、Logstash、Graylog</li>
-</ul></li>
-<li><strong>Communication and Collaboration</strong>：沟通与协作
-<ul>
-<li>Knowledge Sharing：知识库，Rocket Chat、GitLab wiki、Redmine、Trello</li>
-</ul></li>
-</ul>
+<p>典型的软件发行流程：想法 -&gt; 需求 -&gt; 编码 -&gt; 测试 -&gt; 打包 -&gt; 部署 -&gt; 运维 &amp; 监控</p>
 <p><strong>DevOps 表现指标：</strong></p>
 <ul>
 <li><strong>Delivery Lead Time</strong>：交付前时间，包括代码实现、测试、提交更改到生产系统，越短越好</li>
@@ -23106,27 +23548,108 @@ observable<span class="token punctuation">.</span><span class="token function">s
 <li><strong>Change Fail Percentage</strong>：变更导致需要回滚或紧急修复的比率，越低越好</li>
 <li><strong>Mean Time to Restore (MTTR)</strong>：从突发事件中恢复的平均时间，越短越好</li>
 </ul>
-<h2 id="ci-cd">CI &amp; CD</h2>
+<h2 id="devops-techniques-and-tools">DevOps Techniques and Tools</h2>
+<h3 id="continuous-integration-ci">Continuous Integration (CI)</h3>
+<blockquote>
+<p>持续集成</p>
+</blockquote>
+<p>每个开发人员开发开发自己负责的部分</p>
 <ul>
-<li><strong>Continuous Integration</strong>
-<ul>
-<li>每个开发人员开发开发自己负责的部分</li>
 <li>需要持续地将自己的代码与其他的人的代码集成起来</li>
 <li>需要对集成后的代码进行单元测试、集成测试、回归测试</li>
-</ul></li>
-<li><strong>Continuous Delivery</strong>
-<ul>
-<li>持续交付并不是说尽可能快地部署所有变更，而是让所有变更在任何时刻都被保证是可部署的</li>
-<li>指的是部署在任何时间、任何平台部署任意版本的能力和基础设施</li>
-</ul></li>
-<li><strong>From CI to CD</strong>
-<ul>
-<li>集成所有该项目相关的工作，以及所有构成该服务、应用或系统的代码</li>
-<li>验证构建完成无错误，将应用交付给 QA（代码从开发环境交付到测试环境）</li>
-<li>在模拟环境下进行冒烟测试、接受性测试、系统稳定性测试，提供给运维一些必要的脚本和测试数据来进行接受性测试和性能测试</li>
-<li>在类生产环境中进行测试</li>
-</ul></li>
 </ul>
+<p>涉及到以下过程和工具：</p>
+<ul>
+<li><strong>Source Code Management</strong>：源代码管理，Git、SVN、CVS、ClearCase</li>
+<li><strong>Build Process</strong>：构建，Maven、Gradle、Rake、JUnit、Sonar</li>
+<li><strong>Continuous Integration</strong>：持续集成，Jenkins、GitLab CI、Travis、Nexus</li>
+<li><strong>Test Automation</strong>：自动化测试，包括单元测试、服务测试、UI 测试等</li>
+</ul>
+<h3 id="continuous-delivery-cd">Continuous Delivery (CD)</h3>
+<blockquote>
+<p>持续交付并不是说尽可能快地部署所有变更，而是让所有变更在任何时刻都被保证是可部署的。换句话说，CD 是保证在任何时间、任何平台部署任意版本的能力和基础设施。</p>
+</blockquote>
+<p>开发环境和生产环境是不同的</p>
+<ul>
+<li>开发人员的代码需要经过 Deployment Pipeline，在这个过程中，会经历数个环境，越后面的环境会越接近生产环境</li>
+<li>CD 指的就是持续的让代码经历这些环境，保证新功能在任何时刻都可以扔到生产环境中</li>
+</ul>
+<p>工具：Chef、Puppet、Docker、Heroku、Open Stack、AWS Cloud Formation、Rancher、Flyway</p>
+<h4 id="from-ci-to-cd">From CI to CD</h4>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/ShiftLeftInDevOps.png" /></p>
+<h4 id="continuous-delivery-continuous-deployment">Continuous Delivery &amp; Continuous Deployment</h4>
+<ul>
+<li><strong>持续部署（Continuous Deployment）是一个过程</strong>。指的是每一个开发人员产生的变化都向生产发布（<strong>Do</strong> deploy to production），他并不一定适用于所有的组织，因为有的组织需要手动发布。</li>
+<li><strong>持续交付（Continuous Delivery）是一种能力。</strong>指的是在任何时候使用 Pipeline 向不同的环境部署应用的能力（<strong>Can</strong> deploy to production）。拥有这样的能力比真的生产环境连续部署更加重要。</li>
+</ul>
+<h3 id="microservices-1">Microservices</h3>
+<blockquote>
+<p>微服务</p>
+</blockquote>
+<p>TBC.</p>
+<h3 id="infrastructure-as-code-iac">Infrastructure as Code (IaC)</h3>
+<blockquote>
+<p>基础设置及代码</p>
+</blockquote>
+<ul>
+<li>自动化创建、更新、删除设施的流程，简化创建应用所需资源等重复性工作</li>
+<li>用同一套代码（参数不同）创建不同的环境 <img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/1*3HV8dJP3XTTGBBMzYwhqlA.png" /></li>
+</ul>
+<h3 id="monitoring-and-logging">Monitoring and Logging</h3>
+<blockquote>
+<p>监测与日志，让开发者查看生产环境指标</p>
+</blockquote>
+<p><strong>Application Performance Monitoring (APM)</strong> 是说监视生产环境的软件，可以先于用户发现问题和需要提升的地方。</p>
+<p><em>需要在用户发现之前（至少在用户通知你之前）发现问题。</em></p>
+<p>可用工具：Nagios、Zabbix、Prometheus、Logstash、Graylog、Prometheus、Grafana。</p>
+<p><strong>可见性（Observability）</strong>可以用来衡量 <em>可以从系统外部的输出来判断系统内部状态的程度</em>。Observability 有一些关键的数据类型（MELT）：Metrics、Events、Logs、Traces</p>
+<h4 id="metrics">Metrics</h4>
+<blockquote>
+<p>指标，提供活动或过程的信息的数字。比如 CPU 利用率、请求延迟 (ms)、错误率等</p>
+</blockquote>
+<p><strong>Error</strong>：错误，单位时间导致错误的请求比例</p>
+<p><strong>Latency</strong>：时延，完成一个单位任务的时间。需要统计所有请求的时延，不管请求成功与否。错误事务的时延在跟踪错误的时候很重要。时延可以用平均值或比率表示，比如 97% 的请求在 0.5s 内完成。</p>
+<p><strong>Throughput</strong>：单位时间完成的任务量。帮助量化系统的需求。</p>
+<ul>
+<li>Application：每秒的并行进程数</li>
+<li>Database：每秒执行的查询数</li>
+<li>Web Server：每秒处理的请求数</li>
+</ul>
+<h4 id="events">Events</h4>
+<blockquote>
+<p>事件是在某时刻发生的不彼此分离的行为，比如 Payment Microservice 在 2022/1/10 11:59pm 炸了</p>
+</blockquote>
+<p>与 Metrics 不同，Events 发生的时间间隔是不确定的。</p>
+<h4 id="logs">Logs</h4>
+<blockquote>
+<p>随着时间的流逝发生的各个事件的不可变的记录，在 databases、caches、load balancers 的排障中非常有用</p>
+</blockquote>
+<p>Logs 可以有不同的格式：</p>
+<ul>
+<li>随意的文本格式</li>
+<li>一定的数据结构，比如 JSON 格式</li>
+<li>二进制</li>
+</ul>
+<p>可以用中心化的 Logs 记录项目中其他微服务的事件</p>
+<h5 id="elk-stack">ELK Stack</h5>
+<blockquote>
+<p>ELK 指的是三个开源项目：Elasticsearch、Logstash 和 Kibana</p>
+</blockquote>
+<p>Elasticsearch 是一个搜索和分析引擎</p>
+<p>Logstash 是一个服务端的数据处理管道，他从多个数据来源获取数据，然后把它送给像 Elasticsearch 这样的 "stash"</p>
+<p>Kibana 可以将 Elasticsearch 中的数据使用图标可视化</p>
+<h4 id="traces">Traces</h4>
+<blockquote>
+<p>在分布式系统中，一个用户请求可能会经过好多微服务，这时候需要跟踪这个请求。</p>
+</blockquote>
+<p>一个 Trace 是 Spans 构成的树，每一个的工作单元（独立的 services 或 components）就被称为一个 Span。</p>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/MELT-Tracing.png" /></p>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/MELT-Tracing-2.png" /></p>
+<h3 id="communication-and-collaboration">Communication and Collaboration</h3>
+<blockquote>
+<p>沟通与协作</p>
+</blockquote>
+<p>可用工具：Rocket Chat、GitLab wiki、Redmine、Trello</p>
 ]]></content>
       <categories>
         <category>计算机</category>
