@@ -23,7 +23,9 @@ categories:
 
 <!-- more -->
 
-# 复杂度
+# Complexity
+
+> 复杂度
 
 **最好情况与最坏情况**：通常我们只考虑最坏的情况。我们通常很难定义出 *平均情况*，而且也很难知道平均情况出现的概率。
 
@@ -46,7 +48,9 @@ arrayMax(A: array, n: lengthOfArray)
 
 估计算法运行时间：T(n) = (n - 1) * (c2 + c3 + c4) + c1 + c5
 
-## 大 O 表示法
+## Big O Notation
+
+> 大 O 表示法
 
 **定义：存在 $g$，使得 $f(n) = O(g(n))$ 中 $n \rightarrow \infty$ 时，$f$ 的增长率小于等于 $g$ 的倍数。**
 
@@ -73,14 +77,14 @@ $$
 - $T_1 + T_2 = O(\max(f(n), g(n)))$
 - $T_1 \cdot T_2 = O(f(n) \cdot g(n))$ 
 
-# 数组
+# Array
 
-> 存放在连续内存空间上的相同类型数据的集合
+> 数组是存放在连续内存空间上的相同类型数据的集合
 
 - 数组的下标从 0 开始
 - 数组的内存空间地址是连续的
 
-## 数组操作
+## Operations of Array
 
 | 操作 | 时间复杂度 |
 | ---- | ---------- |
@@ -90,9 +94,9 @@ $$
 | 追加 | O(1)       |
 | 删除 | O(n)       |
 
-## 查找
+## Searching in Array
 
-### 二分查找
+### Binary Search
 
 [LeetCode.204](https://leetcode.cn/problems/binary-search/submissions/)
 
@@ -127,9 +131,9 @@ const binarySearch = (nums: number[], target: number) => {
 ```
 </detail>
 
-## 排序
+## Sorting
 
-### 选择排序
+### Selection Sort
 
 每次从剩下的部分选择最小的排到前面来，O(n^2)
 
@@ -159,7 +163,7 @@ const selectionSort = numbers => {
 }
 ```
 
-### 插入排序
+### Insertion Sort
 
 从后面未排序的数中取一个，插入前面已经排序好的数组中正确的位置，O(n^2)，最好 O(n)
 
@@ -181,7 +185,7 @@ const insertionSort = numbers => {
 }
 ```
 
-### 冒泡排序
+### Bubble Sort
 
 两两比较，如果后者比前者小，则交换，最终每次循环使得最大数冒泡到最后去，O(n^2)，最好 O(n)
 
@@ -206,7 +210,7 @@ const bubbleSort = numbers => {
 }
 ```
 
-### 归并排序
+### Merge Sort
 
 拆成左右两个数组，分别对左右数组进行排序（当长度为 1 的时候，自然是排好序的数组），再合并起来（排序实际上发生在合并的那一步），O(nlogn)
 
@@ -251,7 +255,7 @@ const mergeSort = numbers => {
 }
 ```
 
-### 快速排序
+### Quick Sort
 
 找出 Pivot，把小于 Pivot 的放左边，大于 Pivot 的放右边，最好 O(nlogn)，最坏 O(n^2)
 
@@ -318,6 +322,10 @@ const quickSort = (numbers, l = 0, r = numbers.length - 1) => {
 }
 ```
 
+### Heap Sort
+
+见 [堆](#heap) 章节。
+
 ### Sorting in JavaScript
 
 早年的 ECMAScript Spec 并没有规定 `Array#sort` 方法的稳定性，甚至有的 JavaScript Engine 在短数组时是稳定的（插入排序），长数组中不稳定（快速排序）。但 V8 向 ECMAScript 发起了 [数组稳定性的提案](https://v8.dev/features/stable-sort)，并且已经被采纳了，现在的 JavaScript Engine （V8 v7.0 / Chrome 70）均已支持稳定的数组排序。
@@ -375,7 +383,7 @@ V8 的排序预处理步骤如下：
 
 > To Be Completed.
 
-## 数组去重
+## Deduplication in Array
 
 > 恰当地利用对象和 Map key 的唯一性可以实现对 `'1'` 和 `1` 的区分、对象的去重，以及 `undefined` `null` `NaN` 的良好识别。
 
@@ -665,7 +673,7 @@ Array.prototype.unique = function() {
 
 不能去重：对象
 
-## 例题
+## Examples
 
 ### 电话号码的组合
 
@@ -703,8 +711,6 @@ A mapping of digits to letters (just like on the telephone buttons) is given bel
   };
   ```
 </details>
-
-
 ### 卡牌分组 （归类运算）
 
 [LeetCode.914](https://leetcode.cn/problems/x-of-a-kind-in-a-deck-of-cards/)
@@ -746,11 +752,11 @@ const cardGroup = (arr) => {
 }
 ```
 
-# 字符串
+# String
 
-## 大数运算
+## Big Number Calculation
 
-### 大数相加
+### Big Number Plus
 
 ```ts
 function addStrings(num1: string, num2: string): string {
@@ -773,7 +779,7 @@ function addStrings(num1: string, num2: string): string {
 };
 ```
 
-### 大数相减
+### Big Number Minus
 
 ```ts
 function minusString(num1: string, num2: string): string {
@@ -820,7 +826,7 @@ function compare(num1: string, num2: string): boolean {
 }
 ```
 
-## 例题
+## Examples
 
 ### 反转字符串中的单词
 
@@ -890,11 +896,11 @@ const count = (str) => {
 }
 ```
 
-# 栈
+# Stack
 
-> 后进先出（Last In First Out, LIFO）
+> 栈，后进先出（Last In First Out, LIFO）
 
-## 栈的实现
+## Implementation of Stack
 
 一般可以用数组来实现栈，其对应的时间复杂度如下：
 
@@ -907,7 +913,7 @@ const count = (str) => {
 
 *栈一般也不提供搜索操作
 
-## 单调栈
+## Monotonous Stack
 
 一维数组，要寻找任一元素的右边或左边第一个比自己大或自己小的位置。
 
@@ -1039,7 +1045,7 @@ result: [1, 2, '*', '+', 4]
 result: [1, 2, '*', '+', 4, '-']
 ```
 
-## 例题
+## Examples
 
 ### 实现一个简单的计算器
 
@@ -1085,7 +1091,7 @@ result: [1, 2, '*', '+', 4, '-']
 
 计算 3 - 2 - 1：
 
-1. 先得到后缀表达 3 2 - 1
+1. 先得到后缀表达 3 2 - 1 -
 
 2. push 3
 3. push 2
@@ -1292,11 +1298,11 @@ class Stack() {
 }
 ```
 
-# 队列
+# Queue
 
-> 先进先出（First In First Out, FIFO）
+> 队列，先进先出（First In First Out, FIFO）
 
-## 队列的实现
+## Implementation of Queue
 
 使用数组实现时，可以将 front 的指针一直指向 0，rear 的指针指向队尾元素；也可以将 rear 的指针一直指向 0，front 指针一直指向队尾元素。但因为数组删除的时间复杂度是 O(n)，所以这两种方法不能同时保证 O(1) 的入队和出队复杂度。
 
@@ -1355,13 +1361,15 @@ class Queue {
 }
 ```
 
-# 链表
+# Linked List
+
+> 链表
 
 - 最后一个节点的 next 指针指向 null
 - 通常有 head 指针表示第一个节点，有时候 tail 指针表示最后一个节点
 - 双向链表的结点同时有 next 指针和 prev 指针
 
-## 链表操作
+## Operations of Linked List
 
 | 操作  | 时间复杂度 |
 | ----- | ---------- |
@@ -1371,21 +1379,55 @@ class Queue {
 
 *注意如果插入和删除并不知道元素到底在哪里，需要从头开始查找的话，复杂度是 O(n)
 
-# 哈希表
+# Hash Table
+
+> 哈希表
 
 考虑我们有一堆 Key-Value 值，比如 Key 是 id，Value 是姓名，怎么才能实现快速通过 id 获取到姓名呢？
 
-首先如果 id 本来就是数字，那么可以用数组来实现，id 即为数组的 index，这样就可以通过数组的 index 直接拿到姓名了。
+首先如果 id 本来就是数字，那么可以用数组来实现，id 即为数组的 index，这样就可以通过数组的 index 直接拿到姓名了，**查找的时间复杂度是 O(1)**。
 
-但是这样的话如果 id 分布比较分散，比如对于两个值 1 和 100，我们为了能将他们存起来，需要分配一个长度至少为 101 的数组，index 从 0 取值到 100，这样中间就有大量空间浪费掉了。
+但是这样的话如果 id 分布比较分散，比如对于两个值 1 和 100，我们为了能将他们存起来，需要分配一个长度至少为 101 的数组，index 从 0 取值到 100，这样中间就有大量空间浪费掉了，空间复杂度是 **O(range(id))**。
 
 **哈希函数是一个特定的编码函数， 可以将 Key 转换为一个索引值，这样就可以节约大量空间。**
 
 比如定义一个简单的哈希函数 `H(k) = k % m`，那么就有 `H(293) = 3`，将这个 id 为 293 的项存在 index 为 3 的位置即可。
 
-# 二叉树
+## Hash Collision
 
-## 定义
+如果映射过去的索引空间太小，就可能将不同的值映射到同样的地方去，比如 `8 % 5 = 3 % 5 = 3`，因此 id 为 8 和 5 时都会被映射到索引为 3 的地方去，这被称为 **哈希碰撞**。
+
+定义 **负载率（Load Factor）** $\lambda = n / m$，其中 $n$ 是 key 的总数， $m$ 是哈希表索引空间的大小，最好保持 $\lambda < 0.5$。
+
+可以通过 **链表（Chaining）**或 **开放寻址（Open Addressing）**解决哈希碰撞问题：
+
+### Chaining
+
+> 将碰撞的那一位 `A[k]` 使用链表来进行存储。
+
+查找的时间复杂度最坏 O(n)，平均 O(λ)（若 λ < 1，则为 O(1)）；因此为了保持良好的性能，需要保持 $\lambda < 1$。
+
+### Open Addressing
+
+> 如果 A[k] 已经被占据了，找另一个地方存。
+
+例如有哈希函数 $H(k, i) = (k+i) \% m$，其中 $i$ 是尝试次数。
+
+注意：
+
+- 插入和查找不能无休止地进行下去，有最大尝试次数；
+- 删除不能无休止地进行下去，可以将已经删除的元素标记位 DELETED，遇到 DELETED 的话继续删下去，而遇到什么都没有的空元素，说明删到头了，停止删除。
+
+与链表不同，**必须** 保持 $\lambda \le 1$，否则新的元素就插不进去了。
+
+哈希函数有两种策略：
+
+- **线性探测（Linear Probing）**：$(k+i)\%m$，其性能在 $\lambda > 0.5$ 时显著下降；
+- **次方探测（Quadratic Probing）**：$k \% m + a \cdot i + b \cdot i^2$。哈希表中的元素容易堆在一起形成集群，次方探测可以减少集群问题，从而减少碰撞，因而性能下降没有线性探测剧烈。
+
+# Binary Tree
+
+## Definition
 
 ```typescript
 class TreeNode {
@@ -1400,9 +1442,11 @@ class TreeNode {
 }
 ```
 
-## 遍历
+## Traversal
 
-### 深度优先
+### Deep First Traversal
+
+> 深度优先遍历分为前序、中序和后序遍历，均有递归和迭代写法，主要需要借助栈来实现
 
 #### 递归写法
 
@@ -1583,9 +1627,9 @@ const traversal = (root: TreeNode | null, cb?: (node: TreeNode) => any) => {
 }
 ```
 
-### 广度优先
+### Breadth First Traversal
 
-> 即层序遍历
+> 广度优先遍历即层序遍历
 
 #### 迭代法
 
@@ -1630,7 +1674,7 @@ function levelOrder(root: TreeNode | null): number[][] {
 }
 ```
 
-## 二叉搜索树
+## Binary Search Tree
 
 ### Search
 
@@ -1684,50 +1728,44 @@ const insert = (root: TreeNode | null, node: TreeNode) => {
   - 称 x 为继任者，x 是比该节点大一位的节点
   - 也可以用比 x 节点小一位的节点（左子树的最大节点）来替代，但是这样得到的树高度差会更大（？）
 
-# 堆
+# Heap
 
-## 优先级队列与堆
+## Priority Queue & Heap
 
 **优先级队列（Priority Queue）是一个抽象数据类型（Abstract Data Type, ADT）**，他支持插入元素、删除具有最大或最小优先级的元素。他可以用很多数据结构来实现，比如堆、二叉搜索树、数组等。
 
-**堆（Heap）是一个具体的数据结构**，可以用来实现优先级队列。有很多种堆，比如二叉堆、斐波那契堆、二项堆等，他们都有自己的特点，并且都可以被用来实现优先级队列。有两种特别的堆，大顶堆（Max-Heap）和小顶堆（Min-Heap），大顶堆中父结点的优先级高于子结点，小顶堆中则相反。
+**堆（Heap）是一个具体的数据结构**，可以用来实现优先级队列，他实际上就是一棵 **完全二叉树**（最后一层可能不满），并且满足排序特点：大顶堆（Max-Heap）中父结点的优先级高于子结点，小顶堆（Min-Heap）中则相反。堆有很多变种，比如二叉堆、斐波那契堆、二项堆等，他们都有自己的特点。
 
-JavaScript 中并没有提供原生的堆函数，我们可以手动实现一个堆：
+JavaScript 中并没有提供原生的堆函数，而完全二叉树可以高效地用数组表示，因此我们可以手动用数组实现一个堆：
 
 <detail>
 
 ```typescript
-// Heap 的每一项是 [key, value]
-type IHeapItem<K = any, V = any> = [K, V]
-
-class Heap<K = any, V = any> {
+class Heap<T = any> {
   // 二叉堆实际上是一棵树，但保证了节点的顺序
-  private tree: IHeapItem<K, V>[] = []
-  private compareFn: (a: IHeapItem<K, V>, b: IHeapItem<K, V>) => number
+  private tree: T[] = []
+  private compareFn: (a: T, b: T) => number
 
-  constructor(compareFn: (a: IHeapItem<K, V>, b: IHeapItem<K, V>) => number) {
-      this.compareFn = compareFn
-  }
-
-  // 向堆底添加元素
-  public push(item: IHeapItem<K, V>) {
-    // 先将新的 HeapItem 直接放到堆的最底部
-    this.tree.push(item)
-    // 拿到刚刚 push 的 HeapItem 的 index
-    let index = this.size() - 1
-    // 拿到新的 HeapItem 的父结点的 index
-    let parent = Math.floor((index - 1) / 2)
-    // 将 index 往上浮
-    // 注意 compare 的传参，因为 index 是要从最底下往上浮
-    while (parent >= 0 && this.compare(parent, index) > 0) {
-      [this.tree[parent], this.tree[index]] = [this.tree[index], this.tree[parent]]
-      index = parent
-      parent = Math.floor((index - 1) / 2)
+  // compareFn 指定堆的特性，按照什么优先级构建堆，返回正数即意味着在 a 应当在 b 下面
+  // 比如当 a, b 均为 number，传入 a - b 就意味着 a > b 时，a 应当在 b 的下面，即为小顶堆
+  // arr 可以指定通过特定的数组进行堆的初始化
+  constructor(compareFn: (a: T, b: T) => number, arr?: T[]) {
+    this.compareFn = compareFn
+    if (arr) {
+      this.build(arr)
     }
   }
 
+  // 向堆底添加元素
+  public push(item: T) {
+    // 先将新的 HeapItem 直接放到堆的最底部
+    this.tree.push(item)
+    // 将刚刚 push 的 HeapItem 往上浮
+    this.up(this.size() - 1)
+  }
+
   // 弹出堆顶元素
-  public pop(): IHeapItem<K, V> {
+  public pop(): T {
     if (this.size() <= 1) {
       return this.tree.pop()
     }
@@ -1736,48 +1774,103 @@ class Heap<K = any, V = any> {
     const bottom = this.tree.pop()
     this.tree[0] = bottom
     // 将新的堆顶下沉
-    let index = 0
-    // left 是左孩子，left + 1 是右孩子
-    let left = 1
-    // 找到要下沉到哪里，如果左孩子比右孩子更低，那么应该跟右孩子进行比较
-    // 否则可能出现该节点比左孩子高，比右孩子低的情况（本应该节点比两个孩子都高）
-    let searchChild = this.compare(left, left + 1) > 0 ? left + 1 : left
-    // 注意 compare 的传参，因为要把 index 向下沉
-    while (searchChild !== undefined && this.compare(index, searchChild) > 0) {
-      [this.tree[index], this.tree[searchChild]] = [this.tree[searchChild], this.tree[index]]
-      index = searchChild
-      left = 2 * searchChild + 1
-      searchChild = this.compare(left, left + 1) > 0 ? left + 1 : left 
-    }
+    this.down(0)
     return top
   }
 
-    public top() {
-      return this.tree[0]
-    }
+  public top() {
+    return this.tree[0]
+  }
 
-    public size() {
-      return this.tree.length
-    }
+  public size() {
+    return this.tree.length
+  }
 
-    // 返回正数时，指示 index1 应该在 index2 的下方，应该把 index1 往下沉，反之则代表 index2 需要往下沉
-    // 注意这与这是大顶堆还是小顶堆是没关系的，不管是大顶堆还是小顶堆，都是正数表示 index1 需要往下沉
-    private compare(index1: number, index2: number): number {
-      // 讨论越界情况，保证 undfined 值总是在最下面
-      // 当 index1 越界了，应该把 index1 所代表的 undefined 值往下沉
-      if (this.tree[index1] === undefined) { return 1 }
-      // 当 index2 越界了，应该把 index2 所代表的 undefined 值往下沉
-      if (this.tree[index2] === undefined) { return -1 }
-      // 正常情况由传入的 compareFn 决定
-      // 比如如果是小顶堆，应该写作类似 (a, b) => a[1] - b[1]，这样当 a 的值 > b 的值时，a 就会往下沉
-      return this.compareFn(this.tree[index1], this.tree[index2])
+  // 返回正数时，指示 index1 应该在 index2 的下方，应该把 index1 往下沉，反之则代表 index2 需要往下沉
+  // 注意这与这是大顶堆还是小顶堆是没关系的，不管是大顶堆还是小顶堆，都是正数表示 index1 需要往下沉
+  private compare(index1: number, index2: number): number {
+    // 讨论越界情况，保证 undfined 值总是在最下面
+    // 当 index1 越界了，应该把 index1 所代表的 undefined 值往下沉
+    if (this.tree[index1] === undefined) { return 1 }
+    // 当 index2 越界了，应该把 index2 所代表的 undefined 值往下沉
+    if (this.tree[index2] === undefined) { return -1 }
+    // 正常情况由传入的 compareFn 决定
+    // 比如如果是小顶堆，应该写作类似 (a, b) => a - b，这样当 a 的值 > b 的值时，a 就会往下沉
+    return this.compareFn(this.tree[index1], this.tree[index2])
+  }
+
+  private down(index: number) {
+    // left 是左孩子 index，left + 1 是右孩子 index
+    let left = this.leftIndex(index)
+    // 找到要下沉到哪里，如果左孩子比右孩子更低，那么应该跟右孩子进行比较
+    // 否则可能出现操作完成后的节点比左孩子高、比右孩子低的情况（本应该节点比两个孩子都高）
+    let searchChild = this.compare(left, left + 1) > 0 ? left + 1 : left
+    // 注意 compare 的传参，因为要把 index 向下沉
+    while (searchChild < this.size() && this.compare(index, searchChild) > 0) {
+      [this.tree[index], this.tree[searchChild]] = [this.tree[searchChild], this.tree[index]]
+      index = searchChild
+      left = this.leftIndex(index)
+      searchChild = this.compare(left, left + 1) > 0 ? left + 1 : left
     }
+  }
+
+  private up(index: number) {
+    // parent 是父结点的 index
+    let parent = this.parentIndex(index)
+    // 注意 compare 的传参，因为 index 是要从最底下往上浮
+    while (parent >= 0 && this.compare(parent, index) > 0) {
+      [this.tree[index], this.tree[parent]] = [this.tree[parent], this.tree[index]]
+      index = parent
+      parent = this.parentIndex(index)
+    }
+  }
+
+  // 通过数组构建堆
+  private build(arr: T[]) {
+    this.tree = [...arr]
+    for (let i = Math.floor(arr.length / 2) - 1; i >= 0; i--) {
+      this.down(i)
+    }
+  }
+
+  private leftIndex(index: number) {
+    return 2 * index + 1
+  }
+
+  private parentIndex(index: number) {
+    return Math.floor((index - 1) / 2)
+  }
 }
 ```
 
 </detail>
 
-## 例题
+## Heap Sort
+
+**堆排序实际上会经历两个过程：**
+
+1. 由数组构建大顶堆/小顶堆
+2. 将堆顶不停 pop 出来，因为每次 pop 完成之后堆内部都会重建以保证其大顶堆/小顶堆的特性，因此每次 pop 出来的一定是最大值/最小值
+
+**堆的构建过程有两种方案：**
+
+1. **自底向上（Bottom-Up）**建堆，使用 Floyd 算法。先把用于构建堆的数组存入堆中，再从最后一个非叶节点（n / 2 - 1）遍历至第 0 个元素，将遍历到的每个元素向下沉，也是上面代码示例中所使用的方法。
+   令 $h$ 为堆的总高度，$h_i$ 为高度为第 $i$ 层的高度，即 $h - i$；$n_i$ 为第 $i$ 层的节点数量，即 $2^i$。那么 **自底向上建堆的时间复杂度为 O(n)**：
+
+$$
+T(n) & = \sum_{i=0}^{h} n_i h_i \\
+& = \sum_{i=0}^{h}2^i(h - i) \\
+& = \sum_{i=0}^{h}{{h-i}\over{2^{h-i}}}{2^h} \\
+& = 2^h\sum_{k=0}^{h}{k\over{2^k}} \\
+& \le n\sum_{k=0}^\infin{k\over{2^k}} \\
+& = O(n)
+$$
+
+2. **自顶向下（Top-Down）**建堆。可以理解为最开始只有一个空堆，每次都 push 一个元素进去，然后让其上浮，堆重建，时间复杂度为 $log(1)+log(2)+\cdots+log(n)$，即 **O(nlog(n))**。
+
+**堆的排序过程还可以描述为：**每次将倒数第 $i$ 个元素与堆顶元素兑换，这样就能保证第 $i$ 个元素到最后一个元素都是排好序的了。然后再将兑换后的堆顶元素往下沉（不能沉到 $i$ 之后），重建堆。**这样我们就可以实现原位的堆排序了**。
+
+## Examples
 
 ### 前 K 个高频元素
 
@@ -1804,7 +1897,7 @@ function topKFrequent(nums: number[], k: number): number[] {
   // 遍历哈希表，用二叉堆（优先级队列）统计出前 k 个值
   // 这里用的是小顶堆，因为如果堆的size超过k，是把堆顶的那个值给扔掉
   // 如果是大顶堆就是把最大值扔掉了，我们要逐步扔掉比较小的值，把大的值沉在堆底
-  const heap = new Heap<number, number>((a, b) => a[1] - b[1])
+  const heap = new Heap<[number, number]>((a, b) => a[1] - b[1])
   for (const entry of map.entries()) {
     heap.push(entry)
     if (heap.size() > k) {
@@ -1822,7 +1915,7 @@ function topKFrequent(nums: number[], k: number): number[] {
 
 </detail>
 
-# 动态规划
+# Dynamic Programing
 
 ## 背包问题
 
