@@ -1858,12 +1858,12 @@ class Heap<T = any> {
    令 $h$ 为堆的总高度，$h_i$ 为高度为第 $i$ 层的高度，即 $h - i$；$n_i$ 为第 $i$ 层的节点数量，即 $2^i$。那么 **自底向上建堆的时间复杂度为 O(n)**：
 
 $$
-T(n) & = \sum_{i=0}^{h} n_i h_i \\
-& = \sum_{i=0}^{h}2^i(h - i) \\
-& = \sum_{i=0}^{h}{{h-i}\over{2^{h-i}}}{2^h} \\
-& = 2^h\sum_{k=0}^{h}{k\over{2^k}} \\
-& \le n\sum_{k=0}^\infin{k\over{2^k}} \\
-& = O(n)
+T(n) = \sum_{i=0}^{h} n_i h_i \\
+= \sum_{i=0}^{h}2^i(h - i) \\
+= \sum_{i=0}^{h}{{h-i}\over{2^{h-i}}}{2^h} \\
+= 2^h\sum_{k=0}^{h}{k\over{2^k}} \\
+\le n\sum_{k=0}^\infin{k\over{2^k}} \\
+= O(n)
 $$
 
 2. **自顶向下（Top-Down）**建堆。可以理解为最开始只有一个空堆，每次都 push 一个元素进去，然后让其上浮，堆重建，时间复杂度为 $log(1)+log(2)+\cdots+log(n)$，即 **O(nlog(n))**。
