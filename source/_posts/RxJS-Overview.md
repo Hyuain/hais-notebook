@@ -84,8 +84,9 @@ observable.subscribe() 表示 *同步或异步地给我一堆值*
 
 #### 懒执行
 
-如果不 call Function，那么函数就不会执行；
-如果不 subscribe Observable，那么 Observable 中注册的回调函数也不会执行。
+如果不 call Function，那么函数就不会执行；如果不 subscribe Observable，那么 Observable 中注册的回调函数也不会执行。
+
+**注意这一点与 **
 
 ```typescript
 function foo() {
@@ -219,7 +220,7 @@ console.log('after');
 300
 ```
 
-## 创建 Observable：Creating
+## Creating Observable
 
 Observable 构造函数只需要一个参数：subscribe 函数
 
@@ -232,39 +233,42 @@ const observable = new Observable(function subscribe(subscriber) {
 });
 ```
 
-## 订阅 Observable：Subscribing
+## Subscribing Observable
 
 ```typescript
 observable.subscribe(x => console.log(x));
 ```
 
 当调用 `observable.subscribe` 的时候，subscribe 函数会用给定的 subscriber 运行，并且每次调用都是独立的。
+
 与 `addEventListener` 这种 API 不一样，Observer 并没有注册为一个 listener，Observable 里面也没有维护 Observer 的列表。
 
-## 执行 Observable：Executing
+## Executing Observable
 
-在 `new Observable(function subscribe(subscriber) {...})` 中的代码表示一个 Observable execution。
+在 `new Observable(function subscribe(subscriber) {...})` 中的代码表示一个 Observable Execution。
 
 Observable Execution 可以发出三种类型的值：
+
 - "Next" 通知：会伴随一个 Number、String、Object 等类型的值
 - "Error" 通知：会伴随一个 JS Error 或者异常
 - "Complete" 通知：不会伴随任何值
 
 通常来说，Execution 会随着时间通过 Next 通知发出多个值。但当发出 Error 或者 Complete 通知之后，就不会再发出值了。
 
-## 释放 Executions：Disposing Executions
+## Disposing Executions
 
-当调用 `observable.subscribe` 之后，Observer 会跟一个新创建的 Observable execution 绑定。并且返回一个 `Subscription`：
+当调用 `observable.subscribe` 之后，Observer 会跟一个新创建的 Observable Execution 绑定。并且返回一个 `Subscription`：
 
 ```typescript
 const subscription = observable.subscribe(x => console.log(x));
 ```
 
 Subscription 就代表了正在执行的 execution。
-- 可以通过 `subscription.unsubscribe()` 来取消正在执行的 execution。
+
+- 可以通过 `subscription.unsubscribe()` 来取消正在执行的 Execution。
 - Complete 或 Error 也会取消 execution。
 
-我们有时候需要自定义一个 `unsubscribe` 函数来在取消 execution 的时候释放资源。
+我们有时候需要自定义一个 `unsubscribe` 函数来在取消 Execution 的时候释放资源。
 
 ```typescript
 const observable = new Observable(function subscribe(subscriber) {
@@ -299,6 +303,7 @@ observable.subscribe(() => console.log('Observer got a next value: ' + x))
 # Operators
 
 Operator 就是函数。有两种类型的 Operator：
+
 - Pipeable Operator：不会改变原来的 Observable 实例，他接受一个 Observable 作为参数，然后再返回一个 Observable
 - Creation Operator：会创建一个新的 Observable
 
@@ -331,7 +336,7 @@ setTimeout(() => {
 
 # Subject
 
-Subject 是一种特殊的 Observable，他可以向多个 Observer 以多播的形式发出值——而普通的 Observable 是单播，每个订阅的 Observer 对这个 Observable 都有自己独立的 Execution。
+Subject 是一种特殊的 Observable，他可以 **向多个 Observer 以多播的形式发出值**——而普通的 Observable 是单播，每个订阅的 Observer 对这个 Observable 都有自己独立的 Execution。
 
 - **每个 Subject 都是 Observable**。你可以 `subscribe` 一个 Subject。对于 Subject 来说，`subscribe` 并不会产生一个新的 Execution，他会将这个 Observer 注册到一个 ObserverList，就像 `addListner` 一样
 - **每个 Subject 都是 Observer**。他有 `next()` `error()` `complete()` 方法。只需要调用 `next()`，就会广播给所有已经注册了的 Observer。
@@ -449,7 +454,7 @@ subject.next(5);
 
 ## AsyncSubject
 
-当 Observable execution complete 的时候才会发出值，并且只会发出最后一个值——这跟 `last()` 操作符差不多。
+当 Observable Execution Complete 的时候才会发出值，并且只会发出最后一个值——这跟 `last()` 操作符差不多。
 
 ```typescript
 const subject = new AsyncSubject();
@@ -560,4 +565,3 @@ const proxyObserver = {
 ## 使用 Scheduler
 
 以后用到再翻译，先看[文档](https://rxjs.dev/guide/scheduler)
-

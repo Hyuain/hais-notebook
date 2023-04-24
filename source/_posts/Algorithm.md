@@ -165,7 +165,7 @@ const selectionSort = numbers => {
 
 ### Insertion Sort
 
-从后面未排序的数中取一个，插入前面已经排序好的数组中正确的位置，O(n^2)，最好 O(n)
+从后面未排序的数中取一个，插入前面已经排序好的数组中正确的位置，最坏 O(n^2)，最好 O(n)
 
 - 稳定
 - 原地
@@ -187,7 +187,7 @@ const insertionSort = numbers => {
 
 ### Bubble Sort
 
-两两比较，如果后者比前者小，则交换，最终每次循环使得最大数冒泡到最后去，O(n^2)，最好 O(n)
+两两比较，如果后者比前者小，则交换，最终每次循环使得最大数冒泡到最后去，最坏 O(n^2)，最好 O(n)
 
 - 稳定
 - 原地
@@ -383,7 +383,7 @@ V8 的排序预处理步骤如下：
 
 > To Be Completed.
 
-## Deduplication in Array
+## Deduplication
 
 > 恰当地利用对象和 Map key 的唯一性可以实现对 `'1'` 和 `1` 的区分、对象的去重，以及 `undefined` `null` `NaN` 的良好识别。
 
@@ -1427,6 +1427,19 @@ class Queue {
 
 # Binary Tree
 
+| 英文                 | 中文       | 说明                                                         |
+| -------------------- | ---------- | ------------------------------------------------------------ |
+| Root                 | 根节点     |                                                              |
+| Leaf                 | 叶节点     | 没有子节点的节点                                             |
+| Parent               | 父节点     |                                                              |
+| Length of a Path     | 路径的长度 | 路径上边的数量                                               |
+| Ancestor of a Node   | 节点的祖先 | 父节点、父节点的父节点等                                     |
+| Descendant of a Node | 节点的后代 | 子节点、子节点的子节点等                                     |
+| The Height of a Node | 节点的高度 | 该节点到叶节点的、最大的、不含祖先节点的路径长度，叶节点高度为 0 |
+| Tree Height          | 树的高度   | 根节点的高度                                                 |
+| The Depth of a Node  | 节点的深度 | 该节点到根节点的路径长度，根节点深度为 0                     |
+| Subtree              | 子树       | 包括节点及其后代                                             |
+
 ## Definition
 
 ```typescript
@@ -1447,6 +1460,8 @@ class TreeNode {
 ### Deep First Traversal
 
 > 深度优先遍历分为前序、中序和后序遍历，均有递归和迭代写法，主要需要借助栈来实现
+
+![](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/TreeDFS.png)
 
 #### 递归写法
 
@@ -1674,9 +1689,43 @@ function levelOrder(root: TreeNode | null): number[][] {
 }
 ```
 
-## Binary Search Tree
+## Special Binary Trees
 
-### Search
+### Full Binary Tree
+
+每个节点有 0 或 2 个子结点
+
+### Perfect Binary Tree
+
+> 满二叉树
+
+只有度为 0 或 2 的节点，且度为 0 的节点在同一层上。
+
+深度为 $k$ 时，有 $2^k - 1$ 个节点。
+
+![](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/PerfectBinaryTree.png)
+
+### Complete Binary Tree
+
+> 完全二叉树，有的作者会将 Perfect Binary Tree 称为 Complete Binary Tree，而称这种树为 Nearly Complete Binary Tree 或 Almost Binary Tree。
+
+![](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/CompleteBinaryTree.png)
+
+除了最底层，每层都填满了，且最底层节点都集中在左边的位置。
+
+这种树可以很方便地用数组表示，若当前节点的下标为 `i`，则其父节点的下标为 `Math.floor((i - 1) / 2)`，左孩子下标为 `2 * i + 1`，右孩子下标为 `2 * i + 2`，最后一个非叶节点下标为 `Math.floor(size / 2) - 1`。
+
+优先级队列可以用堆来实现，而堆则就是一棵完全二叉树，同时保证了父子节点的顺序关系。
+
+### Binary Search Tree
+
+> 二叉搜索树
+
+若左子树不为空，则左子树上所有节点的值均小于该根节点的值；若右子树不为空，则右子树上所有节点的值均大于该根节点的值。
+
+#### Search
+
+> 时间复杂度 O(log n)
 
 ```typescript
 const search = (root: TreeNode | null, target: any) => {
@@ -1691,7 +1740,23 @@ const search = (root: TreeNode | null, target: any) => {
 }
 ```
 
-### Insertion
+#### Validation
+
+```typescript
+function isValidBST(root: TreeNode | null): boolean {
+  function checkValidBST(node: TreeNode | null, min: number, max: number): boolean {
+    if (!node) { return true }
+    if (node.val >= max || node.val <= min) { return false }
+    return checkValidBST(node.left, min, Math.min(node.val, max))
+    && checkValidBST(node.right, Math.max(min, node.val), max)
+  }
+  return checkValidBST(root, -Infinity, +Infinity)
+}
+```
+
+#### Insertion
+
+> 时间复杂度 O(log n)
 
 ```typescript
 const insert = (root: TreeNode | null, node: TreeNode) => {
@@ -1720,7 +1785,7 @@ const insert = (root: TreeNode | null, node: TreeNode) => {
 }
 ```
 
-### Deletion
+#### Deletion
 
 - 如果没有子节点：直接删除
 - 如果有一个子节点：用子结点替代该节点
@@ -1728,11 +1793,37 @@ const insert = (root: TreeNode | null, node: TreeNode) => {
   - 称 x 为继任者，x 是比该节点大一位的节点
   - 也可以用比 x 节点小一位的节点（左子树的最大节点）来替代，但是这样得到的树高度差会更大（？）
 
+### AVL Tree
+
+> 平衡二叉树，又称为 Adleson-Velsky and Landis Tree
+
+是空树；或者他的左右两个子树的高度差绝对值不超过 1，并且左右两棵子树都是一棵平衡二叉树。
+
+#### Convert Sorted Array to Binary Search Tree
+
+[LeetCode.108](https://leetcode.cn/problems/convert-sorted-array-to-binary-search-tree/)
+
+Given an integer array nums where the elements are sorted in ascending order, convert it to a height-balanced binary search tree.
+
+<detail>
+思路：对有序数组按照中点进行切分，左边给左子树，右边给右子树。
+```typescript
+function sortedArrayToBST(nums: number[]): TreeNode | null {
+  if (!nums.length) { return null }
+  const midIndex = Math.floor(nums.length / 2)
+  const root = new TreeNode(nums[midIndex])
+  root.left = sortedArrayToBST(nums.slice(0, midIndex))
+  root.right = sortedArrayToBST(nums.slice(midIndex + 1))
+  return root
+}
+```
+</detail>
+
 # Heap
 
 ## Priority Queue & Heap
 
-**优先级队列（Priority Queue）是一个抽象数据类型（Abstract Data Type, ADT）**，他支持插入元素、删除具有最大或最小优先级的元素。他可以用很多数据结构来实现，比如堆、二叉搜索树、数组等。
+**优先级队列（Priority Queue）是一个抽象数据类型（Abstract Data Type, ADT）**，他支持插入元素（Enqueue）、删除具有最大或最小优先级的元素（Dequeue）。他可以用很多数据结构来实现，比如堆、二叉搜索树、数组等。
 
 **堆（Heap）是一个具体的数据结构**，可以用来实现优先级队列，他实际上就是一棵 **完全二叉树**（最后一层可能不满），并且满足排序特点：大顶堆（Max-Heap）中父结点的优先级高于子结点，小顶堆（Min-Heap）中则相反。堆有很多变种，比如二叉堆、斐波那契堆、二项堆等，他们都有自己的特点。
 

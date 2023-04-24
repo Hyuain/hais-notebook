@@ -6,7 +6,20 @@ categories:
 mathjax: true
 ---
 
-什么是数据库、Node.js 连接数据库、SQL、范式、表设计、缓存字段、事务、存储引擎
+本文介绍了数据库的基本概念、SQL、ERM、范式、事务等，以及数据库的基本使用（以 Node.js 为例）。
+
+按照章节来讲主要分为：
+
+- 介绍
+  - 数据库
+  - 数据库管理系统（DBMS）
+  - 数据库引擎
+  - 其他术语（Schema、Instance、Attribute、Domain、Key 等）
+- 关系代数
+- SQL
+  - 数据类型
+  - 命令（DDL、DML、DQL、DCL）
+- ERM
 
 <!-- more -->
 
@@ -25,7 +38,7 @@ mathjax: true
 
 > 用来管理数据库的系统被称为数据库管理系统
 
-- 比如 MySQL、PostgreSQL、SQL Server、DB2、Oracle
+DBMS 会提供一些接口给用户或应用来跟存储的数据进行交互（比如增删改查），同时不用关心底层的复杂逻辑。常见的 DBMS 有 MySQL、PostgreSQL、SQL Server、DB2、Oracle 等。
 
 DBMS 大概结构如下：
 
@@ -56,6 +69,16 @@ Client 客户端（数据使用者）
 
 
 ## Terminologies
+
+### Relational Model
+
+**数据模型（Data Model）**确定了数据库的逻辑结构，**关系模型（Relational Model）**是逻辑层面的数据模型中的一种，其他的逻辑层面的数据模型还有层次模型（Hierarchical Model）、Network Model（网络模型）、基于对象的数据模型（Object-Based Data Models）、半结构化数据模型（Semi-Structured Data Model）。
+
+在关系模型中，所有的数据都保存在 **表（Table / Relation）**里。
+
+表的 **列（Columns）**也被称为 **属性（Attributes）** 或 **字段（Fields）**，表的 **行（Rows）**也被称为 **元组（Tuples）**或 **记录（Records）**。 
+
+关系模型允许数据通过 **共有属性（Common Attributes）**与其他数据联系起来。
 
 ### Relation Schema & Instance
 

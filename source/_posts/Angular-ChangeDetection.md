@@ -5,11 +5,26 @@ categories:
   - [前端]
 ---
 
-翻译文章 [Angular Change Detection - How Does It Really Work?](https://blog.angular-university.io/how-does-angular-2-change-detection-really-work/) 。
+翻译自 [Angular Change Detection - How Does It Really Work?](https://blog.angular-university.io/how-does-angular-2-change-detection-really-work/) 。
+
+Angular CD 是一个框架内置的特性，用于保证组件数据和 HTML 模板视图的同步。
+
+**CD 会检测常规的浏览器事件（比如点击）、HTTP 请求，以及其他类型的事件，并决定每个组件的视图是否需要更新，Angular 通过 Zone.js 来改写浏览器 API 来达到劫持事件的目的。**
+
+**不同的 CD 模式**：
+
+- **Default CD**：对于组件树中所有的组件，Angular 通过比较 template 中表达式的在事件前后的值，来决定视图是否更新
+- **OnPush CD**：他会检查是否有新的数据确实地被推到了组件中（可以通过组件 input 或者使用 async pipe 订阅了的 Observable）
+
+**Angular 默认 CD 机制与 AngularJS 非常接近，他会检查 template 表达式在浏览器事件前后的值来看是否有变化。**他对 **所有** 的组件都会这么做，但也有几点不同：
+
+- **其一是 Angular 中没有 CD 循环**（AngularJS 中叫 digest cycle）。这允许我们在只看 template 和 controller 的情况下能推导出每个组件。
+- 其二是由于 CDr 是被构建出来的，Angular 中的 CD 机制会快很多。
+- 第三是与 AngularJS 不同，Angular 中的 CD 机制是可定制的。
 
 <!-- more -->
 
-* 下文中 CD 指 Change Detection，即变化检查；CDr 指 Change Detector，即变化检查器
+> 下文中 CD 指 Change Detection，即变化检查；CDr 指 Change Detector，即变化检查器
 
 # 目录
 
@@ -20,7 +35,6 @@ categories:
 - 避开 CD 循环：生产模式和开发模式
 - `OnPush` CD 模式究竟做了什么？
 - 使用 Immutable.js 来简化 Angular 应用的构建
-- 总结
 
 如果想要了解更多关于 OnPush CD 机制，请查阅 [这篇文章](https://blog.angular-university.io/onpush-change-detection-how-it-works) 。
 
@@ -335,21 +349,3 @@ class MyComponent {
 ```
 
 我们最开始 detach 了 CDr（这会关闭自动的 CD），然后每 5 秒通过 `detectChanges` 手动触发一次。
-
-# 总结
-
-Angular CD 是一个框架内置的特性，用于保证组件数据和 HTML 模板视图的同步。
-
-CD 会检测常规的浏览器事件（比如点击）、HTTP 请求，以及其他类型的事件，并决定每个组件的视图是否需要更新。
-
-有中不同的 CD：
-
-- 默认 CD：对于组件树种所有的组件，Angular 通过比较 template 中表达式的在事件前后的值，来决定视图是否更新
-- `OnPush` CD：他会检查是否有新的数据确实地被推到了组件中（可以通过组件 input 或者使用 async pipe 订阅了的 Observable）
-
-Angular **默认** CD 机制与 AngularJS 非常接近，他会检查 template 表达式在浏览器事件前后的值来看是否有变化。他对 **所有** 的组件都会这么做，但也有几点不同：
-
-- 其一是 Angular 中没有 CD 循环（AngularJS 中叫 digest cycle）。这允许我们在只看 template 和 controller 的情况下能推导出每个组件。
-- 其二是由于 CDr 是被构建出来的，Angular 中的 CD 机制会快很多。
-- 第三是与 AngularJS 不同，Angular 中的 CD 机制是可定制的。
-
