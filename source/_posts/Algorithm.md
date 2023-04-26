@@ -1793,6 +1793,61 @@ const insert = (root: TreeNode | null, node: TreeNode) => {
   - 称 x 为继任者，x 是比该节点大一位的节点
   - 也可以用比 x 节点小一位的节点（左子树的最大节点）来替代，但是这样得到的树高度差会更大（？）
 
+```typescript
+function deleteNode(root: TreeNode | null, key: number): TreeNode | null {
+  let current = root
+  let currentParent = null
+  while (current) {
+    if (current.val === key) {
+      break
+    } else if (current.val < key) {
+      currentParent = current
+      current = current.right
+    } else {
+      currentParent = current
+      current = current.left
+    }
+  }
+  if (!current) { return root }
+  if (!current.left && !current.right) {
+    if (!currentParent) { return null }
+    if (currentParent.left === current) {
+      currentParent.left = null
+    } else {
+      currentParent.right = null
+    }
+  } else if (current.left && !current.right) {
+    if (!currentParent) { return current.left }
+    if (currentParent.left === current) {
+      currentParent.left = current.left
+    } else {
+      currentParent.right = current.left
+    }
+  } else if (!current.left && current.right) {
+    if (!currentParent) { return current.right }
+    if (currentParent.left === current) {
+      currentParent.left = current.right
+    } else {
+      currentParent.right = current.right
+    }
+  } else {
+    let successor = current.right
+    let successorParent = current
+    while (successor.left) {
+      successorParent = successor
+      successor = successor.left
+    }
+    current.val = successor.val
+    if (successorParent.left === successor) {
+      successorParent.left = successor.right
+    } else {
+      successorParent.right = successor.right
+    }
+  }
+  return root
+};
+```
+
 ### AVL Tree
 
 > 平衡二叉树，又称为 Adleson-Velsky and Landis Tree
