@@ -36,7 +36,7 @@ mathjax: true
 
 ## Database Management System (DBMS)
 
-> 用来管理数据库的系统被称为数据库管理系统
+> 用来管理数据库的系统，被称为 **数据库管理系统（DBMS）**
 
 DBMS 会提供一些接口给用户或应用来跟存储的数据进行交互（比如增删改查），同时不用关心底层的复杂逻辑。常见的 DBMS 有 MySQL、PostgreSQL、SQL Server、DB2、Oracle 等。
 
@@ -52,25 +52,36 @@ Client 客户端（数据使用者）
 
 我们使用的 MySQL 命令，就是一个客户端，MySQL 背后其实还有一个 Server 在 24 小时不间断运行着
 
+## Database Administrator (DBA)
+
+> 有数据库中央控制权限的人，被称为 **数据库管理员（BDA）**
+
+数据库管理员有以下职能：
+
+- 定义 Schemas
+- 定义存储结构和访问方法
+- 修改 Schema 和物理架构
+- 分配数据访问权限
+- 日常维护（周期性备份、确保磁盘空间足够、监控数据库上执行的任务）
+
 ## Database Engine
 
 > DBMS 用来从数据库创建、读取、更新、删除数据的底层模块
 
-- Storage Manager：与操作系统文件管理器交互，并提供高效的数据存储、读取和更新
+- **Storage Manager**：与操作系统文件管理器交互，并提供高效的数据存储、读取和更新。他会通过很多种数据结构来实现物理层的存储，包括数据本身、数据目录、索引等。
   - Authorization and Integrity Manager
   - Transaction Manager
   - File Manager
-- Query Processor：包括 DDL 解释器、DML 编译器、查询执行引擎
-- Transaction Management：在系统出现错误后，保证数据库的一致性，如果一个事务内的某个操作出现错误，可以将该事务内之前已经执行的操作回滚
+  - Buffer Manager
+- **Query Processor**：包括 DDL 解释器、DML 编译器、查询执行引擎等
+- **Transaction Management Component**：在系统出现错误后，保证数据库的一致性，如果一个事务内的某个操作出现错误，可以将该事务内之前已经执行的操作回滚
   - Concurrency-Control Manager：控制并行事务之间的交互
 
 ![DatabaseStructure](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/DatabaseStructure.jpg)
 
 
 
-## Terminologies
-
-### Relational Model
+# Relational Model
 
 **数据模型（Data Model）**确定了数据库的逻辑结构，**关系模型（Relational Model）**是逻辑层面的数据模型中的一种，其他的逻辑层面的数据模型还有层次模型（Hierarchical Model）、Network Model（网络模型）、基于对象的数据模型（Object-Based Data Models）、半结构化数据模型（Semi-Structured Data Model）。
 
@@ -80,11 +91,11 @@ Client 客户端（数据使用者）
 
 关系模型允许数据通过 **共有属性（Common Attributes）**与其他数据联系起来。
 
-### Relation Schema & Instance
+## Relation Schema & Relation Instance
 
-> 关系模式定义了表格中的 **属性（Attributes）** 和 **域（Domains）**，关系实例是指关系数据库中具体的数据记录。
+> **关系模式（Relation Schema）**定义了表格中的 **属性（Attributes）** 和 **域（Domains）**，**关系实例（Relation Instance）**是指关系数据库中具体的数据记录。
 
-定义 $A_1, A_2, \dots, A_n$ 为 Attributes，$R=(A_1,A_2,\dots,A_n)$ 是 Relation Schema，$r(R)$ 表示 R 下的一个 Relation Instance，$t$ 可以用来表示 $r$ 中的一个元组（一行）。
+定义 $A_1, A_2, \dots, A_n$ 为 Attributes，$R=(A_1,A_2,\dots,A_n)$ 是 **关系模式（Relation Schema）**，$r(R)$ 表示 R 下的一个 **Relation Instance**，$t$ 可以用来表示 $r$ 中的一个元组（一行）。
 
 比如：
 
@@ -95,33 +106,37 @@ instructor = (ID, name, dept_name, salary)
 # An Element: A specific instructor
 ```
 
+注意每一行之间的顺序其实是不确定的，不能保证他们的顺序。
+
 ### Attribute & Domain
 
-> 域（Domain）表示某个属性的取值范围，比如 $salary=\{1000,\dots, 10000\}\cup\{null\}$
+> **域（Domain）**表示某个属性的取值范围，比如 $salary=\{1000,\dots, 10000\}\cup\{null\}$
 
-属性类型可以分为：
+属性有以下几种分类方式：
 
-- **SImple & Composite**：比如 ID 是简单属性，Address 是复合属性（包含门牌号、街道、城市、国家等）
+- **Simple & Composite**：比如 ID 是简单属性，Address 是复合属性（包含门牌号、街道、城市、国家等）
 - **Single-Valued & Multi-Valued**：比如 Age 是 Single-Valued，Phone Numbers 是 Multi-Valued（人可以有很多电话号码）
 - **Derived**：比如 Age 可以从 DateOfBirth 推算出来。
 
 属性一般要求是 **原子的（atomic）**，即不可分的。比如整数、字符串是原子的，集合和数组是非原子的。
 
-NULL 是一个特殊值，所有域都有，表示某个值是 unkown。
+NULL 是一个特殊值，所有域都有，表示某个值是 unknown。
 
-### Database Schema
+## Database Schema & Database Instance
 
-> 数据库模式是指一个数据库中存储的数据结构的定义，数据库实例是数据库中数据在某个时间点的快照。数据库模式包括多个关系模式。
+> **数据库模式（Database Schema）**是指一个数据库中存储的数据结构的定义，**数据库实例（Database Instance）**是数据库中数据在某个时间点的快照。
 
-### Keys
+在关系型数据库中，Database Schema 和 Relation Schema 之间看做层级关系，Database Schema 由一堆 Relation Schema 组成，并提供了更高层级的视角上对他们进行管理。
 
-> 超键（Superkey）是能够唯一标识关系中每一个元素的属性集合，候选键（Candidate Key）是最小的超键。
+## Keys
 
-如果 $K \subseteq R$，且 $K$ 能够确定 $r(R)$ 中的每一个元素，则称 $K$ 为 Superkey，比如 $\{ID, name\}$。
+> **超键（Super Key）**是能够唯一标识关系中每一个元素的属性集合，**候选键（Candidate Key）**是最小的超键。
 
-超键去除所有冗余的属性之后就是 Candidate Key，比如 $\{ID\}$，通常我们将 Candidate Key 作为主键（Primary Key）。
+如果 $K \subseteq R$，且 $K$ 能够确定 $r(R)$ 中的每一个元素，则称 $K$ 为 Super Key，比如 $\{ID, name\}$。
 
-外键（Foreign Key）约束指的是确保一个表中的数据必须在另一个表中存在，以维护表之间的引用完整性，比如：
+超键去除所有冗余的属性之后就是 Candidate Key，比如 $\{ID\}$，通常我们将 Candidate Key 作为 **主键（Primary Key）**。
+
+**外键约束（Foreign Key Constraint）**指的是确保一个表中的数据必须在另一个表中存在，以维护表之间的引用完整性，比如：
 
 ```text
 instructor(ID, name, dept_name, salary);
@@ -130,19 +145,21 @@ department(depart_name, building, budget);
 
 # Relational Algebra
 
+> **关系代数（Relational Algebra）**是一种过程语言。他包含一组操作符，这些操作符指定了怎么获取数据，每个操作符会需要一个或两个表作为输入。
+
 基本操作符：
 
-| 含义               | 操作符       |
-| ------------------ | ------------ |
-| Select             | $\sigma$     |
-| Project            | $\Pi$        |
-| Union              | $\cup$       |
-| Intersection       | $\cap$       |
-| Difference         | $-$          |
-| Cattersian Product | $\times$     |
-| Rename             | $\rho$       |
-| Join               | $\Join$      |
-| Assignment         | $\leftarrow$ |
+| 含义              | 操作符       |
+| ----------------- | ------------ |
+| Select            | $\sigma$     |
+| Project           | $\Pi$        |
+| Union             | $\cup$       |
+| Intersection      | $\cap$       |
+| Difference        | $-$          |
+| Cartesian Product | $\times$     |
+| Rename            | $\rho$       |
+| Join              | $\Join$      |
+| Assignment        | $\leftarrow$ |
 
 ## Select
 
@@ -199,7 +216,7 @@ $$
 
 ## Join
 
-> 两个表按照规则有意义的组合起来（Catersian Product 会产生很多无意义的数据），相当于只取了匹配规则的值。
+> 两个表按照规则有意义的组合起来（Cartesian Product 会产生很多无意义的数据），相当于只取了匹配规则的值。
 
 $$
 r \Join_\theta s = \sigma_\theta(r \times s)
@@ -257,19 +274,36 @@ $$
 
 # Structured Query Language (SQL)
 
-SQL 包括了：
+SQL 包括以下几部分：
 
-- Data Manipulation Language (DML)：提供操作数据的方法，比如 INSERT、 UPDATE 和 DELETE 等
-- Data Definition Language (DDL)：提供描述和管理数据库的方法，比如 CREATE、ALTER 和 DROP 等
+- **Data Manipulation Language (DML)**：提供操作数据的方法，比如 INSERT、 UPDATE 和 DELETE 等
+- **Data Definition Language (DDL)**：提供描述和管理数据库的方法，比如 CREATE、ALTER 和 DROP 等
+- **Data Query Language (DQL)**：提供查询数据的方法，比如 SELECT，有时候会被归入 DML 中
+- **Data Control Language (DCL)**：提供数据库权限相关的方法，比如 GRANT、REVOKE 等，有时会归入 DDL 中
+- **Transaction Control Language (TCL)**：提供事务相关的方法，比如 BEGIN、COMMIT 和 ROLLBACK 等
 
 ## Data Types
+
+### Primary Types
+
+| 类型          | 描述                             |
+| ------------- | -------------------------------- |
+| char(n)       | 固定长度为 n 的字符串            |
+| varchar(n)    | 最大长度为 n 的字符串            |
+| int           | 整型                             |
+| smallint      | 小整型                           |
+| numeric(p, d) | 定点数，共 p 位，其中 d 位是小数 |
+| real, double  | 单精度浮点数和双精度浮点数       |
+| float(n)      | 小数至少有 n 位的浮点数          |
 
 ### Large-Object Type
 
 > 当查询返回一个大对象时，他不会返回这个对象本身，而是返回一个指针
 
-- **blob**: 大的二进制文件
-- **clob**: 一大堆字符的集合
+| 类型 | 描述             |
+| ---- | ---------------- |
+| blob | 大的二进制文件   |
+| clob | 一大堆字符的集合 |
 
 ### User-Defined Type
 
@@ -280,7 +314,9 @@ CREATE TABLE department
   (budget Dollars);
 ```
 
-## Create Table
+## Data Definition Language (DDL)
+
+### Create Table
 
 ```sql
 CREATE TABLE r
@@ -290,7 +326,7 @@ CREATE TABLE r
   integrity-constriantk)
 ```
 
-`r` 是表的名字，`Ai` 表示 `r` 的 schema 中属性的名字，`Di` 表示 `Ai` 值域的数据类型，比如：
+`r` 是 Relation 的名字，`Ai` 是 `r` 的 Schema 中属性的名字，`Di` 是`Ai` 值域的数据类型，比如：
 
 ```sql
 CREATE TABLE instructor (
@@ -300,7 +336,90 @@ CREATE TABLE instructor (
   salary    numeric(8,2));
 ```
 
-## Upate Table
+### Update Table
+
+### Integrity Constraints
+
+> 完整性约束（Integrity Constraints，比如 `PRIMARY KEY` `NOT NULL` 等）保证了数据的一致性，确保数据库里面的值是合法的。
+
+可以在创建数据库的时候设置：
+
+```sql
+CREATE TABLE instructor (
+  ID          char(5),
+  name        varchar(20) NOT NULL,
+  dept_name   varchar(20),
+  salary      numeric(8,2),
+  PRIMARY KEY (ID),
+  FOREIGN KEY (dept_name) REFERENCES department(dept_name));
+```
+
+也可以通过这样增加：
+
+```sql
+ALTER TABLE table_name ADD constraint;
+```
+
+#### Constraints on a Single Relation
+
+- 主键约束：`PRIMARY KEY (A1, A2,..., An)` 指定主键。
+
+- 非空约束：`NOT NULL` 表示某个属性不能为 `NULL`。
+
+- 唯一约束：`UNIQUE (A1, A2, ... Am)` 指定这些属性形成了一个 Candidate Key，注意 Candidate Keys 是可以为 NULL 的（Primary Key 不能）。
+
+- 检查约束：`CHECK (P)`
+
+  ```sql
+  CREATE TABLE section
+    (course_id varchar(8),
+     semester varchar(8),
+     CHECK (semester in ('Fall', 'Winter', 'Spring', 'Summer')))
+  ```
+
+  - `CHECK (P)` 中的 P 可以是任意的选择谓词，比如 `CHECK (time_slot_id IN (SELECT time_slot_id FROM time_slot))`
+    - 这个条件不只在行插入或者修改的时候检查，也会在 `time_slot` 表改变的时候进行检查
+
+#### Referential Integrity
+
+外键约束：外键是指一个表中的一个字段，它引用另一个表中的主键。外键约束确保数据的引用完整性，防止引用不存在的记录。
+
+A 是一组属性，R 和 S 是两个表，他们都含有 A，并且 A 是 S 的主键。如果 R 中出现的所有 A 都在 S 中出现，那么 A 称为 R 的外键。
+
+```sql
+FOREIGN KEY (A1, A2,..., An) REFERENCES r
+```
+
+比如：
+
+```sql
+FOREIGN KEY (dept_name) REFERENCES department
+```
+
+默认情况下，外键引用了另外一个表的主键。SQL 也允许具体指定哪些属性：
+
+```sql
+FOREIGN KEY (dept_name) REFERENCES (dept_name)
+```
+
+正常情况下，如果外键约束被违反了，此次操作会被拒绝。
+
+如果使用 `CASCADE`，那么当主表中的行被删除之后，所有引用了该指的表都会被删除，比如：
+
+```sql
+CREATE TABLE course(
+  ...
+  dept_name varchar(20),
+  FOREIGN KEY (dept_name) REFERENCES department
+  ON DELETE CASCADE
+  ON UPDATE CASCADE,
+  ...
+)
+```
+
+除了 `CASCADE` 以外，也可以使用 `SET NULL` 或者 `SET DEFAULT`。
+
+### Upate Table
 
 ### Insert
 
@@ -987,87 +1106,6 @@ CREATE VIEW history_instructors AS
 
 如果我们往 hisoty_instructors 中插入 `('25566', 'Brown', 'Biology', 10000)`，那么 instructors 中会出现这行，而 history_instructors 中则不会。
 
-## Integrity Constraints
-
-完整性约束（比如 `PRIMARY KEY` `NOT NULL` 等）保证了数据的一致性，确保数据库里面的值是合法的。
-
-可以在创建数据库的时候设置：
-
-```sql
-CREATE TABLE instructor (
-  ID          char(5),
-  name        varchar(20) NOT NULL,
-  dept_name   varchar(20),
-  salary      numeric(8,2),
-  PRIMARY KEY (ID),
-  FOREIGN KEY (dept_name) REFERENCES department(dept_name));
-```
-
-也可以通过这样增加：
-
-```sql
-ALTER TABLE table_name ADD constraint;
-```
-
-### Constraints on a Single Relation
-
-- 主键约束：`PRIMARY KEY (A1, A2,..., An)` 指定主键。
-
-- 非空约束：`NOT NULL` 表示某个属性不能为 `NULL`。
-
-- 唯一约束：`UNIQUE (A1, A2, ... Am)` 指定这些属性形成了一个 Candidate Key，注意 Candidate Keys 是可以为 NULL 的（Primary Key 不能）。
-
-- 检查约束：`CHECK (P)`
-
-  ```sql
-  CREATE TABLE section
-    (course_id varchar(8),
-     semester varchar(8),
-     CHECK (semester in ('Fall', 'Winter', 'Spring', 'Summer')))
-  ```
-  
-  - `CHECK (P)` 中的 P 可以是任意的选择谓词，比如 `CHECK (time_slot_id IN (SELECT time_slot_id FROM time_slot))`
-    - 这个条件不只在行插入或者修改的时候检查，也会在 `time_slot` 表改变的时候进行检查
-
-### Referential Integrity
-
-外键约束：外键是指一个表中的一个字段，它引用另一个表中的主键。外键约束确保数据的引用完整性，防止引用不存在的记录。
-
-A 是一组属性，R 和 S 是两个表，他们都含有 A，并且 A 是 S 的主键。如果 R 中出现的所有 A 都在 S 中出现，那么 A 称为 R 的外键。
-
-```sql
-FOREIGN KEY (A1, A2,..., An) REFERENCES r
-```
-
-比如：
-
-```sql
-FOREIGN KEY (dept_name) REFERENCES department
-```
-
-默认情况下，外键引用了另外一个表的主键。SQL 也允许具体指定哪些属性：
-
-```sql
-FOREIGN KEY (dept_name) REFERENCES (dept_name)
-```
-
-正常情况下，如果外键约束被违反了，此次操作会被拒绝。
-
-如果使用 `CASCADE`，那么当主表中的行被删除之后，所有引用了该指的表都会被删除，比如：
-
-```sql
-CREATE TABLE course(
-  ...
-  dept_name varchar(20),
-  FOREIGN KEY (dept_name) REFERENCES department
-  ON DELETE CASCADE
-  ON UPDATE CASCADE,
-  ...
-)
-```
-
-除了 `CASCADE` 以外，也可以使用 `SET NULL` 或者 `SET DEFAULT`。
-
 ## Index
 
 一些查询只会涉及到表中的一小部分数据，此时对整个表都进行查找的话效率是很低的，可以通过属性上的 `INDEX` 来让查找的时候只查找这部分数据：
@@ -1252,11 +1290,11 @@ age()
 
 ![](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/ERDiagram-11.png)
 
-## Relation Schemas
+## Convert ERD to Relation Schemas
 
 可以将 ERD 转换为 **关系模式（Relation Schemas）**。
 
-### Rpresenting Entity Set
+### Representing Entity Set
 
 强实体集直接转换成表：building(<u>name</u>, address)
 
