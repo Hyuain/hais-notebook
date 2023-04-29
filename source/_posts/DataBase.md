@@ -132,11 +132,11 @@ NULL 是一个特殊值，所有域都有，表示某个值是 unknown。
 
 > **超键（Super Key）**是能够唯一标识关系中每一个元素的属性集合，**候选键（Candidate Key）**是最小的超键。
 
-如果 $K \subseteq R$，且 $K$ 能够确定 $r(R)$ 中的每一个元素，则称 $K$ 为 Super Key，比如 $\{ID, name\}$。
+**超键（Super Key）**：如果 $K \subseteq R$，且 $K$ 能够确定 $r(R)$ 中的每一个元素，则称 $K$ 为 **超键（Super Key）**，比如 $\{ID, name\}$。
 
-超键去除所有冗余的属性之后就是 Candidate Key，比如 $\{ID\}$，通常我们将 Candidate Key 作为 **主键（Primary Key）**。
+**候选键（Candidate Key）**：**超键（Super Key）**去除所有冗余的属性之后就是 **候选键（Candidate Key）**，比如 $\{ID\}$，通常我们将 **候选键（Candidate Key）**作为 **主键（Primary Key）**。
 
-**外键约束（Foreign Key Constraint）**指的是确保一个表中的数据必须在另一个表中存在，以维护表之间的引用完整性，比如：
+**外键约束（Foreign Key Constraint）**：指的是确保一个表中的数据必须在另一个表中存在，以维护表之间的引用完整性，比如：
 
 ```text
 instructor(ID, name, dept_name, salary);
@@ -279,7 +279,7 @@ SQL 包括以下几部分：
 - **Data Manipulation Language (DML)**：提供操作数据的方法，比如 INSERT、 UPDATE 和 DELETE 等
 - **Data Definition Language (DDL)**：提供描述和管理数据库的方法，比如 CREATE、ALTER 和 DROP 等
 - **Data Query Language (DQL)**：提供查询数据的方法，比如 SELECT，有时候会被归入 DML 中
-- **Data Control Language (DCL)**：提供数据库权限相关的方法，比如 GRANT、REVOKE 等，有时会归入 DDL 中
+- **Data Control Language (DCL)**：提供数据库权限相关的方法，比如 GRANT、REVOKE 等
 - **Transaction Control Language (TCL)**：提供事务相关的方法，比如 BEGIN、COMMIT 和 ROLLBACK 等
 
 ## Data Types
@@ -316,7 +316,11 @@ CREATE TABLE department
 
 ## Data Definition Language (DDL)
 
-### Create Table
+> DDL 用于定义数据结构，提供了描述和管理数据库的方法
+
+### CREATE
+
+> 用 CREATE TABLE 关键字创建表
 
 ```sql
 CREATE TABLE r
@@ -336,11 +340,120 @@ CREATE TABLE instructor (
   salary    numeric(8,2));
 ```
 
-### Update Table
+#### VIEW
+
+View 是给某人看的虚拟的表，通常可以用来对特定的用户隐藏一些特定的信息。
+
+View 与使用 WITH 定义的 CTE（Common Table Expression）有些许不同：
+
+- 范围不同：VIEW 是一个数据库级别的对象，而 CTE 只在当次查询上下文中存在；
+- 场景不同：VIEW 通常用于简化数据库中数据的查询，CTE 更适合用于将复杂的查询分解为更小的部分，或者将递归查询变得更加清晰。
+
+##### View Definition
+
+> 定义 View 并不是创建了一个新的表，而只是保存了这个表达式。
+
+```sql
+CREATE VIEW V as <query expression>
+```
+
+```sql
+CREATE VIEW faculty AS
+  SELECT ID, name, dept_name
+  FROM instructor;
+
+SELECT name
+FROM faculty
+WHERE dept_name = 'Biology';
+
+CREATE VIEW departments_total_salary(dept_name, total_salary) AS
+  SELECT dept_name, SUM(salary)
+  FROM instructor
+  GROUP BY dept_name;
+```
+
+View 可以用来定义另一个 View，于是形成了 View Chain，如果 View 依赖了自己，则称为递归。
+
+View Expansion：比如 View v1 可以写作 Expression e1，e1 中可能也使用了一个 View，将里面的 View 展开成 Expression 的过程称为   View Expansion。
+
+##### Materialized View
+
+> 一些数据库系统允许将 View 的结果存下来，他们的结果存下来之后就不会改变了，这种 View 称为 Materialized View
+
+```sql
+CREATE MATERIALIZED VIEW faculty AS
+  SELECT ID, name, dept_name
+  FROM instructor;
+```
+
+##### View Update
+
+他会将数据插入到原来的表中，比如：
+
+```sql
+CREATE VIEW faculty AS
+  SELECT ID, name, dept_name
+  FROM instructors;
+```
+
+```sql
+INSERT INTO faculty
+VALUES ('30765', 'Green', 'Music');
+```
+
+如果 instructors 中有更多的属性，比如 salary，那么可以：
+
+1. 拒绝这次操作；
+2. 将新行的 salary 设置为 NULL（更广泛使用）。
+
+```sql
+CREATE VIEW history_instructors AS
+  SELECT *
+  FROM instructors
+  WHERE dept_name = 'History';
+```
+
+如果我们往 history_instructors 中插入 `('25566', 'Brown', 'Biology', 10000)`，那么 instructors 中会出现这行，而 history_instructors 中则不会。
+
+#### INDEX
+
+一些查询只会涉及到表中的一小部分数据，此时对整个表都进行查找的话效率是很低的，可以通过属性上的 `INDEX` 来让查找的时候只查找这部分数据：
+
+```sql
+CREATE INDEX <name> ON <relation-name> (attribute);
+```
+
+```sql
+CREATE TABLE student
+  (ID varchar(5),);
+CREATE INDEX student_index ON student(ID);
+
+-- 下列查询会使用 INDEX 去查找，而不会搜索全表
+SELECT *
+FROM STUDENT
+WHERE ID = '12345';
+```
+
+### ALTER
+
+> 用 ALTER 关键字增删表的属性
+
+```sql
+ALTER TABLE student ADD age numeric(3,0);
+ALTER TABLE student DROP age;
+```
+
+### DROP
+
+> 用 DROP 关键字删除表
+
+```sql
+DROP TABLE student;
+```
 
 ### Integrity Constraints
 
-> 完整性约束（Integrity Constraints，比如 `PRIMARY KEY` `NOT NULL` 等）保证了数据的一致性，确保数据库里面的值是合法的。
+> **完整性约束**（**Integrity Constraints**，比如 `PRIMARY KEY` `NOT NULL` 等）保证了数据的一致性，确保数据库里面的值是合法的。
 
 可以在创建数据库的时候设置：
 
@@ -362,13 +475,13 @@ ALTER TABLE table_name ADD constraint;
 
 #### Constraints on a Single Relation
 
-- 主键约束：`PRIMARY KEY (A1, A2,..., An)` 指定主键。
+- **主键约束**：`PRIMARY KEY (A1, A2,..., An)` 指定主键。
 
-- 非空约束：`NOT NULL` 表示某个属性不能为 `NULL`。
+- **非空约束**：`NOT NULL` 表示某个属性不能为 `NULL`。
 
-- 唯一约束：`UNIQUE (A1, A2, ... Am)` 指定这些属性形成了一个 Candidate Key，注意 Candidate Keys 是可以为 NULL 的（Primary Key 不能）。
+- **唯一约束**：`UNIQUE (A1, A2, ... Am)` 指定这些属性形成了一个 Candidate Key，注意 Candidate Keys 是可以为 NULL 的（Primary Key 不能）。
 
-- 检查约束：`CHECK (P)`
+- **检查约束**：`CHECK (P)`
 
   ```sql
   CREATE TABLE section
@@ -377,12 +490,11 @@ ALTER TABLE table_name ADD constraint;
      CHECK (semester in ('Fall', 'Winter', 'Spring', 'Summer')))
   ```
 
-  - `CHECK (P)` 中的 P 可以是任意的选择谓词，比如 `CHECK (time_slot_id IN (SELECT time_slot_id FROM time_slot))`
-    - 这个条件不只在行插入或者修改的时候检查，也会在 `time_slot` 表改变的时候进行检查
+  - `CHECK (P)` 中的 P 可以是任意的选择谓词，比如 `CHECK (time_slot_id IN (SELECT time_slot_id FROM time_slot))`，这个条件不只在行插入或者修改的时候检查，也会在 `time_slot` 表改变的时候进行检查
 
 #### Referential Integrity
 
-外键约束：外键是指一个表中的一个字段，它引用另一个表中的主键。外键约束确保数据的引用完整性，防止引用不存在的记录。
+**外键约束**：外键是指一个表中的一个字段，它引用另一个表中的主键。外键约束确保数据的引用完整性，防止引用不存在的记录。
 
 A 是一组属性，R 和 S 是两个表，他们都含有 A，并且 A 是 S 的主键。如果 R 中出现的所有 A 都在 S 中出现，那么 A 称为 R 的外键。
 
@@ -399,12 +511,12 @@ FOREIGN KEY (dept_name) REFERENCES department
 默认情况下，外键引用了另外一个表的主键。SQL 也允许具体指定哪些属性：
 
 ```sql
-FOREIGN KEY (dept_name) REFERENCES (dept_name)
+FOREIGN KEY (dept_name) REFERENCES department(dept_name)
 ```
 
 正常情况下，如果外键约束被违反了，此次操作会被拒绝。
 
-如果使用 `CASCADE`，那么当主表中的行被删除之后，所有引用了该指的表都会被删除，比如：
+如果使用 `CASCADE`，那么当主表（department）中的行被删除之后，所有引用了属性的表（course）中对应的行都会被删除，比如：
 
 ```sql
 CREATE TABLE course(
@@ -419,9 +531,13 @@ CREATE TABLE course(
 
 除了 `CASCADE` 以外，也可以使用 `SET NULL` 或者 `SET DEFAULT`。
 
-### Upate Table
+## Data Manipulation Language (DML)
 
-### Insert
+> DML 提供了操纵数据的方法，有时 DQL 也会归入其中
+
+### INSERT
+
+> 用 INSERT 关键字插入一些行
 
 ```sql
 INSERT INTO instructor
@@ -431,7 +547,9 @@ INSERT INTO instructor (ID, name, dept_name)
 VALUES ('10211', 'Smith', 'Biology');
 ```
 
-### Delete
+### DELETE
+
+> 用 DELETE 关键字删除某些行
 
 ```sql
 DELETE FROM student [WHERE Calause];
@@ -449,7 +567,9 @@ DELETE FROM instructor
 WHERE salary < @avg_salary;
 ```
 
-### Update
+### UPDATE
+
+> 用 UPDATE 关键字插入某些行
 
 ```sql
 UPDATE instructor
@@ -463,29 +583,113 @@ SET salary = CASE
              END;
 ```
 
-### Drop
+## Data Query Language (DQL)
+
+> DQL 用于查询数据，有时候 DQL 会被规纳入 DML 中
+
+最基本的一个查询语句如下：
 
 ```sql
-DROP TABLE student;
+SELECT A1, A2, ..., An
+FROM r1, r2, ..., rm
+WHERE P
 ```
 
-### Alter
+其中 `Ai` 是属性，`ri` 是表，`P` 是查询谓词。**注意 SQL 是大小写不敏感的，不仅对于关键字，也对于属性名、表名等。**
 
-> Add/Drop an attribute to a relation
+### SELECT
+
+可以使用 `DISTINCT` 去掉重复的行，比如：
 
 ```sql
-ALTER TABLE student ADD age numeric(3,0);
-
-ALTER TABLE student DROP age;
+SELECT DISTINCT dept_name
+FROM instructor;
 ```
 
-### Join
+也可以显式地用 `ALL` 指定不能删除重复的行：
 
-Join 实际上就是 Catersian Product，但对输入的数据有些条件，对也会选择性地输出一些属性。
+```sql
+SELECT ALL dept_name
+FROM instructor;
+```
+
+`*` 表示所有属性。
+
+注意也可以使用字符串字面量：
+
+```sql
+-- 返回一行包含 '123' 的数据表，表名为 '123'
+SELECT '123';
+-- 可以给这个返回的数据表重命名
+SELECT '123' AS FOO;
+-- 返回与 instructor 行数一样多的数据表
+SELECT '123' FROM instructor;
+```
+
+可以使用算术运算符，也可以使用 `AS` 来重命名：
+
+```sql
+SELECT ID, name, salary/12 AS monthly_salary
+FROM instructor;
+```
+
+### WHERE
+
+可以在 `WHERE` 语句中使用逻辑运算符和比较运算符，`<>` 表示不等于：
+
+```sql
+SELECT name
+FROM instructor
+WHERE dept_name = 'Comp.Sci.' AND salary > 70000;
+```
+
+此外还可以使用 `BETWEEN`（两端都包含）：
+
+```sql
+SELECT name
+FROM instructor
+WHERE salary BETWEEN 9000 AND 10000;
+```
+
+元组比较：
+
+```sql
+SELECT name, course_id
+FROM instructor, teaches
+WHERE (instructor.ID, dept_name) = (teaches.ID, 'Biology')
+-- 这里 instructor.ID 和 teaches.ID 比较，dept_name 和 'Biology' 比较
+```
+
+### FROM
+
+`FROM` 会使用对应表的 Cartesian Product，比如下面是在 $instructor \times teaches$ 中进行查找：
+
+```sql
+SELECT *
+FROM instructor, teaches;
+```
+
+通过 Cartesian Product，可以得到所有可能的两表的组合，单独使用可能没什么用，但是经常会与 `WHERE` 语句一同使用：
+
+```sql
+SELECT *
+FROM Products, Categories
+WHERE Products.CategoryID = Categories.CategoryID;
+```
+
+### JOIN
+
+`JOIN` 实际上也是 Cartesian Product，但对输入的数据有些条件，对也会选择性地输出一些属性。
+
+`JOIN` 语句主要由 **类型** 和 **条件** 构成，主要类型有 `INNER JOIN` / `LEFT OUTER JOIN` / `RIGHT OUTER JOIN` / `FULL OUTER JOIN`，条件主要有 `NATURAL` / `ON <predicate>` / `USING (attributes)`
+
+
+
+
 
 ![JOIN](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/sql-join.png)
 
-#### Natrual Join
+#### NATRUAL JOIN
 
 会匹配所有的共同属性，并且每个共同属性只保留一列。
 
@@ -520,7 +724,7 @@ FROM student NATRUAL JOIN takes;
 
 ```sql
 SELECT name, course_id
-FROM student, INNER JOIN takes
+FROM student INNER JOIN takes
 ON student.ID = takes.ID;
 ```
 
@@ -556,26 +760,26 @@ SELECT name, title
 FROM (student NATRUAL JOIN takes) JOIN course USING(course_id)
 ```
 
-#### Inner Join
+#### INNER JOIN
 
-就是 Relational Algebra 中的 Join 运算。
+`INNER JOIN` 与 Relational Algebra 中的 Join 运算效果相同。
 
 ![Inner Join](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/DS-InnerJoin.png)
 
 `INNER JOIN` 和 `NATRUAL JOIN` 的不同在于：
 
-- `NATRUAL JOIN` 会自动匹配所有的共同属性，并且只保留一个共同属性
-- `INNER JOIN` 需要用户指明需要匹配的属性，并且会保留所有的共同属性（包括指定的属性）
+- `NATRUAL JOIN` 会自动匹配所有的共同属性，并且只保留每种共同属性只会保留一列
+- `INNER JOIN` 需要用户指明需要匹配的属性，并且会保留所有的共同属性列（包括指定的属性）
 
 此外，注意使用 `NATRUAL/INNER JOIN` 的关系的先后顺序是有影响的，写在左边表的就会出现在结果的左边
 
-#### Outer Join
+#### OUTER JOIN
 
-Natrual Join 和 Inner Join 最后得到的实际上是 **交集**，比如 student 中有 ID 为 70555 的行，但 takes 中没有，如果将他们 Inner Join on ID，则会忽略该行。
+`NATRUAL JOIN` 和 `INNER JOIN` 最后得到的实际上是 **交集**，比如 student 中有 ID 为 70555 的行，但 takes 中没有，如果将他们 `INNER JOIN USING ID`，则会忽略该行。
 
-Outer Join 则不会忽略这些只有一个表中有，而另一个表中没有的行，具体有三种 Outer Join：LEFT、RIGHT、FULL。
+`OUTER JOIN` 则不会忽略这些只有一个表中有，而另一个表中没有的行，具体有三种 `OUTER JOIN`：`LEFT`、`RIGHT`、`FULL`。
 
-下面用这个例子来讲解三种 Outer Join，以及他们与 Inner Join 的不同：
+下面用这个例子来讲解三种 `OUTER JOIN`，以及他们与 `INNER JOIN` 的不同：
 
 **Course**
 
@@ -595,18 +799,20 @@ Outer Join 则不会忽略这些只有一个表中有，而另一个表中没有
 
 注意上述表中，Course 中没有 course_id 为 CS-347 的项，Prereq 中没有 course_id 为 CS-315 的项。
 
-**Course NATRAL JOIN Prereq**
+```sql
+Course NATRAL JOIN Prereq
+```
 
 | course_id | title       | dept_name  | credits | prereq_id |
 | --------- | ----------- | ---------- | ------- | --------- |
 | BIO-301   | Genetics    | Biology    | 4       | BIO-101   |
 | CS-190    | Game Design | Comp. Sci. | 4       | CS-101    |
 
-##### Left Outer Join
+##### LEFT OUTER JOIN
 
 > Relational Algebra 中可以使用符号 ⟕ 表示
 
-Left Outer Join 保证了左边的表是完整的：
+`LEFT OUTER JOIN` 保证了左边的表是完整的：
 
 | course_id  | title        | dept_name      | credits | prereq_id |
 | ---------- | ------------ | -------------- | ------- | --------- |
@@ -614,11 +820,11 @@ Left Outer Join 保证了左边的表是完整的：
 | CS-190     | Game Design  | Comp. Sci.     | 4       | CS-101    |
 | **CS-315** | **Robotics** | **Comp. Sci.** | **3**   | **NULL**  |
 
-##### Right Outer Join
+##### RIGHT OUTER JOIN
 
 > Relational Algebra 中可以使用符号 ⟖ 表示
 
-Right Outer Join 保证了右边的表是完整的：
+`RIGHT OUTER JOIN` 保证了右边的表是完整的：
 
 | course_id  | title       | dept_name  | credits  | prereq_id  |
 | ---------- | ----------- | ---------- | -------- | ---------- |
@@ -626,11 +832,11 @@ Right Outer Join 保证了右边的表是完整的：
 | CS-190     | Game Design | Comp. Sci. | 4        | CS-101     |
 | **CS-347** | **NULL**    | **NULL**   | **NULL** | **CS-101** |
 
-##### Full Outer Join
+##### FULL OUTER JOIN
 
 > Relational Algebra 中可以使用符号 ⟗ 表示
 
-Right Outer Join 保证了两个表的完整性，*R* ⟗ *S* = (*R* ⟕ *S*) ∪ (*R* ⟖ *S*)：
+`RIGHT OUTER JOIN` 保证了两个表的完整性，*R* ⟗ *S* = (*R* ⟕ *S*) ∪ (*R* ⟖ *S*)：
 
 | course_id  | title        | dept_name      | credits  | prereq_id  |
 | ---------- | ------------ | -------------- | -------- | ---------- |
@@ -639,92 +845,9 @@ Right Outer Join 保证了两个表的完整性，*R* ⟗ *S* = (*R* ⟕ *S*) �
 | **CS-315** | **Robotics** | **Comp. Sci.** | **3**    | **NULL**   |
 | **CS-347** | **NULL**     | **NULL**       | **NULL** | **CS-101** |
 
-## Query
+### AS
 
-```sql
-SELECT A1, A2, ..., An
-FROM r1, r2, ..., rm
-WHERE P
-```
-
-`Ai` 是属性，`ri` 是表，`P` 是查询谓词。注意 SQL 是大小写不敏感的。
-
-### SELECT Clause
-
-可以使用 `DISTINCT` 去掉重复的行，比如：
-
-```sql
-SELECT DISTINCT dept_name
-FROM instructor;
-```
-
-`*` 表示所有属性。
-
-注意也可以使用字符串字面量：
-
-```sql
--- 返回一行包含 '123' 的数据表，表名为 '123'
-SELECT '123';
--- 可以给这个返回的数据表重命名
-SELECT '123' AS FOO;
--- 返回与 instructor 行数一样多的数据表
-SELECT '123' FROM instructor;
-```
-
-可以使用算术运算符，也可以使用 `AS` 来重命名：
-
-```sql
-SELECT ID, name, salary/12 AS monthly_salary
-FROM instructor;
-```
-
-### WHERE Clause
-
-可以在 `WHERE` 语句中使用逻辑运算符和比较运算符，`<>` 表示不等于：
-
-```sql
-SELECT name
-FROM instructor
-WHERE dept_name = 'Comp.Sci.' AND salary > 70000;
-```
-
-此外还可以使用 `BETWEEN`（两端都包含）：
-
-```sql
-SELECT name
-FROM instructor
-WHERE salary BETWEEN 9000 AND 10000;
-```
-
-元组比较：
-
-```sql
-SELECT name, course_id
-FROM instructor, teaches
-WHERE (instructor.ID, dept_name) = (teaches.ID, 'Biology')
--- 这里 instructor.ID 和 teaches.ID 比较，dept_name 和 'Biology' 比较
-```
-
-### FROM Clause
-
-`FROM` 会使用对应表的 Cartesian Product，比如下面是在 $instructor \times teaches$ 中进行查找：
-
-```sql
-SELECT *
-FROM instructor, teaches;
-```
-
-通过 Cartesian Product，可以得到所有可能的两表的组合，单独使用可能没什么用，但是经常会与 `WHERE` 语句一同使用：
-
-```sql
-SELECT *
-FROM Products, Categories
-WHERE Products.CategoryID = Categories.CategoryID;
-```
-
-### Rename Operation
-
-使用 `AS` 可以对关系（表）或者属性重命名：
+> 使用 `AS` 可以对关系（表）或者属性重命名
 
 找到 Comp. Sci. 中所有的至少比一个 instructor 工资高的 instructor.name。
 
@@ -734,7 +857,7 @@ FROM instructor AS T, instructor AS S
 WHERE T.salary > S.salray AND S.dept_name = 'Comp. Sci.'
 ```
 
-### String Operation
+### LIKE
 
 可以用 `LIKE` 来进行字符串匹配，并且有两个通配符：
 
@@ -755,7 +878,7 @@ WHERE name LIKE '%dar%';
 LIKE '100\%' ESCAPE '\'
 ```
 
-通过指定 `\` 为 Escape Character，告诉系统 `\%` 是 `%` 字面量，而不是通配符。
+通过指定 `\` 为 **转义字符（Escape Character）**，告诉系统 `\%` 是 `%` 字面量，而不是通配符。
 
 还有一些特殊的用法：
 
@@ -767,24 +890,44 @@ LIKE '100\%' ESCAPE '\'
 '___%'
 ```
 
-### Ordering
+### ODER BY
 
-默认会按字母升序（`ASC`）排列，可以指定 `DESC` 让其按照降序排列：
+默认情况下，查询结果会按字母升序（`ASC`）排列，可以指定 `DESC` 让其按照降序排列：
 
 ```sql
 SELECT DISTINCT name
 FROM instructor
-ORDER BY name
+ORDER BY name;
 ```
 
 也可以根据多个字段进行排序：
 
 ```sql
 ORDER BY dept_name, name
-ORDER BY salary ASC, name DESC
+ORDER BY salary ASC, name DESC;
 ```
 
-### Set Operation
+### NULL
+
+所有与 `NULL` 的计算都会返回 `NULL`，比如 `5 + NULL` 会返回 `NULL`。
+
+`IS NULL` 可以用来检查是否是 `NULL`：
+
+```sql
+SELECT name
+FROM instructor
+WHERE salary IS NULL;
+```
+
+布尔表达式中可以有 `NULL`，但最好又不要，因为会产生一些不太容易理解的结果：
+
+- `AND`：`TRUE AND NULL` 为 `NULL`，`FALSE AND NULL` 为 `FALSE`；
+- `OR`：`TRUE OR NULL` 为 `TRUE`，`FALSE OR NULL` 为 `NULL`；
+- `NOT`：`NOT NULL` 为 `NULL`。
+
+通常我们会用 `IS NULL` 或 `IS NOT NULL` 来处理 `NULL` 值。
+
+### Set Operations
 
 ```sql
 (SELECT course_id FROM section WHERE sem = 'Fall' AND year = 2017)
@@ -802,21 +945,9 @@ INTERSECT ALL
 EXCEPT ALL
 ```
 
-### NULL
-
-所有与 `NULL` 的计算都会返回 `NULL`，比如 `5 + NULL` 会返回 `NULL`。
-
-`IS NULL` 可以用来检查是否是 `NULL`：
-
-```sql
-SELECT name
-FROM instructor
-WHERE salary IS NULL;
-```
-
 ### Aggregate Function
 
->  聚合函数可以执行计算并返回单个值作为结果： `AVG` `MIN` `MAX` `SUM` `COUNT`
+>  **聚合函数（Aggregation Function）**可以执行计算并返回单个值作为结果，包括 `AVG` `MIN` `MAX` `SUM` `COUNT` 等
 
 得到 COMP instructors 的平均工资：
 
@@ -863,11 +994,11 @@ FROM instructor
 GROUP BY dept_name, ID;
 ```
 
-#### HAVING Clause
+#### HAVING
 
-> 用于筛选分组
+> HAVING 用于筛选分组
 
-同为筛选，不过与 `WHERE` 有所不同：
+`HAVING` 和 `WHERE` 同为筛选，不过与 `WHERE` 有所不同：
 
 - `WHERE` 是用来筛选行的，`HAVING` 是用来筛选分组的
 - `WHERE` 放在 `FROM` 之后，`HAVING` 放在 `GROUP BY` 之后
@@ -901,6 +1032,8 @@ HAVING SUM(sales) > 1000;
 
 ### Nested Subquery
 
+事实上，我们的查询结构可以更加复杂，比如在 `SELECT` 和 `FROM` 后面使用，在 `WHERE` 后面使用集合表达式：
+
 ```sql
 SELECT A1, A2, ..., An
 FROM r1, r2, ..., rm
@@ -912,6 +1045,8 @@ WHERE P
 ```text
 B <operation> (subquery)
 ```
+
+其中 `B` 是一个属性，`<operation>` 是表示集合从属关系的 `IN` `NOT IN` 或比较运算符等，`(subquery)` 是一个产生集合的子查询。
 
 #### Subqueries in WHERE
 
@@ -1036,88 +1171,27 @@ FROM dept_total, dept_total_avg
 WHERE dept_total.value > dept_total_avg.value;
 ```
 
-## View
+## Data Control Language (DCL)
 
-View 是给某人看的虚拟的表，通常可以用来对特定的用户隐藏一些特定的信息。
+数据库 **权限（privilege）** 主要包括：**增、删、改、查**。可以授权给某个用户所有或部分权限，或设置为无权限。
 
-### View Definition
+### GRANT
 
-> 定义 View 并不是创建了一个新的表，而只是保存了这个表达式。
-
-```sql
-CREATE VIEW V as <query expression>
-```
+> 可以用 GRANT 来分配权限
 
 ```sql
-CREATE VIEW faculty AS
-  SELECT ID, name, dept_name
-  FROM instructor;
-
-SELECT name
-FROM faculty
-WHERE dept_name = 'Biology'
-
-CREATE VIEW departments_total_salary(dept_name, total_salary) AS
-  SELECT dept_name, SUM(salary)
-  FROM instructor
-  GROUP BY dept_name;
+GRANT <privilege list> ON <relation or view> TO <user list>
 ```
 
-View 可以用来定义另一个 View，于是形成了 View Chain，如果 View 依赖了自己，则称为递归。
-
-View Exapnsion：比如 View v1 可以写作 Expression e1，e1 中可能也使用了一个 View，将里面的 View 展开成 Expression 的过程称为   View Expansion。
-
-### Materialized View
-
-> 一些数据库系统允许将 View 的结果存下来，他们的结果存下来之后就不会改变了，这种 View 称为 Materialized View
+其中 `<user list>` 可以是用户 id、`PUBLIC` 或角色（Role），比如：
 
 ```sql
-CREATE MATERIALIZED VIEW faculty AS
-  SELECT ID, name, dept_name
-  FROM instructor;
+GRANT SELECT ON department TO Amit, Satoshi
 ```
 
-### View Update
+**注意给一个 View 分配权限并不代表给他所依赖的表分配了权限。**
 
-他会将数据插入到原来的表中，比如：
-
-```sql
-CREATE VIEW faculty AS
-  SELECT ID, name, dept_name
-  FROM instructors;
-```
-
-```sql
-INSERT INTO faculty
-VALUES ('30765', 'Green', 'Music');
-```
-
-如果 instructors 中有更多的属性，比如 salary，那么可以：
-
-1. 拒绝这次操作；
-2. 将新行的 salary 设置为 NULL（更广泛使用）。
-
-```sql
-CREATE VIEW history_instructors AS
-  SELECT *
-  FROM instructors
-  WHERE dept_name = 'History';
-```
-
-如果我们往 hisoty_instructors 中插入 `('25566', 'Brown', 'Biology', 10000)`，那么 instructors 中会出现这行，而 history_instructors 中则不会。
-
-## Index
-
-一些查询只会涉及到表中的一小部分数据，此时对整个表都进行查找的话效率是很低的，可以通过属性上的 `INDEX` 来让查找的时候只查找这部分数据：
-
-```sql
-CREATE INDEX <name> ON <relation-name> (attribute);
-```
-
-```sql
-CREATE TABLE student
-  (ID varchar(5),)
-```
+可以分配的权限如下表所示：
 
 # Entity Relationship Model (ERM)
 
