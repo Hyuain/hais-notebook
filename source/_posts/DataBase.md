@@ -95,7 +95,7 @@ Client 客户端（数据使用者）
 
 > **关系模式（Relation Schema）**定义了表格中的 **属性（Attributes）** 和 **域（Domains）**，**关系实例（Relation Instance）**是指关系数据库中具体的数据记录。
 
-定义 $A_1, A_2, \dots, A_n$ 为 Attributes，$R=(A_1,A_2,\dots,A_n)$ 是 **关系模式（Relation Schema）**，$r(R)$ 表示 R 下的一个 **Relation Instance**，$t$ 可以用来表示 $r$ 中的一个元组（一行）。
+定义 $A_1, A_2, \dots, A_n$ 为 Attributes，$R=(A_1,A_2,\dots,A_n)$ 是 **关系模式（Relation Schema）**，$r(R)$ 表示 R 下的一个 **关系实例（Relation Instance）**，$t$ 可以用来表示 $r$ 中的一个元组（一行）。
 
 比如：
 
@@ -106,21 +106,11 @@ instructor = (ID, name, dept_name, salary)
 # An Element: A specific instructor
 ```
 
-注意每一行之间的顺序其实是不确定的，不能保证他们的顺序。
+注意每一行之间的顺序其实是不确定的，关系模式并不能保证他们的顺序。
 
-### Attribute & Domain
+**属性（Attributes）** 一般要求是 **原子的（atomic）**，即不可分的。比如整数、字符串是原子的，集合和数组是非原子的。
 
-> **域（Domain）**表示某个属性的取值范围，比如 $salary=\{1000,\dots, 10000\}\cup\{null\}$
-
-属性有以下几种分类方式：
-
-- **Simple & Composite**：比如 ID 是简单属性，Address 是复合属性（包含门牌号、街道、城市、国家等）
-- **Single-Valued & Multi-Valued**：比如 Age 是 Single-Valued，Phone Numbers 是 Multi-Valued（人可以有很多电话号码）
-- **Derived**：比如 Age 可以从 DateOfBirth 推算出来。
-
-属性一般要求是 **原子的（atomic）**，即不可分的。比如整数、字符串是原子的，集合和数组是非原子的。
-
-NULL 是一个特殊值，所有域都有，表示某个值是 unknown。
+每个属性有自己的类型和 **域（Domain）**，域表示某个属性的取值范围，比如 $salary=\{1000,\dots, 10000\}\cup\{null\}$。NULL 是一个特殊值，所有域都有，表示某个值是 unknown。
 
 ## Database Schema & Database Instance
 
@@ -1277,50 +1267,58 @@ geo_staff 可以没有 instructor 的权限，此时他就 *只能查看* 上述
 **实体关系模型（ERM）**主要用来帮助设计数据库，描述表之间的关系，独立于数据库硬件和软件的具体实现，主要有三个核心概念：
 
 - **Entity Sets**: 实体集
-  - **实体（Entity）**是客观存在、并可相互区别的事物。每个 Entity 可以表示为一组属性，比如 `instrucot = (ID, name, street, city, salary)`，`course = (course_id, title, credits)`。
+  - **实体（Entity）**是客观存在、并可相互区别的事物，比如 Peter Chen、Hong Kong、Star Wars。
   - **实体集（Entity Set）**是一堆同样类型、同样属性的实体的集合，比如 Persons、Cities、Movies。
-  - 一些属性组成了实体集的主键，主键可以将实体集中的每个实体区分开来。
+  - 一些属性（Attributes）组成了实体集的主键（Primary Key），主键可以将实体集中的每个实体区分开来。
 - **Relationship Sets**: 关系集
-  - Relationship 是一些实体之间的联系。定义 ${(e_1, \cdots ,e_n|e_1 \in E_1, \cdots, e_n \in E_n)}$ 中的 $(e_1, \cdots ,e_n)$ 就是一个关系。
-  - Relationship Set 是不同实体集的实体间的数学联系，里面存了好多关系。关系集中除了来自于各个实体的属性之外，还可以拥有自己的属性。
-  - Degree of a relationship（关系的度）是关系集中包涉及到的的实体集的数量。
+  - **关系（Relationship）**是一些实体之间的联系。定义 ${(e_1, \cdots ,e_n|e_1 \in E_1, \cdots, e_n \in E_n)}$ 中的 $(e_1, \cdots ,e_n)$ 就是一个关系，其中 $e_i$ 代表某个实体，而 $E_i$ 则代表该实体属于哪个实体集。
+  - **关系集（Relationship Set）**是不同实体集的实体间的数学联系，里面存了好多关系。关系集中除了来自于各个实体的属性之外，还可以拥有自己的属性。
+  - **关系的度（Degree of a Relationship）**是关系集中包涉及到的的实体集的数量。
 - **Attributes**: 属性
 
-## Cardinality Constraint
+## Concepts in ERM
 
-**基数约束（Cardinality Constraint）** 是用来表示实体可以有多少实体与另一实体集的实体存在联系，一共有四种形态：
+### Cardinality Constraint
+
+**基数约束（Cardinality Constraint）** 是用来表示实体集中可以有多少实体与另一实体集的实体存在联系，一共有四种形态：
 
 - 1:1（一对一）：Student*WorksOn*Thesis, Department*Has*Dean
 - 1:n（一对多）：Building*Has*Room, Lecturer*Teaches*Course
 - n:1（多对一）：Room*LocatedIn*Building, Course*ToughtBy*Lecturer
 - n:m（多对多）：Student*Takes*Course, Student*Has*Advisor
 
-区分 1:n/n:1 和 n:m：反过来问题
+区分 1:n/n:1 和 n:m：可以反过来问问题
 
-- A building may have multiple rooms...
-  - ... but can room be in multiple buildings? *No -> BuildingHasRoom is 1:n*
-- A department can be located in multiple buildings...
-  - ... but can a building host multiple departments? *Yes -> DepartmentLocatedInBujilding is n:m*
+- 一个 Building 可以有很多个 Room…
+  - …但是一个 Room 可以在很多 Building 中吗？*不能 -> BuildingHasRoom is 1:n* 
+- 一个 Department 可以在很多个 Building 中…
+  - …但是一个 Building 可以容纳很多 Department 吗？*能 -> DepartmentLocatedInBujilding is n:m*
 
-此外两个来自同一个实体集的实体也可以形成关系：
+此外，两个来自同一个实体集的实体也可以形成关系：
 
 - Person*MarriedTo*Person (1:1)
 - Person*IsFatherOf*Person (1:n)
 - Person*Has*Father (n:1)
 - Person*IsParentOf*Person (n:m)
 
-## Redundant Attribute
+### Attributes in ERM
+
+ERM 中的属性有以下几种分类方式：
+
+- **Simple & Composite**：比如 ID 是简单属性，Address 是复合属性（包含门牌号、街道、城市、国家等）
+- **Single-Valued & Multi-Valued**：比如 Age 是 Single-Valued，Phone Numbers 是 Multi-Valued（人可以有很多电话号码）
+- **Derived**：比如 Age 可以从 DateOfBirth 推算出来。
+
+### Redundant Attribute
 
 比如有两个实体集：
 
 - Instructor(ID, name, *dept_name*, salary)
-- Department(dept_name, buidling, budget)
+- Department(*dept_name*, building, budget)
 
-并且将他们用一个关系集联系起来：Instructor*BelongsTo*Department (ID, dept_name)
+并且将他们用一个关系集联系起来：Instructor*BelongsTo*Department (ID, dept_name)。此时 Instructor.dept_name 就是冗余属性，可以去掉。
 
-**此时 Instructor.dept_name 就是冗余属性，可以去掉。**
-
-## Weak Entity Set
+### Weak Entity Set
 
 考虑另外一个例子：
 
