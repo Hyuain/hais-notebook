@@ -7520,7 +7520,6 @@ variable \larr E
 <pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">GRANT</span> <span class="token operator">&lt;</span>privilege list<span class="token operator">></span> <span class="token keyword">ON</span> <span class="token operator">&lt;</span>relation <span class="token operator">or</span> <span class="token keyword">view</span><span class="token operator">></span> <span class="token keyword">TO</span> <span class="token operator">&lt;</span><span class="token keyword">user</span> list<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>其中 <code>&lt;user list&gt;</code> 可以是用户 id、<code>PUBLIC</code> 或角色（Role），比如：</p>
 <pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">GRANT</span> <span class="token keyword">SELECT</span> <span class="token keyword">ON</span> department <span class="token keyword">TO</span> Amit<span class="token punctuation">,</span> Satoshi<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p><strong>注意给一个 View 分配权限并不代表给他所依赖的表分配了权限。</strong></p>
 <p>可以分配的权限如下表所示：</p>
 <table>
 <thead>
@@ -7565,19 +7564,39 @@ variable \larr E
 <p>如果某个用户被不同的授权者授予了多次相同的权限，他可能会在某个授权者撤回权限之后仍然保有权限。</p>
 <h3 id="role">ROLE</h3>
 <blockquote>
-<p>可以用 ROLE 给用户进行分组</p>
+<p>可以用 CREATE ROLE 创建角色，然后用 GRANT 给用户指定角色</p>
 </blockquote>
-<p>用下面的语句创建 ROLE：</p>
-<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> ROLE <span class="token operator">&lt;</span>name<span class="token operator">></span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>用下面的语句创建并分配 ROLE：</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> ROLE <span class="token operator">&lt;</span>role name<span class="token operator">></span><span class="token punctuation">;</span>
+<span class="token keyword">GRANT</span> <span class="token operator">&lt;</span>role name<span class="token operator">></span> <span class="token keyword">to</span> <span class="token operator">&lt;</span>users<span class="token operator">></span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <p>比如：</p>
-<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> ROLE instructor<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> ROLE instructor<span class="token punctuation">;</span>
+<span class="token keyword">GRANT</span> instructor <span class="token keyword">TO</span> Amit<span class="token punctuation">;</span>
+<span class="token keyword">GRANT</span> <span class="token keyword">SELECT</span> <span class="token keyword">ON</span> takes <span class="token keyword">TO</span> instructor<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>ROLE 还可以套娃：</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> ROLE dean<span class="token punctuation">;</span>
+<span class="token keyword">GRANT</span> instrucot <span class="token keyword">TO</span> dean<span class="token punctuation">;</span>
+<span class="token keyword">GRANT</span> dean <span class="token keyword">TO</span> Tom<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h3 id="authorization-on-view">Authorization on View</h3>
+<blockquote>
+<p><strong>注意给一个 View 分配权限并不代表给他所依赖的表分配了权限。</strong></p>
+</blockquote>
+<p>考虑以下例子：</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">VIEW</span> geo_instructor <span class="token keyword">AS</span>
+  <span class="token punctuation">(</span><span class="token keyword">SELECT</span> <span class="token operator">*</span>
+   <span class="token keyword">FROM</span> instructor
+   <span class="token keyword">WHERE</span> dept_name <span class="token operator">=</span> <span class="token string">'Geology'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">GRANT</span> <span class="token keyword">SELECT</span> <span class="token keyword">ON</span> geo_instructor <span class="token keyword">TO</span> geo_staff<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>然后一个 geo_staff 想要执行以下命令：</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span> <span class="token operator">*</span> <span class="token keyword">FROM</span> geo_instructors<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>geo_staff 可以没有 instructor 的权限，此时他就 <em>只能查看</em> 上述查询的结果；而 View 的创建者 <em>必须</em> 有 instructor 的 SELECT 权限。</p>
 <h1 id="entity-relationship-model-erm">Entity Relationship Model (ERM)</h1>
-<p>ERM 主要用来帮助设计设计库，描述表之间的关系，独立于数据库硬件和软件的具体实现，主要有三个核心概念：</p>
+<p><strong>实体关系模型（ERM）</strong>主要用来帮助设计数据库，描述表之间的关系，独立于数据库硬件和软件的具体实现，主要有三个核心概念：</p>
 <ul>
 <li><strong>Entity Sets</strong>: 实体集
 <ul>
-<li>Entity 是客观存在并可相互区别的事物。每个 Entity 可以表示为一组属性，比如 <code>instrucot = (ID, name, street, city, salary)</code>，<code>course  = (course_id, title, credits)</code>。</li>
-<li>Entity Set 是一堆同样类型、同样属性的实体的集合，比如 Persons、Cities、Movies。</li>
+<li><strong>实体（Entity）</strong>是客观存在、并可相互区别的事物。每个 Entity 可以表示为一组属性，比如 <code>instrucot = (ID, name, street, city, salary)</code>，<code>course = (course_id, title, credits)</code>。</li>
+<li><strong>实体集（Entity Set）</strong>是一堆同样类型、同样属性的实体的集合，比如 Persons、Cities、Movies。</li>
 <li>一些属性组成了实体集的主键，主键可以将实体集中的每个实体区分开来。</li>
 </ul></li>
 <li><strong>Relationship Sets</strong>: 关系集
