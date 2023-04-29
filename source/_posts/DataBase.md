@@ -340,100 +340,6 @@ CREATE TABLE instructor (
   salary    numeric(8,2));
 ```
 
-#### VIEW
-
-View 是给某人看的虚拟的表，通常可以用来对特定的用户隐藏一些特定的信息。
-
-View 与使用 WITH 定义的 CTE（Common Table Expression）有些许不同：
-
-- 范围不同：VIEW 是一个数据库级别的对象，而 CTE 只在当次查询上下文中存在；
-- 场景不同：VIEW 通常用于简化数据库中数据的查询，CTE 更适合用于将复杂的查询分解为更小的部分，或者将递归查询变得更加清晰。
-
-##### View Definition
-
-> 定义 View 并不是创建了一个新的表，而只是保存了这个表达式。
-
-```sql
-CREATE VIEW V as <query expression>
-```
-
-```sql
-CREATE VIEW faculty AS
-  SELECT ID, name, dept_name
-  FROM instructor;
-
-SELECT name
-FROM faculty
-WHERE dept_name = 'Biology';
-
-CREATE VIEW departments_total_salary(dept_name, total_salary) AS
-  SELECT dept_name, SUM(salary)
-  FROM instructor
-  GROUP BY dept_name;
-```
-
-View 可以用来定义另一个 View，于是形成了 View Chain，如果 View 依赖了自己，则称为递归。
-
-View Expansion：比如 View v1 可以写作 Expression e1，e1 中可能也使用了一个 View，将里面的 View 展开成 Expression 的过程称为   View Expansion。
-
-##### Materialized View
-
-> 一些数据库系统允许将 View 的结果存下来，他们的结果存下来之后就不会改变了，这种 View 称为 Materialized View
-
-```sql
-CREATE MATERIALIZED VIEW faculty AS
-  SELECT ID, name, dept_name
-  FROM instructor;
-```
-
-##### View Update
-
-他会将数据插入到原来的表中，比如：
-
-```sql
-CREATE VIEW faculty AS
-  SELECT ID, name, dept_name
-  FROM instructors;
-```
-
-```sql
-INSERT INTO faculty
-VALUES ('30765', 'Green', 'Music');
-```
-
-如果 instructors 中有更多的属性，比如 salary，那么可以：
-
-1. 拒绝这次操作；
-2. 将新行的 salary 设置为 NULL（更广泛使用）。
-
-```sql
-CREATE VIEW history_instructors AS
-  SELECT *
-  FROM instructors
-  WHERE dept_name = 'History';
-```
-
-如果我们往 history_instructors 中插入 `('25566', 'Brown', 'Biology', 10000)`，那么 instructors 中会出现这行，而 history_instructors 中则不会。
-
-#### INDEX
-
-一些查询只会涉及到表中的一小部分数据，此时对整个表都进行查找的话效率是很低的，可以通过属性上的 `INDEX` 来让查找的时候只查找这部分数据：
-
-```sql
-CREATE INDEX <name> ON <relation-name> (attribute);
-```
-
-```sql
-CREATE TABLE student
-  (ID varchar(5),);
-CREATE INDEX student_index ON student(ID);
-
--- 下列查询会使用 INDEX 去查找，而不会搜索全表
-SELECT *
-FROM STUDENT
-WHERE ID = '12345';
-```
-
 ### ALTER
 
 > 用 ALTER 关键字增删表的属性
@@ -530,6 +436,100 @@ CREATE TABLE course(
 ```
 
 除了 `CASCADE` 以外，也可以使用 `SET NULL` 或者 `SET DEFAULT`。
+
+### VIEW
+
+View 是给某人看的虚拟的表，通常可以用来对特定的用户隐藏一些特定的信息。
+
+View 与使用 WITH 定义的 CTE（Common Table Expression）有些许不同：
+
+- 范围不同：VIEW 是一个数据库级别的对象，而 CTE 只在当次查询上下文中存在；
+- 场景不同：VIEW 通常用于简化数据库中数据的查询，CTE 更适合用于将复杂的查询分解为更小的部分，或者将递归查询变得更加清晰。
+
+#### View Definition
+
+> 定义 View 并不是创建了一个新的表，而只是保存了这个表达式。
+
+```sql
+CREATE VIEW V as <query expression>
+```
+
+```sql
+CREATE VIEW faculty AS
+  SELECT ID, name, dept_name
+  FROM instructor;
+
+SELECT name
+FROM faculty
+WHERE dept_name = 'Biology';
+
+CREATE VIEW departments_total_salary(dept_name, total_salary) AS
+  SELECT dept_name, SUM(salary)
+  FROM instructor
+  GROUP BY dept_name;
+```
+
+View 可以用来定义另一个 View，于是形成了 View Chain，如果 View 依赖了自己，则称为递归。
+
+View Expansion：比如 View v1 可以写作 Expression e1，e1 中可能也使用了一个 View，将里面的 View 展开成 Expression 的过程称为   View Expansion。
+
+#### Materialized View
+
+> 一些数据库系统允许将 View 的结果存下来，他们的结果存下来之后就不会改变了，这种 View 称为 Materialized View
+
+```sql
+CREATE MATERIALIZED VIEW faculty AS
+  SELECT ID, name, dept_name
+  FROM instructor;
+```
+
+#### View Update
+
+他会将数据插入到原来的表中，比如：
+
+```sql
+CREATE VIEW faculty AS
+  SELECT ID, name, dept_name
+  FROM instructors;
+```
+
+```sql
+INSERT INTO faculty
+VALUES ('30765', 'Green', 'Music');
+```
+
+如果 instructors 中有更多的属性，比如 salary，那么可以：
+
+1. 拒绝这次操作；
+2. 将新行的 salary 设置为 NULL（更广泛使用）。
+
+```sql
+CREATE VIEW history_instructors AS
+  SELECT *
+  FROM instructors
+  WHERE dept_name = 'History';
+```
+
+如果我们往 history_instructors 中插入 `('25566', 'Brown', 'Biology', 10000)`，那么 instructors 中会出现这行，而 history_instructors 中则不会。
+
+### INDEX
+
+一些查询只会涉及到表中的一小部分数据，此时对整个表都进行查找的话效率是很低的，可以通过属性上的 `INDEX` 来让查找的时候只查找这部分数据：
+
+```sql
+CREATE INDEX <name> ON <relation-name> (attribute);
+```
+
+```sql
+CREATE TABLE student
+  (ID varchar(5),);
+CREATE INDEX student_index ON student(ID);
+
+-- 下列查询会使用 INDEX 去查找，而不会搜索全表
+SELECT *
+FROM STUDENT
+WHERE ID = '12345';
+```
 
 ## Data Manipulation Language (DML)
 
@@ -1192,6 +1192,56 @@ GRANT SELECT ON department TO Amit, Satoshi
 **注意给一个 View 分配权限并不代表给他所依赖的表分配了权限。**
 
 可以分配的权限如下表所示：
+
+| 权限           | 说明                       |
+| -------------- | -------------------------- |
+| SELECT         | 允许读取或查询表格         |
+| INSERT         | 允许插入行                 |
+| UPDATE         | 允许使用 UPDATE 语句修改行 |
+| DELETE         | 允许删除行                 |
+| ALL PRIVILEGES | 允许所有权限               |
+
+比如给用户 U1、U2 和 U3 分配 SELECT 权限：
+
+```sql
+GRANT SELECT ON instructor TO U1, U2, U3
+```
+
+### REVOKE
+
+> 用 ROVOKE 撤回权限
+
+```sql
+REVOKE <privilege list> ON <relation or view> FROM <user list>
+```
+
+比如撤回 U1、U2 和 U3 的 SELECT 权限：
+
+```sql
+REVOKE SELECT ON student FROM U1, U2, U3
+```
+
+权限列表可以置为 `ALL`，表示撤回该用户的所有权限；被撤回的用户列表可以设置为 `PUBLIC`，表示撤回除了特殊指定以外的其他所有用户对应权限。
+
+如果某个用户被不同的授权者授予了多次相同的权限，他可能会在某个授权者撤回权限之后仍然保有权限。
+
+### ROLE
+
+> 可以用 ROLE 给用户进行分组
+
+用下面的语句创建 ROLE：
+
+```sql
+CREATE ROLE <name>;
+```
+
+比如：
+
+```sql
+CREATE ROLE instructor
+```
+
+
 
 # Entity Relationship Model (ERM)
 
