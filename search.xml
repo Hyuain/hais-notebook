@@ -6829,67 +6829,6 @@ variable \larr E
   name      <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">20</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
   dept_name <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">20</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
   salary    <span class="token keyword">numeric</span><span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h4 id="view">VIEW</h4>
-<p>View 是给某人看的虚拟的表，通常可以用来对特定的用户隐藏一些特定的信息。</p>
-<p>View 与使用 WITH 定义的 CTE（Common Table Expression）有些许不同：</p>
-<ul>
-<li>范围不同：VIEW 是一个数据库级别的对象，而 CTE 只在当次查询上下文中存在；</li>
-<li>场景不同：VIEW 通常用于简化数据库中数据的查询，CTE 更适合用于将复杂的查询分解为更小的部分，或者将递归查询变得更加清晰。</li>
-</ul>
-<h5 id="view-definition">View Definition</h5>
-<blockquote>
-<p>定义 View 并不是创建了一个新的表，而只是保存了这个表达式。</p>
-</blockquote>
-<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">VIEW</span> V <span class="token keyword">as</span> <span class="token operator">&lt;</span>query expression<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">VIEW</span> faculty <span class="token keyword">AS</span>
-  <span class="token keyword">SELECT</span> ID<span class="token punctuation">,</span> name<span class="token punctuation">,</span> dept_name
-  <span class="token keyword">FROM</span> instructor<span class="token punctuation">;</span>
-
-<span class="token keyword">SELECT</span> name
-<span class="token keyword">FROM</span> faculty
-<span class="token keyword">WHERE</span> dept_name <span class="token operator">=</span> <span class="token string">'Biology'</span><span class="token punctuation">;</span>
-
-<span class="token keyword">CREATE</span> <span class="token keyword">VIEW</span> departments_total_salary<span class="token punctuation">(</span>dept_name<span class="token punctuation">,</span> total_salary<span class="token punctuation">)</span> <span class="token keyword">AS</span>
-  <span class="token keyword">SELECT</span> dept_name<span class="token punctuation">,</span> <span class="token function">SUM</span><span class="token punctuation">(</span>salary<span class="token punctuation">)</span>
-  <span class="token keyword">FROM</span> instructor
-  <span class="token keyword">GROUP</span> <span class="token keyword">BY</span> dept_name<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>View 可以用来定义另一个 View，于是形成了 View Chain，如果 View 依赖了自己，则称为递归。</p>
-<p>View Expansion：比如 View v1 可以写作 Expression e1，e1 中可能也使用了一个 View，将里面的 View 展开成 Expression 的过程称为 View Expansion。</p>
-<h5 id="materialized-view">Materialized View</h5>
-<blockquote>
-<p>一些数据库系统允许将 View 的结果存下来，他们的结果存下来之后就不会改变了，这种 View 称为 Materialized View</p>
-</blockquote>
-<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> MATERIALIZED <span class="token keyword">VIEW</span> faculty <span class="token keyword">AS</span>
-  <span class="token keyword">SELECT</span> ID<span class="token punctuation">,</span> name<span class="token punctuation">,</span> dept_name
-  <span class="token keyword">FROM</span> instructor<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<h5 id="view-update">View Update</h5>
-<p>他会将数据插入到原来的表中，比如：</p>
-<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">VIEW</span> faculty <span class="token keyword">AS</span>
-  <span class="token keyword">SELECT</span> ID<span class="token punctuation">,</span> name<span class="token punctuation">,</span> dept_name
-  <span class="token keyword">FROM</span> instructors<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">INSERT</span> <span class="token keyword">INTO</span> faculty
-<span class="token keyword">VALUES</span> <span class="token punctuation">(</span><span class="token string">'30765'</span><span class="token punctuation">,</span> <span class="token string">'Green'</span><span class="token punctuation">,</span> <span class="token string">'Music'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>如果 instructors 中有更多的属性，比如 salary，那么可以：</p>
-<ol type="1">
-<li>拒绝这次操作；</li>
-<li>将新行的 salary 设置为 NULL（更广泛使用）。</li>
-</ol>
-<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">VIEW</span> history_instructors <span class="token keyword">AS</span>
-  <span class="token keyword">SELECT</span> <span class="token operator">*</span>
-  <span class="token keyword">FROM</span> instructors
-  <span class="token keyword">WHERE</span> dept_name <span class="token operator">=</span> <span class="token string">'History'</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>如果我们往 history_instructors 中插入 <code>('25566', 'Brown', 'Biology', 10000)</code>，那么 instructors 中会出现这行，而 history_instructors 中则不会。</p>
-<h4 id="index">INDEX</h4>
-<p>一些查询只会涉及到表中的一小部分数据，此时对整个表都进行查找的话效率是很低的，可以通过属性上的 <code>INDEX</code> 来让查找的时候只查找这部分数据：</p>
-<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">INDEX</span> <span class="token operator">&lt;</span>name<span class="token operator">></span> <span class="token keyword">ON</span> <span class="token operator">&lt;</span>relation<span class="token operator">-</span>name<span class="token operator">></span> <span class="token punctuation">(</span>attribute<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> student
-  <span class="token punctuation">(</span>ID <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token keyword">CREATE</span> <span class="token keyword">INDEX</span> student_index <span class="token keyword">ON</span> student<span class="token punctuation">(</span>ID<span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-<span class="token comment">-- 下列查询会使用 INDEX 去查找，而不会搜索全表</span>
-<span class="token keyword">SELECT</span> <span class="token operator">*</span>
-<span class="token keyword">FROM</span> STUDENT
-<span class="token keyword">WHERE</span> ID <span class="token operator">=</span> <span class="token string">'12345'</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="alter">ALTER</h3>
 <blockquote>
 <p>用 ALTER 关键字增删表的属性</p>
@@ -6948,6 +6887,67 @@ variable \larr E
   <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
 <span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>除了 <code>CASCADE</code> 以外，也可以使用 <code>SET NULL</code> 或者 <code>SET DEFAULT</code>。</p>
+<h3 id="view">VIEW</h3>
+<p>View 是给某人看的虚拟的表，通常可以用来对特定的用户隐藏一些特定的信息。</p>
+<p>View 与使用 WITH 定义的 CTE（Common Table Expression）有些许不同：</p>
+<ul>
+<li>范围不同：VIEW 是一个数据库级别的对象，而 CTE 只在当次查询上下文中存在；</li>
+<li>场景不同：VIEW 通常用于简化数据库中数据的查询，CTE 更适合用于将复杂的查询分解为更小的部分，或者将递归查询变得更加清晰。</li>
+</ul>
+<h4 id="view-definition">View Definition</h4>
+<blockquote>
+<p>定义 View 并不是创建了一个新的表，而只是保存了这个表达式。</p>
+</blockquote>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">VIEW</span> V <span class="token keyword">as</span> <span class="token operator">&lt;</span>query expression<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">VIEW</span> faculty <span class="token keyword">AS</span>
+  <span class="token keyword">SELECT</span> ID<span class="token punctuation">,</span> name<span class="token punctuation">,</span> dept_name
+  <span class="token keyword">FROM</span> instructor<span class="token punctuation">;</span>
+
+<span class="token keyword">SELECT</span> name
+<span class="token keyword">FROM</span> faculty
+<span class="token keyword">WHERE</span> dept_name <span class="token operator">=</span> <span class="token string">'Biology'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">CREATE</span> <span class="token keyword">VIEW</span> departments_total_salary<span class="token punctuation">(</span>dept_name<span class="token punctuation">,</span> total_salary<span class="token punctuation">)</span> <span class="token keyword">AS</span>
+  <span class="token keyword">SELECT</span> dept_name<span class="token punctuation">,</span> <span class="token function">SUM</span><span class="token punctuation">(</span>salary<span class="token punctuation">)</span>
+  <span class="token keyword">FROM</span> instructor
+  <span class="token keyword">GROUP</span> <span class="token keyword">BY</span> dept_name<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>View 可以用来定义另一个 View，于是形成了 View Chain，如果 View 依赖了自己，则称为递归。</p>
+<p>View Expansion：比如 View v1 可以写作 Expression e1，e1 中可能也使用了一个 View，将里面的 View 展开成 Expression 的过程称为 View Expansion。</p>
+<h4 id="materialized-view">Materialized View</h4>
+<blockquote>
+<p>一些数据库系统允许将 View 的结果存下来，他们的结果存下来之后就不会改变了，这种 View 称为 Materialized View</p>
+</blockquote>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> MATERIALIZED <span class="token keyword">VIEW</span> faculty <span class="token keyword">AS</span>
+  <span class="token keyword">SELECT</span> ID<span class="token punctuation">,</span> name<span class="token punctuation">,</span> dept_name
+  <span class="token keyword">FROM</span> instructor<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h4 id="view-update">View Update</h4>
+<p>他会将数据插入到原来的表中，比如：</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">VIEW</span> faculty <span class="token keyword">AS</span>
+  <span class="token keyword">SELECT</span> ID<span class="token punctuation">,</span> name<span class="token punctuation">,</span> dept_name
+  <span class="token keyword">FROM</span> instructors<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">INSERT</span> <span class="token keyword">INTO</span> faculty
+<span class="token keyword">VALUES</span> <span class="token punctuation">(</span><span class="token string">'30765'</span><span class="token punctuation">,</span> <span class="token string">'Green'</span><span class="token punctuation">,</span> <span class="token string">'Music'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>如果 instructors 中有更多的属性，比如 salary，那么可以：</p>
+<ol type="1">
+<li>拒绝这次操作；</li>
+<li>将新行的 salary 设置为 NULL（更广泛使用）。</li>
+</ol>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">VIEW</span> history_instructors <span class="token keyword">AS</span>
+  <span class="token keyword">SELECT</span> <span class="token operator">*</span>
+  <span class="token keyword">FROM</span> instructors
+  <span class="token keyword">WHERE</span> dept_name <span class="token operator">=</span> <span class="token string">'History'</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>如果我们往 history_instructors 中插入 <code>('25566', 'Brown', 'Biology', 10000)</code>，那么 instructors 中会出现这行，而 history_instructors 中则不会。</p>
+<h3 id="index">INDEX</h3>
+<p>一些查询只会涉及到表中的一小部分数据，此时对整个表都进行查找的话效率是很低的，可以通过属性上的 <code>INDEX</code> 来让查找的时候只查找这部分数据：</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">INDEX</span> <span class="token operator">&lt;</span>name<span class="token operator">></span> <span class="token keyword">ON</span> <span class="token operator">&lt;</span>relation<span class="token operator">-</span>name<span class="token operator">></span> <span class="token punctuation">(</span>attribute<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> student
+  <span class="token punctuation">(</span>ID <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">CREATE</span> <span class="token keyword">INDEX</span> student_index <span class="token keyword">ON</span> student<span class="token punctuation">(</span>ID<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">-- 下列查询会使用 INDEX 去查找，而不会搜索全表</span>
+<span class="token keyword">SELECT</span> <span class="token operator">*</span>
+<span class="token keyword">FROM</span> STUDENT
+<span class="token keyword">WHERE</span> ID <span class="token operator">=</span> <span class="token string">'12345'</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h2 id="data-manipulation-language-dml">Data Manipulation Language (DML)</h2>
 <blockquote>
 <p>DML 提供了操纵数据的方法，有时 DQL 也会归入其中</p>
@@ -7522,6 +7522,55 @@ variable \larr E
 <pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">GRANT</span> <span class="token keyword">SELECT</span> <span class="token keyword">ON</span> department <span class="token keyword">TO</span> Amit<span class="token punctuation">,</span> Satoshi<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p><strong>注意给一个 View 分配权限并不代表给他所依赖的表分配了权限。</strong></p>
 <p>可以分配的权限如下表所示：</p>
+<table>
+<thead>
+<tr class="header">
+<th>权限</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>SELECT</td>
+<td>允许读取或查询表格</td>
+</tr>
+<tr class="even">
+<td>INSERT</td>
+<td>允许插入行</td>
+</tr>
+<tr class="odd">
+<td>UPDATE</td>
+<td>允许使用 UPDATE 语句修改行</td>
+</tr>
+<tr class="even">
+<td>DELETE</td>
+<td>允许删除行</td>
+</tr>
+<tr class="odd">
+<td>ALL PRIVILEGES</td>
+<td>允许所有权限</td>
+</tr>
+</tbody>
+</table>
+<p>比如给用户 U1、U2 和 U3 分配 SELECT 权限：</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">GRANT</span> <span class="token keyword">SELECT</span> <span class="token keyword">ON</span> instructor <span class="token keyword">TO</span> U1<span class="token punctuation">,</span> U2<span class="token punctuation">,</span> U3<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="revoke">REVOKE</h3>
+<blockquote>
+<p>用 ROVOKE 撤回权限</p>
+</blockquote>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">REVOKE</span> <span class="token operator">&lt;</span>privilege list<span class="token operator">></span> <span class="token keyword">ON</span> <span class="token operator">&lt;</span>relation <span class="token operator">or</span> <span class="token keyword">view</span><span class="token operator">></span> <span class="token keyword">FROM</span> <span class="token operator">&lt;</span><span class="token keyword">user</span> list<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>比如撤回 U1、U2 和 U3 的 SELECT 权限：</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">REVOKE</span> <span class="token keyword">SELECT</span> <span class="token keyword">ON</span> student <span class="token keyword">FROM</span> U1<span class="token punctuation">,</span> U2<span class="token punctuation">,</span> U3<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>权限列表可以置为 <code>ALL</code>，表示撤回该用户的所有权限；被撤回的用户列表可以设置为 <code>PUBLIC</code>，表示撤回除了特殊指定以外的其他所有用户对应权限。</p>
+<p>如果某个用户被不同的授权者授予了多次相同的权限，他可能会在某个授权者撤回权限之后仍然保有权限。</p>
+<h3 id="role">ROLE</h3>
+<blockquote>
+<p>可以用 ROLE 给用户进行分组</p>
+</blockquote>
+<p>用下面的语句创建 ROLE：</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> ROLE <span class="token operator">&lt;</span>name<span class="token operator">></span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>比如：</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> ROLE instructor<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <h1 id="entity-relationship-model-erm">Entity Relationship Model (ERM)</h1>
 <p>ERM 主要用来帮助设计设计库，描述表之间的关系，独立于数据库硬件和软件的具体实现，主要有三个核心概念：</p>
 <ul>
@@ -7597,7 +7646,7 @@ variable \larr E
 <p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/ERDiagram-2.png" /></p>
 <p><strong>第三步：可以加上关系集中的其他属性。</strong></p>
 <p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/ERDiagram-3.png" /></p>
-<h3 id="role">Role</h3>
+<h3 id="role-1">Role</h3>
 <p>同一个实体集可以出现在同一个关系集中多次，每次可以扮演不同的角色：</p>
 <p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/ERDiagram-4.png" /></p>
 <p>图中的 course_id 和 prereq_id 就被称为 Roles。</p>
