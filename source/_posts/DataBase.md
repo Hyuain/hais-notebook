@@ -1189,8 +1189,6 @@ GRANT <privilege list> ON <relation or view> TO <user list>
 GRANT SELECT ON department TO Amit, Satoshi
 ```
 
-**注意给一个 View 分配权限并不代表给他所依赖的表分配了权限。**
-
 可以分配的权限如下表所示：
 
 | 权限           | 说明                       |
@@ -1227,29 +1225,60 @@ REVOKE SELECT ON student FROM U1, U2, U3
 
 ### ROLE
 
-> 可以用 ROLE 给用户进行分组
+> 可以用 CREATE ROLE 创建角色，然后用 GRANT 给用户指定角色
 
-用下面的语句创建 ROLE：
+用下面的语句创建并分配 ROLE：
 
 ```sql
-CREATE ROLE <name>;
+CREATE ROLE <role name>;
+GRANT <role name> to <users>;
 ```
 
 比如：
 
 ```sql
-CREATE ROLE instructor
+CREATE ROLE instructor;
+GRANT instructor TO Amit;
+GRANT SELECT ON takes TO instructor;
 ```
 
+ROLE 还可以套娃：
 
+```sql
+CREATE ROLE dean;
+GRANT instrucot TO dean;
+GRANT dean TO Tom;
+```
+
+### Authorization on View
+
+> **注意给一个 View 分配权限并不代表给他所依赖的表分配了权限。**
+
+考虑以下例子：
+
+```sql
+CREATE VIEW geo_instructor AS
+  (SELECT *
+   FROM instructor
+   WHERE dept_name = 'Geology');
+GRANT SELECT ON geo_instructor TO geo_staff;
+```
+
+然后一个 geo_staff 想要执行以下命令：
+
+```sql
+SELECT * FROM geo_instructors;
+```
+
+geo_staff 可以没有 instructor 的权限，此时他就 *只能查看* 上述查询的结果；而 View 的创建者 *必须* 有 instructor 的 SELECT 权限。
 
 # Entity Relationship Model (ERM)
 
-ERM 主要用来帮助设计设计库，描述表之间的关系，独立于数据库硬件和软件的具体实现，主要有三个核心概念：
+**实体关系模型（ERM）**主要用来帮助设计数据库，描述表之间的关系，独立于数据库硬件和软件的具体实现，主要有三个核心概念：
 
 - **Entity Sets**: 实体集
-  - Entity 是客观存在并可相互区别的事物。每个 Entity 可以表示为一组属性，比如 `instrucot = (ID, name, street, city, salary)`，`course  = (course_id, title, credits)`。
-  - Entity Set 是一堆同样类型、同样属性的实体的集合，比如 Persons、Cities、Movies。
+  - **实体（Entity）**是客观存在、并可相互区别的事物。每个 Entity 可以表示为一组属性，比如 `instrucot = (ID, name, street, city, salary)`，`course = (course_id, title, credits)`。
+  - **实体集（Entity Set）**是一堆同样类型、同样属性的实体的集合，比如 Persons、Cities、Movies。
   - 一些属性组成了实体集的主键，主键可以将实体集中的每个实体区分开来。
 - **Relationship Sets**: 关系集
   - Relationship 是一些实体之间的联系。定义 ${(e_1, \cdots ,e_n|e_1 \in E_1, \cdots, e_n \in E_n)}$ 中的 $(e_1, \cdots ,e_n)$ 就是一个关系。
