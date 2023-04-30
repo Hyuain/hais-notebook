@@ -1328,7 +1328,7 @@ ERM 中的属性有以下几种分类方式：
 
 **这时，如果删除了 Room.building_name，就无法区分 Room 中的每一个房间了。**
 
-**弱实体集（Weak Entity Set）** 是一种特殊的实体集，他没有能有效区分每个实体的属性他需要 **一个额外的关系集** 来帮助他区分每个实体。这个额外的关系集叫做 **识别关系集（Identifying Relation Set）**。
+**弱实体集（Weak Entity Set）** 是一种特殊的实体集，他没有能有效区分每个实体的属性，他需要 **一个额外的关系集** 来帮助他区分每个实体。这个额外的关系集叫做 **识别关系集（Identifying Relation Set）**。
 
 - 弱实体没有主键，相对的，他有一个 **识别实体（Identifying Entity）**和一个 **判别器（Discriminator）**。在上述例子中，Buidling 就是识别实体，number 是判别器。
 
@@ -1337,9 +1337,9 @@ ERM 中的属性有以下几种分类方式：
 
 ## Entity Relationship Diagram (ERD)
 
-实体关系图是 ERM 的图形化表达，以下是一个简单的 ER 图：
+> **实体关系图（ERD）**是 ERM 的图形化表达，注意 ERD 可能有很多种画法，要具体问题具体分析。
 
-> **注意 ERD 可能有很多种画法，要具体问题具体分析。**
+以下是一个简单的 ERD：
 
 **第一步：用矩形表示实体集，矩形里面列出实体集的属性，主键会加上下划线。**
 
@@ -1361,9 +1361,9 @@ ERM 中的属性有以下几种分类方式：
 
 图中的 course_id 和 prereq_id 就被称为 Roles。
 
-### Cardinality
+### Cardinality Constraints
 
-用不同类型端点来表示基数约束，其中有箭头的表示一，没有箭头的表示多，比如：
+用不同类型端点来表示 **基数约束（Cardinality Constraints）**，**其中有箭头的表示一，没有箭头的表示多**，比如：
 
 ![一个老师对一个学生](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/ERDiagram-5.png)
 
@@ -1383,7 +1383,7 @@ ERM 中的属性有以下几种分类方式：
 
 每个 student 都必须在 advisor 中出现（每个 student 都必须至少有一个 instructor），而有部分 instructor 可能没有 student。
 
-### Attribute
+### Attributes in ERD
 
 用缩进表示 Composite Attribute，比如：
 
@@ -1414,36 +1414,38 @@ address
 age()
 ```
 
-### Weak Entity Set
+### Weak Entity Set in ERD
 
 用双菱形表示识别关系集 Identifying Relationship Set，用虚下划线表示判别器 Discriminator。
 
-![](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/ERDiagram-9.png)
+![ERDiagram-9](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/ERDiagram-9.png)
 
-### Specialization
+### Higher Arity in ERD
+
+> ERD 中可以表达多元关系，多个实体集连向同一个关系集即可。
+
+### Specialization in ERD
 
 > Specialization 简单来讲就是继承关系，与 Specialization 相对应的概念是 Generalization。
 
 ![ERDiagram-10](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/ERDiagram-10.png)
 
-- Overlapping & Disjoint
-
-  - Overlapping：Person 可以是 Employee，同时也可以是 Student；
-
-  - Disjoint：Employee 只能是 Instructor 或 Secretary 中的一个。
-
-- Partial & Total Specialization
-
-  - Partial：比如 Employee 可以是 Instructor、Secretary 或者没有其他特异功能的普通 Employee，默认情况；
-  - Total：比如 Person 必须是 Employee 或者 Student，不能是别的任何类别，通常需要特殊指定。
+- **Overlapping & Disjoint**
+  - **Overlapping**: Person 可以是 Employee，同时也可以是 Student；
+  
+  - **Disjoint**: Employee 只能是 Instructor 或 Secretary 中的一个。
+  
+- **Partial & Total Specialization**
+  - **Partial**：比如 Employee 可以是 Instructor、Secretary 或者没有其他特异功能的普通 Employee，默认情况；
+  - **Total**：比如 Person 必须是 Employee 或者 Student，不能是别的任何类别，通常需要特殊指定。
 
 ### Example
 
 ![](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/ERDiagram-11.png)
 
-## Convert ERD to Relation Schemas
+## Convert ERM to Relation Schemas
 
-可以将 ERD 转换为 **关系模式（Relation Schemas）**。
+可以将 **实体关系模型（ERM）** 转换为 **关系模式（Relation Schemas）**。
 
 ### Representing Entity Set
 
@@ -1458,7 +1460,7 @@ age()
 一对多：
 
 - 可以取实体集的主键（并再加一些属性），并且把 *多* 的那个实体集的主键作为关系集的主键，比如 insDept = (<u>insID</u>, deptName)
-- 也可以关系集合并到将 *多* 的那边的实体集里面去，比如 instructor = (<u>ID</u>, name, salary, dept_name)
+- 也可以关系集合并到将 *多* 的那边的实体集里面去，比如 instructor = (<u>ID</u>, name, salary, deptName)
 
 一对一：
 
@@ -1467,13 +1469,13 @@ age()
 
 ### Representing Attribute
 
-- Composite Attributes：展开存放
-- Multi-Valued Attributes：忽略，用一个单独的表存放
+- Composite Attribute：展开存放
+- Multi-Valued Attribute：忽略，用一个单独的表存放
 - Derived Attribute：忽略
 
 #### Multi-Valued Attribute
 
-需要一个单独的表用来表达，比如 instructor 中的 phoneNumber，需要用一个新表：instPhone = (<u>ID</u>, <u>phoneNumber</u>)。
+需要一个单独的表用来表达，比如 instructor 中的 phoneNumber，需要用一个新表：instPhone = (ID, <u>phoneNumber</u>)。
 
 原来的一组值就会变成新表中的单独的几行，比如原来的 instructorID 123 有 phoneNumber 1234 和 5678，那么就需要存为两行 (123, 1234) 和 (123, 5678)。
 
@@ -1509,7 +1511,57 @@ CREATE VIEW instructorAge AS
 - employee = (<u>ID</u>, name, street, city, salary)
 - student = (<u>ID</u>, name, street, city, totCredits)
 
-缺陷是产生了冗余的信息（如果一个人既是 Employee，也是 Student）
+缺陷是产生了冗余的信息（如果一个人既是 Employee，也是 Student，那么他们的 name、street、city 就都被存了两次）。
+
+# Normal Form
+
+数据库范式（Normal Form）可以帮助我们按照需求设计出更合理的 Schemas，下面将从一个设计得不太合理的表开始逐步进行优化：
+
+| ID     | Name                             | Instructor    | Programs         |
+| ------ | -------------------------------- | ------------- | ---------------- |
+| CS-101 | Introduction to Computer Science | Melanie Smith | CS, DS, Math, EE |
+| CS-205 | Introduction to Databases        | Mark Johnson  | DS, Soc          |
+| CS-374 | Data Mining                      | Mark Johnson  | CS, DS, Soc      |
+| MA-403 | Linear Algebra                   | Mary Williams | Math, CS         |
+
+## First Normal Form (1NF)
+
+> **第一范式（1NF）**要求表中所有属性的值域是 **原子的（Atomic）**。
+
+上表中很多属性都是非原子的，比如 Programs，需要拆分为 `CS`、`DS`、`Math`、`EE` 等，而不是让他一次性返回字符串 `CS, DS, Math, EE`；ID 也可以继续拆分为 `CS` 和 `101` 。
+
+**非原子的值有一些弊端：**
+
+- **存储** 起来比较复杂，并且会造成 **冗余** 存储
+- **处理** 起来比较复杂
+- 将词义完全交给处理代码来解读
+
+**需要这样来分解非原子的值：**
+
+- 将 Composite Attributes 用 Single Attributes 代替，比如例子中的 ID、Instructor
+- 将 Multi-Valued Attributes 用一个新的表代替，比如例子中的 Programs
+
+因此上表变为下列两个表：
+
+| ID_Dept | ID_No | Name                             | Instructor_First | Instructor_Last |
+| ------- | ----- | -------------------------------- | ---------------- | --------------- |
+| CS      | 101   | Introduction to Computer Science | Melanie          | Smith           |
+| CS      | 205   | Introduction to Databases        | Mark             | Johnson         |
+| CS      | 374   | Data Mining                      | Mark             | Johnson         |
+| MA      | 403   | Linear Algebra                   | Mary             | Williams        |
+
+| ID_Dept | ID_No | Programs |
+| ------- | ----- | -------- |
+| CS      | 101   | CS       |
+| CS      | 101   | DS       |
+| CS      | 101   | Math     |
+| CS      | 101   | EE       |
+| CS      | 205   | DS       |
+| CS      | 205   | SoC      |
+| CS      | 374   | CS       |
+| CS      | 374   | Soc      |
+| MA      | 403   | Math     |
+| MA      | 403   | CS       |
 
 # Quick Start
 
@@ -1614,59 +1666,6 @@ varchar 长度可变，可以节省空间
 ### BC范式
 
 > 键中的属性也不存在间接依赖。
-
-## 数据库设计经验
-
-> 高内聚、低耦合。
-
-### 高内聚
-
-把相关的字段放到一起，不相关的字段分开建表。
-
-如果两个字段能单独建表，那就单独建表。
-
-### 低耦合
-
-如果两个表中有弱关系，采取低耦合
-
-#### 一对一
-
-假设一个学生只能加入一个班级，一个班级里面只能有一个学生。
-
-- 可以把班级放在学生表里面：
-  学生表：学生 id、学生姓名、班级 id
-  班级表：班级 id、班级名称
-
-- 也可以单独建立关联表：
-  学生表：学生 id、学生姓名
-  关联表：学生 id、班级 id
-  班级表：班级 id、班级名称
-
-#### 一对多
-
-假设一个作者可以写多本数。
-
-若 DBMS 支持数组，可以存两个 id 到一个字段：作者 id、姓名、书（书的 id 数组）
-
-但一般推荐单独建立关系表：
-
-作者表：id、姓名
-关联表：作者 id、书 id
-书表：id、书名
-
-#### 多对多
-
-假设一个学生可以加入多个班级，一个班级也可以有多个学生。
-
-仍然推荐建立关联表：
-
-学生表：学生 id、学生姓名
-关联表：学生 id、班级 id、有效期
-班级表：班级 id、班级名称
-
-#### 什么时候建立关联表
-
-当关联自身存在属性时，比如上表的有效期。或者管理多对多这种比较复杂的关系的时候也推荐建立关联表。
 
 # Tricks
 
