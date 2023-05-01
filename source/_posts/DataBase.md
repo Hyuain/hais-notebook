@@ -1515,7 +1515,33 @@ CREATE VIEW instructorAge AS
 
 # Normal Form
 
-数据库范式（Normal Form）可以帮助我们按照需求设计出更合理的 Schemas，下面将从一个设计得不太合理的表开始逐步进行优化：
+数据库范式（Normal Form）可以帮助我们按照需求设计出更合理的 Schemas。
+
+```text
+1NF 基于原子性（Atomicity）
+ ↓  所有的非键属性都完全依赖于主键
+2NF 基于函数依赖（Function Dependency）
+ ↓  没有属性间接依赖于主键
+3NF 基于函数依赖（Function Dependency）
+ ↓  不同候选键中的属性没有相互依赖
+BCNF 基于函数依赖（Function Dependency）
+ ↓  不存在多个独立的多值依赖
+4NF 基于多值依赖（Multi-Valued Dependency）
+ ↓  不能再进行无损分解
+5NF/PJNF 基于连接依赖（Join Dependency）
+ ↓  不能进行异常的插入和删除
+6NF/DKNF 基于域的定义
+```
+
+数据库标准化（Normalization）的过程会不断地减少冗余，并提高一致性；但同时也会产生更多的表格，和更大的复杂性。
+
+其中 3NF/BCNF 是最常用的，BCNF 会带来更多的一致性，但是也会丢失依赖信息。
+
+## First Normal Form (1NF)
+
+> **第一范式（1NF）**要求表中所有属性的值域是 **原子的（Atomic）**。
+
+> **原子性（Atomicity）**指的是属性不可再分。
 
 | ID     | Name                             | Instructor    | Programs         |
 | ------ | -------------------------------- | ------------- | ---------------- |
@@ -1523,10 +1549,6 @@ CREATE VIEW instructorAge AS
 | CS-205 | Introduction to Databases        | Mark Johnson  | DS, Soc          |
 | CS-374 | Data Mining                      | Mark Johnson  | CS, DS, Soc      |
 | MA-403 | Linear Algebra                   | Mary Williams | Math, CS         |
-
-## First Normal Form (1NF)
-
-> **第一范式（1NF）**要求表中所有属性的值域是 **原子的（Atomic）**。
 
 上表中很多属性都是非原子的，比如 Programs，需要拆分为 `CS`、`DS`、`Math`、`EE` 等，而不是让他一次性返回字符串 `CS, DS, Math, EE`；ID 也可以继续拆分为 `CS` 和 `101` 。
 
@@ -1563,11 +1585,247 @@ CREATE VIEW instructorAge AS
 | MA      | 403   | Math     |
 | MA      | 403   | CS       |
 
+## Second Normal Form (2NF)
+
+> **第二范式（2NF）**在第一范式的基础上，额外要求所有 **非键属性（Non-Key Attributes）**都 **函数依赖于（Functionally Dependent On）**整个主键。**换句话说，非键属性不能只依赖于主键中的一部分。**
+
+> **函数依赖（Function Dependency）**：如果一组属性 A 决定了另一组属性 B，那么 B 则 **函数依赖于（Functionally Dependent On）** A，标记为 A → B。比如上述例子中的 {ID_Dept, ID_No} → {Name, Instructor_First, Instructor_Last} 。
+
+假设我们在上表中增加 Department 列，得到这样一张表：
+
+| ID_Dept | ID_No | Department       | Name                             |
+| ------- | ----- | ---------------- | -------------------------------- |
+| CS      | 101   | Computer Science | Introduction to Computer Science |
+| CS      | 205   | Computer Science | Introduction to Databases        |
+| CS      | 374   | Computer Science | Data Mining                      |
+| MA      | 403   | Mathematics      | Linear Algebra                   |
+
+该表有如下函数依赖：
+
+- {ID_Dept} → {Department}，违反了第二范式，Department 只依赖了 ID_Dept，而没有依赖整个主键。
+- {ID_Dept, ID_No} → {Name}
+
+我们需要为只部分依赖了主键的属性创建新的表：
+
+| ID_Dept | ID_No | Name                             |
+| ------- | ----- | -------------------------------- |
+| CS      | 101   | Introduction to Computer Science |
+| CS      | 205   | Introduction to Databases        |
+| CS      | 374   | Data Mining                      |
+| MA      | 403   | Linear Algebra                   |
+
+| ID_Dept | Department       |
+| ------- | ---------------- |
+| CS      | Computer Science |
+| CS      | Computer Science |
+| CS      | Computer Science |
+| MA      | Mathematics      |
+
+**这样分解之后，我们在查询的时候可能需要进行 JOIN 操作，计算复杂性变高了；但是相对的，一致性也得到了提升。**
+
+## Third Normal Form (3NF)
+
+> **第三范式（3NF）**在第二范式的基础上，额外要求不能有属性 **间接依赖于（Transitively Dependent On）**主键。**换句话说，一个表中不能有两层依赖。**
+
+假设增加 Instructor_ID 列得到下表：
+
+| ID_Dept | ID_No | Name                             | Instructor_ID | Instructor_First | Instructor_Last |
+| ------- | ----- | -------------------------------- | ------------- | ---------------- | --------------- |
+| CS      | 101   | Introduction to Computer Science | 143273        | Melanie          | Smith           |
+| CS      | 205   | Introduction to Databases        | 143980        | Mark             | Johnson         |
+| CS      | 374   | Data Mining                      | 143980        | Mark             | Johnson         |
+| MA      | 403   | Linear Algebra                   | 141784        | Mary             | Williams        |
+
+该表中有如下依赖：
+
+- {ID_Dept, ID_No} → {Instructor_ID} → {Instructor_First, Instructor _Last}，违背了第三范式，属性间接依赖于主键。
+
+我们需要为这个间接依赖创建新表：
+
+| ID_Dept | ID_No | Name                             | Instructor_ID |
+| ------- | ----- | -------------------------------- | ------------- |
+| CS      | 101   | Introduction to Computer Science | 143273        |
+| CS      | 205   | Introduction to Databases        | 143980        |
+| CS      | 374   | Data Mining                      | 143980        |
+| MA      | 403   | Linear Algebra                   | 141784        |
+
+| Instructor_ID | Instructor_First | Instructor_Last |
+| ------------- | ---------------- | --------------- |
+| 143273        | Melanie          | Smith           |
+| 143980        | Mark             | Johnson         |
+| 143980        | Mark             | Johnson         |
+| 141784        | Mary             | Williams        |
+
+## Boyce-Codd Normal Form (3.5NF / BCNF)
+
+> **BC 范式（BCNF / 3.5NF）**在第三范式的基础上，额外要求不同的候选键中的属性也不能有依赖。换句话说，如果 CK → {a}，那么 a 不能是某个候选键的一部分。
+
+BC 范式相当于是第三范式的严格版本，在以下情况下满足第三范式的表可能不满足 BC 范式：
+
+- 该表有 **两个或多个候选键**；
+- 至少两个候选键 **由一个以上的属性组成**；
+- 这两个候选键中 **有共同的属性**。
+
+比如下表中每个 Institute 都有一个或多个 Secretary，每个 Secretary 服务于一个或多个 Institute，每个 Secretary 在每个 Institute 都有一个 Phone，不同 Institute 的 Phone 可能相同：
+
+| Institute | Secretory_ID | Phone |
+| --------- | ------------ | ----- |
+| CS        | 0001         | 5073  |
+| CS        | 0002         | 5074  |
+| Soc       | 0001         | 6010  |
+| Soc       | 0003         | 6011  |
+| Eng       | 0003         | 6011  |
+
+上表有两个候选键 {Institute, Secretory_ID} 和 {Institute, Phone}，其存在依赖关系：
+
+- {Institute, **Secretory_ID**} → {**Phone**}
+- {Institute, **Phone**} → {**Secretory_ID**}
+
+**注意上表是满足第三范式的**，即：
+
+1. 该表每个属性都是原子的，满足第一范式；
+2. 该表没有非键属性，满足第二范式；
+3. 该表不存在间接依赖，满足第三范式。
+
+**但是该表不满足 BC 范式，因为候选键中存在依赖，**比如 {Phone} 和 {Secretory_ID} 存在相互依赖。
+
+这样会导致可能插入某些不合逻辑的值，比如当选择 {Institute, Phone} 作为主键时，可以插入 (<u>CS</u>, 0001, <u>5075</u>)；而选择 {Institute, Secretory_ID} 作为主键时，可以插入 (<u>Soc</u>, <u>0002</u>, 5073)。
+
+因此需要对上表进行拆分：
+
+| Institute | Secretory_ID |
+| --------- | ------------ |
+| CS        | 0001         |
+| CS        | 0002         |
+| Soc       | 0001         |
+| Soc       | 0003         |
+| Eng       | 0003         |
+
+| Institute | Phone |
+| --------- | ----- |
+| CS        | 5073  |
+| CS        | 5074  |
+| Soc       | 6010  |
+| Soc       | 6011  |
+| Eng       | 6011  |
+
+分解后，我们丢失 Secretory_ID 和 Phone 之间的依赖关系，我们无从得知 Phone 是对应的哪个 Secretary_ID 了。
+
+我们可以引入新的关系表 {Secretory_ID, Phone}，但这样又会有损数据库的一致性。
+
+这里引入两个概念，**无损分解（Lossless Decomposition）**和 **依赖保留分解（Dependency-Preserving Decomposition）**：
+
+- **无损分解（Lossless Decomposition）**：该分解不会导致信息的丢失；
+- **依赖保留分解（Dependency-Preserving Decomposition）**：该分解不会导致依赖的丢失。
+
+有些时候可能 3NF 会更好一些，因为 **每个表都可以无损分解至满足 BCNF 的更小的表，但不能保证依赖不丢失；每个表都可以无损并保留依赖地分解至满足 3NF 的表。**
+
+## Fourth Normal Form (4NF)
+
+> 第四范式（4NF）在 BC 范式的基础上，额外要求表不能包含多独立的 **多值依赖（Multi-Valued Dependency）**。换句话说，表内不能存在多组一对多关系，也就是要把表中的多对多关系消除。
+
+> **多值依赖（Multi-Valued Dependency）**：**函数依赖（Function Dependency）**只能表达一对一关系，而多值依赖则是用于表达一对多关系。
+
+比如下表中，Cost_Center 和 Phone 都是 Multi-Valued Attribute。对于每个 ID 和 Cost_Center，都有多个 Phone，然后对于每个 ID 和 Phone，都有多个 Cost_Center：
+
+| ID   | Cost_Center | Phone |
+| ---- | ----------- | ----- |
+| 1000 | 10020       | 1234  |
+| 1000 | 10030       | 1234  |
+| 1000 | 10020       | 4321  |
+| 1000 | 10030       | 4321  |
+
+他有两个 Multi-Valued Attributes，且 Cost_Center 和 Phone 是相互独立的，也就是说没有 {Cost_Center} → {Phone}，也没有 {Phone} → {Cost_Center}，因而不满足第四范式。
+
+这导致如果我们想要在其中插入一个 Phone，那么对所有的 Cost_Center 都要插入一条新的记录。
+
+我们需要分解为两个表：
+
+| ID   | Cost_Center |
+| ---- | ----------- |
+| 1000 | 10020       |
+| 1000 | 10030       |
+
+| ID   | Phone |
+| ---- | ----- |
+| 1000 | 1234  |
+| 1000 | 4321  |
+
+## Fifth Normal Form (5NF / PJNF)
+
+> 第五范式（5NF）又称为 **投影连接范式（Project-Join Normal Form, PJNF）**，他在第四范式的基础上，额外要求所有的 **连接依赖（Join Dependency）**都已经被候选键包含了。也就是说，他不能再进行无损分解（Lossless Decomposition）。
+
+> 函数依赖（Function Dependency）是多值依赖的特殊情况，而多值依赖又是 **连接依赖（Join Dependency）**一种特殊情况，连接依赖解释起来比较复杂，但是他可以通过连接运算（JOIN）反映出来。
+
+考虑这样一个表，有 Course、Instructor_ID 和 Semester 属性：
+
+| Course                           | Instructor_ID | Semester |
+| -------------------------------- | ------------- | -------- |
+| Introduction to Computer Science | 13001         | 1        |
+| Introduction to Computer Science | 13001         | 2        |
+| Data Mining                      | 15743         | 2        |
+| Data Mining                      | 14233         | 2        |
+| Linear Algebra                   | 14233         | 1        |
+
+注意该表是满足第四范式的，因为虽然 Course、Instructor_ID、Semester 都是 Multi-Valued Attributes，但是他们是不独立的，他们之间有一些额外的约束条件，比如某些课只在第二学期开，某些课需要某些特定的老师教等。
+
+但是该表不满足第五范式，因为他的主键是 {Course, Instructor_ID, Semester}，他还可以继续无损地分为三个表，分别以 {Course, Instructor_ID}、{Course, Semester} 和 {Instructor_ID, Semester} 为主键，他们 NATURAL JOIN 之后可以得到原来的表：
+
+| Course                           | Instructor_ID |
+| -------------------------------- | ------------- |
+| Introduction to Computer Science | 13001         |
+| Introduction to Computer Science | 13001         |
+| Data Mining                      | 15743         |
+| Data Mining                      | 14233         |
+| Linear Algebra                   | 14233         |
+
+| Course                           | Semester |
+| -------------------------------- | -------- |
+| Introduction to Computer Science | 1        |
+| Introduction to Computer Science | 2        |
+| Data Mining                      | 2        |
+| Data Mining                      | 2        |
+| Linear Algebra                   | 1        |
+
+| Instructor_ID | Semester |
+| ------------- | -------- |
+| 13001         | 1        |
+| 13001         | 2        |
+| 15743         | 2        |
+| 14233         | 2        |
+| 14233         | 1        |
+
+## Sixth Normal Form (6NF / DKNF)
+
+> 第六范式（6NF）也称为 **域键范式（Domain Key Normal Form, DKNF）**。当不再存在非法的插入和删除之后，将满足第六范式。换句话说，所有的约束都已经被编码进了数据库中。
+
+考虑一个如下的 Employee 表：
+
+| ID    | Type      | Hours |
+| ----- | --------- | ----- |
+| 10032 | Lecturer  | 80    |
+| 10432 | Student   | 40    |
+| 10483 | Secretary | 160   |
+
+如果我们要加一个条件是 Students 不能工作超过 80 小时，那么为了满足第六范式，需要将上表分解至三个不同的表，并在 {Student, Hours} 表中增加 **域约束（Domain Constraint）**：
+
+| Lecturer_ID | Hours |
+| ----------- | ----- |
+| 10032       | 80    |
+
+| Secretary_ID | Hours |
+| ------------ | ----- |
+| 10483        | 160   |
+
+| Student_ID | Hours |
+| ---------- | ----- |
+| 10432      | 40    |
+
 # Quick Start
 
 ## 创建数据库
 
-[下载 MySQL](https://dev.mysql.com/downloads/mysql/)、[下载 MySQL WorkBench](https://dev.mysql.com/downloads/workbench)
+[下载 MySQL](https://dev.mysql.com/downloads/mysql/)、[下载 MySQL Work Bench](https://dev.mysql.com/downloads/workbench)
 
 使用 Docker {% post_link Container %}
 
@@ -1634,38 +1892,6 @@ varchar 长度可变，可以节省空间
 [官方文档](https://dev.mysql.com/doc/refman/8.0/en/date-and-time-type-syntax.html)
 
 一般传给前端需要转换为 ISO 8601 格式
-
-# Concepts
-
-## 关系型数据库的范式
-
-### 第一范式 1NF
-
-> **字段不可再分**。
-
-比如我们需要存储体检者的双眼视力，那么左右眼视力应该分别存在两个字段中。
-
-### 第二范式 2NF
-
-> 在第一范式的基础上，要有 **键**（键可由多个字段组合）。
-> 所有字段分别 **完全依赖** 于键。
-> 如果键是多个字段的组合，则 **不允许部分依赖** 于该键。
-
-> 依赖关系：给出键，就能确定唯一字段的值。
-
-比如给出“学号”，就能唯一确定“姓名”，反之则不行，则称“姓名”依赖于“学号”。
-
-比如有一个表中有“学号”“姓名”“课名”“分数”，分数依赖于“学号+课名”，因此将“学号+课名”作为键，但字段“姓名”不依赖于“课名”却依赖于“学号”（“姓名”部分依赖于“学号+课名”）这就不满足第二范式。
-
-### 第三范式 3NF
-
-> 一个表里面不能有两层依赖。
-
-比如一个表中有“学号”“姓名”“系名”“系主任”，“姓名”依赖于“学号”，而“系主任”依赖于“系名”，这就不满足第三范式。
-
-### BC范式
-
-> 键中的属性也不存在间接依赖。
 
 # Tricks
 
