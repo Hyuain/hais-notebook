@@ -20,6 +20,11 @@ mathjax: true
   - 数据类型
   - 命令（DDL、DML、DQL、DCL）
 - ERM
+  - 概念
+  - ERD
+  - ERM 转换为 Relational Schemas
+
+- 范式（1NF、2NF、3NF、BCNF、4NF、PJNF、DKNF）
 
 <!-- more -->
 
@@ -83,7 +88,7 @@ Client 客户端（数据使用者）
 
 # Relational Model
 
-**数据模型（Data Model）**确定了数据库的逻辑结构，**关系模型（Relational Model）**是逻辑层面的数据模型中的一种，其他的逻辑层面的数据模型还有层次模型（Hierarchical Model）、Network Model（网络模型）、基于对象的数据模型（Object-Based Data Models）、半结构化数据模型（Semi-Structured Data Model）。
+**数据模型（Data Model）**确定了数据库的逻辑结构，**关系模型（Relational Model）**是逻辑层面的数据模型中的一种，其他的逻辑层面的数据模型还有层次模型（Hierarchical Model）、网络模型（Network Model）、基于对象的数据模型（Object-Based Data Models）、半结构化数据模型（Semi-Structured Data Model）。
 
 在关系模型中，所有的数据都保存在 **表（Table / Relation）**里。
 
@@ -108,9 +113,7 @@ instructor = (ID, name, dept_name, salary)
 
 注意每一行之间的顺序其实是不确定的，关系模式并不能保证他们的顺序。
 
-**属性（Attributes）** 一般要求是 **原子的（atomic）**，即不可分的。比如整数、字符串是原子的，集合和数组是非原子的。
-
-每个属性有自己的类型和 **域（Domain）**，域表示某个属性的取值范围，比如 $salary=\{1000,\dots, 10000\}\cup\{null\}$。NULL 是一个特殊值，所有域都有，表示某个值是 unknown。
+每个属性有自己的类型和 **域（Domain）**，域表示某个属性的取值范围，比如 $salary=\{1000,\dots, 10000\}\cup\{null\}$。NULL 是一个特殊值，所有域都有，表示某个值是 Unknown。
 
 ## Database Schema & Database Instance
 
