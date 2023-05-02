@@ -18,12 +18,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"hyuain.github.io","root":"/hais-notebook/","images":"/hais-notebook/images","scheme":"Gemini","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac","show_result":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/hais-notebook/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/hais-notebook/js/config.js"></script>
 
-    <meta name="description" content="本文介绍了数据库的基本概念、SQL、ERM、范式、事务等，以及数据库的基本使用（以 Node.js 为例）。 按照章节来讲主要分为：  介绍  数据库 数据库管理系统（DBMS） 数据库引擎 其他术语（Schema、Instance、Attribute、Domain、Key 等）  关系代数 SQL  数据类型 命令（DDL、DML、DQL、DCL）  ERM">
+    <meta name="description" content="本文介绍了数据库的基本概念、SQL、ERM、范式、事务等，以及数据库的基本使用（以 Node.js 为例）。 按照章节来讲主要分为：  介绍  数据库 数据库管理系统（DBMS） 数据库引擎 其他术语（Schema、Instance、Attribute、Domain、Key 等）  关系代数 SQL  数据类型 命令（DDL、DML、DQL、DCL）  ERM  概念 ERD ERM 转换为 Re">
 <meta property="og:type" content="article">
 <meta property="og:title" content="数据库">
 <meta property="og:url" content="https://hyuain.github.io/hais-notebook/2021/03/20/DataBase/index.html">
 <meta property="og:site_name" content="Hais Notebook">
-<meta property="og:description" content="本文介绍了数据库的基本概念、SQL、ERM、范式、事务等，以及数据库的基本使用（以 Node.js 为例）。 按照章节来讲主要分为：  介绍  数据库 数据库管理系统（DBMS） 数据库引擎 其他术语（Schema、Instance、Attribute、Domain、Key 等）  关系代数 SQL  数据类型 命令（DDL、DML、DQL、DCL）  ERM">
+<meta property="og:description" content="本文介绍了数据库的基本概念、SQL、ERM、范式、事务等，以及数据库的基本使用（以 Node.js 为例）。 按照章节来讲主要分为：  介绍  数据库 数据库管理系统（DBMS） 数据库引擎 其他术语（Schema、Instance、Attribute、Domain、Key 等）  关系代数 SQL  数据类型 命令（DDL、DML、DQL、DCL）  ERM  概念 ERD ERM 转换为 Re">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/DatabaseStructure.jpg">
 <meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/RelationalAlgebraCartesianProduct.png">
@@ -270,7 +270,13 @@
 <li>数据类型</li>
 <li>命令（DDL、DML、DQL、DCL）</li>
 </ul></li>
-<li>ERM</li>
+<li>ERM
+<ul>
+<li>概念</li>
+<li>ERD</li>
+<li>ERM 转换为 Relational Schemas</li>
+</ul></li>
+<li>范式（1NF、2NF、3NF、BCNF、4NF、PJNF、DKNF）</li>
 </ul>
 <span id="more"></span>
 <h1 id="introduction">Introduction</h1>
@@ -329,7 +335,7 @@ Client 客户端（数据使用者）<span aria-hidden="true" class="line-number
 <img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/DatabaseStructure.jpg" alt="DatabaseStructure" /><figcaption aria-hidden="true">DatabaseStructure</figcaption>
 </figure>
 <h1 id="relational-model">Relational Model</h1>
-<p><strong>数据模型（Data Model）</strong>确定了数据库的逻辑结构，<strong>关系模型（Relational Model）</strong>是逻辑层面的数据模型中的一种，其他的逻辑层面的数据模型还有层次模型（Hierarchical Model）、Network Model（网络模型）、基于对象的数据模型（Object-Based Data Models）、半结构化数据模型（Semi-Structured Data Model）。</p>
+<p><strong>数据模型（Data Model）</strong>确定了数据库的逻辑结构，<strong>关系模型（Relational Model）</strong>是逻辑层面的数据模型中的一种，其他的逻辑层面的数据模型还有层次模型（Hierarchical Model）、网络模型（Network Model）、基于对象的数据模型（Object-Based Data Models）、半结构化数据模型（Semi-Structured Data Model）。</p>
 <p>在关系模型中，所有的数据都保存在 <strong>表（Table / Relation）</strong>里。</p>
 <p>表的 <strong>列（Columns）</strong>也被称为 <strong>属性（Attributes）</strong> 或 <strong>字段（Fields）</strong>，表的 <strong>行（Rows）</strong>也被称为 <strong>元组（Tuples）</strong>或 <strong>记录（Records）</strong>。</p>
 <p>关系模型允许数据通过 <strong>共有属性（Common Attributes）</strong>与其他数据联系起来。</p>
@@ -344,8 +350,7 @@ instructor = (ID, name, dept_name, salary)
 # A Relation Instance: A specific instructor table
 # An Element: A specific instructor<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 <p>注意每一行之间的顺序其实是不确定的，关系模式并不能保证他们的顺序。</p>
-<p><strong>属性（Attributes）</strong> 一般要求是 <strong>原子的（atomic）</strong>，即不可分的。比如整数、字符串是原子的，集合和数组是非原子的。</p>
-<p>每个属性有自己的类型和 <strong>域（Domain）</strong>，域表示某个属性的取值范围，比如 <span class="math inline">\(salary=\{1000,\dots, 10000\}\cup\{null\}\)</span>。NULL 是一个特殊值，所有域都有，表示某个值是 unknown。</p>
+<p>每个属性有自己的类型和 <strong>域（Domain）</strong>，域表示某个属性的取值范围，比如 <span class="math inline">\(salary=\{1000,\dots, 10000\}\cup\{null\}\)</span>。NULL 是一个特殊值，所有域都有，表示某个值是 Unknown。</p>
 <h2 id="database-schema-database-instance">Database Schema &amp; Database Instance</h2>
 <blockquote>
 <p><strong>数据库模式（Database Schema）</strong>是指一个数据库中存储的数据结构的定义，<strong>数据库实例（Database Instance）</strong>是数据库中数据在某个时间点的快照。</p>
