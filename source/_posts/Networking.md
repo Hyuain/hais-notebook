@@ -3,13 +3,46 @@ title: Networking
 date: 2023-01-18 21:37:30
 categories:
   - [计算机]
+mathjax: true
 ---
 
-.
+本文几种了计算机网络的相关知识，主要包括协议栈介绍、应用层、传输层和网络安全相关的知识，本文将会不断扩充积累。
+
+目前，按照目录框架看大概分为以下几个部分：
+
+- 概述，包括协议栈及其他基本概念
+- 应用层，包括 HTTP、HTTPS、Email、DNS、视频流、CDN 等
+- 传输层，包括多路复用与多路分解、UDP、可靠数据传输、TCP、TCP 连接管理及其他性能优化
+- 网络安全
 
 <!-- more -->
 
-# Protocol Stack
+# Introduction
+
+## Switching
+
+- **电路交换（Circuit Switching）**：主要用于电话系统，用户之间会建立一条专用的物理链路，并且在通信过程中始终占用该链路。电路交换的线路利用率通常很低。
+- **分组交换（Packet Switching）**：则是一个相对的概念，分组包含首部和尾部，其中包含了源地址和目的地址等控制信息，同一条线路上的多个分组不会相互影响。分组交换又像邮局一样，收到一些分组后会存储下来，然后把一些相同目的地的分组一起发送给下一个目的地。
+
+## Delay
+
+> 总时延 = 排队时延（Queuing Delay）+ 节点处理时延（Nodal Processing Delay）+ 传输时延（Transmission Delay）+ 传播时延（Propagation Delay）
+
+- **排队时延（Queuing Delay）**：分组在路由器的输入和输出队列中等待的时间，取决于当前网络的**通信量（Traffic）**。
+
+- **节点处理时延（Nodal Processing Delay）**：主机或路由器收到分组时进行处理所需要的时间，例如分析首部、从分组中提取数据、检验差错、查找路由等。
+
+- **传输时延（Transmission Delay）**：主机或路由器传输数据帧所需要的时间。其中 $l$ 是数据帧的长度，$v$ 是传输速率。
+  $$
+  d = \frac{l(bit)}{v(bit/s)}
+  $$
+
+- **传播时延（Propagation Delay）**：电磁波在信道中传播需要花费的时间。其中 $l$ 是信道长度，$v$ 是电磁波在信道中传播的速度。
+  $$
+  d = \frac{l(m)}{v(m/s)}
+  $$
+
+## Protocol Stack
 
 - 应用层：FTP、DNS、HTTP
 - 传输层：TCP、UDP
@@ -879,22 +912,20 @@ DNS 只有查询和回答报文，并且两种报文有相同的格式：
 
 可以使用 `nslookup` 直接向 DNS 服务器发送查询报文。
 
-## 视频流和内容分发网
-
-### HTTP 流和 DASH
+## Media Stream
 
 - **HTTP 流**：视频只是一个普通的文件，每个文件有一个特定的 URL。接收到视频就进行播放，同时缓存该视频后面部分的帧。
   - 缺陷：所有客户端接收到相同编码的视频
 - **DASH (Dynamic Adaptive Stream over HTTP)**：视频编码为几个不同的版本，客户动态地请求来自不同版本且长度为几秒的视频段数据块。每个视频版本存储在服务器中，HTTP 服务器有一个告示文件（manifest file），为每个版本提供一个 URL 和比特率。
 
-### 内容分发网
+## Content Distribution Network (CDN)
 
 > 内容分发网即 CDN (Content Distribution Network)
 
 - CDN 管理分布在多个地理位置的服务器，在他的服务器中存储各种 web 内容的副本，并且将每个用户请求定向到一个将提供最好用户体验的 CDN 位置
 - CDN 可以是专用 CDN（private CDN），也可以是第三方 CDN（third-party CDN）
 
-# 运输层
+# Transport Layer
 
 ## 多路复用与多路分解
 
@@ -1348,6 +1379,60 @@ TCP 要求延迟的时延必须小于 500ms，一般的操作系统都不会超�
 
 由于 TCP 不是一个轮询的协议，他无法获知对端连接失效的情况（比如对端网络故障或宕机），**keep-alive** 则是用于探测对端的连接是否失效，但是因为探测的时间比较长，所以一般不怎么用
 
+# Network Layer
+
+# Data Link Layer
+
+## Framing
+
+数据链路层会将网络层传下来的分组添加首部和尾部，用于标记帧的开始和结束。
+
+帧通过首部和尾部彼此区分开来，如果真的数据部分包含有首部和尾部相同的内容，那么帧的分界就会被错误地判定，因此需要在数据部分出现的相同内容前面插入转义字符。用户将察觉不到转义字符的存在，该过程又被称为对转义字符的 *透明传输*。
+
+## Error Detection
+
+数据链路层目前通常使用循环冗余检验（Cyclic Redundancy Check, CRC）来检查比特差错。
+
+与校验和不同，CRC 是将两个字节数据流采用二进制除法（而不是加法）来实现的。
+
+## Link
+
+有两种类型的网咯链路：**点对点链路（Point-to-Point Link）**和 **广播链路（Broadcast Link）**。
+
+**广播链路** 是一对多通信，所有节点都在同一个广播信道上发送数据。如果所有节点同时接到多个帧，那么称传输的帧在接收方发生了 **碰撞（Collide）**，此时所有碰撞涉及的帧都丢失了。因此需要专门的控制方法来避免发生碰撞。
+
+可以使用 **多路访问协议（Multiple Access Protocol）**来进行协调，比如 CSMA/CD。
+
+**点对点链路** 不会发生碰撞，因此可以使用较为简单的 **PPP (Point-to-Point Protocol)** 进行控制。
+
+### Multiple Access Protocol
+
+多路访问协议可以分为 **信道划分协议（Channel Partitioning Protocol）**、**随机接入协议（Random Access Protocol）**和 **轮流协议（Taking-Turns Protocol）**。
+
+
+
+#### Channel Partitioning Protocol
+
+
+
+#### Random Access Protocol
+
+#### Taking-Turns Protocol
+
+# Physical Layer
+
+## Communication Channels
+
+有三种通信方式：
+
+- 单工（Simplex）：单向传输
+- 半双工（Half-Duplex）：双向交替传输
+- 全双工（Full-Duplex）：双向同时传输
+
+## Modulation
+
+> 带通调制（Modulation）将离散的数字信号转换为连续的模拟信号。
+
 # Network Security
 
 ## DNS Poisoning
@@ -1362,3 +1447,7 @@ TCP 要求延迟的时延必须小于 500ms，一般的操作系统都不会超�
 Further Reading：
 
 [DNS Poisoning Attacks: A Guide for Website Admins](https://www.thesslstore.com/blog/dns-poisoning-attacks-a-guide-for-website-admins/)
+
+XSS
+
+CSRF

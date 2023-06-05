@@ -251,11 +251,10 @@ $$
 ## Assignment
 
 $$
-variable \larr E
+variable ← E
 $$
 
 ## Rename
-
 $$
 \rho_X(E)
 $$
@@ -854,8 +853,8 @@ WHERE T.salary > S.salray AND S.dept_name = 'Comp. Sci.'
 
 可以用 `LIKE` 来进行字符串匹配，并且有两个通配符：
 
-- `%` 表示任意字串
-- `_` 表示任意字符
+- `%` 表示 0 或任意个未知字符
+- `_` 表示  1 个未知字符
 
 比如，在所有的 `instructor` 中找到名字包含 `dar` 的：
 

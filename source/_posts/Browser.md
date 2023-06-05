@@ -414,9 +414,119 @@ document.body.addEventListener('touchstart', event => {
 
 ![](https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/25.png)
 
+# Web Workers
+
+Web Workers 简单来说就是在后台线程运行一些代码的上下文。Worker 线程可以在不影响 UI 的情况下执行一些任务，比如可以使用 XHR、fetch 等。Worker 创建后，可以给创建其的 JS 代码发送消息，也可以接受他发送过来的消息。
+
+Worker 是在另一个全局上下文中运行的（而不是当前的 `window`），并且在 Worker 中访问 `window` 会报错。
+
+目前有四种 Web Workers：
+
+- Dedicated Workers
+- Shared Workers
+- Service Workers
+- Audio Worklet
+
+## Dedicated Workers
+
+可以通过 `Worker()` 构造函数来创建，只有最开始创建 Dedicated Workers 的 JavaScript 代码才能访问到他：
+
+```js
+// 创建 Worker
+const myWorker = new Worker("worker.js")
+// 发送消息
+myWorker.postMessage(myData)
+// 监听消息
+myWocker.onmessage = (e) => {
+  console.log(e)
+}
+// 处理错误
+myWocker.onerror = (err) => {
+  console.log(err)
+  // 可以阻止默认的错误行为
+  err.preventDefault()
+}
+// 终止 Worker
+myWoker.terminate()
+```
+
+在 `worker.js` 中可以获取到发送的数据：
+
+```js
+// 监听消息
+onmessage = (e) => {
+  console.log(e)
+  // 发送消息
+  postMessage(newData)
+}
+```
+
+Worker 还可以创建同源的 Sub-Workers，子 Workers 的 URIs 是基于父 Worker 的位置的，而不是最开始的页面。
+
+通过 `importScripts()` 还可以引入代码：
+
+```js
+importScripts(); /* imports nothing */
+importScripts("foo.js"); /* imports just "foo.js" */
+importScripts("foo.js", "bar.js"); /* imports two scripts */
+importScripts(
+  "//example.com/hello.js"
+); /* You can import scripts from other origins */
+```
+
+`importScripts()` 失败的话会报出 `NETWORK_ERROR`，并且代码执行会被中断，之前执行的代码仍然生效。
+
+## Shared Workers
+
+Shared Workers 可以被多个代码使用，尽管他们来自于不同的 Browsing Context，比如不同的 Windows、iframes、Wockers。**但注意与 Dedicated Worker 一样，这些必须来自同源。**
+
+与创建 Dedicated Worker 类似相同，通过 `SharedWorker()` 构造函数创建：
+
+```js
+const myWorker = new SharedWorker("worker.js")
+myWorker.port.postMessage(myData)
+myWorker.port.onmessage = (e) => {
+  console.log(e)
+}
+```
+
+也可以使用 `addEventListener` 来监听，这样的话需要调用 `sharedWorker.port.start()` 来启动，而 `onmessage` 则不需要。
+
+在 `worker.js` 中这样接受与发送消息：
+
+```js
+onconnect = (e) => {
+  const port = e.ports[0]
+  port.onmessage = (e) => {
+    port.postMessage(workerResult)
+  }
+}
+```
+
+## Service Workers
+
+Service Worker 主要用于充当一个 Web 应用、浏览器和网络之间的代理服务器，来提供更好的离线体验。
+
+Service Worker 可以使用静态的 `import` 语法，但不能动态引入 JavaScript 模组，`import()` 也会报错。
+
+Service Worker 只能在 HTTPS 上使用，因为 HTTP 容易遭到中间人攻击而被注入恶意代码。
+
+TBC....
+
 # 跨页面通信
 
-> Browsing Context 是浏览器显示 Document 的环境。现代浏览器中，主要是指 Tab，也可以指 Window、frame 或者 iframe。
+> Browsing Context 是浏览器显示 Document 的环境。现代浏览器中，主要是指 Tab，也可以指 Window、frame、iframe 和 Worker 等。
+>
+> 这里说的跨页面通信指的都是跨 Browsing Context 通信。
+
+|      | 方法                        |
+| ---- | --------------------------- |
+| 同源 | BroadcastChannel            |
+| 同源 | ServiceWorker               |
+| 同源 | LocalStorage                |
+| 同源 | SharedWorker                |
+| 同源 | IndexedDB                   |
+| 同源 | window.open + window.opener |
 
 参考资料: [面试官：前端跨页面通信，你知道哪些方法？](https://juejin.cn/post/6844903811232825357)
 
@@ -424,4 +534,187 @@ document.body.addEventListener('touchstart', event => {
 
 ### BroadcastChannel
 
-浏览器
+同源页面可以监听同一个 [BroadcastChannel](https://developer.mozilla.org/en-US/docs/Web/API/BroadcastChannel) 的 `message` 事件，或使用 `postMessage` 方法：
+
+```js
+const bc = new BroadcastChannel('MyChannel')
+bc.onmessage = function(e) {
+  console.log(e)
+}
+bc.postMessage(myData)
+```
+
+### ServiceWorker
+
+[ServiceWorker](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API) 可以在后台长期运行，并且多页面的 ServiceWorker 可以共享：
+
+```js
+navigator.serviceWorker.register('my-service-worker.js').then(() => {
+  console.log('registered')
+})
+```
+
+需要在 `my-service-worker.js` 中加入消息中转站的逻辑：
+
+```js
+self.addEventListener('message', (e) => {
+  console.log(e)
+  e.waitUntil(
+    // 通过 self.clients.matchAll() 获取所有注册了该 serviceWorker 的页面
+    self.clients.matchAll().then((clients) => {
+      clients.forEach((client) => {
+        client.postMessage(e.data)
+      })
+    })
+  )
+})
+```
+
+页面上就可以通过该 ServiceWorker 实现消息中转了：
+
+```js
+navigator.serviceWorker.addEventListener('message', (e) => {
+  console.log(e)
+})
+```
+
+### LocalStorage
+
+通过监听 `storage` 事件来达到消息共享的目的：
+
+```js
+window.addEventListener('storage', function (e) {
+  console.log(e)
+})
+```
+
+### SharedWorker
+
+[SharedWorker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API) 没有 ServiceWorker 的注册机制，也不能直接知道现在有多少 Client，因此需要通过客户端轮询或 Worker 维护订阅池的方式来实现通信的效果。
+
+方案一：订阅池。监听 `connect` 事件，并将所有的 `port` 加入 `connectionPool` 中，然后通过类似 ServiceWorker 的广播来发送消息。
+
+```js
+const connectionPool = new Set()
+onconnect = (e) => {
+  const port = e.ports[0]
+  connectionPool.add(port)
+  port.onmessage = (e) => {
+    connectionPool.forEach((p) => {
+      p.postMessage(newData)
+    })
+  }
+}
+```
+
+方案二：客户端轮询。Worker 接受 `get` 和 `post` 两种消息，将 `post` 接受到的消息存下来，然后客户端 `get` 的时候，再发送回去。
+
+Worker 中监听 `messsage` 事件：
+
+```js
+let data = null
+self.addEventListener('connect', function (e) {
+  const port = e.ports[0];
+  port.addEventListener('message', function (event) {
+      // get 指令则返回存储的消息数据
+      if (event.data.get) {
+          data && port.postMessage(data)
+      }
+      // 非 get 指令则存储该消息数据
+      else {
+          data = event.data;
+      }
+  })
+  port.start()
+})
+```
+
+客户端中定时轮询：
+
+```js
+setInterval(function () {
+    sharedWorker.port.postMessage({get: true})
+}, 1000)
+
+// 监听 get 消息的返回数据
+sharedWorker.port.addEventListener('message', (e) => {
+  console.log(e)
+}, false)
+sharedWorker.port.start()
+```
+
+### IndexedDB
+
+由于 [IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB) 没有像 LocalStorage 那样的事件，因此也需要借助 SharedWorker 中使用的类似轮询的方法来获取到最新的数据。
+
+先封装一些创建数据库和存取数据的方法
+
+```js
+const STORAGE_NAME = 'eventBus'
+
+function openStore() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open('EventBusDB', 3)
+    request.onerror = reject
+    request.onsuccess = resolve
+    request.onupgradeneeded = (e) => {
+      const db = e.target.result
+      if (e.oldVersion === 0 && !db.objectStroageNames.contains(storageName)) {
+         const store = db.createObjectStore(STORAGE_NAME, {keyPath: 'tag'})
+         store.createIndex(STORAGE_NAME + 'Index', 'tag', {unique: false})
+      }
+    }
+  })
+}
+
+function saveData(db, data) {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORAGE_NAME, 'readwrite')
+    const store = tx.objectStore(STORAGE_NAME)
+    const request = store.put({ tag: 'data', data })
+    request.onsuccess = () => resolve(db)
+    request.onerror = reject
+  })
+}
+
+function query(db) {
+  return new Promise((resolve, reject) => {
+    try {
+      const tx = db.transaction(STORAGE_NAME, 'readwrite')
+      const store = tx.objectStore(STORAGE_NAME)
+      const request = store.get('data')
+      request.onsuccess = resolve
+      request.onerror = reject
+    }
+  })
+}
+```
+
+然后打开数据库并进行长轮询：
+
+```js
+openStore()
+  .then(db => saveData(db, null))
+  .then(function (db) {
+    setInterval(function () {
+      query(db).then(function (res) {
+        console.log(res)
+      })
+    }, 1000)
+});
+```
+
+### window.open + window.opener
+
+该方案主要是借助：
+
+- `window.open` 会返回被打开页面的 `window`，可以使用被打开页面的 `window.postMessage` 来给被打开页面发送消息；
+- `window.opener` 可以得到打开他的页面的 `window`，同样可以使用他的 `window.postMessage` 发送消息；
+- `window.addEventListener('message')` 可以得到 `postMessage` 的消息。
+
+## 非同源页面通信
+
+可以借助一个 iframe 来进行通信：
+
+- iframe 与父页面之间可以通过指定 `origin` 来忽略同源限制
+- iframe 之间由于同源，可以使用 Broadcast Channel 等来进行消息同步

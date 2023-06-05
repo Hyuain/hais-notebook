@@ -142,13 +142,13 @@ Write less code for configuration.
 
 ### Java Development Kit (JDK)
 
-Including **Java Runtime Environment (JRE)**, compilers and various tools like JavaDoc, Java debugger etc.
+包含了 **Java 运行时环境（Java Runtime Environment, JRE）**、编译器和各种工具（比如 JavaDoc、Java Debugger 等）。
 
 ![jdk](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/jdk.jpg)
 
 ### Java Runtime Environment (JRE)
 
-JRE is a part of JDK. JRE includes JVM, browser plugins and applets support.
+JRE 是 JDK 的一部分。JRE 包括 JVM、浏览器插件和小程序支持。
 
 ### Java Virtual Machine (JVM)
 

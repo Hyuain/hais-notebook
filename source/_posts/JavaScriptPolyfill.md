@@ -1,5 +1,5 @@
 ---
-title: JavaScript 实现部分 API
+title: JavaScript Polyfill
 date: 2020-02-23 16:33:44
 categories:
   - [前端]
@@ -681,3 +681,4 @@ function myNew(fun, ...args){
     return typeof result === 'object' ? result : newObj
 }
 ```
+

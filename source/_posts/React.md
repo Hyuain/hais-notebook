@@ -440,7 +440,7 @@ React 处理 UI 有三步：
    root.render(<Image />)
    ```
 
-2. 组件或他的某个祖先 state 改变（通过 set 方法）。
+2. 组件或他的某个祖先 State 改变（通过 set 方法）。
 
 ### Step 2: React renders your component
 
@@ -486,6 +486,75 @@ function Image() {
 
 - 首次渲染时，React 会使用 `appendChild()` 将所有创建的 DOM 节点放到页面上；
 - 重新渲染时，React 只会执行在渲染阶段计算出来的少量变动到 DOM 上。
+
+## React Implementation
+
+> Fiber 架构让 React 可以异步进行协调过程，将协调过程分解为更小的、可以独立处理的块。
+>
+> Fiber 允许 React 随时暂停或重启某个任务。
+
+**协调（Reconciliation）**是 React 根据 state 的变化决定 UI 更新的过程，过去的协调是同步进行的，这将会在处理渲染的过程的时候阻塞主线程。
+
+渲染过程可以看成就是执行组件函数，传统意义上讲，**函数的执行过程将由执行栈控制，每个函数可以看成一个 栈帧（Stack Frame），整个过程是无法暂停或终止的，直到执行栈为空。**这样可能一次性会阻塞主线程地执行大量的更新任务，并且前面的有些函数的执行可能是无效的，因为他的效果被后来的更新给覆盖了。
+
+为了解决一长串同步协调过程带来的性能问题，React 提出了三个概念：
+
+- **Fiber**：Fiber 架构相当于是一个自定义的执行栈，**可以将每一个 Fiber 看成一个虚拟的栈帧（Virtual Stack Frame）**。他让 React 可以将任务划分得更细，并且每个 Fiber 可以相对独立地异步执行。
+
+  ```js
+  let firstFiber
+  // nextFiber 用来跟踪下一步需要执行的 Fiber
+  let nextFiber = firstFiber
+  // shouldYield 表示需要暂停
+  let shouldYield = false
+  // 假设有链表 firstFiber -> firstChild -> sibling
+  // 从链表的头结点开始执行 performUnitOfWork
+  function performUnitOfWork(nextFiber) {
+    // ...
+    return nextFiber.next
+  }
+  function workLoop(deadline) {
+    while(nextFiber && !shouldYield) {
+      nextFiber = performUnitOfWork(nextFiber)
+      shouldYield = deadline.timeRemaining < 1
+    }
+    requestIdleCallback(workLoop)
+  }
+  // 假设可以使用浏览器的 requestIdelCallback API 来执行 workLoop
+  // 这样就可以在浏览器空闲的时候去执行 workLoop
+  requestIdleCallback(workLoop)
+  ```
+
+- **Scheduler**：利用浏览器的时间片去异步执行这些 Fiber。虽然浏览器自带了 `requestIdelCallback` API，可以在浏览器空闲的时候执行一些任务。但这个 API 存在浏览器兼容性和不稳定等问题，于是 React 自己实现的一套时间片机制就叫 Scheduler。
+- **Lane**：用于管理任务的优先级，让高优先级的任务先执行。
+
+### Structure of Fiber
+
+下面给出的是一些 Fiber 的大致结构：
+
+`type` 和 `key` 与 React Element 中的相同，`key` 可以用于追踪该 Fiber 能否被重用；
+
+`child` 和 `sibling` 分别指向子 Fiber 和兄弟 Fiber；
+
+`return` 表示该 Fiber 处理之后应该返回到哪里，就像执行栈一样，一般来讲需要返回父 Fiber；
+
+`pendingProps` 和 `memorizedProps`，如果 `memorizedProps` 与 `pendingProps` 相同，表示该 Fiber 之前的输出可以被重用；
+
+`pendingWorkPriority` 表示该 Fiber 代表的工作的优先级；
+
+`alternate` 表示改 Fiber 当前的状态；
+
+`output` 通常是渲染函数的执行结果。
+
+### Fiber Tree
+
+**Fiber 架构的核心是 Fiber Tree，他表示一个允许 React 跟踪需要执行的各个小工作的 Virtrual DOM。Fiber Tree 上的每一个 Fiber 表示一个需要被处理的工作，比如更新组件或渲染新的元素。**
+
+组件的 State 发生改变之后（a render is triggered）：
+
+1. React 为这个组件创建一个新的 Fiber，并添加到 Fiber Tree 中；
+2. 然后安排处理这个 Fiber，将这个 Fiber 放入一个待执行的队列中；
+3. 然后开始处理这个队列，一次一个 Fiber。
 
 # Manage State
 
@@ -2003,6 +2072,8 @@ function ChatIndicator() {
 }
 ```
 
+
+
 # Hooks
 
 像 `useState` 这种 `use` 开头的函数被称为 Hook。
@@ -2078,176 +2149,99 @@ const useList = () => {
 }
 ```
 
-# Reconciliation
+# Algebraic Effects
 
-Reconciliation 直译为协调，即 React 的渲染机制，他有以下几步：
+> 不同设备的性能和网络状况不同，React 需要具备分离副作用的能力，来保证副作用在不同设备上表现尽可能一致。
+>
+> 引用自 [Algebraic Effects for the Rest of Us](https://overreacted.io/algebraic-effects-for-the-rest-of-us/) 和 [代数效应与React](https://zhuanlan.zhihu.com/p/169805499)
 
-1. props 或 state 改变
-2. render 函数返回不同的元素树（虚拟 DOM）
-3. 新旧 DOM 对比（vDOM Diff）
-4. 针对差异的地方进行更新
-5. 渲染为真实的 DOM 树
+**代数效应（Algebraic Effects）**是函数式编程中的一个概念，主要是将副作用从函数调用中分离。这个概念只在一些特定的编程语言中被实现并支持。
 
-## DOM Diff 原理
+考虑一个普通的 `try / catch` 块，当 `name` 为空的时候直接抛出错误：
 
-### 设计思想
+```js
+function getName(user) {
+  let name = user.name;
+  if (name === null) {
+  	throw new Error('A girl has no name');
+  }
+  return name;
+}
 
-1. 永远只比较同层的节点，不会跨层级比较
-2. 不同的两个节点产生不同的树（两个类型不同的节点直接用新的全部替代旧的，包括其后代）
-3. 通过 key 判断哪些元素是相同的（比如列表如果没有 key，从头部插入元素会导致列表全部更新），因此 key 需要在列表中保持唯一（不需要全局唯一）
+function makeFriends(user1, user2) {
+  user1.friendNames.push(getName(user2));
+  user2.friendNames.push(getName(user1));
+}
 
-### 比较流程
-
-- 若元素类型不相同：直接用新的树替换掉原来的树
-- 若元素类型相同：
-  - 若都是 DOM 节点：更新 DOM 属性，比如 `style`、`title` 等，再向下递归找
-  - 若都是组件节点：组件实例保持不变，更新 Props
-
-## 如何减少 Diff 过程
-
-> 利用 `shouldComponentUpdate`
-
-默认的 `shouldComponentUpdate` 会在 props 或 state 发生变化的时候返回 true，表示组件会重新渲染，然后调用 render 函数，进行 vDOM Diff；相对的，我们也可以通过控制它的返回值来控制是否发生 vDOM Diff
-
-## 浅比较与深比较
-
-如果不想使用 `shouldComponentUpdate` 来一个一个检查，可以使用 `pureComponent` 对所有 `props` 和 `state` 进行 **浅比较**：
-
-```jsx harmony
-class MyComp extends React.PureComponent {
-  // ...
+const arya = { name: null, friendNames: [] };
+const gendry = { name: 'Gendry', friendNames: [] };
+try {
+  makeFriends(arya, gendry);
+} catch (err) {
+  console.log("Oops, that didn't work out: ", err);
 }
 ```
 
-对于函数组件，可以使用 `React.memo`：
+这个错误会向上冒泡（不管中间嵌套了多少层函数执行），并最终在 `catch` 语句中得到处理。
 
-```jsx harmony
-function Component() { }
-export default React.memo(Component)
-```
+**但是，执行过程就此终止，所有的临时变量被销毁，执行栈被清空，我们不能再恢复到之前抛出错误的地方继续运行。**
 
-{% note warning %}
+**但是，我们可以通过代数效应做到。**
 
-浅比较：
+下面我们假设一种新的语法，该语法实现了代数效应：
 
-1. 首先会使用等价于 `Object.is` 的方法进行判断，因此若引用类型的地址相同则判定为没有发生变化；
-2. 然后对于地址不同的，会进行 **一层** key 和 value 的比较
+```js
+function getName(user) {
+  let name = user.name;
+  if (name === null) {
+  	// 1. We perform an effect here
+  	name = perform 'ask_name';
+  	// 4. ...and end up back here (name is now 'Arya Stark')
+  }
+  return name;
+}
 
-{% endnote %}
+// ...
 
-因此，如果数据结构比较复杂，浅比较会损失掉很多信息，比如说通过 `push` 方法改变数组的值，浅比较将不能发现变化。
-
-```jsx harmony
-handleClick() {
-// 这部分代码很糟，而且还有 bug
-  const words = this.state.words;
-  words.push('marklar');
-  this.setState({words: words});
+try {
+  makeFriends(arya, gendry);
+} handle (effect) {
+  // 2. We jump to the handler (like try/catch)
+  if (effect === 'ask_name') {
+  	// 3. However, we can resume with a value (unlike try/catch!)
+  	resume with 'Arya Stark';
+  }
 }
 ```
 
-这个时候应该使用不可变数据，尽量避免修改正在用于 props 或 state 的值，而是创建一个新的值，去覆盖原来的值：
+上述代码中我们引入了 `perform` 来执行一个 `effect`，用 `try / handle` 来截获这个 `effect`，然后用 `resume with` 来返回到最开始执行 `effect` 的地方。
 
-```jsx harmony
-handleClick() {
-  this.setState(state => ({
-    words: state.words.concat(['marklar'])
-  }))
-}
+对于异步操作，我们也许可以考虑这样的代码：
 
-// 或者使用 ES6 里的扩展运算符
-handleClick() {
-  this.setState(state => ({
-    words: [...state.words, 'marklar']
-  }))
-}
-```
-
-对于对象，我们可以用 `Object.assign`
-
-```jsx harmony
-function updateColorMap(colorMap) {
-  return Object.assign({}, colorMap, {right: 'blue'})
-}
-
-// 或者使用扩展运算符
-function updateColorMap(colorMap) {
-  return {...colorMap, right: 'blue'}
+```js
+try {
+  makeFriends(arya, gendry);
+} handle (effect) {
+  if (effect === 'ask_name') {
+  	setTimeout(() => {
+      resume with 'Arya Stark';
+  	}, 1000);
+  }
 }
 ```
 
-需要注意的是，尽管扩展运算符和 `Object.assign` 创建了新的引用，但是他们仍然是 **浅拷贝**，这并不冲突
+上述代码在延迟 1000ms 后返回到原来的地方。
 
-## immutable 数据结构
+代数效应有一些好处：
 
-immutable 的意义：浅比较缺点很明显，深比较有时候又比较浪费性能
+1. 比起 `try / catch`，他可以返回到原来的地方继续执行；
+2. 比起 `async / await`，他不具备传染性，也就是说，他不需要让受到影响的地方也变成 `async`；并且如果 `perform effect` 的地方嵌套得很深，中间层的函数也不需要变成 `async`，他只需要在其上层的某处 `handle` 即可，就像 `try / catch` 一样。
 
-简单来说：
+## Algebraic Effects in React
 
-1. **节省性能**：immutable 内部采用多叉树结构，如果它里面有节点被改变，那么则更新 **这个节点** 和他有关的所有 **上级节点**
-2. **返回一个新的引用**，即使是浅比较也能感知到数据的变化
+比如 `useState` 等 Hooks，我们不需要关心 Hooks 内部是如何处理的，`useState` 就好像 `perform State()`，React 在我们调用这个 `effect` 之后为我们提供 State。
 
-### 一些 immutable API
-
-#### fromJS
-
-将 JS 对象转换为 immutable 对象
-
-```js
-import {fromJS} from 'immutable'
-const immutableState = fromJS ({
-  count: 0
-})
-```
-
-#### toJS
-
-将 immutable 对象转换为 JS 对象
-
-```js
-const jsObj = immutableState.toJS()
-```
-
-#### get/getIn
-
-用来获取 immutable 对象属性
-
-```js
-let jsObj = {a: 1}
-let res = jsObj.a
-
-let immutableObj = fromJS(jsObj)
-let res = immutableObj.get('a')
-```
-
-```js
-let jsObj = {a:{b: 1}}
-let res = jsObj.a.b
-
-let immutableObj = fromJS(jsObj)
-let res = immutableObj.getIn(['a', 'b']) // 传入一个数组
-```
-
-#### set
-
-用来给 immutable 对象的属性赋值
-
-```js
-let immutableObj = fromJS({a: 1})
-immutableObj.set('a', 2)
-```
-
-#### merge
-
-新旧数据对比，旧数据中不存在的属性直接添加，存在的属性用新数据覆盖
-
-```js
-let immutableObj = fromJS({a: 1})
-immutableObj.merge({
-  a: 2,
-  b: 3
-})
-```
+React Fiber 也可以理解成代数效应思想的一种应用，每个 Fiber 有自己的优先级，可以中断与恢复，恢复之后可以复用之前的中间状态。
 
 # Portals
 
@@ -3218,6 +3212,177 @@ function logProps(WrappedComponent) {
 #### 页面权限管理
 
 通过 HOC 对组件进行包裹，当用户跳转到其他页面的时候，检查用户是否含有对应的权限，如果有的话，渲染页面，如果没有的话，跳转到其他页面
+
+## Reconciliation
+
+Reconciliation 直译为协调，即 React 的渲染机制，他有以下几步：
+
+1. props 或 state 改变
+2. render 函数返回不同的元素树（虚拟 DOM）
+3. 新旧 DOM 对比（vDOM Diff）
+4. 针对差异的地方进行更新
+5. 渲染为真实的 DOM 树
+
+### DOM Diff
+
+#### 设计思想
+
+1. 永远只比较同层的节点，不会跨层级比较
+2. 不同的两个节点产生不同的树（两个类型不同的节点直接用新的全部替代旧的，包括其后代）
+3. 通过 key 判断哪些元素是相同的（比如列表如果没有 key，从头部插入元素会导致列表全部更新），因此 key 需要在列表中保持唯一（不需要全局唯一）
+
+#### 比较流程
+
+- 若元素类型不相同：直接用新的树替换掉原来的树
+- 若元素类型相同：
+  - 若都是 DOM 节点：更新 DOM 属性，比如 `style`、`title` 等，再向下递归找
+  - 若都是组件节点：组件实例保持不变，更新 Props
+
+### 如何减少 Diff 过程
+
+> 利用 `shouldComponentUpdate`
+
+默认的 `shouldComponentUpdate` 会在 props 或 state 发生变化的时候返回 true，表示组件会重新渲染，然后调用 render 函数，进行 vDOM Diff；相对的，我们也可以通过控制它的返回值来控制是否发生 vDOM Diff
+
+### 浅比较与深比较
+
+如果不想使用 `shouldComponentUpdate` 来一个一个检查，可以使用 `pureComponent` 对所有 `props` 和 `state` 进行 **浅比较**：
+
+```jsx harmony
+class MyComp extends React.PureComponent {
+  // ...
+}
+```
+
+对于函数组件，可以使用 `React.memo`：
+
+```jsx harmony
+function Component() { }
+export default React.memo(Component)
+```
+
+{% note warning %}
+
+浅比较：
+
+1. 首先会使用等价于 `Object.is` 的方法进行判断，因此若引用类型的地址相同则判定为没有发生变化；
+2. 然后对于地址不同的，会进行 **一层** key 和 value 的比较
+
+{% endnote %}
+
+因此，如果数据结构比较复杂，浅比较会损失掉很多信息，比如说通过 `push` 方法改变数组的值，浅比较将不能发现变化。
+
+```jsx harmony
+handleClick() {
+// 这部分代码很糟，而且还有 bug
+  const words = this.state.words;
+  words.push('marklar');
+  this.setState({words: words});
+}
+```
+
+这个时候应该使用不可变数据，尽量避免修改正在用于 props 或 state 的值，而是创建一个新的值，去覆盖原来的值：
+
+```jsx harmony
+handleClick() {
+  this.setState(state => ({
+    words: state.words.concat(['marklar'])
+  }))
+}
+
+// 或者使用 ES6 里的扩展运算符
+handleClick() {
+  this.setState(state => ({
+    words: [...state.words, 'marklar']
+  }))
+}
+```
+
+对于对象，我们可以用 `Object.assign`
+
+```jsx harmony
+function updateColorMap(colorMap) {
+  return Object.assign({}, colorMap, {right: 'blue'})
+}
+
+// 或者使用扩展运算符
+function updateColorMap(colorMap) {
+  return {...colorMap, right: 'blue'}
+}
+```
+
+需要注意的是，尽管扩展运算符和 `Object.assign` 创建了新的引用，但是他们仍然是 **浅拷贝**，这并不冲突
+
+### immutable 数据结构
+
+immutable 的意义：浅比较缺点很明显，深比较有时候又比较浪费性能
+
+简单来说：
+
+1. **节省性能**：immutable 内部采用多叉树结构，如果它里面有节点被改变，那么则更新 **这个节点** 和他有关的所有 **上级节点**
+2. **返回一个新的引用**，即使是浅比较也能感知到数据的变化
+
+#### 一些 immutable API
+
+##### fromJS
+
+将 JS 对象转换为 immutable 对象
+
+```js
+import {fromJS} from 'immutable'
+const immutableState = fromJS ({
+  count: 0
+})
+```
+
+##### toJS
+
+将 immutable 对象转换为 JS 对象
+
+```js
+const jsObj = immutableState.toJS()
+```
+
+##### get/getIn
+
+用来获取 immutable 对象属性
+
+```js
+let jsObj = {a: 1}
+let res = jsObj.a
+
+let immutableObj = fromJS(jsObj)
+let res = immutableObj.get('a')
+```
+
+```js
+let jsObj = {a:{b: 1}}
+let res = jsObj.a.b
+
+let immutableObj = fromJS(jsObj)
+let res = immutableObj.getIn(['a', 'b']) // 传入一个数组
+```
+
+##### set
+
+用来给 immutable 对象的属性赋值
+
+```js
+let immutableObj = fromJS({a: 1})
+immutableObj.set('a', 2)
+```
+
+##### merge
+
+新旧数据对比，旧数据中不存在的属性直接添加，存在的属性用新数据覆盖
+
+```js
+let immutableObj = fromJS({a: 1})
+immutableObj.merge({
+  a: 2,
+  b: 3
+})
+```
 
 # Vue & React
 
