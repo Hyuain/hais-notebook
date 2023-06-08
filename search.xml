@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>数据结构与算法</title>
+    <title>Data Structure and Algorithm</title>
     <url>/hais-notebook/2022/02/05/Algorithm/</url>
     <content><![CDATA[<p>本文介绍了常见的数据结构、算法、一些典型例题及代码题中的特殊需要关注的地方。</p>
 <p>按照章节来讲主要分为：</p>
@@ -112,25 +112,47 @@ O(1) &lt; O(log(n)) &lt; O(n) &lt; O (nlog(n)) &lt; O(n^2) &lt; O(n^3) &lt; O(2^
 <li>数组中无重复元素</li>
 </ul>
 <p>时间复杂度 O(log(n))</p>
-<p><detail> <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">const</span> <span class="token function-variable function">binarySearch</span> <span class="token operator">=</span> <span class="token punctuation">(</span>nums<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> target<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+<p><detail> <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// 左闭右闭写法</span>
+<span class="token keyword">const</span> <span class="token function-variable function">binarySearch</span> <span class="token operator">=</span> <span class="token punctuation">(</span>nums<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> target<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
   <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>nums<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">1</span> <span class="token punctuation">&#125;</span>
   <span class="token keyword">let</span> left <span class="token operator">=</span> <span class="token number">0</span>
   <span class="token keyword">let</span> right <span class="token operator">=</span> nums<span class="token punctuation">.</span>length <span class="token operator">-</span> <span class="token number">1</span>
+  <span class="token comment">// 当 left === right 时，区间 [left, right] 依旧有效</span>
   <span class="token keyword">while</span> <span class="token punctuation">(</span>l <span class="token operator">&lt;=</span> r<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
     <span class="token keyword">let</span> mid <span class="token operator">=</span> Math<span class="token punctuation">.</span><span class="token function">floor</span><span class="token punctuation">(</span><span class="token punctuation">(</span>left <span class="token operator">+</span> right<span class="token punctuation">)</span> <span class="token operator">/</span> <span class="token number">2</span><span class="token punctuation">)</span>
     <span class="token keyword">if</span> <span class="token punctuation">(</span>nums<span class="token punctuation">[</span>mid<span class="token punctuation">]</span> <span class="token operator">===</span> target<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
       <span class="token keyword">return</span> mid
     <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>nums<span class="token punctuation">[</span>mid<span class="token punctuation">]</span> <span class="token operator">></span> target<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-      <span class="token comment">// 如果写成这样，意味着新的 right 需要在下一次循环被考虑</span>
-      <span class="token comment">// 所以当 left === right 的时候，循环还不能终止</span>
+      <span class="token comment">// 因为是右闭区间，新的 right 需要在下一次循环被考虑</span>
       right <span class="token operator">=</span> mid <span class="token operator">-</span> <span class="token number">1</span>
     <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
-      <span class="token comment">// 新的 left 总是需要被考虑的，所以下面这行一般没有第二种写法</span>
+      <span class="token comment">// 因为是左闭区间，新的 left 需要在下一次循环被考虑</span>
       left <span class="token operator">=</span> mid <span class="token operator">+</span> <span class="token number">1</span>
     <span class="token punctuation">&#125;</span>
   <span class="token punctuation">&#125;</span>
   <span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">1</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre> </detail></p>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">// 左闭右开写法</span>
+<span class="token keyword">const</span> <span class="token function-variable function">binarySearch</span> <span class="token operator">=</span> <span class="token punctuation">(</span>nums<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> target<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>nums<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">1</span> <span class="token punctuation">&#125;</span>
+  <span class="token keyword">let</span> left <span class="token operator">=</span> <span class="token number">0</span>
+  <span class="token keyword">let</span> right <span class="token operator">=</span> nums<span class="token punctuation">.</span>length
+  <span class="token comment">// 当 left === right 时，区间 [left, right) 无效了</span>
+  <span class="token keyword">while</span> <span class="token punctuation">(</span>l <span class="token operator">&lt;</span> r<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">let</span> mid <span class="token operator">=</span> Math<span class="token punctuation">.</span><span class="token function">floor</span><span class="token punctuation">(</span><span class="token punctuation">(</span>left <span class="token operator">+</span> right<span class="token punctuation">)</span> <span class="token operator">/</span> <span class="token number">2</span><span class="token punctuation">)</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>nums<span class="token punctuation">[</span>mid<span class="token punctuation">]</span> <span class="token operator">===</span> target<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token keyword">return</span> mid
+    <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>nums<span class="token punctuation">[</span>mid<span class="token punctuation">]</span> <span class="token operator">></span> target<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token comment">// 因为是右开区间，新的 right 不需要被循环考虑</span>
+      right <span class="token operator">=</span> mid
+    <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+      <span class="token comment">// 因为是左闭区间，新的 left 需要在下一次循环被考虑</span>
+      left <span class="token operator">=</span> mid <span class="token operator">+</span> <span class="token number">1</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">1</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre> </detail></p>
 <h2 id="sorting">Sorting</h2>
 <h3 id="selection-sort">Selection Sort</h3>
 <p>每次从剩下的部分选择最小的排到前面来，O(n^2)</p>
@@ -769,7 +791,7 @@ O(1) &lt; O(log(n)) &lt; O(n) &lt; O (nlog(n)) &lt; O(n^2) &lt; O(n^3) &lt; O(2^
 </tbody>
 </table>
 <p>*栈一般也不提供搜索操作</p>
-<h2 id="monotonous-stack">Monotonous Stack</h2>
+<h2 id="monotonic-stack">Monotonic Stack</h2>
 <p>一维数组，要寻找任一元素的右边或左边第一个比自己大或自己小的位置。</p>
 <p>比如 <code>[73, 74, 75, 71, 71, 72, 76, 73]</code> 为例，输出下一个 <strong>大于</strong> 自己的位置，输出应该是 <code>[1, 2, 6, 5, 5, 1, -1, -1]</code>。</p>
 <p>这个时候需要维持一个 <strong>栈底到栈顶单调递减</strong> 的单调栈。这里我们单调栈里面可以存放元素的下标（存放什么可以根据题目的需要定义，重要的是单调栈的核心思想，这个看下面模拟会有标注）。</p>
@@ -1171,6 +1193,16 @@ result: [1, 2, '*', '+', 4, '-']<span aria-hidden="true" class="line-numbers-row
     <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span>rear <span class="token operator">===</span> <span class="token keyword">this</span><span class="token punctuation">.</span>front
   <span class="token punctuation">&#125;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="monotonic-queue">Monotonic Queue</h2>
+<p>单调队列与单调栈有些许类似之处，他常用于求解区间内的的最大值或最小值。单调队列需要保证队列内部的元素单调递增或递减，除此之外，实际算法应用中由于经常会涉及到其他操作，因此大多数需要借助双端队列实现。</p>
+<p>实际算法中的单调队列可以看成是变种的单调栈，比如维持一个单调递减的单调队列，我们需要：</p>
+<ul>
+<li>如果当前需要插入的元素大于队尾元素，则将队尾 <code>pop</code> 出来，重复这个过程——这与 <a href="#monotonic-stack">单调栈</a> 是一样的；</li>
+<li>除此之外，他还可以通过出队来找到最大元素（队首元素）。</li>
+</ul>
+<h1 id="examples-3">Examples</h1>
+<h2 id="滑动窗口最大值">滑动窗口最大值</h2>
+<p><a href="https://leetcode.cn/problems/sliding-window-maximum/">LeetCode.239</a></p>
 <h1 id="linked-list">Linked List</h1>
 <blockquote>
 <p>链表</p>
@@ -1776,7 +1808,7 @@ T(n) = \sum_{i=0}^{h} n_i h_i \\
 <li><strong>自顶向下（Top-Down）</strong>建堆。可以理解为最开始只有一个空堆，每次都 push 一个元素进去，然后让其上浮，堆重建，时间复杂度为 <span class="math inline">\(log(1)+log(2)+\cdots+log(n)\)</span>，即 <strong>O(nlog(n))</strong>。</li>
 </ol>
 <p><strong>堆的排序过程还可以描述为：</strong>每次将倒数第 <span class="math inline">\(i\)</span> 个元素与堆顶元素兑换，这样就能保证第 <span class="math inline">\(i\)</span> 个元素到最后一个元素都是排好序的了。然后再将兑换后的堆顶元素往下沉（不能沉到 <span class="math inline">\(i\)</span> 之后），重建堆。<strong>这样我们就可以实现原位的堆排序了</strong>。</p>
-<h2 id="examples-3">Examples</h2>
+<h2 id="examples-4">Examples</h2>
 <h3 id="前-k-个高频元素">前 K 个高频元素</h3>
 <p><a href="https://leetcode.cn/problems/top-k-frequent-elements/">LeetCode.347</a></p>
 <p>Given an integer array nums and an integer k, return the k most frequent elements. You may return the answer in any order.</p>
@@ -4504,7 +4536,7 @@ performanceB<span class="token punctuation">.</span>prototype<span class="token 
 </ul>
 <h3 id="localstorage-和-sessionstorage-的区别">LocalStorage 和 SessionStorage 的区别</h3>
 <p>LocalStorage 一般不过期，SessionStorage 一般在 Session 结束的时候过期（比如关闭浏览器的时候）</p>
-<h1 id="同源策略">同源策略</h1>
+<h1 id="same-origin-policy">Same-Origin Policy</h1>
 <ul>
 <li>源：输入 <code>window.origin</code> 或者 <code>location.origin</code>，我们就可以看到 <strong>源</strong>，实际上他就是 <strong>协议 + 域名 + 端口号</strong>。</li>
 <li>同源：当两个 url 的源（协议、域名、端口号）完全一致，则称之为 <strong>同源</strong>，比如 <code>https://baidu.com</code> 和 <code>https://www.baidu.com</code> 就不同源。</li>
@@ -4561,15 +4593,14 @@ performanceB<span class="token punctuation">.</span>prototype<span class="token 
   document<span class="token punctuation">.</span>head<span class="token punctuation">.</span><span class="token function">appendChild</span><span class="token punctuation">(</span>script<span class="token punctuation">)</span>
   document<span class="token punctuation">.</span>head<span class="token punctuation">.</span><span class="token function">removeChild</span><span class="token punctuation">(</span>script<span class="token punctuation">)</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h1 id="浏览器架构">浏览器架构</h1>
-<h2 id="浏览器的多进程架构">浏览器的多进程架构</h2>
-<h3 id="chrome-的多进程架构">Chrome 的多进程架构</h3>
+<h1 id="multi-process-architecture-of-browsers">Multi-Process Architecture of Browsers</h1>
+<h2 id="chrome-的多进程架构">Chrome 的多进程架构</h2>
 <p>浏览器可以是单进程的，也可以是多进程的（不同的进程间可以通过IPC通信），不同的浏览器使用不同的架构，比如对于 Chrome：</p>
 <ul>
-<li><strong>浏览器进程 Browser Process</strong>：负责浏览器 Tab 的前进、后退、地址栏、书签栏、网络请求、文件访问等</li>
-<li><strong>渲染进程 Renderer Process</strong>：负责一个 Tab 内的显示相关工作</li>
-<li><strong>插件进程 Plugin Process</strong>：负责控制插件</li>
-<li><strong>GPU 进程 GPU Process</strong>：负责处理 GPU 任务</li>
+<li><strong>浏览器进程 Browser Process</strong>：浏览器只会存在一个浏览器进程，他负责管理浏览器的 Tabs、Windows 以及 "chrome"，以及与硬盘、网络、用户输入、显示器的交互，具体来说包括 Tab 的前进、后退、地址栏、书签栏、网络请求、文件访问等。但他不会负责解析或渲染来自网络的任何内容。</li>
+<li><strong>渲染器进程 Renderer Process</strong>：浏览器进程会创建多个渲染器进程，每个浏览器进程会负责一个 Tab 内的显示相关工作。浏览器进程包揽了所有处理 HTML、JavaScript、CSS、图片等的复杂逻辑。每个渲染器进程都在一个沙盒中运行，并不会直接访问硬盘、网络或显示器。所有与 Web APP 的交互（包括处理用户输入事件、绘制屏幕等）都需要经过浏览器进程。因此浏览器进程可以监控渲染器进程，并终止可疑的恶意进程。</li>
+<li><strong>插件进程 Plugin Process</strong>：浏览器进程还会为每一个运行中的插件创建一个插件进程。</li>
+<li><strong>GPU 进程 GPU Process</strong>：负责处理 GPU 任务。</li>
 </ul>
 <p><img src="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/2.png" /></p>
 <p>当我们在浏览器地址栏输入 URL 后：</p>
@@ -4580,14 +4611,14 @@ performanceB<span class="token punctuation">.</span>prototype<span class="token 
 <li><strong>GPU Process</strong> 将图像帧转化为图像显示在屏幕上</li>
 </ol>
 <p><img src="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/3.png" /></p>
-<h3 id="多进程架构的好处">多进程架构的好处</h3>
+<h2 id="多进程架构的好处">多进程架构的好处</h2>
 <p><img src="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/4.png" /></p>
 <ol type="1">
 <li>容错性。防止崩溃传染</li>
 <li>安全性。浏览器针对不同的进程限制了不同的权限，并为其提供沙盒运行环境，使其更加安全可靠</li>
 <li>更高的响应速度。避免各个任务抢占 CPU 资源</li>
 </ol>
-<h3 id="多进程架构优化">多进程架构优化</h3>
+<h2 id="多进程架构优化">多进程架构优化</h2>
 <p>一个 Tab 对应一个 <strong>Renderer Process</strong>，进程之间的内存无法共享，而不同的进程内存常常有相同的内容，此时需要优化。</p>
 <h4 id="浏览器的进程模式">浏览器的进程模式</h4>
 <p>Chrome 提供了四种进程模式（Process Models），不同的进程会对 Tab 进程做不同的处理。</p>
@@ -5537,25 +5568,8 @@ div<span class="token punctuation">.</span><span class="token function">remove</
   <entry>
     <title>Topics From Chromium Blogs</title>
     <url>/hais-notebook/2022/06/16/ChromiumBlogs/</url>
-    <content><![CDATA[<p>Read some articles in chromium blogs or relative wikis, and take these memos.</p>
+    <content><![CDATA[<p>本文是来从 <a href="https://blog.chromium.org/">Chromium</a> 和 <a href="https://v8.dev/blog">V8</a> 的博客中摘录的一些不好归类的内容。</p>
 <span id="more"></span>
-<h1 id="architecture">Architecture</h1>
-<h2 id="multi-process-architecture">Multi-process Architecture</h2>
-<blockquote>
-<p><a href="https://blog.chromium.org/2008/09/multi-process-architecture.html">Multi-process Architecture</a> - Thursday, September 11, 2008</p>
-<p>Overview: One browser process + many renderer processes (roughly one for each tab) + plugin processes (one for each plugin)</p>
-</blockquote>
-<ol type="1">
-<li>Three different types of processes: browser, renderers, and plug-ins.
-<ol type="1">
-<li><em>Browser</em>. There's only <strong>one</strong> browser process, which manages the tabs, windows, and "chrome" of the browser. This process also handles all interactions with the disk, network, user input, and display, but it makes no attempt to parse or render any content from the web.</li>
-<li><em>Renderers</em>. The browser process creates <strong>many</strong> renderer processes, each responsible for rendering web pages. The renderer processes contain all the complex logic for handling HTML, JavaScript, CSS, images, and so on. We achieve this using the open source WebKit rendering engine, which is also used by Apple's Safari web browser. Each renderer process is run in a sandbox, which means it has almost <strong>no direct access to your disk, network, or display</strong>. <strong>All interactions with web apps, including user input events and screen painting, must go through the browser process.</strong> This lets the browser process monitor the renderers for suspicious activity, killing them if it suspects an exploit has occurred.</li>
-<li><em>Plug-ins</em>. The browser process also creates <strong>one process for each type of plug-in that is in use</strong>, such as Flash, Quicktime, or Adobe Reader. These processes just contain the plug-ins themselves, along with some glue code to let them interact with the browser and renderers.</li>
-</ol></li>
-<li>Create browser process -&gt; Create one renderer process for each instance of a web site you visit.</li>
-<li>You can think of this as using <strong>a different process for each tab in the browser</strong>, but <strong>allowing two tabs to share a process</strong> if they are related to each other and are showing the same site.</li>
-</ol>
-<h1 id="security">Security</h1>
 <h1 id="javascript">JavaScript</h1>
 <h2 id="jit-just-in-time-compilation">JIT: Just-in-time compilation</h2>
 <blockquote>
@@ -16107,6 +16121,124 @@ foo<span class="token punctuation">.</span><span class="token function">fn</span
 ]]></content>
       <categories>
         <category>前端</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>LeetCodeDiray</title>
+    <url>/hais-notebook/2023/02/05/LeetCodeDiary/</url>
+    <content><![CDATA[<p>与 <a href="/hais-notebook/2022/02/05/Algorithm/" title="Data Structure and Algorithm">Data Structure and Algorithm</a> 不同，算法与数据结构一文中主要是从理论、宏观、模板的角度体系化地记录常见的算法与数据结构。而本文是做算法题中的学习记录，主要记录主观的心路历程和一些实际做题中的坑点、想法和解法。</p>
+<p>本文将按照一定的 Tag，比如二分查找、双指针等来进行展开。</p>
+<span id="more"></span>
+<h1 id="二分查找">二分查找</h1>
+<h2 id="leetcode-704.-binarysearch">LeetCode 704. BinarySearch</h2>
+<blockquote>
+<p><a href="https://leetcode.cn/problems/binary-search/">LeetCode 704. 二分查找</a></p>
+<p>Last Reviewed: 2023.6.8</p>
+</blockquote>
+<p>该题主要需要注意熟悉 <strong>左闭右开</strong> 和 <strong>左闭右闭</strong> 的两种写法，具体写法见 <a href="/hais-notebook/2022/02/05/Algorithm/" title="Data Structure and Algorithm">Data Structure and Algorithm</a> 对应章节。</p>
+<h2 id="leetcode-35.-searchinsertposition">LeetCode 35. SearchInsertPosition</h2>
+<blockquote>
+<p><a href="https://leetcode.cn/problems/search-insert-position/">LeetCode 35. 搜索插入位置</a></p>
+<p>Last Reviewed: 2023.6.8</p>
+</blockquote>
+<p>该题与二分查找别无二致，返回值既可以是右指针 <code>r</code>，也可以是左指针 <code>l</code>，比如我们如果使用左闭右闭区间 <code>[l, r]</code> 的写法：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">while</span> <span class="token punctuation">(</span>l <span class="token operator">&lt;=</span> r<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>num<span class="token punctuation">[</span>mid<span class="token punctuation">]</span> <span class="token operator">===</span> target<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  	<span class="token keyword">return</span> mid
+  <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>nums<span class="token punctuation">[</span>mid<span class="token punctuation">]</span> <span class="token operator">&lt;</span> target<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    l <span class="token operator">=</span> mid <span class="token operator">+</span> <span class="token number">1</span>
+  <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+    r <span class="token operator">=</span> mid <span class="token operator">-</span> <span class="token number">1</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token keyword">return</span> l<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以看到三种情况下返回值均可以为 <code>l</code>：</p>
+<ul>
+<li>当 <code>target &lt; nums[0]</code>，我们要将 <code>target</code> 插入第 <code>0</code> 位，此时 <code>l</code> 也将永远为 <code>0</code>。</li>
+<li>当 <code>target</code> 在 <code>nums</code> 范围内时，比如 <code>[0, 2]</code> 中插入 <code>1</code>，应该返回 <code>1</code>，也就是大于 <code>1</code> 的第一个数字的 <code>index</code>；由于 <code>l</code> 最后加了一，所以正好是这一位。</li>
+<li>当 <code>target &gt; nums[nums.length - 1]</code> 时，我们要将 <code>target</code> 第 <code>nums.length</code> 位，同上，也正好可以用 <code>l</code> 来表示。</li>
+</ul>
+<h2 id="leetcode-34.-findfirstandlastpositionofelementinsortedarray">LeetCode 34. FindFirstAndLastPositionOfElementInSortedArray</h2>
+<blockquote>
+<p><a href="https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/">LeetCode 34. 在排序数组中查找元素的第一个和最后一个位置</a></p>
+<p>Last Reviewed: 2023.6.8</p>
+</blockquote>
+<p>该题刚拿到的时候毫无头绪，想着可能是二分查找嵌套。看了题解之后其实也是有点懵，题解将整体拆成三步：</p>
+<ol type="1">
+<li>查找区间的右边界（约定右边界也不包含 target）</li>
+<li>查找区间的左边界（约定左边界不包含 target）</li>
+<li>根据左右边界确定最终 target 的 position
+<ol type="1">
+<li>target 不在 nums 的范围内：表现为该区间的右边界不在 nums 的范围内（target 位于 nums 的左侧），或该区间的左边界不在 nums 的范围内（target 位于 nums 的右侧）。</li>
+<li>target 在 nums 的范围内，但 nums 中不存在 target：表现为左右区间中间的元素数量小于 1。</li>
+<li>target 在 nums 的范围内，且 nums 中存在 target：输出结果即可。</li>
+</ol></li>
+</ol>
+<h2 id="leetcode-69.-sqrtx">LeetCode 69. SqrtX</h2>
+<blockquote>
+<p><a href="https://leetcode.cn/problems/sqrtx/">LeetCode 69. X 的平方根</a></p>
+<p>Last Reviewed: 2023.6.8</p>
+</blockquote>
+<p>因为要找到的结果是整数，因此直接在整数范围用二分查找即可。</p>
+<h2 id="leetcode-367.-validperfectsquare">LeetCode 367. ValidPerfectSquare</h2>
+<blockquote>
+<p><a href="https://leetcode.cn/problems/valid-perfect-square/">LeetCode 367. 有效的完全平方数</a></p>
+<p>Last Reviewed: 2023.6.8</p>
+</blockquote>
+<p>与 69 题相同。</p>
+<h1 id="双指针">双指针</h1>
+<h2 id="leetcode-27.-removeelement">LeetCode 27. RemoveElement</h2>
+<blockquote>
+<p><a href="https://leetcode.cn/problems/remove-element/">LeetCode 27. 移除元素</a></p>
+<p>Last Reviewed: 2023.6.8</p>
+</blockquote>
+<p>一眼快慢指针。</p>
+<h2 id="leetcode-283.-movezeros">LeetCode 283. MoveZeros</h2>
+<blockquote>
+<p><a href="https://leetcode.cn/problems/move-zeroes/">LeetCode 283. 移动零</a></p>
+<p>Last Reviewd: 2023.6.8</p>
+</blockquote>
+<p>快慢指针，需要想清楚慢指针的定义，我的解法是慢指针指向最后一个非 0 的后一位。</p>
+<h2 id="leetcode-844.-backspacestringcompare">LeetCode 844. BackspaceStringCompare</h2>
+<blockquote>
+<p><a href="https://leetcode.cn/problems/backspace-string-compare/">LeetCode 844. 比较含退格的字符串</a></p>
+<p>Last Reviewed: 2023.6.8</p>
+</blockquote>
+<p>刚拿到这道题的时候只能想到用栈来模拟退格的过程，创建两个新的结果字符串来进行比较，想不到怎样将使用双指针来解。</p>
+<p>题解确实巧妙，将字符串反向遍历，将 # 看做是 Skip 而不是 Back。</p>
+<h2 id="leetcode-977.-squaresofasortedarray">LeetCode 977. SquaresOfASortedArray</h2>
+<blockquote>
+<p><a href="https://leetcode.cn/problems/squares-of-a-sorted-array/">LeetCode 977. 有序数组的平方</a></p>
+<p>Last Reviewed: 2023.6.8</p>
+</blockquote>
+<p>刚拿到这道题的时候，想的是找到第一个非负数，然后用两个指针向两头移动，逐个按平方大小的顺序推入结果数组。</p>
+<p>题解也确实巧妙，不是从中间向两边发散，而是从两头向中间走，相当于反向生成结果，与 844 有异曲同工之妙。</p>
+<h2 id="leetcode-209.-minimunsizesubarraysum">LeetCode 209. MinimunSizeSubarraySum</h2>
+<blockquote>
+<p><a href="https://leetcode.cn/problems/minimum-size-subarray-sum/">LeetCode 209. 长度最小的子数组</a></p>
+<p>Last Reviewed: 2023.6.8</p>
+</blockquote>
+<p>这道题也是刚拿到的时候毫无头绪，结果发现是题目看得有问题，他要求的子数组是连续的而不是随便选，这样自然就可以用双指针（滑动窗口）来做了。</p>
+<h2 id="leetcode-904.-fruitintobaskets">LeetCode 904. FruitIntoBaskets</h2>
+<blockquote>
+<p><a href="https://leetcode.cn/problems/fruit-into-baskets/">LeetCode 904. 水果成篮</a></p>
+<p>Last Reviewed: 2023.6.8</p>
+</blockquote>
+<p>该题用滑动窗口，但有几个坑点：</p>
+<ol type="1">
+<li>最开始是用 Set 存的已经采了哪几种水果，但后来发现需要用 Map 来将每种水果的数量存下来，这样才能在滑动窗口滑走之后将前面所有的水果删掉；</li>
+<li>最开始以为是按照入水果篮的顺序依次删除水果，但其实是需要在有新的品种进入之后，保留新品种的前一个水果的品种（即使该品种可能是先入库的）。</li>
+</ol>
+<h2 id="leetcode-59.-spiralmatrixii">LeetCode 59. SpiralMatrixII</h2>
+<blockquote>
+<p><a href="螺旋矩阵%20II">LeetCode 59. SpiralMatrixII</a></p>
+<p>Last Reviewed: 2023.6.8</p>
+</blockquote>
+<p>该题题解是可以以一圈为一个大循环，在每个大循环内确定该次大循环的四个小循环的边界，然后填充矩阵。</p>
+<p>我自己考虑的解法是使用一个 <code>next</code> 变量维护下一次应该朝哪个方向走，比如 <code>right</code> <code>down</code> 等，然后走到边界之后再换向，模拟人思考的过程。</p>
+]]></content>
+      <categories>
+        <category>计算机</category>
       </categories>
   </entry>
   <entry>
