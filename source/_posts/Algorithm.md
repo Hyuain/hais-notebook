@@ -1,5 +1,5 @@
 ---
-title: 数据结构与算法
+title: Data Structure and Algorithm
 date: 2022-02-05 15:49:12
 categories:
   - [计算机]
@@ -110,20 +110,42 @@ $$
 
 <detail>
 ```typescript
+// 左闭右闭写法
 const binarySearch = (nums: number[], target: number) => {
   if (!nums.length) { return -1 }
   let left = 0
   let right = nums.length - 1
+  // 当 left === right 时，区间 [left, right] 依旧有效
   while (l <= r) {
     let mid = Math.floor((left + right) / 2)
     if (nums[mid] === target) {
       return mid
     } else if (nums[mid] > target) {
-      // 如果写成这样，意味着新的 right 需要在下一次循环被考虑
-      // 所以当 left === right 的时候，循环还不能终止
+      // 因为是右闭区间，新的 right 需要在下一次循环被考虑
       right = mid - 1
     } else {
-      // 新的 left 总是需要被考虑的，所以下面这行一般没有第二种写法
+      // 因为是左闭区间，新的 left 需要在下一次循环被考虑
+      left = mid + 1
+    }
+  }
+  return -1
+}
+
+// 左闭右开写法
+const binarySearch = (nums: number[], target: number) => {
+  if (!nums.length) { return -1 }
+  let left = 0
+  let right = nums.length
+  // 当 left === right 时，区间 [left, right) 无效了
+  while (l < r) {
+    let mid = Math.floor((left + right) / 2)
+    if (nums[mid] === target) {
+      return mid
+    } else if (nums[mid] > target) {
+      // 因为是右开区间，新的 right 不需要被循环考虑
+      right = mid
+    } else {
+      // 因为是左闭区间，新的 left 需要在下一次循环被考虑
       left = mid + 1
     }
   }
@@ -914,7 +936,7 @@ const count = (str) => {
 
 *栈一般也不提供搜索操作
 
-## Monotonous Stack
+## Monotonic Stack
 
 一维数组，要寻找任一元素的右边或左边第一个比自己大或自己小的位置。
 
@@ -1361,6 +1383,21 @@ class Queue {
   }
 }
 ```
+
+## Monotonic Queue
+
+单调队列与单调栈有些许类似之处，他常用于求解区间内的的最大值或最小值。单调队列需要保证队列内部的元素单调递增或递减，除此之外，实际算法应用中由于经常会涉及到其他操作，因此大多数需要借助双端队列实现。
+
+实际算法中的单调队列可以看成是变种的单调栈，比如维持一个单调递减的单调队列，我们需要：
+
+- 如果当前需要插入的元素大于队尾元素，则将队尾 `pop` 出来，重复这个过程——这与 [单调栈](#monotonic-stack) 是一样的；
+- 除此之外，他还可以通过出队来找到最大元素（队首元素）。
+
+# Examples
+
+## 滑动窗口最大值
+
+[LeetCode.239](https://leetcode.cn/problems/sliding-window-maximum/)
 
 # Linked List
 

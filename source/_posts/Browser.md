@@ -107,7 +107,7 @@ Session 是会话，表示浏览器与服务器一段时间内的会话
 
 LocalStorage 一般不过期，SessionStorage 一般在 Session 结束的时候过期（比如关闭浏览器的时候）
 
-# 同源策略
+# Same-Origin Policy
 
 - 源：输入 `window.origin` 或者 `location.origin`，我们就可以看到 **源**，实际上他就是 **协议 + 域名 + 端口号**。
 - 同源：当两个 url 的源（协议、域名、端口号）完全一致，则称之为 **同源**，比如 `https://baidu.com` 和 `https://www.baidu.com` 就不同源。
@@ -174,18 +174,16 @@ function jsonp(settings) {
 }
 ```
 
-# 浏览器架构
+# Multi-Process Architecture of Browsers
 
-## 浏览器的多进程架构
-
-### Chrome 的多进程架构
+## Chrome 的多进程架构
 
 浏览器可以是单进程的，也可以是多进程的（不同的进程间可以通过IPC通信），不同的浏览器使用不同的架构，比如对于 Chrome：
 
-- **浏览器进程 Browser Process**：负责浏览器 Tab 的前进、后退、地址栏、书签栏、网络请求、文件访问等
-- **渲染进程 Renderer Process**：负责一个 Tab 内的显示相关工作
-- **插件进程 Plugin Process**：负责控制插件
-- **GPU 进程 GPU Process**：负责处理 GPU 任务
+- **浏览器进程 Browser Process**：浏览器只会存在一个浏览器进程，他负责管理浏览器的 Tabs、Windows 以及 "chrome"，以及与硬盘、网络、用户输入、显示器的交互，具体来说包括 Tab 的前进、后退、地址栏、书签栏、网络请求、文件访问等。但他不会负责解析或渲染来自网络的任何内容。
+- **渲染器进程 Renderer Process**：浏览器进程会创建多个渲染器进程，每个浏览器进程会负责一个 Tab 内的显示相关工作。浏览器进程包揽了所有处理 HTML、JavaScript、CSS、图片等的复杂逻辑。每个渲染器进程都在一个沙盒中运行，并不会直接访问硬盘、网络或显示器。所有与 Web APP 的交互（包括处理用户输入事件、绘制屏幕等）都需要经过浏览器进程。因此浏览器进程可以监控渲染器进程，并终止可疑的恶意进程。
+- **插件进程 Plugin Process**：浏览器进程还会为每一个运行中的插件创建一个插件进程。
+- **GPU 进程 GPU Process**：负责处理 GPU 任务。
 
 ![](https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/2.png)
 
@@ -198,7 +196,7 @@ function jsonp(settings) {
 
 ![](https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/3.png)
 
-### 多进程架构的好处
+## 多进程架构的好处
 
 ![](https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/4.png)
 
@@ -206,7 +204,7 @@ function jsonp(settings) {
 2. 安全性。浏览器针对不同的进程限制了不同的权限，并为其提供沙盒运行环境，使其更加安全可靠
 3. 更高的响应速度。避免各个任务抢占 CPU 资源
 
-### 多进程架构优化
+## 多进程架构优化
 
 一个 Tab 对应一个 **Renderer Process**，进程之间的内存无法共享，而不同的进程内存常常有相同的内容，此时需要优化。
 

@@ -5,26 +5,9 @@ categories:
   - [Memo]
 ---
 
-Read some articles in chromium blogs or relative wikis, and take these memos.
+本文是来从 [Chromium](https://blog.chromium.org/) 和 [V8](https://v8.dev/blog) 的博客中摘录的一些不好归类的内容。
 
 <!-- more -->
-
-# Architecture
-
-## Multi-process Architecture
-
->  [Multi-process Architecture](https://blog.chromium.org/2008/09/multi-process-architecture.html) - Thursday, September 11, 2008
->
->  Overview: One browser process + many renderer processes (roughly one for each tab) + plugin processes (one for each plugin)
-
-1. Three different types of processes: browser, renderers, and plug-ins.
-   1. *Browser*. There's only **one** browser process, which manages the tabs, windows, and "chrome" of the browser.  This process also handles all interactions with the disk, network, user input, and display, but it makes no attempt to parse or render any content from the web.
-   2. *Renderers*. The browser process creates **many** renderer processes, each responsible for rendering web pages.  The renderer processes contain all the complex logic for handling HTML, JavaScript, CSS, images, and so on.  We achieve this using the open source WebKit rendering engine, which is also used by Apple's Safari web browser.  Each renderer process is run in a sandbox, which means it has almost **no direct access to your disk, network, or display**.  **All interactions with web apps, including user input events and screen painting, must go through the browser process.**  This lets the browser process monitor the renderers for suspicious activity, killing them if it suspects an exploit has occurred.
-   3. *Plug-ins*. The browser process also creates **one process for each type of plug-in that is in use**, such as Flash, Quicktime, or Adobe Reader.  These processes just contain the plug-ins themselves, along with some glue code to let them interact with the browser and renderers.
-2. Create browser process -> Create one renderer process for each instance of a web site you visit.
-3. You can think of this as using **a different process for each tab in the browser**, but **allowing two tabs to share a process** if they are related to each other and are showing the same site.
-
-# Security
 
 # JavaScript
 
