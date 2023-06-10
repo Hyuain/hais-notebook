@@ -139,10 +139,56 @@ return l
 
 ## LeetCode 59. SpiralMatrixII
 
-> [LeetCode 59. SpiralMatrixII](螺旋矩阵 II)
+> [LeetCode 59. 螺旋矩阵](https://leetcode.cn/problems/spiral-matrix-ii/)
 >
 > Last Reviewed: 2023.6.8
 
 该题题解是可以以一圈为一个大循环，在每个大循环内确定该次大循环的四个小循环的边界，然后填充矩阵。
 
 我自己考虑的解法是使用一个 `next` 变量维护下一次应该朝哪个方向走，比如 `right` `down` 等，然后走到边界之后再换向，模拟人思考的过程。
+
+## LeetCode 19. RemoveNthNodeFromEndOfList
+
+> [LeetCode 19. 删除链表的倒数第 N 个节点](https://leetcode.cn/problems/remove-nth-node-from-end-of-list/)
+>
+> Last Rveiewed: 2023.6.10
+
+该题首先想到的就是先遍历一遍找到 size，然后再找到正数的 index，该方法需要遍历两次链表。
+
+题解使用快慢指针可以达仅用一次遍历的效果。具体做法是先将快指针指向 n + 1 的位置，然后快慢指针同时向后遍历，此时若快指针指向 null，则慢指针则会指向要删除的节点的父结点，利用这个快慢指针的差值记录 n，可谓非常巧妙。
+
+## Interview 2.7. IntersectionOfTwoLinkedListLCCI
+
+> [Interview 2.7. 链表相交]([Intersection of Two Linked Lists LCCI](https://leetcode.cn/problems/intersection-of-two-linked-lists-lcci/))
+>
+> Last Reviewed: 2023.6.10
+
+该题首先想到是用 Set 存起来已经遍历的节点，该解法要求额外 O(n) 的空间。
+
+同样的，该题也可以用快慢指针来解决。首先找到两个链表的长度差值 diff，然后通过将快指针（用来遍历长链表）先走 diff 步，使得两个链表右对齐。此时再让快（遍历长链表）慢（遍历短链表）指针同时出发，就可以找到相交的节点了。利用了如果两个链表相交，那么他们相交之后的部分长度相同的特点。
+
+## LeetCode 142. LinkedListCycleII
+
+> [LeetCode 142. 环形链表 II](https://leetcode.cn/problems/linked-list-cycle-ii/)
+>
+> Last Reviewd: 2023.6.10
+
+该题其实也可以通过 Set 来解，用 Set 的话就无比简单，但需要额外 O(n) 的空间。
+
+如果用快慢指针的话，该题需要让快指针的一次走两步，慢指针一次走一步，慢指针若能追上快指针，则链表有环。
+
+找到环开始的地方就相对比较麻烦了，可以设三段的长度，环开始节点的左边长度为 $x$，环开始的地方到追上的地方长度为 $y$，环剩下的部分长度为 z。那么快指针走过的距离为 $x + k * (y + z)$；也可以表示为慢指针的两倍，即 $2 * (x + y)$，那么有以下等式：
+$$
+x + k * (y + z) +y = 2 * (x + y)
+$$
+可以化简为：
+$$
+x + y = k * (y + z)
+$$
+如果此时快指针只多走了一圈，那么有 $k = 1$，则：
+$$
+x = z
+$$
+也就是说，从相遇的地方开始一个指针，从链表头开始一个指针，两个指针相交的地方则为环开始的地方。
+
+如果 $k \neq 1$，那么其实也可以用上述算法，只是在环中开始的节点会在环中多转几圈。

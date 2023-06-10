@@ -2099,6 +2099,114 @@ function topKFrequent(nums: number[], k: number): number[] {
 
 </detail>
 
+# Graph
+
+## Shortest Path
+
+### Dijkstra
+
+> Dijkstra（/ˈdikstrɑ/或/ˈdɛikstrɑ/）算法由荷兰计算机科学家 E. W. Dijkstra 于 1956 年发现，1959 年公开发表。是一种求解 **非负权图** 上单源最短路径的算法。
+
+该算法会记录当前已知的最短路径，并在寻找到更短的路径时更新。
+
+一旦找到最短路径，那个节点从未访问集合中被删除，并添加到已找到最短路径的集合中。
+
+重复查找的过程，直到所图中所有的节点都已经添加到路径中，这样就可以得到源节点出发访问其他所有节点的最短路径方案。
+
+![](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Dijkstra-1.png)
+
+**目标**：如图所示我们从 `0` 出发，查找其他所有节点的最短路径。
+
+**初始化**
+
+1. 初始化距离列表：`distance = [0, Infinity, Infinity, Infinity, Infinity, Infinity]`。
+
+2. 初始化未访问节点集合：`unvisitied = new Set([1, 2, 3, 4, 5, 6])` 和已找到最短路径的集合 `shortest = new Set([0])`，当集合为空时即为计算完成（从节点 `0` 出发可以直接将 `0` 标记为已访问）。
+
+```javascript
+distance:   [0, Infinity, Infinity, Infinity, Infinity, Infinity, Infinity]
+unvisited:  Set({1, 2, 3, 4, 5, 6})
+shortest:   Set({0})
+```
+
+**第一次循环**
+
+1. 检查 `0` 到相邻节点 `1` 和 `2` 的距离， 并更新 `distance` 为对应的权重 `[0, 2, 6, Infinity, Infinity, Infinity]`。
+2. 根据已知的 `distance` 选择距离源节点最近的节点，即节点 `1`，把他标记为已访问，并添加到路径中。`unvisitied.delete(1); shortest.add(1)`。
+
+```javascript
+istance:   [0, 2, 6, Infinity, Infinity, Infinity, Infinity]
+unvisited:  Set({2, 3, 4, 5, 6})
+shortest:   Set({0, 1})
+```
+
+**第二次循环**
+
+1. 检查已经在最短路径的集合中包含的节点的相邻节点 `2` 和 `3`，此时需要计算源节点到 `3` 的距离，由于已经在路径中的集合只有 `0` 和 `1`，因此只能通过 `0 -> 1 -> 3` 进行计算，结果为 7。更新 `distance` 为 `[0, 2, 6, 7, Infinity, Infinity]`。
+2. 选择已知的与源节点最近的未访问节点，即节点 `2`，将其标记为已访问并加入路径。
+
+```javascript
+distance:   [0, 2, 6, 7, Infinity, Infinity, Infinity]
+unvisited:  Set({3, 4, 5, 6})
+shortest:   Set({0, 1, 2})
+```
+
+**第三次循环**
+
+1. 检查已经在最短路径集合中包含的节点的相邻节点 `3`，可选路径为 `0 -> 1 -> 3` 和 `0 -> 2 -> 3`，结果是前者更小，因此保持 `distance` 中的 7 不变。
+2. 将节点 `3` 标记为已访问并添加至路径中。
+
+```javascript
+distance:   [0, 2, 6, 7, Infinity, Infinity, Infinity]
+unvisited:  Set({4, 5, 6})
+shortest:   Set({0, 1, 2, 3})
+```
+
+**第四次循环**
+
+1. 重复上述过程，检查节点 `4` 和 `5`，节点 `4` 的最短路径是 `0 -> 3 -> 4`，距离为 17；节点 `5` 的最短路径是 `0 -> 3 -> 5`，距离为 22，用这个结果更新 `distance`。
+2. 将 `4` 标记为已访问并添加至路径。
+
+```javascript
+distance:   [0, 2, 6, 7, 17, 22, Infinity]
+unvisited:  Set({5, 6})
+shortest:   Set({0, 1, 2, 3, 4})
+```
+
+**第五次循环**
+
+1. 检查 `5` 和 `6`，对于 `5` 可选 `0 -> 3 -> 5` 和 `0 -> 4 -> 5`；对于 `6` 可选 `0 -> 4 -> 6`，更新 `distance`。
+2. 将 `6` 标记为已访问并添加至路径。
+
+```javascript
+distance:   [0, 2, 6, 7, 17, 22, 19]
+unvisited:  Set({5})
+shortest:   Set({0, 1, 2, 3, 4, 6})
+```
+
+**第六次循环**
+
+1. 检查 `5`，可选 `0 -> 3 -> 5` `0 -> 4 -> 5` 和 `0 -> 6 -> 5`，更新 `distance`。
+2. 将 `5` 标记为已访问并添加至路径。
+
+```javascript
+distance:   [0, 2, 6, 7, 17, 22, 19]
+unvisited:  Set({})
+shortest:   Set({0, 1, 2, 3, 4, 6, 5})
+```
+
+算法代码如下：
+
+```javascript
+function dijkstra(edges, n, source) {
+  const distance = new Array(n).fill(Infinity)
+  distance[source] = 0
+  
+}
+```
+
+
+
 # Dynamic Programing
 
 ## 背包问题
