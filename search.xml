@@ -1840,6 +1840,79 @@ T(n) = \sum_{i=0}^{h} n_i h_i \\
   <span class="token keyword">return</span> result
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p></detail></p>
+<h1 id="graph">Graph</h1>
+<h2 id="shortest-path">Shortest Path</h2>
+<h3 id="dijkstra">Dijkstra</h3>
+<blockquote>
+<p>Dijkstra（/ˈdikstrɑ/或/ˈdɛikstrɑ/）算法由荷兰计算机科学家 E. W. Dijkstra 于 1956 年发现，1959 年公开发表。是一种求解 <strong>非负权图</strong> 上单源最短路径的算法。</p>
+</blockquote>
+<p>该算法会记录当前已知的最短路径，并在寻找到更短的路径时更新。</p>
+<p>一旦找到最短路径，那个节点从未访问集合中被删除，并添加到已找到最短路径的集合中。</p>
+<p>重复查找的过程，直到所图中所有的节点都已经添加到路径中，这样就可以得到源节点出发访问其他所有节点的最短路径方案。</p>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Dijkstra-1.png" /></p>
+<p><strong>目标</strong>：如图所示我们从 <code>0</code> 出发，查找其他所有节点的最短路径。</p>
+<p><strong>初始化</strong></p>
+<ol type="1">
+<li><p>初始化距离列表：<code>distance = [0, Infinity, Infinity, Infinity, Infinity, Infinity]</code>。</p></li>
+<li><p>初始化未访问节点集合：<code>unvisitied = new Set([1, 2, 3, 4, 5, 6])</code> 和已找到最短路径的集合 <code>shortest = new Set([0])</code>，当集合为空时即为计算完成（从节点 <code>0</code> 出发可以直接将 <code>0</code> 标记为已访问）。</p></li>
+</ol>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token literal-property property">distance</span><span class="token operator">:</span>   <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">Infinity</span><span class="token punctuation">,</span> <span class="token number">Infinity</span><span class="token punctuation">,</span> <span class="token number">Infinity</span><span class="token punctuation">,</span> <span class="token number">Infinity</span><span class="token punctuation">,</span> <span class="token number">Infinity</span><span class="token punctuation">,</span> <span class="token number">Infinity</span><span class="token punctuation">]</span>
+<span class="token literal-property property">unvisited</span><span class="token operator">:</span>  <span class="token function">Set</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token literal-property property">shortest</span><span class="token operator">:</span>   <span class="token function">Set</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span><span class="token number">0</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p><strong>第一次循环</strong></p>
+<ol type="1">
+<li>检查 <code>0</code> 到相邻节点 <code>1</code> 和 <code>2</code> 的距离， 并更新 <code>distance</code> 为对应的权重 <code>[0, 2, 6, Infinity, Infinity, Infinity]</code>。</li>
+<li>根据已知的 <code>distance</code> 选择距离源节点最近的节点，即节点 <code>1</code>，把他标记为已访问，并添加到路径中。<code>unvisitied.delete(1); shortest.add(1)</code>。</li>
+</ol>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token literal-property property">istance</span><span class="token operator">:</span>   <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">,</span> <span class="token number">Infinity</span><span class="token punctuation">,</span> <span class="token number">Infinity</span><span class="token punctuation">,</span> <span class="token number">Infinity</span><span class="token punctuation">,</span> <span class="token number">Infinity</span><span class="token punctuation">]</span>
+<span class="token literal-property property">unvisited</span><span class="token operator">:</span>  <span class="token function">Set</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token literal-property property">shortest</span><span class="token operator">:</span>   <span class="token function">Set</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p><strong>第二次循环</strong></p>
+<ol type="1">
+<li>检查已经在最短路径的集合中包含的节点的相邻节点 <code>2</code> 和 <code>3</code>，此时需要计算源节点到 <code>3</code> 的距离，由于已经在路径中的集合只有 <code>0</code> 和 <code>1</code>，因此只能通过 <code>0 -&gt; 1 -&gt; 3</code> 进行计算，结果为 7。更新 <code>distance</code> 为 <code>[0, 2, 6, 7, Infinity, Infinity]</code>。</li>
+<li>选择已知的与源节点最近的未访问节点，即节点 <code>2</code>，将其标记为已访问并加入路径。</li>
+</ol>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token literal-property property">distance</span><span class="token operator">:</span>   <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">,</span> <span class="token number">7</span><span class="token punctuation">,</span> <span class="token number">Infinity</span><span class="token punctuation">,</span> <span class="token number">Infinity</span><span class="token punctuation">,</span> <span class="token number">Infinity</span><span class="token punctuation">]</span>
+<span class="token literal-property property">unvisited</span><span class="token operator">:</span>  <span class="token function">Set</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span><span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token literal-property property">shortest</span><span class="token operator">:</span>   <span class="token function">Set</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p><strong>第三次循环</strong></p>
+<ol type="1">
+<li>检查已经在最短路径集合中包含的节点的相邻节点 <code>3</code>，可选路径为 <code>0 -&gt; 1 -&gt; 3</code> 和 <code>0 -&gt; 2 -&gt; 3</code>，结果是前者更小，因此保持 <code>distance</code> 中的 7 不变。</li>
+<li>将节点 <code>3</code> 标记为已访问并添加至路径中。</li>
+</ol>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token literal-property property">distance</span><span class="token operator">:</span>   <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">,</span> <span class="token number">7</span><span class="token punctuation">,</span> <span class="token number">Infinity</span><span class="token punctuation">,</span> <span class="token number">Infinity</span><span class="token punctuation">,</span> <span class="token number">Infinity</span><span class="token punctuation">]</span>
+<span class="token literal-property property">unvisited</span><span class="token operator">:</span>  <span class="token function">Set</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span><span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token literal-property property">shortest</span><span class="token operator">:</span>   <span class="token function">Set</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p><strong>第四次循环</strong></p>
+<ol type="1">
+<li>重复上述过程，检查节点 <code>4</code> 和 <code>5</code>，节点 <code>4</code> 的最短路径是 <code>0 -&gt; 3 -&gt; 4</code>，距离为 17；节点 <code>5</code> 的最短路径是 <code>0 -&gt; 3 -&gt; 5</code>，距离为 22，用这个结果更新 <code>distance</code>。</li>
+<li>将 <code>4</code> 标记为已访问并添加至路径。</li>
+</ol>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token literal-property property">distance</span><span class="token operator">:</span>   <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">,</span> <span class="token number">7</span><span class="token punctuation">,</span> <span class="token number">17</span><span class="token punctuation">,</span> <span class="token number">22</span><span class="token punctuation">,</span> <span class="token number">Infinity</span><span class="token punctuation">]</span>
+<span class="token literal-property property">unvisited</span><span class="token operator">:</span>  <span class="token function">Set</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span><span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token literal-property property">shortest</span><span class="token operator">:</span>   <span class="token function">Set</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p><strong>第五次循环</strong></p>
+<ol type="1">
+<li>检查 <code>5</code> 和 <code>6</code>，对于 <code>5</code> 可选 <code>0 -&gt; 3 -&gt; 5</code> 和 <code>0 -&gt; 4 -&gt; 5</code>；对于 <code>6</code> 可选 <code>0 -&gt; 4 -&gt; 6</code>，更新 <code>distance</code>。</li>
+<li>将 <code>6</code> 标记为已访问并添加至路径。</li>
+</ol>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token literal-property property">distance</span><span class="token operator">:</span>   <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">,</span> <span class="token number">7</span><span class="token punctuation">,</span> <span class="token number">17</span><span class="token punctuation">,</span> <span class="token number">22</span><span class="token punctuation">,</span> <span class="token number">19</span><span class="token punctuation">]</span>
+<span class="token literal-property property">unvisited</span><span class="token operator">:</span>  <span class="token function">Set</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span><span class="token number">5</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token literal-property property">shortest</span><span class="token operator">:</span>   <span class="token function">Set</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p><strong>第六次循环</strong></p>
+<ol type="1">
+<li>检查 <code>5</code>，可选 <code>0 -&gt; 3 -&gt; 5</code> <code>0 -&gt; 4 -&gt; 5</code> 和 <code>0 -&gt; 6 -&gt; 5</code>，更新 <code>distance</code>。</li>
+<li>将 <code>5</code> 标记为已访问并添加至路径。</li>
+</ol>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token literal-property property">distance</span><span class="token operator">:</span>   <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">,</span> <span class="token number">7</span><span class="token punctuation">,</span> <span class="token number">17</span><span class="token punctuation">,</span> <span class="token number">22</span><span class="token punctuation">,</span> <span class="token number">19</span><span class="token punctuation">]</span>
+<span class="token literal-property property">unvisited</span><span class="token operator">:</span>  <span class="token function">Set</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token literal-property property">shortest</span><span class="token operator">:</span>   <span class="token function">Set</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>算法代码如下：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">function</span> <span class="token function">dijkstra</span><span class="token punctuation">(</span><span class="token parameter">edges<span class="token punctuation">,</span> n<span class="token punctuation">,</span> source</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> distance <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Array</span><span class="token punctuation">(</span>n<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">fill</span><span class="token punctuation">(</span><span class="token number">Infinity</span><span class="token punctuation">)</span>
+  distance<span class="token punctuation">[</span>source<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">0</span>
+  
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h1 id="dynamic-programing">Dynamic Programing</h1>
 <h2 id="背包问题">背包问题</h2>
 <figure>
@@ -16231,11 +16304,40 @@ foo<span class="token punctuation">.</span><span class="token function">fn</span
 </ol>
 <h2 id="leetcode-59.-spiralmatrixii">LeetCode 59. SpiralMatrixII</h2>
 <blockquote>
-<p><a href="螺旋矩阵%20II">LeetCode 59. SpiralMatrixII</a></p>
+<p><a href="https://leetcode.cn/problems/spiral-matrix-ii/">LeetCode 59. 螺旋矩阵</a></p>
 <p>Last Reviewed: 2023.6.8</p>
 </blockquote>
 <p>该题题解是可以以一圈为一个大循环，在每个大循环内确定该次大循环的四个小循环的边界，然后填充矩阵。</p>
 <p>我自己考虑的解法是使用一个 <code>next</code> 变量维护下一次应该朝哪个方向走，比如 <code>right</code> <code>down</code> 等，然后走到边界之后再换向，模拟人思考的过程。</p>
+<h2 id="leetcode-19.-removenthnodefromendoflist">LeetCode 19. RemoveNthNodeFromEndOfList</h2>
+<blockquote>
+<p><a href="https://leetcode.cn/problems/remove-nth-node-from-end-of-list/">LeetCode 19. 删除链表的倒数第 N 个节点</a></p>
+<p>Last Rveiewed: 2023.6.10</p>
+</blockquote>
+<p>该题首先想到的就是先遍历一遍找到 size，然后再找到正数的 index，该方法需要遍历两次链表。</p>
+<p>题解使用快慢指针可以达仅用一次遍历的效果。具体做法是先将快指针指向 n + 1 的位置，然后快慢指针同时向后遍历，此时若快指针指向 null，则慢指针则会指向要删除的节点的父结点，利用这个快慢指针的差值记录 n，可谓非常巧妙。</p>
+<h2 id="interview-2.7.-intersectionoftwolinkedlistlcci">Interview 2.7. IntersectionOfTwoLinkedListLCCI</h2>
+<blockquote>
+<p><a href="%5BIntersection%20of%20Two%20Linked%20Lists%20LCCI%5D(https://leetcode.cn/problems/intersection-of-two-linked-lists-lcci/)">Interview 2.7. 链表相交</a></p>
+<p>Last Reviewed: 2023.6.10</p>
+</blockquote>
+<p>该题首先想到是用 Set 存起来已经遍历的节点，该解法要求额外 O(n) 的空间。</p>
+<p>同样的，该题也可以用快慢指针来解决。首先找到两个链表的长度差值 diff，然后通过将快指针（用来遍历长链表）先走 diff 步，使得两个链表右对齐。此时再让快（遍历长链表）慢（遍历短链表）指针同时出发，就可以找到相交的节点了。利用了如果两个链表相交，那么他们相交之后的部分长度相同的特点。</p>
+<h2 id="leetcode-142.-linkedlistcycleii">LeetCode 142. LinkedListCycleII</h2>
+<blockquote>
+<p><a href="https://leetcode.cn/problems/linked-list-cycle-ii/">LeetCode 142. 环形链表 II</a></p>
+<p>Last Reviewd: 2023.6.10</p>
+</blockquote>
+<p>该题其实也可以通过 Set 来解，用 Set 的话就无比简单，但需要额外 O(n) 的空间。</p>
+<p>如果用快慢指针的话，该题需要让快指针的一次走两步，慢指针一次走一步，慢指针若能追上快指针，则链表有环。</p>
+<p>找到环开始的地方就相对比较麻烦了，可以设三段的长度，环开始节点的左边长度为 <span class="math inline">\(x\)</span>，环开始的地方到追上的地方长度为 <span class="math inline">\(y\)</span>，环剩下的部分长度为 z。那么快指针走过的距离为 <span class="math inline">\(x + k * (y + z)\)</span>；也可以表示为慢指针的两倍，即 <span class="math inline">\(2 * (x + y)\)</span>，那么有以下等式： <span class="math display">\[
+x + k * (y + z) +y = 2 * (x + y)
+\]</span> 可以化简为： <span class="math display">\[
+x + y = k * (y + z)
+\]</span> 如果此时快指针只多走了一圈，那么有 <span class="math inline">\(k = 1\)</span>，则： <span class="math display">\[
+x = z
+\]</span> 也就是说，从相遇的地方开始一个指针，从链表头开始一个指针，两个指针相交的地方则为环开始的地方。</p>
+<p>如果 <span class="math inline">\(k \neq 1\)</span>，那么其实也可以用上述算法，只是在环中开始的节点会在环中多转几圈。</p>
 ]]></content>
       <categories>
         <category>计算机</category>
