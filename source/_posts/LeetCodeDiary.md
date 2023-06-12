@@ -126,16 +126,46 @@ return l
 
 这道题也是刚拿到的时候毫无头绪，结果发现是题目看得有问题，他要求的子数组是连续的而不是随便选，这样自然就可以用双指针（滑动窗口）来做了。
 
-## LeetCode 904. FruitIntoBaskets
+# 哈希表
+## LeetCode 209. MinimunSizeSubarraySum
 
-> [LeetCode 904. 水果成篮](https://leetcode.cn/problems/fruit-into-baskets/)
+> [LeetCode 209. 长度最小的子数组](https://leetcode.cn/problems/minimum-size-subarray-sum/)
 >
 > Last Reviewed: 2023.6.8
 
-该题用滑动窗口，但有几个坑点：
+这道题也是刚拿到的时候毫无头绪，结果发现是题目看得有问题，他要求的子数组是连续的而不是随便选，这样自然就可以用双指针（滑动窗口）来做了。
 
-1. 最开始是用 Set 存的已经采了哪几种水果，但后来发现需要用 Map 来将每种水果的数量存下来，这样才能在滑动窗口滑走之后将前面所有的水果删掉；
-2. 最开始以为是按照入水果篮的顺序依次删除水果，但其实是需要在有新的品种进入之后，保留新品种的前一个水果的品种（即使该品种可能是先入库的）。
+## LeetCode 242. Valid Anagram
+
+> [LeetCode 242. 有效的字母异位词](https://leetcode.cn/problems/valid-anagram/)
+>
+> Last Reviewed: 2023.6.12
+
+该题非常简单，可以考虑直接用dic实现或者直接用数组实现。
+
+## LeetCode 349. Intersection of Two Arrays
+
+> [LeetCode 349. 两个数组的交集](https://leetcode.cn/problems/intersection-of-two-arrays/)
+>
+> Last Reviewed: 2023.6.12
+
+Set中元素不重复，能很好的解决这个问题。
+
+## LeetCode 202. Happy Number
+
+> [LeetCode 202. 快乐数](https://leetcode.cn/problems/happy-number/)
+>
+> Last Reviewed: 2023.6.12
+
+不是快乐数的话会进入循环，即后面出现的数是之前出现过的，可以根据这个判断是否为快乐数。
+
+## LeetCode 1. Two Sum
+
+> [LeetCode 1. 两数之和](https://leetcode.cn/problems/two-sum/)
+>
+> Last Reviewed: 2023.6.12
+
+一边遍历一边把数和index加入dic，遍历数i时只需要考虑dic中是否存在target-i即可
 
 ## LeetCode 59. SpiralMatrixII
 
