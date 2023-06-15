@@ -126,47 +126,6 @@ return l
 
 这道题也是刚拿到的时候毫无头绪，结果发现是题目看得有问题，他要求的子数组是连续的而不是随便选，这样自然就可以用双指针（滑动窗口）来做了。
 
-# 哈希表
-## LeetCode 209. MinimunSizeSubarraySum
-
-> [LeetCode 209. 长度最小的子数组](https://leetcode.cn/problems/minimum-size-subarray-sum/)
->
-> Last Reviewed: 2023.6.8
-
-这道题也是刚拿到的时候毫无头绪，结果发现是题目看得有问题，他要求的子数组是连续的而不是随便选，这样自然就可以用双指针（滑动窗口）来做了。
-
-## LeetCode 242. Valid Anagram
-
-> [LeetCode 242. 有效的字母异位词](https://leetcode.cn/problems/valid-anagram/)
->
-> Last Reviewed: 2023.6.12
-
-该题非常简单，可以考虑直接用dic实现或者直接用数组实现。
-
-## LeetCode 349. Intersection of Two Arrays
-
-> [LeetCode 349. 两个数组的交集](https://leetcode.cn/problems/intersection-of-two-arrays/)
->
-> Last Reviewed: 2023.6.12
-
-Set中元素不重复，能很好的解决这个问题。
-
-## LeetCode 202. Happy Number
-
-> [LeetCode 202. 快乐数](https://leetcode.cn/problems/happy-number/)
->
-> Last Reviewed: 2023.6.12
-
-不是快乐数的话会进入循环，即后面出现的数是之前出现过的，可以根据这个判断是否为快乐数。
-
-## LeetCode 1. Two Sum
-
-> [LeetCode 1. 两数之和](https://leetcode.cn/problems/two-sum/)
->
-> Last Reviewed: 2023.6.12
-
-一边遍历一边把数和index加入dic，遍历数i时只需要考虑dic中是否存在target-i即可
-
 ## LeetCode 59. SpiralMatrixII
 
 > [LeetCode 59. 螺旋矩阵](https://leetcode.cn/problems/spiral-matrix-ii/)
@@ -222,3 +181,89 @@ $$
 也就是说，从相遇的地方开始一个指针，从链表头开始一个指针，两个指针相交的地方则为环开始的地方。
 
 如果 $k \neq 1$，那么其实也可以用上述算法，只是在环中开始的节点会在环中多转几圈。
+
+## LeetCode 15. ThreeSum
+
+> [LeetCode 15. 三数之和](https://leetcode.cn/problems/3sum/)
+>
+> Last Reviewed: 2023.6.13
+
+该题由于是在同一数组中的三个数，三个数下标不能相等，且不能有重复的三元组，因此难度是要高于四数之和 II 的。
+
+该题主要是要借助双指针来对问题进行降维。该题在暴力解法下的时间复杂度是 O(n^3)。但借助双指针，可以同时遍历后面两个下标（若和小于 0，则第二个下标右移；若和大于 0，则第三个下标左移），使得时间复杂度下降至 O(n^2)。
+
+## LeetCode 18. FourSum
+
+> [LeetCode 18. 四数之和](https://leetcode.cn/problems/4sum/)
+>
+> Last Reviewed: 2023.6.13
+
+该题与三数之和类似，同样是用双指针来进行降维，四个下标中第一个和第二个暴力遍历，第三个和第四个用类似三数之和的双指针法同时遍历剩下的部分。
+
+## Offer 05. ReplaceSpaces
+
+> [Offer 05. 替换空格 LCOF](https://leetcode.cn/problems/ti-huan-kong-ge-lcof/)
+>
+> Last Reviewed: 2023.6.14
+
+该题是考字符串的操作，增补操作通常可以通过从字符串末尾开始的两个指针来完成。
+
+# 哈希表
+
+## LeetCode 242. ValidAnagram
+
+> [LeetCode 242. 有效的字母异位词](https://leetcode.cn/problems/valid-anagram/)
+>
+> Last Reviewed: 2023.6.12
+
+该题非常简单，可以考虑直接用dic实现或者直接用数组实现。
+
+## LeetCode 349. IntersectionOfTwoArrays
+
+> [LeetCode 349. 两个数组的交集](https://leetcode.cn/problems/intersection-of-two-arrays/)
+>
+> Last Reviewed: 2023.6.12
+
+Set中元素不重复，能很好的解决这个问题。
+
+## LeetCode 202. HappyNumber
+
+> [LeetCode 202. 快乐数](https://leetcode.cn/problems/happy-number/)
+>
+> Last Reviewed: 2023.6.12
+
+不是快乐数的话会进入循环，即后面出现的数是之前出现过的，可以根据这个判断是否为快乐数。
+
+## LeetCode 1. TwoSum
+
+> [LeetCode 1. 两数之和](https://leetcode.cn/problems/two-sum/)
+>
+> Last Reviewed: 2023.6.12
+
+一边遍历一边把数和index加入dic，遍历数i时只需要考虑dic中是否存在target-i即可
+
+## LeetCode 454. FourSumII
+
+> [LeetCode 454. 四数之和 II](https://leetcode.cn/problems/4sum-ii/)
+>
+> Last Reviewed: 2023.6.13
+
+由于题目没有说同一个数组中不能取相同的数字，因此可以简单将其分为两两一组，暴力得到每组的所有可能的和，并借助哈希表来统计个数即可。
+
+# 字符串
+
+## LeetCode 1177. CanMakePalindromeFromSubstring
+
+> [LeetCode 1177. 构建回文串检测](https://leetcode.cn/problems/can-make-palindrome-from-substring/)
+>
+> Last Reviewed: 2023.6.15
+
+该题由于可以重新构建字符串，因此可以通过对字符串中字符进行计数来判断是否能构成回文串。
+
+## LeetCode 28. FindTheIndexOfFirstOccurenceInAString
+
+> [LeetCode 28. 找出字符串中第一个匹配项的下标](https://leetcode.cn/problems/find-the-index-of-the-first-occurrence-in-a-string/)
+>
+> Last Reviewed: 2023.6.15
+
+该题使用 KMP，具体见 {% post_link Algorithm %} 对应章节。
