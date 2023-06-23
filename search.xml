@@ -1870,7 +1870,7 @@ T(n) = \sum_{i=0}^{h} n_i h_i \\
 = \sum_{i=0}^{h}2^i(h - i) \\
 = \sum_{i=0}^{h}\frac{h-i}{2^{h-i}}{2^h} \\
 = 2^h\sum_{k=0}^{h}\frac{k}{2^k} \\
-\le n\sum_{k=0}^\infin\frac{k}{2^k} \\
+\le n\sum_{k=0}^\infty\frac{k}{2^k} \\
 = O(n)
 \]</span></p>
 <ol start="2" type="1">
@@ -20829,6 +20829,87 @@ user <span class="token operator">=</span> create<span class="token punctuation"
 ]]></content>
       <categories>
         <category>全栈</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>React - Deep Dive</title>
+    <url>/hais-notebook/2023/06/23/React-DeepDive/</url>
+    <content><![CDATA[<p>与另一篇 React 笔记不同，本文主要是深入讨论 React 的源码与设计理念。</p>
+<span id="more"></span>
+<p>Clone React 项目之后，在 README 中找到调试 React 的方法，具体可参照 <a href="https://legacy.reactjs.org/docs/how-to-contribute.html">How to Contribute</a>。然后按照文中安装依赖并 Build 之后，将 <code>fixture/packaging/babel-standalone/dev.html</code> 作为我们的 Playground。</p>
+<h1 id="createroot-createlement">createRoot &amp; creatElement</h1>
+<p>写一个简单的例子找到 React 的入口：</p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">const</span> <span class="token function-variable function">App</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">return</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span> <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'click!'</span><span class="token punctuation">)</span><span class="token punctuation">&#125;</span></span><span class="token punctuation">></span></span><span class="token plain-text">Hello World!</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span>
+<span class="token punctuation">&#125;</span>
+ReactDOM<span class="token punctuation">.</span><span class="token function">createRoot</span><span class="token punctuation">(</span>
+  document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">'container'</span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">render</span><span class="token punctuation">(</span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">App</span></span> <span class="token punctuation">/></span></span><span class="token punctuation">,</span>
+<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="createroot">createRoot</h2>
+<p>首先是 <code>createRoot</code> 函数，该函数位于 <code>react-dom/ReactDOMRoot.js</code>，主要用于：</p>
+<ol type="1">
+<li>调用 <code>createContainer</code> 创建 <code>FiberRoot</code></li>
+<li>调用 <code>listenToAllSupportedEvents</code> 为 <code>container</code> 绑定事件，React 的事件是通过 <code>container</code> 做事件代理来进行监听的</li>
+<li>调用 <code>new ReactDOMRoot</code> 创建 <code>ReactDOMRoot</code>，并返回这个对象，其原型链上有 <code>render</code> 和 <code>unmount</code> 方法</li>
+</ol>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">createRoort</span><span class="token punctuation">(</span>
+  container<span class="token operator">:</span> Element <span class="token operator">|</span> Document <span class="token operator">|</span> DocumentFragment<span class="token punctuation">,</span>
+  options<span class="token operator">?</span><span class="token operator">:</span> CreateRootOptions<span class="token punctuation">,</span>
+<span class="token punctuation">)</span><span class="token operator">:</span> RootType <span class="token punctuation">&#123;</span>
+  <span class="token comment">// ...</span>
+  <span class="token comment">// createContainer 根据 container 和初始信息创建一个 FiberRoot（FiberRoot 相关的详细内容见对应章节）</span>
+  <span class="token keyword">const</span> root <span class="token operator">=</span> <span class="token function">createContainer</span><span class="token punctuation">(</span>container<span class="token punctuation">)</span>
+  container<span class="token punctuation">.</span>__reactContainer$RandomKey <span class="token operator">=</span> root
+  <span class="token comment">// ...</span>
+  <span class="token keyword">const</span> rootContainerElement <span class="token operator">=</span> container<span class="token punctuation">.</span>nodeType <span class="token operator">===</span> <span class="token constant">COMMENT_NODE</span>
+    <span class="token operator">?</span> container<span class="token punctuation">.</span>parentNode
+    <span class="token operator">:</span> container<span class="token punctuation">;</span>
+  <span class="token comment">// listenToAllSupportedEvents 会在 contaienr 上添加 eventListenr 来监听支持的事件</span>
+  <span class="token function">listenToAllSupportedEvents</span><span class="token punctuation">(</span>rootContainerElement<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">// ReactDOMRoot.prototype 上定义了两个方法：render 和 unmount</span>
+  <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">ReactDOMRoot</span><span class="token punctuation">(</span>root<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>调用 <code>createRoot</code> 返回的对象的 <code>render</code> 方法，他会调用 <code>updateContainer</code> 并传入一个由 jsx 转换来的 <code>ReactElement</code> 和刚刚创建好的 <code>FiberRoot</code>，来进入更新流程：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">ReactDOMRoot<span class="token punctuation">.</span>prototype<span class="token punctuation">.</span><span class="token function-variable function">render</span> <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span>children<span class="token operator">:</span> ReactNodeList<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">// ...</span>
+  <span class="token function">updateContainer</span><span class="token punctuation">(</span>children<span class="token punctuation">,</span> root<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="createelement">createElement</h2>
+<p>Babel 会将 JSX 静态编译为 JavaScript 代码，可以在这个 <a href="https://babeljs.io/repl">Babel Playground</a> 看到即时编译的效果，比如</p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">123</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>会被编译为：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">/*#__PURE__*/</span>React<span class="token punctuation">.</span><span class="token function">createElement</span><span class="token punctuation">(</span><span class="token string">"div"</span><span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">,</span> <span class="token string">"123"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>或者</p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">import</span> <span class="token punctuation">&#123;</span> jsx <span class="token keyword">as</span> _jsx <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"react/jsx-runtime"</span><span class="token punctuation">;</span>
+<span class="token comment">/*#__PURE__*/</span><span class="token function">_jsx</span><span class="token punctuation">(</span><span class="token string">"div"</span><span class="token punctuation">,</span> <span class="token punctuation">&#123;</span>
+  <span class="token literal-property property">children</span><span class="token operator">:</span> <span class="token string">"123"</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p><code>jsx</code> 和 <code>createElement</code> 都定义在 <code>react/src/ReactElementValidator.js</code> 中了，他们都会在经过一系列校验之后调用 <code>react/src/ReactElement.js</code> 中对应的函数。</p>
+<p><code>jsx</code> 和 <code>createElement</code> 最终返回值都是相同的结构，这里以 <code>createElement</code> 举例：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">createElement</span><span class="token punctuation">(</span>type<span class="token punctuation">,</span> config<span class="token punctuation">,</span> children<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">// ...</span>
+  <span class="token comment">// 对于函数组件，这里的 type 会传入这个函数本身</span>
+  <span class="token comment">// 从 config 中提取并生成 key, ref, props 等传给下一层</span>
+  <span class="token keyword">return</span> <span class="token function">ReactElement</span><span class="token punctuation">(</span>type<span class="token punctuation">,</span> key<span class="token punctuation">,</span> ref<span class="token punctuation">,</span> soource<span class="token punctuation">,</span> ReactCurrentOwner<span class="token punctuation">.</span>current<span class="token punctuation">,</span> props<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><code>ReactElement</code> 是一个十分简单的函数，他构造了一个 <code>element</code> 对象：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">ReactElement</span><span class="token punctuation">(</span>type<span class="token punctuation">,</span> key<span class="token punctuation">,</span> ref<span class="token punctuation">,</span> self<span class="token punctuation">,</span> source<span class="token punctuation">,</span> owner<span class="token punctuation">,</span> props<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> element <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 标记该对象为 ReactElement 类型</span>
+    $$<span class="token keyword">typeof</span><span class="token operator">:</span> <span class="token constant">REACT_ELEMENT_TYPE</span><span class="token punctuation">,</span>
+    <span class="token comment">// 一些内置的属性</span>
+    type<span class="token punctuation">,</span> key<span class="token punctuation">,</span> ref<span class="token punctuation">,</span> props<span class="token punctuation">,</span>
+    <span class="token comment">// 记录创建该元素的组件</span>
+    _owner<span class="token operator">:</span> owner<span class="token punctuation">,</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token keyword">return</span> element
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>最终，这个对象被传给了 <code>ReactDOMRoot</code> 的 <code>render</code> 函数，首屏渲染开始。</p>
+]]></content>
+      <categories>
+        <category>前端</category>
       </categories>
   </entry>
   <entry>
