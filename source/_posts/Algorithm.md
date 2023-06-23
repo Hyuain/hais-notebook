@@ -2136,7 +2136,7 @@ T(n) = \sum_{i=0}^{h} n_i h_i \\
 = \sum_{i=0}^{h}2^i(h - i) \\
 = \sum_{i=0}^{h}\frac{h-i}{2^{h-i}}{2^h} \\
 = 2^h\sum_{k=0}^{h}\frac{k}{2^k} \\
-\le n\sum_{k=0}^\infin\frac{k}{2^k} \\
+\le n\sum_{k=0}^\infty\frac{k}{2^k} \\
 = O(n)
 $$
 
