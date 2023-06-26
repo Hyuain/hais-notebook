@@ -1427,8 +1427,8 @@ result: [1, 2, '*', '+', 4, '-']<span aria-hidden="true" class="line-numbers-row
 </ol>
 <h5 id="前序中左右">前序（中左右）</h5>
 <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">const</span> <span class="token function-variable function">traversal</span> <span class="token operator">=</span> <span class="token punctuation">(</span>current<span class="token operator">:</span> TreeNode <span class="token operator">|</span> <span class="token keyword">null</span><span class="token punctuation">,</span> cb<span class="token operator">?</span><span class="token operator">:</span> <span class="token punctuation">(</span>node<span class="token operator">:</span> TreeNode<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token builtin">any</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
-  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>current<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>	<span class="token keyword">return</span> <span class="token punctuation">&#125;</span>
-  cb<span class="token operator">?.</span><span class="token punctuation">(</span>current<span class="token punctuation">)</span>							<span class="token comment">// 中</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>current<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>  <span class="token keyword">return</span> <span class="token punctuation">&#125;</span>
+  cb<span class="token operator">?.</span><span class="token punctuation">(</span>current<span class="token punctuation">)</span>              <span class="token comment">// 中</span>
   <span class="token function">traversal</span><span class="token punctuation">(</span>current<span class="token punctuation">.</span>left<span class="token punctuation">)</span>   <span class="token comment">// 左</span>
   <span class="token function">traversal</span><span class="token punctuation">(</span>current<span class="token punctuation">.</span>right<span class="token punctuation">)</span>  <span class="token comment">// 右</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
@@ -1444,7 +1444,7 @@ result: [1, 2, '*', '+', 4, '-']<span aria-hidden="true" class="line-numbers-row
   <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>current<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token keyword">return</span> <span class="token punctuation">&#125;</span>
   <span class="token function">traversal</span><span class="token punctuation">(</span>current<span class="token punctuation">.</span>left<span class="token punctuation">)</span>   <span class="token comment">// 左</span>
   <span class="token function">traversal</span><span class="token punctuation">(</span>current<span class="token punctuation">.</span>right<span class="token punctuation">)</span>  <span class="token comment">// 右</span>
-  cb<span class="token operator">?.</span><span class="token punctuation">(</span>current<span class="token punctuation">)</span>							<span class="token comment">// 中</span>
+  cb<span class="token operator">?.</span><span class="token punctuation">(</span>current<span class="token punctuation">)</span>             <span class="token comment">// 中</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h4 id="迭代写法">迭代写法</h4>
 <h5 id="前序中左右-1">前序（中左右）</h5>
@@ -1457,7 +1457,7 @@ result: [1, 2, '*', '+', 4, '-']<span aria-hidden="true" class="line-numbers-row
   <span class="token keyword">const</span> stack <span class="token operator">=</span> <span class="token punctuation">[</span>root<span class="token punctuation">]</span>          <span class="token comment">// 中入栈</span>
   <span class="token keyword">while</span> <span class="token punctuation">(</span>stack<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
     <span class="token keyword">const</span> current <span class="token operator">=</span> stack<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment">// 出栈，可以看出中最先出栈，然后是左，然后是右</span>
-    cb<span class="token operator">?.</span><span class="token punctuation">(</span>current<span class="token punctuation">)</span>								<span class="token comment">// 处理</span>
+    cb<span class="token operator">?.</span><span class="token punctuation">(</span>current<span class="token punctuation">)</span>               <span class="token comment">// 处理</span>
     <span class="token keyword">if</span> <span class="token punctuation">(</span>current<span class="token punctuation">.</span>right<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
       stack<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>current<span class="token punctuation">.</span>right<span class="token punctuation">)</span> <span class="token comment">// 右入栈</span>
     <span class="token punctuation">&#125;</span>
@@ -1481,7 +1481,7 @@ result: [1, 2, '*', '+', 4, '-']<span aria-hidden="true" class="line-numbers-row
       current <span class="token operator">=</span> current<span class="token punctuation">.</span>left     <span class="token comment">// 准备左入栈（第一次会一直入栈直到最左下角的元素，那才是处理的起点）</span>
     <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
       current <span class="token operator">=</span> stack<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span>      <span class="token comment">// 出栈，可以看出左最先出栈，然后是中，然后是右</span>
-      cb<span class="token operator">?.</span><span class="token punctuation">(</span>current<span class="token punctuation">)</span>							 <span class="token comment">// 处理</span>
+      cb<span class="token operator">?.</span><span class="token punctuation">(</span>current<span class="token punctuation">)</span>               <span class="token comment">// 处理</span>
       current <span class="token operator">=</span> current<span class="token punctuation">.</span>right    <span class="token comment">// 准备右入栈</span>
     <span class="token punctuation">&#125;</span>
   <span class="token punctuation">&#125;</span>
@@ -1516,13 +1516,13 @@ result: [1, 2, '*', '+', 4, '-']<span aria-hidden="true" class="line-numbers-row
   <span class="token keyword">const</span> stack <span class="token operator">=</span> <span class="token punctuation">[</span>root<span class="token punctuation">]</span>
   <span class="token keyword">while</span> <span class="token punctuation">(</span>stack<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
     <span class="token keyword">const</span> current <span class="token operator">=</span> stack<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>current<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>					   	<span class="token comment">// 出栈时遇到 null，说明下一个元素需要处理</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>current<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>               <span class="token comment">// 出栈时遇到 null，说明下一个元素需要处理</span>
       cb<span class="token operator">?.</span><span class="token punctuation">(</span>stack<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
       <span class="token keyword">continue</span>
     <span class="token punctuation">&#125;</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>current<span class="token punctuation">.</span>right<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> stack<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>current<span class="token punctuation">.</span>right<span class="token punctuation">)</span> <span class="token punctuation">&#125;</span>	<span class="token comment">// 右入栈，待访问</span>
-    stack<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>current<span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">)</span>													<span class="token comment">// 中入栈，待处理</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>current<span class="token punctuation">.</span>left<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> stack<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>current<span class="token punctuation">.</span>left<span class="token punctuation">)</span> <span class="token punctuation">&#125;</span>    <span class="token comment">// 左入栈，待访问</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>current<span class="token punctuation">.</span>right<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> stack<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>current<span class="token punctuation">.</span>right<span class="token punctuation">)</span> <span class="token punctuation">&#125;</span>   <span class="token comment">// 右入栈，待访问</span>
+    stack<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>current<span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">)</span>                          <span class="token comment">// 中入栈，待处理</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>current<span class="token punctuation">.</span>left<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> stack<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>current<span class="token punctuation">.</span>left<span class="token punctuation">)</span> <span class="token punctuation">&#125;</span>     <span class="token comment">// 左入栈，待访问</span>
   <span class="token punctuation">&#125;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <figure>
@@ -1595,6 +1595,11 @@ result: [1, 2, '*', '+', 4, '-']<span aria-hidden="true" class="line-numbers-row
     <span class="token function">traversal</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> result<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span>
     <span class="token keyword">return</span> result
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="other-operations">Other Operations</h2>
+<p><strong><a href="https://leetcode.cn/problems/invert-binary-tree/">翻转二叉树</a></strong>：#后序 #先序 #层序</p>
+<p><strong><a href="https://leetcode.cn/problems/symmetric-tree/">对称二叉树</a></strong>：#内外层 #内外层共用一个数组层序</p>
+<p><strong><a href="https://leetcode.cn/problems/maximum-depth-of-binary-tree/">二叉树最大深度</a></strong>：#最大深度=根节点高度 #后序求高度 #先序求深度 #层序用size控制每次只遍历一层</p>
+<p><strong><a href="https://leetcode.cn/problems/minimum-depth-of-binary-tree/">二叉树最小深度</a></strong>：#最小深度=根节点到叶节点的距离 #后序求高度需要注意最低点的位置判断 #先序求深度 #层序</p>
 <h2 id="special-binary-trees">Special Binary Trees</h2>
 <h3 id="full-binary-tree">Full Binary Tree</h3>
 <p>每个节点有 0 或 2 个子结点</p>
@@ -1607,12 +1612,40 @@ result: [1, 2, '*', '+', 4, '-']<span aria-hidden="true" class="line-numbers-row
 <p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/PerfectBinaryTree.png" /></p>
 <h3 id="complete-binary-tree">Complete Binary Tree</h3>
 <blockquote>
-<p>完全二叉树，有的作者会将 Perfect Binary Tree 称为 Complete Binary Tree，而称这种树为 Nearly Complete Binary Tree 或 Almost Binary Tree。</p>
+<p>完全二叉树，有的作者会将 Perfect Binary Tree 称为 Complete Binary Tree，而称这种树为 Nearly Complete Binary Tree 或 Almost Complete Binary Tree。</p>
 </blockquote>
 <p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/CompleteBinaryTree.png" /></p>
 <p>除了最底层，每层都填满了，且最底层节点都集中在左边的位置。</p>
 <p>这种树可以很方便地用数组表示，若当前节点的下标为 <code>i</code>，则其父节点的下标为 <code>Math.floor((i - 1) / 2)</code>，左孩子下标为 <code>2 * i + 1</code>，右孩子下标为 <code>2 * i + 2</code>，最后一个非叶节点下标为 <code>Math.floor(size / 2) - 1</code>。</p>
 <p>优先级队列可以用堆来实现，而堆则就是一棵完全二叉树，同时保证了父子节点的顺序关系。</p>
+<h4 id="count">Count</h4>
+<p><strong>完全二叉树的节点个数可以用时间复杂度为 O(logn * logn)、空间复杂度为 O(logn) 的解法来求，并不需要遍历整棵树：</strong></p>
+<ul>
+<li>完全二叉树是由一棵棵满二叉树构成的，其中最小的满二叉树只有一个节点；</li>
+<li>完全二叉树中，一个节点如果 <strong>一直朝左下方遍历到底的层数</strong> 等于其 <strong>一直朝右下方遍历到底的层数</strong>，那么以这个节点为根节点的子树一定是满二叉树；</li>
+<li>因此我们只需要判断该节点是否是满二叉树，如果是则直接返回计算结果，否则再分别遍历左右两棵子树即可。</li>
+</ul>
+<p><detail></p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">countNodes</span><span class="token punctuation">(</span>root<span class="token operator">:</span> TreeNode <span class="token operator">|</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>root<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token keyword">return</span> <span class="token number">0</span> <span class="token punctuation">&#125;</span>
+  <span class="token keyword">let</span> leftDept <span class="token operator">=</span> <span class="token number">1</span>
+  <span class="token keyword">let</span> rightDept <span class="token operator">=</span> <span class="token number">1</span>
+  <span class="token keyword">let</span> node <span class="token operator">=</span> root
+  <span class="token keyword">while</span> <span class="token punctuation">(</span>node<span class="token punctuation">.</span>left<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    node <span class="token operator">=</span> node<span class="token punctuation">.</span>left
+    leftDept<span class="token operator">++</span>
+  <span class="token punctuation">&#125;</span>
+  node <span class="token operator">=</span> root
+  <span class="token keyword">while</span> <span class="token punctuation">(</span>node<span class="token punctuation">.</span>right<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    node <span class="token operator">=</span> node<span class="token punctuation">.</span>right
+    rightDept<span class="token operator">++</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>leftDept <span class="token operator">===</span> rightDept<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">&lt;&lt;</span> leftDept<span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token keyword">return</span> <span class="token function">countNodes</span><span class="token punctuation">(</span>root<span class="token punctuation">.</span>left<span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token function">countNodes</span><span class="token punctuation">(</span>root<span class="token punctuation">.</span>right<span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token number">1</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p></detail></p>
 <h3 id="binary-search-tree">Binary Search Tree</h3>
 <blockquote>
 <p>二叉搜索树</p>
@@ -1737,6 +1770,7 @@ result: [1, 2, '*', '+', 4, '-']<span aria-hidden="true" class="line-numbers-row
 <p>平衡二叉树，又称为 Adleson-Velsky and Landis Tree</p>
 </blockquote>
 <p>是空树；或者他的左右两个子树的高度差绝对值不超过 1，并且左右两棵子树都是一棵平衡二叉树。</p>
+<h4 id="isbalanced">isBalanced</h4>
 <h4 id="convert-sorted-array-to-binary-search-tree">Convert Sorted Array to Binary Search Tree</h4>
 <p><a href="https://leetcode.cn/problems/convert-sorted-array-to-binary-search-tree/">LeetCode.108</a></p>
 <p>Given an integer array nums where the elements are sorted in ascending order, convert it to a height-balanced binary search tree.</p>
@@ -2060,8 +2094,8 @@ T(n) = \sum_{i=0}^{h} n_i h_i \\
 <span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
   <span class="token keyword">const</span> goodsNum <span class="token operator">=</span> weight<span class="token punctuation">.</span>length
   <span class="token keyword">const</span> dp <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name"><span class="token builtin">Array</span></span><span class="token punctuation">(</span>goodsNum<span class="token punctuation">)</span>
-  	<span class="token punctuation">.</span><span class="token function">fill</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>
-  	<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token keyword">new</span> <span class="token class-name"><span class="token builtin">Array</span></span><span class="token punctuation">(</span>size <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">fill</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">fill</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token keyword">new</span> <span class="token class-name"><span class="token builtin">Array</span></span><span class="token punctuation">(</span>size <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">fill</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
   <span class="token comment">// j = 0 的时候全部为 0</span>
   <span class="token comment">// i = 0 的时候能放下时为 value[0]，否则为 0</span>
   <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> j <span class="token operator">=</span> weight<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span> j <span class="token operator">&lt;=</span> size<span class="token punctuation">;</span> j<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
@@ -20837,8 +20871,16 @@ user <span class="token operator">=</span> create<span class="token punctuation"
     <content><![CDATA[<p>与另一篇 React 笔记不同，本文主要是深入讨论 React 的源码与设计理念。</p>
 <span id="more"></span>
 <p>Clone React 项目之后，在 README 中找到调试 React 的方法，具体可参照 <a href="https://legacy.reactjs.org/docs/how-to-contribute.html">How to Contribute</a>。然后按照文中安装依赖并 Build 之后，将 <code>fixture/packaging/babel-standalone/dev.html</code> 作为我们的 Playground。</p>
-<h1 id="createroot-createlement">createRoot &amp; creatElement</h1>
-<p>写一个简单的例子找到 React 的入口：</p>
+<p>React 从状态更新到 UI 变化中间经历的过程，被称为 <strong>Reconciliation</strong>，完成这个过程的工具就是 <strong>Reconciler</strong>，他的核心代码都在 <code>react-reconciler</code> 这个包中。</p>
+<h1 id="首次渲染过程">首次渲染过程</h1>
+<p>React 的更新流程分为 <strong>Schedule、Render 和 Commit</strong> 三个阶段：</p>
+<ul>
+<li><strong>Schedule 阶段</strong> 会挑出一批优先级，并为不同优先级准备不同的调度策略；</li>
+<li><strong>Render 阶段</strong> 会执行 Fiber 节点的重新计算，并标记好需要执行的副作用；</li>
+<li><strong>Commit 阶段</strong> 分为 <strong>BeforeMutation</strong>、<strong>Mutation</strong> 和 <strong>Layout</strong> 三个子阶段，在 <strong>Mutation 阶段</strong> 会完成 UI 相关的副作用，并且会完成 <code>workInProgress</code> 与 <code>current</code> <code>FiberTree</code> 的切换。</li>
+</ul>
+<h2 id="schedule-开始之前">Schedule 开始之前</h2>
+<p>写一个简单的例子，然后通过 debug 可以找到 React 的入口：</p>
 <pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">const</span> <span class="token function-variable function">App</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
   <span class="token keyword">return</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span> <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'click!'</span><span class="token punctuation">)</span><span class="token punctuation">&#125;</span></span><span class="token punctuation">></span></span><span class="token plain-text">Hello World!</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span>
 <span class="token punctuation">&#125;</span>
@@ -20847,14 +20889,25 @@ ReactDOM<span class="token punctuation">.</span><span class="token function">cre
 <span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">render</span><span class="token punctuation">(</span>
   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">App</span></span> <span class="token punctuation">/></span></span><span class="token punctuation">,</span>
 <span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="createroot">createRoot</h2>
+<p>在上述例子中，总的来说会经历这样的过程：</p>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">ReactDOM.createRoot             // 创建 ReactDOMRoot
+  createContainer               // 创建 Container，Container 实际上就是创建 FiberRoot
+    createFiberRoot             // 创建 FiberRoot
+      createHostRootFiber       // 创建 HostRootFiber（tag 为 HostRoot 的 Fiber）
+        createFiber             // 创建 Fiber
+  listenToAllSupportedEvents    // 在容器 DOM 元素上绑定事件
+React.createElement             // 暴露给外部，将 JSX 转换的结果再转换为 ReactElement
+
+ReactDOMRoot.render             // 传入 ReactElement，开始首次渲染
+  updateContainer               // 首次渲染的入口，创建 Update 并入队，准备进入 Schedule 阶段<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="createroot">createRoot</h3>
 <p>首先是 <code>createRoot</code> 函数，该函数位于 <code>react-dom/ReactDOMRoot.js</code>，主要用于：</p>
 <ol type="1">
 <li>调用 <code>createContainer</code> 创建 <code>FiberRoot</code></li>
 <li>调用 <code>listenToAllSupportedEvents</code> 为 <code>container</code> 绑定事件，React 的事件是通过 <code>container</code> 做事件代理来进行监听的</li>
 <li>调用 <code>new ReactDOMRoot</code> 创建 <code>ReactDOMRoot</code>，并返回这个对象，其原型链上有 <code>render</code> 和 <code>unmount</code> 方法</li>
 </ol>
-<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">createRoort</span><span class="token punctuation">(</span>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">createRoot</span><span class="token punctuation">(</span>
   container<span class="token operator">:</span> Element <span class="token operator">|</span> Document <span class="token operator">|</span> DocumentFragment<span class="token punctuation">,</span>
   options<span class="token operator">?</span><span class="token operator">:</span> CreateRootOptions<span class="token punctuation">,</span>
 <span class="token punctuation">)</span><span class="token operator">:</span> RootType <span class="token punctuation">&#123;</span>
@@ -20871,12 +20924,37 @@ ReactDOM<span class="token punctuation">.</span><span class="token function">cre
   <span class="token comment">// ReactDOMRoot.prototype 上定义了两个方法：render 和 unmount</span>
   <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">ReactDOMRoot</span><span class="token punctuation">(</span>root<span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>调用 <code>createRoot</code> 返回的对象的 <code>render</code> 方法，他会调用 <code>updateContainer</code> 并传入一个由 jsx 转换来的 <code>ReactElement</code> 和刚刚创建好的 <code>FiberRoot</code>，来进入更新流程：</p>
-<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">ReactDOMRoot<span class="token punctuation">.</span>prototype<span class="token punctuation">.</span><span class="token function-variable function">render</span> <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span>children<span class="token operator">:</span> ReactNodeList<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-  <span class="token comment">// ...</span>
-  <span class="token function">updateContainer</span><span class="token punctuation">(</span>children<span class="token punctuation">,</span> root<span class="token punctuation">)</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="createelement">createElement</h2>
+<h4 id="createcontainer">createContainer</h4>
+<p><code>createContainer</code> 位于 <code>reac-reconciler/src/ReactFiberReconciler.js</code> 中，他直接调用了 <code>createFiberRoot</code></p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">createContainer</span><span class="token punctuation">(</span><span class="token operator">...</span>args<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">return</span> <span class="token function">createFiberRoot</span><span class="token punctuation">(</span><span class="token operator">...</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p><code>createFiberRoot</code> 位于 <code>react-reconciler/src/ReactFiberRoot.js</code> 中，他：</p>
+<ol type="1">
+<li>创建了一个 <code>FiberRoot</code></li>
+<li>为该 <code>FiberRoot</code> 创建了一个 <code>HostRootFiber</code>（一个 <code>tag</code> 为 <code>HostRoot</code> 的 <code>Fiber</code>）。该 <code>HostRootFiber</code> 即为后续 <code>FiberTree</code> 的根节点</li>
+<li>初始化 <code>HostRootFiber</code> 的 <code>memorizedState</code> 和 <code>updateQueue</code></li>
+</ol>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">createFiberRoot</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">// 1. 创建 FiberRoot</span>
+  <span class="token keyword">const</span> root <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FiberRootNode</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  
+  <span class="token comment">// 2. 创建 tag 为 HostRoot 的 Fiber</span>
+  <span class="token keyword">const</span> uninitializedFiber <span class="token operator">=</span> <span class="token function">createHostRootFiber</span><span class="token punctuation">(</span><span class="token punctuation">)</span> 
+  root<span class="token punctuation">.</span>current <span class="token operator">=</span> uninitializedFiber
+  uninitializedFiber<span class="token punctuation">.</span>stateNode <span class="token operator">=</span> root
+  
+  <span class="token comment">// 3. 初始化 memorizedState，可以看做是用来记录某些值的</span>
+  <span class="token keyword">const</span> initialState<span class="token operator">:</span> RootState <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 首次渲染中 initialChildren 为 null</span>
+    element<span class="token operator">:</span> initialChildren<span class="token punctuation">,</span>
+  <span class="token punctuation">&#125;</span>
+  uninitializedFiber<span class="token punctuation">.</span>memorizedState <span class="token operator">=</span> initialState
+  
+  <span class="token comment">// 3. 初始化 updateQueue，稍后进入渲染流程后将会提到，用于存取 Update</span>
+ 	<span class="token function">initializeUpdateQueue</span><span class="token punctuation">(</span>uninitializedFiber<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="createelement">createElement</h3>
 <p>Babel 会将 JSX 静态编译为 JavaScript 代码，可以在这个 <a href="https://babeljs.io/repl">Babel Playground</a> 看到即时编译的效果，比如</p>
 <pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">123</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>会被编译为：</p>
@@ -20886,7 +20964,7 @@ ReactDOM<span class="token punctuation">.</span><span class="token function">cre
 <span class="token comment">/*#__PURE__*/</span><span class="token function">_jsx</span><span class="token punctuation">(</span><span class="token string">"div"</span><span class="token punctuation">,</span> <span class="token punctuation">&#123;</span>
   <span class="token literal-property property">children</span><span class="token operator">:</span> <span class="token string">"123"</span>
 <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p><code>jsx</code> 和 <code>createElement</code> 都定义在 <code>react/src/ReactElementValidator.js</code> 中了，他们都会在经过一系列校验之后调用 <code>react/src/ReactElement.js</code> 中对应的函数。</p>
+<p><code>jsx</code> 和 <code>createElement</code> 都定义在 <code>react/src/ReactElementValidator.js</code> 中了，他们都会在经过一系列校验之后调用 <code>react/src/ReactElement.js</code> 中对应的函数。二者的不同在 <a href="https://github.com/reactjs/rfcs/blob/createlement-rfc/text/0000-create-element-changes.md">这篇文章</a>，（TBC）</p>
 <p><code>jsx</code> 和 <code>createElement</code> 最终返回值都是相同的结构，这里以 <code>createElement</code> 举例：</p>
 <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">createElement</span><span class="token punctuation">(</span>type<span class="token punctuation">,</span> config<span class="token punctuation">,</span> children<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
   <span class="token comment">// ...</span>
@@ -20907,6 +20985,58 @@ ReactDOM<span class="token punctuation">.</span><span class="token function">cre
   <span class="token keyword">return</span> element
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>最终，这个对象被传给了 <code>ReactDOMRoot</code> 的 <code>render</code> 函数，首屏渲染开始。</p>
+<h3 id="render">render</h3>
+<p>调用 <code>createRoot</code> 返回的对象的 <code>render</code> 方法，他会调用 <code>updateContainer</code> 并传入一个由 jsx 转换来的 <code>ReactElement</code> 和刚刚创建好的 <code>FiberRoot</code>，来进入更新流程：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">ReactDOMRoot<span class="token punctuation">.</span>prototype<span class="token punctuation">.</span><span class="token function-variable function">render</span> <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span>children<span class="token operator">:</span> ReactNodeList<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">// ...</span>
+  <span class="token function">updateContainer</span><span class="token punctuation">(</span>children<span class="token punctuation">,</span> root<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p><code>updateContainer</code> 位于 <code>react-reconciler/src/ReactFiberReconciler.js</code> 中，他会：</p>
+<ol type="1">
+<li>获取优先级（lane）</li>
+<li>创建 <code>Update</code>，并将该更新入队</li>
+<li>调用 <code>scheduleUpdateOnFiber</code>，准备进入 Schedule 阶段</li>
+</ol>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// 对于首屏渲染，element 是 &lt;App />，container 是 FiberRoot，剩下两个为 null</span>
+<span class="token keyword">function</span> <span class="token function">updateContainer</span><span class="token punctuation">(</span>
+  element<span class="token operator">:</span> ReactElement<span class="token punctuation">,</span>
+  container<span class="token operator">:</span> FiberRoot<span class="token punctuation">,</span>
+  parentComponent<span class="token punctuation">,</span>
+  callback
+<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">// 获取优先级（lane），后面会提到</span>
+  <span class="token keyword">const</span> lane <span class="token operator">=</span> <span class="token function">requestUpdateLane</span><span class="token punctuation">(</span>container<span class="token punctuation">.</span>current<span class="token punctuation">)</span>
+  <span class="token comment">// 创建 Update，他的 payload 就是传入的 ReactElement</span>
+  <span class="token keyword">const</span> update <span class="token operator">=</span> <span class="token function">createUpdate</span><span class="token punctuation">(</span>lane<span class="token punctuation">)</span>
+  update<span class="token punctuation">.</span>payload <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+    element<span class="token punctuation">,</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token comment">// 将该更新入队，并且会返回当前 Fiber 对应的 FiberRoot</span>
+  <span class="token keyword">const</span> root <span class="token operator">=</span> <span class="token function">enqueueUpdate</span><span class="token punctuation">(</span>current<span class="token punctuation">,</span> update<span class="token punctuation">,</span> lane<span class="token punctuation">)</span>
+  <span class="token comment">// 准备进入 Schedule 阶段</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>root <span class="token operator">!==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token function">scheduleUpdateOnFiber</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> current<span class="token punctuation">,</span> lane<span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token keyword">return</span> lane
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><code>scheduleUpdateOnFiber</code> 位于 <code>react-reconciler/src/ReactFiberWorkLoop.js</code> 中，他主要用于：</p>
+<ol type="1">
+<li>给当前的 <code>root</code> 标记选出的 <code>lane</code></li>
+<li>进入调度阶段</li>
+</ol>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">scheduleUpdateOnFiber</span><span class="token punctuation">(</span>
+  root<span class="token operator">:</span> FiberRoot<span class="token punctuation">,</span>
+  fiber<span class="token operator">:</span> Fiber<span class="token punctuation">,</span>
+  lane<span class="token operator">:</span> Lane
+<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">// root.pendingLanes |= lane</span>
+ 	<span class="token function">markRootUpdated</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> lane<span class="token punctuation">)</span>
+  <span class="token comment">// 进入 Schedule 阶段</span>
+  <span class="token function">ensureRootIsScheduled</span><span class="token punctuation">(</span>root<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="数据结构">数据结构</h2>
+<p>要完成上文的过程，已经需要不少的数据结构进行支撑了，包括 <code>ReactDOMRoot</code> <code>Fiber</code> <code>FiberRoot</code> <code>Update</code> <code>UpdateQueue</code> <code>Lane</code> 等，了解这些数据结构对了解 React Reconcile 的</p>
+<h1 id="schedule">Schedule</h1>
 ]]></content>
       <categories>
         <category>前端</category>
