@@ -1603,8 +1603,8 @@ class TreeNode {
 
 ```typescript
 const traversal = (current: TreeNode | null, cb?: (node: TreeNode) => any) => {
-  if (!current) {	return }
-  cb?.(current)							// 中
+  if (!current) {  return }
+  cb?.(current)              // 中
   traversal(current.left)   // 左
   traversal(current.right)  // 右
 }
@@ -1627,8 +1627,8 @@ const traversal = (current: TreeNode | null, cb?: (node: TreeNode) => any) => {
 const traversal = (current: TreeNode | null, cb?: (node: TreeNode) => any) => {
   if (!current) { return }
   traversal(current.left)   // 左
-	traversal(current.right)  // 右
-  cb?.(current)							// 中
+  traversal(current.right)  // 右
+  cb?.(current)             // 中
 }
 ```
 
@@ -1646,7 +1646,7 @@ const traversal = (root: TreeNode | null, cb?: (node: TreeNode) => any) => {
   const stack = [root]          // 中入栈
   while (stack.length) {
     const current = stack.pop() // 出栈，可以看出中最先出栈，然后是左，然后是右
-    cb?.(current)								// 处理
+    cb?.(current)               // 处理
     if (current.right) {
       stack.push(current.right) // 右入栈
     }
@@ -1674,7 +1674,7 @@ const traversal = (root: TreeNode | null, cb?: (node: TreeNode) => any) => {
       current = current.left     // 准备左入栈（第一次会一直入栈直到最左下角的元素，那才是处理的起点）
     } else {
       current = stack.pop()      // 出栈，可以看出左最先出栈，然后是中，然后是右
-      cb?.(current)							 // 处理
+      cb?.(current)               // 处理
       current = current.right    // 准备右入栈
     }
   }
@@ -1719,13 +1719,13 @@ const traversal = (root: TreeNode | null, cb?: (node: TreeNode) => any) => {
   const stack = [root]
   while (stack.length) {
     const current = stack.pop()
-    if (!current) {					   	// 出栈时遇到 null，说明下一个元素需要处理
+    if (!current) {               // 出栈时遇到 null，说明下一个元素需要处理
       cb?.(stack.pop())
       continue
     }
-    if (current.right) { stack.push(current.right) }	// 右入栈，待访问
-    stack.push(current, null)													// 中入栈，待处理
-    if (current.left) { stack.push(current.left) }    // 左入栈，待访问
+    if (current.right) { stack.push(current.right) }   // 右入栈，待访问
+    stack.push(current, null)                          // 中入栈，待处理
+    if (current.left) { stack.push(current.left) }     // 左入栈，待访问
   }
 }
 ```
@@ -1817,6 +1817,18 @@ function levelOrder(root: TreeNode | null): number[][] {
 }
 ```
 
+## Other Operations
+
+**[翻转二叉树](https://leetcode.cn/problems/invert-binary-tree/)**：#后序 #先序 #层序
+
+**[对称二叉树](https://leetcode.cn/problems/symmetric-tree/)**：#内外层 #内外层共用一个数组层序
+
+**[二叉树最大深度](https://leetcode.cn/problems/maximum-depth-of-binary-tree/)**：#最大深度=根节点高度 #后序求高度 #先序求深度 #层序用size控制每次只遍历一层
+
+**[二叉树最小深度](https://leetcode.cn/problems/minimum-depth-of-binary-tree/)**：#最小深度=根节点到叶节点的距离 #后序求高度需要注意最低点的位置判断 #先序求深度 #层序
+
+
+
 ## Special Binary Trees
 
 ### Full Binary Tree
@@ -1835,7 +1847,7 @@ function levelOrder(root: TreeNode | null): number[][] {
 
 ### Complete Binary Tree
 
-> 完全二叉树，有的作者会将 Perfect Binary Tree 称为 Complete Binary Tree，而称这种树为 Nearly Complete Binary Tree 或 Almost Binary Tree。
+> 完全二叉树，有的作者会将 Perfect Binary Tree 称为 Complete Binary Tree，而称这种树为 Nearly Complete Binary Tree 或 Almost Complete Binary Tree。
 
 ![](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/CompleteBinaryTree.png)
 
@@ -1844,6 +1856,40 @@ function levelOrder(root: TreeNode | null): number[][] {
 这种树可以很方便地用数组表示，若当前节点的下标为 `i`，则其父节点的下标为 `Math.floor((i - 1) / 2)`，左孩子下标为 `2 * i + 1`，右孩子下标为 `2 * i + 2`，最后一个非叶节点下标为 `Math.floor(size / 2) - 1`。
 
 优先级队列可以用堆来实现，而堆则就是一棵完全二叉树，同时保证了父子节点的顺序关系。
+
+#### Count
+
+**完全二叉树的节点个数可以用时间复杂度为 O(logn * logn)、空间复杂度为 O(logn) 的解法来求，并不需要遍历整棵树：**
+
+- 完全二叉树是由一棵棵满二叉树构成的，其中最小的满二叉树只有一个节点；
+- 完全二叉树中，一个节点如果 **一直朝左下方遍历到底的层数** 等于其 **一直朝右下方遍历到底的层数**，那么以这个节点为根节点的子树一定是满二叉树；
+- 因此我们只需要判断该节点是否是满二叉树，如果是则直接返回计算结果，否则再分别遍历左右两棵子树即可。
+
+<detail>
+
+```typescript
+function countNodes(root: TreeNode | null): number {
+  if (!root) { return 0 }
+  let leftDept = 1
+  let rightDept = 1
+  let node = root
+  while (node.left) {
+    node = node.left
+    leftDept++
+  }
+  node = root
+  while (node.right) {
+    node = node.right
+    rightDept++
+  }
+  if (leftDept === rightDept) {
+    return (1 << leftDept) - 1
+  }
+  return countNodes(root.left) + countNodes(root.right) + 1
+};
+```
+
+</detail>
 
 ### Binary Search Tree
 
@@ -1981,6 +2027,10 @@ function deleteNode(root: TreeNode | null, key: number): TreeNode | null {
 > 平衡二叉树，又称为 Adleson-Velsky and Landis Tree
 
 是空树；或者他的左右两个子树的高度差绝对值不超过 1，并且左右两棵子树都是一棵平衡二叉树。
+
+#### isBalanced
+
+
 
 #### Convert Sorted Array to Binary Search Tree
 
@@ -2373,8 +2423,8 @@ const weightBagProblem = (
 ): number => {
   const goodsNum = weight.length
   const dp = new Array(goodsNum)
-  	.fill(0)
-  	.map((item) => new Array(size + 1).fill(0))
+    .fill(0)
+    .map((item) => new Array(size + 1).fill(0))
   // j = 0 的时候全部为 0
   // i = 0 的时候能放下时为 value[0]，否则为 0
   for (let j = weight[0]; j <= size; j++) {
@@ -2455,7 +2505,7 @@ dp[2] = dp[2 - weight[0]] + value[0] = 30 // value[0] 又加入了一次
 
 ```typescript
 const weightBagProblem = (
-	weight: number[], value: number[], size: number,
+  weight: number[], value: number[], size: number,
 ) => {
   const goodsNum = weight.length
   const dp = new Array(size + 1).fill(0)
