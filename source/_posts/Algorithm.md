@@ -1827,8 +1827,6 @@ function levelOrder(root: TreeNode | null): number[][] {
 
 **[二叉树最小深度](https://leetcode.cn/problems/minimum-depth-of-binary-tree/)**：#最小深度=根节点到叶节点的距离 #后序求高度需要注意最低点的位置判断 #先序求深度 #层序
 
-
-
 ## Special Binary Trees
 
 ### Full Binary Tree
@@ -2030,7 +2028,104 @@ function deleteNode(root: TreeNode | null, key: number): TreeNode | null {
 
 #### isBalanced
 
+[LeetCode. 110](https://leetcode.cn/problems/balanced-binary-tree/)
 
+<detail>
+
+思路：用后序遍历求分别求子树高度
+
+```typescript
+// 递归法，用 -1 传递已经不平衡了的状态
+function isBalanced(root: TreeNode | null): boolean {
+  return getHeight(root) !== -1
+}
+
+function getHeight(node: TreeNode | null): number {
+  if (!node) { return 0 }
+  const leftHeight = getHeight(node.left)
+  const rightHeight = getHeight(node.right)
+  if (leftHeight === -1 || rightHeight === -1 || Math.abs(leftHeight - rightHeight) > 1) {
+    return -1
+  }
+  return Math.max(leftHeight, rightHeight)
+}
+```
+
+```typescript
+// 迭代法，用栈模拟后序遍历，然后用先序遍历或者层序遍历求节点高度(深度)、或后序遍历求高度
+// 该方法会有很多冗余的过程，效率比较低下
+function isBalanced(root: TreeNode | null): boolean {
+  if (!root) { return true }
+  const stack = [root]
+  while (stack.length) {
+    let current = stack.pop()
+    if (current === null) {
+      current = stack.pop()
+      const leftHeight = getHeight(current.left)
+      const rightHeight = getHeight(current.right)
+      if (Math.abs(leftHeight - rightHeight) > 1) {
+        return false
+      }
+      continue
+    }
+    stack.push(current, null)
+    if (current.right) {
+      stack.push(current.right)
+    }
+    if (current.left) {
+      stack.push(current.left)
+    }
+  }
+  return true
+};
+
+function getHeight(node: TreeNode | null): number {
+  if (!node) { return 0 }
+  const queue = [node]
+  let depth = 0
+  while (queue.length) {
+    const length = queue.length
+    for (let i = 0; i < length; i++) {
+      const current = queue.shift()
+      if (current.left) {
+        queue.push(current.left)
+      }
+      if (current.right) {
+        queue.push(current.right)
+      }
+    }
+    depth++
+  }
+  return depth
+}
+
+function getHeight(node: TreeNode | null): number {
+  if (!node) { return 0 }
+  const stack = [node]
+  let depth = 0
+  let maxDepth = 0
+  while (stack.length) {
+    let current = stack.pop()
+    if (current === null) {
+      current = stack.pop()
+      depth--
+      continue
+    }
+    stack.push(current, null)
+    depth++
+    if (current.right) {
+      stack.push(current.right)
+    }
+    if (current.left) {
+      stack.push(current.left)
+    }
+    maxDepth = Math.max(maxDepth, depth)
+  }
+  return maxDepth
+}
+```
+
+</detail>
 
 #### Convert Sorted Array to Binary Search Tree
 
@@ -2039,7 +2134,9 @@ function deleteNode(root: TreeNode | null, key: number): TreeNode | null {
 Given an integer array nums where the elements are sorted in ascending order, convert it to a height-balanced binary search tree.
 
 <detail>
+
 思路：对有序数组按照中点进行切分，左边给左子树，右边给右子树。
+
 ```typescript
 function sortedArrayToBST(nums: number[]): TreeNode | null {
   if (!nums.length) { return null }
