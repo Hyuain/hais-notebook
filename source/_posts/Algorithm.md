@@ -1817,6 +1817,41 @@ function levelOrder(root: TreeNode | null): number[][] {
 }
 ```
 
+## Construct Binary Trees
+
+**[从中序和后序遍历构造二叉树](https://leetcode.cn/problems/construct-binary-tree-from-inorder-and-postorder-traversal/)**
+
+**[从前序与中序遍历构造二叉树](https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-inorder-traversal/)**
+
+<detail>
+
+两题类似：
+
+1. 后序遍历的最后一位就是 `root`，前序遍历的第一位就是 `root`
+2. 再在中序遍历中找到 `root` 从而找到左右子树
+3. 再在后序遍历中分开左右子树
+
+```typescript
+function buildTree(inorder: number[], postorder: number[]): TreeNode | null {
+  if (!inorder.length) { return null }
+  const rootVal = postorder[postorder.length - 1]
+  const rootIndex = inorder.indexOf(rootVal)
+  const leftInorder = inorder.slice(0, rootIndex)
+  const rightInorder = inorder.slice(rootIndex + 1)
+  const leftPostorder = postorder.slice(0, leftInorder.length)
+  const rightPostorder = postorder.slice(leftInorder.length, postorder.length - 1)
+  return new TreeNode(
+    rootVal,
+    buildTree(leftInorder, leftPostorder),
+    buildTree(rightInorder, rightPostorder)
+  )
+}
+```
+
+</detail>
+
+
+
 ## Other Operations
 
 **[翻转二叉树](https://leetcode.cn/problems/invert-binary-tree/)**：#后序 #先序 #层序
@@ -1894,6 +1929,8 @@ function countNodes(root: TreeNode | null): number {
 > 二叉搜索树
 
 若左子树不为空，则左子树上所有节点的值均小于该根节点的值；若右子树不为空，则右子树上所有节点的值均大于该根节点的值。
+
+**二叉搜索树的中序遍历得到的结果是有序的**，利用这个特性可以解决一些问题。
 
 #### Search
 
