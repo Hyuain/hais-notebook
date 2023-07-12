@@ -358,7 +358,9 @@ O(1) &lt; O(log(n)) &lt; O(n) &lt; O (nlog(n)) &lt; O(n^2) &lt; O(n^3) &lt; O(2^
 <li>数组中无重复元素</li>
 </ul>
 <p>时间复杂度 O(log(n))</p>
-<p><detail> <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// 左闭右闭写法</span>
+<details class="note "><summary><p>Code</p>
+</summary>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// 左闭右闭写法</span>
 <span class="token keyword">const</span> <span class="token function-variable function">binarySearch</span> <span class="token operator">=</span> <span class="token punctuation">(</span>nums<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> target<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
   <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>nums<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">1</span> <span class="token punctuation">&#125;</span>
   <span class="token keyword">let</span> left <span class="token operator">=</span> <span class="token number">0</span>
@@ -398,7 +400,9 @@ O(1) &lt; O(log(n)) &lt; O(n) &lt; O (nlog(n)) &lt; O(n^2) &lt; O(n^3) &lt; O(2^
     <span class="token punctuation">&#125;</span>
   <span class="token punctuation">&#125;</span>
   <span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">1</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre> </detail></p>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+</details>
 <h2 id="sorting">Sorting</h2>
 <h3 id="selection-sort">Selection Sort</h3>
 <p>每次从剩下的部分选择最小的排到前面来，O(n^2)</p>
@@ -824,8 +828,10 @@ O(1) &lt; O(log(n)) &lt; O(n) &lt; O (nlog(n)) &lt; O(n^2) &lt; O(n^3) &lt; O(2^
 <p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/letter-combinations-of-a-phone-number/">LeetCode.17</a></p>
 <p>Given a string containing digits from 2-9 inclusive, return all possible letter combinations that the number could represent. Return the answer in any order.</p>
 <p>A mapping of digits to letters (just like on the telephone buttons) is given below. Note that 1 does not map to any letters.</p>
-<details>
-#回溯 <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">letterCombinations</span><span class="token punctuation">(</span>digits<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">&#123;</span>
+<details class="note "><summary><p>Code</p>
+</summary>
+<p>#回溯</p>
+<p><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">letterCombinations</span><span class="token punctuation">(</span>digits<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">&#123;</span>
   <span class="token keyword">const</span> letters <span class="token operator">=</span> <span class="token punctuation">[</span>
     <span class="token string">""</span><span class="token punctuation">,</span> <span class="token string">""</span><span class="token punctuation">,</span> <span class="token string">"abc"</span><span class="token punctuation">,</span> <span class="token string">"def"</span><span class="token punctuation">,</span> <span class="token string">"ghi"</span><span class="token punctuation">,</span> <span class="token string">"jkl"</span><span class="token punctuation">,</span> <span class="token string">"mno"</span><span class="token punctuation">,</span> <span class="token string">"pqrs"</span><span class="token punctuation">,</span> <span class="token string">"tuv"</span><span class="token punctuation">,</span> <span class="token string">"wxyz"</span>
   <span class="token punctuation">]</span>
@@ -847,10 +853,13 @@ O(1) &lt; O(log(n)) &lt; O(n) &lt; O (nlog(n)) &lt; O(n^2) &lt; O(n^3) &lt; O(2^
   <span class="token punctuation">&#125;</span>
   <span class="token function">trackingback</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
   <span class="token keyword">return</span> result
-<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+
 </details>
 <h3 id="卡牌分组-归类运算">卡牌分组 （归类运算）</h3>
 <p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/x-of-a-kind-in-a-deck-of-cards/">LeetCode.914</a></p>
+<details class="note "><summary><p>Code</p>
+</summary>
 <p>问题的核心是求最大公约数：</p>
 <pre class="line-numbers language-text" data-language="text"><code class="language-text">辗转相除： gcd(a, b) = gcd(b, a % b)
 更相减损： gcd(a, b) = a > b ? gcd(a - b, b) : gcd(a, b - a)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
@@ -881,9 +890,13 @@ O(1) &lt; O(log(n)) &lt; O(n) &lt; O (nlog(n)) &lt; O(n^2) &lt; O(n^3) &lt; O(2^
   <span class="token comment">// 如果 group 为空，或者每组的数量小于 1，则为 false</span>
   <span class="token keyword">return</span> group<span class="token punctuation">.</span>length <span class="token operator">?</span> group<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>length <span class="token operator">></span> <span class="token number">1</span> <span class="token operator">:</span> <span class="token boolean">false</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+</details>
 <h1 id="string">String</h1>
 <h2 id="big-number-calculation">Big Number Calculation</h2>
 <h3 id="big-number-plus">Big Number Plus</h3>
+<details class="note "><summary><p>Code</p>
+</summary>
 <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">addStrings</span><span class="token punctuation">(</span>num1<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">,</span> num2<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">string</span> <span class="token punctuation">&#123;</span>
     <span class="token keyword">const</span> arr1 <span class="token operator">=</span> num1<span class="token punctuation">.</span><span class="token function">split</span><span class="token punctuation">(</span><span class="token string">''</span><span class="token punctuation">)</span>
     <span class="token keyword">const</span> arr2 <span class="token operator">=</span> num2<span class="token punctuation">.</span><span class="token function">split</span><span class="token punctuation">(</span><span class="token string">''</span><span class="token punctuation">)</span>
@@ -902,7 +915,11 @@ O(1) &lt; O(log(n)) &lt; O(n) &lt; O (nlog(n)) &lt; O(n^2) &lt; O(n^3) &lt; O(2^
     <span class="token punctuation">&#125;</span>
     <span class="token keyword">return</span> results<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token string">''</span><span class="token punctuation">)</span>
 <span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+</details>
 <h3 id="big-number-minus">Big Number Minus</h3>
+<details class="note "><summary><p>Code</p>
+</summary>
 <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">minusString</span><span class="token punctuation">(</span>num1<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">,</span> num2<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">string</span> <span class="token punctuation">&#123;</span>
   <span class="token keyword">if</span> <span class="token punctuation">(</span>num1 <span class="token operator">===</span> num2<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
     <span class="token keyword">return</span> <span class="token string">'0'</span><span class="token punctuation">;</span>
@@ -945,6 +962,8 @@ O(1) &lt; O(log(n)) &lt; O(n) &lt; O (nlog(n)) &lt; O(n^2) &lt; O(n^3) &lt; O(2^
   <span class="token punctuation">&#125;</span>
   <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+</details>
 <h2 id="kmp">KMP</h2>
 <p>Knuth-Morris-Pratt (KMP) 算法是一种字符串查找算法。他的核心在于：</p>
 <ol type="1">
@@ -968,7 +987,8 @@ O(1) &lt; O(log(n)) &lt; O(n) &lt; O (nlog(n)) &lt; O(n^2) &lt; O(n^3) &lt; O(2^
 <figure>
 <img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/KMP.png" alt="KMP 算法流程图" /><figcaption aria-hidden="true">KMP 算法流程图</figcaption>
 </figure>
-<p><detail></p>
+<details class="note "><summary><p>Code</p>
+</summary>
 <pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// 返回 p 在 s 中出现的位置，-1 为未找到</span>
 <span class="token keyword">function</span> <span class="token function">strStr</span><span class="token punctuation">(</span><span class="token parameter">s<span class="token punctuation">,</span> p</span><span class="token punctuation">)</span><span class="token operator">:</span> number <span class="token punctuation">&#123;</span>
   <span class="token comment">// 构建前缀表 next</span>
@@ -1012,7 +1032,8 @@ O(1) &lt; O(log(n)) &lt; O(n) &lt; O (nlog(n)) &lt; O(n^2) &lt; O(n^3) &lt; O(2^
   <span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">1</span>
 <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p></detail></p>
+
+</details>
 <p>有的实现中会将 <code>next</code> 数组中的所有值都初始化为 <code>-1</code>，且 <code>j</code> 也从 <code>-1</code> 开始，本质没有区别。</p>
 <h2 id="examples-1">Examples</h2>
 <h3 id="反转字符串中的单词">反转字符串中的单词</h3>
@@ -1844,7 +1865,8 @@ result: [1, 2, '*', '+', 4, '-']<span aria-hidden="true" class="line-numbers-row
 <h2 id="construct-binary-trees">Construct Binary Trees</h2>
 <p><strong><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/construct-binary-tree-from-inorder-and-postorder-traversal/">从中序和后序遍历构造二叉树</a></strong></p>
 <p><strong><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-inorder-traversal/">从前序与中序遍历构造二叉树</a></strong></p>
-<p><detail></p>
+<details class="note "><summary><p>Code</p>
+</summary>
 <p>两题类似：</p>
 <ol type="1">
 <li>后序遍历的最后一位就是 <code>root</code>，前序遍历的第一位就是 <code>root</code></li>
@@ -1865,7 +1887,8 @@ result: [1, 2, '*', '+', 4, '-']<span aria-hidden="true" class="line-numbers-row
     <span class="token function">buildTree</span><span class="token punctuation">(</span>rightInorder<span class="token punctuation">,</span> rightPostorder<span class="token punctuation">)</span>
   <span class="token punctuation">)</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p></detail></p>
+
+</details>
 <h2 id="other-operations">Other Operations</h2>
 <p><strong><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/invert-binary-tree/">翻转二叉树</a></strong>：#后序 #先序 #层序</p>
 <p><strong><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/symmetric-tree/">对称二叉树</a></strong>：#内外层 #内外层共用一个数组层序</p>
@@ -1896,7 +1919,8 @@ result: [1, 2, '*', '+', 4, '-']<span aria-hidden="true" class="line-numbers-row
 <li>完全二叉树中，一个节点如果 <strong>一直朝左下方遍历到底的层数</strong> 等于其 <strong>一直朝右下方遍历到底的层数</strong>，那么以这个节点为根节点的子树一定是满二叉树；</li>
 <li>因此我们只需要判断该节点是否是满二叉树，如果是则直接返回计算结果，否则再分别遍历左右两棵子树即可。</li>
 </ul>
-<p><detail></p>
+<details class="note "><summary><p>Code</p>
+</summary>
 <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">countNodes</span><span class="token punctuation">(</span>root<span class="token operator">:</span> TreeNode <span class="token operator">|</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span> <span class="token punctuation">&#123;</span>
   <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>root<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token keyword">return</span> <span class="token number">0</span> <span class="token punctuation">&#125;</span>
   <span class="token keyword">let</span> leftDept <span class="token operator">=</span> <span class="token number">1</span>
@@ -1916,7 +1940,8 @@ result: [1, 2, '*', '+', 4, '-']<span aria-hidden="true" class="line-numbers-row
   <span class="token punctuation">&#125;</span>
   <span class="token keyword">return</span> <span class="token function">countNodes</span><span class="token punctuation">(</span>root<span class="token punctuation">.</span>left<span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token function">countNodes</span><span class="token punctuation">(</span>root<span class="token punctuation">.</span>right<span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token number">1</span>
 <span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p></detail></p>
+
+</details>
 <h3 id="binary-search-tree">Binary Search Tree</h3>
 <blockquote>
 <p>二叉搜索树</p>
@@ -2043,8 +2068,9 @@ result: [1, 2, '*', '+', 4, '-']<span aria-hidden="true" class="line-numbers-row
 </blockquote>
 <p>是空树；或者他的左右两个子树的高度差绝对值不超过 1，并且左右两棵子树都是一棵平衡二叉树。</p>
 <h4 id="isbalanced">isBalanced</h4>
-<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/balanced-binary-tree/">LeetCode. 110</a></p>
-<p><detail></p>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/balanced-binary-tree/">LeetCode.110 Balanced Binary Tree</a></p>
+<details class="note "><summary><p>Code</p>
+</summary>
 <p>思路：用后序遍历求分别求子树高度</p>
 <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// 递归法，用 -1 传递已经不平衡了的状态</span>
 <span class="token keyword">function</span> <span class="token function">isBalanced</span><span class="token punctuation">(</span>root<span class="token operator">:</span> TreeNode <span class="token operator">|</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">boolean</span> <span class="token punctuation">&#123;</span>
@@ -2131,11 +2157,13 @@ result: [1, 2, '*', '+', 4, '-']<span aria-hidden="true" class="line-numbers-row
   <span class="token punctuation">&#125;</span>
   <span class="token keyword">return</span> maxDepth
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p></detail></p>
+
+</details>
 <h4 id="convert-sorted-array-to-binary-search-tree">Convert Sorted Array to Binary Search Tree</h4>
 <p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/convert-sorted-array-to-binary-search-tree/">LeetCode.108</a></p>
 <p>Given an integer array nums where the elements are sorted in ascending order, convert it to a height-balanced binary search tree.</p>
-<p><detail></p>
+<details class="note "><summary><p>Code</p>
+</summary>
 <p>思路：对有序数组按照中点进行切分，左边给左子树，右边给右子树。</p>
 <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">sortedArrayToBST</span><span class="token punctuation">(</span>nums<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">:</span> TreeNode <span class="token operator">|</span> <span class="token keyword">null</span> <span class="token punctuation">&#123;</span>
   <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>nums<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token keyword">return</span> <span class="token keyword">null</span> <span class="token punctuation">&#125;</span>
@@ -2145,13 +2173,15 @@ result: [1, 2, '*', '+', 4, '-']<span aria-hidden="true" class="line-numbers-row
   root<span class="token punctuation">.</span>right <span class="token operator">=</span> <span class="token function">sortedArrayToBST</span><span class="token punctuation">(</span>nums<span class="token punctuation">.</span><span class="token function">slice</span><span class="token punctuation">(</span>midIndex <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
   <span class="token keyword">return</span> root
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p></detail></p>
+
+</details>
 <h1 id="heap">Heap</h1>
 <h2 id="priority-queue-heap">Priority Queue &amp; Heap</h2>
 <p><strong>优先级队列（Priority Queue）是一个抽象数据类型（Abstract Data Type, ADT）</strong>，他支持插入元素（Enqueue）、删除具有最大或最小优先级的元素（Dequeue）。他可以用很多数据结构来实现，比如堆、二叉搜索树、数组等。</p>
 <p><strong>堆（Heap）是一个具体的数据结构</strong>，可以用来实现优先级队列，他实际上就是一棵 <strong>完全二叉树</strong>（最后一层可能不满），并且满足排序特点：大顶堆（Max-Heap）中父结点的优先级高于子结点，小顶堆（Min-Heap）中则相反。堆有很多变种，比如二叉堆、斐波那契堆、二项堆等，他们都有自己的特点。</p>
 <p>JavaScript 中并没有提供原生的堆函数，而完全二叉树可以高效地用数组表示，因此我们可以手动用数组实现一个堆：</p>
-<p><detail></p>
+<details class="note "><summary><p>Code</p>
+</summary>
 <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">class</span> <span class="token class-name">Heap<span class="token operator">&lt;</span><span class="token constant">T</span> <span class="token operator">=</span> <span class="token builtin">any</span><span class="token operator">></span></span> <span class="token punctuation">&#123;</span>
   <span class="token comment">// 二叉堆实际上是一棵树，但保证了节点的顺序</span>
   <span class="token keyword">private</span> tree<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
@@ -2252,7 +2282,8 @@ result: [1, 2, '*', '+', 4, '-']<span aria-hidden="true" class="line-numbers-row
     <span class="token keyword">return</span> Math<span class="token punctuation">.</span><span class="token function">floor</span><span class="token punctuation">(</span><span class="token punctuation">(</span>index <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">/</span> <span class="token number">2</span><span class="token punctuation">)</span>
   <span class="token punctuation">&#125;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p></detail></p>
+
+</details>
 <h2 id="heap-sort-1">Heap Sort</h2>
 <p><strong>堆排序实际上会经历两个过程：</strong></p>
 <ol type="1">
@@ -2282,7 +2313,9 @@ T(n) = \sum_{i=0}^{h} n_i h_i \\
 <p>Example 1:</p>
 <p>Input: nums = [1,1,1,2,2,3], k = 2</p>
 <p>Output: [1,2]</p>
-<p><detail> #二叉堆</p>
+<details class="note "><summary><p>Code</p>
+</summary>
+<p>#二叉堆</p>
 <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">topKFrequent</span><span class="token punctuation">(</span>nums<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> k<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">&#123;</span>
   <span class="token comment">// 哈希表统计元素数量 O(n)</span>
   <span class="token keyword">const</span> map <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Map</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
@@ -2306,7 +2339,8 @@ T(n) = \sum_{i=0}^{h} n_i h_i \\
   <span class="token punctuation">&#125;</span>
   <span class="token keyword">return</span> result
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p></detail></p>
+
+</details>
 <h1 id="graph">Graph</h1>
 <h2 id="shortest-path">Shortest Path</h2>
 <h3 id="dijkstra">Dijkstra</h3>
@@ -2442,7 +2476,9 @@ T(n) = \sum_{i=0}^{h} n_i h_i \\
 <blockquote>
 <p>从 <code>n</code> 个数里面找出 <code>k</code> 个数的集合</p>
 </blockquote>
-<p><detail> <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">combine</span><span class="token punctuation">(</span>n<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">,</span> k<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">&#123;</span>
+<details class="note "><summary><p>Code</p>
+</summary>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">combine</span><span class="token punctuation">(</span>n<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">,</span> k<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">&#123;</span>
   <span class="token keyword">const</span> results <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
   <span class="token keyword">const</span> temp <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
   <span class="token keyword">function</span> <span class="token function">dfs</span><span class="token punctuation">(</span>start<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
@@ -2459,11 +2495,14 @@ T(n) = \sum_{i=0}^{h} n_i h_i \\
   <span class="token punctuation">&#125;</span>
   <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
   <span class="token keyword">return</span> results
-<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre> </detail></p>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+</details>
 <p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/letter-combinations-of-a-phone-number/">LeetCode.17 Letter Combinations of a Phone Number</a> 和 <a target="_blank" rel="noopener" href="https://leetcode.cn/problems/combination-sum-iii/description/">LeetCode.216 Combination Sum III</a> 也是类似的解法。</p>
 <p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/combination-sum/">LeetCode.39 Combination Sum</a> 稍微有点特殊，<strong>组合中的元素可以重复</strong>，但这也并不意味着我们需要考虑以前考虑过的项，只需要考虑当前项重复的情况即可。即在 LeetCode.77 等题中，纵向遍历采用 <code>dfs(i + 1)</code>；而在本题中，需要使用 <code>dfs(i)</code>。</p>
 <p>同时，<strong>此类组合还有另外一种 DFS 的思路，该思路可以转换为递推公式</strong>，即：将问题拆分到每一个元素上，对于每个元素来说，只有两种可能性，选或不选，因此可以得到类似这样的代码：</p>
-<p><detail></p>
+<details class="note "><summary><p>Code</p>
+</summary>
 <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// LeetCode.39 Combination Sum</span>
 <span class="token keyword">function</span> <span class="token function">combinationSum</span><span class="token punctuation">(</span>candidates<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> target<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">&#123;</span>
   <span class="token keyword">const</span> temp <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
@@ -2486,21 +2525,23 @@ T(n) = \sum_{i=0}^{h} n_i h_i \\
   <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> target<span class="token punctuation">)</span>
   <span class="token keyword">return</span> results
 <span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p></detail></p>
+
+</details>
 <p>与动态规划不同的是，这种 DFS 是全搜索 DFS，可以看到并没有加中间判断以选出每个子问题最优解，而是对所有子问题都进行了遍历。</p>
 <h3 id="组合问题中的去重">组合问题中的去重</h3>
 <p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/combination-sum-ii/description/">LeetCode.40 Combination Sum II</a> 中就要求对组合进行去重，组合问题中去重的特点是：</p>
 <ol type="1">
-<li><p><strong>候选元素集合中有值相同的元素</strong></p></li>
-<li><p><strong>候选元素集合中每个元素只能使用一次</strong>，但由于候选集合中有相同的元素，因此结果集合中可能有值相同的元素</p></li>
-<li><p><strong>不能有相同的结果集合</strong></p></li>
+<li><strong>候选元素集合中有值相同的元素</strong></li>
+<li><strong>候选元素集合中每个元素只能使用一次</strong>，但由于候选集合中有相同的元素，因此结果集合中可能有值相同的元素</li>
+<li><strong>不能有相同的结果集合</strong></li>
 </ol>
 <p>由于候选集合中可能有值相同的元素，如果不进行去重处理，<strong>两个结果集可能分别使用了候选集合中位置不同、但值相同的元素</strong>，导致两个结果集相同了。</p>
 <p>从第 2 点可以看出来，由于并没有限制单个结果集合内不能出现重复的元素，因此比如在候选集 <code>[1, 1, 2]</code> 中，可以出现集合 <code>[1, 1]</code>，但不能出现两个 <code>[1, 2]</code>。该类去重是 <strong>对树的横向去重（在 <code>for</code> 循环中去重）</strong>，而纵向可以重复。</p>
 <p>对树的横向去重，实际上就是对 <strong>当层的可选元素数组</strong> 的去重（即对模板代码中的 <code>selections</code> 去重），数组去重常用的就是 <code>Set</code> 和 <strong>排序后相邻元素去重</strong>。</p>
 <h4 id="使用-set-去重">使用 Set 去重</h4>
 <p>在 <code>for</code> 循环遍历的时候使用 <code>Set</code> 即可很方便地进行横向去重：</p>
-<p><detail></p>
+<details class="note "><summary><p>Code</p>
+</summary>
 <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">combinationSum2</span><span class="token punctuation">(</span>candidates<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> target<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">&#123;</span>
   candidates<span class="token punctuation">.</span><span class="token function">sort</span><span class="token punctuation">(</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span> b<span class="token punctuation">)</span> <span class="token operator">=></span> a <span class="token operator">-</span> b<span class="token punctuation">)</span>
   <span class="token keyword">const</span> results <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
@@ -2527,9 +2568,11 @@ T(n) = \sum_{i=0}^{h} n_i h_i \\
   <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> target<span class="token punctuation">)</span>
   <span class="token keyword">return</span> results
 <span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p></detail></p>
+
+</details>
 <h4 id="相邻元素去重">相邻元素去重</h4>
-<p><detail></p>
+<details class="note "><summary><p>Code</p>
+</summary>
 <p>首先需要对 <code>candidates</code> 进行排序：</p>
 <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">candidates<span class="token punctuation">.</span><span class="token function">sort</span><span class="token punctuation">(</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span> b<span class="token punctuation">)</span> <span class="token operator">=></span> a <span class="token operator">-</span> b<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>然后直接看 <code>for</code> 循环里面的逻辑：</p>
@@ -2539,7 +2582,8 @@ T(n) = \sum_{i=0}^{h} n_i h_i \\
   <span class="token punctuation">&#125;</span>
   <span class="token comment">// ...</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p></detial></p>
+
+</details>
 <h2 id="切割问题">切割问题</h2>
 <p>切割问题其实与组合问题类似：</p>
 <ul>
@@ -2571,7 +2615,8 @@ T(n) = \sum_{i=0}^{h} n_i h_i \\
 <h2 id="子集问题">子集问题</h2>
 <p>子集问题有个很重要的特征是，他不是在最后递归终止的时候保存结果的，而是在递归的过程中保存结果。</p>
 <p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/subsets/description/">LeetCode.78 Subsets</a> 就是最简单的子集问题：</p>
-<p><detail></p>
+<details class="note "><summary><p>Code</p>
+</summary>
 <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">subsets</span><span class="token punctuation">(</span>nums<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">&#123;</span>
   <span class="token keyword">const</span> results <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
   <span class="token keyword">const</span> temp <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
@@ -2588,7 +2633,8 @@ T(n) = \sum_{i=0}^{h} n_i h_i \\
   <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>
   <span class="token keyword">return</span> results
 <span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p></detail></p>
+
+</details>
 <p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/subsets-ii/">LeetCode.90 Subsets II</a> 要求不能出现重复的子集，子集问题的去重与组合问题一模一样；<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/non-decreasing-subsequences/">LeetCode.491 Non-dcreasing Subsequences</a> 只是多了一些额外的判断。</p>
 <h2 id="排列问题">排列问题</h2>
 <p>排列问题跟组合问题有所不同，排列问题关心顺序，因此：</p>
@@ -2599,7 +2645,8 @@ T(n) = \sum_{i=0}^{h} n_i h_i \\
 <p>组合问题不需要考虑之前已经选过的项，因此到叶节点的路径上不会选择同一个元素，因此在纵向递归的过程中隐藏着 <strong>可选元素数组</strong> <code>selections</code> 随着 <code>start</code> 的增长而改变的逻辑，也就是说 <strong>组合问题自带纵向去重</strong>。</p>
 <p>而排列问题没有 <code>start</code> 的帮忙，如果不做处理，<strong>到叶节点的路径上就会多次出现同一个的元素</strong>。因此需要每次递归之后都需要在 <code>selections</code> 中去手动去除路径中已有的元素，也就是说进行 <strong>纵向去重（对递归进行去重）</strong>，最简单的去重方法就是使用 <code>Set</code>。</p>
 <p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/permutations/description/">LeetCode.46 Permutations</a> 是一个最简单的全排列问题，注意其中的去重逻辑：</p>
-<p><detail></p>
+<details class="note "><summary><p>Code</p>
+</summary>
 <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">permute</span><span class="token punctuation">(</span>nums<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">&#123;</span>
   <span class="token keyword">const</span> results <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
   <span class="token keyword">const</span> temp <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
@@ -2626,12 +2673,14 @@ T(n) = \sum_{i=0}^{h} n_i h_i \\
   <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
   <span class="token keyword">return</span> results
 <span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p></detail></p>
+
+</details>
 <h3 id="排列问题中的去重">排列问题中的去重</h3>
 <p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/permutations-ii/description/">LeetCode.47 Permutations II</a> 中要求像组合问题一样，对排列问题进行去重。因为该题中出现了相同值的元素，需要进行 <strong>横向去重</strong>，而 LeetCode.46 中每个元素的值都是不同的，不需要进行横向去重。</p>
 <h4 id="使用两个-set-去重">使用两个 Set 去重</h4>
 <p>既然纵向去重和横向去重都可以使用 <code>Set</code>，那么可以使用两个 <code>Set</code> 来分别对纵向和横向进行去重：</p>
-<p><detail></p>
+<details class="note "><summary><p>Code</p>
+</summary>
 <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">permuteUnique</span><span class="token punctuation">(</span>nums<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">&#123;</span>
   <span class="token keyword">const</span> results <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
   <span class="token keyword">const</span> temp <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
@@ -2665,7 +2714,8 @@ T(n) = \sum_{i=0}^{h} n_i h_i \\
   <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
   <span class="token keyword">return</span> results
 <span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p></detail></p>
+
+</details>
 <h4 id="使用-used-数组进行去重">使用 used 数组进行去重</h4>
 <p>这是一个比较神奇的方法，将 Set 和 相邻元素去重结合了一下，首先需要对候选集进行排序，然后用数组 <code>used</code> 标记当前的使用状态：</p>
 <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">permuteUnique</span><span class="token punctuation">(</span>nums<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">&#123;</span>
@@ -2927,7 +2977,10 @@ dp<span class="token punctuation">[</span><span class="token number">2</span><sp
 <p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/integer-break/">LeetCode.343</a></p>
 <p>Given an integer n, break it into the sum of k positive integers, where k &gt;= 2, and maximize the product of those integers.</p>
 <p>Return the maximum product you can get.</p>
-<p><detail> #双重循环 <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">integerBreak</span><span class="token punctuation">(</span>n<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span> <span class="token punctuation">&#123;</span>
+<details class="note "><summary><p>Code</p>
+</summary>
+<p>#双重循环</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">integerBreak</span><span class="token punctuation">(</span>n<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span> <span class="token punctuation">&#123;</span>
   <span class="token keyword">const</span> dp <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name"><span class="token builtin">Array</span></span><span class="token punctuation">(</span>n<span class="token punctuation">)</span>
   <span class="token comment">// dp[i] = max(dp[i],max(dp[i-j]*j,(i-j)*j))</span>
   <span class="token comment">// 1, 2, 4, 6, 9</span>
@@ -2939,7 +2992,9 @@ dp<span class="token punctuation">[</span><span class="token number">2</span><sp
   <span class="token punctuation">&#125;</span>
   <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>dp<span class="token punctuation">)</span>
   <span class="token keyword">return</span> dp<span class="token punctuation">[</span>n<span class="token punctuation">]</span>
-<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre> </detail></p>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+</details>
 <h1 id="mod">Mod</h1>
 <p>最简单的模运算：计算乘积的个位数，比如 <span class="math inline">\(1234\cdot6789\)</span> 的个位数是 <span class="math inline">\((4\cdot9)\%10=6\)</span> ，<span class="math inline">\(1234+6789\)</span> 的个位数是 <span class="math inline">\((4+9)\%10=3\)</span>。</p>
 <p>将上述结论抽象成数学公式就是： <span class="math display">\[
