@@ -683,6 +683,10 @@ export function getHighestPriorityLane(lanes: Lanes): Lane {
 }
 ```
 
+## 优先级队列
+
+Scheduler 中使用优先级队列来为任务进行排序，并保证每次出队的任务均是优先级最高的任务，优先级队列有多种实现方式，React 的 Scheduler 是采用常用的小顶堆来实现的。关于 *优先级队列和堆* 的更多内容可以参考 {% post_link Algorithm %} 这篇笔记。
+
 # 首次渲染过程
 
 React 的更新流程分为 **Schedule、Render 和 Commit** 三个阶段：
@@ -859,7 +863,7 @@ ReactDOMRoot.prototype.render = function(children: ReactNodeList) {
 
 `updateContainer` 位于 `react-reconciler/src/ReactFiberReconciler.js` 中，他会：
 
-1. 获取优先级（lane）
+1. 获取优先级（`lane`）
 2. 创建 `Update`，并将该更新入队
 3. 调用 `scheduleUpdateOnFiber`，准备进入 Schedule 阶段
 
@@ -945,7 +949,156 @@ const scheduleMicrotask =
 
 ### Scheduler
 
+正如上文所说，Scheduler 提供了一些核心 API 供 `react-reconciler` 包使用：
 
+```typescript
+// 使用某种优先级调度 task
+scheduleCallback(task, priority)
+
+// 提示时间是否用尽，需要中断循环
+shouldYield()
+
+// 取消调度 task
+cancelCallback(task)
+```
+
+Scheduler 实际上就是采用了一堆计时器，每个 `task` 会有 `expirationTime` 属性代表了他的过期时间，`expirationTime` 越小就意味着优先级越高，这在一定程度上也能解决饥饿问题。
+
+```typescript
+function unstable_scheduleCallback(
+  priorityLevel: PriorityLevel,
+  callback: Callback,
+  options?: {delay: number},
+): Task {
+  const currentTime = getCurrentTime();
+
+  // 如果传入了 delay 参数，则会延迟执行
+  let startTime;
+  if (typeof options === 'object' && options !== null) {
+    var delay = options.delay;
+    if (typeof delay === 'number' && delay > 0) {
+      startTime = currentTime + delay;
+    } else {
+      startTime = currentTime;
+    }
+  } else {
+    startTime = currentTime;
+  }
+
+  // 根据传入的优先级确定 timeout，从而确定 expirationTime
+  let timeout;
+  switch (priorityLevel) {
+    case ImmediatePriority:
+      timeout = IMMEDIATE_PRIORITY_TIMEOUT;      // -1
+      break;
+    case UserBlockingPriority:
+      timeout = USER_BLOCKING_PRIORITY_TIMEOUT;  // 250
+      break;
+    // 永远不会到时间
+    case IdlePriority:
+      timeout = IDLE_PRIORITY_TIMEOUT;           // maxSigned31BitInt
+      break;
+    case LowPriority:
+      timeout = LOW_PRIORITY_TIMEOUT;            // 10000
+      break;
+    case NormalPriority:
+    default:
+      timeout = NORMAL_PRIORITY_TIMEOUT;         // 5000
+      break;
+  }
+
+  const expirationTime = startTime + timeout;
+
+  const newTask: Task = {
+    id: taskIdCounter++,
+    callback,
+    priorityLevel,
+    startTime,
+    expirationTime,
+    sortIndex: -1,
+  };
+  if (enableProfiling) {
+    newTask.isQueued = false;
+  }
+
+  if (startTime > currentTime) {
+    // 延迟任务，进入 timerQueue；延迟时间到了之后进入 taskQueue
+    newTask.sortIndex = startTime;
+    push(timerQueue, newTask);
+    if (peek(taskQueue) === null && newTask === peek(timerQueue)) {
+      // All tasks are delayed, and this is the task with the earliest delay.
+      if (isHostTimeoutScheduled) {
+        // Cancel an existing timeout.
+        cancelHostTimeout();
+      } else {
+        isHostTimeoutScheduled = true;
+      }
+      // Schedule a timeout.
+      requestHostTimeout(handleTimeout, startTime - currentTime);
+    }
+  } else {
+    // 非延迟任务，进入 taskQueue
+    newTask.sortIndex = expirationTime;
+    push(taskQueue, newTask);
+    if (enableProfiling) {
+      markTaskStart(newTask, currentTime);
+      newTask.isQueued = true;
+    }
+    // Schedule a host callback, if needed. If we're already performing work,
+    // wait until the next time we yield.
+    if (!isHostCallbackScheduled && !isPerformingWork) {
+      isHostCallbackScheduled = true;
+      requestHostCallback(flushWork);
+    }
+  }
+
+  return newTask;
+}
+```
+
+可以看到 Scheduler 中维护了两个队列： `timerQueue` 和 `taskQueue`。
+
+- 如果调用 `scheduleCallback` 的时候传入了 `delay` 参数，则会进入 `timerQueue` 并延迟开始计时的时间；
+- 否则会直接进入 `taskQueue` 开始计时，然后调用 `requestHostCallback` 来开启 **宏任务** 执行 `taskQueue` 中的任务。
+
+`timerQueue` 和 `taskQueue` 均采用了 **优先级队列** 这一数据结构，优先级队列中排序的依据就是过期时间 `expirtionTime`。
+
+`requestHostCallback` 等函数会 **开启一个新的宏任务** 来循环执行 `taskQueue`，目前 Scheduler 中是这样判断使用什么宏任务的：
+
+```typescript
+let schedulePerformWorkUnitlDeadline
+if (typeof localSetImmediate === 'function') {
+  // Node.js 和老 IE，setImmediate 不像 MessageChannel 一样会阻止 Node.js 进程退出，而且执行时机更早
+  schedulePerformWorkUnitlDeadline = () => {
+    localSetImmediate(performWorkUnitlDeadline)
+  }
+} else if (typeof MessgeChannel !== 'undefined') {
+  // DOM 和 Worker
+  const channel = new MessageChannel()
+  const port = channel.port2
+  channel.port1.onmessage = performWorkUnitlDeadline
+  schedulePerformWorkUnitlDeadline = () => {
+    port.postMessage(null)
+  }
+} else {
+  // setTimeout 会有 4ms 延迟
+  schedulePerformWorkUnitlDeadline = () => {
+    localSetTimeout(performWorkUntilDeadline, 0)
+  }
+}
+```
+
+需要注意的是，`requestIdleCallback` 由于兼容性、以及他执行频率不稳定的问题没有被 React 选用。另外 `requestIdleCallback` 是在空闲时期执行低优先级工作，这与 Scheduler 需要执行多种优先级任务的需求相悖。
+
+### React 中的优先级
+
+React 中有两种优先级表示方法，一种是 `Lane`，一种是事件优先级 `EventPriority`，`EventPriority` 可以看做是特殊的 `Lane`。
+
+具体来讲，不同的事件会产生不同的 `EventPriority`，比如 `DiscreteEventPriority` 代表 `click` `input` `focus` 等离散事件； `ContinousEventPriority` 代表 `drag` `mouseover` 等连续事件。这些 `EventPriority` 都有着对应的 `Lane`，他们数值相同，不需要函数来转换。
+
+但是 `Lanes` 转换为 `EventPriority` 时，由于是多对一转换，就需要 `lanesToEventPriority` 来帮忙。
+
+**不过，上面提到的 `Scheduler` 还有一套自己的优先级系统，React 需要再将优先级转换为 `SchedulerPriority`，才能调用 `Scheduler` 的 API。** 其实也很简单，用 `switch-case` 映射一下就好了。
 
 ### 计算并处理调度
 
@@ -1048,9 +1201,9 @@ function processRootScheduleInMicrotask() {
 }
 ```
 
-#### 选择优先级并进行调度
+### 在微任务中选择优先级并进行调度
 
-这个 `scheduleTaskForRootDuringMicrotask` 函数会获取到本轮调度应该执行的优先级 `nextLanes`，并进行调度：
+这个 `scheduleTaskForRootDuringMicrotask` 函数只能在微任务中调用，他会获取到本轮调度应该执行的优先级 `nextLanes`，并进行调度：
 
 1. 通过 `getNextLanes` 选择优先级
 2. 根据优先级把任务以回调函数的形式传给 `scheduleCallback` 交给 Scheduler 进行调度
@@ -1220,7 +1373,7 @@ export function performSyncWorkOnRoot(root: FiberRoot): null {
 export function performConcurrentWorkOnRoot(
   root: FiberRoot,
    // Scheduler 执行该函数的时候，会传入第二个参数 didTimeout 指示该任务是否已过期
-   didTimeout: boolean,
+  didTimeout: boolean,
 ) {
   if ((executionContext & (RenderContext | CommitContext)) !== NoContext) {
     throw new Error('Should not already be working')
@@ -2054,4 +2207,24 @@ BeforeMutation 阶段主要有两个作用：
 - 执行 `ClassComponenent` 的 `getSnapshotBeforeUpdate` 方法
 - 清空 `HostRoot` 挂载的内容
 
-### 
+### Mutation
+
+对于 HostComponent 来说，Mutation 阶段会进行 DOM 元素的增、删、改：
+
+- **删除元素：**在向下遍历的过程中会前序执行删除操作，该操作会将 Render 阶段 `beginWOrk` 中往 `fiber.deletions` 里添加的元素删除掉，删除会有以下过程
+  - 找到最近的祖先 Host
+  - DFS 删除子树的每一个节点
+- **插入、移动元素：**
+  - 找到最近的祖先 Host
+  - 找到 `parentNode.insertBefore` 所需的元素，注意这个找到的元素本身不能被标记为 `Placement`
+  - 执行 `parentNode.insertBefore` 或 `parentNode.appendChild`
+
+**Mutation** 执行完之后将进行 FiberTree 的切换：
+
+```typescript
+root.current = finishedWork
+```
+
+### Layout
+
+在 DFS 中会前序执行 `OffscreenComponent` 的显隐逻辑，后序执行 `useLayoutEffect` 回调。
