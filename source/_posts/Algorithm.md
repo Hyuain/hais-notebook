@@ -2551,7 +2551,6 @@ function combine(k: number) {
 > 从 `n` 个数里面找出 `k` 个数的集合
 
 <detail>
-
 ```typescript
 function combine(n: number, k: number): number[][] {
   const results = []
@@ -2572,7 +2571,6 @@ function combine(n: number, k: number): number[][] {
   return results
 };
 ```
-
 </detail>
 
 [LeetCode.17 Letter Combinations of a Phone Number](https://leetcode.cn/problems/letter-combinations-of-a-phone-number/) 和 [LeetCode.216 Combination Sum III](https://leetcode.cn/problems/combination-sum-iii/description/) 也是类似的解法。
