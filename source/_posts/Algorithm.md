@@ -108,7 +108,7 @@ $$
 
 时间复杂度 O(log(n))
 
-<detail>
+{% note Code %}
 ```typescript
 // 左闭右闭写法
 const binarySearch = (nums: number[], target: number) => {
@@ -152,7 +152,7 @@ const binarySearch = (nums: number[], target: number) => {
   return -1
 }
 ```
-</detail>
+{% endnote %}
 
 ## Sorting
 
@@ -706,8 +706,10 @@ Given a string containing digits from 2-9 inclusive, return all possible letter 
 
 A mapping of digits to letters (just like on the telephone buttons) is given below. Note that 1 does not map to any letters.
 
-<details>
-  #回溯
+{% note Code %} 
+
+#回溯
+
   ```typescript
   function letterCombinations(digits: string): string[] {
     const letters = [
@@ -733,10 +735,14 @@ A mapping of digits to letters (just like on the telephone buttons) is given bel
     return result
   };
   ```
-</details>
+
+{% endnote %}
+
 ### 卡牌分组 （归类运算）
 
 [LeetCode.914](https://leetcode.cn/problems/x-of-a-kind-in-a-deck-of-cards/)
+
+{% note Code %}
 
 问题的核心是求最大公约数：
 
@@ -775,11 +781,15 @@ const cardGroup = (arr) => {
 }
 ```
 
+{% endnote %}
+
 # String
 
 ## Big Number Calculation
 
 ### Big Number Plus
+
+{% note Code %}
 
 ```ts
 function addStrings(num1: string, num2: string): string {
@@ -802,7 +812,11 @@ function addStrings(num1: string, num2: string): string {
 };
 ```
 
+{% endnote %}
+
 ### Big Number Minus
+
+{% note Code %}
 
 ```ts
 function minusString(num1: string, num2: string): string {
@@ -849,6 +863,8 @@ function compare(num1: string, num2: string): boolean {
 }
 ```
 
+{% endnote %}
+
 ## KMP
 
 Knuth-Morris-Pratt (KMP) 算法是一种字符串查找算法。他的核心在于：
@@ -887,7 +903,7 @@ a a b a a f
 
 ![KMP 算法流程图](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/KMP.png)
 
-<detail>
+{% note Code %}
 
 ```javascript
 // 返回 p 在 s 中出现的位置，-1 为未找到
@@ -935,7 +951,7 @@ function strStr(s, p): number {
 
 ```
 
-</detail>
+{% endnote %}
 
 有的实现中会将 `next` 数组中的所有值都初始化为 `-1`，且 `j` 也从 `-1` 开始，本质没有区别。
 
@@ -1823,7 +1839,7 @@ function levelOrder(root: TreeNode | null): number[][] {
 
 **[从前序与中序遍历构造二叉树](https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-inorder-traversal/)**
 
-<detail>
+{% note Code %}
 
 两题类似：
 
@@ -1848,9 +1864,7 @@ function buildTree(inorder: number[], postorder: number[]): TreeNode | null {
 }
 ```
 
-</detail>
-
-
+{% endnote %}
 
 ## Other Operations
 
@@ -1898,7 +1912,7 @@ function buildTree(inorder: number[], postorder: number[]): TreeNode | null {
 - 完全二叉树中，一个节点如果 **一直朝左下方遍历到底的层数** 等于其 **一直朝右下方遍历到底的层数**，那么以这个节点为根节点的子树一定是满二叉树；
 - 因此我们只需要判断该节点是否是满二叉树，如果是则直接返回计算结果，否则再分别遍历左右两棵子树即可。
 
-<detail>
+{% note Code %}
 
 ```typescript
 function countNodes(root: TreeNode | null): number {
@@ -1922,7 +1936,7 @@ function countNodes(root: TreeNode | null): number {
 };
 ```
 
-</detail>
+{% endnote %}
 
 ### Binary Search Tree
 
@@ -2065,9 +2079,9 @@ function deleteNode(root: TreeNode | null, key: number): TreeNode | null {
 
 #### isBalanced
 
-[LeetCode. 110](https://leetcode.cn/problems/balanced-binary-tree/)
+[LeetCode.110 Balanced Binary Tree](https://leetcode.cn/problems/balanced-binary-tree/)
 
-<detail>
+{% note Code %}
 
 思路：用后序遍历求分别求子树高度
 
@@ -2162,7 +2176,7 @@ function getHeight(node: TreeNode | null): number {
 }
 ```
 
-</detail>
+{% endnote %}
 
 #### Convert Sorted Array to Binary Search Tree
 
@@ -2170,7 +2184,7 @@ function getHeight(node: TreeNode | null): number {
 
 Given an integer array nums where the elements are sorted in ascending order, convert it to a height-balanced binary search tree.
 
-<detail>
+{% note Code %}
 
 思路：对有序数组按照中点进行切分，左边给左子树，右边给右子树。
 
@@ -2184,7 +2198,7 @@ function sortedArrayToBST(nums: number[]): TreeNode | null {
   return root
 }
 ```
-</detail>
+{% endnote %}
 
 # Heap
 
@@ -2196,7 +2210,7 @@ function sortedArrayToBST(nums: number[]): TreeNode | null {
 
 JavaScript 中并没有提供原生的堆函数，而完全二叉树可以高效地用数组表示，因此我们可以手动用数组实现一个堆：
 
-<detail>
+{% note Code %}
 
 ```typescript
 class Heap<T = any> {
@@ -2301,7 +2315,7 @@ class Heap<T = any> {
 }
 ```
 
-</detail>
+{% endnote %}
 
 ## Heap Sort
 
@@ -2342,7 +2356,8 @@ Input: nums = [1,1,1,2,2,3], k = 2
 
 Output: [1,2]
 
-<detail>
+{% note Code %}
+
 #二叉堆
 
 ```typescript
@@ -2371,7 +2386,7 @@ function topKFrequent(nums: number[], k: number): number[] {
 }
 ```
 
-</detail>
+{% endnote %}
 
 # Graph
 
@@ -2550,7 +2565,8 @@ function combine(k: number) {
 
 > 从 `n` 个数里面找出 `k` 个数的集合
 
-<detail>
+{% note Code %}
+
 ```typescript
 function combine(n: number, k: number): number[][] {
   const results = []
@@ -2571,7 +2587,7 @@ function combine(n: number, k: number): number[][] {
   return results
 };
 ```
-</detail>
+{% endnote %}
 
 [LeetCode.17 Letter Combinations of a Phone Number](https://leetcode.cn/problems/letter-combinations-of-a-phone-number/) 和 [LeetCode.216 Combination Sum III](https://leetcode.cn/problems/combination-sum-iii/description/) 也是类似的解法。
 
@@ -2579,7 +2595,7 @@ function combine(n: number, k: number): number[][] {
 
 同时，**此类组合还有另外一种 DFS 的思路，该思路可以转换为递推公式**，即：将问题拆分到每一个元素上，对于每个元素来说，只有两种可能性，选或不选，因此可以得到类似这样的代码：
 
-<detail>
+{% note Code %}
 
 ```typescript
 // LeetCode.39 Combination Sum
@@ -2606,7 +2622,7 @@ function combinationSum(candidates: number[], target: number): number[][] {
 };
 ```
 
-</detail>
+{% endnote %}
 
 与动态规划不同的是，这种 DFS 是全搜索 DFS，可以看到并没有加中间判断以选出每个子问题最优解，而是对所有子问题都进行了遍历。
 
@@ -2615,9 +2631,7 @@ function combinationSum(candidates: number[], target: number): number[][] {
 [LeetCode.40 Combination Sum II](https://leetcode.cn/problems/combination-sum-ii/description/) 中就要求对组合进行去重，组合问题中去重的特点是：
 
 1. **候选元素集合中有值相同的元素**
-
 2. **候选元素集合中每个元素只能使用一次**，但由于候选集合中有相同的元素，因此结果集合中可能有值相同的元素
-
 3. **不能有相同的结果集合**
 
 由于候选集合中可能有值相同的元素，如果不进行去重处理，**两个结果集可能分别使用了候选集合中位置不同、但值相同的元素**，导致两个结果集相同了。
@@ -2630,7 +2644,7 @@ function combinationSum(candidates: number[], target: number): number[][] {
 
 在 `for` 循环遍历的时候使用 `Set` 即可很方便地进行横向去重：
 
-<detail>
+{% note Code %}
 
 ```typescript
 function combinationSum2(candidates: number[], target: number): number[][] {
@@ -2661,11 +2675,11 @@ function combinationSum2(candidates: number[], target: number): number[][] {
 };
 ```
 
-</detail>
+{% endnote %}
 
 #### 相邻元素去重
 
-<detail>
+{% note Code %}
 
 首先需要对 `candidates` 进行排序：
 
@@ -2684,7 +2698,7 @@ for (let i = start; i < candidates.length; i++) {
 }
 ```
 
-</detial>
+{% endnote %}
 
 ## 切割问题
 
@@ -2726,7 +2740,7 @@ function partition(s: string) {
 
 [LeetCode.78 Subsets](https://leetcode.cn/problems/subsets/description/) 就是最简单的子集问题：
 
-<detail>
+{% note Code %}
 
 ```typescript
 function subsets(nums: number[]): number[][] {
@@ -2747,7 +2761,7 @@ function subsets(nums: number[]): number[][] {
 };
 ```
 
-</detail>
+{% endnote %}
 
 [LeetCode.90 Subsets II](https://leetcode.cn/problems/subsets-ii/) 要求不能出现重复的子集，子集问题的去重与组合问题一模一样；[LeetCode.491 Non-dcreasing Subsequences](https://leetcode.cn/problems/non-decreasing-subsequences/) 只是多了一些额外的判断。
 
@@ -2764,7 +2778,7 @@ function subsets(nums: number[]): number[][] {
 
 [LeetCode.46 Permutations](https://leetcode.cn/problems/permutations/description/) 是一个最简单的全排列问题，注意其中的去重逻辑：
 
-<detail>
+{% note Code %}
 
 ```typescript
 function permute(nums: number[]): number[][] {
@@ -2795,7 +2809,7 @@ function permute(nums: number[]): number[][] {
 };
 ```
 
-</detail>
+{% endnote %}
 
 ### 排列问题中的去重
 
@@ -2805,7 +2819,7 @@ function permute(nums: number[]): number[][] {
 
 既然纵向去重和横向去重都可以使用 `Set`，那么可以使用两个 `Set` 来分别对纵向和横向进行去重：
 
-<detail>
+{% note Code %}
 
 ```typescript
 function permuteUnique(nums: number[]): number[][] {
@@ -2843,7 +2857,7 @@ function permuteUnique(nums: number[]): number[][] {
 };
 ```
 
-</detail>
+{% endnote %}
 
 #### 使用 used 数组进行去重
 
@@ -3151,8 +3165,10 @@ Given an integer n, break it into the sum of k positive integers, where k >= 2, 
 
 Return the maximum product you can get.
 
-<detail>
+{% note Code %}
+
 #双重循环
+
 ```typescript
 function integerBreak(n: number): number {
   const dp = new Array(n)
@@ -3168,7 +3184,7 @@ function integerBreak(n: number): number {
   return dp[n]
 };
 ```
-</detail>
+{% endnote %}
 
 # Mod
 
