@@ -2132,8 +2132,333 @@ T(n) = \sum_{i=0}^{h} n_i h_i \\
 <pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">function</span> <span class="token function">dijkstra</span><span class="token punctuation">(</span><span class="token parameter">edges<span class="token punctuation">,</span> n<span class="token punctuation">,</span> source</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
   <span class="token keyword">const</span> distance <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Array</span><span class="token punctuation">(</span>n<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">fill</span><span class="token punctuation">(</span><span class="token number">Infinity</span><span class="token punctuation">)</span>
   distance<span class="token punctuation">[</span>source<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">0</span>
-  
+  <span class="token comment">// TBC </span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="backtracing">Backtracing</h1>
+<p><strong>回溯算法</strong> 的本质是 <strong>遍历搜索</strong>，而回溯操作实际上指的是：</p>
+<ul>
+<li>我们在遍历二叉树的时候，可能会定义一些全局变量来记录当前所在的节点位置、或者遍历到当前节点的时候累计的某些值</li>
+<li><strong>在我们采用深度优先遍历时，这些变量需要在遍历 B 子树之前，退回到原来的状态，消除遍历 A 子树时产生的影响</strong></li>
+</ul>
+<p>由于回溯算法的本质是遍历操作，因此效率并不高，通常需要进行剪枝来些微提高效率，一般来说只有在解决以下这些比较复杂的问题时，才会考虑回溯法：</p>
+<ul>
+<li><p><strong>组合问题：</strong><code>n</code> 个数里面找出 <code>k</code> 个数的集合</p></li>
+<li><p><strong>排列问题：</strong><code>n</code> 个数按照一定规则全排列</p></li>
+<li><p><strong>切割问题：</strong>一个字符串按照一定规则进行切割</p></li>
+<li><p><strong>子集问题：</strong>给定一个集合，找到所有可能的子集</p></li>
+<li><p><strong>棋盘问题：</strong>N皇后、解数独</p></li>
+</ul>
+<p>回溯法其实就是对树的遍历，不过对象通常不是二叉树，因此需要两种循环：</p>
+<ul>
+<li><strong>横向遍历：</strong><code>for</code> 循环</li>
+<li><strong>纵向遍历：</strong>递归</li>
+</ul>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">dfs</span><span class="token punctuation">(</span>params<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">finish</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token function">saveResults</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">const</span> child <span class="token keyword">of</span> children<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token function">process</span><span class="token punctuation">(</span>child<span class="token punctuation">)</span>
+    <span class="token function">dfs</span><span class="token punctuation">(</span>child<span class="token punctuation">,</span> newParams<span class="token punctuation">)</span>
+    <span class="token function">rollback</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="组合问题">组合问题</h2>
+<p>组合问题实质上是指的 <code>n</code> 中选 <code>k</code>，不需要考虑顺序，即 <code>[1, 2]</code> 和 <code>[2, 1]</code> 认为是一种情况，因此一般不需要考虑已经考虑过的位，一位一位地考虑即可：</p>
+<ul>
+<li><strong>横向遍历</strong> 为当前位可选择的项；</li>
+<li><strong>纵向遍历</strong> 为当前位已经确定，进入下一位。</li>
+</ul>
+<p>模板代码如下：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">combine</span><span class="token punctuation">(</span>k<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> results <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token keyword">const</span> temp <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token keyword">function</span> <span class="token function">dfs</span><span class="token punctuation">(</span>start<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 已经选了 k 个了，结束</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>temp<span class="token punctuation">.</span>length <span class="token operator">===</span> k<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      results<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token operator">...</span>temp<span class="token punctuation">]</span><span class="token punctuation">)</span>
+      <span class="token keyword">return</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token comment">// 确定当前位可选的内容，通常需要借助 start 的帮忙</span>
+    <span class="token keyword">const</span> selections <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token operator">...</span><span class="token punctuation">.</span><span class="token punctuation">]</span>
+    <span class="token comment">// 横向遍历当前位的可选内容</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">const</span> selection <span class="token keyword">of</span> selections<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token comment">// 确定当前位并进入下一位</span>
+      temp<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>selection<span class="token punctuation">)</span>
+      <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+      temp<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><a href="https://leetcode.cn/problems/combinations/description/">LeetCode.77 Combinations</a></p>
+<blockquote>
+<p>从 <code>n</code> 个数里面找出 <code>k</code> 个数的集合</p>
+</blockquote>
+<p><detail></p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">combine</span><span class="token punctuation">(</span>n<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">,</span> k<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> results <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token keyword">const</span> temp <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token keyword">function</span> <span class="token function">dfs</span><span class="token punctuation">(</span>start<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>temp<span class="token punctuation">.</span>length <span class="token operator">===</span> k<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      results<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token operator">...</span>temp<span class="token punctuation">]</span><span class="token punctuation">)</span>
+      <span class="token keyword">return</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token comment">// 剪枝，因为最终集合需要 k 个数，因此在不够的情况下可以提前结束</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> start<span class="token punctuation">;</span> i <span class="token operator">&lt;=</span> n <span class="token operator">-</span> k <span class="token operator">+</span> temp<span class="token punctuation">.</span>length <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      temp<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span>
+      <span class="token function">dfs</span><span class="token punctuation">(</span>i <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span>
+      temp<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span> results
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p></detail></p>
+<p><a href="https://leetcode.cn/problems/letter-combinations-of-a-phone-number/">LeetCode.17 Letter Combinations of a Phone Number</a> 和 <a href="https://leetcode.cn/problems/combination-sum-iii/description/">LeetCode.216 Combination Sum III</a> 也是类似的解法。</p>
+<p><a href="https://leetcode.cn/problems/combination-sum/">LeetCode.39 Combination Sum</a> 稍微有点特殊，<strong>组合中的元素可以重复</strong>，但这也并不意味着我们需要考虑以前考虑过的项，只需要考虑当前项重复的情况即可。即在 LeetCode.77 等题中，纵向遍历采用 <code>dfs(i + 1)</code>；而在本题中，需要使用 <code>dfs(i)</code>。</p>
+<p>同时，<strong>此类组合还有另外一种 DFS 的思路，该思路可以转换为递推公式</strong>，即：将问题拆分到每一个元素上，对于每个元素来说，只有两种可能性，选或不选，因此可以得到类似这样的代码：</p>
+<p><detail></p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// LeetCode.39 Combination Sum</span>
+<span class="token keyword">function</span> <span class="token function">combinationSum</span><span class="token punctuation">(</span>candidates<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> target<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> temp <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token keyword">const</span> results <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token keyword">function</span> <span class="token function">dfs</span><span class="token punctuation">(</span>start<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">,</span> rest<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>rest <span class="token operator">&lt;=</span> <span class="token number">0</span> <span class="token operator">||</span> start <span class="token operator">>=</span> candidates<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>rest <span class="token operator">===</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        results<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token operator">...</span>temp<span class="token punctuation">]</span><span class="token punctuation">)</span>
+      <span class="token punctuation">&#125;</span>
+      <span class="token keyword">return</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">const</span> current <span class="token operator">=</span> candidates<span class="token punctuation">[</span>start<span class="token punctuation">]</span>
+    <span class="token comment">// 选当前项</span>
+    temp<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>current<span class="token punctuation">)</span>
+    <span class="token function">dfs</span><span class="token punctuation">(</span>start<span class="token punctuation">,</span> rest <span class="token operator">-</span> current<span class="token punctuation">)</span>
+    temp<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token comment">// 不选当前项</span>
+    <span class="token function">dfs</span><span class="token punctuation">(</span>start <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">,</span> rest<span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> target<span class="token punctuation">)</span>
+  <span class="token keyword">return</span> results
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p></detail></p>
+<p>与动态规划不同的是，这种 DFS 是全搜索 DFS，可以看到并没有加中间判断以选出每个子问题最优解，而是对所有子问题都进行了遍历。</p>
+<h3 id="组合问题中的去重">组合问题中的去重</h3>
+<p><a href="https://leetcode.cn/problems/combination-sum-ii/description/">LeetCode.40 Combination Sum II</a> 中就要求对组合进行去重，组合问题中去重的特点是：</p>
+<ol type="1">
+<li><p><strong>候选元素集合中有值相同的元素</strong></p></li>
+<li><p><strong>候选元素集合中每个元素只能使用一次</strong>，但由于候选集合中有相同的元素，因此结果集合中可能有值相同的元素</p></li>
+<li><p><strong>不能有相同的结果集合</strong></p></li>
+</ol>
+<p>由于候选集合中可能有值相同的元素，如果不进行去重处理，<strong>两个结果集可能分别使用了候选集合中位置不同、但值相同的元素</strong>，导致两个结果集相同了。</p>
+<p>从第 2 点可以看出来，由于并没有限制单个结果集合内不能出现重复的元素，因此比如在候选集 <code>[1, 1, 2]</code> 中，可以出现集合 <code>[1, 1]</code>，但不能出现两个 <code>[1, 2]</code>。该类去重是 <strong>对树的横向去重（在 <code>for</code> 循环中去重）</strong>，而纵向可以重复。</p>
+<p>对树的横向去重，实际上就是对 <strong>当层的可选元素数组</strong> 的去重（即对模板代码中的 <code>selections</code> 去重），数组去重常用的就是 <code>Set</code> 和 <strong>排序后相邻元素去重</strong>。</p>
+<h4 id="使用-set-去重">使用 Set 去重</h4>
+<p>在 <code>for</code> 循环遍历的时候使用 <code>Set</code> 即可很方便地进行横向去重：</p>
+<p><detail></p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">combinationSum2</span><span class="token punctuation">(</span>candidates<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> target<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">&#123;</span>
+  candidates<span class="token punctuation">.</span><span class="token function">sort</span><span class="token punctuation">(</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span> b<span class="token punctuation">)</span> <span class="token operator">=></span> a <span class="token operator">-</span> b<span class="token punctuation">)</span>
+  <span class="token keyword">const</span> results <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token keyword">const</span> temp <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token keyword">function</span> <span class="token function">dfs</span><span class="token punctuation">(</span>start<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">,</span> rest<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>rest <span class="token operator">&lt;=</span> <span class="token number">0</span> <span class="token operator">||</span> start <span class="token operator">===</span> candidates<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>rest <span class="token operator">===</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        results<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token operator">...</span>temp<span class="token punctuation">]</span><span class="token punctuation">)</span>
+      <span class="token punctuation">&#125;</span>
+      <span class="token keyword">return</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token comment">// 用 Set 记录本层已经检查过的值</span>
+    <span class="token keyword">const</span> visted <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Set</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> start<span class="token punctuation">;</span> i <span class="token operator">&lt;</span> candidates<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token keyword">const</span> current <span class="token operator">=</span> candidates<span class="token punctuation">[</span>i<span class="token punctuation">]</span>
+      <span class="token comment">// 如果这个值在本层已经被用过了，就跳过他</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>visted<span class="token punctuation">.</span><span class="token function">has</span><span class="token punctuation">(</span>current<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token keyword">continue</span> <span class="token punctuation">&#125;</span>
+      visted<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>current<span class="token punctuation">)</span>
+      temp<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>current<span class="token punctuation">)</span>
+      <span class="token function">dfs</span><span class="token punctuation">(</span>i <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">,</span> rest <span class="token operator">-</span> current<span class="token punctuation">)</span>
+      temp<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> target<span class="token punctuation">)</span>
+  <span class="token keyword">return</span> results
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p></detail></p>
+<h4 id="相邻元素去重">相邻元素去重</h4>
+<p><detail></p>
+<p>首先需要对 <code>candidates</code> 进行排序：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">candidates<span class="token punctuation">.</span><span class="token function">sort</span><span class="token punctuation">(</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span> b<span class="token punctuation">)</span> <span class="token operator">=></span> a <span class="token operator">-</span> b<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>然后直接看 <code>for</code> 循环里面的逻辑：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> start<span class="token punctuation">;</span> i <span class="token operator">&lt;</span> candidates<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>i <span class="token operator">></span> start <span class="token operator">&amp;&amp;</span> candidates<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">===</span> candidates<span class="token punctuation">[</span>i <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">continue</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token comment">// ...</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p></detial></p>
+<h2 id="切割问题">切割问题</h2>
+<p>切割问题其实与组合问题类似：</p>
+<ul>
+<li><strong>横向遍历</strong> 为当前切割的终点；</li>
+<li><strong>纵向遍历</strong> 为当前切割的终点已经确定，作为下次的起点。</li>
+</ul>
+<p>模板代码如下：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">partition</span><span class="token punctuation">(</span>s<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> results <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token keyword">const</span> temp <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token keyword">function</span> <span class="token function">dfs</span><span class="token punctuation">(</span>start<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 字符串遍历完成了，结束</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>start <span class="token operator">===</span> results<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      results<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token operator">...</span>temp<span class="token punctuation">]</span><span class="token punctuation">)</span>
+      <span class="token keyword">return</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token comment">// 这个字符串的结尾可以是 [start, s.length]</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> end <span class="token operator">=</span> start<span class="token punctuation">;</span> end <span class="token operator">&lt;</span> s<span class="token punctuation">.</span>length<span class="token punctuation">;</span> end<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token comment">// 确定当前切割，并将当前的终止位 +1 作为下一次的起始位置</span>
+      temp<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>s<span class="token punctuation">.</span><span class="token function">slice</span><span class="token punctuation">(</span>start<span class="token punctuation">,</span> end <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+      <span class="token function">dfs</span><span class="token punctuation">(</span>end <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span>
+      temp<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span> results
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><a href="https://leetcode.cn/problems/palindrome-partitioning/description/">LeetCode.131 Palindrome Partitioning</a> 只需要在每次切割完成之后判断回文串、<a href="https://leetcode.cn/problems/restore-ip-addresses/description/">LeetCode.93 Restore IP Address</a> 只需要在每次切割完成之后判断合法 IP 即可。</p>
+<h2 id="子集问题">子集问题</h2>
+<p>子集问题有个很重要的特征是，他不是在最后递归终止的时候保存结果的，而是在递归的过程中保存结果。</p>
+<p><a href="https://leetcode.cn/problems/subsets/description/">LeetCode.78 Subsets</a> 就是最简单的子集问题：</p>
+<p><detail></p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">subsets</span><span class="token punctuation">(</span>nums<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> results <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token keyword">const</span> temp <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token keyword">function</span> <span class="token function">dfs</span><span class="token punctuation">(</span>start<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 在递归的过程中收集结果集</span>
+    results<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token operator">...</span>temp<span class="token punctuation">]</span><span class="token punctuation">)</span>
+    <span class="token comment">// 当遍历到原集合的最后一个元素时，自然终止</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> start<span class="token punctuation">;</span> i <span class="token operator">&lt;</span> nums<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      temp<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>nums<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span>
+      <span class="token function">dfs</span><span class="token punctuation">(</span>i <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span>
+      temp<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span> results
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p></detail></p>
+<p><a href="https://leetcode.cn/problems/subsets-ii/">LeetCode.90 Subsets II</a> 要求不能出现重复的子集，子集问题的去重与组合问题一模一样；<a href="https://leetcode.cn/problems/non-decreasing-subsequences/">LeetCode.491 Non-dcreasing Subsequences</a> 只是多了一些额外的判断。</p>
+<h2 id="排列问题">排列问题</h2>
+<p>排列问题跟组合问题有所不同，排列问题关心顺序，因此：</p>
+<ol type="1">
+<li><strong>排列问题每次都需要从 <code>0</code> 开始遍历</strong></li>
+<li><strong>排列问题通常都需要纵向去重</strong></li>
+</ol>
+<p>组合问题不需要考虑之前已经选过的项，因此到叶节点的路径上不会选择同一个元素，因此在纵向递归的过程中隐藏着 <strong>可选元素数组</strong> <code>selections</code> 随着 <code>start</code> 的增长而改变的逻辑，也就是说 <strong>组合问题自带纵向去重</strong>。</p>
+<p>而排列问题没有 <code>start</code> 的帮忙，如果不做处理，<strong>到叶节点的路径上就会多次出现同一个的元素</strong>。因此需要每次递归之后都需要在 <code>selections</code> 中去手动去除路径中已有的元素，也就是说进行 <strong>纵向去重（对递归进行去重）</strong>，最简单的去重方法就是使用 <code>Set</code>。</p>
+<p><a href="https://leetcode.cn/problems/permutations/description/">LeetCode.46 Permutations</a> 是一个最简单的全排列问题，注意其中的去重逻辑：</p>
+<p><detail></p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">permute</span><span class="token punctuation">(</span>nums<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> results <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token keyword">const</span> temp <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token comment">// 记录当前 DFS 到叶节点的路径上已经用了哪些元素，注意这里存的是下标！</span>
+  <span class="token keyword">const</span> used <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Set</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token keyword">function</span> <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>temp<span class="token punctuation">.</span>length <span class="token operator">===</span> nums<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      results<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token operator">...</span>temp<span class="token punctuation">]</span><span class="token punctuation">)</span>
+      <span class="token keyword">return</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> nums<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token comment">// 跳过在路径上已经用过的元素</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>used<span class="token punctuation">.</span><span class="token function">has</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token keyword">continue</span> <span class="token punctuation">&#125;</span>
+      <span class="token keyword">const</span> current <span class="token operator">=</span> nums<span class="token punctuation">[</span>i<span class="token punctuation">]</span>
+      <span class="token comment">// 进入下一层之前，标记当前元素已使用</span>
+      used<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span>
+      temp<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>current<span class="token punctuation">)</span>
+      <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+      temp<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+      <span class="token comment">// 从下一层退出，删除当前元素已使用标记</span>
+      used<span class="token punctuation">.</span><span class="token function">delete</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span> results
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p></detail></p>
+<h3 id="排列问题中的去重">排列问题中的去重</h3>
+<p><a href="https://leetcode.cn/problems/permutations-ii/description/">LeetCode.47 Permutations II</a> 中要求像组合问题一样，对排列问题进行去重。因为该题中出现了相同值的元素，需要进行 <strong>横向去重</strong>，而 LeetCode.46 中每个元素的值都是不同的，不需要进行横向去重。</p>
+<h4 id="使用两个-set-去重">使用两个 Set 去重</h4>
+<p>既然纵向去重和横向去重都可以使用 <code>Set</code>，那么可以使用两个 <code>Set</code> 来分别对纵向和横向进行去重：</p>
+<p><detail></p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">permuteUnique</span><span class="token punctuation">(</span>nums<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> results <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token keyword">const</span> temp <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token comment">// 记录当前 DFS 到叶节点的路径上已经用了哪些元素，注意这里存的是下标！</span>
+  <span class="token keyword">const</span> deepVisited <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Set</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+  <span class="token keyword">function</span> <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>temp<span class="token punctuation">.</span>length <span class="token operator">===</span> nums<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      results<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token operator">...</span>temp<span class="token punctuation">]</span><span class="token punctuation">)</span>
+      <span class="token keyword">return</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token comment">// 记录当前层遍历过哪些元素，注意这里是值！</span>
+    <span class="token keyword">const</span> breadthVisited <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Set</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> nums<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token comment">// 如果路径上已经有该元素，跳过</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>deepVisited<span class="token punctuation">.</span><span class="token function">has</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token keyword">continue</span> <span class="token punctuation">&#125;</span>
+      <span class="token keyword">const</span> current <span class="token operator">=</span> nums<span class="token punctuation">[</span>i<span class="token punctuation">]</span>
+      <span class="token comment">// 如果当前层已经遍历过值相同的元素，跳过</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>breadthVisited<span class="token punctuation">.</span><span class="token function">has</span><span class="token punctuation">(</span>current<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token keyword">continue</span> <span class="token punctuation">&#125;</span>
+      <span class="token comment">// 标记元素为当前层已用过</span>
+      breadthVisited<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>current<span class="token punctuation">)</span>
+      <span class="token comment">// 进入下一层之前，标记当前元素已使用</span>
+      deepVisited<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span>
+      temp<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>current<span class="token punctuation">)</span>
+      <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+      temp<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+      <span class="token comment">// 从下一层退出，删除当前元素已使用标记</span>
+      deepVisited<span class="token punctuation">.</span><span class="token function">delete</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span> results
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p></detail></p>
+<h4 id="使用-used-数组进行去重">使用 used 数组进行去重</h4>
+<p>这是一个比较神奇的方法，将 Set 和 相邻元素去重结合了一下，首先需要对候选集进行排序，然后用数组 <code>used</code> 标记当前的使用状态：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">permuteUnique</span><span class="token punctuation">(</span>nums<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> results <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token keyword">const</span> temp <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  nums<span class="token punctuation">.</span><span class="token function">sort</span><span class="token punctuation">(</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span> b<span class="token punctuation">)</span> <span class="token operator">=></span> a <span class="token operator">-</span> b<span class="token punctuation">)</span>
+  <span class="token comment">// 标记当前元素的使用状态，会将本次路径上的元素标记为 true，其实与 deepVisited Set 类似</span>
+  <span class="token keyword">const</span> used <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name"><span class="token builtin">Array</span></span><span class="token punctuation">(</span>nums<span class="token punctuation">.</span>length<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">fill</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span>
+
+  <span class="token keyword">function</span> <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>temp<span class="token punctuation">.</span>length <span class="token operator">===</span> nums<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>temp<span class="token punctuation">)</span>
+      results<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token operator">...</span>temp<span class="token punctuation">]</span><span class="token punctuation">)</span>
+      <span class="token keyword">return</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> nums<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>used<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token keyword">continue</span> <span class="token punctuation">&#125;</span>
+      <span class="token comment">// 如果当前元素与上一个相同并且 used[i - 1] === false</span>
+      <span class="token comment">// 也就是说当前路径中没有 used[i - 1]</span>
+      <span class="token comment">// 也就是说当前在纵向遍历的过程中，而是在横向遍历的过程中</span>
+      <span class="token comment">// 横向去重时不能选择值相同的元素</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>i <span class="token operator">></span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span> nums<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">===</span> nums<span class="token punctuation">[</span>i <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>used<span class="token punctuation">[</span>i <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token keyword">continue</span> <span class="token punctuation">&#125;</span>
+      <span class="token keyword">const</span> current <span class="token operator">=</span> nums<span class="token punctuation">[</span>i<span class="token punctuation">]</span>
+      <span class="token comment">// 将当前元素标记为在路径中使用</span>
+      used<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token boolean">true</span>
+      temp<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>current<span class="token punctuation">)</span>
+      <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+      temp<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+      <span class="token comment">// 将当前元素标记为路径中未使用</span>
+      used<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token boolean">false</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span> results
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="棋盘问题">棋盘问题</h2>
+<p>TBC</p>
 <h1 id="dynamic-programing">Dynamic Programing</h1>
 <h2 id="背包问题">背包问题</h2>
 <figure>
@@ -21585,6 +21910,8 @@ UpdateQueue<span class="token punctuation">.</span>shared<span class="token punc
   <span class="token comment">// 取最低位的 1</span>
   <span class="token keyword">return</span> lanes <span class="token operator">&amp;</span> <span class="token operator">-</span>lanes<span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="优先级队列">优先级队列</h2>
+<p>Scheduler 中使用优先级队列来为任务进行排序，并保证每次出队的任务均是优先级最高的任务，优先级队列有多种实现方式，React 的 Scheduler 是采用常用的小顶堆来实现的。关于 <em>优先级队列和堆</em> 的更多内容可以参考 <a href="/hais-notebook/2022/02/05/Algorithm/" title="Data Structure and Algorithm">Data Structure and Algorithm</a> 这篇笔记。</p>
 <h1 id="首次渲染过程">首次渲染过程</h1>
 <p>React 的更新流程分为 <strong>Schedule、Render 和 Commit</strong> 三个阶段：</p>
 <ul>
@@ -21712,7 +22039,7 @@ ReactDOM<span class="token punctuation">.</span><span class="token function">cre
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 <p><code>updateContainer</code> 位于 <code>react-reconciler/src/ReactFiberReconciler.js</code> 中，他会：</p>
 <ol type="1">
-<li>获取优先级（lane）</li>
+<li>获取优先级（<code>lane</code>）</li>
 <li>创建 <code>Update</code>，并将该更新入队</li>
 <li>调用 <code>scheduleUpdateOnFiber</code>，准备进入 Schedule 阶段</li>
 </ol>
@@ -21778,6 +22105,138 @@ ReactDOM<span class="token punctuation">.</span><span class="token function">cre
     <span class="token operator">:</span> setTimeout<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p><strong>宏任务调度</strong> 则会使用 <code>scheduler</code> 包中的 API，<code>react-reconciler</code> 只需要传给传给 <code>scheduler</code> <em>需要执行的任务</em> 及 <em>对应的优先级</em> 即可。</p>
 <h3 id="scheduler">Scheduler</h3>
+<p>正如上文所说，Scheduler 提供了一些核心 API 供 <code>react-reconciler</code> 包使用：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// 使用某种优先级调度 task</span>
+<span class="token function">scheduleCallback</span><span class="token punctuation">(</span>task<span class="token punctuation">,</span> priority<span class="token punctuation">)</span>
+
+<span class="token comment">// 提示时间是否用尽，需要中断循环</span>
+<span class="token function">shouldYield</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token comment">// 取消调度 task</span>
+<span class="token function">cancelCallback</span><span class="token punctuation">(</span>task<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>Scheduler 实际上就是采用了一堆计时器，每个 <code>task</code> 会有 <code>expirationTime</code> 属性代表了他的过期时间，<code>expirationTime</code> 越小就意味着优先级越高，这在一定程度上也能解决饥饿问题。</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">unstable_scheduleCallback</span><span class="token punctuation">(</span>
+  priorityLevel<span class="token operator">:</span> PriorityLevel<span class="token punctuation">,</span>
+  callback<span class="token operator">:</span> Callback<span class="token punctuation">,</span>
+  options<span class="token operator">?</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>delay<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+<span class="token punctuation">)</span><span class="token operator">:</span> Task <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> currentTime <span class="token operator">=</span> <span class="token function">getCurrentTime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment">// 如果传入了 delay 参数，则会延迟执行</span>
+  <span class="token keyword">let</span> startTime<span class="token punctuation">;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">typeof</span> options <span class="token operator">===</span> <span class="token string">'object'</span> <span class="token operator">&amp;&amp;</span> options <span class="token operator">!==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">var</span> delay <span class="token operator">=</span> options<span class="token punctuation">.</span>delay<span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">typeof</span> delay <span class="token operator">===</span> <span class="token string">'number'</span> <span class="token operator">&amp;&amp;</span> delay <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      startTime <span class="token operator">=</span> currentTime <span class="token operator">+</span> delay<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+      startTime <span class="token operator">=</span> currentTime<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+    startTime <span class="token operator">=</span> currentTime<span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token comment">// 根据传入的优先级确定 timeout，从而确定 expirationTime</span>
+  <span class="token keyword">let</span> timeout<span class="token punctuation">;</span>
+  <span class="token keyword">switch</span> <span class="token punctuation">(</span>priorityLevel<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">case</span> ImmediatePriority<span class="token operator">:</span>
+      timeout <span class="token operator">=</span> <span class="token constant">IMMEDIATE_PRIORITY_TIMEOUT</span><span class="token punctuation">;</span>      <span class="token comment">// -1</span>
+      <span class="token keyword">break</span><span class="token punctuation">;</span>
+    <span class="token keyword">case</span> UserBlockingPriority<span class="token operator">:</span>
+      timeout <span class="token operator">=</span> <span class="token constant">USER_BLOCKING_PRIORITY_TIMEOUT</span><span class="token punctuation">;</span>  <span class="token comment">// 250</span>
+      <span class="token keyword">break</span><span class="token punctuation">;</span>
+    <span class="token comment">// 永远不会到时间</span>
+    <span class="token keyword">case</span> IdlePriority<span class="token operator">:</span>
+      timeout <span class="token operator">=</span> <span class="token constant">IDLE_PRIORITY_TIMEOUT</span><span class="token punctuation">;</span>           <span class="token comment">// maxSigned31BitInt</span>
+      <span class="token keyword">break</span><span class="token punctuation">;</span>
+    <span class="token keyword">case</span> LowPriority<span class="token operator">:</span>
+      timeout <span class="token operator">=</span> <span class="token constant">LOW_PRIORITY_TIMEOUT</span><span class="token punctuation">;</span>            <span class="token comment">// 10000</span>
+      <span class="token keyword">break</span><span class="token punctuation">;</span>
+    <span class="token keyword">case</span> NormalPriority<span class="token operator">:</span>
+    <span class="token keyword">default</span><span class="token operator">:</span>
+      timeout <span class="token operator">=</span> <span class="token constant">NORMAL_PRIORITY_TIMEOUT</span><span class="token punctuation">;</span>         <span class="token comment">// 5000</span>
+      <span class="token keyword">break</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token keyword">const</span> expirationTime <span class="token operator">=</span> startTime <span class="token operator">+</span> timeout<span class="token punctuation">;</span>
+
+  <span class="token keyword">const</span> newTask<span class="token operator">:</span> Task <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+    id<span class="token operator">:</span> taskIdCounter<span class="token operator">++</span><span class="token punctuation">,</span>
+    callback<span class="token punctuation">,</span>
+    priorityLevel<span class="token punctuation">,</span>
+    startTime<span class="token punctuation">,</span>
+    expirationTime<span class="token punctuation">,</span>
+    sortIndex<span class="token operator">:</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>enableProfiling<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    newTask<span class="token punctuation">.</span>isQueued <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>startTime <span class="token operator">></span> currentTime<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 延迟任务，进入 timerQueue；延迟时间到了之后进入 taskQueue</span>
+    newTask<span class="token punctuation">.</span>sortIndex <span class="token operator">=</span> startTime<span class="token punctuation">;</span>
+    <span class="token function">push</span><span class="token punctuation">(</span>timerQueue<span class="token punctuation">,</span> newTask<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">peek</span><span class="token punctuation">(</span>taskQueue<span class="token punctuation">)</span> <span class="token operator">===</span> <span class="token keyword">null</span> <span class="token operator">&amp;&amp;</span> newTask <span class="token operator">===</span> <span class="token function">peek</span><span class="token punctuation">(</span>timerQueue<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token comment">// All tasks are delayed, and this is the task with the earliest delay.</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>isHostTimeoutScheduled<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token comment">// Cancel an existing timeout.</span>
+        <span class="token function">cancelHostTimeout</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+        isHostTimeoutScheduled <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+      <span class="token punctuation">&#125;</span>
+      <span class="token comment">// Schedule a timeout.</span>
+      <span class="token function">requestHostTimeout</span><span class="token punctuation">(</span>handleTimeout<span class="token punctuation">,</span> startTime <span class="token operator">-</span> currentTime<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 非延迟任务，进入 taskQueue</span>
+    newTask<span class="token punctuation">.</span>sortIndex <span class="token operator">=</span> expirationTime<span class="token punctuation">;</span>
+    <span class="token function">push</span><span class="token punctuation">(</span>taskQueue<span class="token punctuation">,</span> newTask<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>enableProfiling<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token function">markTaskStart</span><span class="token punctuation">(</span>newTask<span class="token punctuation">,</span> currentTime<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      newTask<span class="token punctuation">.</span>isQueued <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token comment">// Schedule a host callback, if needed. If we're already performing work,</span>
+    <span class="token comment">// wait until the next time we yield.</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>isHostCallbackScheduled <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>isPerformingWork<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      isHostCallbackScheduled <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+      <span class="token function">requestHostCallback</span><span class="token punctuation">(</span>flushWork<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token keyword">return</span> newTask<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以看到 Scheduler 中维护了两个队列： <code>timerQueue</code> 和 <code>taskQueue</code>。</p>
+<ul>
+<li>如果调用 <code>scheduleCallback</code> 的时候传入了 <code>delay</code> 参数，则会进入 <code>timerQueue</code> 并延迟开始计时的时间；</li>
+<li>否则会直接进入 <code>taskQueue</code> 开始计时，然后调用 <code>requestHostCallback</code> 来开启 <strong>宏任务</strong> 执行 <code>taskQueue</code> 中的任务。</li>
+</ul>
+<p><code>timerQueue</code> 和 <code>taskQueue</code> 均采用了 <strong>优先级队列</strong> 这一数据结构，优先级队列中排序的依据就是过期时间 <code>expirtionTime</code>。</p>
+<p><code>requestHostCallback</code> 等函数会 <strong>开启一个新的宏任务</strong> 来循环执行 <code>taskQueue</code>，目前 Scheduler 中是这样判断使用什么宏任务的：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">let</span> schedulePerformWorkUnitlDeadline
+<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">typeof</span> localSetImmediate <span class="token operator">===</span> <span class="token string">'function'</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">// Node.js 和老 IE，setImmediate 不像 MessageChannel 一样会阻止 Node.js 进程退出，而且执行时机更早</span>
+  <span class="token function-variable function">schedulePerformWorkUnitlDeadline</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+    <span class="token function">localSetImmediate</span><span class="token punctuation">(</span>performWorkUnitlDeadline<span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">typeof</span> MessgeChannel <span class="token operator">!==</span> <span class="token string">'undefined'</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">// DOM 和 Worker</span>
+  <span class="token keyword">const</span> channel <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">MessageChannel</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token keyword">const</span> port <span class="token operator">=</span> channel<span class="token punctuation">.</span>port2
+  channel<span class="token punctuation">.</span>port1<span class="token punctuation">.</span>onmessage <span class="token operator">=</span> performWorkUnitlDeadline
+  <span class="token function-variable function">schedulePerformWorkUnitlDeadline</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+    port<span class="token punctuation">.</span><span class="token function">postMessage</span><span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">// setTimeout 会有 4ms 延迟</span>
+  <span class="token function-variable function">schedulePerformWorkUnitlDeadline</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+    <span class="token function">localSetTimeout</span><span class="token punctuation">(</span>performWorkUntilDeadline<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>需要注意的是，<code>requestIdleCallback</code> 由于兼容性、以及他执行频率不稳定的问题没有被 React 选用。另外 <code>requestIdleCallback</code> 是在空闲时期执行低优先级工作，这与 Scheduler 需要执行多种优先级任务的需求相悖。</p>
+<h3 id="react-中的优先级">React 中的优先级</h3>
+<p>React 中有两种优先级表示方法，一种是 <code>Lane</code>，一种是事件优先级 <code>EventPriority</code>，<code>EventPriority</code> 可以看做是特殊的 <code>Lane</code>。</p>
+<p>具体来讲，不同的事件会产生不同的 <code>EventPriority</code>，比如 <code>DiscreteEventPriority</code> 代表 <code>click</code> <code>input</code> <code>focus</code> 等离散事件； <code>ContinousEventPriority</code> 代表 <code>drag</code> <code>mouseover</code> 等连续事件。这些 <code>EventPriority</code> 都有着对应的 <code>Lane</code>，他们数值相同，不需要函数来转换。</p>
+<p>但是 <code>Lanes</code> 转换为 <code>EventPriority</code> 时，由于是多对一转换，就需要 <code>lanesToEventPriority</code> 来帮忙。</p>
+<p><strong>不过，上面提到的 <code>Scheduler</code> 还有一套自己的优先级系统，React 需要再将优先级转换为 <code>SchedulerPriority</code>，才能调用 <code>Scheduler</code> 的 API。</strong> 其实也很简单，用 <code>switch-case</code> 映射一下就好了。</p>
 <h3 id="计算并处理调度">计算并处理调度</h3>
 <p>React 中，“计算并调度更新”的过程本身也是需要在微任务中执行的，<code>ensureRootIsScheduled</code> 是整个 Schedule 阶段的入口，每次 <code>FiberRoot</code> 收到更新的时候都会调用该函数，他会：</p>
 <ol type="1">
@@ -21872,8 +22331,8 @@ ReactDOM<span class="token punctuation">.</span><span class="token function">cre
   <span class="token comment">// 3. 处理所有在调度进微任务执行的任务</span>
   <span class="token function">flushSyncWorkOnAllRoots</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h4 id="选择优先级并进行调度">选择优先级并进行调度</h4>
-<p>这个 <code>scheduleTaskForRootDuringMicrotask</code> 函数会获取到本轮调度应该执行的优先级 <code>nextLanes</code>，并进行调度：</p>
+<h3 id="在微任务中选择优先级并进行调度">在微任务中选择优先级并进行调度</h3>
+<p>这个 <code>scheduleTaskForRootDuringMicrotask</code> 函数只能在微任务中调用，他会获取到本轮调度应该执行的优先级 <code>nextLanes</code>，并进行调度：</p>
 <ol type="1">
 <li>通过 <code>getNextLanes</code> 选择优先级</li>
 <li>根据优先级把任务以回调函数的形式传给 <code>scheduleCallback</code> 交给 Scheduler 进行调度</li>
@@ -22049,7 +22508,7 @@ ReactDOM<span class="token punctuation">.</span><span class="token function">cre
 <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">performConcurrentWorkOnRoot</span><span class="token punctuation">(</span>
   root<span class="token operator">:</span> FiberRoot<span class="token punctuation">,</span>
    <span class="token comment">// Scheduler 执行该函数的时候，会传入第二个参数 didTimeout 指示该任务是否已过期</span>
-   didTimeout<span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">,</span>
+  didTimeout<span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">,</span>
 <span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
   <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>executionContext <span class="token operator">&amp;</span> <span class="token punctuation">(</span>RenderContext <span class="token operator">|</span> CommitContext<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">!==</span> NoContext<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
     <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">Error</span><span class="token punctuation">(</span><span class="token string">'Should not already be working'</span><span class="token punctuation">)</span>
@@ -22769,7 +23228,25 @@ workInProgress<span class="token punctuation">.</span>stateNode <span class="tok
 <li>执行 <code>ClassComponenent</code> 的 <code>getSnapshotBeforeUpdate</code> 方法</li>
 <li>清空 <code>HostRoot</code> 挂载的内容</li>
 </ul>
-<h3 id="section"></h3>
+<h3 id="mutation">Mutation</h3>
+<p>对于 HostComponent 来说，Mutation 阶段会进行 DOM 元素的增、删、改：</p>
+<ul>
+<li><strong>删除元素：</strong>在向下遍历的过程中会前序执行删除操作，该操作会将 Render 阶段 <code>beginWOrk</code> 中往 <code>fiber.deletions</code> 里添加的元素删除掉，删除会有以下过程
+<ul>
+<li>找到最近的祖先 Host</li>
+<li>DFS 删除子树的每一个节点</li>
+</ul></li>
+<li><strong>插入、移动元素：</strong>
+<ul>
+<li>找到最近的祖先 Host</li>
+<li>找到 <code>parentNode.insertBefore</code> 所需的元素，注意这个找到的元素本身不能被标记为 <code>Placement</code></li>
+<li>执行 <code>parentNode.insertBefore</code> 或 <code>parentNode.appendChild</code></li>
+</ul></li>
+</ul>
+<p><strong>Mutation</strong> 执行完之后将进行 FiberTree 的切换：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">root<span class="token punctuation">.</span>current <span class="token operator">=</span> finishedWork<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="layout">Layout</h3>
+<p>在 DFS 中会前序执行 <code>OffscreenComponent</code> 的显隐逻辑，后序执行 <code>useLayoutEffect</code> 回调。</p>
 ]]></content>
       <categories>
         <category>前端</category>
