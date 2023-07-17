@@ -11,8 +11,6 @@ categories:
 
 # TODO Queue
 
-大数运算：https://segmentfault.com/a/1190000039763431
-
 好子集（1e9+7 困难）：https://leetcode.cn/problems/the-number-of-good-subsets/
 
 提示工程：https://learningprompt.wiki/

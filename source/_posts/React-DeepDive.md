@@ -270,8 +270,6 @@ export type SharedQueue<State> = {
 
 ### enqueueUpdate
 
-// TBC
-
 ```typescript
 export function enqueueUpdate<State>(
   fiber: Fiber,
@@ -376,11 +374,7 @@ export function finishQueueingConcurrentUpdates() {
 }
 ```
 
-
-
 ### processUpdateQueue
-
-
 
 ```typescript
 function processUpdateQueue(
@@ -533,6 +527,37 @@ function processUpdateQueue(
     }
   }
   currentlyProcessingQueue = null
+}
+```
+
+## Hook
+
+React 的 `FunctionComponentFiber` 中的 `memorizedState` 属性指向的即为该函数组件的第一个 `Hook`，一个函数组件内部的 Hooks 会组成一个链表，他们由 `.next` 链接起来。
+
+**注意当前 React 源码中 `ReactFiberHooks.js` 中单独定义了 `Hook` 的 `Update` 和 `UpdateQueue`，这跟上文提到的 `Fiber` 中的 `Update` 和 `UpdateQueue` 思路类似但结构有所不同！**  
+
+```typescript
+export type Hook = {
+  memorizedState: any
+  baseState: any
+  baseQueue: Update<any, any> | null
+  queue: any
+  next: Hook | null
+}
+
+export type Update<S, A> = {
+  lane: Lane
+  // Fiber 中 Update 的更新信息主要由 payload 携带，而这里主要是 action
+  action: A
+  next: Update<S, A>
+}
+
+export type UpdateQueue<S, A> = {
+  pending: Update<S, A> | null
+  lanes: Lanes
+  dispatch: (A => any) | null
+  lastRenderedReducer: ((S, A) => S) | null
+  lastRenderedState: S | null
 }
 ```
 
@@ -1826,11 +1851,9 @@ function createChildReconciler(shouldTrackEffects: boolean) {
 可以看到其中调用的函数大致分为两种类型：
 
 - 一种是计算子节点变更的 `reconcileSingleElement` 等函数
-- 一种是
+- 一种是跟踪副作用的 `TrackSideEffects` 等函数，该函数通常只有在传入 `shouldTrackSideEffects` 为 `true` 的情况下才会执行，并为 `Fiber` 打上各种标记
 
 ##### ChildReconciliation
-
-
 
 ###### reconcileSingleElement
 
@@ -2228,3 +2251,232 @@ root.current = finishedWork
 ### Layout
 
 在 DFS 中会前序执行 `OffscreenComponent` 的显隐逻辑，后序执行 `useLayoutEffect` 回调。
+
+# React 中的事件系统
+
+React 在首次渲染的过程中会给 `container` 绑定所有支持事件的监听，以事件委托的形式处理所有在 `container` 内触发的事件。当有事件触发时，React 会：
+
+1. 通过 `nativeEvent.target` 上的属性找到这个元素对应的 `Fiber`（React 中的 `HostComponent.sateNode` 里面存了两个属性：`[internalInstanceKey]` 指向 `HostComponentFiber` 、 `[internalPropsKey]` 指向他的 `props`）
+2. 遍历 `Fiber` 的所有祖先节点，并且通过 `Fiber.stateNode[internalPropsKey]` 找到 `props` 中对应事件的监听函数，收集到起来
+3. 构造一个通用的 `SyntheticEvent` 对象，然后顺着事件监听函数的顺序调用事件处理函数
+
+# Hooks
+
+在代码结构上讲，Hooks 有几点比较特别的地方：
+
+1. Hooks 都是定义在 `react-reconciler` 包的（这个包最终会被合并到 `react-dom` 中），但是我们引入 Hooks 却是在 `react` 包引入的
+2. 很多 Hooks 在组件第一次渲染和后续渲染时的表现都不同，比如 `useEffect` 第一次渲染不论如何都会执行回调、`useState` 第一次渲染会使用初始值等
+
+事实上，在 `react` 包里有一个全局变量 `__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED`，里面有个 `ReactCurrentDispatcher` 属性，该属性就存放了当前的 `useState` `useEffect` 等，因此 `react` 包可以使用到这些 Hooks。 
+
+此外，React 中原生的 `useXXX` 其实都有两套实现，分别对应 `mount` 和 `update` 两种情况，`reac-reconciler` 中 `renderWithHooks` 执行的时候，会选择根据是首次渲染还是后续更新（通过 `current` 是否有值来判断）合适的 `useXXX` 函数，将其挂载到 `ReactCurrentDispatcher` 上。
+
+## Hooks 通用流程
+
+在 Hooks 运行的过程中，React 会维护两个全局变量：
+
+- `workInProgressHook`：当前正在处理的 `Hook`
+- `currentHook`：current `Fiber` 中的 `Hook`，可以理解为上一次渲染的 `Hook`
+
+### workInProgressHook
+
+#### mountWorkInProgressHook
+
+在组件首次渲染时，每个原生 `useXXX` 都会执行 `mountWorkInProgressHook` 来创建一个新的 `Hook`，如果当前 `Hook` 是该组件的第一个 `Hook`，则会将 `currentlyRenderingFiber.memorizedState` 指向他：
+
+```typescript
+function mountWorkInProgressHook() {
+  const hook: Hook = {
+    memorizedState: null,
+    baseState: null,
+    baseQueue: null,
+    queue: null,
+    next: null
+  }
+  if (workInProgressHook === null) {
+    currentlyRenderingFiber.memorizedState = workInProgressHook = hook
+  } else {
+    workInProgressHook = workInProgressHook.next = hook
+  }
+  return workInProgressHook
+}
+```
+
+#### updateWorkInProgressHook
+
+```typescript
+function updateWorkInProgressHook() {
+  let nextCurrentHook
+  if (currentHook === null) {
+    // 当前是再次渲染时遇到的第一个 Hook
+    // 从 curret.memorizedState 中取到上一次的 Hook
+    const current = currentlyRenderingFiber.alternate
+    if (current !== null) {
+      nextCurrentHook = current.memorizedState
+    } else {
+      nextCurrentHook = null
+    }
+    // 当前不是第一个 Hook，直接取链表的下一项
+  } else {
+    nextCurrentHook = currentHook.next
+  }
+  // 从 WIP 中捡上一次已经不要了的 Hook，看能不能复用
+  let nextWorkInProgressHook
+  if (workInProgressHook === null) {
+    nextWorkInProgressHook = currentlyRenderingFiber.memorizedState
+  } else {
+    nextWorkInProgressHook = nextWorkInProgressHook.next
+  }
+  if (nextWorkInProgressHook !== null) {
+    // 捡垃圾复用一把
+    workInProgressHook = nextWorkInProgressHook
+    nextWorkInProgressHook = nextWorkInProgressHook.next
+    currentHook = nextCurrentHook
+  } else {
+    // 只能重新建一个 Hook
+    if (nextCurrentHook === null) {
+      throw new Error('要么现在不在 Render 阶段（currentFiber === null），要么这次 Render 的 Hook 比上一次多')
+    }
+    currentHook = nextCurrentHook
+    const newHook = {
+      memorizedState: currentHook.memorizedHook,
+      baseState: currentHook.baseState,
+      baseQueue: currentHook.baseQueue,
+      queue: currentHook.queue,
+      next: null
+    }
+    if (workInProgressHook === null) {
+      currentlyRenderingFiber.memorizedState = workInProgressHook = newHook
+    } else {
+      workInProgressHook = workInProgressHook.next = newHook
+    }
+  }
+  return workInProgressHook
+}
+```
+
+
+
+## useState
+
+```typescript
+function basicStateReducer<S>(state: S, action: BasicStateAction<S>): S {
+  return typeof action === 'function' ? action(state) : action
+}
+```
+
+
+
+```typescript
+function mountState(initialState: (() => S) | S) {
+  // 创建一个新的 Hook
+  const hook = mountWorkInProgressHook()
+  if (typeof initialState === 'function') {
+    initialState = initialState()
+  }
+  hook.memorizedState = hook.baseState = initialState
+  const queue: Update<S, BasicStateAction<S>> = {
+    pending: null,
+    lanes: NoLanes,
+    dispatch: null,
+    lastRenderedReducer: basicStateReducer,
+    lastRenderedState: initialState,
+  }
+  hook.queue = queue
+  const dipatch = dispatchSetState.bind(null, currentlyRenderingFiber, queue)
+  return [hoo.memorizedState, dispatch]
+}
+```
+
+```typescript
+function dispatchSetState<S, A>(
+  fiber: Fiber,
+  queue: Update<S, A>,
+  action: A,
+) {
+  const lane = requestUpdateLane(fiber)
+  const update = {
+    lane,
+    reverLane: NoLane,
+    action,
+    next: null,
+  }
+  const alternate = fiber.alternate
+  // 调用 enqueueUpdate 把 Queue 推入 Fiber 的 UpdateQueue 中
+  const root = enqueueConcurrentHookUpdate(fiber, queue, update, lane)
+  if (root !== null) {
+    scheduleUpdateOnFiber(root, fiber, lane)
+  }
+}
+```
+
+```typescript
+function updateState(initialState) {
+  return updateReducer(basicStateReducer, initialState)
+}
+
+function updateReducer(reducer) {
+  const hook = updateWorkInProgressHook()
+  const queue = hook.queue
+  // 计算新 state 的算法与 UpdateQueue 基本一致，只是变量不同
+  // ...
+  return [hook.memorizedState, queue.dispatch]
+}
+```
+
+## useEffect
+
+与 Effect 相关的 Hooks 一共又三个，包括：
+
+- `useEffect`：`commit` 完成之后异步执行
+- `useLayoutEffect`：在 Commit 的 Layout 子阶段同步执行
+- `useInsertionEffect`，在 Commit 的 Mutation 子阶段同步执行，此时无法访问对 DOM 的引用
+
+React 为这些 Hooks 准备了一套抽象数据结构 `Effect`：
+
+```typescript
+export type Effect {
+  tag: Flags
+  // Effect 回调函数
+  create: EffectCallback
+  // Effect 回调函数的返回值
+  destory: EffectCallback
+  // 依赖项
+  deps: EffectDeps
+  // 与当前 FunctionComponent 的其他 Effect 组成环状链表
+  next: Effect | null
+}
+```
+
+### 声明阶段
+
+在对函数组件执行 `renderWithHooks` 时，会分别执行 `mountEffect` 和 `updateEffect` 方法，他们会：
+
+1. 创建 Effect 环状链表，并放到 `fiber.updateQueue` 上
+2. `updateEffect` 会浅比较依赖项
+3. 在 `tag` 中标记本次渲染之后是否需要执行该 Effect
+
+### 调度阶段
+
+由于 `useEffect` 的回调会在 Commit 完成之后异步执行，因此会在 Commit 阶段的三个子阶段之前进行调度：
+
+```typescript
+if (
+  (finishedWork.subtreeFlags & PassiveMask) !== NoFlags ||
+  (finishedWork.flags & PassiveMask) !== NoFlags
+) {
+  // ...
+  scheduleCallback(NormalSchedulerPriority, () => {
+    flushPassiveEffects()
+    return null
+  })
+}
+```
+
+而另外两种 Effect 由于是同步执行的，因此没有调度阶段。
+
+### 执行阶段
+
+1. 使用后序遍历 FiberTree，遍历每个 Fiber 的 Effect 链表，依次执行 `effect.detroy` 方法
+2. 所有需要执行的 `effect.destory` 执行完成之后，再次后序遍历 FiberTree、每个 Fiber 的 Effect 链表，执行 `effect.create`  方法
+
