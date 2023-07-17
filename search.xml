@@ -16,8 +16,9 @@
 <li>二叉树：特殊的二叉树、遍历、二叉搜索树</li>
 <li>堆：堆与优先级队列及其实现</li>
 </ul></li>
-<li>算法（动态规划）
+<li>算法（回溯、贪心、动态规划）
 <ul>
+<li>回溯：</li>
 <li>动态规划：背包问题</li>
 </ul></li>
 <li>其他注意事项（对 1e9 + 7 取模）</li>
@@ -1290,8 +1291,8 @@ result: [1, 2, '*', '+', 4, '-']<span aria-hidden="true" class="line-numbers-row
 <li>如果当前需要插入的元素大于队尾元素，则将队尾 <code>pop</code> 出来，重复这个过程——这与 <a href="#monotonic-stack">单调栈</a> 是一样的；</li>
 <li>除此之外，他还可以通过出队来找到最大元素（队首元素）。</li>
 </ul>
-<h1 id="examples-3">Examples</h1>
-<h2 id="滑动窗口最大值">滑动窗口最大值</h2>
+<h2 id="examples-3">Examples</h2>
+<h3 id="滑动窗口最大值">滑动窗口最大值</h3>
 <p><a href="https://leetcode.cn/problems/sliding-window-maximum/">LeetCode.239</a></p>
 <h1 id="linked-list">Linked List</h1>
 <blockquote>
@@ -2507,6 +2508,86 @@ T(n) = \sum_{i=0}^{h} n_i h_i \\
 <span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h2 id="棋盘问题">棋盘问题</h2>
 <p>TBC</p>
+<h1 id="greedy-algorithm">Greedy Algorithm</h1>
+<p>贪心算法：想要解决一个大问题，那么在解决大问题的路上的每一步都采取当前看起来最优的解法。贪心算法有这样几个特点：</p>
+<ul>
+<li>不关心当前的选择对后续造成的影响</li>
+<li>也不是有规律地从之前的某几步中推出当前步的结果（与动态规划不同，动态规划会从之前的步骤推算出当前的结果）</li>
+<li>其中的某些步骤在整体看来可能并不是最优的，但是他们在当时看来是最优的，并且由这样小的最优的累计，最终能达成整体最优</li>
+<li>贪心策略通常更偏向脑筋急转弯，更加隐晦和靠直觉，不如动态规划那样清晰</li>
+<li>不是每个问题都能用贪心算法解决</li>
+</ul>
+<h2 id="examples-5">Examples</h2>
+<h3 id="最大子数组和">最大子数组和</h3>
+<p><a href="https://leetcode.cn/problems/maximum-subarray/description/">LeetCode.53 Maximum Subarray</a>，给定一个数组，找出最大的子数组（里面的项在原来的数组里面必须是连续的）和。</p>
+<p>以数组 <code>[-2,1,-3,4,-1,2,1,-5,4]</code> 为例尝试从 <code>index</code> 为 <code>0</code> 时的最小问题开始解决：</p>
+<ol type="1">
+<li>第 0 项为 <code>-2</code>，那么必选 <code>-2</code>，因此在选择第 0 项的时候，<code>sum</code> 为 <code>-2</code></li>
+<li>第 1 项为 <code>1</code>，如果我们选了之前的 <code>-2</code>，会导致结果更小，因此我们不选 <code>-2</code>，只选 <code>1</code>，<code>sum</code> 为 <code>1</code></li>
+<li>第 2 项为 <code>-3</code>，我们肯定会加上之前的 <code>1</code>，<code>sum</code> 为 <code>-2</code></li>
+<li>第 3 项为 <code>4</code>，我们必然不能加上之前的结果，<code>sum</code> 为 <code>4</code></li>
+<li>第 4 项为 <code>-1</code>，加上之前的结果 <code>4</code>，<code>sum</code> 为 <code>3</code></li>
+<li>第 5 项为 <code>2</code>，虽然前一项为 <code>-1</code>，但是如果不选 <code>-1</code>，就代表放弃了我们累计的 <code>sum</code>，因此还是得选上，<code>sum</code> 为 <code>5</code></li>
+<li>第 6 项为 <code>1</code>，<code>sum</code> 为 <code>6</code></li>
+<li>...</li>
+</ol>
+<p>我们只需要持续追踪到上一项为止的 <strong>累计的和</strong>，如果和为正数，则考虑当前位的时候，把之前的加上，否则就不能加。</p>
+<p>这个 <strong>累计的和</strong> 已经是 <strong>考虑选择上一项之后的最大的和</strong>，因此只有两种可能，加上这个和、或者不加，其他的情况只会更糟（我们不需要回顾这个和是从哪里算起的，只知道他是考虑上一项之后最大的和即可）。</p>
+<details class="note "><summary><p>Code</p>
+</summary>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">maxSubArray</span><span class="token punctuation">(</span>nums<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">let</span> maxSum <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">Infinity</span>
+  <span class="token keyword">let</span> sum <span class="token operator">=</span> <span class="token number">0</span>
+  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> nums<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>sum <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      sum <span class="token operator">=</span> nums<span class="token punctuation">[</span>i<span class="token punctuation">]</span> 
+    <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+      sum <span class="token operator">+=</span> nums<span class="token punctuation">[</span>i<span class="token punctuation">]</span>
+    <span class="token punctuation">&#125;</span>
+    maxSum <span class="token operator">=</span> Math<span class="token punctuation">.</span><span class="token function">max</span><span class="token punctuation">(</span>sum<span class="token punctuation">,</span> maxSum<span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token keyword">return</span> maxSum
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+</details>
+<h3 id="加油站">加油站</h3>
+<p><a href="https://leetcode.cn/problems/gas-station/">LeetCode.134 Gas Station</a>，环形道路上 <code>gas</code> 数组和 <code>cost</code> 数组分别代表该加油站可以加多少油、和去下一个加油站需要耗费多少油，找到从哪里开始。</p>
+<p>这一题其实跟最大子数组和有一点类似，我们依然是可以拿示例来进行讨论：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">gas <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">5</span><span class="token punctuation">]</span>
+cost <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">5</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<ol type="1">
+<li>在 0 时，净余额为 <code>1 - 3 = -2</code></li>
+<li>在 1 时，肯定不能从 0 出发，因此净余额为 <code>2 - 4 = -2</code></li>
+<li>在 2 时，肯定也不能加上前面的，因此净余额为 <code>3 - 5 = -2</code></li>
+<li>在 3 时，不能加上前面的，净余额为 <code>4 - 1 = 3</code></li>
+<li>在 4 时，可以加上前面的，净余额为 <code>3 + 5 - 2 = 6</code></li>
+</ol>
+<p>因此我们可以在净余额不为负数的时候，就标记 <strong>可以从该点</strong> 出发：</p>
+<ul>
+<li>如果净余额在累加的过程中为负数了，则只能从下一个不为负数的开始</li>
+<li>如果到终点净余额都还是非负的，且 <code>gas</code> 总量大于等于 <code>cost</code> 总量，说明绕圈的话，剩下的油也是够跑完起始点之前的点的。否则就返回 <code>-1</code></li>
+</ul>
+<p>考虑，为什么不可以是起始点之后的某一点为起始点呢？因为从起始点开始是更优的选择，因为起始点到他之后的每一点都是有盈余的，肯定比从他之后的某一点开始强。如果算到某一点累加值为负了，那么就需要更换起始点了。</p>
+<details class="note "><summary><p>Code</p>
+</summary>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">canCompleteCircuit</span><span class="token punctuation">(</span>gas<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> cost<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">let</span> rest <span class="token operator">=</span> <span class="token number">0</span>
+  <span class="token keyword">let</span> start <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">1</span>
+  <span class="token keyword">let</span> total <span class="token operator">=</span> <span class="token number">0</span>
+  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> gas<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">const</span> current <span class="token operator">=</span> gas<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">-</span> cost<span class="token punctuation">[</span>i<span class="token punctuation">]</span>
+    total <span class="token operator">+=</span> current
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>rest <span class="token operator">&lt;=</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      start <span class="token operator">=</span> i
+      rest <span class="token operator">=</span> current
+    <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+      rest <span class="token operator">+=</span> current
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token keyword">return</span> total <span class="token operator">>=</span> <span class="token number">0</span> <span class="token operator">?</span> start <span class="token operator">:</span> <span class="token operator">-</span><span class="token number">1</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+</details>
 <h1 id="dynamic-programing">Dynamic Programing</h1>
 <h2 id="背包问题">背包问题</h2>
 <figure>
@@ -2726,7 +2807,7 @@ dp<span class="token punctuation">[</span><span class="token number">2</span><sp
   <span class="token punctuation">&#125;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>背包容量的每一个值，都会重新计算一遍 1 和 5，所以包含了 {1, 5} 和 {5, 1} 两种情况。，<code>dp[j]</code> 里面存的就是排列数。</p>
-<h2 id="例题">例题</h2>
+<h2 id="examples-6">Examples</h2>
 <h3 id="整数拆分">整数拆分</h3>
 <p><a href="https://leetcode.cn/problems/integer-break/">LeetCode.343</a></p>
 <p>Given an integer n, break it into the sum of k positive integers, where k &gt;= 2, and maximize the product of those integers.</p>
@@ -6566,7 +6647,6 @@ console<span class="token punctuation">.</span><span class="token function">log<
     <content><![CDATA[<p>临时整理碎片化信息。</p>
 <span id="more"></span>
 <h1 id="todo-queue">TODO Queue</h1>
-<p>大数运算：https://segmentfault.com/a/1190000039763431</p>
 <p>好子集（1e9+7 困难）：https://leetcode.cn/problems/the-number-of-good-subsets/</p>
 <p>提示工程：https://learningprompt.wiki/</p>
 <p>香港建筑数据库：https://geodata.gov.hk/gs/datasets</p>
@@ -21602,7 +21682,6 @@ HostRootFiber (Current) -> Fiber (&lt;App />) -> Fiber (&lt;h1>NEW World!&lt;/h1
   hiddenCallbacks<span class="token operator">:</span> <span class="token builtin">Array</span><span class="token operator">&lt;</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token builtin">any</span><span class="token operator">></span> <span class="token operator">|</span> <span class="token keyword">null</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="enqueueupdate">enqueueUpdate</h3>
-<p>// TBC</p>
 <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token generic-function"><span class="token function">enqueueUpdate</span><span class="token generic class-name"><span class="token operator">&lt;</span>State<span class="token operator">></span></span></span><span class="token punctuation">(</span>
   fiber<span class="token operator">:</span> Fiber<span class="token punctuation">,</span>
   update<span class="token operator">:</span> Update<span class="token operator">&lt;</span>State<span class="token operator">></span><span class="token punctuation">,</span>
@@ -21853,6 +21932,31 @@ HostRootFiber (Current) -> Fiber (&lt;App />) -> Fiber (&lt;h1>NEW World!&lt;/h1
   <span class="token punctuation">&#125;</span>
   currentlyProcessingQueue <span class="token operator">=</span> <span class="token keyword">null</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="hook">Hook</h2>
+<p>React 的 <code>FunctionComponentFiber</code> 中的 <code>memorizedState</code> 属性指向的即为该函数组件的第一个 <code>Hook</code>，一个函数组件内部的 Hooks 会组成一个链表，他们由 <code>.next</code> 链接起来。</p>
+<p><strong>注意当前 React 源码中 <code>ReactFiberHooks.js</code> 中单独定义了 <code>Hook</code> 的 <code>Update</code> 和 <code>UpdateQueue</code>，这跟上文提到的 <code>Fiber</code> 中的 <code>Update</code> 和 <code>UpdateQueue</code> 思路类似但结构有所不同！</strong></p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">export</span> <span class="token keyword">type</span> <span class="token class-name">Hook</span> <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+  memorizedState<span class="token operator">:</span> <span class="token builtin">any</span>
+  baseState<span class="token operator">:</span> <span class="token builtin">any</span>
+  baseQueue<span class="token operator">:</span> Update<span class="token operator">&lt;</span><span class="token builtin">any</span><span class="token punctuation">,</span> <span class="token builtin">any</span><span class="token operator">></span> <span class="token operator">|</span> <span class="token keyword">null</span>
+  queue<span class="token operator">:</span> <span class="token builtin">any</span>
+  next<span class="token operator">:</span> Hook <span class="token operator">|</span> <span class="token keyword">null</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">type</span> <span class="token class-name">Update<span class="token operator">&lt;</span><span class="token constant">S</span><span class="token punctuation">,</span> <span class="token constant">A</span><span class="token operator">></span></span> <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+  lane<span class="token operator">:</span> Lane
+  <span class="token comment">// Fiber 中 Update 的更新信息主要由 payload 携带，而这里主要是 action</span>
+  action<span class="token operator">:</span> <span class="token constant">A</span>
+  next<span class="token operator">:</span> Update<span class="token operator">&lt;</span><span class="token constant">S</span><span class="token punctuation">,</span> <span class="token constant">A</span><span class="token operator">></span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">type</span> <span class="token class-name">UpdateQueue<span class="token operator">&lt;</span><span class="token constant">S</span><span class="token punctuation">,</span> <span class="token constant">A</span><span class="token operator">></span></span> <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+  pending<span class="token operator">:</span> Update<span class="token operator">&lt;</span><span class="token constant">S</span><span class="token punctuation">,</span> <span class="token constant">A</span><span class="token operator">></span> <span class="token operator">|</span> <span class="token keyword">null</span>
+  lanes<span class="token operator">:</span> Lanes
+  dispatch<span class="token operator">:</span> <span class="token punctuation">(</span><span class="token constant">A</span> <span class="token operator">=></span> <span class="token builtin">any</span><span class="token punctuation">)</span> <span class="token operator">|</span> <span class="token keyword">null</span>
+  lastRenderedReducer<span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token constant">S</span><span class="token punctuation">,</span> <span class="token constant">A</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token constant">S</span><span class="token punctuation">)</span> <span class="token operator">|</span> <span class="token keyword">null</span>
+  lastRenderedState<span class="token operator">:</span> <span class="token constant">S</span> <span class="token operator">|</span> <span class="token keyword">null</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h1 id="数据结构与算法">数据结构与算法</h1>
 <p>React 的源码中使用了几个非常典型的数据结构和算法，包括各种链表的变体、深度优先遍历、位运算等。</p>
 <h2 id="链表">链表</h2>
@@ -22966,7 +23070,7 @@ ReactDOM<span class="token punctuation">.</span><span class="token function">cre
 <p>可以看到其中调用的函数大致分为两种类型：</p>
 <ul>
 <li>一种是计算子节点变更的 <code>reconcileSingleElement</code> 等函数</li>
-<li>一种是</li>
+<li>一种是跟踪副作用的 <code>TrackSideEffects</code> 等函数，该函数通常只有在传入 <code>shouldTrackSideEffects</code> 为 <code>true</code> 的情况下才会执行，并为 <code>Fiber</code> 打上各种标记</li>
 </ul>
 <h5 id="childreconciliation">ChildReconciliation</h5>
 <h6 id="reconcilesingleelement">reconcileSingleElement</h6>
@@ -23300,6 +23404,190 @@ workInProgress<span class="token punctuation">.</span>stateNode <span class="tok
 <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">root<span class="token punctuation">.</span>current <span class="token operator">=</span> finishedWork<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <h3 id="layout">Layout</h3>
 <p>在 DFS 中会前序执行 <code>OffscreenComponent</code> 的显隐逻辑，后序执行 <code>useLayoutEffect</code> 回调。</p>
+<h1 id="react-中的事件系统">React 中的事件系统</h1>
+<p>React 在首次渲染的过程中会给 <code>container</code> 绑定所有支持事件的监听，以事件委托的形式处理所有在 <code>container</code> 内触发的事件。当有事件触发时，React 会：</p>
+<ol type="1">
+<li>通过 <code>nativeEvent.target</code> 上的属性找到这个元素对应的 <code>Fiber</code>（React 中的 <code>HostComponent.sateNode</code> 里面存了两个属性：<code>[internalInstanceKey]</code> 指向 <code>HostComponentFiber</code> 、 <code>[internalPropsKey]</code> 指向他的 <code>props</code>）</li>
+<li>遍历 <code>Fiber</code> 的所有祖先节点，并且通过 <code>Fiber.stateNode[internalPropsKey]</code> 找到 <code>props</code> 中对应事件的监听函数，收集到起来</li>
+<li>构造一个通用的 <code>SyntheticEvent</code> 对象，然后顺着事件监听函数的顺序调用事件处理函数</li>
+</ol>
+<h1 id="hooks">Hooks</h1>
+<p>在代码结构上讲，Hooks 有几点比较特别的地方：</p>
+<ol type="1">
+<li>Hooks 都是定义在 <code>react-reconciler</code> 包的（这个包最终会被合并到 <code>react-dom</code> 中），但是我们引入 Hooks 却是在 <code>react</code> 包引入的</li>
+<li>很多 Hooks 在组件第一次渲染和后续渲染时的表现都不同，比如 <code>useEffect</code> 第一次渲染不论如何都会执行回调、<code>useState</code> 第一次渲染会使用初始值等</li>
+</ol>
+<p>事实上，在 <code>react</code> 包里有一个全局变量 <code>__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED</code>，里面有个 <code>ReactCurrentDispatcher</code> 属性，该属性就存放了当前的 <code>useState</code> <code>useEffect</code> 等，因此 <code>react</code> 包可以使用到这些 Hooks。</p>
+<p>此外，React 中原生的 <code>useXXX</code> 其实都有两套实现，分别对应 <code>mount</code> 和 <code>update</code> 两种情况，<code>reac-reconciler</code> 中 <code>renderWithHooks</code> 执行的时候，会选择根据是首次渲染还是后续更新（通过 <code>current</code> 是否有值来判断）合适的 <code>useXXX</code> 函数，将其挂载到 <code>ReactCurrentDispatcher</code> 上。</p>
+<h2 id="hooks-通用流程">Hooks 通用流程</h2>
+<p>在 Hooks 运行的过程中，React 会维护两个全局变量：</p>
+<ul>
+<li><code>workInProgressHook</code>：当前正在处理的 <code>Hook</code></li>
+<li><code>currentHook</code>：current <code>Fiber</code> 中的 <code>Hook</code>，可以理解为上一次渲染的 <code>Hook</code></li>
+</ul>
+<h3 id="workinprogresshook">workInProgressHook</h3>
+<h4 id="mountworkinprogresshook">mountWorkInProgressHook</h4>
+<p>在组件首次渲染时，每个原生 <code>useXXX</code> 都会执行 <code>mountWorkInProgressHook</code> 来创建一个新的 <code>Hook</code>，如果当前 <code>Hook</code> 是该组件的第一个 <code>Hook</code>，则会将 <code>currentlyRenderingFiber.memorizedState</code> 指向他：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">mountWorkInProgressHook</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> hook<span class="token operator">:</span> Hook <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+    memorizedState<span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+    baseState<span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+    baseQueue<span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+    queue<span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+    next<span class="token operator">:</span> <span class="token keyword">null</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>workInProgressHook <span class="token operator">===</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    currentlyRenderingFiber<span class="token punctuation">.</span>memorizedState <span class="token operator">=</span> workInProgressHook <span class="token operator">=</span> hook
+  <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+    workInProgressHook <span class="token operator">=</span> workInProgressHook<span class="token punctuation">.</span>next <span class="token operator">=</span> hook
+  <span class="token punctuation">&#125;</span>
+  <span class="token keyword">return</span> workInProgressHook
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="updateworkinprogresshook">updateWorkInProgressHook</h4>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">updateWorkInProgressHook</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">let</span> nextCurrentHook
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>currentHook <span class="token operator">===</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 当前是再次渲染时遇到的第一个 Hook</span>
+    <span class="token comment">// 从 curret.memorizedState 中取到上一次的 Hook</span>
+    <span class="token keyword">const</span> current <span class="token operator">=</span> currentlyRenderingFiber<span class="token punctuation">.</span>alternate
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>current <span class="token operator">!==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      nextCurrentHook <span class="token operator">=</span> current<span class="token punctuation">.</span>memorizedState
+    <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+      nextCurrentHook <span class="token operator">=</span> <span class="token keyword">null</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token comment">// 当前不是第一个 Hook，直接取链表的下一项</span>
+  <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+    nextCurrentHook <span class="token operator">=</span> currentHook<span class="token punctuation">.</span>next
+  <span class="token punctuation">&#125;</span>
+  <span class="token comment">// 从 WIP 中捡上一次已经不要了的 Hook，看能不能复用</span>
+  <span class="token keyword">let</span> nextWorkInProgressHook
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>workInProgressHook <span class="token operator">===</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    nextWorkInProgressHook <span class="token operator">=</span> currentlyRenderingFiber<span class="token punctuation">.</span>memorizedState
+  <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+    nextWorkInProgressHook <span class="token operator">=</span> nextWorkInProgressHook<span class="token punctuation">.</span>next
+  <span class="token punctuation">&#125;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>nextWorkInProgressHook <span class="token operator">!==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 捡垃圾复用一把</span>
+    workInProgressHook <span class="token operator">=</span> nextWorkInProgressHook
+    nextWorkInProgressHook <span class="token operator">=</span> nextWorkInProgressHook<span class="token punctuation">.</span>next
+    currentHook <span class="token operator">=</span> nextCurrentHook
+  <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 只能重新建一个 Hook</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>nextCurrentHook <span class="token operator">===</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">Error</span><span class="token punctuation">(</span><span class="token string">'要么现在不在 Render 阶段（currentFiber === null），要么这次 Render 的 Hook 比上一次多'</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+    currentHook <span class="token operator">=</span> nextCurrentHook
+    <span class="token keyword">const</span> newHook <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+      memorizedState<span class="token operator">:</span> currentHook<span class="token punctuation">.</span>memorizedHook<span class="token punctuation">,</span>
+      baseState<span class="token operator">:</span> currentHook<span class="token punctuation">.</span>baseState<span class="token punctuation">,</span>
+      baseQueue<span class="token operator">:</span> currentHook<span class="token punctuation">.</span>baseQueue<span class="token punctuation">,</span>
+      queue<span class="token operator">:</span> currentHook<span class="token punctuation">.</span>queue<span class="token punctuation">,</span>
+      next<span class="token operator">:</span> <span class="token keyword">null</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>workInProgressHook <span class="token operator">===</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      currentlyRenderingFiber<span class="token punctuation">.</span>memorizedState <span class="token operator">=</span> workInProgressHook <span class="token operator">=</span> newHook
+    <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+      workInProgressHook <span class="token operator">=</span> workInProgressHook<span class="token punctuation">.</span>next <span class="token operator">=</span> newHook
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token keyword">return</span> workInProgressHook
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="usestate">useState</h2>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token generic-function"><span class="token function">basicStateReducer</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token constant">S</span><span class="token operator">></span></span></span><span class="token punctuation">(</span>state<span class="token operator">:</span> <span class="token constant">S</span><span class="token punctuation">,</span> action<span class="token operator">:</span> BasicStateAction<span class="token operator">&lt;</span><span class="token constant">S</span><span class="token operator">></span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token constant">S</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">return</span> <span class="token keyword">typeof</span> action <span class="token operator">===</span> <span class="token string">'function'</span> <span class="token operator">?</span> <span class="token function">action</span><span class="token punctuation">(</span>state<span class="token punctuation">)</span> <span class="token operator">:</span> action
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">mountState</span><span class="token punctuation">(</span>initialState<span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token constant">S</span><span class="token punctuation">)</span> <span class="token operator">|</span> <span class="token constant">S</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">// 创建一个新的 Hook</span>
+  <span class="token keyword">const</span> hook <span class="token operator">=</span> <span class="token function">mountWorkInProgressHook</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">typeof</span> initialState <span class="token operator">===</span> <span class="token string">'function'</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    initialState <span class="token operator">=</span> <span class="token function">initialState</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+  hook<span class="token punctuation">.</span>memorizedState <span class="token operator">=</span> hook<span class="token punctuation">.</span>baseState <span class="token operator">=</span> initialState
+  <span class="token keyword">const</span> queue<span class="token operator">:</span> Update<span class="token operator">&lt;</span><span class="token constant">S</span><span class="token punctuation">,</span> BasicStateAction<span class="token operator">&lt;</span><span class="token constant">S</span><span class="token operator">>></span> <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+    pending<span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+    lanes<span class="token operator">:</span> NoLanes<span class="token punctuation">,</span>
+    dispatch<span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+    lastRenderedReducer<span class="token operator">:</span> basicStateReducer<span class="token punctuation">,</span>
+    lastRenderedState<span class="token operator">:</span> initialState<span class="token punctuation">,</span>
+  <span class="token punctuation">&#125;</span>
+  hook<span class="token punctuation">.</span>queue <span class="token operator">=</span> queue
+  <span class="token keyword">const</span> dipatch <span class="token operator">=</span> <span class="token function">dispatchSetState</span><span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">,</span> currentlyRenderingFiber<span class="token punctuation">,</span> queue<span class="token punctuation">)</span>
+  <span class="token keyword">return</span> <span class="token punctuation">[</span>hoo<span class="token punctuation">.</span>memorizedState<span class="token punctuation">,</span> dispatch<span class="token punctuation">]</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token generic-function"><span class="token function">dispatchSetState</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token constant">S</span><span class="token punctuation">,</span> <span class="token constant">A</span><span class="token operator">></span></span></span><span class="token punctuation">(</span>
+  fiber<span class="token operator">:</span> Fiber<span class="token punctuation">,</span>
+  queue<span class="token operator">:</span> Update<span class="token operator">&lt;</span><span class="token constant">S</span><span class="token punctuation">,</span> <span class="token constant">A</span><span class="token operator">></span><span class="token punctuation">,</span>
+  action<span class="token operator">:</span> <span class="token constant">A</span><span class="token punctuation">,</span>
+<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> lane <span class="token operator">=</span> <span class="token function">requestUpdateLane</span><span class="token punctuation">(</span>fiber<span class="token punctuation">)</span>
+  <span class="token keyword">const</span> update <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+    lane<span class="token punctuation">,</span>
+    reverLane<span class="token operator">:</span> NoLane<span class="token punctuation">,</span>
+    action<span class="token punctuation">,</span>
+    next<span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token keyword">const</span> alternate <span class="token operator">=</span> fiber<span class="token punctuation">.</span>alternate
+  <span class="token comment">// 调用 enqueueUpdate 把 Queue 推入 Fiber 的 UpdateQueue 中</span>
+  <span class="token keyword">const</span> root <span class="token operator">=</span> <span class="token function">enqueueConcurrentHookUpdate</span><span class="token punctuation">(</span>fiber<span class="token punctuation">,</span> queue<span class="token punctuation">,</span> update<span class="token punctuation">,</span> lane<span class="token punctuation">)</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>root <span class="token operator">!==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token function">scheduleUpdateOnFiber</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> fiber<span class="token punctuation">,</span> lane<span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">updateState</span><span class="token punctuation">(</span>initialState<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">return</span> <span class="token function">updateReducer</span><span class="token punctuation">(</span>basicStateReducer<span class="token punctuation">,</span> initialState<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">function</span> <span class="token function">updateReducer</span><span class="token punctuation">(</span>reducer<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> hook <span class="token operator">=</span> <span class="token function">updateWorkInProgressHook</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token keyword">const</span> queue <span class="token operator">=</span> hook<span class="token punctuation">.</span>queue
+  <span class="token comment">// 计算新 state 的算法与 UpdateQueue 基本一致，只是变量不同</span>
+  <span class="token comment">// ...</span>
+  <span class="token keyword">return</span> <span class="token punctuation">[</span>hook<span class="token punctuation">.</span>memorizedState<span class="token punctuation">,</span> queue<span class="token punctuation">.</span>dispatch<span class="token punctuation">]</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="useeffect">useEffect</h2>
+<p>与 Effect 相关的 Hooks 一共又三个，包括：</p>
+<ul>
+<li><code>useEffect</code>：<code>commit</code> 完成之后异步执行</li>
+<li><code>useLayoutEffect</code>：在 Commit 的 Layout 子阶段同步执行</li>
+<li><code>useInsertionEffect</code>，在 Commit 的 Mutation 子阶段同步执行，此时无法访问对 DOM 的引用</li>
+</ul>
+<p>React 为这些 Hooks 准备了一套抽象数据结构 <code>Effect</code>：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">export</span> <span class="token keyword">type</span> <span class="token class-name">Effect</span> <span class="token punctuation">&#123;</span>
+  tag<span class="token operator">:</span> Flags
+  <span class="token comment">// Effect 回调函数</span>
+  create<span class="token operator">:</span> EffectCallback
+  <span class="token comment">// Effect 回调函数的返回值</span>
+  destory<span class="token operator">:</span> EffectCallback
+  <span class="token comment">// 依赖项</span>
+  deps<span class="token operator">:</span> EffectDeps
+  <span class="token comment">// 与当前 FunctionComponent 的其他 Effect 组成环状链表</span>
+  next<span class="token operator">:</span> Effect <span class="token operator">|</span> <span class="token keyword">null</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="声明阶段">声明阶段</h3>
+<p>在对函数组件执行 <code>renderWithHooks</code> 时，会分别执行 <code>mountEffect</code> 和 <code>updateEffect</code> 方法，他们会：</p>
+<ol type="1">
+<li>创建 Effect 环状链表，并放到 <code>fiber.updateQueue</code> 上</li>
+<li><code>updateEffect</code> 会浅比较依赖项</li>
+<li>在 <code>tag</code> 中标记本次渲染之后是否需要执行该 Effect</li>
+</ol>
+<h3 id="调度阶段">调度阶段</h3>
+<p>由于 <code>useEffect</code> 的回调会在 Commit 完成之后异步执行，因此会在 Commit 阶段的三个子阶段之前进行调度：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">if</span> <span class="token punctuation">(</span>
+  <span class="token punctuation">(</span>finishedWork<span class="token punctuation">.</span>subtreeFlags <span class="token operator">&amp;</span> PassiveMask<span class="token punctuation">)</span> <span class="token operator">!==</span> NoFlags <span class="token operator">||</span>
+  <span class="token punctuation">(</span>finishedWork<span class="token punctuation">.</span>flags <span class="token operator">&amp;</span> PassiveMask<span class="token punctuation">)</span> <span class="token operator">!==</span> NoFlags
+<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">// ...</span>
+  <span class="token function">scheduleCallback</span><span class="token punctuation">(</span>NormalSchedulerPriority<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+    <span class="token function">flushPassiveEffects</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> <span class="token keyword">null</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>而另外两种 Effect 由于是同步执行的，因此没有调度阶段。</p>
+<h3 id="执行阶段">执行阶段</h3>
+<ol type="1">
+<li>使用后序遍历 FiberTree，遍历每个 Fiber 的 Effect 链表，依次执行 <code>effect.detroy</code> 方法</li>
+<li>所有需要执行的 <code>effect.destory</code> 执行完成之后，再次后序遍历 FiberTree、每个 Fiber 的 Effect 链表，执行 <code>effect.create</code> 方法</li>
+</ol>
 ]]></content>
       <categories>
         <category>前端</category>
