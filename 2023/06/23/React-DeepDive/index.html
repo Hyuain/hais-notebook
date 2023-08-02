@@ -153,7 +153,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/hais-notebook/archives/">
-          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-count">48</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -246,14 +246,14 @@
 <h1 id="抽象数据类型">抽象数据类型</h1>
 <p>要完成 React Reconciliation 过程，需要数量众多的抽象数据类型进行支撑，包括 <code>ReactDOMRoot</code> <code>Fiber</code> <code>FiberRoot</code> <code>Update</code> <code>UpdateQueue</code> <code>Lane</code> 等，本篇章将逐一介绍这些数据类型、对他们的操作以及他们的用途。初次阅读时可以跳过，后面遇到的时候再返回来查阅。</p>
 <h2 id="reactdomroot">ReactDOMRoot</h2>
-<p>ReactDOMRoot 是 <code>ReactDOM.createRoot</code> 的返回值，他事实上只是暴露了两个方法给我们使用，一个是 <code>render</code>，一个是 <code>unmount</code>。通过 <code>render</code> 方法，我们可以传入 <code>ReactElement</code> 然后开启首次渲染。</p>
+<p>ReactDOMRoot 是 <code>ReactDOM.createRoot</code> 的返回值，他事实上只是暴露了两个方法给我们使用，一个是 <code>render</code>，一个是 <code>unmount</code>。我们可以给 <code>render</code> 方法传入 <code>ReactElement</code>，然后开启首次渲染。</p>
 <h2 id="fiber">Fiber</h2>
 <blockquote>
 <p><code>Fiber</code> 就是 Component 上的需要被执行的、或已经执行完成的工作，每个 Component 可能有多个 <code>Fiber</code>。</p>
 <p>——React 源码中的注释</p>
 </blockquote>
-<p><code>Fiber</code> 可以暂时先理解为虚拟节点，他有不同的类型，比如 <code>FunctionComponent</code> <code>ClassComponent</code> <code>HostRoot</code> <code>HostText</code> <code>Fragment</code> 等，这标记着该 Fiber 的类型。也就是说，一个 <code>Fiber</code> 节点可以对应某个 React 组件或某个 DOM 节点等。</p>
-<p>React 中的很多过程都是使用深度优先遍历（DFS）来实现的：比如生成或更新 FiberTree（暂时可以理解为 VirtualDOMTree）、将 FiberTree 的内容提交到宿主环境 UI 中等等。具体可参考 <strong>数据结构与算法</strong> 章节。</p>
+<p><code>Fiber</code> 可以暂时先理解为虚拟节点，他有不同的类型，比如 <code>FunctionComponent</code> <code>ClassComponent</code> <code>HostRoot</code> <code>HostText</code> <code>Fragment</code> 等。也就是说，一个 <code>Fiber</code> 节点可以对应某个 React 组件或某个 DOM 节点等。</p>
+<p>React 中的很多过程都是使用深度优先遍历（DFS）来实现的：比如生成 FiberTree（暂时可以理解为 VirtualDOMTree）、将 FiberTree 的内容提交到宿主环境 UI 中、遍历 FiberTree 执行 Effects 等等。具体可参考本文的 <strong>数据结构与算法</strong> 章节。</p>
 <p>需要注意的是：<strong>如果使用递归实现 DFS 的过程，那么 React 将无法控制调用栈的随时中断与继续。</strong>因此 React 选择借助 FiberTree 并使用迭代的方式实现 DFS，并在中间的某些环节设置了可以提前中断的手段。同时 <code>Fiber.updateQueue</code> 等属性提供了记忆并恢复工作状态的能力，使得继续之前被中断的任务成为可能。</p>
 <blockquote>
 <p>不过，由于 React 源码使用了 Flow，其实可能某个 <code>Fiber</code> 类型并不需要某些属性，但 React 并没有将他们拆分开来，而是都直接散开放在了 <code>Fiber</code> 这一个数据类型中。</p>
@@ -287,12 +287,12 @@
   <span class="token comment">// 用于处理该 Fiber 的外部输入（Props、Arguments）</span>
   pendingProps<span class="token operator">:</span> <span class="token builtin">any</span>   <span class="token comment">// 当次传入的输入</span>
   memorizedProps<span class="token operator">:</span> <span class="token builtin">any</span> <span class="token comment">// 上次的输入</span>
-  <span class="token comment">// 内部 State 更新和回调的列表</span>
+  <span class="token comment">// 内部状态更新和回调的列表，不同类型的 Fiber 存的东西也不一样</span>
   updateQueue<span class="token operator">:</span> <span class="token builtin">unknown</span>
-  <span class="token comment">// 上一次用来创建输出的 State</span>
+  <span class="token comment">// 上一次的内部状态</span>
   memorizedState<span class="token operator">:</span> <span class="token builtin">any</span>
   
-  <span class="token comment">/* Effect（副作用）相关的属性 */</span>
+  <span class="token comment">/* 副作用相关的属性 */</span>
   <span class="token comment">// 标记此次 render 都需要执行哪些副作用，比如往 DOM 添加节点、删除节点、执行 useEffect 等</span>
   flags<span class="token operator">:</span> Flags
   <span class="token comment">// 子结点都有什么副作用</span>
@@ -883,7 +883,7 @@ ReactDOM<span class="token punctuation">.</span><span class="token function">cre
 <ol type="1">
 <li><strong>createRoot：</strong>来自 <code>react-dom</code> 包的 <code>createRoot</code> 方法获取 Container Element 相关的信息，并调用 <code>react-reconciler</code> 中的方法来初始化 <code>FiberRoot</code> 和 <code>HostRootFiber</code>；</li>
 <li><strong>createElement：</strong>来自 <code>react</code> 包的 <code>createElement</code> 将 JSX 转换结果再次转换为 <code>ReactElement</code>；</li>
-<li><strong>rener：</strong>调用 <code>createRoot</code> 返回对象的 <code>render</code> 方法，并传入 <code>ReactElement</code>，该方法会调用 <code>react-reconciler</code> 中的方法进入 Reconciliation 流程。</li>
+<li><strong>render：</strong>调用 <code>createRoot</code> 返回对象的 <code>render</code> 方法，并传入 <code>ReactElement</code>，该方法会调用 <code>react-reconciler</code> 中的方法进入 Reconciliation 流程。</li>
 </ol>
 <pre class="line-numbers language-text" data-language="text"><code class="language-text">1. ReactDOM.createRoot             // 创建 ReactDOMRoot
      createContainer               // 创建 Container，Container 实际上就是创建 FiberRoot
@@ -948,7 +948,7 @@ ReactDOM<span class="token punctuation">.</span><span class="token function">cre
   uninitializedFiber<span class="token punctuation">.</span>memorizedState <span class="token operator">=</span> initialState
   
   <span class="token comment">// 3.2. 初始化 updateQueue，稍后进入渲染流程后将会提到，用于存取 Update</span>
- 	<span class="token function">initializeUpdateQueue</span><span class="token punctuation">(</span>uninitializedFiber<span class="token punctuation">)</span>
+  <span class="token function">initializeUpdateQueue</span><span class="token punctuation">(</span>uninitializedFiber<span class="token punctuation">)</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="createelement">createElement</h3>
 <p>Babel 会将 JSX 静态编译为 JavaScript 代码，可以在这个 <a target="_blank" rel="noopener" href="https://babeljs.io/repl">Babel Playground</a> 看到即时编译的效果，比如</p>
@@ -1029,7 +1029,7 @@ ReactDOM<span class="token punctuation">.</span><span class="token function">cre
   lane<span class="token operator">:</span> Lane
 <span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
   <span class="token comment">// root.pendingLanes |= lane</span>
- 	<span class="token function">markRootUpdated</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> lane<span class="token punctuation">)</span>
+  <span class="token function">markRootUpdated</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> lane<span class="token punctuation">)</span>
   <span class="token comment">// 进入 Schedule 阶段</span>
   <span class="token function">ensureRootIsScheduled</span><span class="token punctuation">(</span>root<span class="token punctuation">)</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
@@ -1552,7 +1552,7 @@ ReactDOM<span class="token punctuation">.</span><span class="token function">cre
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h4 id="workloop">workLoop</h4>
 <p><code>workLoop</code> 会循环地将当前的 <code>workInProgress</code> 送入 <code>performUnitOfWork</code> 函数来执行具体的渲染工作，与 <code>performXXXWorkOnRoot</code> 和 <code>renderXXXRoot</code> 一样，他也有 Sync 和 Concurrent 两种版本。</p>
-<p>两种版本唯一的区别在于 Sync 版本的 <code>workSyncConcurrent</code> 会一直循环执行直到 <code>workInProgress</code> 为空，而 Concurrent 版本则会受到来自 Scheduler 的 <code>shouldYield</code> 函数控制，使得他可以提前中断。</p>
+<p>两种版本唯一的区别在于 Sync 版本的 <code>workLoopSync</code> 会一直循环执行直到 <code>workInProgress</code> 为空，而 Concurrent 版本则会受到来自 Scheduler 的 <code>shouldYield</code> 函数控制，使得他可以提前中断。</p>
 <p>Render 阶段的 Sync 和 Concurrent 的区别到此就结束了，他们后面的流程完全一样。</p>
 <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">workLoopSync</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
   <span class="token keyword">while</span> <span class="token punctuation">(</span>workInProgress <span class="token operator">!==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
@@ -2399,6 +2399,9 @@ workInProgress<span class="token punctuation">.</span>stateNode <span class="tok
                 </a>
             </div>
             <div class="post-nav-item">
+                <a href="/hais-notebook/2023/07/18/Rust/" rel="next" title="Rust">
+                  Rust <i class="fa fa-chevron-right"></i>
+                </a>
             </div>
           </div>
     </footer>

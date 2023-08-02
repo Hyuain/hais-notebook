@@ -18,7 +18,7 @@
 </ul></li>
 <li>算法（回溯、贪心、动态规划）
 <ul>
-<li>回溯：</li>
+<li>回溯：组合问题、切割问题、子集问题、排列问题、棋盘问题</li>
 <li>动态规划：背包问题</li>
 </ul></li>
 <li>其他注意事项（对 1e9 + 7 取模）</li>
@@ -2282,7 +2282,7 @@ T(n) = \sum_{i=0}^{h} n_i h_i \\
 <span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 </details>
-<p>与动态规划不同的是，这种 DFS 是全搜索 DFS，可以看到并没有加中间判断以选出每个子问题最优解，而是对所有子问题都进行了遍历。</p>
+<p>与动态规划不同的是，这种 DFS 是全搜索 DFS，可以看到并没有加中间判断以选出每个子问题最优解，而是对所有子问题都进行了遍历（这一点会在动态规划中有更详细的讨论）。</p>
 <h3 id="组合问题中的去重">组合问题中的去重</h3>
 <p><a href="https://leetcode.cn/problems/combination-sum-ii/description/">LeetCode.40 Combination Sum II</a> 中就要求对组合进行去重，组合问题中去重的特点是：</p>
 <ol type="1">
@@ -2588,11 +2588,330 @@ cost <span class="token operator">=</span> <span class="token punctuation">[</sp
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 </details>
+<h3 id="分发糖果">分发糖果</h3>
+<p><a href="https://leetcode.cn/problems/candy/description/">LeetCode.135 Candy</a>，有一列孩子，每个孩子至少一颗糖，得分高的孩子要比旁边的人糖果多。</p>
+<p>本题实际上用了两个贪心策略：</p>
+<ol type="1">
+<li>如果当前孩子比前面的孩子分高，那么他的糖果就是前面的孩子糖果数 + 1</li>
+<li>如果从左往右遍历一次，然后再从右往左遍历一次，那么每个小孩就跟左右都比较过了；注意在第二次遍历时，需要跟第一次的结果进行比对，取最大值而不要破坏第一次的计算结果</li>
+</ol>
+<details class="note "><summary><p>Code</p>
+</summary>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">candy</span><span class="token punctuation">(</span>ratings<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> compareLeft <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token keyword">let</span> candies <span class="token operator">=</span> <span class="token number">0</span>
+  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> ratings<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>i <span class="token operator">></span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span> ratings<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">></span> ratings<span class="token punctuation">[</span>i <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      compareLeft<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> compareLeft<span class="token punctuation">[</span>i <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">+</span> <span class="token number">1</span>
+    <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+      compareLeft<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">1</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token keyword">const</span> comapreRight <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> ratings<span class="token punctuation">.</span>length <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span> i <span class="token operator">>=</span> <span class="token number">0</span><span class="token punctuation">;</span> i<span class="token operator">--</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>i <span class="token operator">&lt;</span> ratings<span class="token punctuation">.</span>length <span class="token operator">-</span> <span class="token number">1</span> <span class="token operator">&amp;&amp;</span> ratings<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">></span> ratings<span class="token punctuation">[</span>i <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      comapreRight<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> Math<span class="token punctuation">.</span><span class="token function">max</span><span class="token punctuation">(</span>comapreRight<span class="token punctuation">[</span>i <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">,</span> compareLeft<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+      comapreRight<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> compareLeft<span class="token punctuation">[</span>i<span class="token punctuation">]</span>
+    <span class="token punctuation">&#125;</span>
+    candies <span class="token operator">+=</span> comapreRight<span class="token punctuation">[</span>i<span class="token punctuation">]</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token keyword">return</span> candies
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+</details>
+<h3 id="重叠区间">重叠区间</h3>
+<p><strong>重叠区间其实就是一种遍历方法，与之前二叉树的遍历别无二致。</strong>遍历过程中要做的事情有三件：</p>
+<ol type="1">
+<li>对区间进行排序</li>
+<li>如果该区间的开始仍在上一次的重叠区间内，需要做什么</li>
+<li>如果该区间的开始已经脱离了上一次的重叠区间，需要做什么</li>
+</ol>
+<p>需要注意的是，<strong>在重叠区间内</strong> 在不同的题目可能含义不太相同，<strong>有的题目是只要重叠区间内的最早结束的区间结束就结束了，有的题目是重叠区间内最远的区间结束才结束。</strong></p>
+<p><a href="https://leetcode.cn/problems/minimum-number-of-arrows-to-burst-balloons/">LeetCode.452 用最少数量的箭引爆气球</a> 就是一道很典型的求重叠区间的问题，按照每个区间的开始从小到大对区间进行排序，然后进行一轮遍历，如果遍历到重叠区间结束，则射出一箭。</p>
+<p>当重叠区间结束时，我们射出一箭，那么这个重叠区间的所有气球就都被引爆了，也就是说，所有之后区间内的所有小区间都没用了；因此我们不需要用优先队列来记住区间内的所有小区间，只需要记录该区间内最先结束的小区间的结束点就可以了。</p>
+<details class="note "><summary><p>Code</p>
+</summary>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">findMinArrowShots</span><span class="token punctuation">(</span>points<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>points<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token keyword">return</span> <span class="token number">0</span> <span class="token punctuation">&#125;</span>
+  points<span class="token punctuation">.</span><span class="token function">sort</span><span class="token punctuation">(</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span> b<span class="token punctuation">)</span> <span class="token operator">=></span> a<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">-</span> b<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+  <span class="token keyword">let</span> shots <span class="token operator">=</span> <span class="token number">1</span>
+  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> points<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>points<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">></span> points<span class="token punctuation">[</span>i <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token comment">// 重叠区间结束后射一箭</span>
+      shots<span class="token operator">++</span>
+    <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+      <span class="token comment">// 记录该重叠区间内最先结束的小区间的结束点，其实可以用一个新的变量来记录，但是这里复用了 points 数组</span>
+      points<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">=</span> Math<span class="token punctuation">.</span><span class="token function">min</span><span class="token punctuation">(</span>points<span class="token punctuation">[</span>i <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span> points<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token keyword">return</span> shots
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+</details>
+<p><a href="https://leetcode.cn/problems/non-overlapping-intervals/description/">LeetCode.435 无重叠区间</a> 要求我们移除一些区间，使得没有区间重叠，跟上一题很类似，不过上一题是在重叠区间结束的时候射一箭，这一题是在重叠区间内，每有一个区间重叠，就计数一次（该区间需要被移除）。</p>
+<details class="note "><summary><p>Code</p>
+</summary>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">eraseOverlapIntervals</span><span class="token punctuation">(</span>intervals<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span> <span class="token punctuation">&#123;</span>
+  intervals<span class="token punctuation">.</span><span class="token function">sort</span><span class="token punctuation">(</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span> b<span class="token punctuation">)</span> <span class="token operator">=></span> a<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">-</span> b<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+  <span class="token keyword">let</span> end <span class="token operator">=</span> intervals<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span>
+  <span class="token keyword">let</span> overlaps <span class="token operator">=</span> <span class="token number">0</span>
+  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> intervals<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>intervals<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">>=</span> end<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      end <span class="token operator">=</span> intervals<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span>
+    <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+      end <span class="token operator">=</span> Math<span class="token punctuation">.</span><span class="token function">min</span><span class="token punctuation">(</span>end<span class="token punctuation">,</span> intervals<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+      <span class="token comment">// 该区间需要被移除，计数 + 1</span>
+      overlaps<span class="token operator">++</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token keyword">return</span> overlaps
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+</details>
+<p><a href="https://leetcode.cn/problems/merge-intervals/">LeetCode.56 合并区间</a> 是在重叠区间的遍历过程中，不断地更新之前生成的合并后区间，在重叠区间结束时创建新的区间。</p>
+<details class="note "><summary><p>Code</p>
+</summary>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">merge</span><span class="token punctuation">(</span>intervals<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> result <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  intervals<span class="token punctuation">.</span><span class="token function">sort</span><span class="token punctuation">(</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span> b<span class="token punctuation">)</span> <span class="token operator">=></span> a<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">-</span> b<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> intervals<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>result<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      result<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>intervals<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span>
+      <span class="token keyword">continue</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">const</span> last <span class="token operator">=</span> result<span class="token punctuation">[</span>result<span class="token punctuation">.</span>length <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>intervals<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">></span> last<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      result<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>intervals<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+      last<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">=</span> Math<span class="token punctuation">.</span><span class="token function">max</span><span class="token punctuation">(</span>last<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span> intervals<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token keyword">return</span> result
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+</details>
+<p><a href="https://leetcode.cn/problems/partition-labels/">LeetCode.763 划分字母区间</a> 有点类似青蛙跳问题，不断更新当前区间的最大值。当当前遍历的项已经超过最大值时，在蛙跳问题中青蛙将不能跳到终点，而本题中则是新建一个区间再继续跳。</p>
+<details class="note "><summary><p>Code</p>
+</summary>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">partitionLabels</span><span class="token punctuation">(</span>s<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> map <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>
+  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> s<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    map<span class="token punctuation">[</span>s<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">]</span> <span class="token operator">=</span> i
+  <span class="token punctuation">&#125;</span>
+  <span class="token keyword">const</span> results <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token keyword">let</span> start <span class="token operator">=</span> <span class="token number">0</span>
+  <span class="token keyword">let</span> end <span class="token operator">=</span> <span class="token number">0</span>
+  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> s<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>i <span class="token operator">></span> end<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      results<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>end <span class="token operator">-</span> start <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span>
+      start <span class="token operator">=</span> i
+      end <span class="token operator">=</span> map<span class="token punctuation">[</span>s<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">]</span>
+      <span class="token keyword">continue</span>
+    <span class="token punctuation">&#125;</span>
+    end <span class="token operator">=</span> Math<span class="token punctuation">.</span><span class="token function">max</span><span class="token punctuation">(</span>end<span class="token punctuation">,</span> map<span class="token punctuation">[</span>s<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+  results<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>end <span class="token operator">-</span> start <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span> results
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+</details>
 <h1 id="dynamic-programing">Dynamic Programing</h1>
+<p>动态规划比较通用的解法是 <strong>找规律</strong>，先根据题意确定递推数组的含义，然后根据我们定义的含义从 0 开始找规律，可以参考 Examples 中的题目。</p>
+<p>一些比较典型的动态规划问题，比如 <strong>背包问题</strong>，就被人们总结起来，形成了一类特殊的、有解题模板的题目。</p>
+<p>此外，比较复杂的动态规划问题有下面几种，如果常规的找规律想不出来，可以考虑以下几个方向：</p>
+<ol type="1">
+<li><strong>多状态的动态规划。</strong>递推数组的每一项并不是只存了一个数字，而是多个状态，前面的状态会影响后面的状态，比如买卖股票问题中上一天持有股票的状态将影响当前天的计算。</li>
+<li><strong>状态压缩的动态规划。</strong>多状态动态规划的升级版，使用二进制来保存当前状态，通过二进制运算来改变状态，状态数量在 32 种以下的复杂题目一般可以往这个方向考虑。</li>
+<li><strong>高维动态规划。</strong>递推数组有时候会达到二维甚至三维，其实基础版本的背包问题就是二维动态规划，不过可以通过滚动数组的方式将其降维，有些复杂的背包问题就可能会涉及到更三维动态规划了。</li>
+<li><strong>非线性动态规划。</strong>有些复杂的动态规划可能涉及到非线型数据结构，而不只是局限于数组，比如树、图等。</li>
+</ol>
+<p><strong>动态规划有以下的思考步骤：</strong></p>
+<ol type="1">
+<li>确定 <code>dp</code> 数组下标及含义</li>
+<li>确定递推公式</li>
+<li>初始化 <code>dp</code> 数组</li>
+<li>确定遍历顺序</li>
+<li>举例推导 <code>dp</code> 数组</li>
+</ol>
+<h2 id="memorization-dfs">Memorization DFS</h2>
+<p><strong>动态规划本质上就是特殊优化的一种深度优先搜索。</strong></p>
+<p>我们拿 <a href="https://leetcode.cn/problems/unique-paths/">LeetCode.63 不同路径</a> 来举例说明，在这道题中，机器人要从左上角走到右下角，每次只能向右或者向下移动一步，求有多少种不同的路径。</p>
+<p>我们比较容易想到的 DFS 可以这样写：</p>
+<details class="note "><summary><p>Code</p>
+</summary>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">uniquePaths</span><span class="token punctuation">(</span>m<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">,</span> n<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">function</span> <span class="token function">dfs</span><span class="token punctuation">(</span>position<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">const</span> <span class="token punctuation">[</span>x<span class="token punctuation">,</span> y<span class="token punctuation">]</span> <span class="token operator">=</span> position
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>x <span class="token operator">>=</span> m <span class="token operator">||</span> y <span class="token operator">>=</span> n<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token keyword">return</span> <span class="token number">0</span> <span class="token punctuation">&#125;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>x <span class="token operator">===</span> m <span class="token operator">-</span> <span class="token number">1</span> <span class="token operator">&amp;&amp;</span> y <span class="token operator">===</span> n <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token keyword">return</span> <span class="token number">1</span> <span class="token punctuation">&#125;</span>
+    <span class="token keyword">return</span> <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token punctuation">[</span>x <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">,</span> y<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token punctuation">[</span>x<span class="token punctuation">,</span> y <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token keyword">return</span> <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+</details>
+<p>注意递归逻辑 <code>dfs([x + 1, y]) + dfs([x, y + 1])</code>，我把这种写法称为 <strong>“头尾头”</strong> 的写法，类比成树的话，就是从树的根节点 <strong>向下“递”到每个叶节点</strong>，然后将结果从叶节点后序地 <strong>向上“归”回根节点</strong>。</p>
+<p>这样写实际上是将所有节点都遍历了一遍，有的节点甚至不止一遍。但是实际上我们 <strong>每个节点只有一个最优解</strong>，并且该最优解在“归”的过程中会一次性地计算出来，<strong>不会有反复更新某个节点上的值的情况</strong>。因此，我们这里可以用一个 Map 将已经在“归”的过程中计算过的值存起来，下次在“递”的时候如果发现之前已经计算过了，就会直接取已经存起来的值，避免对其子节点继续进行递归的过程。<strong>这就被称为记忆化深度优先搜索（Memorization DFS）</strong>，代码如下：</p>
+<details class="note "><summary><p>Code</p>
+</summary>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">uniquePaths</span><span class="token punctuation">(</span>m<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">,</span> n<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> memo <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>
+  <span class="token keyword">function</span> <span class="token function">dfs</span><span class="token punctuation">(</span>position<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">const</span> <span class="token punctuation">[</span>x<span class="token punctuation">,</span> y<span class="token punctuation">]</span> <span class="token operator">=</span> position
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>x <span class="token operator">>=</span> m <span class="token operator">||</span> y <span class="token operator">>=</span> n<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token keyword">return</span> <span class="token number">0</span> <span class="token punctuation">&#125;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>x <span class="token operator">===</span> m <span class="token operator">-</span> <span class="token number">1</span> <span class="token operator">&amp;&amp;</span> y <span class="token operator">===</span> n <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token keyword">return</span> <span class="token number">1</span> <span class="token punctuation">&#125;</span>
+    <span class="token keyword">const</span> key <span class="token operator">=</span> <span class="token function">getKey</span><span class="token punctuation">(</span>position<span class="token punctuation">)</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>memo<span class="token punctuation">[</span>key<span class="token punctuation">]</span> <span class="token operator">!==</span> <span class="token keyword">undefined</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token keyword">return</span> memo<span class="token punctuation">[</span>key<span class="token punctuation">]</span> <span class="token punctuation">&#125;</span>
+    <span class="token keyword">const</span> paths <span class="token operator">=</span> <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token punctuation">[</span>x <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">,</span> y<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token punctuation">[</span>x<span class="token punctuation">,</span> y <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> memo<span class="token punctuation">[</span>key<span class="token punctuation">]</span> <span class="token operator">=</span> paths
+  <span class="token punctuation">&#125;</span>
+  <span class="token keyword">return</span> <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+
+<span class="token keyword">function</span> <span class="token function">getKey</span><span class="token punctuation">(</span>position<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">return</span> position<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+</details>
+<blockquote>
+<p>这与之前在 <strong>回溯的组合问题</strong> 中提到的 DFS 有点不同。<strong>组合问题中，当每个节点有很多种合法的可能性</strong>，每次先暂时性地确定该节点的值，然后再向下 DFS 到终点之后，<strong>会撤销之前的路径并给节点重新确定一个值</strong>。所以当时我们提到，那种 DFS 与动态规划不同。</p>
+</blockquote>
+<p>除了这种 <strong>“头尾头”</strong> 的写法以外，我们还有一种 <strong>“尾头尾”</strong> 的写法（从尾“递”到头，再从头“归”回尾），只不过是将递归逻辑反过来写成 <code>dfs([x - 1, y]) + dfs([x, y - 1])</code>，然后将起始和终止条件也随之调整一下即可：</p>
+<details class="note "><summary><p>Code</p>
+</summary>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">uniquePaths</span><span class="token punctuation">(</span>m<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">,</span> n<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> memo <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>
+  <span class="token keyword">function</span> <span class="token function">dfs</span><span class="token punctuation">(</span>position<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">const</span> <span class="token punctuation">[</span>x<span class="token punctuation">,</span> y<span class="token punctuation">]</span> <span class="token operator">=</span> position
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>x <span class="token operator">&lt;</span> <span class="token operator">||</span> y <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token keyword">return</span> <span class="token number">0</span> <span class="token punctuation">&#125;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>x <span class="token operator">===</span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span> y <span class="token operator">===</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token keyword">return</span> <span class="token number">1</span> <span class="token punctuation">&#125;</span>
+    <span class="token keyword">const</span> key <span class="token operator">=</span> <span class="token function">getKey</span><span class="token punctuation">(</span>position<span class="token punctuation">)</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>memo<span class="token punctuation">[</span>key<span class="token punctuation">]</span> <span class="token operator">!==</span> <span class="token keyword">undefined</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token keyword">return</span> memo<span class="token punctuation">[</span>key<span class="token punctuation">]</span> <span class="token punctuation">&#125;</span>
+    <span class="token keyword">const</span> paths <span class="token operator">=</span> <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token punctuation">[</span>x <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">,</span> y<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token punctuation">[</span>x<span class="token punctuation">,</span> y <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> memo<span class="token punctuation">[</span>key<span class="token punctuation">]</span> <span class="token operator">=</span> paths
+  <span class="token punctuation">&#125;</span>
+  <span class="token keyword">return</span> <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token punctuation">[</span>m <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">,</span> n <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+
+<span class="token keyword">function</span> <span class="token function">getKey</span><span class="token punctuation">(</span>position<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">return</span> position<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+</details>
+<p>这两种写法其实都可以转换为动态规划，只是 <code>dp</code> 数组的含义和遍历顺序不同而已，动态规划中的 <code>dp</code> 的遍历顺序实际上就是 DFS 中 <strong>“归”的顺序</strong>，因为 <strong>DFS 中结果的计算与收集实际上是在“归”这一步完成的</strong>（可以看出动态规划实际上就是这类 DFS 的迭代写法）：</p>
+<table>
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 41%" />
+<col style="width: 41%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>头尾头</th>
+<th>尾头尾</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>递归逻辑</td>
+<td><code>return dfs([x + 1, y]) + dfs([x, y + 1])</code></td>
+<td><code>return dfs([x - 1, y]) + dfs([x, y - 1])</code></td>
+</tr>
+<tr class="even">
+<td><code>dp[i][j]</code> 的含义</td>
+<td>从 <code>[i, j]</code> 出发到达终点有多少种路径</td>
+<td>从起点出发到达 <code>[i, j]</code> 有多少种路径</td>
+</tr>
+<tr class="odd">
+<td>递推公式</td>
+<td><code>dp[i][j] = dp[i + 1][j] + dp[i][j + 1]</code></td>
+<td><code>dp[i][j] = dp[i - 1][j] + dp[i][j - 1]</code></td>
+</tr>
+<tr class="even">
+<td><code>dp</code> 遍历顺序</td>
+<td><code>终点 -&gt; 起点</code></td>
+<td><code>起点 -&gt; 终点</code></td>
+</tr>
+</tbody>
+</table>
+<p>我们将后者转换为动态规划的写法：</p>
+<details class="note "><summary><p>Code</p>
+</summary>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">uniquePaths</span><span class="token punctuation">(</span>m<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">,</span> n<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> dp <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token keyword">new</span> <span class="token class-name"><span class="token builtin">Array</span></span><span class="token punctuation">(</span>n<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">fill</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> m<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    dp<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> j <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> j <span class="token operator">&lt;</span> n<span class="token punctuation">;</span> j<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      dp<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">[</span>j<span class="token punctuation">]</span> <span class="token operator">=</span> dp<span class="token punctuation">[</span>i <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">[</span>j<span class="token punctuation">]</span> <span class="token operator">+</span> dp<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">[</span>j <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token keyword">return</span> dp<span class="token punctuation">[</span>m <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">[</span>n <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+</details>
+<p>可以从递推公式中看出，我们只依赖了 <strong>上一行</strong> 的数据，并没有依赖 <strong>再上一行</strong>，因此我们可以使 <strong>用滚动数组的方式来优化空间复杂度</strong>，只使用一维的 <code>dp</code> 数组，每次在遍历新的一行时，数组中原来的数据就是上一行的数据了：</p>
+<details class="note "><summary><p>Code</p>
+</summary>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">uniquePaths</span><span class="token punctuation">(</span>m<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">,</span> n<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> dp <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name"><span class="token builtin">Array</span></span><span class="token punctuation">(</span>n<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">fill</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> m<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> j <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> j <span class="token operator">&lt;</span> n<span class="token punctuation">;</span> j<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      dp<span class="token punctuation">[</span>j<span class="token punctuation">]</span> <span class="token operator">=</span> dp<span class="token punctuation">[</span>j <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">+</span> dp<span class="token punctuation">[</span>j<span class="token punctuation">]</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token keyword">return</span> dp<span class="token punctuation">[</span>n <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+</details>
+<h2 id="找规律">找规律</h2>
+<p><a href="https://leetcode.cn/problems/integer-break/">LeetCode.343 整数拆分</a> 就是一道找规律的题目，从第 0 项开始慢慢找规律即可，通过反复利用已经拆过的结果可以。</p>
+<details class="note "><summary><p>Code</p>
+</summary>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">integerBreak</span><span class="token punctuation">(</span>n<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span> <span class="token punctuation">&#123;</span>
+<span class="token comment">// 1 => 1 * 0</span>
+<span class="token comment">// 2 => 1 * 1, 2 * 0 => 1</span>
+<span class="token comment">// 3 => 2 * 1, 1 * 1 * 1 => 2</span>
+<span class="token comment">// 4 => 3 * 1, 2 * 2, 2 * 1 * 1 => 3</span>
+<span class="token comment">// 5 => 4 * 1(max4/3), 3 * 2 => 6</span>
+<span class="token comment">// 6 => 5 * 1(max5/6), 4 * 2(max4/3), 3 * 3(max3/2) => 9</span>
+<span class="token comment">// 7 => 6 * 1(max6/9), 5 * 2(max5/6), 4 * 3 => 12</span>
+<span class="token comment">// 8 => 7 * 1(max7/12), 6 * 2(max6/9), 5 * 3(max5/6), 4 * 4 => 18</span>
+<span class="token comment">// 9 => 8 * 1(max8/18), 7 * 2(max7/12), 6 * 3(max6/9), 5 * 4(max5,6) => 27</span>
+<span class="token comment">// 10 => 9 * 1(max9/27), 8 * 2(max8/18), 7 * 3(max7/12), 6 * 4 => 36</span>
+  <span class="token keyword">const</span> dp <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name"><span class="token builtin">Array</span></span><span class="token punctuation">(</span>n <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">fill</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>
+  dp<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">0</span>
+  dp<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">1</span>
+  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">3</span><span class="token punctuation">;</span> i <span class="token operator">&lt;=</span> n<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> j <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> j <span class="token operator">&lt;=</span> Math<span class="token punctuation">.</span><span class="token function">floor</span><span class="token punctuation">(</span>i <span class="token operator">/</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span> j<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      dp<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> Math<span class="token punctuation">.</span><span class="token function">max</span><span class="token punctuation">(</span>
+        dp<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">,</span>
+        Math<span class="token punctuation">.</span><span class="token function">max</span><span class="token punctuation">(</span>dp<span class="token punctuation">[</span>j<span class="token punctuation">]</span><span class="token punctuation">,</span> j<span class="token punctuation">)</span> <span class="token operator">*</span> Math<span class="token punctuation">.</span><span class="token function">max</span><span class="token punctuation">(</span>dp<span class="token punctuation">[</span>i <span class="token operator">-</span> j<span class="token punctuation">]</span><span class="token punctuation">,</span> i <span class="token operator">-</span> j<span class="token punctuation">)</span>
+      <span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token keyword">return</span> dp<span class="token punctuation">[</span>n<span class="token punctuation">]</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+</details>
 <h2 id="背包问题">背包问题</h2>
 <figure>
 <img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Algorithm-Bag-1.png" alt="背包问题分类" /><figcaption aria-hidden="true">背包问题分类</figcaption>
 </figure>
+<p>背包问题变种繁多，其核心是 <strong>遍历的方式和顺序</strong>，<code>dp</code> 数组表示的内容可能会随着题目的要求而发生很多变化，但总结起来他的遍历方式和顺序总结起来只有以下几种：</p>
+<ul>
+<li><strong>遍历方式有</strong>：外层物品 <code>i</code>，内层背包容量 <code>j</code>；外层背包容量 <code>j</code>，内层物品 <code>i</code>。一般来讲区别不大，我比较喜欢物品 <code>i</code> 在外，容量 <code>j</code> 在内。只有在以下这两种情况下才有会有不同：
+<ul>
+<li><strong>用滚动数组进行优化时</strong>，由于滚动数组相当于默认使用了逐行遍历，每一行需要依赖上一行的内容，因此需要外层物品 <code>i</code>、内层容量 <code>j</code>。</li>
+<li><strong>多重背包求装满方式时</strong>，由于多重背包一个物品可以被多次使用，因此如果先遍历容量 <code>j</code>，再遍历物品 <code>i</code> 的话，相当于求的是 <strong>排列数</strong>，因为在遍历每个容量时，物品会从头开始考虑；而先物品 <code>i</code> 再容量 <code>j</code> 的话，求的就是 <strong>组合数</strong>。</li>
+</ul></li>
+<li><strong>遍历顺序有</strong>：背包容量 <code>j</code> 正序还是倒序。在外层物品 <code>i</code> 内层容量 <code>j</code> 的情况下，一般区别不大，但 <strong>如果使用了滚动数组</strong>：
+<ul>
+<li>正序遍历 <code>j</code> 会使得物品被反复装入（因为反复利用了前面的数据），即完全背包</li>
+<li>倒序遍历 <code>j</code> 则不会存在反复利用本行前面数据的这样的问题，即01背包</li>
+</ul></li>
+</ul>
 <h3 id="背包">01背包</h3>
 <p>有 n 件物品和一个最多能背重量为 w 的背包。第 i 件物品的重量是 weight[i]，得到的价值是 value[i] 。<strong>每件物品只能用一次</strong>，求解将哪些物品装入背包里物品价值总和最大。</p>
 <p>假设物品如下：</p>
@@ -2659,8 +2978,10 @@ cost <span class="token operator">=</span> <span class="token punctuation">[</sp
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>其他的值初始化为什么都不影响（因为会被覆盖），我们可以先生成一个全是 0 的二维数组，然后初始化 <code>value[0]</code> （能放下物品 0 的情况）</p>
 <h5 id="确定遍历的顺序">4. 确定遍历的顺序</h5>
-<p>根据递推公式，先遍历 i 还是 j 都不影响</p>
+<p>根据递推公式，先遍历 <code>i</code> 还是 <code>j</code> 都不影响</p>
 <h5 id="最终代码">最终代码</h5>
+<details class="note "><summary><p>Code</p>
+</summary>
 <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">const</span> weightBagProblem <span class="token operator">=</span> <span class="token punctuation">(</span>
   weight<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> value<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> size<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">,</span>
 <span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
@@ -2684,6 +3005,8 @@ cost <span class="token operator">=</span> <span class="token punctuation">[</sp
   <span class="token punctuation">&#125;</span>
   <span class="token keyword">return</span> dp<span class="token punctuation">[</span>goodsNum <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">[</span>size<span class="token punctuation">]</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+</details>
 <h4 id="一维数组动态规划滚动数组">一维数组动态规划（滚动数组）</h4>
 <p>在二维数组中，递推公式如下：</p>
 <pre class="line-numbers language-text" data-language="text"><code class="language-text">dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - weight[i]] + value[i])<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
@@ -2708,8 +3031,8 @@ cost <span class="token operator">=</span> <span class="token punctuation">[</sp
 <h5 id="确定遍历的顺序-1">4. 确定遍历的顺序</h5>
 <p>注意：</p>
 <ul>
-<li>根据递推公式，必须 <code>i</code> 在外层，<code>j</code> 在内层（相当于二维数组的逐行遍历），因为 <code>dp[i - 1][j - weight[i]]</code> 相当于要依赖上一行前几位的运算结果</li>
-<li>遍历 <code>j</code> 的时候，一定要倒序遍历，因为顺序的话物品可能会被加入多次：</li>
+<li>根据递推公式，<strong>必须 <code>i</code> 在外层，<code>j</code> 在内层</strong>（相当于二维数组的逐行遍历），因为 <code>dp[i - 1][j - weight[i]]</code> 相当于要依赖上一行前几位的运算结果</li>
+<li>遍历 <code>j</code> 的时候，<strong>一定要倒序遍历</strong>，因为顺序的话物品可能会被加入多次：</li>
 </ul>
 <pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript">weight<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> value<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">15</span><span class="token punctuation">;</span>
 dp<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">=</span> dp<span class="token punctuation">[</span><span class="token number">1</span> <span class="token operator">-</span> weight<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">]</span> <span class="token operator">+</span> value<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">15</span>
@@ -2721,6 +3044,8 @@ dp<span class="token punctuation">[</span><span class="token number">2</span><sp
 </ul>
 <p>一维数组中，相当于 <strong>把上一行的数据原位重复利用</strong>，如果顺序遍历的话，相当于后面的数据用了 <strong>本行</strong> 的数据，就可能会重复放入物品</p>
 <h5 id="最终代码-1">最终代码</h5>
+<details class="note "><summary><p>Code</p>
+</summary>
 <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">const</span> <span class="token function-variable function">weightBagProblem</span> <span class="token operator">=</span> <span class="token punctuation">(</span>
   weight<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> value<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> size<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">,</span>
 <span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
@@ -2734,6 +3059,8 @@ dp<span class="token punctuation">[</span><span class="token number">2</span><sp
   <span class="token punctuation">&#125;</span>
   <span class="token keyword">return</span> dp<span class="token punctuation">[</span>size<span class="token punctuation">]</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+</details>
 <h3 id="完全背包">完全背包</h3>
 <p>有 n 件物品和一个最多能背重量为 w 的背包。第 i 件物品的重量是 weight[i]，其价值是 value[i] 。<strong>每件物品都有无限个（也就是可以放入背包多次）</strong>，求解将哪些物品装入背包里物品价值总和最大。</p>
 <p>假设物品如下：</p>
@@ -2763,16 +3090,17 @@ dp<span class="token punctuation">[</span><span class="token number">2</span><sp
 </tr>
 </tbody>
 </table>
-<h4 id="遍历顺序问题">遍历顺序问题</h4>
-<p>完全背包最核心的就是遍历顺序问题，在完全背包中需要从小到大进行遍历，因为一样物品可以被添加多次：</p>
+<h4 id="遍历顺序方式">遍历顺序方式</h4>
+<p>完全背包最核心的就是遍历方式和顺序问题，在完全背包中需要 <strong>从小到大进行遍历</strong>，因为一样物品可以被添加多次：</p>
 <pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> goodsNum<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
   <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> j <span class="token operator">=</span> weight<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span> j <span class="token operator">&lt;=</span> size<span class="token punctuation">;</span> j<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
     dp<span class="token punctuation">[</span>j<span class="token punctuation">]</span> <span class="token operator">=</span> Math<span class="token punctuation">.</span><span class="token function">max</span><span class="token punctuation">(</span>dp<span class="token punctuation">[</span>j<span class="token punctuation">]</span><span class="token punctuation">,</span> dp<span class="token punctuation">[</span>j <span class="token operator">-</span> weight<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">]</span> <span class="token operator">+</span> value<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span>
   <span class="token punctuation">&#125;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h5 id="求最大价值时的遍历顺序">求最大价值时的遍历顺序</h5>
-<p>另外之前 0 1 背包中，要求物品在外层，重量在内层，因为下一行需要 <code>dp[i - 1][j - weight[i]]</code>，会依赖上一行前几位的运算结果</p>
-<p>而在完全背包中，是可以重量在外层，物品在内层的。因为 <code>dp[j - weight[i]]</code>，依赖的是本行的运算结果，只有 <code>dp[0]</code> 是继承的上一行的数据，如果先遍历列，也可以拿到上一行 <code>dp[i - 1][0]</code>（因为是同一列的）</p>
+<h5 id="求最大价值时的遍历方式">求最大价值时的遍历方式</h5>
+<p>另外之前 0 1 背包中，要求物品在外层，重量在内层，因为下一行需要 <code>dp[i - 1][j - weight[i]]</code>，会依赖上一行前几位的运算结果。</p>
+<p>而 <strong>在完全背包中，是可以重量在外层，物品在内层的</strong>。因为 <code>dp[j - weight[i]]</code>，依赖的是本行的运算结果，只有 <code>dp[0]</code> 是继承的上一行的数据，如果先遍历列，也可以拿到上一行 <code>dp[i - 1][0]</code>（因为是同一列的） 。</p>
+<p>如果是问最大价值，<strong>dp 数组里面存的是最大价值，最大价值与怎样凑成最大价值无关，因此物品、重量谁在内层谁在外层并不关键</strong>。</p>
 <pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// 先遍历背包容量（列），再遍历物品（行）</span>
 <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> j <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> j <span class="token operator">&lt;=</span> size<span class="token punctuation">;</span> j<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
   <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> weight<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
@@ -2781,9 +3109,8 @@ dp<span class="token punctuation">[</span><span class="token number">2</span><sp
     <span class="token punctuation">&#125;</span>
   <span class="token punctuation">&#125;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h5 id="求装满方式时的遍历顺序">求装满方式时的遍历顺序</h5>
-<p>如果是问最大价值，dp 数组里面存的是最大价值，最大价值与怎样凑成最大价值无关，因此物品、重量谁在内层谁在外层并不关键。</p>
-<p>但如果问背包的装满方式，遍历顺序就会影响很大了，得看题目问的是组合问题还是排列问题。</p>
+<h5 id="求装满方式时的遍历方式">求装满方式时的遍历方式</h5>
+<p>但如果问背包的装满方式，遍历方式就会影响很大了，得看题目问的是 <strong>组合问题</strong> 还是 <strong>排列问题</strong>。</p>
 <p>拿零钱兑换问题（<a href="https://leetcode.cn/problems/coin-change-ii/">LeetCode.518 Coin Change II</a>）举例，给定一个总额和一堆无限多的币值，问总额有多少种组合方式。组合问题不关心顺序。</p>
 <ol type="1">
 <li>确定 dp 数组及下标的含义：<code>dp[j]</code> 表示凑成总额为 <code>j</code> 时，有多少种钱币组合方式</li>
@@ -2807,29 +3134,7 @@ dp<span class="token punctuation">[</span><span class="token number">2</span><sp
   <span class="token punctuation">&#125;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>背包容量的每一个值，都会重新计算一遍 1 和 5，所以包含了 {1, 5} 和 {5, 1} 两种情况。，<code>dp[j]</code> 里面存的就是排列数。</p>
-<h2 id="examples-6">Examples</h2>
-<h3 id="整数拆分">整数拆分</h3>
-<p><a href="https://leetcode.cn/problems/integer-break/">LeetCode.343</a></p>
-<p>Given an integer n, break it into the sum of k positive integers, where k &gt;= 2, and maximize the product of those integers.</p>
-<p>Return the maximum product you can get.</p>
-<details class="note "><summary><p>Code</p>
-</summary>
-<p>#双重循环</p>
-<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">integerBreak</span><span class="token punctuation">(</span>n<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span> <span class="token punctuation">&#123;</span>
-  <span class="token keyword">const</span> dp <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name"><span class="token builtin">Array</span></span><span class="token punctuation">(</span>n<span class="token punctuation">)</span>
-  <span class="token comment">// dp[i] = max(dp[i],max(dp[i-j]*j,(i-j)*j))</span>
-  <span class="token comment">// 1, 2, 4, 6, 9</span>
-  dp<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">1</span>
-  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">3</span><span class="token punctuation">;</span> i <span class="token operator">&lt;=</span> n<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> j <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> j <span class="token operator">&lt;</span> i <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span> j<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-      dp<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> Math<span class="token punctuation">.</span><span class="token function">max</span><span class="token punctuation">(</span>dp<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">||</span> <span class="token number">0</span><span class="token punctuation">,</span> Math<span class="token punctuation">.</span><span class="token function">max</span><span class="token punctuation">(</span>dp<span class="token punctuation">[</span>i <span class="token operator">-</span> j<span class="token punctuation">]</span> <span class="token operator">*</span> j<span class="token punctuation">,</span> <span class="token punctuation">(</span>i <span class="token operator">-</span> j<span class="token punctuation">)</span> <span class="token operator">*</span> j<span class="token punctuation">)</span><span class="token punctuation">)</span>
-    <span class="token punctuation">&#125;</span>
-  <span class="token punctuation">&#125;</span>
-  <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>dp<span class="token punctuation">)</span>
-  <span class="token keyword">return</span> dp<span class="token punctuation">[</span>n<span class="token punctuation">]</span>
-<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-</details>
+<h3 id="examples-6">Examples</h3>
 <h1 id="mod">Mod</h1>
 <p>最简单的模运算：计算乘积的个位数，比如 <span class="math inline">\(1234\cdot6789\)</span> 的个位数是 <span class="math inline">\((4\cdot9)\%10=6\)</span> ，<span class="math inline">\(1234+6789\)</span> 的个位数是 <span class="math inline">\((4+9)\%10=3\)</span>。</p>
 <p>将上述结论抽象成数学公式就是： <span class="math display">\[
@@ -21453,14 +21758,14 @@ user <span class="token operator">=</span> create<span class="token punctuation"
 <h1 id="抽象数据类型">抽象数据类型</h1>
 <p>要完成 React Reconciliation 过程，需要数量众多的抽象数据类型进行支撑，包括 <code>ReactDOMRoot</code> <code>Fiber</code> <code>FiberRoot</code> <code>Update</code> <code>UpdateQueue</code> <code>Lane</code> 等，本篇章将逐一介绍这些数据类型、对他们的操作以及他们的用途。初次阅读时可以跳过，后面遇到的时候再返回来查阅。</p>
 <h2 id="reactdomroot">ReactDOMRoot</h2>
-<p>ReactDOMRoot 是 <code>ReactDOM.createRoot</code> 的返回值，他事实上只是暴露了两个方法给我们使用，一个是 <code>render</code>，一个是 <code>unmount</code>。通过 <code>render</code> 方法，我们可以传入 <code>ReactElement</code> 然后开启首次渲染。</p>
+<p>ReactDOMRoot 是 <code>ReactDOM.createRoot</code> 的返回值，他事实上只是暴露了两个方法给我们使用，一个是 <code>render</code>，一个是 <code>unmount</code>。我们可以给 <code>render</code> 方法传入 <code>ReactElement</code>，然后开启首次渲染。</p>
 <h2 id="fiber">Fiber</h2>
 <blockquote>
 <p><code>Fiber</code> 就是 Component 上的需要被执行的、或已经执行完成的工作，每个 Component 可能有多个 <code>Fiber</code>。</p>
 <p>——React 源码中的注释</p>
 </blockquote>
-<p><code>Fiber</code> 可以暂时先理解为虚拟节点，他有不同的类型，比如 <code>FunctionComponent</code> <code>ClassComponent</code> <code>HostRoot</code> <code>HostText</code> <code>Fragment</code> 等，这标记着该 Fiber 的类型。也就是说，一个 <code>Fiber</code> 节点可以对应某个 React 组件或某个 DOM 节点等。</p>
-<p>React 中的很多过程都是使用深度优先遍历（DFS）来实现的：比如生成或更新 FiberTree（暂时可以理解为 VirtualDOMTree）、将 FiberTree 的内容提交到宿主环境 UI 中等等。具体可参考 <strong>数据结构与算法</strong> 章节。</p>
+<p><code>Fiber</code> 可以暂时先理解为虚拟节点，他有不同的类型，比如 <code>FunctionComponent</code> <code>ClassComponent</code> <code>HostRoot</code> <code>HostText</code> <code>Fragment</code> 等。也就是说，一个 <code>Fiber</code> 节点可以对应某个 React 组件或某个 DOM 节点等。</p>
+<p>React 中的很多过程都是使用深度优先遍历（DFS）来实现的：比如生成 FiberTree（暂时可以理解为 VirtualDOMTree）、将 FiberTree 的内容提交到宿主环境 UI 中、遍历 FiberTree 执行 Effects 等等。具体可参考本文的 <strong>数据结构与算法</strong> 章节。</p>
 <p>需要注意的是：<strong>如果使用递归实现 DFS 的过程，那么 React 将无法控制调用栈的随时中断与继续。</strong>因此 React 选择借助 FiberTree 并使用迭代的方式实现 DFS，并在中间的某些环节设置了可以提前中断的手段。同时 <code>Fiber.updateQueue</code> 等属性提供了记忆并恢复工作状态的能力，使得继续之前被中断的任务成为可能。</p>
 <blockquote>
 <p>不过，由于 React 源码使用了 Flow，其实可能某个 <code>Fiber</code> 类型并不需要某些属性，但 React 并没有将他们拆分开来，而是都直接散开放在了 <code>Fiber</code> 这一个数据类型中。</p>
@@ -21494,12 +21799,12 @@ user <span class="token operator">=</span> create<span class="token punctuation"
   <span class="token comment">// 用于处理该 Fiber 的外部输入（Props、Arguments）</span>
   pendingProps<span class="token operator">:</span> <span class="token builtin">any</span>   <span class="token comment">// 当次传入的输入</span>
   memorizedProps<span class="token operator">:</span> <span class="token builtin">any</span> <span class="token comment">// 上次的输入</span>
-  <span class="token comment">// 内部 State 更新和回调的列表</span>
+  <span class="token comment">// 内部状态更新和回调的列表，不同类型的 Fiber 存的东西也不一样</span>
   updateQueue<span class="token operator">:</span> <span class="token builtin">unknown</span>
-  <span class="token comment">// 上一次用来创建输出的 State</span>
+  <span class="token comment">// 上一次的内部状态</span>
   memorizedState<span class="token operator">:</span> <span class="token builtin">any</span>
   
-  <span class="token comment">/* Effect（副作用）相关的属性 */</span>
+  <span class="token comment">/* 副作用相关的属性 */</span>
   <span class="token comment">// 标记此次 render 都需要执行哪些副作用，比如往 DOM 添加节点、删除节点、执行 useEffect 等</span>
   flags<span class="token operator">:</span> Flags
   <span class="token comment">// 子结点都有什么副作用</span>
@@ -22090,7 +22395,7 @@ ReactDOM<span class="token punctuation">.</span><span class="token function">cre
 <ol type="1">
 <li><strong>createRoot：</strong>来自 <code>react-dom</code> 包的 <code>createRoot</code> 方法获取 Container Element 相关的信息，并调用 <code>react-reconciler</code> 中的方法来初始化 <code>FiberRoot</code> 和 <code>HostRootFiber</code>；</li>
 <li><strong>createElement：</strong>来自 <code>react</code> 包的 <code>createElement</code> 将 JSX 转换结果再次转换为 <code>ReactElement</code>；</li>
-<li><strong>rener：</strong>调用 <code>createRoot</code> 返回对象的 <code>render</code> 方法，并传入 <code>ReactElement</code>，该方法会调用 <code>react-reconciler</code> 中的方法进入 Reconciliation 流程。</li>
+<li><strong>render：</strong>调用 <code>createRoot</code> 返回对象的 <code>render</code> 方法，并传入 <code>ReactElement</code>，该方法会调用 <code>react-reconciler</code> 中的方法进入 Reconciliation 流程。</li>
 </ol>
 <pre class="line-numbers language-text" data-language="text"><code class="language-text">1. ReactDOM.createRoot             // 创建 ReactDOMRoot
      createContainer               // 创建 Container，Container 实际上就是创建 FiberRoot
@@ -22155,7 +22460,7 @@ ReactDOM<span class="token punctuation">.</span><span class="token function">cre
   uninitializedFiber<span class="token punctuation">.</span>memorizedState <span class="token operator">=</span> initialState
   
   <span class="token comment">// 3.2. 初始化 updateQueue，稍后进入渲染流程后将会提到，用于存取 Update</span>
- 	<span class="token function">initializeUpdateQueue</span><span class="token punctuation">(</span>uninitializedFiber<span class="token punctuation">)</span>
+  <span class="token function">initializeUpdateQueue</span><span class="token punctuation">(</span>uninitializedFiber<span class="token punctuation">)</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="createelement">createElement</h3>
 <p>Babel 会将 JSX 静态编译为 JavaScript 代码，可以在这个 <a href="https://babeljs.io/repl">Babel Playground</a> 看到即时编译的效果，比如</p>
@@ -22236,7 +22541,7 @@ ReactDOM<span class="token punctuation">.</span><span class="token function">cre
   lane<span class="token operator">:</span> Lane
 <span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
   <span class="token comment">// root.pendingLanes |= lane</span>
- 	<span class="token function">markRootUpdated</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> lane<span class="token punctuation">)</span>
+  <span class="token function">markRootUpdated</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> lane<span class="token punctuation">)</span>
   <span class="token comment">// 进入 Schedule 阶段</span>
   <span class="token function">ensureRootIsScheduled</span><span class="token punctuation">(</span>root<span class="token punctuation">)</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
@@ -22759,7 +23064,7 @@ ReactDOM<span class="token punctuation">.</span><span class="token function">cre
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h4 id="workloop">workLoop</h4>
 <p><code>workLoop</code> 会循环地将当前的 <code>workInProgress</code> 送入 <code>performUnitOfWork</code> 函数来执行具体的渲染工作，与 <code>performXXXWorkOnRoot</code> 和 <code>renderXXXRoot</code> 一样，他也有 Sync 和 Concurrent 两种版本。</p>
-<p>两种版本唯一的区别在于 Sync 版本的 <code>workSyncConcurrent</code> 会一直循环执行直到 <code>workInProgress</code> 为空，而 Concurrent 版本则会受到来自 Scheduler 的 <code>shouldYield</code> 函数控制，使得他可以提前中断。</p>
+<p>两种版本唯一的区别在于 Sync 版本的 <code>workLoopSync</code> 会一直循环执行直到 <code>workInProgress</code> 为空，而 Concurrent 版本则会受到来自 Scheduler 的 <code>shouldYield</code> 函数控制，使得他可以提前中断。</p>
 <p>Render 阶段的 Sync 和 Concurrent 的区别到此就结束了，他们后面的流程完全一样。</p>
 <pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">workLoopSync</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
   <span class="token keyword">while</span> <span class="token punctuation">(</span>workInProgress <span class="token operator">!==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
@@ -27587,6 +27892,62 @@ puts user_input<span class="token punctuation">.</span>tainted<span class="token
 ]]></content>
       <categories>
         <category>全栈</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Rust</title>
+    <url>/hais-notebook/2023/07/18/Rust/</url>
+    <content><![CDATA[<p>熟练掌握三门语言计划之三：Rust。</p>
+<p>资料来源：</p>
+<ul>
+<li><a href="https://doc.rust-lang.org/">The Book</a></li>
+</ul>
+<span id="more"></span>
+<h1 id="concepts">Concepts</h1>
+<h2 id="变量与可变性">变量与可变性</h2>
+<p>Rust 中可以使用 <code>let</code> 来定义变量，但定义的 <strong>变量默认是不可变（Immutable）</strong> 的，重复给变量赋值会在编译时报错：</p>
+<pre class="line-numbers language-rust" data-language="rust"><code class="language-rust"><span class="token keyword">let</span> x <span class="token operator">=</span> <span class="token number">5</span><span class="token punctuation">;</span>
+x <span class="token operator">=</span> <span class="token number">6</span><span class="token punctuation">;</span>       <span class="token comment">// error</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>要想让变量变得可变，需要加上 <code>mut</code>：</p>
+<pre class="line-numbers language-rust" data-language="rust"><code class="language-rust"><span class="token keyword">let</span> <span class="token keyword">mut</span> x <span class="token operator">=</span> <span class="token number">5</span><span class="token punctuation">;</span>
+x <span class="token operator">=</span> <span class="token number">6</span><span class="token punctuation">;</span>       <span class="token comment">// ok </span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>此外还可以用 <code>const</code> 定义常量：</p>
+<pre class="line-numbers language-rust" data-language="rust"><code class="language-rust"><span class="token keyword">const</span> <span class="token constant">THREE_HOURS_IN_SECONDS</span><span class="token punctuation">:</span> <span class="token keyword">u32</span> <span class="token operator">=</span> <span class="token number">60</span> <span class="token operator">*</span> <span class="token number">60</span> <span class="token operator">*</span> <span class="token number">3</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>常量有这样几个特点：</p>
+<ol type="1">
+<li>永远不可以改变</li>
+<li>需要定义数据类型</li>
+<li>在程序运行的所有生命周期内可在作用域内访问</li>
+</ol>
+<p>Rust 还有一个特性叫 <strong>Shadowing</strong>，这个特性允许变量被重复定义（在 JavaScript 中，只有在新的作用域里面才能重新定义同名变量）：</p>
+<pre class="line-numbers language-rust" data-language="rust"><code class="language-rust"><span class="token keyword">let</span> x <span class="token operator">=</span> <span class="token number">5</span><span class="token punctuation">;</span>
+<span class="token keyword">let</span> x <span class="token operator">=</span> <span class="token number">6</span><span class="token punctuation">;</span>       <span class="token comment">// ok</span>
+<span class="token punctuation">&#123;</span>
+  <span class="token keyword">let</span> x <span class="token operator">=</span> x <span class="token operator">*</span> <span class="token number">2</span><span class="token punctuation">;</span> <span class="token comment">// ok</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>Shadowing 允许两次定义的变量类型不同，因为他们实际上是两个变量，而 <code>mut</code> 则不允许两次赋值为不一样的类型：</p>
+<pre class="line-numbers language-rust" data-language="rust"><code class="language-rust"><span class="token keyword">let</span> spaces <span class="token operator">=</span> <span class="token string">"    "</span><span class="token punctuation">;</span>
+<span class="token keyword">let</span> spaces <span class="token operator">=</span> spaces<span class="token punctuation">.</span><span class="token function">len</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment">// ok</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-rust" data-language="rust"><code class="language-rust"><span class="token keyword">let</span> <span class="token keyword">mut</span> spaces <span class="token operator">=</span> <span class="token string">"    "</span><span class="token punctuation">;</span>
+spaces <span class="token operator">=</span> spaces<span class="token punctuation">.</span><span class="token function">len</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>        <span class="token comment">// error</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h2 id="数据类型">数据类型</h2>
+<p>Rust 中的数据类型分为 <strong>标量类型（Scalar Types）</strong> 和 <strong>合成类型（Compond Types）</strong>。</p>
+<p><strong>标量类型</strong> 包括：</p>
+<ul>
+<li><strong>整型（Integer）</strong>：包括 <strong>有符号整型（<code>i</code> 开头）</strong>和 <strong>无符号整型（<code>u</code> 开头）</strong>，比如 <code>i8</code> <code>u128</code> 等，数字表示他占了多少位。其中 <code>isize</code> 和 <code>usize</code> 类型取决于程序运行所处的计算机的体系结构，比如 64 位或 32 位等。</li>
+<li><strong>浮点型（Floating-Point）</strong>：包括 <code>f32</code> 和 <code>f64</code>。</li>
+<li><strong>布尔型（Boolean）</strong>：<code>bool</code>，可以用 <code>true</code> 或 <code>false</code> 显式指定。</li>
+<li><strong>字符型（Character）</strong>：<code>char</code>，与字符串字面量不同，用单引号 <code>' '</code> 指定。</li>
+</ul>
+<p><strong>合成类型</strong> 包括：</p>
+<ul>
+<li><strong>元组（Tuple）</strong>：用括号框起来的、逗号隔开的一组值，比如 <code>let tup: (i32, f64, u8) = (500, 6.4, 1)</code>，可以用 <code>tup.0</code> <code>tup.1</code> 等来取到里面的值。<strong>元组中的值可以是不同类型的。</strong></li>
+<li><strong>数组（Array）</strong>：<strong>数组中的值类型必须相同，且 Rust 中的数组是定长的，且不能越界访问。</strong> 可以这样定义数组类型 <code>let a: [i32; 5] = [1, 2, 3, 4, 5];</code> 也可以在最开始为所有元素赋相同的值 <code>let a = [3; 5];</code>。</li>
+<li></li>
+</ul>
+]]></content>
+      <categories>
+        <category>计算机</category>
       </categories>
   </entry>
   <entry>
