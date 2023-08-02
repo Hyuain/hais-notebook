@@ -19,7 +19,7 @@ mathjax: true
   - 二叉树：特殊的二叉树、遍历、二叉搜索树
   - 堆：堆与优先级队列及其实现
 - 算法（回溯、贪心、动态规划）
-  - 回溯：
+  - 回溯：组合问题、切割问题、子集问题、排列问题、棋盘问题
   - 动态规划：背包问题
   
 - 其他注意事项（对 1e9 + 7 取模）
@@ -2626,7 +2626,7 @@ function combinationSum(candidates: number[], target: number): number[][] {
 
 {% endnote %}
 
-与动态规划不同的是，这种 DFS 是全搜索 DFS，可以看到并没有加中间判断以选出每个子问题最优解，而是对所有子问题都进行了遍历。
+与动态规划不同的是，这种 DFS 是全搜索 DFS，可以看到并没有加中间判断以选出每个子问题最优解，而是对所有子问题都进行了遍历（这一点会在动态规划中有更详细的讨论）。
 
 ### 组合问题中的去重
 
@@ -3003,11 +3003,352 @@ function canCompleteCircuit(gas: number[], cost: number[]): number {
 
 {% endnote %}
 
+### 分发糖果
+
+[LeetCode.135 Candy](https://leetcode.cn/problems/candy/description/)，有一列孩子，每个孩子至少一颗糖，得分高的孩子要比旁边的人糖果多。
+
+本题实际上用了两个贪心策略：
+
+1. 如果当前孩子比前面的孩子分高，那么他的糖果就是前面的孩子糖果数 + 1
+2. 如果从左往右遍历一次，然后再从右往左遍历一次，那么每个小孩就跟左右都比较过了；注意在第二次遍历时，需要跟第一次的结果进行比对，取最大值而不要破坏第一次的计算结果
+
+{% note Code %}
+
+```typescript
+function candy(ratings: number[]): number {
+  const compareLeft = []
+  let candies = 0
+  for (let i = 0; i < ratings.length; i++) {
+    if (i > 0 && ratings[i] > ratings[i - 1]) {
+      compareLeft[i] = compareLeft[i - 1] + 1
+    } else {
+      compareLeft[i] = 1
+    }
+  }
+  const comapreRight = []
+  for (let i = ratings.length - 1; i >= 0; i--) {
+    if (i < ratings.length - 1 && ratings[i] > ratings[i + 1]) {
+      comapreRight[i] = Math.max(comapreRight[i + 1] + 1, compareLeft[i])
+    } else {
+      comapreRight[i] = compareLeft[i]
+    }
+    candies += comapreRight[i]
+  }
+  return candies
+};
+```
+
+{% endnote %}
+
+### 重叠区间
+
+**重叠区间其实就是一种遍历方法，与之前二叉树的遍历别无二致。**遍历过程中要做的事情有三件：
+
+1. 对区间进行排序
+2. 如果该区间的开始仍在上一次的重叠区间内，需要做什么
+3. 如果该区间的开始已经脱离了上一次的重叠区间，需要做什么
+
+需要注意的是，**在重叠区间内** 在不同的题目可能含义不太相同，**有的题目是只要重叠区间内的最早结束的区间结束就结束了，有的题目是重叠区间内最远的区间结束才结束。**
+
+[LeetCode.452 用最少数量的箭引爆气球](https://leetcode.cn/problems/minimum-number-of-arrows-to-burst-balloons/) 就是一道很典型的求重叠区间的问题，按照每个区间的开始从小到大对区间进行排序，然后进行一轮遍历，如果遍历到重叠区间结束，则射出一箭。
+
+当重叠区间结束时，我们射出一箭，那么这个重叠区间的所有气球就都被引爆了，也就是说，所有之后区间内的所有小区间都没用了；因此我们不需要用优先队列来记住区间内的所有小区间，只需要记录该区间内最先结束的小区间的结束点就可以了。
+
+{% note Code %}
+
+```typescript
+function findMinArrowShots(points: number[][]): number {
+  if (!points.length) { return 0 }
+  points.sort((a, b) => a[0] - b[0])
+  let shots = 1
+  for (let i = 1; i < points.length; i++) {
+    if (points[i][0] > points[i - 1][1]) {
+      // 重叠区间结束后射一箭
+      shots++
+    } else {
+      // 记录该重叠区间内最先结束的小区间的结束点，其实可以用一个新的变量来记录，但是这里复用了 points 数组
+      points[i][1] = Math.min(points[i - 1][1], points[i][1])
+    }
+  }
+  return shots
+};
+```
+
+{% endnote %}
+
+[LeetCode.435 无重叠区间](https://leetcode.cn/problems/non-overlapping-intervals/description/) 要求我们移除一些区间，使得没有区间重叠，跟上一题很类似，不过上一题是在重叠区间结束的时候射一箭，这一题是在重叠区间内，每有一个区间重叠，就计数一次（该区间需要被移除）。
+
+{% note Code %}
+
+```typescript
+function eraseOverlapIntervals(intervals: number[][]): number {
+  intervals.sort((a, b) => a[0] - b[0])
+  let end = intervals[0][1]
+  let overlaps = 0
+  for (let i = 1; i < intervals.length; i++) {
+    if (intervals[i][0] >= end) {
+      end = intervals[i][1]
+    } else {
+      end = Math.min(end, intervals[i][1])
+      // 该区间需要被移除，计数 + 1
+      overlaps++
+    }
+  }
+  return overlaps
+};
+```
+
+{% endnote %}
+
+[LeetCode.56 合并区间](https://leetcode.cn/problems/merge-intervals/) 是在重叠区间的遍历过程中，不断地更新之前生成的合并后区间，在重叠区间结束时创建新的区间。
+
+{% note Code %}
+
+```typescript
+function merge(intervals: number[][]): number[][] {
+  const result = []
+  intervals.sort((a, b) => a[0] - b[0])
+  for (let i = 0; i < intervals.length; i++) {
+    if (!result.length) {
+      result.push(intervals[i])
+      continue
+    }
+    const last = result[result.length - 1]
+    if (intervals[i][0] > last[1]) {
+      result.push(intervals[i])
+    } else {
+      last[1] = Math.max(last[1], intervals[i][1])
+    }
+  }
+  return result
+};
+```
+
+{% endnote %}
+
+[LeetCode.763 划分字母区间](https://leetcode.cn/problems/partition-labels/) 有点类似青蛙跳问题，不断更新当前区间的最大值。当当前遍历的项已经超过最大值时，在蛙跳问题中青蛙将不能跳到终点，而本题中则是新建一个区间再继续跳。
+
+{% note Code %}
+
+```typescript
+function partitionLabels(s: string): number[] {
+  const map = {}
+  for (let i = 0; i < s.length; i++) {
+    map[s[i]] = i
+  }
+  const results = []
+  let start = 0
+  let end = 0
+  for (let i = 0; i < s.length; i++) {
+    if (i > end) {
+      results.push(end - start + 1)
+      start = i
+      end = map[s[i]]
+      continue
+    }
+    end = Math.max(end, map[s[i]])
+  }
+  results.push(end - start + 1)
+  return results
+};
+```
+
+{% endnote %}
+
 # Dynamic Programing
+
+动态规划比较通用的解法是 **找规律**，先根据题意确定递推数组的含义，然后根据我们定义的含义从 0 开始找规律，可以参考 Examples 中的题目。
+
+一些比较典型的动态规划问题，比如 **背包问题**，就被人们总结起来，形成了一类特殊的、有解题模板的题目。
+
+此外，比较复杂的动态规划问题有下面几种，如果常规的找规律想不出来，可以考虑以下几个方向：
+
+1. **多状态的动态规划。**递推数组的每一项并不是只存了一个数字，而是多个状态，前面的状态会影响后面的状态，比如买卖股票问题中上一天持有股票的状态将影响当前天的计算。
+2. **状态压缩的动态规划。**多状态动态规划的升级版，使用二进制来保存当前状态，通过二进制运算来改变状态，状态数量在 32 种以下的复杂题目一般可以往这个方向考虑。
+3. **高维动态规划。**递推数组有时候会达到二维甚至三维，其实基础版本的背包问题就是二维动态规划，不过可以通过滚动数组的方式将其降维，有些复杂的背包问题就可能会涉及到更三维动态规划了。
+4. **非线性动态规划。**有些复杂的动态规划可能涉及到非线型数据结构，而不只是局限于数组，比如树、图等。
+
+**动态规划有以下的思考步骤：**
+
+1. 确定 `dp` 数组下标及含义
+2. 确定递推公式
+3. 初始化 `dp` 数组
+4. 确定遍历顺序
+5. 举例推导 `dp` 数组
+
+## Memorization DFS
+
+**动态规划本质上就是特殊优化的一种深度优先搜索。**
+
+我们拿 [LeetCode.63 不同路径](https://leetcode.cn/problems/unique-paths/) 来举例说明，在这道题中，机器人要从左上角走到右下角，每次只能向右或者向下移动一步，求有多少种不同的路径。
+
+我们比较容易想到的 DFS 可以这样写：
+
+{% note Code %}
+
+```typescript
+function uniquePaths(m: number, n: number): number {
+  function dfs(position: number[]) {
+    const [x, y] = position
+    if (x >= m || y >= n) { return 0 }
+    if (x === m - 1 && y === n - 1) { return 1 }
+    return dfs([x + 1, y]) + dfs([x, y + 1])
+  }
+  return dfs([0, 0])
+};
+```
+
+{% endnote %}
+
+注意递归逻辑 `dfs([x + 1, y]) + dfs([x, y + 1])`，我把这种写法称为 **“头尾头”** 的写法，类比成树的话，就是从树的根节点 **向下“递”到每个叶节点**，然后将结果从叶节点后序地 **向上“归”回根节点**。
+
+这样写实际上是将所有节点都遍历了一遍，有的节点甚至不止一遍。但是实际上我们 **每个节点只有一个最优解**，并且该最优解在“归”的过程中会一次性地计算出来，**不会有反复更新某个节点上的值的情况**。因此，我们这里可以用一个 Map 将已经在“归”的过程中计算过的值存起来，下次在“递”的时候如果发现之前已经计算过了，就会直接取已经存起来的值，避免对其子节点继续进行递归的过程。**这就被称为记忆化深度优先搜索（Memorization DFS）**，代码如下：
+
+{% note Code %}
+
+```typescript
+function uniquePaths(m: number, n: number): number {
+  const memo = {}
+  function dfs(position: number[]) {
+    const [x, y] = position
+    if (x >= m || y >= n) { return 0 }
+    if (x === m - 1 && y === n - 1) { return 1 }
+    const key = getKey(position)
+    if (memo[key] !== undefined) { return memo[key] }
+    const paths = dfs([x + 1, y]) + dfs([x, y + 1])
+    return memo[key] = paths
+  }
+  return dfs([0, 0])
+};
+
+function getKey(position: number[]) {
+  return position.toString()
+}
+```
+
+{% endnote %}
+
+> 这与之前在 **回溯的组合问题** 中提到的 DFS 有点不同。**组合问题中，当每个节点有很多种合法的可能性**，每次先暂时性地确定该节点的值，然后再向下 DFS 到终点之后，**会撤销之前的路径并给节点重新确定一个值**。所以当时我们提到，那种 DFS 与动态规划不同。
+
+除了这种 **“头尾头”** 的写法以外，我们还有一种 **“尾头尾”** 的写法（从尾“递”到头，再从头“归”回尾），只不过是将递归逻辑反过来写成 `dfs([x - 1, y]) + dfs([x, y - 1])`，然后将起始和终止条件也随之调整一下即可：
+
+{% note Code %}
+
+```typescript
+function uniquePaths(m: number, n: number): number {
+  const memo = {}
+  function dfs(position: number[]) {
+    const [x, y] = position
+    if (x < || y < 0) { return 0 }
+    if (x === 0 && y === 0) { return 1 }
+    const key = getKey(position)
+    if (memo[key] !== undefined) { return memo[key] }
+    const paths = dfs([x - 1, y]) + dfs([x, y - 1])
+    return memo[key] = paths
+  }
+  return dfs([m - 1, n - 1])
+};
+
+function getKey(position: number[]) {
+  return position.toString()
+}
+```
+
+{% endnote %}
+
+这两种写法其实都可以转换为动态规划，只是 `dp` 数组的含义和遍历顺序不同而已，动态规划中的 `dp` 的遍历顺序实际上就是 DFS 中 **“归”的顺序**，因为 **DFS 中结果的计算与收集实际上是在“归”这一步完成的**（可以看出动态规划实际上就是这类 DFS 的迭代写法）：
+
+|                   | 头尾头                                     | 尾头尾                                     |
+| ----------------- | ------------------------------------------ | ------------------------------------------ |
+| 递归逻辑          | `return dfs([x + 1, y]) + dfs([x, y + 1])` | `return dfs([x - 1, y]) + dfs([x, y - 1])` |
+| `dp[i][j]` 的含义 | 从 `[i, j]` 出发到达终点有多少种路径       | 从起点出发到达 `[i, j]` 有多少种路径       |
+| 递推公式          | `dp[i][j] = dp[i + 1][j] + dp[i][j + 1]`   | `dp[i][j] = dp[i - 1][j] + dp[i][j - 1]`   |
+| `dp` 遍历顺序     | `终点 -> 起点`                             | `起点 -> 终点`                             |
+
+我们将后者转换为动态规划的写法：
+
+{% note Code %}
+
+```typescript
+function uniquePaths(m: number, n: number): number {
+  const dp = [new Array(n).fill(1)]
+  for (let i = 1; i < m; i++) {
+    dp[i] = [1]
+    for (let j = 1; j < n; j++) {
+      dp[i][j] = dp[i - 1][j] + dp[i][j - 1]
+    }
+  }
+  return dp[m - 1][n - 1]
+};
+```
+
+{% endnote %}
+
+可以从递推公式中看出，我们只依赖了 **上一行** 的数据，并没有依赖 **再上一行**，因此我们可以使 **用滚动数组的方式来优化空间复杂度**，只使用一维的 `dp` 数组，每次在遍历新的一行时，数组中原来的数据就是上一行的数据了：
+
+{% note Code %}
+
+```typescript
+function uniquePaths(m: number, n: number): number {
+  const dp = new Array(n).fill(1)
+  for (let i = 1; i < m; i++) {
+    for (let j = 1; j < n; j++) {
+      dp[j] = dp[j - 1] + dp[j]
+    }
+  }
+  return dp[n - 1]
+};
+```
+
+{% endnote %}
+
+## 找规律
+
+[LeetCode.343 整数拆分](https://leetcode.cn/problems/integer-break/) 就是一道找规律的题目，从第 0 项开始慢慢找规律即可，通过反复利用已经拆过的结果可以。
+
+{% note Code %}
+
+```typescript
+function integerBreak(n: number): number {
+// 1 => 1 * 0
+// 2 => 1 * 1, 2 * 0 => 1
+// 3 => 2 * 1, 1 * 1 * 1 => 2
+// 4 => 3 * 1, 2 * 2, 2 * 1 * 1 => 3
+// 5 => 4 * 1(max4/3), 3 * 2 => 6
+// 6 => 5 * 1(max5/6), 4 * 2(max4/3), 3 * 3(max3/2) => 9
+// 7 => 6 * 1(max6/9), 5 * 2(max5/6), 4 * 3 => 12
+// 8 => 7 * 1(max7/12), 6 * 2(max6/9), 5 * 3(max5/6), 4 * 4 => 18
+// 9 => 8 * 1(max8/18), 7 * 2(max7/12), 6 * 3(max6/9), 5 * 4(max5,6) => 27
+// 10 => 9 * 1(max9/27), 8 * 2(max8/18), 7 * 3(max7/12), 6 * 4 => 36
+  const dp = new Array(n + 1).fill(0)
+  dp[1] = 0
+  dp[2] = 1
+  for (let i = 3; i <= n; i++) {
+    for (let j = 0; j <= Math.floor(i / 2); j++) {
+      dp[i] = Math.max(
+        dp[i],
+        Math.max(dp[j], j) * Math.max(dp[i - j], i - j)
+      )
+    }
+  }
+  return dp[n]
+};
+```
+
+{% endnote %}
 
 ## 背包问题
 
 ![背包问题分类](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Algorithm-Bag-1.png)
+
+背包问题变种繁多，其核心是 **遍历的方式和顺序**，`dp` 数组表示的内容可能会随着题目的要求而发生很多变化，但总结起来他的遍历方式和顺序总结起来只有以下几种：
+
+- **遍历方式有**：外层物品 `i`，内层背包容量 `j`；外层背包容量 `j`，内层物品 `i`。一般来讲区别不大，我比较喜欢物品 `i` 在外，容量 `j` 在内。只有在以下这两种情况下才有会有不同：
+  - **用滚动数组进行优化时**，由于滚动数组相当于默认使用了逐行遍历，每一行需要依赖上一行的内容，因此需要外层物品 `i`、内层容量 `j`。
+  - **多重背包求装满方式时**，由于多重背包一个物品可以被多次使用，因此如果先遍历容量 `j`，再遍历物品 `i` 的话，相当于求的是 **排列数**，因为在遍历每个容量时，物品会从头开始考虑；而先物品 `i` 再容量 `j` 的话，求的就是 **组合数**。
+- **遍历顺序有**：背包容量 `j` 正序还是倒序。在外层物品 `i` 内层容量 `j` 的情况下，一般区别不大，但 **如果使用了滚动数组**：
+  - 正序遍历 `j` 会使得物品被反复装入（因为反复利用了前面的数据），即完全背包
+  - 倒序遍历 `j` 则不会存在反复利用本行前面数据的这样的问题，即01背包
 
 ### 01背包
 
@@ -3069,9 +3410,11 @@ if (let j = weight[0]; j < bagweight; j++) {
 
 ##### 4. 确定遍历的顺序
 
-根据递推公式，先遍历 i 还是 j 都不影响
+根据递推公式，先遍历 `i` 还是 `j` 都不影响
 
 ##### 最终代码
+
+{% note Code %}
 
 ```typescript
 const weightBagProblem = (
@@ -3098,6 +3441,8 @@ const weightBagProblem = (
   return dp[goodsNum - 1][size]
 }
 ```
+
+{% endnote %}
 
 #### 一维数组动态规划（滚动数组）
 
@@ -3141,8 +3486,8 @@ dp[j] = max(dp[j], dp[j - weight[i]] + value[i])
 
 注意：
 
-- 根据递推公式，必须 `i` 在外层，`j` 在内层（相当于二维数组的逐行遍历），因为 `dp[i - 1][j - weight[i]]` 相当于要依赖上一行前几位的运算结果
-- 遍历 `j` 的时候，一定要倒序遍历，因为顺序的话物品可能会被加入多次：
+- 根据递推公式，**必须 `i` 在外层，`j` 在内层**（相当于二维数组的逐行遍历），因为 `dp[i - 1][j - weight[i]]` 相当于要依赖上一行前几位的运算结果
+- 遍历 `j` 的时候，**一定要倒序遍历**，因为顺序的话物品可能会被加入多次：
 
 ```javascript
 weight[0] = 1; value[0] = 15;
@@ -3158,6 +3503,8 @@ dp[2] = dp[2 - weight[0]] + value[0] = 30 // value[0] 又加入了一次
 一维数组中，相当于 **把上一行的数据原位重复利用**，如果顺序遍历的话，相当于后面的数据用了 **本行** 的数据，就可能会重复放入物品
 
 ##### 最终代码
+
+{% note Code %}
 
 ```typescript
 const weightBagProblem = (
@@ -3175,6 +3522,8 @@ const weightBagProblem = (
 }
 ```
 
+{% endnote %}
+
 ### 完全背包
 
 有 n 件物品和一个最多能背重量为 w 的背包。第 i 件物品的重量是 weight[i]，其价值是 value[i] 。**每件物品都有无限个（也就是可以放入背包多次）**，求解将哪些物品装入背包里物品价值总和最大。
@@ -3187,23 +3536,25 @@ const weightBagProblem = (
 | 物品 1 | 3    | 20   |
 | 物品 2 | 4    | 30   |
 
-#### 遍历顺序问题
+#### 遍历顺序方式
 
-完全背包最核心的就是遍历顺序问题，在完全背包中需要从小到大进行遍历，因为一样物品可以被添加多次：
+完全背包最核心的就是遍历方式和顺序问题，在完全背包中需要 **从小到大进行遍历**，因为一样物品可以被添加多次：
 
 ```js
-  for (let i = 0; i < goodsNum; i++) {
-    for (let j = weight[i]; j <= size; j++) {
-      dp[j] = Math.max(dp[j], dp[j - weight[i]] + value[i])
-    }
+for (let i = 0; i < goodsNum; i++) {
+  for (let j = weight[i]; j <= size; j++) {
+    dp[j] = Math.max(dp[j], dp[j - weight[i]] + value[i])
   }
+}
 ```
 
-##### 求最大价值时的遍历顺序
+##### 求最大价值时的遍历方式
 
-另外之前 0 1 背包中，要求物品在外层，重量在内层，因为下一行需要 `dp[i - 1][j - weight[i]]`，会依赖上一行前几位的运算结果
+另外之前 0 1 背包中，要求物品在外层，重量在内层，因为下一行需要 `dp[i - 1][j - weight[i]]`，会依赖上一行前几位的运算结果。
 
-而在完全背包中，是可以重量在外层，物品在内层的。因为 `dp[j - weight[i]]`，依赖的是本行的运算结果，只有 `dp[0]` 是继承的上一行的数据，如果先遍历列，也可以拿到上一行 `dp[i - 1][0]`（因为是同一列的） 
+而 **在完全背包中，是可以重量在外层，物品在内层的**。因为 `dp[j - weight[i]]`，依赖的是本行的运算结果，只有 `dp[0]` 是继承的上一行的数据，如果先遍历列，也可以拿到上一行 `dp[i - 1][0]`（因为是同一列的） 。
+
+如果是问最大价值，**dp 数组里面存的是最大价值，最大价值与怎样凑成最大价值无关，因此物品、重量谁在内层谁在外层并不关键**。
 
 ```js
 // 先遍历背包容量（列），再遍历物品（行）
@@ -3216,11 +3567,9 @@ for (let j = 0; j <= size; j++) {
 }
 ```
 
-##### 求装满方式时的遍历顺序
+##### 求装满方式时的遍历方式
 
-如果是问最大价值，dp 数组里面存的是最大价值，最大价值与怎样凑成最大价值无关，因此物品、重量谁在内层谁在外层并不关键。
-
-但如果问背包的装满方式，遍历顺序就会影响很大了，得看题目问的是组合问题还是排列问题。
+但如果问背包的装满方式，遍历方式就会影响很大了，得看题目问的是 **组合问题** 还是 **排列问题**。
 
 拿零钱兑换问题（[LeetCode.518 Coin Change II](https://leetcode.cn/problems/coin-change-ii/)）举例，给定一个总额和一堆无限多的币值，问总额有多少种组合方式。组合问题不关心顺序。
 
@@ -3255,36 +3604,9 @@ for (let j = 0; j <= amount; j++) {        // 重量
 
 背包容量的每一个值，都会重新计算一遍 1 和 5，所以包含了 {1, 5} 和 {5, 1} 两种情况。，`dp[j]` 里面存的就是排列数。
 
-## Examples
+### Examples
 
-### 整数拆分
 
-[LeetCode.343](https://leetcode.cn/problems/integer-break/)
-
-Given an integer n, break it into the sum of k positive integers, where k >= 2, and maximize the product of those integers.
-
-Return the maximum product you can get.
-
-{% note Code %}
-
-#双重循环
-
-```typescript
-function integerBreak(n: number): number {
-  const dp = new Array(n)
-  // dp[i] = max(dp[i],max(dp[i-j]*j,(i-j)*j))
-  // 1, 2, 4, 6, 9
-  dp[2] = 1
-  for (let i = 3; i <= n; i++) {
-    for (let j = 1; j < i - 1; j++) {
-      dp[i] = Math.max(dp[i] || 0, Math.max(dp[i - j] * j, (i - j) * j))
-    }
-  }
-  console.log(dp)
-  return dp[n]
-};
-```
-{% endnote %}
 
 # Mod
 

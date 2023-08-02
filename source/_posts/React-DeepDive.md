@@ -23,7 +23,7 @@ Clone React 项目之后，在 README 中找到调试 React 的方法，具体�
 
 ## ReactDOMRoot
 
-ReactDOMRoot 是 `ReactDOM.createRoot` 的返回值，他事实上只是暴露了两个方法给我们使用，一个是 `render`，一个是 `unmount`。通过 `render` 方法，我们可以传入 `ReactElement` 然后开启首次渲染。
+ReactDOMRoot 是 `ReactDOM.createRoot` 的返回值，他事实上只是暴露了两个方法给我们使用，一个是 `render`，一个是 `unmount`。我们可以给 `render` 方法传入 `ReactElement`，然后开启首次渲染。
 
 ## Fiber
 
@@ -31,9 +31,9 @@ ReactDOMRoot 是 `ReactDOM.createRoot` 的返回值，他事实上只是暴露�
 >
 > ——React 源码中的注释
 
-`Fiber` 可以暂时先理解为虚拟节点，他有不同的类型，比如 `FunctionComponent` `ClassComponent` `HostRoot` `HostText` `Fragment` 等，这标记着该 Fiber 的类型。也就是说，一个 `Fiber` 节点可以对应某个 React 组件或某个 DOM 节点等。
+`Fiber` 可以暂时先理解为虚拟节点，他有不同的类型，比如 `FunctionComponent` `ClassComponent` `HostRoot` `HostText` `Fragment` 等。也就是说，一个 `Fiber` 节点可以对应某个 React 组件或某个 DOM 节点等。
 
-React 中的很多过程都是使用深度优先遍历（DFS）来实现的：比如生成或更新 FiberTree（暂时可以理解为 VirtualDOMTree）、将 FiberTree 的内容提交到宿主环境 UI 中等等。具体可参考 **数据结构与算法** 章节。
+React 中的很多过程都是使用深度优先遍历（DFS）来实现的：比如生成 FiberTree（暂时可以理解为 VirtualDOMTree）、将 FiberTree 的内容提交到宿主环境 UI 中、遍历 FiberTree 执行 Effects 等等。具体可参考本文的 **数据结构与算法** 章节。
 
 需要注意的是：**如果使用递归实现 DFS 的过程，那么 React 将无法控制调用栈的随时中断与继续。**因此 React 选择借助 FiberTree 并使用迭代的方式实现 DFS，并在中间的某些环节设置了可以提前中断的手段。同时 `Fiber.updateQueue` 等属性提供了记忆并恢复工作状态的能力，使得继续之前被中断的任务成为可能。
 
@@ -69,12 +69,12 @@ export type Fiber = {
   // 用于处理该 Fiber 的外部输入（Props、Arguments）
   pendingProps: any   // 当次传入的输入
   memorizedProps: any // 上次的输入
-  // 内部 State 更新和回调的列表
+  // 内部状态更新和回调的列表，不同类型的 Fiber 存的东西也不一样
   updateQueue: unknown
-  // 上一次用来创建输出的 State
+  // 上一次的内部状态
   memorizedState: any
   
-  /* Effect（副作用）相关的属性 */
+  /* 副作用相关的属性 */
   // 标记此次 render 都需要执行哪些副作用，比如往 DOM 添加节点、删除节点、执行 useEffect 等
   flags: Flags
   // 子结点都有什么副作用
@@ -739,7 +739,7 @@ ReactDOM.createRoot(
 
 1. **createRoot：**来自 `react-dom` 包的 `createRoot` 方法获取 Container Element 相关的信息，并调用 `react-reconciler` 中的方法来初始化 `FiberRoot` 和 `HostRootFiber`；
 2. **createElement：**来自 `react` 包的 `createElement` 将 JSX 转换结果再次转换为 `ReactElement`；
-3. **rener：**调用 `createRoot` 返回对象的 `render` 方法，并传入 `ReactElement`，该方法会调用 `react-reconciler` 中的方法进入 Reconciliation 流程。
+3. **render：**调用 `createRoot` 返回对象的 `render` 方法，并传入 `ReactElement`，该方法会调用 `react-reconciler` 中的方法进入 Reconciliation 流程。
 
 ```text
 1. ReactDOM.createRoot             // 创建 ReactDOMRoot
@@ -817,7 +817,7 @@ function createFiberRoot() {
   uninitializedFiber.memorizedState = initialState
   
   // 3.2. 初始化 updateQueue，稍后进入渲染流程后将会提到，用于存取 Update
- 	initializeUpdateQueue(uninitializedFiber)
+  initializeUpdateQueue(uninitializedFiber)
 }
 ```
 
@@ -932,7 +932,7 @@ function scheduleUpdateOnFiber(
   lane: Lane
 ) {
   // root.pendingLanes |= lane
- 	markRootUpdated(root, lane)
+  markRootUpdated(root, lane)
   // 进入 Schedule 阶段
   ensureRootIsScheduled(root)
 }
@@ -1506,7 +1506,7 @@ function prepareFreshStack(root: FiberRoot, lanes: Lanes): Fiber {
 
 `workLoop` 会循环地将当前的 `workInProgress` 送入 `performUnitOfWork` 函数来执行具体的渲染工作，与 `performXXXWorkOnRoot` 和 `renderXXXRoot` 一样，他也有 Sync 和 Concurrent 两种版本。
 
-两种版本唯一的区别在于 Sync 版本的 `workSyncConcurrent` 会一直循环执行直到 `workInProgress` 为空，而 Concurrent 版本则会受到来自 Scheduler 的 `shouldYield` 函数控制，使得他可以提前中断。
+两种版本唯一的区别在于 Sync 版本的 `workLoopSync` 会一直循环执行直到 `workInProgress` 为空，而 Concurrent 版本则会受到来自 Scheduler 的 `shouldYield` 函数控制，使得他可以提前中断。
 
 Render 阶段的 Sync 和 Concurrent 的区别到此就结束了，他们后面的流程完全一样。
 
