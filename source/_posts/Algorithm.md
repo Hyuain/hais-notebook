@@ -1044,58 +1044,92 @@ const count = (str) => {
 
 *栈一般也不提供搜索操作
 
+我们可以用 JavaScript 非常简单地实现栈，之后的相关代码可能会直接使用这段代码所定义的 `Stack` 类：
+
+```javascript
+class Stack {
+  array = []
+  constructor() {}
+  push(value) {
+    return this.array.push(value)
+  }
+  pop() {
+    return this.array.pop()
+  }
+  get size() {
+    return this.array.length
+  }
+  get top() {
+    return this.array[this.array.length - 1]
+  }
+}
+```
+
 ## Monotonic Stack
 
-一维数组，要寻找任一元素的右边或左边第一个比自己大或自己小的位置。
+**何时使用单调栈：**一维数组，要寻找任一元素的右边或左边第一个比自己大或自己小的位置。
 
-比如 `[73, 74, 75, 71, 71, 72, 76, 73]` 为例，输出下一个 **大于** 自己的位置，输出应该是 `[1, 2, 6, 5, 5, 1, -1, -1]`。
+**单调栈的核心思想在于 “清算”**，当遍历的 **当前元素 `x`** 满足某种条件之后，可以对之前保存在栈内的部分元素进行 **清算**。清算完成之后，就再也不用考虑那些元素了，所以通常来讲，使用单调栈时，元素遍历的过程中会至多入栈一次、出栈一次，时间复杂度为 O(n)。
 
-这个时候需要维持一个 **栈底到栈顶单调递减** 的单调栈。这里我们单调栈里面可以存放元素的下标（存放什么可以根据题目的需要定义，重要的是单调栈的核心思想，这个看下面模拟会有标注）。
+### Examples
 
-遍历一遍数组，每次将遍历到的元素与栈顶元素相比较，有两种操作：
+#### 找到下一个大于自己的元素
 
-- **如果当前遍历的元素大于栈顶的元素**，说明栈顶元素找到了下一位比自己大的元素，栈顶出栈并记录结果；同时新的栈顶也要与当前遍历的元素比较，直到小于等于当前元素
-- **如果当前遍历的元素小于等于栈顶元素**，说明还需要继续找，将其入栈（这样效果上就达成了一个栈底到栈顶递减的单调栈）
+比如题目 [LeetCode.496 下一个更大元素 I](https://leetcode.cn/problems/next-greater-element-i/) 题目中，输出右边第一个 **大于** 自己的位置。比如 `[73, 74, 75, 71, 71, 72, 76, 73]` 输出应该是 `[1, 2, 6, 5, 5, 1, -1, -1]`。
+
+**清算条件：若当前遍历的元素 `x` 大于栈内元素，即可对栈内元素进行清算（即栈内元素找到了右边第一个大于自己的元素）。** 
+
+具体来讲：
+
+1. 维持一个 **栈底到栈顶单调递减** 的单调栈。这里我们单调栈里面可以存放元素的下标（存放什么可以根据题目的需要定义，重要的是单调栈的核心思想，这个看下面模拟会有标注）。
+
+2. 遍历一遍数组，每次将 **遍历到的元素 `x`** 与 **栈顶元素 `top`** 相比较，有两种操作：
+
+   - **如果 `x > top`**，说明栈顶元素 `top` 找到了下一位比自己大的元素，**可以对栈顶进行清算**，即栈顶出栈并记录结果；同时新的栈顶也要与当前遍历的元素比较，直到小于等于当前元素，不再满足清算条件
+
+   - **如果 `x <= top`**，说明 **栈内元素都不满足清算条件**，还需要继续找，将其入栈（这样效果上就达成了一个栈底到栈顶递减的单调栈）
 
 模拟步骤如下：
 
-```text
+{% note Steps %}
+
+```javascript
 const stack = []
 const result = [-1, -1, -1, -1, -1, -1, -1, -1]
 
---i == 0--
+/*  i == 0  */
 !stack.size
 stack.push(0)
 result: [-1, -1, -1, -1, -1, -1, -1, -1]
 stack: [0]
 
---i == 1--
+/*  i == 1  */
 74 > stack.top(73), 需要在 73 的位置标记已经找到了 74；73 的下一个大的已经找到，可以出栈
   result[stack.pop()] = i, result[0] = 1
 stack.push(1)
 result: [1, -1, -1, -1, -1, -1, -1, -1]
 stack: [1]
 
---i == 2--
+/*  i == 2  */
 75 > stack.top(74), 需要在 74 的位置标记已经找到了 75；74 的下一个大的已经找到，可以出栈
   result[stack.pop()] = i, result[1] = 2
 stack.push(2)
 result: [1, 2, -1, -1, -1, -1, -1, -1]
 stack: [2]
 
---i == 3--
+/*  i == 3  */
 71 < stack.top(75), 将 71 入栈，待查找
 stack.push(3)
 result: [1, 2, -1, -1, -1, -1, -1, -1]
 stack: [2, 3]
 
---i == 4--
+/*  i == 4  */
 71 == stack.top(71), 将 71 入栈，待查找
 stack.push(4)
 result: [1, 2, -1, -1, -1, -1, -1, -1]
 stack: [2, 3, 4]
 
---i == 5--
+/*  i == 5  */
 72 > stack.top(71), 需要在 71 的位置标记已经找到了 72；71 的下一个大的已经找到，可以出栈
   result[stack.pop()] = i, result[4] = 5
   出栈后 72 仍然大于 stack.top(71)，继续出栈，直到小于等于 stack.top 或栈为空
@@ -1104,7 +1138,7 @@ stack.push(5)
 result: [1, 2, -1, 5, 5, -1, -1, -1]
 stack: [2, 5]
 
---i == 6--
+/*  i == 6  */
 76 > stack.top(72), 需要在 72 的位置标记已经找到了 76；72 的下一个大的已经找到，可以出栈
   result[stack.pop()] = i, result[5] = 6
   出栈后 76 仍然大于 stack.top(75)，继续出栈，直到小于等于 stack.top 或栈为空
@@ -1113,68 +1147,189 @@ stack.push(6)
 result: [1, 2, 6, 5, 5, 6, -1, -1]
 stack: [6]
 
---i == 7--
+/*  i == 7  */
 73 < stack.top(76), 将 73 入栈，待查找
 stack.push(7)
 result: [1, 2, 6, 5, 5, 6, -1, -1]
 stack: [6, 7]
 
--- End --
+/*  End  */
 ```
 
-计算器中将中缀表达转为后缀表达其实也类似于单调栈的思想，有三种方式可以解读：
+{% endnote %}
 
-- 遍历中缀表达式，遇到运算符的时候，如果栈顶的运算符优先级更高或相同，将其出栈（保证其先被运算），直到遇到优先级更低的运算符或栈空时，将当前运算符入栈
+#### 将中缀表达转换为后缀表达
+
+计算器中将中缀表达转为后缀表达其实也类似于单调栈的思想：
+
+- 遍历中缀表达式，遇到运算符的时候，如果栈顶的运算符优先级更高或相同，**对这个优先级更高的运算符进行清算**（即将其出栈）。直到遇到优先级更低的运算符或栈空时，将当前运算符入栈
 - 栈维持了从 **栈底到栈顶运算符优先级递增**
 - 转为后缀表达式其实是要找 **下一个优先级相同或更低的运算符的位置**，因为 **下一个优先级相同或更低的运算符的位置** 就是 **当前运算符覆盖范围截止的位置**
 
-```text
+{% note Steps %}
+
+```javascript
 1 + 2 * 3 - 4  => 1 2 3 * + 4 -
 
 const stack = []
 const result = []
 
---i == 0--
+/*  i == 0  */
 数字 1 直接放入结果
 result: [1]
 
---i == 1--
+/*  i == 1  */
 !stack.size:
   stack.push('+')
 stack: ['+']
 result: [1]
 
---i == 2--
+/*  i == 2  */
 数字 2 直接放入结果
 stack: ['+']
 result: [1, 2]
 
---i == 3--
+/*  i == 3  */
 * 比 stack.top('+') 优先级更高，stack.push('*')
 stack: ['+', '*']
 result: [1, 2]
 
---i == 4--
+/*  i == 4  */
 数字 3 直接放入结果
 stack: ['+', '*']
 result: [1, 2, 3]
 
---i == 5--
+/*  i == 5  */
 - 比 stack.top('*') 优先级低，result.push(stack.pop())，说明 * 负责的范围已经结束了（2 和 3）
 - 跟 stack.top('+') 优先级相同，result.push(stack.pop())，说明 + 负责的范围已经结束了（1 和 2 * 3）
 stack.push('-')
 stack: ['-']
 result: [1, 2, '*', '+']
 
---i == 6--
+/*  i == 6  */
 数字 4 直接放入结果
 stack: ['-']
 result: [1, 2, '*', '+', 4]
 
--- End --
+/*  End  */
 清空 stack，按照出栈顺序加入结果
 result: [1, 2, '*', '+', 4, '-']
 ```
+
+{% endnote %}
+
+#### 接雨水
+
+[LeetCode.42 接雨水](https://leetcode.cn/problems/trapping-rain-water/) 是一道比较难的单调栈题目，需要找到 **清算条件** 和 **清算方法**。
+
+**清算条件：如果当前遍历的地势比栈中的高，可以对栈中的较低地势处的积水进行清算。**
+
+**清算方法：找到较低地势的深度和宽度，计算其积水。**
+
+{% note Code %}
+
+```typescript
+function trap(height: number[]): number {
+  // 维护一个单调递减的栈
+  const stack = new Stack()
+  let result = 0
+  for (let i = 0; i < height.length; i++) {
+    while (stack.size && height[stack.top] < height[i]) {
+      // 当前的地势比栈顶的地势高，可以对栈顶进行清算
+      // 将栈顶出栈，拿到他的 index
+      const lowestIndex = stack.pop()
+      // 若栈为空，说明 lowestIndex 的左边没有地势更高的地方，不能形成积水
+      if (!stack.length) {
+        continue
+      }
+      // 当前积水的深度，取 min(lowestIndex 左边较高地势, lowestIndex 右边较高地势) - lowestIndex 的地势
+      const depth = Math.min(height[stack.top], height[i]) - height[lowestIndex]
+      // 左边较高地势的 index
+      const left = stack.top
+      // 右边较高地势的 index
+      const right = i
+      // 当前的积水
+      const water = (right - left - 1) * depth
+      result += water
+    }
+    stack.push(i)
+  }
+  return result
+};
+```
+
+{% endnote %}
+
+#### 柱状图中的最大矩形
+
+[LeetCode.84 柱状图中的最大矩形](https://leetcode.cn/problems/largest-rectangle-in-histogram/description/) 与接雨水的清算方法是类似的，不过清算条件恰好相反。
+
+**清算条件：如果当前遍历的矩形比栈中的低，那么对以栈中的项进行清算，找到以其为高的矩形面积。**
+
+**清算方法：找到较高的矩形的宽度，计算其面积。**
+
+{% note Code %}
+
+```typescript
+function largestRectangleArea(heights: number[]): number {
+  // 维护一个单调递增的栈
+  const stack = new Stack()
+  let maxArea = 0
+  for (let i = 0; i < heights.length; i++) {
+    while (stack.size && heights[stack.top] > heights[i]) {
+      // 当前的柱更低，可以对以更高的柱为高度的矩形面积进行清算了
+      // 更高的柱的高度
+      const height = heights[stack.pop()]
+      // 以更高的柱为高的矩形面积的左边界
+      const left = stack.size ? stack.top : -1
+      // 以更高的柱为高的矩形面积的右边界
+      const right = i
+      // 矩形的面积
+      const area = (right - left - 1) * height
+      maxArea = Math.max(maxArea, area)
+    }
+    stack.push(i)
+  }
+  // 栈中还剩下没有清算的柱，遍历一遍进行清算
+  while (stack.size) {
+    const height = heights[stack.pop()]
+    const left = stack.size ? stack.top : -1
+    const right = heights.length
+    const area = (right - left - 1) * height
+    maxArea = Math.max(maxArea, area)
+  }
+  return maxArea
+};
+```
+
+{% endnote %}
+
+该题可以通过给原来的柱状图的左右添加高度为 0 的项，让栈中剩余的元素在遍历到数组最后一项时自行清算：
+
+{% note Code %}
+
+```typescript
+function largestRectangleArea(heights: number[]): number {
+  const stack = new Stack()
+  let maxArea = 0
+  heights.unshift(0)
+  heights.push(0)
+  stack.push(0)
+  for (let i = 1; i < heights.length; i++) {
+    while (stack.length && heights[stack.top] > heights[i]) {
+      const height = heights[stack.pop()]
+      const left = stack[stack.top]
+      const right = i
+      const area = (right - left - 1) * height
+      maxArea = Math.max(maxArea, area)
+    }
+    stack.push(i)
+  }
+  return maxArea
+};
+```
+
+{% endnote %}
 
 ## Examples
 
@@ -1240,25 +1395,6 @@ result: [1, 2, '*', '+', 4, '-']
 7. 结果是栈顶的 0
 
 #### Code
-
-```js
-class Stack {
-  array = []
-  constructor() {}
-  push(value) {
-    return this.array.push(value)
-  }
-  pop() {
-    return this.array.pop()
-  }
-  get size() {
-    return this.array.length
-  }
-  get top() {
-    return this.array[this.array.length - 1]
-  }
-}
-```
 
 ```js
 const priorityMap = new Map([
@@ -3344,11 +3480,11 @@ function integerBreak(n: number): number {
 背包问题变种繁多，其核心是 **遍历的方式和顺序**，`dp` 数组表示的内容可能会随着题目的要求而发生很多变化，但总结起来他的遍历方式和顺序总结起来只有以下几种：
 
 - **遍历方式有**：外层物品 `i`，内层背包容量 `j`；外层背包容量 `j`，内层物品 `i`。一般来讲区别不大，我比较喜欢物品 `i` 在外，容量 `j` 在内。只有在以下这两种情况下才有会有不同：
-  - **用滚动数组进行优化时**，由于滚动数组相当于默认使用了逐行遍历，每一行需要依赖上一行的内容，因此需要外层物品 `i`、内层容量 `j`。
-  - **多重背包求装满方式时**，由于多重背包一个物品可以被多次使用，因此如果先遍历容量 `j`，再遍历物品 `i` 的话，相当于求的是 **排列数**，因为在遍历每个容量时，物品会从头开始考虑；而先物品 `i` 再容量 `j` 的话，求的就是 **组合数**。
+  - **用滚动数组进行优化时**，由于滚动数组相当于默认使用了逐行遍历，每一行需要依赖上一行的内容，因此需**要外层物品 `i`、内层容量 `j`**。
+  - **多重背包求装满方式时**，由于多重背包一个物品可以被多次使用，因此如果 **先遍历容量 `j`，再遍历物品 `i`** 的话，相当于求的是 **排列数**，因为在遍历每个容量时，物品会从头开始考虑；而 **先物品 `i` 再容量 `j`** 的话，求的就是 **组合数**。
 - **遍历顺序有**：背包容量 `j` 正序还是倒序。在外层物品 `i` 内层容量 `j` 的情况下，一般区别不大，但 **如果使用了滚动数组**：
-  - 正序遍历 `j` 会使得物品被反复装入（因为反复利用了前面的数据），即完全背包
-  - 倒序遍历 `j` 则不会存在反复利用本行前面数据的这样的问题，即01背包
+  - **正序遍历 `j`** 会使得物品被反复装入（因为反复利用了前面的数据），即 **完全背包**
+  - **倒序遍历 `j`** 则不会存在反复利用本行前面数据的这样的问题，即 **01背包**
 
 ### 01背包
 
@@ -3536,7 +3672,7 @@ const weightBagProblem = (
 | 物品 1 | 3    | 20   |
 | 物品 2 | 4    | 30   |
 
-#### 遍历顺序方式
+#### 遍历方式
 
 完全背包最核心的就是遍历方式和顺序问题，在完全背包中需要 **从小到大进行遍历**，因为一样物品可以被添加多次：
 
@@ -3602,11 +3738,23 @@ for (let j = 0; j <= amount; j++) {        // 重量
 }
 ```
 
-背包容量的每一个值，都会重新计算一遍 1 和 5，所以包含了 {1, 5} 和 {5, 1} 两种情况。，`dp[j]` 里面存的就是排列数。
+背包容量的每一个值，都会重新计算一遍 1 和 5，所以包含了 {1, 5} 和 {5, 1} 两种情况，`dp[j]` 里面存的就是排列数。
 
 ### Examples
 
+背包问题的难点在于得看出来题目是背包问题，并且找到题目中的什么可以被抽象为 **物品** 和 **背包容量**。
 
+上文在多重背包中提到过 **“求最大价值”** 和 **“求装满方式”** 这两类典型的背包问题，这两类问题遍历方式和遍历顺序上可能有一些差别，不过其中最大的区别的还是 **`dp` 数组的定义不同**，下面我们来看经过包装过的应用题是怎么简化成这两类背包问题的。
+
+#### 是否能恰好装满类问题
+
+[LeetCode. 416](分割等和子集) 就是一道 **是否能恰好装满** 的问题，他要求我们把一个数组分成两份，其中每份的和恰好等于数组所有元素总和的一半。
+
+这相当于要求 **选择其中的一些元素，使他们的和恰好等于某个值**。那么显然可以理解成：**选择一堆物品，让他们恰好装满背包。**
+
+由于问题问的是 **是否** 而不是 **有多少种方式**，因此用 **“求最大价值”** 和 **“求装满方式”** 都可以解决这类问题。
+
+先看 **“求最大价值”** 的解法：元素的值就是他的价值，元素的值同时也是他的重量，我们在装背包的时候，会尽可能让这个背包的价值更高，背包装满的时候也就是价值最高的时候。
 
 # Mod
 
