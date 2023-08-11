@@ -1154,10 +1154,16 @@ module<span class="token punctuation">.</span>exports <span class="token operato
 <p>静态页面生成（Static Site Generation）是预渲染（Pre-rendering）的一种，类似于把 PHP 提前渲染成 HTML。</p>
 <p>时机：</p>
 <ul>
-<li>生产环境中，静态化是在 <code>yarn build</code> 的时候实现的 优点：</li>
+<li>生产环境中，静态化是在 <code>yarn build</code> 的时候实现的</li>
+</ul>
+<p>优点：</p>
+<ul>
 <li>能解决白屏问题</li>
 <li>解决 SEO 问题</li>
-<li>前端重复渲染相同内容的问题（可以将动态内容静态化，将需要客户端渲染的动态内容提前由服务端渲染好，然后作为静态内容发给前端） 缺点：</li>
+<li>前端重复渲染相同内容的问题（可以将动态内容静态化，将需要客户端渲染的动态内容提前由服务端渲染好，然后作为静态内容发给前端）</li>
+</ul>
+<p>缺点：</p>
+<ul>
 <li>无法生成用户相关内容（每个人看到的都是一样的）</li>
 </ul>
 <pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token keyword">import</span> <span class="token punctuation">&#123;</span> GetStaticProps<span class="token punctuation">,</span> NextPage <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"next"</span>
@@ -1280,10 +1286,16 @@ module<span class="token punctuation">.</span>exports <span class="token operato
 <p>服务端渲染（Server Side Render）也是预渲染的一种，类似于 PHP、Python、Ruby、Java 后台的基本功能。 比如当需要通过不同的用户 id 等渲染不同的内容，这时候就较难提前做静态化，这个时候就可以使用 SSR，由服务端渲染好首屏，再下拉刷新。</p>
 <p>时机：</p>
 <ul>
-<li>无论是在开发环境还是生产环境，都是每次请求来到之后运行的 优点：</li>
+<li>无论是在开发环境还是生产环境，都是每次请求来到之后运行的</li>
+</ul>
+<p>优点：</p>
+<ul>
 <li>能解决白屏问题</li>
 <li>解决 SEO 问题</li>
-<li>可以生成跟用户有关系的内容 缺点：</li>
+<li>可以生成跟用户有关系的内容</li>
+</ul>
+<p>缺点：</p>
+<ul>
 <li>无法获取客户端信息，比如浏览器窗口大小等</li>
 </ul>
 <pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token keyword">import</span> <span class="token punctuation">&#123;</span> GetServerSideProps<span class="token punctuation">,</span> NextPage <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"next"</span>
