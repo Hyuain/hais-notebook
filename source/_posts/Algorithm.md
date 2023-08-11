@@ -20,7 +20,8 @@ mathjax: true
   - 堆：堆与优先级队列及其实现
 - 算法（回溯、贪心、动态规划）
   - 回溯：组合问题、切割问题、子集问题、排列问题、棋盘问题
-  - 动态规划：背包问题
+  - 贪心：最大子数组和、加油站、分发糖果、重叠区间
+  - 动态规划：记忆化深度优先搜索、找规律、背包问题
   
 - 其他注意事项（对 1e9 + 7 取模）
 
@@ -2528,6 +2529,32 @@ function topKFrequent(nums: number[], k: number): number[] {
 
 # Graph
 
+## Search
+
+跟树类似，图有深度优先搜索（DFS）和广度优先搜索（BFS）两种搜索方式。深度优先搜索就是先沿着某一条路径探索到底，广度优先就是一层一层地先将当前节点可触达的节点处理完成。
+
+### Deep First Search
+
+DFS 就像 Galgame 一样，我会先打到某个终点，再从最后一个分歧点开始探索新的分支。
+
+**回溯算法实际上就是 DFS 的过程**，DFS 在到达终点之后会从最后一步逐步撤销再探索新的路径，**这个撤销的过程就被成为回溯**。
+
+```typescript
+function dfs(params) {
+  if (finish()) {
+    saveResults()
+    return
+  }
+  for (const child of children) {
+    process(child)
+    dfs(child, newParams)
+    rollback()
+  }
+}
+```
+
+
+
 ## Shortest Path
 
 ### Dijkstra
@@ -2634,7 +2661,7 @@ function dijkstra(edges, n, source) {
 
 # Backtracing
 
-**回溯算法** 的本质是 **遍历搜索**，而回溯操作实际上指的是：
+**回溯算法** 的本质是 **DFS**，而 **回溯操作** 实际上指的是：
 
 - 我们在遍历二叉树的时候，可能会定义一些全局变量来记录当前所在的节点位置、或者遍历到当前节点的时候累计的某些值
 - **在我们采用深度优先遍历时，这些变量需要在遍历 B 子树之前，退回到原来的状态，消除遍历 A 子树时产生的影响**
@@ -2653,6 +2680,8 @@ function dijkstra(edges, n, source) {
 - **纵向遍历：**递归
 
 ```typescript
+// 由于回溯算法本质就是 dfs，因此这里用 dfs 作为函数名，当然也可以用 backtracing 等
+// 可以看到这个函数其实就是在 Graph 一章中讲的 dfs
 function dfs(params) {
 	if (finish()) {
     saveResults()
