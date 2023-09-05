@@ -10,6 +10,199 @@ Object Oriented Design, Java, Maven, Spring Boot.
 
 <!-- more -->
 
+# Java & JavaScript
+
+**主函数**
+
+JavaScript：没有主函数，文件会从头执行到尾。
+
+Java：需要一个主函数，作为程序执行的入口点，主函数的格式是固定的：
+
+```java
+class Test {
+    public static void main(String[] args) {
+        // 程序的代码
+    }
+}
+```
+
+一个打包的 Java 程序中（`*.jar`），可能有很多个类似的函数，但是当程序运行的时候只有一个函数会被运行，该函数被定义在 `Mainifest` 文件中。
+
+**注释**
+
+与 JavaScript 相同
+
+**基本数据类型**
+
+| JavaScript  | Java                                                      |
+| ----------- | --------------------------------------------------------- |
+| `boolean`   | `boolean`                                                 |
+|             | `byte`                                                    |
+|             | `char`                                                    |
+| `string`    | `String`                                                  |
+| `number`    | `double`<br />`float`<br />`int`<br />`long`<br />`short` |
+| `bigint`    | `BigInteger`                                              |
+| `symbol`    |                                                           |
+| `null`      | `null`                                                    |
+| `undefined` |                                                           |
+
+**复杂数据类型**
+
+| JavaScript    | Java                      |
+| ------------- | ------------------------- |
+| `new Array()` | `int[] ary = new int[10]` |
+
+**包装数据类型**
+
+JavaScript 和 Java 都有在基本数据类型上面进行包装，使得基本数据类型可以更好地在面向对象编程中使用。
+
+JavaScript 会自动对基本数据类型进行包装，并且不鼓励我们调用构造函数显式进行包装，就像 `new Number(123)`。
+
+Java 5 才引入了自动装箱拆箱机制，在此之前都需要进行显式装箱：
+
+```java
+int value1 = 1;
+Integer integer = Integer.valueOf(value1);
+int value2 = integer.intValue();
+```
+
+注意 Java 中包装后的对象有一些特殊的性质，比如：
+
+- `Integer` 默认值是 `null`，而 `int` 的默认值是 `0`；
+- `Integer` 最好不要使用 `==` 来判断相同，需要使用 `equals()` 等。
+
+**变量与函数声明**
+
+Java 与 TypeScript 类似，都需要声明类型，不过 TypeScript 是放在冒号后面，而 Java 中则是写在前面，就像这样：
+
+```java
+int a = 12;
+String str = "Hello!";
+// final 关键字表示不可更改
+final double PI = 3.14;
+```
+
+**模块系统**
+
+Java 中 `Class` 会放在 `package` 里面，一个 `package` 里面不允许有同名的 `Class`，在 `Class` 的第一行通常需要说明该类属于哪个包：
+
+```java
+package org.group.me;
+```
+
+通过 `import` 关键字引入别的包的类：
+
+```java
+import java.util.Scanner;
+```
+
+**控制语句**
+
+Java 与 JavaScript 的控制语句相同，`if-else` `switch-case`  `while` `do-while` 均一致，除了 `for` 有些许区别。
+
+他们都有普通的 `for` 循环用法：
+
+```java
+for (int i; i < 10; i++) {
+}
+```
+
+但有一些特殊的用法不同，JavaScript 中有比较早的 `for-in` 用来遍历对象中的所有可枚举字符串属性、`for-of` 用来遍历可迭代对象。Java 中则有这种写法来遍历数组或集合：
+
+```java
+for (int el: arr) {
+}
+```
+
+**继承**
+
+Java 的 Class 和 Interface 与 TypeScript 的基本一致，不过 TypeSccript 中未指定可见性时默认为 `public`，而 Java 中默认为 `default`，只有同一个包里的类可以访问。
+
+**多态**
+
+与 TypeScript 一致，Java 中一个变量可以保存其所声明的类型或该类型的任何子类型。
+
+**泛型**
+
+与 TypeScript 一致。
+
+**Lambda 表达式**
+
+Lambda 表达式与 JavaScript 的箭头函数写法基本一样，不过 `=>` 变成了 `->`。
+
+Java 有函数式接口，该接口只有一个抽象方法，lambda 表达式可以自动填进该方法，比如：
+
+```java
+import java.io.PrintWriter;
+
+public class Main {
+    static PrintWriter out = new PrintWriter(System.out);
+
+    public static void main(String[] args) {
+        String[] plants = {"Mercury", "venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"};
+        Test test = s -> {  // lambda 表达式作为函数式接口的实例
+            if (s.length() % 2 == 0) {
+                return true;
+            }
+            return false;
+        };
+        for (String word : plants) {
+            if (test.check(word)) {
+                out.print(word + " ");
+            }
+        }
+        out.close();
+    }
+}
+
+interface Test {
+    public boolean check(String s);
+}
+```
+
+再比如：
+
+```java
+import java.io.PrintWriter;
+
+public class Main {
+    static PrintWriter out = new PrintWriter(System.out);
+
+    public static double calc(double a, double b, Calculator util) {
+        return util.operation(a, b);
+    }
+
+    public static void main(String[] args) {
+        Calculator util[] = new Calculator[4];  // 定义函数式接口数组
+        util[0] = (a, b) -> a + b;
+        util[1] = (a, b) -> a - b;
+        util[2] = (a, b) -> a * b;
+        util[3] = (a, b) -> a / b;
+        double a = 20, b = 15;
+        for (Calculator c : util) {
+            System.out.println(calc(a, b, c));
+        }
+        out.close();
+    }
+}
+
+interface Calculator {
+    public double operation(double a, double b);
+}
+```
+
+**Collection**
+
+`Collection` 是 Java 中的一个 Interface，他有很多子 Interface，比如 `List` `Map` `Set`，而子 Interface 又进一步被诸如 `ArrayList` 等 `Class` 实现。
+
+| Interface | Class        | Usage                                     |
+| --------- | ------------ | ----------------------------------------- |
+| `List`    | `ArrayList`  | 动态长度的数组，默认长度为 10             |
+| `List`    | `LinkedList` | 双链表，时间复杂度与 `ArrayList` 有所不同 |
+|           |              |                                           |
+
+
+
 # Concepts
 
 ## Object Oriented
@@ -206,8 +399,6 @@ Java 中的 DTO 就是一些简单的类，有一些属性、Getters 和 Setters
 **DTO 的命名：**
 
 一般 DTO 需要反映他的用途，比如 UserCreateDTO、UserUpdateDTO、UserDetailsDTO。
-
-# Basic Syntax
 
 # Startup
 

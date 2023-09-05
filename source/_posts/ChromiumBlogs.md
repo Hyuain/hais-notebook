@@ -93,7 +93,7 @@ There are several kinds of garbage collection:
 > Overview:
 >
 > 1. Split into young (nursery and intermediate) and old.
-> 2. Major GC collects garbage in the entire heap, including marking, sweeping and copaction.
+> 2. Major GC collects garbage in the entire heap, including marking, sweeping and compaction.
 > 3. Minor GC is responsible for the young generation, using semi-space allocation strategy.
 > 4. Orinoco is a project try to improve GC performance.
 

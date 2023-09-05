@@ -868,7 +868,9 @@ function compare(num1: string, num2: string): boolean {
 
 {% endnote %}
 
-## KMP
+## Pattern Matching
+
+### Single-Pattern: KMP
 
 Knuth-Morris-Pratt (KMP) 算法是一种字符串查找算法。他的核心在于：
 
@@ -957,6 +959,132 @@ function strStr(s, p): number {
 {% endnote %}
 
 有的实现中会将 `next` 数组中的所有值都初始化为 `-1`，且 `j` 也从 `-1` 开始，本质没有区别。
+
+### Multi-Parttern: AC
+
+> 字符串的多模式匹配常用 Aho-Corasick Automaton（AC 自动机）来解决，其基础是 字典树（Tried）和 KMP 算法。
+
+#### Trie
+
+如下图所示，字典树（Trie）是一个像字典一样的树，**字典树的每个边代表了一个字母，从根节点到某个节点的路径就代表了一个字符串**。
+
+![Trie](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/trie1.png)
+
+可以用 JavaScript 来实现一个 Trie：
+
+{% note Code %}
+
+```javascript
+// Trie 节点的实现
+class TrieNode {
+  constructor(key) {
+    // 该节点代表的字符（指向该节点的边代表的字符）
+    this.key = key
+    // 指向父结点
+    this.parent = null
+    // 子结点哈希表，该表的键是边所对应的字符，值是子结点的引用
+    this.children = {}
+    // 看是否是某个字符串的最后一个字符
+    this.end = false
+  }
+  
+  // 迭代父结点，得到该节点为终点的字符串
+  // 时间复杂度 O(k)，k = 字符串长度
+  getWord() {
+    const output = []
+    const node = this
+    
+    while (node !== null) {
+      output.unshift(node.key)
+      node = node.parent
+    }
+    
+    return output.join('')
+  }
+}
+```
+
+```javascript
+// Tire 的实现
+class Trie {
+  root = new TrieNode(null)
+  
+  constructor() {
+  }
+  
+  // 向 Trie 插入一个字符串
+  // 时间复杂度 O(k)，k = 字符串长度
+  insert() {
+    const node = this.root
+    
+    for (let i = 0; i < word.length; i++) {
+      // 如果该字符在 children 中不存在，就创建一个
+      if (!node.children[word[i]]) {
+        node.children[word[i]] = new TrieNode(word[i])
+        node.children[word[i]].parent = node
+      }
+      // 进入下一层
+      node = node.children[word[i]]
+      // 如果是字符串最后一个字符，标记为 end
+      if (i === word.length - 1) {
+        node.end = true
+      }
+    }
+  }
+  
+  // 检查某个字符串是否是 Trie 中的一整个字符串
+  // 时间复杂度 O(k)，k = 字符串长度
+  contains(word) {
+    let node = this.root
+    
+    for (let i = 0; i < word.length; i++) {
+      if (node.children[word[i]]) {
+        node = node.children[word[i]]
+      } else {
+        return false
+      }
+    }
+    
+    // word 已经遍历完了，看最后这个节点有没有标记 end，是不是某个字符串的终点
+    return node.end
+  }
+
+  // 返回具有该 prefix 的所有字符串
+  // 时间复杂度 O(p + n)，p = prefix.length，n = 子路径的数量
+  find(prefix) {
+    let node = this.root
+    const output = []
+    
+    for (let i = 0; i < prefix.length; i++) {
+      if (node.childrenp[prefix[i]]) {
+        node = node.children[prefix[i]]
+      } else {
+        return output
+      }
+    }
+    
+    findAllwords(node, output)
+    
+    return output
+  }
+         
+  // 递归获取所有以该节点为起始的字符串
+  findAllWords(node, arr) {
+    if (node.end) {
+      arr.unshift(node.getWord())
+    }
+    for (const child of Object.values(node.children)) {
+      findAllWords(child, arr)
+    }
+  }
+}
+```
+
+{% endnote %}
+
+#### AC
+
+// TBC
 
 ## Examples
 
@@ -1662,7 +1790,7 @@ class Queue {
 
 *注意如果插入和删除并不知道元素到底在哪里，需要从头开始查找的话，复杂度是 O(n)
 
-# Hash Table
+# Hash Map
 
 > 哈希表
 
@@ -1707,6 +1835,181 @@ class Queue {
 
 - **线性探测（Linear Probing）**：$(k+i)\%m$，其性能在 $\lambda > 0.5$ 时显著下降；
 - **次方探测（Quadratic Probing）**：$k \% m + a \cdot i + b \cdot i^2$。哈希表中的元素容易堆在一起形成集群，次方探测可以减少集群问题，从而减少碰撞，因而性能下降没有线性探测剧烈。
+
+# Linked Hash Map
+
+> **哈希链表（Linked Hash Map）**是将哈希表与链表组合起来使用的一种数据结构，在设计 LRU 缓存的时候有妙用。
+
+**LRU（Least Recently Used）**是一种常见的缓存策略。由于缓存的容量是有限的，需要在缓存容量满了的时候清理掉上次使用时间距离现在最久的缓存，给新的数据腾出空间。
+
+可以用一个类 `LRUCache` 来进行示意，他需要 `capacity` 作为初始化参数，表示该内存的最大容量，然后提供 `get` 和 `put` 两个方法，分别用于获取缓存数据和更新缓存数据：
+
+```typescript
+class LRUCache {
+  public capacity: number
+  public get(key :number): number {}
+  public put(key: number, value: number): void {}
+}
+```
+
+借助 **哈希链表（Linked Hash Map）**，我们可以在 O(1) 的时间复杂度内实现 `get` 和 `put` 方法。**哈希链表有哈希表的优点，可以在 O(1) 的时间复杂度内快速取值；也有链表的优点，即有一个可以在 O(1) 的时间复杂度内进行增删操作的线型数据结构。**
+
+哈希链表如下图所示，他有：
+
+- **一个哈希表**，键为 Key，该 Key 就是缓存的 Key，值为指向链表中某个节点的指针；
+- **一个双向链表**，链表中有 Key 和 Value，其中的 Key 与指向他的哈希表中的 Key 相同，Value 则是任意值，比如缓存的内容。
+
+![哈希链表](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/1647580694-NAtygG-4.jpg)
+
+在实现 LRU 时，我们将链表尾部的数据视为最新的，如果数据被访问了，就提升到链表尾部；如果链表满了，就删除链表头部的节点即可。
+
+Java 中内置了 `LinkedHashList` 类，但在在 JavaScript 中，我们需要从双向链表开始实现。
+
+{% note Code %}
+
+先实现链表节点，他有四个属性，`next` `prev` `key` 和 `value`：
+
+```typescript
+class LinkedListNode<K, V> {
+  constructor(
+    public key: K,
+    public value: V,
+    public next: LinkedListNode<K, V> = null,
+    public prev: LinkedListNode<K, V> = null,
+  ) {}
+}
+```
+
+然后实现双向链表，他只提供三个 API，往尾部添加节点 `appendToTail`，删除某节点 `delete`，和删除头部节点 `deleteFromHead`，，其实更加完善的解决方案是提供一个遍历的方法，让我们可以获取到头，然后再删除他，这里简化成一个 `deleteFromHead` 方法：
+
+```typescript
+class DoubleLinkedList<K, V> {
+  private head: LinkedListNode<K, V> = new LinkedListNode(null, null)
+  private tail: LinkedListNode<K, V> = new LinkedListNode(null, null)
+  public size = 0
+
+  constructor() {
+    this.head.next = this.tail
+    this.tail.prev = this.head
+  }
+
+  public appendToTail(node: LinkedListNode<K, V>) {
+    const prev = this.tail.prev
+    prev.next = node
+    node.next = this.tail
+    node.prev = prev
+    this.tail.prev = node
+    this.size++
+  }
+
+  public delete(node: LinkedListNode<K, V>): void {
+    const prev = node.prev
+    const next = node.next
+    prev.next = next
+    next.prev = prev
+    node.prev = null
+    node.next = null
+    this.size--
+  }
+
+  public deleteFromHead(): LinkedListNode<K, V> {
+    if (!this.size) { return }
+    const first = this.head.next
+    this.delete(first)
+    return first
+  }
+}
+```
+
+接着实现哈希链表，除了哈希表的 `has` `get` `set` `delete` 方法以外，额外提供了 `deleteFirst` 方法，用于删去第一个节点，其实更加完善的解决方案是提供一个遍历的方法，让我们可以获取到第一个节点，然后再删除他，这里简化成一个 `deleteFirst` 方法：
+
+```typescript
+class LinkedHashMap<K, V> {
+  private map = new Map<K, LinkedListNode<K, V>>()
+  private list = new DoubleLinkedList<K, V>()
+
+  constructor() {
+  }
+
+  public has(key: K): boolean {
+    return this.map.has(key)
+  }
+
+  public get(key: K): V {
+    const node = this.map.get(key)
+    if (!node) { return }
+    return node.value
+  }
+
+  public get size() {
+    return this.map.size
+  }
+
+  public set(key: K, value: V) {
+    if (this.map.has(key)) {
+      const node = this.map.get(key)
+      node.value = value
+    } else {
+      const node = new LinkedListNode(key, value)
+      this.list.appendToTail(node)
+      this.map.set(key, node)
+    }
+  }
+
+  public delete(key: K): V {
+    const node = this.map.get(key)
+    if (!node) { return }
+    this.list.delete(node)
+    this.map.delete(key)
+    return node.value
+  }
+
+  public deleteFirst() {
+    if (!this.size) { return }
+    const node = this.list.deleteFromHead()
+    this.map.delete(node.key)
+  }
+}
+```
+
+最后实现 LRU 算法，在每次 `get` 和更新的时候将该值删掉并在链表尾部重新添加，增加的时候如果该缓存已满，就删掉链表头部的节点：
+
+```typescript
+class LRUCache {
+  private cache = new LinkedHashMap<number, number>()
+
+  constructor(public capacity: number) {
+  }
+
+  get(key: number): number {
+    if (!this.cache.has(key)) {
+      return -1
+    }
+    this.makeResent(key)
+    return this.cache.get(key)
+  }
+
+  put(key: number, value: number): void {
+    if (this.cache.has(key)) {
+      this.cache.set(key, value)
+      this.makeResent(key)
+      return
+    }
+    if (this.cache.size >= this.capacity) {
+      this.cache.deleteFirst()
+    }
+    this.cache.set(key, value)
+  }
+
+  // 删掉该值并在链表尾部重新添加
+  private makeResent(key: number): void {
+    const value = this.cache.delete(key)
+    this.cache.set(key, value)
+  }
+}
+```
+
+{% endnote %}
 
 # Binary Tree
 
@@ -2339,6 +2642,123 @@ function sortedArrayToBST(nums: number[]): TreeNode | null {
 ```
 {% endnote %}
 
+### Segment Tree
+
+> 线段树是一种二叉树，用来存储区间或线段，可以用来快速查询结构内包含某一点的所有区间
+
+比如对于数组 `arr = [10, 11, 12, 13, 14, 15]` 我们可以生成这样的一个树形结构，其中每个节点维护的就是这个节点所表示的区间总和。
+
+```text
+                               60[0,4]
+                33[0,2]                        27[3,4]
+       21[0,1]           12[2,2]     13[3,3]            7[4,4]
+10[0,0]   11[1,1]
+```
+
+我们可以用数组 $d$ 来存储线段树，其中 $d_i$ 表示的就是其区间内值的和，比如 $d_0$ 表示区间 $[0,4]$ 的总和。
+
+若 $d_i$ 保存区间 $[s,t]$ 的总和，那么：
+
+他的左孩子 $d_{2i}$ 则保存区间 $[s, {s+t\over2}]$ 的总和；右孩子 $d_{2i+1}$ 保存区间 $[{s+t\over2}+1, t]$ 的总和。
+
+下面的代码是线段树的 JavaScript 实现：
+
+{% note Code %}
+
+```typescript
+class SegmentTree {
+  private d = []
+  private n = 0
+  
+  constructor(arr: number[]) {
+    this.build(arr, 0, arr.length - 1, 0)
+  }
+  
+  // 对 arr 的区间 [start, end] 建立线段树
+  // 当前根节点的编号为 p
+  build(
+    arr: number[],
+    start: number,
+    end: number,
+    p: number
+  ) {
+    this.n = arr.length
+    if (start === end) {
+      d[p] = arr[start]
+      return
+    }
+    // 类似二分查找，找到中点的位置，下面相当于 start + Math.floor((end - start) / 2)
+    let mid = start + ((end - start) >> 1)
+    // 递归对左右区间建树
+    this.build(arr, start, mid, p * 2)
+    this.build(arr, mid + 1, end, p * 2 + 1)
+    d[p] = d[p * 2] + d[p * 2 + 1]
+  }
+  
+  // 在区间 [start,end] 中查询 [queryL,queryR] 区间的总和
+  // 当前根节点编号为 p
+  getSum(
+    queryL: number,
+    queryR: number,
+    start: number = 0,
+    end: number = this.n - 1,
+    p: number = 0
+  ) {
+    // 当前区间为查询区间的子区间，返回当前区间的总和
+    if (queryL <= start && end <= queryR) {
+      return d[p]
+    }
+    let mid = start + ((end - start) >> 1)
+    let sum = 0
+    // 左孩子的区间与查询区间有交集，递归查询左孩子
+    if (queryL <= mid) {
+      sum += getSum(queryL, queryR, start, mid, p * 2)
+    }
+    // 右孩子的区间与查询区间有交集，递归查询右孩子
+    if (queryR > mid) {
+      sum += getSum(queryL, queryR, mid + 1, end, p * 2 + 1)
+    }
+    return sum
+  }
+}
+```
+
+{% endnote %}
+
+# Tree
+
+除了二叉树以外，还有一些常用的树，比如 B Tree、B+ Tree 等。
+
+## B Tree
+
+B 树（B tree）是一种自平衡的树，能够保持数据有序。这种数据结构能够让查找数据、顺序访问、插入数据及删除的动作，都在对数时间内完成。
+
+与普通的二叉树不同，B 树有一些额外的特点：
+
+- B 树的每个节点可以拥有两个以上的子节点；
+- B 树中拥有 $k$ 个子节点的非叶节点，拥有 $k - 1$ 个键，且他们升序排列，比如 $7, 16$；
+- 每个键的左子树中的所有键都小于他，右子树中所有键都大于他；
+- 所有叶节点都位于同一层。
+
+
+
+![B Tree](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/b-tree-1.svg)
+
+// TBC
+
+## B+ Tree
+
+B+ 树（B+ Tree）是 B 树的变种，与 B 树有以下不同：
+
+- B 树上的每个节点可以都可以存键和数据，但是 B+ 树的内部节点（非叶结点、索引节点）只存索引，而数据都存在叶节点上；
+- 每个键的左子树中的所有键都小于他，右子树中所有键都 **大于等于** 他；
+- 每个叶节点都存有相邻叶节点的指针，叶节点本身按照键从小到大排列；
+- 父结点存有右孩子的第一个元素的索引。
+
+![B+ Tree](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/bplus-tree-1.png)
+
+// TBC
+
 # Heap
 
 ## Priority Queue & Heap
@@ -2553,7 +2973,28 @@ function dfs(params) {
 }
 ```
 
+### Breadth First Search
 
+BFS 是一圈一圈地搜索，比较适合解决两个点之间最短路径的问题。因为由于是一圈一圈地搜索，第一次搜到的时候，就是路径最短的时候。
+
+**广度优先搜索习惯上用队列来实现**（不过用栈也可以，用栈的话就是一圈顺时针、一圈逆时针地搜）。比树的广度优先搜索需要额外注意的一点是，由于可能访问到之前的节点，所以需要将已访问过的节点标记一下，防止重复访问。
+
+```typescript
+function bfs() {
+  const queue = [start]
+  visited = new Set()
+  while (queue.length) {
+    const current = queue.shift()
+    if (visited.has(current.key)) {
+      continue
+    }
+    visited.add(current.key)
+    for (const neighbor of neighbors) {
+      queue.push(neighbor)
+    }
+  }
+}
+```
 
 ## Shortest Path
 
@@ -2658,6 +3099,103 @@ function dijkstra(edges, n, source) {
   // TBC 
 }
 ```
+
+# Disjoint-Set Data Structure
+
+> 由于支持合并和查询两种操作，并查集也称 Union-Find Data Structure 或 Merge-Find Set。
+>
+> 在需要判断两个元素是否在同一个集合时，可以使用并查集。
+
+并查集实现为一个森林，**其中的每棵树表示一个集合**，树中的节点对应集合中的元素。**如果两个节点在同一个根节点下，则这两个节点属于一个集合。**
+
+下面是一个内部元素全部为数字类型的并查集的 JavaScript 实现，**注意集合中元素是不重复的，所有种类的集合都有这个性质，并查集也不例外**：
+
+```typescript
+class DisjointSet {
+  // 该数组记录了每个节点的父子关系，这个数组表示了一个森林
+  private parent: number[] = []
+  
+  // 初始化并查集，将每一个节点的父结点设置为自己（每个节点为一个集合）
+  // n 为该森林的最大容量
+  constructor(n = 1005) {
+    for (let i = 0; i < n; i++) {
+      parent[i] = i
+    }
+  }
+  
+  // 一直递归向上找到该元素的根节点
+  public find(x: number) {
+    return parent[x] === x
+      ? x
+      : parent[x] = find(parent[x])  // 顺便进行路径压缩，让节点与根节点直接相连，提高性能
+  }
+   
+  // 将 y 所在的集合与 x 所在的集合合并
+  // 也就是将 x 的根节点作为 y 的根节点的父结点
+  public unite(x: number, y: number) {
+    parent[find(x)] = find(y)
+  }
+  
+  // 判断是否在同一个集合
+  // 也就是判断他们的根节点是否相同
+  public isSame(x: number, y: number) {
+    return find(x) === find(y)
+  }
+}
+```
+
+在合并的时候除了路径压缩以外还有另外一种方法，称为 **启发式合并** 或 **按秩合并**。秩就是树的高度，所以这种方法简单来说就是将矮的那棵树合并到高的那棵树中，这样合并的结果会比较矮。注意在使用启发式合并的时候就不能使用路径压缩了，因为这样秩的记录就会不准。
+
+{% note Code %}
+
+```typescript
+class DisjointSet {
+  // 该数组记录了每个节点的父子关系，这个数组表示了一个森林
+  private parent: number[] = []
+  // 记录了树的高度，即秩
+  private rank: number[] = []
+  
+  // 初始化并查集，将每一个节点的父结点设置为自己（每个节点为一个集合）
+  // n 为该森林的最大容量
+  constructor(n = 1005) {
+    for (let i = 0; i < n; i++) {
+      parent[i] = i
+      rank[i] = 1  // 也可以不写
+    }
+  }
+  
+  // 一直递归向上找到该元素的根节点
+  public find(x: number) {
+    return parent[x] === x
+      ? x
+      : find(parent[x])  // 不能进行路径压缩
+  }
+   
+  // 将 y 所在的集合与 x 所在的集合合并
+  public unite(x: number, y: number) {
+    x = find(x)
+    y = find(y)
+    // 将秩小的合并入秩大的集合中
+    if (rank[x] <= rank[y]) {
+      parent[x] = y
+    } else {
+      parent[y] = x
+    }
+    // 秩相等的时候，由于是 x 合并入 y 的，所以将 y 的秩 + 1
+    if (rank[x] == rank[y] && x !== y) {
+      rank[y]++
+    }
+  }
+  
+  // 判断是否在同一个集合
+  // 也就是判断他们的根节点是否相同
+  public isSame(x: number, y: number) {
+    return find(x) === find(y)
+  }
+}
+```
+
+{% endnote %}
 
 # Backtracing
 
