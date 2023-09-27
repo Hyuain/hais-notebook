@@ -1840,6 +1840,10 @@ class Queue {
 
 > **哈希链表（Linked Hash Map）**是将哈希表与链表组合起来使用的一种数据结构，在设计 LRU 缓存的时候有妙用。
 
+## LRU
+
+> [LeetCode.146 LRU Cache](https://leetcode.cn/problems/lru-cache/description)
+
 **LRU（Least Recently Used）**是一种常见的缓存策略。由于缓存的容量是有限的，需要在缓存容量满了的时候清理掉上次使用时间距离现在最久的缓存，给新的数据腾出空间。
 
 可以用一个类 `LRUCache` 来进行示意，他需要 `capacity` 作为初始化参数，表示该内存的最大容量，然后提供 `get` 和 `put` 两个方法，分别用于获取缓存数据和更新缓存数据：
@@ -1861,9 +1865,9 @@ class LRUCache {
 
 ![哈希链表](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/1647580694-NAtygG-4.jpg)
 
-在实现 LRU 时，我们将链表尾部的数据视为最新的，如果数据被访问了，就提升到链表尾部；如果链表满了，就删除链表头部的节点即可。
+**在实现 LRU 时，我们将链表尾部的数据视为最新的，如果数据被访问了，就提升到链表尾部；如果链表满了，就删除链表头部的节点即可。**
 
-Java 中内置了 `LinkedHashList` 类，但在在 JavaScript 中，我们需要从双向链表开始实现。
+Java 中内置了 `LinkedHashList` 类，但在 JavaScript 中，我们需要从双向链表开始实现。
 
 {% note Code %}
 
@@ -2005,6 +2009,137 @@ class LRUCache {
   private makeResent(key: number): void {
     const value = this.cache.delete(key)
     this.cache.set(key, value)
+  }
+}
+```
+
+{% endnote %}
+
+## LFU
+
+> [LeetCode.460 LFU Cache](https://leetcode.cn/problems/lfu-cache/)
+
+**LFU（Least Frequently Used）**是另一种缓存策略，他会淘汰访问频率最低的元素，如果频率相同，淘汰最久的那个元素。
+
+同样我们用类 `LFUCache` 来进行示意，他需要 `capacity` 作为初始化参数，表示该内存的最大容量，然后提供 `get` 和 `put` 两个方法，分别用于获取缓存数据和更新缓存数据：
+
+```typescript
+class LRUCache {
+  public capacity: number
+  public get(key :number): number {}
+  public put(key: number, value: number): void {}
+}
+```
+
+但是 LFU 比 LRU 复杂一些，需要用 **两个哈希表 + N 个双向链表** 才能实现。
+
+- **Key-Value 哈希表**
+  - 哈希表的 Key 为 **缓存的 Key**
+  - 哈希表的 Value 中保存了一个 **Node**，其中包含 **缓存的 Key、缓存的 Value、使用的频率**，这个 Node 也会出现在第二个哈希表（频率哈希表）中
+- **频率哈希表**
+  - 哈希表的 Key 为 **频率**
+  - 哈希表的 Value 是一个 **双向链表**，链表中的节点就是 KV 哈希表中的提到的 **Node**
+
+![LFU.jpg](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/bb3811c03de13fc8548a01c9ab094f5ed38d7ef9b5f5c6ef82340e222750ae92-3.jpg)
+
+**此外我们还需要维护一个 `minFreqency` 变量来记录当前哈希表中的最低频率，来实现 O(1) 复杂度淘汰元素：**
+
+- 更新/查找的时候，将元素频率 + 1，如果 `minFreq` 已经不在频率哈希表中了，就将 `minFreqency + 1`；
+- 插入的时候，将 `minFreqency` 修改为 `1`。
+
+由于 LRU 并没有提供 `delete` 接口，因此不可能存在主动将某个频率删除掉、导致 `minFreq` 找不到的情况，`minFreq` 肯定会跟着元素不停向上加。
+
+{% note Code %}
+
+双向链表相关的部分（`LinkedListNode` 和 `DoubleLinkedList`）与 LRU 基本一致，不过 `LinkedListNode` 中增加了 `frequency` 属性，表示该元素的使用频率。
+
+```typescript
+class LinkdedListNode<K, V> {
+  constructor(
+    public key: K,
+    public value: V,
+    public frequency: number = 0,
+    public next: LinkedListNode<K, V> = null,
+    public prev: LinkedListNode<K, V> = null,
+  ) {}
+}
+```
+
+然后我们直接在 `LFUCache` 类中来实现：
+
+```typescript
+class LFUCache {
+  private kvMap = new Map<number, LinkedListNode<number, number>>()
+  private freqMap = new Map<number, DoubleLinkedList<number, number>>()
+  private minFrequency: number
+
+  constructor(public capacity: number) {
+
+  }
+
+  get(key: number): number {
+    if (!this.kvMap.has(key)) {
+      return -1
+    }
+    const node = this.kvMap.get(key)
+    // 增加频率
+    this.increseFrequency(node)
+    return node.value
+  }
+
+  put(key: number, value: number): void {
+    if (!this.capacity) { return }
+    // 如果存在就增加频率
+    if (this.kvMap.has(key)) {
+      const node = this.kvMap.get(key)
+      node.value = value
+      this.increseFrequency(node)
+      return
+    }
+    // 如果超出容量就删除掉频率最低的中最靠近头部的
+    if (this.kvMap.size >= this.capacity) {
+      const list = this.freqMap.get(this.minFrequency)
+      const node = list.deleteFromHead()
+      if (!list.size) {
+        this.freqMap.delete(this.minFrequency)
+      }
+      this.kvMap.delete(node.key)
+    }
+    // 插入新结点，并将 minFrequency 标记为 1
+    const newNode = new LinkedListNode(key, value, 1)
+    this.addToFreqMap(newNode)
+    this.kvMap.set(key, newNode)
+    this.minFrequency = 1
+  }
+
+  // 增加频率
+  private increseFrequency(node: LinkedListNode<number, number>) {
+    // 将老的频率链表找到，删除节点
+    const oldFrequency = node.frequency
+    const list = this.freqMap.get(oldFrequency)
+    list.delete(node)
+    node.frequency++
+    // 将节点插入新的频率链表尾部
+    this.addToFreqMap(node)
+    // 删除空的频率链表，如果删除的频率链表是 minFrequency，就将 minFrequency + 1
+    if (!list.size) {
+      this.freqMap.delete(oldFrequency)
+      if (oldFrequency === this.minFrequency) {
+        this.minFrequency++
+      }
+    }
+  }
+
+  // 在频率链表中新插入一项
+  private addToFreqMap(node: LinkedListNode<number, number>) {
+    if (this.freqMap.has(node.frequency)) {
+      const list = this.freqMap.get(node.frequency)
+      list.appendToTail(node)
+      return
+    }
+    const list = new DoubleLinkedList<number, number>()
+    list.appendToTail(node)
+    this.freqMap.set(node.frequency, list)
   }
 }
 ```
@@ -2949,6 +3084,130 @@ function topKFrequent(nums: number[], k: number): number[] {
 
 # Graph
 
+## Topological Sorting
+
+> 拓扑排序（Topological Sorting）指的是给有向无环图（Directed Acyclic Graph, DAG）的所有节点排序。
+
+下面用 [LeetCode.207 Course Schedule](https://leetcode.cn/problems/course-schedule) 为例介绍拓扑排序。该题有 BFS 和 DFS 两种解法，通过拓扑排序看是否有环，有环则该课程表无法实现。
+
+> 此外还有还可参考 [LeetCode.210 Course Schedule II](https://leetcode.cn/problems/course-schedule-ii)，该题需要输出顺序
+
+两种解法都需要借助 **邻接表（Adjacency List）**，或者 **逆邻接表（Inverse Adjacency List）**来降低时间复杂度，比如：
+
+```javascript
+const edges = [[0, 1], [0, 2], [1, 3]]
+const adjacency = [
+  [],
+  [0],
+  [0],
+  [1],
+]
+```
+
+上面是一个 **逆邻接表** 的演示，记录了 **指向该顶点的所有边**，而 **邻接表** 则是会记录 **从该顶点出发的所有边**。
+
+### BFS TopSort
+
+BFS 算法除了逆邻接表以外，还需要 **入度表（Indegrees List）**，入度表将会记录每个顶点的入度（指向该顶点的边数）。
+
+```typescript
+function canFinish(n: number, prerequisites: number[][]): boolean {
+  // 入度表
+  const indegrees = new Array(n).fill(0)
+  // 邻接表
+  const adjacency = new Array(n).fill(0).map((_) => [])
+  
+  // 构建入度表和邻接表
+  for (let i = 0; i < prerequisites.length; i++) {
+    const [cur, pre] = prerequisites[i]
+    indegrees[cur]++
+    adjacency[pre].push(cur)
+  }
+  
+  // BFS 需要借助队列
+  const queue = []
+  
+  // 先取得所有入度为 0 的顶点，他们是拓扑排序的开始
+  for (let i = 0; i < indegrees.length; i++) {
+    if (indegrees[i] === 0) {
+      queue.push(i)
+    }
+  }
+  
+  // BFS 拓扑排序
+  while (queue.length) {
+    const pre = queue.shift()
+    n--
+    for (let i = 0; i < adjacency[pre]; i++) {
+      const cur = adjacency[i]
+      indegrees[cur]--
+      if (indegrees[cur] === 0) {
+        queue.push(cur)
+      }
+    }
+  }
+  
+  // 如果 n 还有剩下，那么说明有的课程永远无法到达（成环了）
+  return !n
+}
+```
+
+### DFS TopSort
+
+DFS 算法不需要借助入度表，但是需要借助 `flags` 数组来对每个节点的状态进行标记，`flags[i]` 代表节点 `i` 的状态：
+
+- 未被 DFS 访问：`flags[i] === 0`；
+- 已被其他节点启动的 DFS 访问：`flags[i] === -1`；
+- 已被当前节点启动的 DFS 访问：`flags[i] === 1`。
+
+```typescript
+function canFinish(n: number, prerequisites: number[][]): boolean {
+  // 邻接表
+  const adjacency = new Array(n).fill(0).map((_) => [])
+  // 记录状态
+  const flags = new Array(n).fill(0)
+  
+  // 构建邻接表
+  for (let i = 0; i < prerequisites.length; i++) {
+    const [cur, pre] = prerequisites[i]
+    adjacency[pre].push(cur)
+  }
+  
+  // 如果成环了，返回 false
+  function dfs(start: number): boolean {
+    // 该节点早已被别人访问过
+    if (flags[start] === -1) {
+      return true
+    }
+    // 该节点我之前访问过，成环了
+    if (flags[start] === 1) {
+      return false
+    }
+    // 将该节点标记为我方问过了
+    flags[start] = 1
+    for (let i = 0; i < adjacency[i].length; i++) {
+      if (!dfs(adjacency[i])) {
+        return false
+      }
+    }
+    // 回溯，调整节点访问状态为已被别人访问过，方便其他节点进行判断
+    flags[start] = -1
+    return true
+  }
+  
+  // 对每个节点进行 DFS
+  for (let i = 0; i < n; i++) {
+    if (!dfs(i)) {
+      return false
+    }
+  }
+  
+  return true
+}
+```
+
+
+
 ## Search
 
 跟树类似，图有深度优先搜索（DFS）和广度优先搜索（BFS）两种搜索方式。深度优先搜索就是先沿着某一条路径探索到底，广度优先就是一层一层地先将当前节点可触达的节点处理完成。
@@ -3097,6 +3356,39 @@ function dijkstra(edges, n, source) {
   const distance = new Array(n).fill(Infinity)
   distance[source] = 0
   // TBC 
+}
+```
+
+### Floyd
+
+Floyd 算法是一种非常简单的求任意两个节点之间最短路径的算法。他的时间复杂度是 O(n^3)，但比较容易实现。适用于任何有最短路径的图，不管有向无向，边权正负，但不能有负环（不存在最短路）。比如 [LeetCode.1462 Course Schedule IV](https://leetcode.cn/problems/course-schedule-iv) 可以用 Floyd 算法来解决。
+
+Floyd 算法实际上是多维动态规划算法：
+
+- 定义数组 `f[k][x][y]`，表示节点 `x` 到节点 `y`，只允许经过 `1` 到 `k` 的最短路（显然节点 `f[n][x][y]` 即为 `x` 到 `y` 的最短路）；
+
+- 初始化 `f[0][x][y]`，当 `x` 等于 `y` 时为 `0`，`x` 与 `y` 直接相连时为他们的边权，否则为 `Infinity`；
+- `f[k][x][y] = min(f[k - 1][x][y], f[k - 1][x][k] + f[k - 1][k][y])`，考虑经过和不经过 `k` 两种情况。
+
+```javascript
+for (k = 1; k <= n; k++) {
+  for (x = 1; x <= n; x++) {
+    for (y = 1; y <= n; y++) {
+      f[k][x][y] = Math.min(f[k - 1][x][y], f[k - 1][x][k] + f[k - 1][k][y])
+    }
+  }
+}
+```
+
+可以看出数组的第一维没什么用，可以用滚动数组优化掉：
+
+```javascript
+for (k = 1; k <= n; k++) {
+  for (x = 1; x <= n; x++) {
+    for (y = 1; y <= n; y++) {
+      f[x][y] = Math.min(f[x][y], f[x][k] + f[k][y])
+    }
+  }
 }
 ```
 

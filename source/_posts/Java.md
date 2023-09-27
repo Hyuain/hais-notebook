@@ -3,7 +3,6 @@ title: Java
 date: 2023-02-09 17:14:22
 categories:
   - [全栈]
-
 ---
 
 Object Oriented Design, Java, Maven, Spring Boot.
@@ -46,11 +45,20 @@ class Test {
 | `null`      | `null`                                                    |
 | `undefined` |                                                           |
 
+**强制类型转换**
+
+Java 中两个操作数如果是不同的类型，会自动进行无信息丢失的转换（比如 `int` `float` 转换为 `double` 就是无信息丢失的）。如果我们需要进行可能损失信息的类型转换（比如 `int` 转换为 `float`），需要显式地进行强制类型转换：
+
+```java
+double x = 9.997;
+int nx = (int) x;   // 9，会直接截掉小数部分
+```
+
 **复杂数据类型**
 
-| JavaScript    | Java                      |
-| ------------- | ------------------------- |
-| `new Array()` | `int[] ary = new int[10]` |
+| JavaScript    | Java                                                         |
+| ------------- | ------------------------------------------------------------ |
+| `new Array()` | `int[] ary = new int[10]`<br />`int[] ary = { 2, 3, 5 };`<br />`ary = new int[] { 2, 3, 5 };` |
 
 **包装数据类型**
 
@@ -71,6 +79,29 @@ int value2 = integer.intValue();
 - `Integer` 默认值是 `null`，而 `int` 的默认值是 `0`；
 - `Integer` 最好不要使用 `==` 来判断相同，需要使用 `equals()` 等。
 
+**字符串**
+
+Java 中的 `String` 与 JavaScript 中的高度类似，字符串内容本身也是不可变的，拼接、取子串等均会产生一个新的字符串。注意：
+
+- Java 中没有 `slice`，只有 `substring`；
+
+- 字符串之间不能用 `==` 判断是否相等，需要使用 `equals()`；
+
+- Java 中可以使用 `str.length() === 0` 或 `str.equals("")` 来判断字符串是空串，但注意还有可能为 `null`，因此一般可以用这种条件：
+  ```java
+  if (str != null && str.length() != 0)
+  ```
+
+- Java 中如果需要由较短的字符或字符串拼接一个大的字符串可以使用 `StringBuilder`，通过 `builder.append(str)` 方法来向其中添加字符，然后使用 `builder.toString()` 方法来得到最终的字符串。不过该类只能在单线程中使用，在多线程中可以使用 `StringBuffer`，他的效率稍微低一些。
+
+**运算符**
+
+Java 中除了没有 `===` 以外，与 JavaScript 一致，布尔运算符也有短路逻辑。
+
+**数学函数**
+
+Java 中也有 `Math` 类提供一些数学函数，包括 `pow` `sqrt` `round` `abs` `max` `ceil` 等，与 JavaScript 高度类似。
+
 **变量与函数声明**
 
 Java 与 TypeScript 类似，都需要声明类型，不过 TypeScript 是放在冒号后面，而 Java 中则是写在前面，就像这样：
@@ -81,6 +112,8 @@ String str = "Hello!";
 // final 关键字表示不可更改
 final double PI = 3.14;
 ```
+
+Java 中不允许嵌套作用域声明同名变量。
 
 **模块系统**
 

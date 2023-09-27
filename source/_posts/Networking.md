@@ -4,6 +4,7 @@ date: 2023-01-18 21:37:30
 categories:
   - [计算机]
 mathjax: true
+
 ---
 
 本文几种了计算机网络的相关知识，主要包括协议栈介绍、应用层、传输层和网络安全相关的知识，本文将会不断扩充积累。
@@ -55,6 +56,8 @@ mathjax: true
 ## HTTP
 
 > Web 的应用层协议是超文本传输协议（HyperText Transfer Protocol, HTTP）
+>
+> Fiddler
 
 ### HTTP History
 
@@ -64,34 +67,15 @@ mathjax: true
 - HTTP 2.0：2015，HTTP 1.1 的扩展，于2015年5月提出
 - HTTP 3.0：QUIC 协议（一种传输层协议，TCP的效率比较低，QUIC 为了减小 TCP 的延迟和带宽开销）
 
-### HTTP 协议结构和通讯原理
+### Resources and URIs
 
-#### HTTP 协议特点
+HTTP 请求的目标被称为 **资源**，资源可以是文档、图片或者任何东西，每个资源都由一个 **URI（Uiform Resource Identifier）**唯一确定。
 
-- **支持客户/服务器模式**
-- **简单快速**
-    - 客户向服务器请求服务时，只需要传送请求方法和路径
-    - GET、HEAD、POST
-    - HTTP服务器程序规模小，因此通信速度块
-- **灵活**
-    - 允许传输任意类型的数据对象
-	- 正在传输的类型由 Content-Type 加以标记
-- **无连接**
-    - 无连接的含义是限制 **每次连接只处理一个请求**
-    - 服务器处理完客户的请求，并收到客户的应答后，即断开连接——keep alive 功能使得连接（TCP）不断开，有规定的超时时间
-    - 采用这种方式可以节省传输时间
-- **无状态**
-    - 协议对事务的处理能力 **没有记忆能力**，每个请求都是 **独立的**
-    - 如果后续处理需要前面的信息，则必须重传，导致每次连接的数据量增大
-	- 另一方面，在服务器不需要先前信息时它的应答就较快
+URI 可以分为 **URL（Uniform Resource Locator）**和 **URN（Uniform Resource Name）**两种
 
-#### URI 和 URL
+- URL 就是我们所熟知的 **Web 地址（Web Address）**；
 
-> 问题：我们在浏览器的 Web 地址应该叫 URL 还是 URI？
-> - URI：可以分为 URL 和 URN，或同时具备 locators 和 names 特性的一个东西
-> - URN 像一个人的名字，URL 像一个人的地址；URN 确定了东西的身份，URL 提供了找到它的方式（提供了访问机制，比如说协议）
-
-URL 实际上是 URI 的一个子集，除识别资源外还提供定位资源的方法。 
+- URN 则是在一个特定的命名空间下面指定的资源名，比如 `urn:isbn:9780141036144`。
 
 下面是一个 URI 的组成：
 
@@ -111,18 +95,76 @@ scheme              path
 
 举一个我们常见的 URL（URI） 的例子：
 
-https://zh.wikipedia.org/w/index.php?title=Special:随机页面#5
+`https://zh.wikipedia.org/w/index.php?title=Special:随机页面#5`
 
 1. `https`：协议
 2. `zh.wikipedia.org`：域名
 3. `/w/index.php`：路径（不同的页面）
 4. `?title=Special:随机页面`：查询参数（相同页面，不同内容）
 5. `#5`：锚点（相同页面，相同内容，不同位置）
-6. 其中若不写端口号，则表示使用 https 对应的默认端口号 443
+6. 其中若不写端口号，则表示使用 HTTPS 对应的默认端口号 443
 
-#### HTTP 报文结构
+#### Data URLs
 
-##### 请求报文
+以 `data:` Scheme 为开头的 URL 被称为 Data URL，这种 URL 内部就蕴藏着信息，使得我们可以将小文件嵌入文档中：
+
+```text
+data:[<mediatype>][;base64],<data>
+```
+
+其中 `mediatype` 是一个 MIME 类型字符串，比如 `image/jpeg` 表示一个 JPEG 格式的视频。如果省略，则默认为 `text/plain;charset=US-ASCII`。
+
+下面是一些例子：
+
+```text
+data:,Hello%2C%20World%21
+data:text/plain;base64,SGVsbG8sIFdvcmxkIQ==
+data:text/html,%3Ch1%3EHello%2C%20World%21%3C%2Fh1%3E
+data:text/html,%3Cscript%3Ealert%28%27hi%27%29%3B%3C%2Fscript%3E
+```
+
+注意一般需要将内容使用转换成 Base64 编码，否则中间的空格、换行、特殊字符等容易出现问题，而且 Data URL 的长度限制在不同的浏览器中会有所不同。
+
+#### MIME Types
+
+> **媒体类型（Media Type）**或 **MIME 类型（Multipurpose Internet Mail Extensions Type）**表明了文档、文件或各种二进制内容的性质和格式。
+
+MIME 类型通常由以下两部分组成：
+
+```text
+type/subtypes
+```
+
+后面也可以继续加一些参数：
+
+```text
+type/subtypes;parameter=value
+```
+
+### Basics of HTTP 
+
+#### HTTP Overview
+
+- **支持客户/服务器模式**
+- **简单快速**
+  - 客户向服务器请求服务时，只需要传送请求方法和路径
+  - GET、HEAD、POST
+  - HTTP服务器程序规模小，因此通信速度块
+- **灵活**
+  - 允许传输任意类型的数据对象
+  - 正在传输的类型由 Content-Type 加以标记
+- **无连接**
+  - 无连接的含义是限制 **每次连接只处理一个请求**
+  - 服务器处理完客户的请求，并收到客户的应答后，即断开连接——keep alive 功能使得连接（TCP）不断开，有规定的超时时间
+  - 采用这种方式可以节省传输时间
+- **无状态**
+  - 协议对事务的处理能力 **没有记忆能力**，每个请求都是 **独立的**
+  - 如果后续处理需要前面的信息，则必须重传，导致每次连接的数据量增大
+  - 另一方面，在服务器不需要先前信息时它的应答就较快
+
+#### HTTP Messages
+
+##### Request Message
 
 ```text
 【请求行】POST（请求方法） /webTours/login.pl（请求 URI） HTTP/1.1（HTTP 协议及版本）
@@ -149,7 +191,7 @@ request.query // 只有查询参数
 request.headers['Accept']
 ```
 
-##### 响应报文
+##### Response Message
 
 ```text
 【响应行】HTTP/1.1（报文协议及版本） 200 Ok（状态码及状态描述）
@@ -170,52 +212,37 @@ response.write('内容') // 内容可以追加
 注意 `path` 都是以 `/` 开头的
 {% endnote %}
 
-#### HTTP 报文头
+#### HTTP Headers
 
 - **Accept**：浏览器端可以接收的媒体类型
-    - **Accept: text/html**，代表浏览器可以接收服务器回发的类型为 text/html 类型的数据，如果服务器无法返回此类型，应该返回一个 406 错误（Non Acceptable）
-    - **Accept: */***，代表浏览器可以处理所有类型
-    - 可以设置优先级（权重值q，取0~1.000）
+  - **Accept: text/html**，代表浏览器可以接收服务器回发的类型为 text/html 类型的数据，如果服务器无法返回此类型，应该返回一个 406 错误（Non Acceptable）
+  - **Accept: */***，代表浏览器可以处理所有类型
+  - 可以设置优先级（权重值q，取0~1.000）
 - **Accept-Encoding**：浏览器申明自己接收的编码（压缩）方法（gzip、deflate）
 - **Accept-Language**：浏览器申明自己接收的语言
-    - **Accept-Language**: zh-cn,zh;q=0.7,en-us,en;q=0.3 
+  - **Accept-Language**: zh-cn,zh;q=0.7,en-us,en;q=0.3 
 - **Connection**
-    - **Connection: keep-alive**，TCP 连接不会关闭，如果客户端再次访问这个服务器上的网页，会继续使用这一条已经建立的连接
-    - **Connection: close**，一个 Request 完成后，TCP 连接关闭
+  - **Connection: keep-alive**，TCP 连接不会关闭，如果客户端再次访问这个服务器上的网页，会继续使用这一条已经建立的连接
+  - **Connection: close**，一个 Request 完成后，TCP 连接关闭
 - **Host**：指定被请求资源的 Internet 主机和端口号，通常从 URL 中提取出来
 - **Referer**：一般会带上此字段，告诉服务器是从哪个页面链接过来的
 - **User-Agent**：告诉 HTTP 服务器，客户端使用的操作系统和浏览器名称和版本
 - **Content-Type**：说明了报文体对象的媒体类型
-    - **text/html**：HTML
-    - **text/plain**：纯文本
-    - **text/xml**：XML
-    - **image/gif**：GIF图像
-    - **image/jpeg**：JPG图像
-    - **image/png**：PNG图像
-    - **application/xhtml+xml**：XHTML
-    - **application/xml**：XML
-    - **application/atom+xml**：Atom XML
-    - **application/json**：JSON
-    - **application/pdf**：PDF
-    - **application/msword**：WORD 
-    - **application/octet-stream**：二进制数据流
-    - **application/x-www-form-urlencoded**：表单提交
-    
 
-#### HTTP 请求方法
+#### HTTP Methods
 
 - **GET**：请求访问已被 URI 识别的资源
-    - 提交的内容是 URL 的一部分，长度限制、安全性
+  - 提交的内容是 URL 的一部分，长度限制、安全性
 - **POST**：与 GET 功能类似，一般用来传输实体的主体，主要目的是提交数据，不是获取响应主体的内容
 - **PUT**：与 POST 最大的不同是，PUT 是幂等（不管重复多少次操作，都是实现相同的结果）的，POST 是不幂等的，因此一般创建对象用 POST，更新对象用 PUT
 - **HEAD**：类似于GET，只不过返回的响应中没有具体的内容，用于获取报头（测试超链接的有效性）
 - **DELETE**：请求删除资源，与 PUT 相反，并且没有验证机制，因此现在一般不用
 - **OPTIONS**：用来查询针对请求 URI 指定的资源支持的方法
-    - 服务器返回一个`Allow: GET, HEAD, POST`等等
+  - 服务器返回一个`Allow: GET, HEAD, POST`等等
 - **TRACE**：回显服务器收到的请求，主要用于测试或诊断，但容易受到 XST 攻击，一般不用
 - **CONNECT**：开启客户端与所请求资源之间的双向沟通的通道，可以用来创建隧道，一般用于 HTTP 代理
 
-#### HTTP 状态码
+#### HTTP Status Codes
 
 ![HTTP状态码](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/HTTP-StatusCode.png)
 
@@ -231,207 +258,173 @@ response.write('内容') // 内容可以追加
 - **500 Internal Server Error**，服务器内部错误，无法完成请求
 - **502 Bad Gateway**，充当网关或代理的服务器，从远端服务器接收到了一个无效的请求
 
-#### HTTP 状态管理：Cookie 和 Session
+#### Connection Management in HTTP/1.x
 
-##### Cookie
+HTTP/1.0 中默认使用 **短连接（Short-Lived Connections）**，而 HTTP/1.1 则引入了 **长链接（Persistent Connection）**和 **流水线模型（HTTP Pipelining）**。
 
-W3C 推行的一种机制，客户端请求服务器，如果服务器需要记录该用户的状态，就向客户端浏览器颁发一个Cookie，
-客户端浏览器会把Cookie保存起来，浏览器再请求的时候，就会把请求的网址连同Cookie一同提交给服务器
+![Compares the performance of the three HTTP/1.x connection models: short-lived connections, persistent connections, and HTTP pipelining.](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/http1_x_connections.png)
 
-##### Session
+HTTP/1.1 中默认使用长连接（HTTP/1.0 中需要将 `Connection` 设置为除了 `close` 以外的其他值，比如 `retry-after` 来开启），借助 TCP 的性能增强功能让连接得以保持。服务器可以使用 `Keep-Alive` 头来指定连接需要保持的最少时间。
 
-另一种记录客户状态的机制，服务器把客户端信息以某种形式记录在服务器上
-客户端可以以 Cookie、URL 重写或隐藏表单的形式保存 Session ID
+长连接在空闲的时候也会占用服务器的资源，因此服务器可能会更容易遭受 DoS 攻击。
 
-![Session与Cookie](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Session-Cookie.png)
+HTTP Pipelining 在现代浏览器中并不是默认开启的，因为他实现起来比较复杂，并且容易收到 **队头阻塞（HOL）**问题的影响。他现在已经被 HTTP/2.0 更合理的多路复用算法取代了。
 
-##### Cookie 和 Session
+### HTTP Features
 
-- 有效期不同
-    - Cookie 的有效时间久，或者可以设置到永远
-    - Session 的有效期
-        - 超时自动失效，通常不长
-		- 程序调用 `HttpSession.invalidate()` 主动失效（退出、注销等操作）
-        - 服务器进程被终止
-    - 存放位置不同，Cookie 在客户端，Session 在服务器端
-	- 安全性（隐私策略）不同，用户可以更改 Cookie
-	- 对服务器压力不同
+#### Cross-Origin Resource Sharing
 
-### HTTP 协议的特性
+> **跨域资源共享（Cross-Origin Resource Sharing, CORS）** 是一种基于 HTTP Header 的机制，允许服务器指明除了自己以外的哪些源（Origin）可以访问自己的资源。比如是否允许 `https://domain-a.com` 中的 JavaScript 代码请求 `https://domain-b.com/data.json`。
 
-#### HTTP 协议中的编码和解码
+跨域交互通常可以分为三类：
 
-> 码 = 字符集+编码
+- **跨域写操作（Cross-Origin Writes）**，通常是被允许的，比如链接、重定向、表单提交等，有的请求需要预检；
+- **跨域资源嵌入（Cross-Origin Embeding）**，通常是被允许的；
+- **跨域读操作（Cross-Origin Reads）**，一般是不被允许的，但可以通过嵌入图片来巧妙访问。
 
-##### 编码规范
+**跨域资源嵌入** 指的是比如下面这些资源：
 
-- 字库表：里面存储了所有的字符
-- 字符集：字符对应的二进制地址的集合
-- 编码方式：一套编码规范可以有多种不同的编码方式（比如 UTF-8，对应的编码规范是 Unicode），一种算法来节约空间
+- 使用 `<script src="..."></script>` 嵌入的 JavaScript 代码，但错误详情只能被同源的代码读取到；
+- 使用 `<link re="stylesheet" href="">` 嵌入的 CSS，由于 CSS 松散的语法，跨域的 CSS 文件需要正确的 `Content-Typer` 头，否则会被浏览器拒绝；
+- 使用 `<img>` 展示的图片；
+- 使用 `<video>` 或 `<audio>` 展示的多媒体；
+- 使用 `<object>` 或 `<embed>` 嵌入的外部资源；
+- 使用 `@font-face` 嵌入的字体，不过有的浏览器允许跨域字体，而有的只允许同源字体；
+- `<iframe>` 里面的内容，站点可以使用 `X-Frame-Options` 头来阻止别人通过这样的方式访问自己的网站。
 
-常见的编码规范：
+**CORS 则提供了服务端控制读写资源被跨域读写的能力，有的请求不需要预检，而在发送有的请求之前则需要发送预检请求。**
 
-- ASCII 码：7 位码，128 个字符，1 个字节
-- GBK：汉字内码扩展规范，2 个字节
-- ISO-8859-1：加了希腊语等，把其他所有的当做 ISO-8859-1 来解都没问题，没有中文，8 位码，1 个字节
-- Unicode：包含全世界所有的字符，最多 4 个字节
+满足下面所有条件的请求不需要预检：
 
-##### 乱码
+- 请求方法是 `GET` `POST` 或 `HEAD`；
+- 除了 UA 自动设置的请求头（比如 `Connection` `User-Agent` 等）以外，只有 `Accept` `Accpet-Language` `Content-Language` `Content-Type` `Range`；
+- `Content-Type` 是 `application/x-www-form-urlencoded` `multipart/form-data` 或 `text/plain`；
+- 如果请求是由 `XMLHttpRequest` 对象发出的， `upload` 属性上没有事件监听；
+- 没有使用 `ReadableStream` 对象。
 
-乱码的由来：解码过程、编码过程都可能导致乱码
+对于这些无需预检的请求，服务器会直接在该次请求的响应中加上 `Access-Control-Allow-Origin` 头。
 
-##### URL 的编码与解码
+对于其他请求，浏览器会先发送方法为 `OPTIONS` 的预检请求，该请求有一些特殊的请求头：
 
-URL 是采用 ASCII 字符集进行编码的
+```text
+OPTIONS /doc HTTP/1.1
+Origin: https://foo.example
+Access-Control-Request-Method: POST
+Access-COntrol-Request-Headers: X-PINGOTHER
+```
 
-`%` 编码规范：
+服务器会做出响应：
 
-- 对 URL 中属于 ASCII 字符集的非保留字不做编码
-- 对 URL 中的保留字需要取其 ASCII 内码，然后加上%的前缀对该字符进行编码
-- 对 URL 中非 ASCII 字符需要取其 Unicode 内码，然后加上 `%` 的前缀对该字符进行编码
+```text
+HTTP/1.1 204 No Content
+Access-Control-Allow-Origin: https://foo.example
+Access-Control-Allow-Methods: POST, GET, OPTIONS
+Access-Control-Allow-Headers: X-PINGOTHER
+Access-Control-Max-Age: 86400
+```
 
-> Fiddler
+// TBC With Credentials
 
-#### HTTP 协议的基本认证
+#### HTTP Caching
 
-##### 常见的认证方式
+##### Cacheable
 
-##### BASIC
+首先，并不是所有的 HTTP 请求都可以被缓存，缓存有一些限制条件：
 
-![BASIC](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/BASIC.png)
+- 请求方法：`GET` 和 `HEAD` 请求是可被缓存的；`POST` 或 `PATCH` 请求在明确未过期并设置了 `Content-Location` 的情况下也可以被缓存，但并不是所有的浏览器都支持这种缓存（Firefox 就不支持）；`PUT` 和 `DELETE` 方法是不可缓存的，并且会清除掉同 URL 的 `GET` `HEAD` 等缓存。
+- 状态码：只有 `200` `203` `204` `206` `300` `301` `404` `405` `410` `414` `501` 是可以被缓存的。
+- 有一些响应头（比如 `Cache-Control` 等）会阻止缓存。
 
-不便捷灵活，且不安全（Base64实际上就是明文传输）
+##### Types of Caches
 
-##### DIGEST
+根据 HTTP Caching Spec，缓存共分为两大类：**Private Caches** 和 **Shared Caches**。
 
-同样采用质询 / 响应方式，但不会明文传输密码
+**Private Caches** 跟某个特定的客户端强绑定（比如浏览器），可以在里面存一些与该用户相关的个性化数据。返回头中须使用 `private` 指令，来避免用户相关的数据被别的用户读取到：
 
-![DIGEST](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/DIGEST.png)
+```text
+Cache-Control: private
+```
 
-默认使用md5加密：
-客户端发送响应摘要 = MD5(HA1:nonce:HA2)
-其中，HA1 = MD5(username:realm:password), HA2 = MD5(method:digestURI)
-虽然以前认为是不可逆的加密，但是仍然存在字典攻击、用户被冒充等风险
+注意，如果 **返回头** 中有 `Authorization`，那么处于安全考虑，该请求将不能被缓存（除非强制指定为 `public`）。
 
-##### SSL 客户端
+**Shared Cache** 在客户端和服务端之间，并且可以被多个用户共享。Shared Caches 可以进一步被分为 **Proxy Caches** 和 **Managed Caches**。
 
-凭借客户端证书认证
+> 由于代理通常不受服务端开发者的控制，代理缓存（Proxy Caches）需要借助合适的 HTTP Headers 来进行协商，早年间各种缓存不恰当和过时的实现经常带来一些问题。
 
-##### FormBase
+**Managed Caches** 则是在服务端开发者显式控制下的行为，通常使用反向代理、CDN、Service Worker 等来用来降低源服务器的负载、提高内容分发的效率。在大多数情况下可以通过 `Cache-Control` 头来进行缓存控制。
 
-不是在 HTTP 协议中定义的，是使用 Web 应用各自实现的基于表单的认证，通过 Cookie 和 Session 来保持用户登录状态
+![Type of Cache](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/type-of-cache.png)
 
-#### HTTP 中的长连接和短链接
+##### Cache-Control
 
-长连接又称持续连接（persistent connection），短连接又称非持续连接（non-persistent connection）
+HTTP 缓存主要由 `Cache-Control` 这个响应头来进行控制，他有以下这些取值：
 
-HTTP 中的长连接和短链接本质上是 TCP 的长连接和短链接
-- HTTP/1.0 中，默认是短链接，每遇到一个外部资源就建立一个对话（创建一个 TCP 连接）
-- HTTP/1.1 起，默认是长连接（多个请求共用一个 TCP 连接）
+- `no-store`：所有内容都不缓存
+- `no-cache`：强制校验，浏览器每次都会通过 `If-Modified-Since` 或 `If-None-Match` 来询问服务器，服务器根据情况返回 304 或新的数据 
+- `max-age=x`：请求缓存后 x 秒不再发起请求
+- `s-maxage=x`：类似，但只对 CDN 缓存有效
+- `public`：客户端和代理服务器（CDN）都可以缓存
+- `private`：只有客户端可以缓存
 
-#### 中介代理与中介网关
+除此之外，有的 CDN 也支持一些只对 CDN 有效的头，比如 `CDN-Cache-Control` 等。在 `Cache-Control` 出来之前，浏览器会根据一些条件自己判断资源是否可以缓存（比如某个资源很久没有更新了），这被称为 **启发式缓存（Heuristic Caching）**。
 
-##### 中介代理
+##### max-age/Age/Expires
 
-![中介代理](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/HTTP-Proxy.png)
+HTTP 的响应有 **新鲜（Fresh）**和 **陈旧（Stale）**两种状态，而他们的判断标准就是 **年龄（age）**。年龄指的是自从响应生成开始（`Date` 头表示响应生成的时间），已经过了多久。这种判断方式主要有三个响应头：
 
-代理的作用：抓包、匿名访问、过滤器
+```text
+Cache-Control:max-age=x
+当 age 超过 max-age 的时候，该响应认为是过期的（Stale）
+```
 
-##### 中介网关
+```text
+Age: y
+当缓存在一个 Shared Cache 中时（比如 CDN），客户端拿到 CDN 中的数据时，该数据就已经有 y 秒这么老了
+```
 
-![中介网关](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/HTTP-Getway.png)
+```text
+Expires: Tue, 28 Feb 2022 22:22:22 GMT
+当数据超过 Expires 指定的时间时，视为过期
+```
 
-扮演协议转换器的角色：
-- (HTTP/) 服务器端网关，通过 HTTP 协议与客户端对话，通过其他协议与服务器通信
-- (/HTTP) 客户端网关，通过其他协议与客户端对话，通过 HTTP 协议与服务器通信
+其中 `Expires` 是 HTTP/1.0 的属性，由于其时间解析起来容易有问题、而且依赖于本地系统时间，因此现在一般用 HTTP/1.1 的 `max-age`。且同时出现时，`max-age` 优先级更高。
 
-常见网关类型：
-- HTTP/*：服务器端 Web 网关
-- HTTP/HTTPS：服务器端安全网关
-- HTTPS/HTTP：客户端安全加速网关（SSL 卸载）
-- 资源网关
+##### Last-Modified/If-Modified-Since
 
-#### HTTP 缓存
+其中 `Last-Modified` 是响应头，`If-Modified-Since` 是请求头。
 
-缓存的内容：CSS、JS、图片等更新频率不大的静态资源文件
+如果浏览器经过 `Expires` 或 `max-age` 判断发现缓存已经过期，那么他会向服务器发送请求，在 `If-Modified-Since` 中带上上次请求得到的 `Last-Modified` 中的时间，询问服务器是否已经过期。
 
-##### HTTP 缓存头部字段
+如果没有过期，那么服务器将会返回一个非常短小的 `304 Not Modified` 响应，里面是新的 `max-age`。
 
-###### Cache-Control
+##### ETag/If-None-Match
 
-> 请求/响应头，缓存控制字段
+与 `Last-Modified/If-Modified-Since` 类似，`ETag` 是响应头，`If-None-Match` 是请求头。
 
-- no-store：所有内容都不缓存
-- no-cache：缓存，但浏览器会请求服务器判断资源是否更新
-- max-age=x：请求缓存后 x 秒不再发起请求
-- s-maxage=x：类似，但只对 CDN 缓存有效
-- public：客户端和代理服务器（CDN）都可以缓存
-- private：只有客户端可以缓存
+`ETag` 可以是任何值，比如文件的版本号、哈希值等等，因此该方法比 ``Last-Modified/If-Modified-Since` 更精确，而且不用解析时间。且同时出现时，这组头的优先级更高。
 
-###### 其他头部字段
+##### Vary
 
-响应头，服务器返回：
+通常缓存之间相互区分的 Key 是 URL，但有时候可能 URL 相同但 Headers 不同的情况，比如 `Accept-Language` 可以设置为 `ja` `en` 等，这个时候就需要将该 Header 也视为 Key 的一部分，否则他们就会相互覆盖。该功能通过 `Vary` 头实现：
 
-- **Expires**：代表资源过期时间，是 HTTP/1.0 的属性，比 HTTP/1.1 的 **Cache-Control:max-age=x** 优先级低
-- **Last-Modified**：资源最新修改时间
-- **Etag**：缓存资源标识
+```text
+Vary: Accept-Language
+```
 
-请求头，服务器提供：
+##### Improvents
 
-- **if-Modified-Since**：资源最新修改时间，与 **Last-Modified** 是一对，他们会进行对比
-- **if-None-Match**：缓存资源标识，与 **Etag** 是一对（其实就是上次服务器给的 Etag），他们会进行对比
+md5/hash 缓存：不缓存 html，为静态文件添加 MD5 或者 hash 标识，比如将静态资源的文件名改为 `f-hash1.js`，若文件修改了，文件名也会改变为 `f-hash2.js`
 
-##### HTTP 缓存工作方式
+##### Browser Fresh
 
-###### 场景一：让服务器与浏览器约定一个文件过期时间 Expires
-
-服务器给浏览器一个 Expires，后续请求浏览器会对比当前 **本地时间** 是否已经大于 Expires，超过过期时间再请求。
-
-问题：即使超过过期时间之后，文件可能仍然没有变化
-
-###### 场景二：约定 Expires 的基础上，再通过文件的最新修改时间进行对比 Last-Modified 与 if-Modified-Since
-
-服务器给浏览器 Expires 和 Last-Modified，后续若超过 Expires 后，浏览器请求时会带上 if-Modified-Since，服务器进行对比，如果文件未修改，就返回 304 Not Modified，让浏览器使用缓存
-
-问题：浏览器可以随意修改本地时间，而且 Last-Modified 只能精确到秒
-
-###### 场景三：在上面的基础上加上 Etag/If-None-Match，再使用 max-age
-
-max-age 使用的是 **相对时间**，因此浏览器不能通过修改本地时间的方式来影响缓存，优先级高于 Expires；
-Etag 优先级也高于 Last-Modified，因为文件只要修改过，Etag 就会发生变化
-
-至此其实 Last-Modified 和 Expires 其实已经没什么用了，但很多时候还是会加上
-
-问题：max-age 或者 Expires 未过期的情况下，若改动文件，应该怎样让浏览器知道？
-
-##### 缓存改进方案
-
-###### md5/hash 缓存
-
-不缓存 html，为静态文件添加 MD5 或者 hash 标识，比如将静态资源的文件名改为 `f-hash1.js`，若文件修改了，文件名也会改变为 `f-hash2.js`
-
-###### CDN 缓存
-
-> CDN 是构建在网络之上的内容分发网络，依靠部署在各地的边缘服务器，通过中心平台的负载均衡、内容分发、调度等功能模块，使用户就近获取所需内容，降低网络拥塞，提高用户访问响应速度和命中率
-
-CDN 的作用：
-1. 减少源站压力
-2. 解决跨区域访问问题
-
-CDN缓存的工作方式：
-1. 第一次请求，CDN 和 浏览器同时缓存
-2. 浏览器缓存过期后，找 CDN 进行对比，CDN 看自己的过期没有，若自己没过期，就给发给浏览器
-
-##### 浏览器操作对 HTTP 缓存的影响
-
-| 用户操作 | Expires/Cache-Control | Last-Modified/Etag |
-| --- | --- | --- |
-| 地址栏回车 | 有效 | 有效 |
-| 页面链接跳转 | 有效 | 有效 |
-| 新开窗口 | 有效 | 有效 |
-| 前进、后退 | 有效 | 有效 |
-| F5 刷新 | *无效* | 有效 |
-| Ctrl+F5 刷新 | *无效* | *无效* |
+| 用户操作     | Expires/Cache-Control | Last-Modified/Etag |
+| ------------ | --------------------- | ------------------ |
+| 地址栏回车   | 有效                  | 有效               |
+| 页面链接跳转 | 有效                  | 有效               |
+| 新开窗口     | 有效                  | 有效               |
+| 前进、后退   | 有效                  | 有效               |
+| F5 刷新      | *无效*                | 有效               |
+| Ctrl+F5 刷新 | *无效*                | *无效*             |
 
 ### HTTP 内容协商机制
 
@@ -441,9 +434,9 @@ CDN缓存的工作方式：
 
 - **客户端驱动**：客户端发起请求，服务器发送可选项列表，客户端做出选择后再发送第二次请求
 - **服务器驱动**：服务器检查客户端的请求头部集并决定提供哪个版本的页面
-    - 客户端发送：Accept、Accept-Language、Accept-Charset、Accept-Encoding
-        - `Accept-Language: en;q=0.5, fr;q=0.0, nl;q=1.0, tr;q=0.0`
-    - 服务器返回：Content-Type、Content-Language、Content-Type、Content-Encoding
+  - 客户端发送：Accept、Accept-Language、Accept-Charset、Accept-Encoding
+    - `Accept-Language: en;q=0.5, fr;q=0.0, nl;q=1.0, tr;q=0.0`
+  - 服务器返回：Content-Type、Content-Language、Content-Type、Content-Encoding
 - **透明协商**：某个中间设备（通常是缓存代理）代表客户端进行协商
 
 ### HTTP 断点续传和多线程下载
@@ -470,38 +463,7 @@ Range:bytes=500-600,601-999
 Content-Range:bytes(unit first byte pos)-[last byte pos]/[entity length]
 ```
 
-### HTTPS
 
-#### HTTPS 协议概述
-
-> HTTPS 可以认为是 HTTP + TLS，TLS 是传输层加密协议，他的前身是 SSL 协议
-
-可以认为 TLS 建立在传输层和应用层之间（会话层），目前常用的版本有 TLS/1.0、1.1、1.2、1.3 和 SSL/3.0，但是 SSL/3.0 可能会存在 ‎POODLE 攻击，TSL/1.0 也存在一些漏洞
-
-HTTPS 功能：
-    - **内容加密**（非对称加密协商密钥 + 对称加密传输数据）
-    - **数据完整性**（数字签名）
-    - **身份认证**（数字证书）
-
-#### HTTPS 使用成本
-
-- 证书费用以及更新维护
-- 降低用户的访问速度
-- 消耗 CPU 资源
-
-HTTPS 对性能的影响：
-
-- 协议交互所增加的网络往返时延（Round-Trip Time）
-    - 有可能用户访问 HTTP，服务器需要返回 302 使其跳转到 HTTPS
-    - TLS 完全握手阶段 1 和 2，以及与 CA 服务器进行连接与验证
-- 加解密相关的计算耗时
-    - 浏览器计算耗时
-    - 服务端计算耗时
-    
-
-{% note warning %}
-HTTPS 并不能解决所有的劫持问题
-{% endnote %}
 
 ### 基于 HTTP 的功能追加协议
 
@@ -635,10 +597,10 @@ QUIC 的特性：
 - **面向连接和安全**，所有的 QUIC 分组都是加密的。因为 QUIC 用于创建连接状态的握手和加密的握手，因此可以比 TCP + TLS 拥有更快的创建速度。
   ![QUIC建立连接的过程](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/QUIC-1.png)
 - **没有队头阻塞的多路复用**
-![TCP队头阻塞](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/TCP-Blocking.png)
-![QUIC没有队头阻塞](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/QUIC-No-Blocking.png)
+  ![TCP队头阻塞](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/TCP-Blocking.png)
+  ![QUIC没有队头阻塞](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/QUIC-No-Blocking.png)
 - **前向纠错**，会多发一些冗余的包（校验包），虽然产生了多的包，但是减少了重传带来的损失
-![前向纠错](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/QUIC-Error-Correcting.png)
+  ![前向纠错](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/QUIC-Error-Correcting.png)
 
 
 
@@ -820,7 +782,7 @@ Apache、NGINX、IIS、cPanel、Plesk 等都支持 HTTPS，所以不需要单独
 
 **Steps 6-10: Setting Up Symmetric Encryption**
 
-对称加密效率是高于浏览器的，因此浏览器和服务器现在会创建一个新的、共享的密钥（该密钥取决于加密协议簇）
+对称加密效率是高于非对称加密的，因此浏览器和服务器现在会创建一个新的、共享的密钥（该密钥取决于加密协议簇）
 
 当共享的会话密钥创建好之后，TLS Handshake 就结束了。浏览器和服务器会使用该密钥来加密和解密他们之间传输的所有数据。
 
@@ -972,6 +934,7 @@ DNS 只有查询和回答报文，并且两种报文有相同的格式：
 > 校验和、序号、ACK、重传
 
 通常使用 **自动重传请求（Automatic Repeat reQuest, ARQ）**协议来解决这个问题，ARQ协议中还需要三种功能来处理比特差错：
+
 - 差错检测
 - 接收方反馈（ACK、NAK）
 - 重传
@@ -1114,6 +1077,7 @@ DNS 只有查询和回答报文，并且两种报文有相同的格式：
 ![可选项](https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/TCP-Header-Options.png)
 
 常用的可选项有：
+
 - Timestamp：TCP 时间戳
 - MSS：TCP 允许的从对方接收的最大报文段
 - SACK：选择确认选项
@@ -1130,6 +1094,7 @@ kind(1 Byte) + length(1 Byte) + info(8 Bytes)
 其中 `kind=8` `length=10`，`info` 由 `timestamp` 和 `timestamp echo` 两部分构成，各占四个字节
 
 TCP 的时间戳主要解决两个问题：
+
 - 计算往返时延（RTT, Round-Trip Time）
 - 防止序列号回绕
 
@@ -1361,8 +1326,8 @@ LastByteSent - LastByteAcked = min(rwnd, cwnd)
 
 - 第一次发送数据的时候不用等待，即使是再小的包也马上发送
 - 后面发送的包需要满足下面条件之一：
-    - 数据包大小达到最大子段大小（MSS, Max Segment Size）
-    - 之前所有包的 ACK 都已经接受到
+  - 数据包大小达到最大子段大小（MSS, Max Segment Size）
+  - 之前所有包的 ACK 都已经接受到
 
 ### 延迟确认
 
@@ -1371,6 +1336,7 @@ LastByteSent - LastByteAcked = min(rwnd, cwnd)
 TCP 要求延迟的时延必须小于 500ms，一般的操作系统都不会超过 200ms
 
 一些场景收到之后会马上回复：
+
 - 收到了大于一个 frame 的报文，且需要调整窗口大小
 - TCP 处于 quickack 模式（通过 `tcp_in_quickack_mode` 设置）
 - 发现了乱序包
