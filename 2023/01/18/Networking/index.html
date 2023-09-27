@@ -26,11 +26,8 @@
 <meta property="og:description" content="本文几种了计算机网络的相关知识，主要包括协议栈介绍、应用层、传输层和网络安全相关的知识，本文将会不断扩充积累。 目前，按照目录框架看大概分为以下几个部分：  概述，包括协议栈及其他基本概念 应用层，包括 HTTP、HTTPS、Email、DNS、视频流、CDN 等 传输层，包括多路复用与多路分解、UDP、可靠数据传输、TCP、TCP 连接管理及其他性能优化 网络安全">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/HTTP-StatusCode.png">
-<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Session-Cookie.png">
-<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/BASIC.png">
-<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/DIGEST.png">
-<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/HTTP-Proxy.png">
-<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/HTTP-Getway.png">
+<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/http1_x_connections.png">
+<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/type-of-cache.png">
 <meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/WebSocket.png">
 <meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/SPDY.png">
 <meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Binary-Framing.png">
@@ -189,7 +186,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#switching"><span class="nav-number">1.1.</span> <span class="nav-text">Switching</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#delay"><span class="nav-number">1.2.</span> <span class="nav-text">Delay</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#protocol-stack"><span class="nav-number">1.3.</span> <span class="nav-text">Protocol Stack</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#application-layer"><span class="nav-number">2.</span> <span class="nav-text">Application Layer</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#http"><span class="nav-number">2.1.</span> <span class="nav-text">HTTP</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#http-history"><span class="nav-number">2.1.1.</span> <span class="nav-text">HTTP History</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#http-%E5%8D%8F%E8%AE%AE%E7%BB%93%E6%9E%84%E5%92%8C%E9%80%9A%E8%AE%AF%E5%8E%9F%E7%90%86"><span class="nav-number">2.1.2.</span> <span class="nav-text">HTTP 协议结构和通讯原理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#http-%E5%8D%8F%E8%AE%AE%E7%89%B9%E7%82%B9"><span class="nav-number">2.1.2.1.</span> <span class="nav-text">HTTP 协议特点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#uri-%E5%92%8C-url"><span class="nav-number">2.1.2.2.</span> <span class="nav-text">URI 和 URL</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#http-%E6%8A%A5%E6%96%87%E7%BB%93%E6%9E%84"><span class="nav-number">2.1.2.3.</span> <span class="nav-text">HTTP 报文结构</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%AF%B7%E6%B1%82%E6%8A%A5%E6%96%87"><span class="nav-number">2.1.2.3.1.</span> <span class="nav-text">请求报文</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%93%8D%E5%BA%94%E6%8A%A5%E6%96%87"><span class="nav-number">2.1.2.3.2.</span> <span class="nav-text">响应报文</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#http-%E6%8A%A5%E6%96%87%E5%A4%B4"><span class="nav-number">2.1.2.4.</span> <span class="nav-text">HTTP 报文头</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#http-%E8%AF%B7%E6%B1%82%E6%96%B9%E6%B3%95"><span class="nav-number">2.1.2.5.</span> <span class="nav-text">HTTP 请求方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#http-%E7%8A%B6%E6%80%81%E7%A0%81"><span class="nav-number">2.1.2.6.</span> <span class="nav-text">HTTP 状态码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#http-%E7%8A%B6%E6%80%81%E7%AE%A1%E7%90%86cookie-%E5%92%8C-session"><span class="nav-number">2.1.2.7.</span> <span class="nav-text">HTTP 状态管理：Cookie 和 Session</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#cookie"><span class="nav-number">2.1.2.7.1.</span> <span class="nav-text">Cookie</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#session"><span class="nav-number">2.1.2.7.2.</span> <span class="nav-text">Session</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#cookie-%E5%92%8C-session"><span class="nav-number">2.1.2.7.3.</span> <span class="nav-text">Cookie 和 Session</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#http-%E5%8D%8F%E8%AE%AE%E7%9A%84%E7%89%B9%E6%80%A7"><span class="nav-number">2.1.3.</span> <span class="nav-text">HTTP 协议的特性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#http-%E5%8D%8F%E8%AE%AE%E4%B8%AD%E7%9A%84%E7%BC%96%E7%A0%81%E5%92%8C%E8%A7%A3%E7%A0%81"><span class="nav-number">2.1.3.1.</span> <span class="nav-text">HTTP 协议中的编码和解码</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%BC%96%E7%A0%81%E8%A7%84%E8%8C%83"><span class="nav-number">2.1.3.1.1.</span> <span class="nav-text">编码规范</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%B9%B1%E7%A0%81"><span class="nav-number">2.1.3.1.2.</span> <span class="nav-text">乱码</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#url-%E7%9A%84%E7%BC%96%E7%A0%81%E4%B8%8E%E8%A7%A3%E7%A0%81"><span class="nav-number">2.1.3.1.3.</span> <span class="nav-text">URL 的编码与解码</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#http-%E5%8D%8F%E8%AE%AE%E7%9A%84%E5%9F%BA%E6%9C%AC%E8%AE%A4%E8%AF%81"><span class="nav-number">2.1.3.2.</span> <span class="nav-text">HTTP 协议的基本认证</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84%E8%AE%A4%E8%AF%81%E6%96%B9%E5%BC%8F"><span class="nav-number">2.1.3.2.1.</span> <span class="nav-text">常见的认证方式</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#basic"><span class="nav-number">2.1.3.2.2.</span> <span class="nav-text">BASIC</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#digest"><span class="nav-number">2.1.3.2.3.</span> <span class="nav-text">DIGEST</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ssl-%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="nav-number">2.1.3.2.4.</span> <span class="nav-text">SSL 客户端</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#formbase"><span class="nav-number">2.1.3.2.5.</span> <span class="nav-text">FormBase</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#http-%E4%B8%AD%E7%9A%84%E9%95%BF%E8%BF%9E%E6%8E%A5%E5%92%8C%E7%9F%AD%E9%93%BE%E6%8E%A5"><span class="nav-number">2.1.3.3.</span> <span class="nav-text">HTTP 中的长连接和短链接</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%AD%E4%BB%8B%E4%BB%A3%E7%90%86%E4%B8%8E%E4%B8%AD%E4%BB%8B%E7%BD%91%E5%85%B3"><span class="nav-number">2.1.3.4.</span> <span class="nav-text">中介代理与中介网关</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%B8%AD%E4%BB%8B%E4%BB%A3%E7%90%86"><span class="nav-number">2.1.3.4.1.</span> <span class="nav-text">中介代理</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%B8%AD%E4%BB%8B%E7%BD%91%E5%85%B3"><span class="nav-number">2.1.3.4.2.</span> <span class="nav-text">中介网关</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#http-%E7%BC%93%E5%AD%98"><span class="nav-number">2.1.3.5.</span> <span class="nav-text">HTTP 缓存</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#http-%E7%BC%93%E5%AD%98%E5%A4%B4%E9%83%A8%E5%AD%97%E6%AE%B5"><span class="nav-number">2.1.3.5.1.</span> <span class="nav-text">HTTP 缓存头部字段</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#cache-control"><span class="nav-number">2.1.3.5.1.1.</span> <span class="nav-text">Cache-Control</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E5%A4%B4%E9%83%A8%E5%AD%97%E6%AE%B5"><span class="nav-number">2.1.3.5.1.2.</span> <span class="nav-text">其他头部字段</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#http-%E7%BC%93%E5%AD%98%E5%B7%A5%E4%BD%9C%E6%96%B9%E5%BC%8F"><span class="nav-number">2.1.3.5.2.</span> <span class="nav-text">HTTP 缓存工作方式</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF%E4%B8%80%E8%AE%A9%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E6%B5%8F%E8%A7%88%E5%99%A8%E7%BA%A6%E5%AE%9A%E4%B8%80%E4%B8%AA%E6%96%87%E4%BB%B6%E8%BF%87%E6%9C%9F%E6%97%B6%E9%97%B4-expires"><span class="nav-number">2.1.3.5.2.1.</span> <span class="nav-text">场景一：让服务器与浏览器约定一个文件过期时间 Expires</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF%E4%BA%8C%E7%BA%A6%E5%AE%9A-expires-%E7%9A%84%E5%9F%BA%E7%A1%80%E4%B8%8A%E5%86%8D%E9%80%9A%E8%BF%87%E6%96%87%E4%BB%B6%E7%9A%84%E6%9C%80%E6%96%B0%E4%BF%AE%E6%94%B9%E6%97%B6%E9%97%B4%E8%BF%9B%E8%A1%8C%E5%AF%B9%E6%AF%94-last-modified-%E4%B8%8E-if-modified-since"><span class="nav-number">2.1.3.5.2.2.</span> <span class="nav-text">场景二：约定 Expires 的基础上，再通过文件的最新修改时间进行对比 Last-Modified 与 if-Modified-Since</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF%E4%B8%89%E5%9C%A8%E4%B8%8A%E9%9D%A2%E7%9A%84%E5%9F%BA%E7%A1%80%E4%B8%8A%E5%8A%A0%E4%B8%8A-etagif-none-match%E5%86%8D%E4%BD%BF%E7%94%A8-max-age"><span class="nav-number">2.1.3.5.2.3.</span> <span class="nav-text">场景三：在上面的基础上加上 Etag&#x2F;If-None-Match，再使用 max-age</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E6%94%B9%E8%BF%9B%E6%96%B9%E6%A1%88"><span class="nav-number">2.1.3.5.3.</span> <span class="nav-text">缓存改进方案</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#md5hash-%E7%BC%93%E5%AD%98"><span class="nav-number">2.1.3.5.3.1.</span> <span class="nav-text">md5&#x2F;hash 缓存</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#cdn-%E7%BC%93%E5%AD%98"><span class="nav-number">2.1.3.5.3.2.</span> <span class="nav-text">CDN 缓存</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E6%93%8D%E4%BD%9C%E5%AF%B9-http-%E7%BC%93%E5%AD%98%E7%9A%84%E5%BD%B1%E5%93%8D"><span class="nav-number">2.1.3.5.4.</span> <span class="nav-text">浏览器操作对 HTTP 缓存的影响</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#http-%E5%86%85%E5%AE%B9%E5%8D%8F%E5%95%86%E6%9C%BA%E5%88%B6"><span class="nav-number">2.1.4.</span> <span class="nav-text">HTTP 内容协商机制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%85%E5%AE%B9%E5%8D%8F%E5%95%86%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="nav-number">2.1.4.1.</span> <span class="nav-text">内容协商的方式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#http-%E6%96%AD%E7%82%B9%E7%BB%AD%E4%BC%A0%E5%92%8C%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%8B%E8%BD%BD"><span class="nav-number">2.1.5.</span> <span class="nav-text">HTTP 断点续传和多线程下载</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#range"><span class="nav-number">2.1.5.1.</span> <span class="nav-text">Range</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#content-range"><span class="nav-number">2.1.5.2.</span> <span class="nav-text">Content-Range</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#https"><span class="nav-number">2.1.6.</span> <span class="nav-text">HTTPS</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#https-%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%BF%B0"><span class="nav-number">2.1.6.1.</span> <span class="nav-text">HTTPS 协议概述</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#https-%E4%BD%BF%E7%94%A8%E6%88%90%E6%9C%AC"><span class="nav-number">2.1.6.2.</span> <span class="nav-text">HTTPS 使用成本</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E-http-%E7%9A%84%E5%8A%9F%E8%83%BD%E8%BF%BD%E5%8A%A0%E5%8D%8F%E8%AE%AE"><span class="nav-number">2.1.7.</span> <span class="nav-text">基于 HTTP 的功能追加协议</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#http-%E5%8D%8F%E8%AE%AE%E7%9A%84%E7%93%B6%E9%A2%88"><span class="nav-number">2.1.7.1.</span> <span class="nav-text">HTTP 协议的瓶颈</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#websocket"><span class="nav-number">2.1.7.2.</span> <span class="nav-text">WebSocket</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#spdy"><span class="nav-number">2.1.7.3.</span> <span class="nav-text">SPDY</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#http2.0"><span class="nav-number">2.1.7.4.</span> <span class="nav-text">HTTP&#x2F;2.0</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%88%86%E5%B8%A7"><span class="nav-number">2.1.7.4.1.</span> <span class="nav-text">二进制分帧</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%A6%96%E9%83%A8%E5%8E%8B%E7%BC%A9"><span class="nav-number">2.1.7.4.2.</span> <span class="nav-text">首部压缩</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8"><span class="nav-number">2.1.7.4.3.</span> <span class="nav-text">多路复用</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%B9%B6%E8%A1%8C%E5%8F%8C%E5%90%91%E5%AD%97%E8%8A%82%E6%B5%81"><span class="nav-number">2.1.7.4.4.</span> <span class="nav-text">并行双向字节流</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%AF%B7%E6%B1%82%E4%BC%98%E5%85%88%E7%BA%A7"><span class="nav-number">2.1.7.4.5.</span> <span class="nav-text">请求优先级</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%8E%A8%E9%80%81"><span class="nav-number">2.1.7.4.6.</span> <span class="nav-text">服务器推送</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#webdav"><span class="nav-number">2.1.7.5.</span> <span class="nav-text">WebDAV</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#quic-%E5%92%8C-http3.0"><span class="nav-number">2.1.7.6.</span> <span class="nav-text">QUIC 和 HTTP&#x2F;3.0</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#https-1"><span class="nav-number">2.2.</span> <span class="nav-text">HTTPS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#two-things-https-does"><span class="nav-number">2.2.1.</span> <span class="nav-text">Two Things HTTPS Does</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#authentication"><span class="nav-number">2.2.1.1.</span> <span class="nav-text">Authentication</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#encryption"><span class="nav-number">2.2.1.2.</span> <span class="nav-text">Encryption</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#public-key-infrastructure-pki"><span class="nav-number">2.2.2.</span> <span class="nav-text">Public Key Infrastructure (PKI)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#public-keys-private-keys"><span class="nav-number">2.2.2.1.</span> <span class="nav-text">Public Keys &amp; Private Keys</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#asymmetric-and-symmetric-encryption"><span class="nav-number">2.2.2.1.1.</span> <span class="nav-text">Asymmetric and Symmetric Encryption</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#digital-signatures"><span class="nav-number">2.2.2.2.</span> <span class="nav-text">Digital Signatures</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#certificate-authorities"><span class="nav-number">2.2.2.3.</span> <span class="nav-text">Certificate Authorities</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#digital-certificates"><span class="nav-number">2.2.2.4.</span> <span class="nav-text">Digital Certificates</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#root-stores"><span class="nav-number">2.2.2.5.</span> <span class="nav-text">Root Stores</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#enable-https-on-your-website"><span class="nav-number">2.2.3.</span> <span class="nav-text">Enable HTTPS on Your Website</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#the-tls-handshake"><span class="nav-number">2.2.4.</span> <span class="nav-text">The TLS Handshake</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#email"><span class="nav-number">2.3.</span> <span class="nav-text">Email</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A8%E9%80%81%E6%8A%A5%E6%96%87smtp"><span class="nav-number">2.3.1.</span> <span class="nav-text">推送报文（SMTP）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%82%AE%E4%BB%B6%E6%8A%A5%E6%96%87%E6%A0%BC%E5%BC%8Fdata"><span class="nav-number">2.3.1.1.</span> <span class="nav-text">邮件报文格式（DATA）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E6%8A%A5%E6%96%87"><span class="nav-number">2.3.2.</span> <span class="nav-text">获取报文</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dns"><span class="nav-number">2.4.</span> <span class="nav-text">DNS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#dns-%E7%9A%84%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%BE%E8%AE%A1"><span class="nav-number">2.4.1.</span> <span class="nav-text">DNS 的分布式设计</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E5%B1%82%E6%AC%A1%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">2.4.1.1.</span> <span class="nav-text">分布式、层次数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#dns-%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E4%BA%A4%E4%BA%92"><span class="nav-number">2.4.1.1.1.</span> <span class="nav-text">DNS 服务器的交互</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#dns-%E7%BC%93%E5%AD%98"><span class="nav-number">2.4.1.2.</span> <span class="nav-text">DNS 缓存</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dns-%E8%AE%B0%E5%BD%95"><span class="nav-number">2.4.2.</span> <span class="nav-text">DNS 记录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dns-%E6%8A%A5%E6%96%87"><span class="nav-number">2.4.3.</span> <span class="nav-text">DNS 报文</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#media-stream"><span class="nav-number">2.5.</span> <span class="nav-text">Media Stream</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#content-distribution-network-cdn"><span class="nav-number">2.6.</span> <span class="nav-text">Content Distribution Network (CDN)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#transport-layer"><span class="nav-number">3.</span> <span class="nav-text">Transport Layer</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8%E4%B8%8E%E5%A4%9A%E8%B7%AF%E5%88%86%E8%A7%A3"><span class="nav-number">3.1.</span> <span class="nav-text">多路复用与多路分解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A0%E8%BF%9E%E6%8E%A5%E5%92%8C%E9%9D%A2%E5%90%91%E8%BF%9E%E6%8E%A5"><span class="nav-number">3.1.1.</span> <span class="nav-text">无连接和面向连接</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#udp"><span class="nav-number">3.2.</span> <span class="nav-text">UDP</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%A5%E6%96%87%E7%BB%93%E6%9E%84"><span class="nav-number">3.2.1.</span> <span class="nav-text">报文结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#udp-%E6%A0%A1%E9%AA%8C%E5%92%8Cchecksum"><span class="nav-number">3.2.2.</span> <span class="nav-text">UDP 校验和（checksum）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AF%E9%9D%A0%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93"><span class="nav-number">3.3.</span> <span class="nav-text">可靠数据传输</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E9%83%BD%E4%B8%8D%E8%80%83%E8%99%91rdt1.0"><span class="nav-number">3.3.1.</span> <span class="nav-text">什么都不考虑：rdt1.0</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%80%83%E8%99%91%E6%AF%94%E7%89%B9%E5%B7%AE%E9%94%99rdt2.0"><span class="nav-number">3.3.2.</span> <span class="nav-text">考虑比特差错：rdt2.0</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%80%83%E8%99%91%E6%AF%94%E7%89%B9%E5%B7%AE%E9%94%99%E5%92%8C%E4%B8%A2%E5%8C%85rdt3.0"><span class="nav-number">3.3.3.</span> <span class="nav-text">考虑比特差错和丢包：rdt3.0</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%80%83%E8%99%91%E6%B5%81%E6%B0%B4%E7%BA%BF%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93"><span class="nav-number">3.3.4.</span> <span class="nav-text">考虑流水线数据传输</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#gbn"><span class="nav-number">3.3.4.1.</span> <span class="nav-text">GBN</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#sr"><span class="nav-number">3.3.4.2.</span> <span class="nav-text">SR</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E9%9D%A0%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93%E6%9C%BA%E5%88%B6%E6%80%BB%E7%BB%93"><span class="nav-number">3.3.5.</span> <span class="nav-text">可靠数据传输机制总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp"><span class="nav-number">3.4.</span> <span class="nav-text">TCP</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%A5%E6%96%87%E7%BB%93%E6%9E%84-1"><span class="nav-number">3.4.1.</span> <span class="nav-text">报文结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BA%8F%E5%88%97%E5%8F%B7"><span class="nav-number">3.4.1.1.</span> <span class="nav-text">序列号</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%BA%8F%E5%88%97%E5%8F%B7"><span class="nav-number">3.4.1.1.1.</span> <span class="nav-text">初始序列号</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A1%AE%E8%AE%A4%E5%8F%B7"><span class="nav-number">3.4.1.2.</span> <span class="nav-text">确认号</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A0%87%E8%AE%B0%E4%BD%8D"><span class="nav-number">3.4.1.3.</span> <span class="nav-text">标记位</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AA%97%E5%8F%A3%E5%A4%A7%E5%B0%8F"><span class="nav-number">3.4.1.4.</span> <span class="nav-text">窗口大小</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A0%A1%E9%AA%8C%E5%92%8C"><span class="nav-number">3.4.1.5.</span> <span class="nav-text">校验和</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%AF%E9%80%89%E9%A1%B9"><span class="nav-number">3.4.1.6.</span> <span class="nav-text">可选项</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#timestamp"><span class="nav-number">3.4.1.6.1.</span> <span class="nav-text">Timestamp</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97-rtt"><span class="nav-number">3.4.1.6.1.1.</span> <span class="nav-text">计算 RTT</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E9%98%B2%E6%AD%A2%E5%BA%8F%E5%88%97%E5%8F%B7%E5%9B%9E%E7%BB%95"><span class="nav-number">3.4.1.6.1.2.</span> <span class="nav-text">防止序列号回绕</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B6%85%E6%97%B6%E9%87%8D%E4%BC%A0"><span class="nav-number">3.4.2.</span> <span class="nav-text">超时重传</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B6%85%E6%97%B6%E9%87%8D%E4%BC%A0%E6%97%B6%E9%97%B4%E7%9A%84%E8%AE%A1%E7%AE%97"><span class="nav-number">3.4.2.1.</span> <span class="nav-text">超时重传时间的计算</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%BE%80%E8%BF%94%E6%97%B6%E9%97%B4%E4%BC%B0%E8%AE%A1"><span class="nav-number">3.4.2.1.1.</span> <span class="nav-text">往返时间估计</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%B5%8B%E9%87%8F-rtt-%E5%8F%98%E5%8C%96"><span class="nav-number">3.4.2.1.2.</span> <span class="nav-text">测量 RTT 变化</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E5%92%8C%E7%AE%A1%E7%90%86%E8%B6%85%E6%97%B6%E6%97%B6%E9%97%B4"><span class="nav-number">3.4.2.1.3.</span> <span class="nav-text">设置和管理超时时间</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B6%85%E6%97%B6%E9%87%8D%E4%BC%A0%E7%AD%96%E7%95%A5"><span class="nav-number">3.4.2.2.</span> <span class="nav-text">超时重传策略</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%B6%85%E6%97%B6%E9%97%B4%E9%9A%94%E5%8A%A0%E5%80%8D"><span class="nav-number">3.4.2.2.1.</span> <span class="nav-text">超时间隔加倍</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F%E9%87%8D%E4%BC%A0"><span class="nav-number">3.4.2.2.2.</span> <span class="nav-text">快速重传</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#gbn-sr"><span class="nav-number">3.4.2.2.3.</span> <span class="nav-text">GBN + SR</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6"><span class="nav-number">3.4.3.</span> <span class="nav-text">流量控制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp-%E8%BF%9E%E6%8E%A5%E7%AE%A1%E7%90%86"><span class="nav-number">3.5.</span> <span class="nav-text">TCP 连接管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B"><span class="nav-number">3.5.1.</span> <span class="nav-text">三次握手</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B"><span class="nav-number">3.5.2.</span> <span class="nav-text">四次挥手</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#syn-%E6%B3%9B%E6%B4%AA%E6%94%BB%E5%87%BB%E4%B8%8E-cookie"><span class="nav-number">3.5.3.</span> <span class="nav-text">SYN 泛洪攻击与 Cookie</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8D%8A%E8%BF%9E%E6%8E%A5%E9%98%9F%E5%88%97"><span class="nav-number">3.5.3.1.</span> <span class="nav-text">半连接队列</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%A8%E8%BF%9E%E6%8E%A5%E9%98%9F%E5%88%97"><span class="nav-number">3.5.3.2.</span> <span class="nav-text">全连接队列</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#syn-%E6%B3%9B%E6%B4%AA%E6%94%BB%E5%87%BB"><span class="nav-number">3.5.3.3.</span> <span class="nav-text">SYN 泛洪攻击</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%BA%94%E5%AF%B9-syn-%E6%B3%9B%E6%B4%AA%E6%94%BB%E5%87%BB"><span class="nav-number">3.5.3.3.1.</span> <span class="nav-text">如何应对 SYN 泛洪攻击？</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6"><span class="nav-number">3.5.4.</span> <span class="nav-text">拥塞控制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6%E5%8E%9F%E7%90%86"><span class="nav-number">3.5.4.1.</span> <span class="nav-text">拥塞控制原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AB%AF%E5%88%B0%E7%AB%AF%E7%9A%84%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6"><span class="nav-number">3.5.4.2.</span> <span class="nav-text">端到端的拥塞控制</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%8B%A5%E5%A1%9E%E6%A3%80%E6%B5%8B"><span class="nav-number">3.5.4.2.1.</span> <span class="nav-text">拥塞检测</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%8B%A5%E5%A1%9E%E7%AA%97%E5%8F%A3"><span class="nav-number">3.5.4.2.2.</span> <span class="nav-text">拥塞窗口</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6%E7%AE%97%E6%B3%95"><span class="nav-number">3.5.4.2.3.</span> <span class="nav-text">拥塞控制算法</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%85%A2%E5%90%AF%E5%8A%A8"><span class="nav-number">3.5.4.2.3.1.</span> <span class="nav-text">慢启动</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%8B%A5%E5%A1%9E%E9%81%BF%E5%85%8D"><span class="nav-number">3.5.4.2.3.2.</span> <span class="nav-text">拥塞避免</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F%E6%81%A2%E5%A4%8D"><span class="nav-number">3.5.4.2.3.3.</span> <span class="nav-text">快速恢复</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E8%BE%85%E5%8A%A9%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6"><span class="nav-number">3.5.4.3.</span> <span class="nav-text">网络辅助拥塞控制</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%98%8E%E7%A1%AE%E6%8B%A5%E5%A1%9E%E9%80%9A%E5%91%8Aecn"><span class="nav-number">3.5.4.3.1.</span> <span class="nav-text">明确拥塞通告（ECN）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E6%97%B6%E5%BB%B6%E7%9A%84%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6"><span class="nav-number">3.5.4.3.2.</span> <span class="nav-text">基于时延的拥塞控制</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%AC%E5%B9%B3%E6%80%A7"><span class="nav-number">3.5.4.4.</span> <span class="nav-text">公平性</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96"><span class="nav-number">3.6.</span> <span class="nav-text">其他性能优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#nagle-%E7%AE%97%E6%B3%95"><span class="nav-number">3.6.1.</span> <span class="nav-text">Nagle 算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BB%B6%E8%BF%9F%E7%A1%AE%E8%AE%A4"><span class="nav-number">3.6.2.</span> <span class="nav-text">延迟确认</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tcp-%E7%9A%84-keep-alive"><span class="nav-number">3.6.3.</span> <span class="nav-text">TCP 的 keep-alive</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#network-layer"><span class="nav-number">4.</span> <span class="nav-text">Network Layer</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ip"><span class="nav-number">4.1.</span> <span class="nav-text">IP</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ip-address"><span class="nav-number">4.1.1.</span> <span class="nav-text">IP Address</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#data-link-layer"><span class="nav-number">5.</span> <span class="nav-text">Data Link Layer</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#framing"><span class="nav-number">5.1.</span> <span class="nav-text">Framing</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#error-detection"><span class="nav-number">5.2.</span> <span class="nav-text">Error Detection</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#link"><span class="nav-number">5.3.</span> <span class="nav-text">Link</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#multiple-access-protocol"><span class="nav-number">5.3.1.</span> <span class="nav-text">Multiple Access Protocol</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#channel-partitioning-protocol"><span class="nav-number">5.3.1.1.</span> <span class="nav-text">Channel Partitioning Protocol</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#random-access-protocol"><span class="nav-number">5.3.1.2.</span> <span class="nav-text">Random Access Protocol</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#taking-turns-protocol"><span class="nav-number">5.3.1.3.</span> <span class="nav-text">Taking-Turns Protocol</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#physical-layer"><span class="nav-number">6.</span> <span class="nav-text">Physical Layer</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#communication-channels"><span class="nav-number">6.1.</span> <span class="nav-text">Communication Channels</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#modulation"><span class="nav-number">6.2.</span> <span class="nav-text">Modulation</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#network-security"><span class="nav-number">7.</span> <span class="nav-text">Network Security</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#dns-poisoning"><span class="nav-number">7.1.</span> <span class="nav-text">DNS Poisoning</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#switching"><span class="nav-number">1.1.</span> <span class="nav-text">Switching</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#delay"><span class="nav-number">1.2.</span> <span class="nav-text">Delay</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#protocol-stack"><span class="nav-number">1.3.</span> <span class="nav-text">Protocol Stack</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#application-layer"><span class="nav-number">2.</span> <span class="nav-text">Application Layer</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#http"><span class="nav-number">2.1.</span> <span class="nav-text">HTTP</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#http-history"><span class="nav-number">2.1.1.</span> <span class="nav-text">HTTP History</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#resources-and-uris"><span class="nav-number">2.1.2.</span> <span class="nav-text">Resources and URIs</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#data-urls"><span class="nav-number">2.1.2.1.</span> <span class="nav-text">Data URLs</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mime-types"><span class="nav-number">2.1.2.2.</span> <span class="nav-text">MIME Types</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#basics-of-http"><span class="nav-number">2.1.3.</span> <span class="nav-text">Basics of HTTP</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#http-overview"><span class="nav-number">2.1.3.1.</span> <span class="nav-text">HTTP Overview</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#http-messages"><span class="nav-number">2.1.3.2.</span> <span class="nav-text">HTTP Messages</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#request-message"><span class="nav-number">2.1.3.2.1.</span> <span class="nav-text">Request Message</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#response-message"><span class="nav-number">2.1.3.2.2.</span> <span class="nav-text">Response Message</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#http-headers"><span class="nav-number">2.1.3.3.</span> <span class="nav-text">HTTP Headers</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#http-methods"><span class="nav-number">2.1.3.4.</span> <span class="nav-text">HTTP Methods</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#http-status-codes"><span class="nav-number">2.1.3.5.</span> <span class="nav-text">HTTP Status Codes</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#connection-management-in-http1.x"><span class="nav-number">2.1.3.6.</span> <span class="nav-text">Connection Management in HTTP&#x2F;1.x</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#http-features"><span class="nav-number">2.1.4.</span> <span class="nav-text">HTTP Features</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#cross-origin-resource-sharing"><span class="nav-number">2.1.4.1.</span> <span class="nav-text">Cross-Origin Resource Sharing</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#http-caching"><span class="nav-number">2.1.4.2.</span> <span class="nav-text">HTTP Caching</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#cacheable"><span class="nav-number">2.1.4.2.1.</span> <span class="nav-text">Cacheable</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#types-of-caches"><span class="nav-number">2.1.4.2.2.</span> <span class="nav-text">Types of Caches</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#cache-control"><span class="nav-number">2.1.4.2.3.</span> <span class="nav-text">Cache-Control</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#max-ageageexpires"><span class="nav-number">2.1.4.2.4.</span> <span class="nav-text">max-age&#x2F;Age&#x2F;Expires</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#last-modifiedif-modified-since"><span class="nav-number">2.1.4.2.5.</span> <span class="nav-text">Last-Modified&#x2F;If-Modified-Since</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#etagif-none-match"><span class="nav-number">2.1.4.2.6.</span> <span class="nav-text">ETag&#x2F;If-None-Match</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#vary"><span class="nav-number">2.1.4.2.7.</span> <span class="nav-text">Vary</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#improvents"><span class="nav-number">2.1.4.2.8.</span> <span class="nav-text">Improvents</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#browser-fresh"><span class="nav-number">2.1.4.2.9.</span> <span class="nav-text">Browser Fresh</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#http-%E5%86%85%E5%AE%B9%E5%8D%8F%E5%95%86%E6%9C%BA%E5%88%B6"><span class="nav-number">2.1.5.</span> <span class="nav-text">HTTP 内容协商机制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%85%E5%AE%B9%E5%8D%8F%E5%95%86%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="nav-number">2.1.5.1.</span> <span class="nav-text">内容协商的方式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#http-%E6%96%AD%E7%82%B9%E7%BB%AD%E4%BC%A0%E5%92%8C%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%8B%E8%BD%BD"><span class="nav-number">2.1.6.</span> <span class="nav-text">HTTP 断点续传和多线程下载</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#range"><span class="nav-number">2.1.6.1.</span> <span class="nav-text">Range</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#content-range"><span class="nav-number">2.1.6.2.</span> <span class="nav-text">Content-Range</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E-http-%E7%9A%84%E5%8A%9F%E8%83%BD%E8%BF%BD%E5%8A%A0%E5%8D%8F%E8%AE%AE"><span class="nav-number">2.1.7.</span> <span class="nav-text">基于 HTTP 的功能追加协议</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#http-%E5%8D%8F%E8%AE%AE%E7%9A%84%E7%93%B6%E9%A2%88"><span class="nav-number">2.1.7.1.</span> <span class="nav-text">HTTP 协议的瓶颈</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#websocket"><span class="nav-number">2.1.7.2.</span> <span class="nav-text">WebSocket</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#spdy"><span class="nav-number">2.1.7.3.</span> <span class="nav-text">SPDY</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#http2.0"><span class="nav-number">2.1.7.4.</span> <span class="nav-text">HTTP&#x2F;2.0</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%88%86%E5%B8%A7"><span class="nav-number">2.1.7.4.1.</span> <span class="nav-text">二进制分帧</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%A6%96%E9%83%A8%E5%8E%8B%E7%BC%A9"><span class="nav-number">2.1.7.4.2.</span> <span class="nav-text">首部压缩</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8"><span class="nav-number">2.1.7.4.3.</span> <span class="nav-text">多路复用</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%B9%B6%E8%A1%8C%E5%8F%8C%E5%90%91%E5%AD%97%E8%8A%82%E6%B5%81"><span class="nav-number">2.1.7.4.4.</span> <span class="nav-text">并行双向字节流</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%AF%B7%E6%B1%82%E4%BC%98%E5%85%88%E7%BA%A7"><span class="nav-number">2.1.7.4.5.</span> <span class="nav-text">请求优先级</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%8E%A8%E9%80%81"><span class="nav-number">2.1.7.4.6.</span> <span class="nav-text">服务器推送</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#webdav"><span class="nav-number">2.1.7.5.</span> <span class="nav-text">WebDAV</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#quic-%E5%92%8C-http3.0"><span class="nav-number">2.1.7.6.</span> <span class="nav-text">QUIC 和 HTTP&#x2F;3.0</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#https"><span class="nav-number">2.2.</span> <span class="nav-text">HTTPS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#two-things-https-does"><span class="nav-number">2.2.1.</span> <span class="nav-text">Two Things HTTPS Does</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#authentication"><span class="nav-number">2.2.1.1.</span> <span class="nav-text">Authentication</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#encryption"><span class="nav-number">2.2.1.2.</span> <span class="nav-text">Encryption</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#public-key-infrastructure-pki"><span class="nav-number">2.2.2.</span> <span class="nav-text">Public Key Infrastructure (PKI)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#public-keys-private-keys"><span class="nav-number">2.2.2.1.</span> <span class="nav-text">Public Keys &amp; Private Keys</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#asymmetric-and-symmetric-encryption"><span class="nav-number">2.2.2.1.1.</span> <span class="nav-text">Asymmetric and Symmetric Encryption</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#digital-signatures"><span class="nav-number">2.2.2.2.</span> <span class="nav-text">Digital Signatures</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#certificate-authorities"><span class="nav-number">2.2.2.3.</span> <span class="nav-text">Certificate Authorities</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#digital-certificates"><span class="nav-number">2.2.2.4.</span> <span class="nav-text">Digital Certificates</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#root-stores"><span class="nav-number">2.2.2.5.</span> <span class="nav-text">Root Stores</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#enable-https-on-your-website"><span class="nav-number">2.2.3.</span> <span class="nav-text">Enable HTTPS on Your Website</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#the-tls-handshake"><span class="nav-number">2.2.4.</span> <span class="nav-text">The TLS Handshake</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#email"><span class="nav-number">2.3.</span> <span class="nav-text">Email</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A8%E9%80%81%E6%8A%A5%E6%96%87smtp"><span class="nav-number">2.3.1.</span> <span class="nav-text">推送报文（SMTP）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%82%AE%E4%BB%B6%E6%8A%A5%E6%96%87%E6%A0%BC%E5%BC%8Fdata"><span class="nav-number">2.3.1.1.</span> <span class="nav-text">邮件报文格式（DATA）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E6%8A%A5%E6%96%87"><span class="nav-number">2.3.2.</span> <span class="nav-text">获取报文</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dns"><span class="nav-number">2.4.</span> <span class="nav-text">DNS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#dns-%E7%9A%84%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%BE%E8%AE%A1"><span class="nav-number">2.4.1.</span> <span class="nav-text">DNS 的分布式设计</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E5%B1%82%E6%AC%A1%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">2.4.1.1.</span> <span class="nav-text">分布式、层次数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#dns-%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E4%BA%A4%E4%BA%92"><span class="nav-number">2.4.1.1.1.</span> <span class="nav-text">DNS 服务器的交互</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#dns-%E7%BC%93%E5%AD%98"><span class="nav-number">2.4.1.2.</span> <span class="nav-text">DNS 缓存</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dns-%E8%AE%B0%E5%BD%95"><span class="nav-number">2.4.2.</span> <span class="nav-text">DNS 记录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dns-%E6%8A%A5%E6%96%87"><span class="nav-number">2.4.3.</span> <span class="nav-text">DNS 报文</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#media-stream"><span class="nav-number">2.5.</span> <span class="nav-text">Media Stream</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#content-distribution-network-cdn"><span class="nav-number">2.6.</span> <span class="nav-text">Content Distribution Network (CDN)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#transport-layer"><span class="nav-number">3.</span> <span class="nav-text">Transport Layer</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8%E4%B8%8E%E5%A4%9A%E8%B7%AF%E5%88%86%E8%A7%A3"><span class="nav-number">3.1.</span> <span class="nav-text">多路复用与多路分解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A0%E8%BF%9E%E6%8E%A5%E5%92%8C%E9%9D%A2%E5%90%91%E8%BF%9E%E6%8E%A5"><span class="nav-number">3.1.1.</span> <span class="nav-text">无连接和面向连接</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#udp"><span class="nav-number">3.2.</span> <span class="nav-text">UDP</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%A5%E6%96%87%E7%BB%93%E6%9E%84"><span class="nav-number">3.2.1.</span> <span class="nav-text">报文结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#udp-%E6%A0%A1%E9%AA%8C%E5%92%8Cchecksum"><span class="nav-number">3.2.2.</span> <span class="nav-text">UDP 校验和（checksum）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AF%E9%9D%A0%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93"><span class="nav-number">3.3.</span> <span class="nav-text">可靠数据传输</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E9%83%BD%E4%B8%8D%E8%80%83%E8%99%91rdt1.0"><span class="nav-number">3.3.1.</span> <span class="nav-text">什么都不考虑：rdt1.0</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%80%83%E8%99%91%E6%AF%94%E7%89%B9%E5%B7%AE%E9%94%99rdt2.0"><span class="nav-number">3.3.2.</span> <span class="nav-text">考虑比特差错：rdt2.0</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%80%83%E8%99%91%E6%AF%94%E7%89%B9%E5%B7%AE%E9%94%99%E5%92%8C%E4%B8%A2%E5%8C%85rdt3.0"><span class="nav-number">3.3.3.</span> <span class="nav-text">考虑比特差错和丢包：rdt3.0</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%80%83%E8%99%91%E6%B5%81%E6%B0%B4%E7%BA%BF%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93"><span class="nav-number">3.3.4.</span> <span class="nav-text">考虑流水线数据传输</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#gbn"><span class="nav-number">3.3.4.1.</span> <span class="nav-text">GBN</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#sr"><span class="nav-number">3.3.4.2.</span> <span class="nav-text">SR</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E9%9D%A0%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93%E6%9C%BA%E5%88%B6%E6%80%BB%E7%BB%93"><span class="nav-number">3.3.5.</span> <span class="nav-text">可靠数据传输机制总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp"><span class="nav-number">3.4.</span> <span class="nav-text">TCP</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%A5%E6%96%87%E7%BB%93%E6%9E%84-1"><span class="nav-number">3.4.1.</span> <span class="nav-text">报文结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BA%8F%E5%88%97%E5%8F%B7"><span class="nav-number">3.4.1.1.</span> <span class="nav-text">序列号</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%BA%8F%E5%88%97%E5%8F%B7"><span class="nav-number">3.4.1.1.1.</span> <span class="nav-text">初始序列号</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A1%AE%E8%AE%A4%E5%8F%B7"><span class="nav-number">3.4.1.2.</span> <span class="nav-text">确认号</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A0%87%E8%AE%B0%E4%BD%8D"><span class="nav-number">3.4.1.3.</span> <span class="nav-text">标记位</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AA%97%E5%8F%A3%E5%A4%A7%E5%B0%8F"><span class="nav-number">3.4.1.4.</span> <span class="nav-text">窗口大小</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A0%A1%E9%AA%8C%E5%92%8C"><span class="nav-number">3.4.1.5.</span> <span class="nav-text">校验和</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%AF%E9%80%89%E9%A1%B9"><span class="nav-number">3.4.1.6.</span> <span class="nav-text">可选项</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#timestamp"><span class="nav-number">3.4.1.6.1.</span> <span class="nav-text">Timestamp</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97-rtt"><span class="nav-number">3.4.1.6.1.1.</span> <span class="nav-text">计算 RTT</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E9%98%B2%E6%AD%A2%E5%BA%8F%E5%88%97%E5%8F%B7%E5%9B%9E%E7%BB%95"><span class="nav-number">3.4.1.6.1.2.</span> <span class="nav-text">防止序列号回绕</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B6%85%E6%97%B6%E9%87%8D%E4%BC%A0"><span class="nav-number">3.4.2.</span> <span class="nav-text">超时重传</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B6%85%E6%97%B6%E9%87%8D%E4%BC%A0%E6%97%B6%E9%97%B4%E7%9A%84%E8%AE%A1%E7%AE%97"><span class="nav-number">3.4.2.1.</span> <span class="nav-text">超时重传时间的计算</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%BE%80%E8%BF%94%E6%97%B6%E9%97%B4%E4%BC%B0%E8%AE%A1"><span class="nav-number">3.4.2.1.1.</span> <span class="nav-text">往返时间估计</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%B5%8B%E9%87%8F-rtt-%E5%8F%98%E5%8C%96"><span class="nav-number">3.4.2.1.2.</span> <span class="nav-text">测量 RTT 变化</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E5%92%8C%E7%AE%A1%E7%90%86%E8%B6%85%E6%97%B6%E6%97%B6%E9%97%B4"><span class="nav-number">3.4.2.1.3.</span> <span class="nav-text">设置和管理超时时间</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B6%85%E6%97%B6%E9%87%8D%E4%BC%A0%E7%AD%96%E7%95%A5"><span class="nav-number">3.4.2.2.</span> <span class="nav-text">超时重传策略</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%B6%85%E6%97%B6%E9%97%B4%E9%9A%94%E5%8A%A0%E5%80%8D"><span class="nav-number">3.4.2.2.1.</span> <span class="nav-text">超时间隔加倍</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F%E9%87%8D%E4%BC%A0"><span class="nav-number">3.4.2.2.2.</span> <span class="nav-text">快速重传</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#gbn-sr"><span class="nav-number">3.4.2.2.3.</span> <span class="nav-text">GBN + SR</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6"><span class="nav-number">3.4.3.</span> <span class="nav-text">流量控制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp-%E8%BF%9E%E6%8E%A5%E7%AE%A1%E7%90%86"><span class="nav-number">3.5.</span> <span class="nav-text">TCP 连接管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B"><span class="nav-number">3.5.1.</span> <span class="nav-text">三次握手</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B"><span class="nav-number">3.5.2.</span> <span class="nav-text">四次挥手</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#syn-%E6%B3%9B%E6%B4%AA%E6%94%BB%E5%87%BB%E4%B8%8E-cookie"><span class="nav-number">3.5.3.</span> <span class="nav-text">SYN 泛洪攻击与 Cookie</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8D%8A%E8%BF%9E%E6%8E%A5%E9%98%9F%E5%88%97"><span class="nav-number">3.5.3.1.</span> <span class="nav-text">半连接队列</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%A8%E8%BF%9E%E6%8E%A5%E9%98%9F%E5%88%97"><span class="nav-number">3.5.3.2.</span> <span class="nav-text">全连接队列</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#syn-%E6%B3%9B%E6%B4%AA%E6%94%BB%E5%87%BB"><span class="nav-number">3.5.3.3.</span> <span class="nav-text">SYN 泛洪攻击</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%BA%94%E5%AF%B9-syn-%E6%B3%9B%E6%B4%AA%E6%94%BB%E5%87%BB"><span class="nav-number">3.5.3.3.1.</span> <span class="nav-text">如何应对 SYN 泛洪攻击？</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6"><span class="nav-number">3.5.4.</span> <span class="nav-text">拥塞控制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6%E5%8E%9F%E7%90%86"><span class="nav-number">3.5.4.1.</span> <span class="nav-text">拥塞控制原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AB%AF%E5%88%B0%E7%AB%AF%E7%9A%84%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6"><span class="nav-number">3.5.4.2.</span> <span class="nav-text">端到端的拥塞控制</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%8B%A5%E5%A1%9E%E6%A3%80%E6%B5%8B"><span class="nav-number">3.5.4.2.1.</span> <span class="nav-text">拥塞检测</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%8B%A5%E5%A1%9E%E7%AA%97%E5%8F%A3"><span class="nav-number">3.5.4.2.2.</span> <span class="nav-text">拥塞窗口</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6%E7%AE%97%E6%B3%95"><span class="nav-number">3.5.4.2.3.</span> <span class="nav-text">拥塞控制算法</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%85%A2%E5%90%AF%E5%8A%A8"><span class="nav-number">3.5.4.2.3.1.</span> <span class="nav-text">慢启动</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%8B%A5%E5%A1%9E%E9%81%BF%E5%85%8D"><span class="nav-number">3.5.4.2.3.2.</span> <span class="nav-text">拥塞避免</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F%E6%81%A2%E5%A4%8D"><span class="nav-number">3.5.4.2.3.3.</span> <span class="nav-text">快速恢复</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E8%BE%85%E5%8A%A9%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6"><span class="nav-number">3.5.4.3.</span> <span class="nav-text">网络辅助拥塞控制</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%98%8E%E7%A1%AE%E6%8B%A5%E5%A1%9E%E9%80%9A%E5%91%8Aecn"><span class="nav-number">3.5.4.3.1.</span> <span class="nav-text">明确拥塞通告（ECN）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E6%97%B6%E5%BB%B6%E7%9A%84%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6"><span class="nav-number">3.5.4.3.2.</span> <span class="nav-text">基于时延的拥塞控制</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%AC%E5%B9%B3%E6%80%A7"><span class="nav-number">3.5.4.4.</span> <span class="nav-text">公平性</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96"><span class="nav-number">3.6.</span> <span class="nav-text">其他性能优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#nagle-%E7%AE%97%E6%B3%95"><span class="nav-number">3.6.1.</span> <span class="nav-text">Nagle 算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BB%B6%E8%BF%9F%E7%A1%AE%E8%AE%A4"><span class="nav-number">3.6.2.</span> <span class="nav-text">延迟确认</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tcp-%E7%9A%84-keep-alive"><span class="nav-number">3.6.3.</span> <span class="nav-text">TCP 的 keep-alive</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#network-layer"><span class="nav-number">4.</span> <span class="nav-text">Network Layer</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ip"><span class="nav-number">4.1.</span> <span class="nav-text">IP</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ip-address"><span class="nav-number">4.1.1.</span> <span class="nav-text">IP Address</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#data-link-layer"><span class="nav-number">5.</span> <span class="nav-text">Data Link Layer</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#framing"><span class="nav-number">5.1.</span> <span class="nav-text">Framing</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#error-detection"><span class="nav-number">5.2.</span> <span class="nav-text">Error Detection</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#link"><span class="nav-number">5.3.</span> <span class="nav-text">Link</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#multiple-access-protocol"><span class="nav-number">5.3.1.</span> <span class="nav-text">Multiple Access Protocol</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#channel-partitioning-protocol"><span class="nav-number">5.3.1.1.</span> <span class="nav-text">Channel Partitioning Protocol</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#random-access-protocol"><span class="nav-number">5.3.1.2.</span> <span class="nav-text">Random Access Protocol</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#taking-turns-protocol"><span class="nav-number">5.3.1.3.</span> <span class="nav-text">Taking-Turns Protocol</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#physical-layer"><span class="nav-number">6.</span> <span class="nav-text">Physical Layer</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#communication-channels"><span class="nav-number">6.1.</span> <span class="nav-text">Communication Channels</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#modulation"><span class="nav-number">6.2.</span> <span class="nav-text">Modulation</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#network-security"><span class="nav-number">7.</span> <span class="nav-text">Network Security</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#dns-poisoning"><span class="nav-number">7.1.</span> <span class="nav-text">DNS Poisoning</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -327,6 +324,7 @@ d = \frac{l(m)}{v(m/s)}
 <h2 id="http">HTTP</h2>
 <blockquote>
 <p>Web 的应用层协议是超文本传输协议（HyperText Transfer Protocol, HTTP）</p>
+<p>Fiddler</p>
 </blockquote>
 <h3 id="http-history">HTTP History</h3>
 <ul>
@@ -336,8 +334,55 @@ d = \frac{l(m)}{v(m/s)}
 <li>HTTP 2.0：2015，HTTP 1.1 的扩展，于2015年5月提出</li>
 <li>HTTP 3.0：QUIC 协议（一种传输层协议，TCP的效率比较低，QUIC 为了减小 TCP 的延迟和带宽开销）</li>
 </ul>
-<h3 id="http-协议结构和通讯原理">HTTP 协议结构和通讯原理</h3>
-<h4 id="http-协议特点">HTTP 协议特点</h4>
+<h3 id="resources-and-uris">Resources and URIs</h3>
+<p>HTTP 请求的目标被称为 <strong>资源</strong>，资源可以是文档、图片或者任何东西，每个资源都由一个 <strong>URI（Uiform Resource Identifier）</strong>唯一确定。</p>
+<p>URI 可以分为 <strong>URL（Uniform Resource Locator）</strong>和 <strong>URN（Uniform Resource Name）</strong>两种</p>
+<ul>
+<li><p>URL 就是我们所熟知的 <strong>Web 地址（Web Address）</strong>；</p></li>
+<li><p>URN 则是在一个特定的命名空间下面指定的资源名，比如 <code>urn:isbn:9780141036144</code>。</p></li>
+</ul>
+<p>下面是一个 URI 的组成：</p>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">                    hierarchical part
+        ┌───────────────────┴─────────────────────┐
+                    authority               path
+        ┌───────────────┴───────────────┐┌───┴────┐
+  abc://username:password@example.com:123/path/data?key=value&amp;key2=value2#fragid1
+  └┬┘   └───────┬───────┘ └────┬────┘ └┬┘           └─────────┬─────────┘ └──┬──┘
+scheme  user information     host     port                  query         fragment
+
+  urn:example:mammal:monotreme:echidna
+  └┬┘ └──────────────┬───────────────┘
+scheme              path<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>举一个我们常见的 URL（URI） 的例子：</p>
+<p><code>https://zh.wikipedia.org/w/index.php?title=Special:随机页面#5</code></p>
+<ol type="1">
+<li><code>https</code>：协议</li>
+<li><code>zh.wikipedia.org</code>：域名</li>
+<li><code>/w/index.php</code>：路径（不同的页面）</li>
+<li><code>?title=Special:随机页面</code>：查询参数（相同页面，不同内容）</li>
+<li><code>#5</code>：锚点（相同页面，相同内容，不同位置）</li>
+<li>其中若不写端口号，则表示使用 HTTPS 对应的默认端口号 443</li>
+</ol>
+<h4 id="data-urls">Data URLs</h4>
+<p>以 <code>data:</code> Scheme 为开头的 URL 被称为 Data URL，这种 URL 内部就蕴藏着信息，使得我们可以将小文件嵌入文档中：</p>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">data:[&lt;mediatype>][;base64],&lt;data><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>其中 <code>mediatype</code> 是一个 MIME 类型字符串，比如 <code>image/jpeg</code> 表示一个 JPEG 格式的视频。如果省略，则默认为 <code>text/plain;charset=US-ASCII</code>。</p>
+<p>下面是一些例子：</p>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">data:,Hello%2C%20World%21
+data:text/plain;base64,SGVsbG8sIFdvcmxkIQ==
+data:text/html,%3Ch1%3EHello%2C%20World%21%3C%2Fh1%3E
+data:text/html,%3Cscript%3Ealert%28%27hi%27%29%3B%3C%2Fscript%3E<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>注意一般需要将内容使用转换成 Base64 编码，否则中间的空格、换行、特殊字符等容易出现问题，而且 Data URL 的长度限制在不同的浏览器中会有所不同。</p>
+<h4 id="mime-types">MIME Types</h4>
+<blockquote>
+<p><strong>媒体类型（Media Type）</strong>或 <strong>MIME 类型（Multipurpose Internet Mail Extensions Type）</strong>表明了文档、文件或各种二进制内容的性质和格式。</p>
+</blockquote>
+<p>MIME 类型通常由以下两部分组成：</p>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">type/subtypes<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>后面也可以继续加一些参数：</p>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">type/subtypes;parameter=value<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="basics-of-http">Basics of HTTP</h3>
+<h4 id="http-overview">HTTP Overview</h4>
 <ul>
 <li><strong>支持客户/服务器模式</strong></li>
 <li><strong>简单快速</strong>
@@ -364,35 +409,8 @@ d = \frac{l(m)}{v(m/s)}
 <li>另一方面，在服务器不需要先前信息时它的应答就较快</li>
 </ul></li>
 </ul>
-<h4 id="uri-和-url">URI 和 URL</h4>
-<blockquote>
-<p>问题：我们在浏览器的 Web 地址应该叫 URL 还是 URI？ - URI：可以分为 URL 和 URN，或同时具备 locators 和 names 特性的一个东西 - URN 像一个人的名字，URL 像一个人的地址；URN 确定了东西的身份，URL 提供了找到它的方式（提供了访问机制，比如说协议）</p>
-</blockquote>
-<p>URL 实际上是 URI 的一个子集，除识别资源外还提供定位资源的方法。</p>
-<p>下面是一个 URI 的组成：</p>
-<pre class="line-numbers language-text" data-language="text"><code class="language-text">                    hierarchical part
-        ┌───────────────────┴─────────────────────┐
-                    authority               path
-        ┌───────────────┴───────────────┐┌───┴────┐
-  abc://username:password@example.com:123/path/data?key=value&amp;key2=value2#fragid1
-  └┬┘   └───────┬───────┘ └────┬────┘ └┬┘           └─────────┬─────────┘ └──┬──┘
-scheme  user information     host     port                  query         fragment
-
-  urn:example:mammal:monotreme:echidna
-  └┬┘ └──────────────┬───────────────┘
-scheme              path<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>举一个我们常见的 URL（URI） 的例子：</p>
-<p>https://zh.wikipedia.org/w/index.php?title=Special:随机页面#5</p>
-<ol type="1">
-<li><code>https</code>：协议</li>
-<li><code>zh.wikipedia.org</code>：域名</li>
-<li><code>/w/index.php</code>：路径（不同的页面）</li>
-<li><code>?title=Special:随机页面</code>：查询参数（相同页面，不同内容）</li>
-<li><code>#5</code>：锚点（相同页面，相同内容，不同位置）</li>
-<li>其中若不写端口号，则表示使用 https 对应的默认端口号 443</li>
-</ol>
-<h4 id="http-报文结构">HTTP 报文结构</h4>
-<h5 id="请求报文">请求报文</h5>
+<h4 id="http-messages">HTTP Messages</h4>
+<h5 id="request-message">Request Message</h5>
 <pre class="line-numbers language-text" data-language="text"><code class="language-text">【请求行】POST（请求方法） /webTours/login.pl（请求 URI） HTTP/1.1（HTTP 协议及版本）
 【请求头】用键值对来传递参数，包括 Host、Accept、Content-Type 等
 
@@ -407,7 +425,7 @@ request<span class="token punctuation">.</span>url <span class="token comment">/
 request<span class="token punctuation">.</span>path <span class="token comment">// 纯路径</span>
 request<span class="token punctuation">.</span>query <span class="token comment">// 只有查询参数</span>
 request<span class="token punctuation">.</span>headers<span class="token punctuation">[</span><span class="token string">'Accept'</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h5 id="响应报文">响应报文</h5>
+<h5 id="response-message">Response Message</h5>
 <pre class="line-numbers language-text" data-language="text"><code class="language-text">【响应行】HTTP/1.1（报文协议及版本） 200 Ok（状态码及状态描述）
 【响应头】
 
@@ -418,7 +436,7 @@ response<span class="token punctuation">.</span><span class="token function">set
 response<span class="token punctuation">.</span><span class="token function">write</span><span class="token punctuation">(</span><span class="token string">'内容'</span><span class="token punctuation">)</span> <span class="token comment">// 内容可以追加</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <div class="note warning"><p>注意 <code>path</code> 都是以 <code>/</code> 开头的</p>
 </div>
-<h4 id="http-报文头">HTTP 报文头</h4>
+<h4 id="http-headers">HTTP Headers</h4>
 <ul>
 <li><strong>Accept</strong>：浏览器端可以接收的媒体类型
 <ul>
@@ -439,25 +457,9 @@ response<span class="token punctuation">.</span><span class="token function">wri
 <li><strong>Host</strong>：指定被请求资源的 Internet 主机和端口号，通常从 URL 中提取出来</li>
 <li><strong>Referer</strong>：一般会带上此字段，告诉服务器是从哪个页面链接过来的</li>
 <li><strong>User-Agent</strong>：告诉 HTTP 服务器，客户端使用的操作系统和浏览器名称和版本</li>
-<li><strong>Content-Type</strong>：说明了报文体对象的媒体类型
-<ul>
-<li><strong>text/html</strong>：HTML</li>
-<li><strong>text/plain</strong>：纯文本</li>
-<li><strong>text/xml</strong>：XML</li>
-<li><strong>image/gif</strong>：GIF图像</li>
-<li><strong>image/jpeg</strong>：JPG图像</li>
-<li><strong>image/png</strong>：PNG图像</li>
-<li><strong>application/xhtml+xml</strong>：XHTML</li>
-<li><strong>application/xml</strong>：XML</li>
-<li><strong>application/atom+xml</strong>：Atom XML</li>
-<li><strong>application/json</strong>：JSON</li>
-<li><strong>application/pdf</strong>：PDF</li>
-<li><strong>application/msword</strong>：WORD</li>
-<li><strong>application/octet-stream</strong>：二进制数据流</li>
-<li><strong>application/x-www-form-urlencoded</strong>：表单提交</li>
-</ul></li>
+<li><strong>Content-Type</strong>：说明了报文体对象的媒体类型</li>
 </ul>
-<h4 id="http-请求方法">HTTP 请求方法</h4>
+<h4 id="http-methods">HTTP Methods</h4>
 <ul>
 <li><strong>GET</strong>：请求访问已被 URI 识别的资源
 <ul>
@@ -474,7 +476,7 @@ response<span class="token punctuation">.</span><span class="token function">wri
 <li><strong>TRACE</strong>：回显服务器收到的请求，主要用于测试或诊断，但容易受到 XST 攻击，一般不用</li>
 <li><strong>CONNECT</strong>：开启客户端与所请求资源之间的双向沟通的通道，可以用来创建隧道，一般用于 HTTP 代理</li>
 </ul>
-<h4 id="http-状态码">HTTP 状态码</h4>
+<h4 id="http-status-codes">HTTP Status Codes</h4>
 <figure>
 <img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/HTTP-StatusCode.png" alt="HTTP状态码" /><figcaption aria-hidden="true">HTTP状态码</figcaption>
 </figure>
@@ -491,141 +493,111 @@ response<span class="token punctuation">.</span><span class="token function">wri
 <li><strong>500 Internal Server Error</strong>，服务器内部错误，无法完成请求</li>
 <li><strong>502 Bad Gateway</strong>，充当网关或代理的服务器，从远端服务器接收到了一个无效的请求</li>
 </ul>
-<h4 id="http-状态管理cookie-和-session">HTTP 状态管理：Cookie 和 Session</h4>
-<h5 id="cookie">Cookie</h5>
-<p>W3C 推行的一种机制，客户端请求服务器，如果服务器需要记录该用户的状态，就向客户端浏览器颁发一个Cookie， 客户端浏览器会把Cookie保存起来，浏览器再请求的时候，就会把请求的网址连同Cookie一同提交给服务器</p>
-<h5 id="session">Session</h5>
-<p>另一种记录客户状态的机制，服务器把客户端信息以某种形式记录在服务器上 客户端可以以 Cookie、URL 重写或隐藏表单的形式保存 Session ID</p>
+<h4 id="connection-management-in-http1.x">Connection Management in HTTP/1.x</h4>
+<p>HTTP/1.0 中默认使用 <strong>短连接（Short-Lived Connections）</strong>，而 HTTP/1.1 则引入了 <strong>长链接（Persistent Connection）</strong>和 <strong>流水线模型（HTTP Pipelining）</strong>。</p>
 <figure>
-<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Session-Cookie.png" alt="Session与Cookie" /><figcaption aria-hidden="true">Session与Cookie</figcaption>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/http1_x_connections.png" alt="Compares the performance of the three HTTP/1.x connection models: short-lived connections, persistent connections, and HTTP pipelining." /><figcaption aria-hidden="true">Compares the performance of the three HTTP/1.x connection models: short-lived connections, persistent connections, and HTTP pipelining.</figcaption>
 </figure>
-<h5 id="cookie-和-session">Cookie 和 Session</h5>
-<ul>
-<li>有效期不同
-<ul>
-<li>Cookie 的有效时间久，或者可以设置到永远</li>
-<li>Session 的有效期
-<ul>
-<li>超时自动失效，通常不长</li>
-<li>程序调用 <code>HttpSession.invalidate()</code> 主动失效（退出、注销等操作）</li>
-<li>服务器进程被终止</li>
-</ul></li>
-<li>存放位置不同，Cookie 在客户端，Session 在服务器端</li>
-<li>安全性（隐私策略）不同，用户可以更改 Cookie</li>
-<li>对服务器压力不同</li>
-</ul></li>
-</ul>
-<h3 id="http-协议的特性">HTTP 协议的特性</h3>
-<h4 id="http-协议中的编码和解码">HTTP 协议中的编码和解码</h4>
+<p>HTTP/1.1 中默认使用长连接（HTTP/1.0 中需要将 <code>Connection</code> 设置为除了 <code>close</code> 以外的其他值，比如 <code>retry-after</code> 来开启），借助 TCP 的性能增强功能让连接得以保持。服务器可以使用 <code>Keep-Alive</code> 头来指定连接需要保持的最少时间。</p>
+<p>长连接在空闲的时候也会占用服务器的资源，因此服务器可能会更容易遭受 DoS 攻击。</p>
+<p>HTTP Pipelining 在现代浏览器中并不是默认开启的，因为他实现起来比较复杂，并且容易收到 <strong>队头阻塞（HOL）</strong>问题的影响。他现在已经被 HTTP/2.0 更合理的多路复用算法取代了。</p>
+<h3 id="http-features">HTTP Features</h3>
+<h4 id="cross-origin-resource-sharing">Cross-Origin Resource Sharing</h4>
 <blockquote>
-<p>码 = 字符集+编码</p>
+<p><strong>跨域资源共享（Cross-Origin Resource Sharing, CORS）</strong> 是一种基于 HTTP Header 的机制，允许服务器指明除了自己以外的哪些源（Origin）可以访问自己的资源。比如是否允许 <code>https://domain-a.com</code> 中的 JavaScript 代码请求 <code>https://domain-b.com/data.json</code>。</p>
 </blockquote>
-<h5 id="编码规范">编码规范</h5>
+<p>跨域交互通常可以分为三类：</p>
 <ul>
-<li>字库表：里面存储了所有的字符</li>
-<li>字符集：字符对应的二进制地址的集合</li>
-<li>编码方式：一套编码规范可以有多种不同的编码方式（比如 UTF-8，对应的编码规范是 Unicode），一种算法来节约空间</li>
+<li><strong>跨域写操作（Cross-Origin Writes）</strong>，通常是被允许的，比如链接、重定向、表单提交等，有的请求需要预检；</li>
+<li><strong>跨域资源嵌入（Cross-Origin Embeding）</strong>，通常是被允许的；</li>
+<li><strong>跨域读操作（Cross-Origin Reads）</strong>，一般是不被允许的，但可以通过嵌入图片来巧妙访问。</li>
 </ul>
-<p>常见的编码规范：</p>
+<p><strong>跨域资源嵌入</strong> 指的是比如下面这些资源：</p>
 <ul>
-<li>ASCII 码：7 位码，128 个字符，1 个字节</li>
-<li>GBK：汉字内码扩展规范，2 个字节</li>
-<li>ISO-8859-1：加了希腊语等，把其他所有的当做 ISO-8859-1 来解都没问题，没有中文，8 位码，1 个字节</li>
-<li>Unicode：包含全世界所有的字符，最多 4 个字节</li>
+<li>使用 <code>&lt;script src="..."&gt;&lt;/script&gt;</code> 嵌入的 JavaScript 代码，但错误详情只能被同源的代码读取到；</li>
+<li>使用 <code>&lt;link re="stylesheet" href=""&gt;</code> 嵌入的 CSS，由于 CSS 松散的语法，跨域的 CSS 文件需要正确的 <code>Content-Typer</code> 头，否则会被浏览器拒绝；</li>
+<li>使用 <code>&lt;img&gt;</code> 展示的图片；</li>
+<li>使用 <code>&lt;video&gt;</code> 或 <code>&lt;audio&gt;</code> 展示的多媒体；</li>
+<li>使用 <code>&lt;object&gt;</code> 或 <code>&lt;embed&gt;</code> 嵌入的外部资源；</li>
+<li>使用 <code>@font-face</code> 嵌入的字体，不过有的浏览器允许跨域字体，而有的只允许同源字体；</li>
+<li><code>&lt;iframe&gt;</code> 里面的内容，站点可以使用 <code>X-Frame-Options</code> 头来阻止别人通过这样的方式访问自己的网站。</li>
 </ul>
-<h5 id="乱码">乱码</h5>
-<p>乱码的由来：解码过程、编码过程都可能导致乱码</p>
-<h5 id="url-的编码与解码">URL 的编码与解码</h5>
-<p>URL 是采用 ASCII 字符集进行编码的</p>
-<p><code>%</code> 编码规范：</p>
+<p><strong>CORS 则提供了服务端控制读写资源被跨域读写的能力，有的请求不需要预检，而在发送有的请求之前则需要发送预检请求。</strong></p>
+<p>满足下面所有条件的请求不需要预检：</p>
 <ul>
-<li>对 URL 中属于 ASCII 字符集的非保留字不做编码</li>
-<li>对 URL 中的保留字需要取其 ASCII 内码，然后加上%的前缀对该字符进行编码</li>
-<li>对 URL 中非 ASCII 字符需要取其 Unicode 内码，然后加上 <code>%</code> 的前缀对该字符进行编码</li>
+<li>请求方法是 <code>GET</code> <code>POST</code> 或 <code>HEAD</code>；</li>
+<li>除了 UA 自动设置的请求头（比如 <code>Connection</code> <code>User-Agent</code> 等）以外，只有 <code>Accept</code> <code>Accpet-Language</code> <code>Content-Language</code> <code>Content-Type</code> <code>Range</code>；</li>
+<li><code>Content-Type</code> 是 <code>application/x-www-form-urlencoded</code> <code>multipart/form-data</code> 或 <code>text/plain</code>；</li>
+<li>如果请求是由 <code>XMLHttpRequest</code> 对象发出的， <code>upload</code> 属性上没有事件监听；</li>
+<li>没有使用 <code>ReadableStream</code> 对象。</li>
 </ul>
+<p>对于这些无需预检的请求，服务器会直接在该次请求的响应中加上 <code>Access-Control-Allow-Origin</code> 头。</p>
+<p>对于其他请求，浏览器会先发送方法为 <code>OPTIONS</code> 的预检请求，该请求有一些特殊的请求头：</p>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">OPTIONS /doc HTTP/1.1
+Origin: https://foo.example
+Access-Control-Request-Method: POST
+Access-COntrol-Request-Headers: X-PINGOTHER<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>服务器会做出响应：</p>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">HTTP/1.1 204 No Content
+Access-Control-Allow-Origin: https://foo.example
+Access-Control-Allow-Methods: POST, GET, OPTIONS
+Access-Control-Allow-Headers: X-PINGOTHER
+Access-Control-Max-Age: 86400<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>// TBC With Credentials</p>
+<h4 id="http-caching">HTTP Caching</h4>
+<h5 id="cacheable">Cacheable</h5>
+<p>首先，并不是所有的 HTTP 请求都可以被缓存，缓存有一些限制条件：</p>
+<ul>
+<li>请求方法：<code>GET</code> 和 <code>HEAD</code> 请求是可被缓存的；<code>POST</code> 或 <code>PATCH</code> 请求在明确未过期并设置了 <code>Content-Location</code> 的情况下也可以被缓存，但并不是所有的浏览器都支持这种缓存（Firefox 就不支持）；<code>PUT</code> 和 <code>DELETE</code> 方法是不可缓存的，并且会清除掉同 URL 的 <code>GET</code> <code>HEAD</code> 等缓存。</li>
+<li>状态码：只有 <code>200</code> <code>203</code> <code>204</code> <code>206</code> <code>300</code> <code>301</code> <code>404</code> <code>405</code> <code>410</code> <code>414</code> <code>501</code> 是可以被缓存的。</li>
+<li>有一些响应头（比如 <code>Cache-Control</code> 等）会阻止缓存。</li>
+</ul>
+<h5 id="types-of-caches">Types of Caches</h5>
+<p>根据 HTTP Caching Spec，缓存共分为两大类：<strong>Private Caches</strong> 和 <strong>Shared Caches</strong>。</p>
+<p><strong>Private Caches</strong> 跟某个特定的客户端强绑定（比如浏览器），可以在里面存一些与该用户相关的个性化数据。返回头中须使用 <code>private</code> 指令，来避免用户相关的数据被别的用户读取到：</p>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">Cache-Control: private<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>注意，如果 <strong>返回头</strong> 中有 <code>Authorization</code>，那么处于安全考虑，该请求将不能被缓存（除非强制指定为 <code>public</code>）。</p>
+<p><strong>Shared Cache</strong> 在客户端和服务端之间，并且可以被多个用户共享。Shared Caches 可以进一步被分为 <strong>Proxy Caches</strong> 和 <strong>Managed Caches</strong>。</p>
 <blockquote>
-<p>Fiddler</p>
+<p>由于代理通常不受服务端开发者的控制，代理缓存（Proxy Caches）需要借助合适的 HTTP Headers 来进行协商，早年间各种缓存不恰当和过时的实现经常带来一些问题。</p>
 </blockquote>
-<h4 id="http-协议的基本认证">HTTP 协议的基本认证</h4>
-<h5 id="常见的认证方式">常见的认证方式</h5>
-<h5 id="basic">BASIC</h5>
+<p><strong>Managed Caches</strong> 则是在服务端开发者显式控制下的行为，通常使用反向代理、CDN、Service Worker 等来用来降低源服务器的负载、提高内容分发的效率。在大多数情况下可以通过 <code>Cache-Control</code> 头来进行缓存控制。</p>
 <figure>
-<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/BASIC.png" alt="BASIC" /><figcaption aria-hidden="true">BASIC</figcaption>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/type-of-cache.png" alt="Type of Cache" /><figcaption aria-hidden="true">Type of Cache</figcaption>
 </figure>
-<p>不便捷灵活，且不安全（Base64实际上就是明文传输）</p>
-<h5 id="digest">DIGEST</h5>
-<p>同样采用质询 / 响应方式，但不会明文传输密码</p>
-<figure>
-<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/DIGEST.png" alt="DIGEST" /><figcaption aria-hidden="true">DIGEST</figcaption>
-</figure>
-<p>默认使用md5加密： 客户端发送响应摘要 = MD5(HA1:nonce:HA2) 其中，HA1 = MD5(username:realm:password), HA2 = MD5(method:digestURI) 虽然以前认为是不可逆的加密，但是仍然存在字典攻击、用户被冒充等风险</p>
-<h5 id="ssl-客户端">SSL 客户端</h5>
-<p>凭借客户端证书认证</p>
-<h5 id="formbase">FormBase</h5>
-<p>不是在 HTTP 协议中定义的，是使用 Web 应用各自实现的基于表单的认证，通过 Cookie 和 Session 来保持用户登录状态</p>
-<h4 id="http-中的长连接和短链接">HTTP 中的长连接和短链接</h4>
-<p>长连接又称持续连接（persistent connection），短连接又称非持续连接（non-persistent connection）</p>
-<p>HTTP 中的长连接和短链接本质上是 TCP 的长连接和短链接 - HTTP/1.0 中，默认是短链接，每遇到一个外部资源就建立一个对话（创建一个 TCP 连接） - HTTP/1.1 起，默认是长连接（多个请求共用一个 TCP 连接）</p>
-<h4 id="中介代理与中介网关">中介代理与中介网关</h4>
-<h5 id="中介代理">中介代理</h5>
-<figure>
-<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/HTTP-Proxy.png" alt="中介代理" /><figcaption aria-hidden="true">中介代理</figcaption>
-</figure>
-<p>代理的作用：抓包、匿名访问、过滤器</p>
-<h5 id="中介网关">中介网关</h5>
-<figure>
-<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/HTTP-Getway.png" alt="中介网关" /><figcaption aria-hidden="true">中介网关</figcaption>
-</figure>
-<p>扮演协议转换器的角色： - (HTTP/) 服务器端网关，通过 HTTP 协议与客户端对话，通过其他协议与服务器通信 - (/HTTP) 客户端网关，通过其他协议与客户端对话，通过 HTTP 协议与服务器通信</p>
-<p>常见网关类型： - HTTP/*：服务器端 Web 网关 - HTTP/HTTPS：服务器端安全网关 - HTTPS/HTTP：客户端安全加速网关（SSL 卸载） - 资源网关</p>
-<h4 id="http-缓存">HTTP 缓存</h4>
-<p>缓存的内容：CSS、JS、图片等更新频率不大的静态资源文件</p>
-<h5 id="http-缓存头部字段">HTTP 缓存头部字段</h5>
-<h6 id="cache-control">Cache-Control</h6>
-<blockquote>
-<p>请求/响应头，缓存控制字段</p>
-</blockquote>
+<h5 id="cache-control">Cache-Control</h5>
+<p>HTTP 缓存主要由 <code>Cache-Control</code> 这个响应头来进行控制，他有以下这些取值：</p>
 <ul>
-<li>no-store：所有内容都不缓存</li>
-<li>no-cache：缓存，但浏览器会请求服务器判断资源是否更新</li>
-<li>max-age=x：请求缓存后 x 秒不再发起请求</li>
-<li>s-maxage=x：类似，但只对 CDN 缓存有效</li>
-<li>public：客户端和代理服务器（CDN）都可以缓存</li>
-<li>private：只有客户端可以缓存</li>
+<li><code>no-store</code>：所有内容都不缓存</li>
+<li><code>no-cache</code>：强制校验，浏览器每次都会通过 <code>If-Modified-Since</code> 或 <code>If-None-Match</code> 来询问服务器，服务器根据情况返回 304 或新的数据</li>
+<li><code>max-age=x</code>：请求缓存后 x 秒不再发起请求</li>
+<li><code>s-maxage=x</code>：类似，但只对 CDN 缓存有效</li>
+<li><code>public</code>：客户端和代理服务器（CDN）都可以缓存</li>
+<li><code>private</code>：只有客户端可以缓存</li>
 </ul>
-<h6 id="其他头部字段">其他头部字段</h6>
-<p>响应头，服务器返回：</p>
-<ul>
-<li><strong>Expires</strong>：代表资源过期时间，是 HTTP/1.0 的属性，比 HTTP/1.1 的 <strong>Cache-Control:max-age=x</strong> 优先级低</li>
-<li><strong>Last-Modified</strong>：资源最新修改时间</li>
-<li><strong>Etag</strong>：缓存资源标识</li>
-</ul>
-<p>请求头，服务器提供：</p>
-<ul>
-<li><strong>if-Modified-Since</strong>：资源最新修改时间，与 <strong>Last-Modified</strong> 是一对，他们会进行对比</li>
-<li><strong>if-None-Match</strong>：缓存资源标识，与 <strong>Etag</strong> 是一对（其实就是上次服务器给的 Etag），他们会进行对比</li>
-</ul>
-<h5 id="http-缓存工作方式">HTTP 缓存工作方式</h5>
-<h6 id="场景一让服务器与浏览器约定一个文件过期时间-expires">场景一：让服务器与浏览器约定一个文件过期时间 Expires</h6>
-<p>服务器给浏览器一个 Expires，后续请求浏览器会对比当前 <strong>本地时间</strong> 是否已经大于 Expires，超过过期时间再请求。</p>
-<p>问题：即使超过过期时间之后，文件可能仍然没有变化</p>
-<h6 id="场景二约定-expires-的基础上再通过文件的最新修改时间进行对比-last-modified-与-if-modified-since">场景二：约定 Expires 的基础上，再通过文件的最新修改时间进行对比 Last-Modified 与 if-Modified-Since</h6>
-<p>服务器给浏览器 Expires 和 Last-Modified，后续若超过 Expires 后，浏览器请求时会带上 if-Modified-Since，服务器进行对比，如果文件未修改，就返回 304 Not Modified，让浏览器使用缓存</p>
-<p>问题：浏览器可以随意修改本地时间，而且 Last-Modified 只能精确到秒</p>
-<h6 id="场景三在上面的基础上加上-etagif-none-match再使用-max-age">场景三：在上面的基础上加上 Etag/If-None-Match，再使用 max-age</h6>
-<p>max-age 使用的是 <strong>相对时间</strong>，因此浏览器不能通过修改本地时间的方式来影响缓存，优先级高于 Expires； Etag 优先级也高于 Last-Modified，因为文件只要修改过，Etag 就会发生变化</p>
-<p>至此其实 Last-Modified 和 Expires 其实已经没什么用了，但很多时候还是会加上</p>
-<p>问题：max-age 或者 Expires 未过期的情况下，若改动文件，应该怎样让浏览器知道？</p>
-<h5 id="缓存改进方案">缓存改进方案</h5>
-<h6 id="md5hash-缓存">md5/hash 缓存</h6>
-<p>不缓存 html，为静态文件添加 MD5 或者 hash 标识，比如将静态资源的文件名改为 <code>f-hash1.js</code>，若文件修改了，文件名也会改变为 <code>f-hash2.js</code></p>
-<h6 id="cdn-缓存">CDN 缓存</h6>
-<blockquote>
-<p>CDN 是构建在网络之上的内容分发网络，依靠部署在各地的边缘服务器，通过中心平台的负载均衡、内容分发、调度等功能模块，使用户就近获取所需内容，降低网络拥塞，提高用户访问响应速度和命中率</p>
-</blockquote>
-<p>CDN 的作用： 1. 减少源站压力 2. 解决跨区域访问问题</p>
-<p>CDN缓存的工作方式： 1. 第一次请求，CDN 和 浏览器同时缓存 2. 浏览器缓存过期后，找 CDN 进行对比，CDN 看自己的过期没有，若自己没过期，就给发给浏览器</p>
-<h5 id="浏览器操作对-http-缓存的影响">浏览器操作对 HTTP 缓存的影响</h5>
+<p>除此之外，有的 CDN 也支持一些只对 CDN 有效的头，比如 <code>CDN-Cache-Control</code> 等。在 <code>Cache-Control</code> 出来之前，浏览器会根据一些条件自己判断资源是否可以缓存（比如某个资源很久没有更新了），这被称为 <strong>启发式缓存（Heuristic Caching）</strong>。</p>
+<h5 id="max-ageageexpires">max-age/Age/Expires</h5>
+<p>HTTP 的响应有 <strong>新鲜（Fresh）</strong>和 <strong>陈旧（Stale）</strong>两种状态，而他们的判断标准就是 <strong>年龄（age）</strong>。年龄指的是自从响应生成开始（<code>Date</code> 头表示响应生成的时间），已经过了多久。这种判断方式主要有三个响应头：</p>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">Cache-Control:max-age=x
+当 age 超过 max-age 的时候，该响应认为是过期的（Stale）<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">Age: y
+当缓存在一个 Shared Cache 中时（比如 CDN），客户端拿到 CDN 中的数据时，该数据就已经有 y 秒这么老了<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">Expires: Tue, 28 Feb 2022 22:22:22 GMT
+当数据超过 Expires 指定的时间时，视为过期<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>其中 <code>Expires</code> 是 HTTP/1.0 的属性，由于其时间解析起来容易有问题、而且依赖于本地系统时间，因此现在一般用 HTTP/1.1 的 <code>max-age</code>。且同时出现时，<code>max-age</code> 优先级更高。</p>
+<h5 id="last-modifiedif-modified-since">Last-Modified/If-Modified-Since</h5>
+<p>其中 <code>Last-Modified</code> 是响应头，<code>If-Modified-Since</code> 是请求头。</p>
+<p>如果浏览器经过 <code>Expires</code> 或 <code>max-age</code> 判断发现缓存已经过期，那么他会向服务器发送请求，在 <code>If-Modified-Since</code> 中带上上次请求得到的 <code>Last-Modified</code> 中的时间，询问服务器是否已经过期。</p>
+<p>如果没有过期，那么服务器将会返回一个非常短小的 <code>304 Not Modified</code> 响应，里面是新的 <code>max-age</code>。</p>
+<h5 id="etagif-none-match">ETag/If-None-Match</h5>
+<p>与 <code>Last-Modified/If-Modified-Since</code> 类似，<code>ETag</code> 是响应头，<code>If-None-Match</code> 是请求头。</p>
+<p><code>ETag</code> 可以是任何值，比如文件的版本号、哈希值等等，因此该方法比 `<code>Last-Modified/If-Modified-Since</code> 更精确，而且不用解析时间。且同时出现时，这组头的优先级更高。</p>
+<h5 id="vary">Vary</h5>
+<p>通常缓存之间相互区分的 Key 是 URL，但有时候可能 URL 相同但 Headers 不同的情况，比如 <code>Accept-Language</code> 可以设置为 <code>ja</code> <code>en</code> 等，这个时候就需要将该 Header 也视为 Key 的一部分，否则他们就会相互覆盖。该功能通过 <code>Vary</code> 头实现：</p>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">Vary: Accept-Language<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h5 id="improvents">Improvents</h5>
+<p>md5/hash 缓存：不缓存 html，为静态文件添加 MD5 或者 hash 标识，比如将静态资源的文件名改为 <code>f-hash1.js</code>，若文件修改了，文件名也会改变为 <code>f-hash2.js</code></p>
+<h5 id="browser-fresh">Browser Fresh</h5>
 <table>
 <thead>
 <tr class="header">
@@ -696,34 +668,6 @@ Range:bytes=500-600,601-999<span aria-hidden="true" class="line-numbers-rows"><s
 <h4 id="content-range">Content-Range</h4>
 <p>用于响应头中，返回当前接受的范围和文件总大小：</p>
 <pre class="line-numbers language-text" data-language="text"><code class="language-text">Content-Range:bytes(unit first byte pos)-[last byte pos]/[entity length]<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h3 id="https">HTTPS</h3>
-<h4 id="https-协议概述">HTTPS 协议概述</h4>
-<blockquote>
-<p>HTTPS 可以认为是 HTTP + TLS，TLS 是传输层加密协议，他的前身是 SSL 协议</p>
-</blockquote>
-<p>可以认为 TLS 建立在传输层和应用层之间（会话层），目前常用的版本有 TLS/1.0、1.1、1.2、1.3 和 SSL/3.0，但是 SSL/3.0 可能会存在 ‎POODLE 攻击，TSL/1.0 也存在一些漏洞</p>
-<p>HTTPS 功能： - <strong>内容加密</strong>（非对称加密协商密钥 + 对称加密传输数据） - <strong>数据完整性</strong>（数字签名） - <strong>身份认证</strong>（数字证书）</p>
-<h4 id="https-使用成本">HTTPS 使用成本</h4>
-<ul>
-<li>证书费用以及更新维护</li>
-<li>降低用户的访问速度</li>
-<li>消耗 CPU 资源</li>
-</ul>
-<p>HTTPS 对性能的影响：</p>
-<ul>
-<li>协议交互所增加的网络往返时延（Round-Trip Time）
-<ul>
-<li>有可能用户访问 HTTP，服务器需要返回 302 使其跳转到 HTTPS</li>
-<li>TLS 完全握手阶段 1 和 2，以及与 CA 服务器进行连接与验证</li>
-</ul></li>
-<li>加解密相关的计算耗时
-<ul>
-<li>浏览器计算耗时</li>
-<li>服务端计算耗时</li>
-</ul></li>
-</ul>
-<div class="note warning"><p>HTTPS 并不能解决所有的劫持问题</p>
-</div>
 <h3 id="基于-http-的功能追加协议">基于 HTTP 的功能追加协议</h3>
 <h4 id="http-协议的瓶颈">HTTP 协议的瓶颈</h4>
 <ul>
@@ -852,7 +796,7 @@ Origin: http://example.com<span aria-hidden="true" class="line-numbers-rows"><sp
 <li><strong>没有队头阻塞的多路复用</strong> <img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/TCP-Blocking.png" alt="TCP队头阻塞" /> <img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/QUIC-No-Blocking.png" alt="QUIC没有队头阻塞" /></li>
 <li><strong>前向纠错</strong>，会多发一些冗余的包（校验包），虽然产生了多的包，但是减少了重传带来的损失 <img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/QUIC-Error-Correcting.png" alt="前向纠错" /></li>
 </ul>
-<h2 id="https-1">HTTPS</h2>
+<h2 id="https">HTTPS</h2>
 <blockquote>
 <p><a target="_blank" rel="noopener" href="https://www.thesslstore.com/blog/how-does-https-work">How Does HTTPS Work?</a></p>
 </blockquote>
@@ -991,7 +935,7 @@ Origin: http://example.com<span aria-hidden="true" class="line-numbers-rows"><sp
 </ul>
 <p>但是当前的安全连接只是单向的，服务器不能加密发送给浏览器的信息，因为服务器还没有浏览器的公钥。</p>
 <p><strong>Steps 6-10: Setting Up Symmetric Encryption</strong></p>
-<p>对称加密效率是高于浏览器的，因此浏览器和服务器现在会创建一个新的、共享的密钥（该密钥取决于加密协议簇）</p>
+<p>对称加密效率是高于非对称加密的，因此浏览器和服务器现在会创建一个新的、共享的密钥（该密钥取决于加密协议簇）</p>
 <p>当共享的会话密钥创建好之后，TLS Handshake 就结束了。浏览器和服务器会使用该密钥来加密和解密他们之间传输的所有数据。</p>
 <h2 id="email">Email</h2>
 <ul>
@@ -1131,7 +1075,12 @@ Subject: xxxxxx<span aria-hidden="true" class="line-numbers-rows"><span></span><
 <blockquote>
 <p>校验和、序号、ACK、重传</p>
 </blockquote>
-<p>通常使用 <strong>自动重传请求（Automatic Repeat reQuest, ARQ）</strong>协议来解决这个问题，ARQ协议中还需要三种功能来处理比特差错： - 差错检测 - 接收方反馈（ACK、NAK） - 重传</p>
+<p>通常使用 <strong>自动重传请求（Automatic Repeat reQuest, ARQ）</strong>协议来解决这个问题，ARQ协议中还需要三种功能来处理比特差错：</p>
+<ul>
+<li>差错检测</li>
+<li>接收方反馈（ACK、NAK）</li>
+<li>重传</li>
+</ul>
 <figure>
 <img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Networking-rdt-2.jpg" alt="Networking-rdt-2" /><figcaption aria-hidden="true">Networking-rdt-2</figcaption>
 </figure>
@@ -1305,12 +1254,22 @@ Subject: xxxxxx<span aria-hidden="true" class="line-numbers-rows"><span></span><
 <figure>
 <img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/TCP-Header-Options.png" alt="可选项" /><figcaption aria-hidden="true">可选项</figcaption>
 </figure>
-<p>常用的可选项有： - Timestamp：TCP 时间戳 - MSS：TCP 允许的从对方接收的最大报文段 - SACK：选择确认选项 - Window Scale：窗口缩放</p>
+<p>常用的可选项有：</p>
+<ul>
+<li>Timestamp：TCP 时间戳</li>
+<li>MSS：TCP 允许的从对方接收的最大报文段</li>
+<li>SACK：选择确认选项</li>
+<li>Window Scale：窗口缩放</li>
+</ul>
 <h5 id="timestamp">Timestamp</h5>
 <p>Timestamp 一共占 10 个字节：</p>
 <pre class="line-numbers language-text" data-language="text"><code class="language-text">kind(1 Byte) + length(1 Byte) + info(8 Bytes)<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>其中 <code>kind=8</code> <code>length=10</code>，<code>info</code> 由 <code>timestamp</code> 和 <code>timestamp echo</code> 两部分构成，各占四个字节</p>
-<p>TCP 的时间戳主要解决两个问题： - 计算往返时延（RTT, Round-Trip Time） - 防止序列号回绕</p>
+<p>TCP 的时间戳主要解决两个问题：</p>
+<ul>
+<li>计算往返时延（RTT, Round-Trip Time）</li>
+<li>防止序列号回绕</li>
+</ul>
 <h6 id="计算-rtt">计算 RTT</h6>
 <figure>
 <img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/TCP-Timestamp-RTT.png" alt="计算RTT" /><figcaption aria-hidden="true">计算RTT</figcaption>
@@ -1519,7 +1478,12 @@ Subject: xxxxxx<span aria-hidden="true" class="line-numbers-rows"><span></span><
 <p>为了避免频繁回复小包而诞生</p>
 </blockquote>
 <p>TCP 要求延迟的时延必须小于 500ms，一般的操作系统都不会超过 200ms</p>
-<p>一些场景收到之后会马上回复： - 收到了大于一个 frame 的报文，且需要调整窗口大小 - TCP 处于 quickack 模式（通过 <code>tcp_in_quickack_mode</code> 设置） - 发现了乱序包</p>
+<p>一些场景收到之后会马上回复：</p>
+<ul>
+<li>收到了大于一个 frame 的报文，且需要调整窗口大小</li>
+<li>TCP 处于 quickack 模式（通过 <code>tcp_in_quickack_mode</code> 设置）</li>
+<li>发现了乱序包</li>
+</ul>
 <h3 id="tcp-的-keep-alive">TCP 的 keep-alive</h3>
 <p>由于 TCP 不是一个轮询的协议，他无法获知对端连接失效的情况（比如对端网络故障或宕机），<strong>keep-alive</strong> 则是用于探测对端的连接是否失效，但是因为探测的时间比较长，所以一般不怎么用</p>
 <h1 id="network-layer">Network Layer</h1>

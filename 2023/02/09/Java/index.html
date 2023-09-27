@@ -316,8 +316,16 @@
 </tr>
 </tbody>
 </table>
+<p><strong>强制类型转换</strong></p>
+<p>Java 中两个操作数如果是不同的类型，会自动进行无信息丢失的转换（比如 <code>int</code> <code>float</code> 转换为 <code>double</code> 就是无信息丢失的）。如果我们需要进行可能损失信息的类型转换（比如 <code>int</code> 转换为 <code>float</code>），需要显式地进行强制类型转换：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">double</span> x <span class="token operator">=</span> <span class="token number">9.997</span><span class="token punctuation">;</span>
+<span class="token keyword">int</span> nx <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">)</span> x<span class="token punctuation">;</span>   <span class="token comment">// 9，会直接截掉小数部分</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <p><strong>复杂数据类型</strong></p>
 <table>
+<colgroup>
+<col style="width: 17%" />
+<col style="width: 82%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th>JavaScript</th>
@@ -327,7 +335,7 @@
 <tbody>
 <tr class="odd">
 <td><code>new Array()</code></td>
-<td><code>int[] ary = new int[10]</code></td>
+<td><code>int[] ary = new int[10]</code><br /><code>int[] ary = &#123; 2, 3, 5 &#125;;</code><br /><code>ary = new int[] &#123; 2, 3, 5 &#125;;</code></td>
 </tr>
 </tbody>
 </table>
@@ -343,12 +351,25 @@
 <li><code>Integer</code> 默认值是 <code>null</code>，而 <code>int</code> 的默认值是 <code>0</code>；</li>
 <li><code>Integer</code> 最好不要使用 <code>==</code> 来判断相同，需要使用 <code>equals()</code> 等。</li>
 </ul>
+<p><strong>字符串</strong></p>
+<p>Java 中的 <code>String</code> 与 JavaScript 中的高度类似，字符串内容本身也是不可变的，拼接、取子串等均会产生一个新的字符串。注意：</p>
+<ul>
+<li><p>Java 中没有 <code>slice</code>，只有 <code>substring</code>；</p></li>
+<li><p>字符串之间不能用 <code>==</code> 判断是否相等，需要使用 <code>equals()</code>；</p></li>
+<li><p>Java 中可以使用 <code>str.length() === 0</code> 或 <code>str.equals("")</code> 来判断字符串是空串，但注意还有可能为 <code>null</code>，因此一般可以用这种条件： <pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">if</span> <span class="token punctuation">(</span>str <span class="token operator">!=</span> <span class="token keyword">null</span> <span class="token operator">&amp;&amp;</span> str<span class="token punctuation">.</span><span class="token function">length</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token number">0</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p></li>
+<li><p>Java 中如果需要由较短的字符或字符串拼接一个大的字符串可以使用 <code>StringBuilder</code>，通过 <code>builder.append(str)</code> 方法来向其中添加字符，然后使用 <code>builder.toString()</code> 方法来得到最终的字符串。不过该类只能在单线程中使用，在多线程中可以使用 <code>StringBuffer</code>，他的效率稍微低一些。</p></li>
+</ul>
+<p><strong>运算符</strong></p>
+<p>Java 中除了没有 <code>===</code> 以外，与 JavaScript 一致，布尔运算符也有短路逻辑。</p>
+<p><strong>数学函数</strong></p>
+<p>Java 中也有 <code>Math</code> 类提供一些数学函数，包括 <code>pow</code> <code>sqrt</code> <code>round</code> <code>abs</code> <code>max</code> <code>ceil</code> 等，与 JavaScript 高度类似。</p>
 <p><strong>变量与函数声明</strong></p>
 <p>Java 与 TypeScript 类似，都需要声明类型，不过 TypeScript 是放在冒号后面，而 Java 中则是写在前面，就像这样：</p>
 <pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">int</span> a <span class="token operator">=</span> <span class="token number">12</span><span class="token punctuation">;</span>
 <span class="token class-name">String</span> str <span class="token operator">=</span> <span class="token string">"Hello!"</span><span class="token punctuation">;</span>
 <span class="token comment">// final 关键字表示不可更改</span>
 <span class="token keyword">final</span> <span class="token keyword">double</span> <span class="token constant">PI</span> <span class="token operator">=</span> <span class="token number">3.14</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>Java 中不允许嵌套作用域声明同名变量。</p>
 <p><strong>模块系统</strong></p>
 <p>Java 中 <code>Class</code> 会放在 <code>package</code> 里面，一个 <code>package</code> 里面不允许有同名的 <code>Class</code>，在 <code>Class</code> 的第一行通常需要说明该类属于哪个包：</p>
 <pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">package</span> <span class="token namespace">org<span class="token punctuation">.</span>group<span class="token punctuation">.</span>me</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
