@@ -208,9 +208,7 @@ function jsonp(settings) {
 
 一个 Tab 对应一个 **Renderer Process**，进程之间的内存无法共享，而不同的进程内存常常有相同的内容，此时需要优化。
 
-#### 浏览器的进程模式
-
-Chrome 提供了四种进程模式（Process Models），不同的进程会对 Tab 进程做不同的处理。
+**Chrome 提供了四种进程模式（Process Models），不同的进程会对 Tab 进程做不同的处理。**
 
 - **Process-per-site-instance** (default)：同一个 site-instance 使用一个进程
 - **Process-per-site**：同一个 site 使用一个进程
