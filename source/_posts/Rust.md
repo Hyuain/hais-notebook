@@ -1069,61 +1069,299 @@ hey();
 
 # Traits
 
+## Traits
+
 > Similar to an interface or abstract class
 
 Add definition to a structure
 
-# Common Concepts
-
-
-
-## Functions
-
-### Diverging Functions
-
- **分流函数（Diverging Functions）**永远不会返回：
-
 ```rust
-fn main() {
-    never_return();
-    // 下面的永远不会执行
-}
-
-fn never_return() -> ! {
-    // 抛出一个错误
-    panic!()
+trait Name {
+  fn must_implement(&self) -> i32;
+  fn do_action(&self) { ... }
+  fn do_non_instance_action() { ... }
+  // Can provide a constructor
+  fn new(name: &str) -> Self;
 }
 ```
 
+Implement a trait:
+
 ```rust
-fn main() {
-  
-}
-
-fn get_option(tp: u8) -> Option<i32> {
-    match tp {
-        1 => {
-            // TODO  
-        }
-        _ => {
-            // TODO  
-        }
-    };
-  
-    // 使用分流函数，而不是返回 None
-    never_return_fn()
-}
-
-fn never_return_fn() -> ! {
-    // panic!()
-    // unimplemented!()
-    todo!()
+impl Name for Person {
+  fn must_implement(&self) -> { 42 }
+  fn new(name: &str) -> Person {
+    Person{name: name}
+  }
 }
 ```
 
-# Ownership
+Use a implemented trait:
 
-Rust 中的一个核心概念是 **所有权（Ownership）**。Rust 中没有 GC，但也不需要开发者手动释放内存来防止内存泄漏，而是使用了 Ownership 与一系列的编译时规则来实现内存安全。
+```rust
+let john = Person::new("John")
+```
+
+Example:
+
+```rust
+fn main() {
+    // basic default instantiation
+    // let r = RustDev { awesome: true };
+    // structure instantiate itself
+    let r = RustDev::new(true);
+    let j = JavaDev::new(false);
+    println!("{}", r.language());
+    r.say_hello();
+    println!("{}", j.language());
+    j.say_hello();
+}
+
+struct RustDev {
+    awesome: bool
+}
+
+struct JavaDev {
+    awesome: bool
+}
+
+trait Developer {
+    fn new(awesome: bool) -> Self;
+    fn language(&self) -> &str;
+    fn say_hello(&self) { println!("Hello world!") }
+}
+
+// RustDev implements Developer
+impl Developer for RustDev {
+    fn new(awesome: bool) -> Self {
+        RustDev { awesome }
+    }
+
+    fn language(&self) -> &str {
+        "Rust"
+    }
+
+    fn say_hello(&self) {
+        println!("println(\"Hello world!\");")
+    }
+}
+
+// JavaDev implements Developer
+impl Developer for JavaDev {
+    fn new(awesome: bool) -> Self {
+        JavaDev { awesome }
+    }
+
+    fn language(&self) -> &str {
+        "Java 1.8"
+    }
+
+    fn say_hello(&self) {
+        println!("System.out.println(\"Hello world!\");")
+    }
+}
+```
+
+## Trait Generics
+
+> Generics can be limited by traits
+
+```rust
+let dog = Dog { species: "retriever" };
+let cat = Cat { color: "black" };
+bark_it(dog);
+bark_it(cat); // error: the trait bound `Cat: Bark` is not satisfied
+
+trait Bark {
+    fn bark(&self) -> String;
+}
+
+struct Dog {
+    species: &'static str
+}
+
+struct Cat {
+    color: &'static str
+}
+
+// Dog implements Bark
+impl Bark for Dog {
+    fn bark(&self) -> String {
+        format!("{} barking", self.species)
+    }
+}
+
+fn bark_it<T: Bark>(b: T) {
+    println!("{}", b.bark());
+}
+```
+
+## Returning Traits
+
+The compiler needs to know the space required for a funciton return type, so **a generic can not be used as a return type**.
+
+```rust
+trait Animal {
+    fn make_noise(&self) -> &'static str;
+}
+
+struct Dog {}
+struct Cat {}
+
+fn get_animal(rand_number: f64) -> Animal {  // error: trait objects must include the `dyn` keyword
+    if rand_number < 1.0 {
+        Dog {}
+    } else {
+        Cat {}
+    }
+}
+```
+
+A workaround is to return a box with a dyn trait:
+
+```rust
+struct Dog {}
+struct Cat {}
+
+impl Animal for Dog {
+    fn make_noise(&self) -> &'static str {
+        "woof"
+    }
+}
+
+impl Animal for Cat {
+    fn make_noise(&self) -> &'static str {
+        "meow"
+    }
+}
+
+// should add Box<dyn ...>
+fn get_animal(rand_number: f64) -> Box<dyn Animal> {
+    if rand_number < 1.0 {
+        Box::new(Dog {})
+    } else {
+        Box::new(Cat {})
+    }
+}
+```
+
+dyn is a new addition to the language, old code might not have it.
+
+## Adding Traits to Existing Structures
+
+```rust
+fn main() {
+    let a: Vec<i32> = vec![1, 2, 3, 4, 5];
+    println!("sum = {}", a.sum());
+    let b: Vec<f64> = vec![1.0, 2.0, 3.0, 4.0];
+    println!("sum float = {}", b.sum());    // error
+}
+
+trait Summable<T> {
+    fn sum(&self) -> T;
+}
+
+impl Summable<i32> for Vec<i32> {
+    fn sum(&self) -> i32 {
+        let mut sum: i32 = 0;
+        for i in self {
+            sum += *i;
+        }
+        sum
+    }
+}
+
+```
+
+## Operator Overloading
+
+We can implement standard operators for our custom structs:
+
+```rust
+use std::ops::Add;
+
+fn main() {
+    let p1 = Point { x: 1.2, y: 2.4 };
+    let p2 = Point { x: 1.0, y: 3.0 };
+    let p3 = p1 + p2;
+    println!("{:?}", p3)
+}
+
+#[derive(Debug)]
+struct Point {
+    x: f64,
+    y: f64,
+}
+
+impl Add for Point {
+    type Output = Point;
+
+    fn add(self, other: Self) -> Self::Output {
+        Point {
+            x: self.x + other.x,
+            y: self.y + other.y,
+        }
+    }
+}
+
+```
+
+## Static Dispatch
+
+> A generic trait will be converted to the required type at compile time
+
+Monomorphization: converting to one form. The compiler will convert the function into each required code.
+
+```rust
+fn main() {
+    let a = 42;
+    let b = "Hi John".to_string();
+    duplicate(a);
+    duplicate(b);
+}
+
+trait Duplicatable {
+    fn dupl(&self) -> String;
+}
+
+impl Duplicatable for String {
+    fn dupl(&self) -> String {
+        format!("{0} {0}", *self)
+    }
+}
+
+impl Duplicatable for i32 {
+    fn dupl(&self) -> String {
+        format!("{}", *self * 2)
+    }
+}
+
+// duplicate function will be create once for each implementation for generic
+// so there is one duplicate function for String, and one for i32
+fn duplicate<T: Duplicatable>(x: T) {
+    println!("{}", x.dupl());
+}
+```
+
+## Dynamic Dispatch
+
+> A generic trait will be converted to the required type at run time
+
+```rust
+fn main() {
+    let a = 42;
+    let b = "Hi John".to_string();
+    duplicate(&a);
+    duplicate(&b);
+}
+
+// use &dyn (the function also be created twice)
+fn duplicate(x: &dyn Duplicatable) {
+    println!("{}", x.dupl());
+}
+```
+
+# Memory Management
 
 ## Heap and Stack Memory
 
@@ -1140,28 +1378,17 @@ Rust 中的一个核心概念是 **所有权（Ownership）**。Rust 中没有 G
 - 调用函数的时候，传入函数的参数与函数本地的数据会 Push 进栈中，函数运行结束后，栈中的数据会被 Pop 出来；
 - 栈内存有天然的 Push 和 Pop，使其不会有冗余的数据，但堆内存则需要及时堆不需要的部分进行清理。
 
-## Ownership Rules
-
-Rust 中有三条 Ownership Rules：
-
-- **Rust 中的每个值都有一个 Owner。**
-- **每个值同时只能有一个 Owner。**
-- **当 Owner 离开作用域（Scope）时，值会被丢弃。**
-
-## Complex Types
+## Primitive vs. Complex Types
 
 对于简单类型，比如 `integer`，表现跟其他语言类似：
 
 ```rust
 let x = 5;
-let y = x;
 ```
 
-以上代码，会创建两个变量 `x` 和 `y`，均为 `5`，并 Push 到了 **栈** 中。
+以上代码，会创建变量 `x`，并 Push 到了 **栈** 中。
 
 而复杂类型则不同，他会使用 **堆** 内存，下面以 `String` 举例。
-
-### String vs. &str
 
 ```rust
 // 可以通过字符串字面量创建一个 String
@@ -1175,11 +1402,29 @@ s.push_str(", world!")
 - 字符串的长度 `len`；
 - 字符串的容量 `capacity`。
 
-因此上面 `s` 会在栈中占据 `3 * 8 = 24 Bytes` 大小，
+因此上面 `s` 会在栈中占据 `3 * 8 = 24 Bytes` 大小。
 
-### Copy
+`&str` 有点微妙，被称为字符串切片（String Slice），他是基础类型 `str` 的引用。`str` 与 `i32` 等基础类型不同，他没有固定的长度，并且可能保存在堆中、栈中、或者是程序文本中。通常我们不能直接使用他，而是通过 `&str` 来使用他，`&str` 作为一个引用，他本身的长度是固定的，因此是保存在栈中的。
 
-简单类型赋值时，会**自然地将栈中的数据复制一份**，并且原来的变量也不会失效，这称为 **Copy**：
+Rust 中，`&str` 类型的数据可以直接使用 `str` 的方法，比如 `len()`，因为 Rust 会自动帮我们解引用（Dereference）。
+
+Rust 中，可以通过 Borrowing 从 `String` 中拿到 `&str`：
+
+```rust
+let owned_string: String = "Hello, world!".to_string();
+let string_slice: &str = &owned_string; // Borrowing a slice of the whole String
+```
+
+## Ownership
+
+> Only one variable can own a piece of memory
+
+Copy and Move:
+
+- For primitive types (like i32), copying data is cheap
+- For complex types (like struct), ownership is transferred
+
+Assigning values of **primitives**, **data stored in stack is copied**, previous data is still available.
 
 ```rust
 let x = 5;
@@ -1188,22 +1433,42 @@ let y = x;
 println!("x = {}, y = {}", x, y);
 ```
 
-### Move
+For **complex** values, if value of `s1` is assigned to `s2`, **data in stock is copied, while data in heap is not copied.**
 
-而复杂类型则不同，比如对于 `String`，如果我们将 `s1` 赋值给 `s2`，那么 **堆中的数据不会被复制，栈中的数据会被复制一份**：
+This is called **move** in Rust.
 
 ```rust
 let s1 = String::from("hello");
 let s2 = s1;
+
+println!("{}", s1);     // error, because value is nolonger owned by s1
 ```
 
-此外，由于变量离开作用域时，Rust 会自动调用 `drop` 方法来清理内存，这就导致如果 `s1` 和 `s2` 都离开作用域时，堆中的同一块内存会被清理两次，这会导致内存安全问题。
+Because in Rust  `drop` method is called to clean up memory.
 
-**因此，当 `s1` 赋值给 `s1` 之后，`s1` 将不再可用。**这样的话 Rust 就不会再清理 `s1` 的内存。
+To prevent the same memory being clean up twice, which can cause memory safety issues, `s1` is nolonger accessible after ownership transferred.
 
-**这种特性与其他语言的浅拷贝（Shallow Copy）有所不同，Rust 称其为移动（Move），因为之前的变量将不再可用。**
+This way, memory of `s1` is not considered in cleaning up.
 
-### Clone
+Here is another example:
+
+```rust
+fn main() {
+    let v = vec![1, 2, 3, 4];
+
+    let foo = |v: Vec<i32>| -> Vec<i32> {
+        println!("Vector used in foo");
+        v
+    };
+    
+    let x = foo(v);
+    println!("{:?}", v);   // error, because v is passed into v and nolonger accessible
+}
+```
+
+**Move** is different from shallow copy in other languages, because the previous variables are nolonger accessible. 
+
+## Clone
 
 如果想要对复杂类型执行 **深拷贝（Deep Copy）**，不仅复制其栈中的数据，还复制其堆中的数据，可以使用这些类型中提供的 `clone` 方法：
 
@@ -1214,7 +1479,159 @@ let s2 = s1.clone();
 println!("s1 = {}, s2 = {}", s1, s2);
 ```
 
-## Ownership and Functions
+## Borrowing
+
+> Variables can borrow ownership to other pieces of memory
+
+```rust
+let a = 6;
+let b = &a;            // b borrows ownership from a
+println!("{}", *b);    // once b is destroyed, the ownership is transfered back to a
+```
+
+The borrow has to match the mutability
+
+- **Immutable variable cannot have mutable references**
+- One variable can only have one **mutable reference** (in each scope), but can have **mutiple immutable references**
+- Variables can not have **mutable reference** and **immutable reference** at the same time (prevent dangling references)
+
+```rust
+let mut s = String::from("hello");
+
+let r1 = &s;
+let r2 = &s;
+let r3 = &mut s;   // Error
+
+println("{}, {}, and {}", r1, r2, r3);
+```
+
+```rust
+let mut s = String::from("hello");
+
+let r1 = &s;
+let r2 = &s;
+println("{} and {}", r1, r2);
+// variables r1 and r2 will not be used after this point
+
+let r3 = &mut s;   // No problem
+println("{}", r3);
+```
+
+```rust
+let mut a = 6;
+let b = &mut a;
+println!("{}", a);  // Error, mutable borrow occurs after
+println!("{}", *b);
+```
+
+## Lifetimes
+
+> An indication of how long an object can live
+
+Rust prevents parts of objects outliving the object
+
+```rust
+struct Object<'lifetime> {
+    field: &'lifetime str
+}
+```
+
+```rust
+fn main() {
+    let p1 = Person { name: String::from("John") };
+    let d1 = Dog { name: String::from("Max"), owner: &p1 };
+
+    println!("{:?}", d1);
+}
+
+#[derive(Debug)]
+struct Person {
+    name: String
+}
+
+#[derive(Debug)]
+struct Dog<'l> {
+    name: String,
+    // a reference to Person
+    // Rust need to know how long the Person should live
+    // to match the lifetime of Dog and Person
+    owner: &'l Person,
+}
+```
+
+To live as long as the program is running:
+
+```rust
+&'static str
+```
+
+Lifetime elision: Compiler builds lifetimes for us when evident
+
+```rust
+fn main() {
+    let p1 = Person { name: String::from("John") };
+    let mut a: &String;
+    let mut b: &String;
+    {
+        let p2 = Person { name: String::from("Mary") };
+        a = p1.get_name();
+        b = p2.get_name();
+    }
+    println!("{:?}", b);    // error, borrowed value does not live long enough
+  	println!("{:?}", a);    // ok
+}
+
+#[derive(Debug)]
+struct Person {
+    name: String
+}
+
+impl Person {
+    // equals: fn get_name<'l>(&'l self) -> &'l String {
+    fn get_name(&self) -> &String {
+        &self.name
+    }
+}
+```
+
+## Rc (Referenced Counted Variables)
+
+> A structure that can hold multiple references to a variable, and can be shared in different places
+
+```rust
+use std::rc::Rc;
+
+fn main() {
+    let brand = Rc::new(String::from("BMW"));
+    println!("pointers: {}", Rc::strong_count(&brand));
+    {
+        let car = Car::new(brand.clone());
+        car.drive();
+        println!("pointers: {}", Rc::strong_count(&brand));
+    }
+    println!("My car is a {}", brand);
+    println!("pointers: {}", Rc::strong_count(&brand));
+}
+
+
+struct Car {
+    brand: Rc<String>
+}
+
+impl Car {
+    fn new(brand: Rc<String>) -> Car {
+        Car { brand }
+    }
+    fn drive(&self) {
+        println!("{} is driving", &self.brand);
+    }
+}
+
+```
+
+Rc is useful to use multiple references without considering ownership and borrowing.
+
+## Examples
 
 ```rust
 fn main() {
@@ -1274,86 +1691,379 @@ fn takes_and_gives_back(a_string: String) -> String { // a_string comes into
 }
 ```
 
-## Reference and Borrowing
+# Error Handling
 
-如果传参的时候交出了 Ownership，原来的变量就不可用了，因此需要将原来的值再手动返回回来，重获 Ownership：
+## Files
+
+Create a file
 
 ```rust
+use std::fs::File;
+let mut file = File::create("src/example.txt").expect("create failed");
+```
+
+Write to a file
+
+```rust
+use std::io::Write;
+file.write_all("Hello World\n".as_bytes()).expect("write failed");
+```
+
+Append content to a file
+
+```rust
+use std::fs::OpenOptions;
+let mut file = OpenOptions::new().append(true).open("src/example.txt").expect("open failed");
+```
+
+Read from a file
+
+```rust
+use std::io::Read;
+let mut file = File::open("src/example.txt").unwrap();
+let mut contents = String::new();
+file.read_to_string(&mut contents).unwrap();
+println!("{}", contents);
+```
+
+Delete a file
+
+```rust
+use std::fs::remove_file;
+remove_file("src/example.txt").expect("delete failed");
+```
+
+## Error Handling
+
+2 types of errors:
+
+- **Recoverable:** `Result` enum
+- **Unrecoverable:** `panic!` macro
+
+Index out of bounds is a kind of unrecoverable error
+
+```rust
+let v = vec![1, 2, 3];
+v[10];      // panic
+```
+
+A panic can also raised mannually
+
+```rust
+panic!("Something went wrong. cannot proceed");
+```
+
+Panic will terminate the program or thread, and we can do nothing.
+
+Recoverable error however can be handled and proceed using `Result` enum:
+
+```rust
+enum Result<T, E> {
+    Ok(T),
+    Err(E)
+}
+```
+
+Rust will actually return a `Result` if we try to open a file:
+
+```rust
+let f = File::open("main.jpg"); // f is Result<File>
+match f {
+    Ok(f) => {
+        // f is File
+        println!("file found {:?}", f);
+    },
+    Err(e) => {
+        // e is Error
+        println!("file not found \n{:?}", e);
+    }
+}
+println!("Continuing on with the execution");
+```
+
+We can also use `Option ` enum:
+
+```rust
+enum Option<T, E> {
+    Some(T),
+    None
+}
+```
+
+```rust
+divide(Some(1));    // result is 42
+divide(Some(10));   // result is 4
+divide(None);       // None received, the answer is 42
+divide(Some(0));    // panic
+
+const ANSWER_TO_LIFE: i32 = 42;
+
+fn divide(x: Option<i32>) {
+    match x  {
+        Some(0) => panic!("Cannot divide by 0"),
+        Some(x) => println!("result is {}", ANSWER_TO_LIFE / x),
+        None => println!("None received, the answer is {}", ANSWER_TO_LIFE)
+    }
+}
+```
+
+## Helper Methods
+
+`unwrap()` will return data if it's available or `panic!` of it's not
+
+```rust
+// will return a file or panic!
+File::open("src/example.txt").unwrap();
+```
+
+`expect()` similar to unwrap but allows us to set a custom error message
+
+```rust
+File::open("src/example.txt").expect("Unable to open file");
+```
+
+## ? Operator
+
+A shorthand for an entire match statement, showing we want the result only if the statement succeeded.
+
+```rust
+let a = read_from_file();
+println!("{:?}", a);  // Ok or Err
+
+fn read_from_file() -> Result<String, io::Error> {
+    let f = File::open("src/example.txt");
+    let mut f = match f {
+        Ok(file) => file,
+        Err(e) => return Err(e),
+    };
+    let mut s = String::new();
+    match f.read_to_string(&mut s) {
+        Ok(_) => Ok(s),
+        Err(e) => Err(e),
+    }
+}
+```
+
+Above  code can be simplified using `?`
+
+```rust
+fn read_from_file() -> Result<String, io::Error> {
+    let mut f = File::open("src/username.txt")?;
+    let mut s = String::new();
+    f.read_to_string(&mut s)?;
+    Ok(s)
+}
+```
+
+# Concurrency
+
+## Threads
+
+Run code in parallel
+
+Ownership/ borrowing mechanism gives us
+
+- memory safety (even in multi-threads programs)
+- no data races (because the data only have exactly one owner)
+
+Create a thread
+
+```rust
+use std::thread;
+thread::spawn(|| {
+    println!("new thread");
+});
+```
+
+`move` keyword helps to use variables inside the clousre
+
+```rust
+for i in 0..10 {
+    // to use i inside the clouser, we must add `move`, moving data into the closure
+    thread::spawn(move || {
+        println!("new thread {}", i);
+    });
+}
+
+println!("Main thread");
+
+/*
+new thread 1
+new thread 2
+new thread 3
+new thread 0
+new thread 4
+new thread 5
+new thread 6
+new thread 7
+new thread 8
+Main thread
+new thread 9
+*/
+```
+
+Sleep a thread using `sleep()` method
+
+```rust
+for i in 0..10 {
+    thread::spawn(move || {
+        // sleep the program
+        sleep(Duration::from_millis(i * 1000));
+        println!("new thread {}", i);
+    });
+}
+
+println!("Main thread");
+
+/*
+new thread 0
+Main thread (main program finished before other threads have finished)
+*/
+```
+
+Wait for a thread use `join()` method
+
+```rust
+let mut threads = vec![];
+
+for i in 0..10 {
+    let th = thread::spawn(move || {
+        sleep(Duration::from_millis(i * 1000));
+        println!("new thread {}", i);
+    });
+    threads.push(th);
+}
+
+for th in threads {
+    th.join();
+}
+
+println!("Main thread");
+
+/*
+new thread 0
+new thread 1
+new thread 2
+new thread 3
+new thread 4
+new thread 5
+new thread 6
+new thread 7
+new thread 8
+new thread 9
+Main thread
+*/
+```
+
+## Channels
+
+A way to send data between threads
+
+> **MPSC: Multiple producer single receiver**
+
+Create a channel
+
+```rust
+use std::sync::mpsc;
+// transimiter and receiver
+let (tx, rx) = mpsc::chanel();
+```
+
+Send a message
+
+```rust
+tx.send()
+```
+
+Receive a message
+
+```rust
+rx.recv()      // blocking
+rx.try_recv()  // non blocking
+```
+
+A example of blocked receving. The main thread will wait until it receives message.
+
+```rust
+let (tx, rx) = mpsc::channel();
+thread::spawn(move || {
+    tx.send(42).unwrap();
+});
+println!("received {}", rx.recv().unwrap());
+```
+
+Use `rx` to let the main thread wait for all other threads like `join`:
+
+```rust
+const NUM_THREADS: usize = 20;
+
 fn main() {
-    let s1 = String::from("hello");
+    let (tx, rx) = mpsc::channel();
+    for i in 0..NUM_THREADS {
+        start_thread(i, tx.clone());
+    }
 
-    let (s2, len) = calculate_length(s1);
-
-    println!("The length of '{}' is {}.", s2, len);
+    for j in rx.iter().take(NUM_THREADS) {
+        println!("received {}", j);
+    }
 }
 
-fn calculate_length(s: String) -> (String, usize) {
-    let length = s.len(); // len() returns the length of a String
-
-    (s, length)
+fn start_thread(d: usize, tx: mpsc::Sender<usize>) {
+    thread::spawn(move || {
+        println!("setting timer {}", d);
+        thread::sleep(Duration::from_secs(d as u64));
+        println!("sending {}", d);
+        tx.send(d).unwrap();
+    });
 }
+
 ```
 
-**这时可以使用引用（Reference），这样函数就不会拿到 Ownership，在其作用域结束的时候也就不会被清除：**
+## Mutex
+
+> Mutual exclusion lock. Only one thread can access the data at any one time.
+
+**Arc - Atomically referenced counted type.** Convert data into primitive types, safe to share across threads.
+
+Create a lock:
 
 ```rust
-fn main() {
-    let s1 = String::from("hello");
-
-    // &s1 创建了一个 Reference，指向 s1，但并没有 **拥有** 它，Ownership 没有发生转移
-    let len = calculate_length(&s1);
-
-    println!("The length of '{}' is {}.", s1, len);
-}
-
-// &String s 指向 String s1
-fn calculate_length(s: &String) -> usize {
-    s.len()
-} // Here, s goes out of scope. But because it does not have ownership of what
-  // it refers to, it is not dropped.
+use std::sync::{Mutex, Arc};
+let lock = Arc::new{Mutex::new(0)};
 ```
 
-创建 Reference 的过程称为 **借用（Borrowing）**。
-
-### Mutable Reference
-
-可以通过 `&mut` 来创建可变引用：
+Acquire a lock:
 
 ```rust
-fn main() {
-    let mut s = String::from("hello");
-    change(&mut s);
-}
-
-fn change(some_string: &mut String) {
-    some_string.push_str(", world");
-}
+lock.lock();
+lock.try_lock();
 ```
 
-**Mutable References 有一些限制：**
-
-- **每个变量同时只能有一个 Mutable Reference（在一个作用域中），但可以拥有多个 Immutable References；**
-- **变量不能同时拥有 Mutable Reference 和 Immutable Reference（防止 Dangling References）；**
+A example that a mutal value is stored using `Mutex::new()` and shared with `Arc`:
 
 ```rust
-let mut s = String::from("hello");
+let c = Arc::new(Mutex::new(0));
+let mut threads = vec![];
 
-let r1 = &s;
-let r2 = &s;
-let r3 = &mut s;   // Error
+for _i in 0..10 {
+    let c = Arc::clone(&c);
+    let t = thread::spawn(move || {
+        let mut num = c.lock().unwrap();
+        *num += 1;
+    });
+    threads.push(t);
+}
 
-println("{}, {}, and {}", r1, r2, r3);
+for th in threads {
+    th.join().unwrap();
+}
+
+println!("Result {}", *c.lock().unwrap());    // 10
 ```
 
+Poisoned lock - when a thread that holds the lock panics:
+
 ```rust
-let mut s = String::from("hello");
-
-let r1 = &s;
-let r2 = &s;
-println("{} and {}", r1, r2);
-// variables r1 and r2 will not be used after this point
-
-let r3 = &mut s;   // No problem
-println("{}", r3);
+lock.is_poisoned();
 ```
 
