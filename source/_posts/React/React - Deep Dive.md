@@ -637,7 +637,7 @@ function dfs(node: Fiber) {
 }
 ```
 
-可以看到这个写法的遍历顺序与回溯算法其实非常像，有关回溯可参考 {% post_link Algorithm %} 这篇笔记。
+可以看到这个写法的遍历顺序与回溯算法其实非常像，有关回溯可参考 vvv Algorithm %} 这篇笔记。
 
 这样写遍历的缺点在前面的 `Fiber` 节也提到过，**由于是借助 JavaScript 调用栈的递归写法，我们无法控制他的终止**。这个时候 `return` 属性的意义就出来了，我们可以借助 `return` 代替栈来记录每个子任务执行完成之后需要返回的地方。
 
@@ -710,7 +710,7 @@ export function getHighestPriorityLane(lanes: Lanes): Lane {
 
 ## 优先级队列
 
-Scheduler 中使用优先级队列来为任务进行排序，并保证每次出队的任务均是优先级最高的任务，优先级队列有多种实现方式，React 的 Scheduler 是采用常用的小顶堆来实现的。关于 *优先级队列和堆* 的更多内容可以参考 {% post_link Algorithm %} 这篇笔记。
+Scheduler 中使用优先级队列来为任务进行排序，并保证每次出队的任务均是优先级最高的任务，优先级队列有多种实现方式，React 的 Scheduler 是采用常用的小顶堆来实现的。关于 *优先级队列和堆* 的更多内容可以参考 vvv Algorithm %} 这篇笔记。
 
 # 首次渲染过程
 

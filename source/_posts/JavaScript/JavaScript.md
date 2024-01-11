@@ -3065,7 +3065,7 @@ testFunction()
 
 浏览器不兼容 CommonJS 的根本原因在于缺少四个 NodeJS 环境的变量：`module` `exports` `require` `gloabl`。
 
-我们可以通过提供这四个变量，让浏览器加载 CommonJS 模块，详见 Webpack {% post_link Webpack %}
+我们可以通过提供这四个变量，让浏览器加载 CommonJS 模块，详见 Webpack vvv Webpack %}
 
 ## Asynchronous Module Definition
 

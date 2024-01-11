@@ -302,7 +302,7 @@ function jsonp(settings) {
 
 主线程会遍历布局树（Layout Tree），生成一系列的绘画记录（Paint Records）。绘画记录可以看做是记录各元素绘制先后顺序的笔记。
 
-> 关于他们与 CSS 动画的关系，看这篇笔记：{% post_link CSS %}
+> 关于他们与 CSS 动画的关系，看这篇笔记：vvv CSS %}
 
 ### 合成：Compositing
 

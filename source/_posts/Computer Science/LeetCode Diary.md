@@ -6,7 +6,7 @@ categories:
 mathjax: true
 ---
 
-与 {% post_link Algorithm %} 不同，算法与数据结构一文中主要是从理论、宏观、模板的角度体系化地记录常见的算法与数据结构。而本文是做算法题中的学习记录，主要记录主观的心路历程和一些实际做题中的坑点、想法和解法。
+与 vvv post_link Algorithm vvv 不同，算法与数据结构一文中主要是从理论、宏观、模板的角度体系化地记录常见的算法与数据结构。而本文是做算法题中的学习记录，主要记录主观的心路历程和一些实际做题中的坑点、想法和解法。
 
 本文将按照一定的 Tag，比如二分查找、双指针等来进行展开。
 
@@ -20,7 +20,7 @@ mathjax: true
 >
 > Last Reviewed: 2023.6.8
 
-该题主要需要注意熟悉 **左闭右开** 和 **左闭右闭** 的两种写法，具体写法见 {% post_link Algorithm %} 对应章节。
+该题主要需要注意熟悉 **左闭右开** 和 **左闭右闭** 的两种写法，具体写法见 vvv Algorithm %} 对应章节。
 
 ## LeetCode 35. SearchInsertPosition
 
@@ -266,4 +266,4 @@ Set中元素不重复，能很好的解决这个问题。
 >
 > Last Reviewed: 2023.6.15
 
-该题使用 KMP，具体见 {% post_link Algorithm %} 对应章节。
+该题使用 KMP，具体见 vvv Algorithm %} 对应章节。
