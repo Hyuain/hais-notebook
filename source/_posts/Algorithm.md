@@ -2,7 +2,7 @@
 title: Data Structure and Algorithm
 date: 2022-02-05 15:49:12
 categories:
-  - [计算机]
+  - - 计算机
 mathjax: true
 ---
 

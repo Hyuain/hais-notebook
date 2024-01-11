@@ -16,6 +16,10 @@ categories:
 
 # Project Basics
 
+## Rustup
+
+Rust is installed and managed by the [`rustup`](https://rust-lang.github.io/rustup/) tool. It installs Rust from the official release channels, enabling you to easily switch between stable, beta, and nightly compilers and keep them updated.
+
 ## Cargo
 
 Cargo is the project manager for Rust.
@@ -27,6 +31,18 @@ cargo run
 cargo clean
 cargo check
 cargo doc
+```
+
+We can use `cargo add` to add dependencies to a cargo project:
+
+````bash
+cargo add tokio
+````
+
+And use `--features` to specify features:
+
+```bash
+cargo add --features full
 ```
 
 ## User Input
@@ -89,6 +105,37 @@ println!("Binary: {:b}, Hex: {:x}, Octal: {:o}", 5, 5, 5);
 
 // Debug
 println!("Array {:?}", [1, 2, 3]);
+```
+
+## Unit Testing
+
+ ```rust
+ pub fn add_five(num: u32) -> u32 {
+     num + 5
+ }
+ 
+ // the code only runs in `cargo test`
+ #[cfg(test)]
+ mod test {
+     // inherit libraries imported
+     use super::*;
+   
+     #[test]
+     fn add_five_test() {
+         let x = 100;
+         let y = add_five(x);
+         println!("x and y are from test {}", x, y);
+         assert_eq!(y, 105);
+     }
+ }
+ ```
+
+Then use `cargo test` to run tests.
+
+To make content in `println!()` printed in the console, use the following command:
+
+```dahs
+cargo test -- --nocapture
 ```
 
 # Language Basics
@@ -383,8 +430,7 @@ mod clean {
 
 Two types of crates:
 
-- **Binary Crates:** the main component (entry point) of the crate has a `main` function.
-- **Library Crates:** has no entry point.
+- **Binary Crates:** the main component (entry point) of the crate (`main.rs`) has a `main` function.
 
 ```rust
 // in archive.rs
@@ -410,6 +456,8 @@ fn main() {
     arc("file.txt");
 }
 ```
+
+- **Library Crates:** can be without a entry point, but sometimes has a `lib.rs` as a entry point exporting functions.
 
 Cargo is used to manage crates.
 
@@ -1002,45 +1050,114 @@ fn is_even(x: i32) -> bool {
 }
 ```
 
-## Macros
+# Macros
 
 > Write code that writes code - meta programming
 
-Match an expression and perform som operation
+Match an expression and perform some operation
 
-Code is expanded and compiled
+## Declarative Macros
+
+Declarative macros start with a exclamation mark `!`. Here are some example of declarative macros:
 
 ```rust
-macro_rules! my_macro {
-    () => {
-        println!("First macro")
+println!("Hello 1");
+dbg!("Hello 2");
+let x: Vec<i32> = vec![1, 2, 3];
+let formatted: String = format!("Hello 3 with vec {:?}", x);
+dbg!(formatted);
+```
+
+**Macro captures**
+
+| Keyword |          Explaination          |                     Examples                     |
+| :-----: | :----------------------------: | :----------------------------------------------: |
+| `expr`  | Mathes a valid rust expression | `"hello".to_string"` `vec![1, 2, 3]` `1 + 2` `1` |
+| `stmt`  |  Matches to a rust statement   |     `let x= 5` `x.push(1)` `return Some(x)`      |
+| `ident` |  Matches to a rust identifier  |    variable name, function name, module name     |
+|  `ty`   |     Matches to a rust type     |         `i32` `Vec<String>` `Option<T>`          |
+| `path`  |     Matches to a rust path     |           `std::collections::HashMap`            |
+
+ **Repitition Specifier**
+
+`*` - Match zero or more repititions
+
+`+` - Match one or more repititions
+
+`?` - Match zero or one repitition
+
+**Examples**
+
+Capture expressions
+
+```rust
+macro_rules! mad_skills {
+    ($x: expr) => {
+        format!("You sent an expression: {}", $x)
     };
 }
 
-my_macro!();
+let some_var = mad_skills!(1 + 2);
+dbg!(some_var);    // 3
 ```
 
+Capture types
+
 ```rust
-// macro with one parameter
-macro_rules! name {
-    ($name: expr) => {
-        println!("Hey {}", $name)
+macro_rules! mad_skills {
+    ($x: ty) => {
+        match stringify!($x) {
+            "i32" => "You sent an i32 type".to_string(),
+            _ => format!("You sent {} type", stringify!($x)).to_string()
+        }
+    }
+}
+
+let some_var = mad_skills!(i32);
+dbg!(some_var);
+let some_var = mad_skills!(Vec<i32>);
+dbg!(some_var);
+```
+
+Capture identifiers (eg. function names)
+
+```rust
+macro_rules! build_fn {
+    ($fn_name: ident) => {
+        fn $fn_name() {
+            println!("{:?} was called", stringify!($fn_name));
+        }
     };
 }
 
-name!("John");
+build_fn!(hey);
+hey();
 ```
 
+Create `my_vec!` with repetitions
+
 ```rust
-// multiple parameters
-macro_rules! super_name {
-    ($($name: expr),*) => {
-        $(println!("Hey {}", $name);)*
+ macro_rules! my_vec {
+    // expect one or more parameters
+    ($($x: expr), +) => {
+        // ensure variables inside the macro do not leak out to the surrounding code
+        {
+            let mut temp_vec = Vec::new();
+            // repeat this statement one or more times
+            $(
+                temp_vec.push($x);
+            )+
+            temp_vec
+        }
     };
 }
 
-super_name!("Harvey", "John", "Jack");
+// the same as my_vec!(1, 2);
+let mut y = my_vec![1, 2];
+dbg!("{:?}", y);   // [1, 2]
 ```
+
+Multiple mathces
 
 ```rust
 // multiple match statements
@@ -1053,19 +1170,151 @@ xy!(x => 5);
 xy!(y => 3 * 9);
 ```
 
+Export the macro to let it can be used in other files
+
 ```rust
-// ident as parameter, create a function using macro
-macro_rules! build_fn {
-    ($fn_name: ident) => {
-        fn $fn_name() {
-            println!("{:?} was called", stringify!($fn_name));
+#[macro_export]
+macro_rules! my_vec { ... }
+```
+
+## Procedural Macros
+
+### Derive Macros
+
+```rust
+#[derive(Debug, Serialize, Clone, Deserialize, PartialEq)]
+struct User {
+  //...
+}
+```
+
+To create a derive macro, a new library should be created first. In the `cargo.toml` of the library, set `proc-macro` to `true`
+
+```toml
+[lib]
+proc-macro = true
+
+[dependencies]
+syn = "2.0.18"      # Interact a syntax tree
+quote = "1.0.28"    # Interpolate different types, identifiers, names, expressions, etc. into string
+```
+
+In the project file
+
+```rust
+extern crate proc_macro;  // A special crate included with the Rust Standard Library
+
+use proc_macro::TokenStream;
+use quote::quote;
+use syn::{parse_macro_input, DeriveInput};
+
+// Specify this function is a derive macro, and its name is HelloWorld
+#[proc_macro_derive(HelloWorld)]
+pub fn helloworld_object_derive(input: TokenStream) -> TokenStream {
+    // Parse the input tokens into a syntax tree
+    let input = parse_macro_input!(input as DeriveInput);
+    // Used in the quasi-quotation below as the name of the type to implement
+    let name = input.ident;
+    // Generate the code to parse into the user's program
+    let expanded = quote! {
+        impl HelloWorld for #name {
+            fn hello_world() {
+                println!("Hello, world!");
+            }  
         }
     };
+    // Hand the output tokens back to the compiler
+    TokenStream::from(expanded)
 }
-
-build_fn!(hey);
-hey();
 ```
+
+Add the macro as a denpendency in another project
+
+```toml
+[dependencies]
+proc_macro = { path = "../proc_macro" }
+```
+
+### Function Like Macro
+
+To create a function like procedural macro, add tag `#[proc_macro]`
+
+```rust
+#[proc_macro]
+pub fn create_struct(input: TokenStream) -> TokenStream {
+    // Parse the input tokens into a syntax tree
+    let input = parse_macro_input!(input as Ident);
+  
+    // Construct a string representation of the struct definition
+    let name: &{unknown} = &input;
+    let expanded = quote! {
+        struct #name {
+            x: i32,
+            y: i32,
+        }
+    };
+  
+    // Return the generated struct as a TokenStream, like TokenStream::from(expanded)
+    expended.into()
+}
+```
+
+Then the macro can be imported and used like declarative macros
+
+```rust
+use create_struct_macro::create_struct;
+
+create_struct!(Point);
+
+fn main() {
+    let Point = Point { x: 5, y: 10 };
+    println!("Point coordinates: x = {}, y = {}", point.x, point.y);
+}
+```
+
+### Attribute Like Macro
+
+Use `#[proc_macro_attribute]` to create a attribute like macro
+
+```rust
+#[proc_macro_attribute]
+pub fn function_to_string(_attr: TokenStream, item: TokenStream) -> TokenStream {
+    // Parse the input function
+    let input_fn: ItemFn = parse_macro_input!(item as ItemFn);
+  
+    // Create a string representation of the function
+    let function_str: String = format!("{}", input_fn.to_token_stream());
+  
+    // Define a new function with the same signature as the input function
+    let fn_ident: proc_macro2::Ident = input_fn.sig.ident;
+    let fn_inputs: sys::punctuated::Punctuated<syn::FnArg, syn::token::Comma> = input_fn.sig.inputs;
+    let fn_generics: syn::Generics = input_fn.sig.generics;
+  
+    // Generate the output code
+    let output: proc_macro2::TokenStream = quote! {
+        pub fn #fn_ident #fn_generics(#fn_inputs) -> &'static str {
+            #function_str
+        }
+    }
+  
+    output.into()
+}
+```
+
+Use case of the `function_to_string` macro
+
+```rust
+use proc_macro::function_to_string;
+
+#[function_to_string]
+pub fn convert_user_input_to_goal(_user_request: &str) {
+    println!(OUTPUT)
+}
+```
+
+## Example
+
+Build a 
 
 # Traits
 
@@ -1369,14 +1618,32 @@ fn duplicate(x: &dyn Duplicatable) {
 
 堆与栈内存都是在运行时代码可以使用的内存，关于堆栈的相关介绍情看 {% post_link Algorithm %}  相关部分。
 
-**重要的是：**
+|            | Stack                               | Heap                                                |
+| ---------- | ----------------------------------- | --------------------------------------------------- |
+| Size       | Fixed (known at compile time)       | Dynamic                                             |
+| Speed      | Faster than Heap                    | Slower than Stack                                   |
+| Usage      | Local variables, function call data | Dynamic data, largeobjects that outlive their scope |
+| Management | Automatic in Rust                   | Automatic in Rust (ownership system)                |
+| Scope      | Within scope where declared         | Anywhere complying with ownership rules             |
 
-- **在栈中存储的数据必须是确定的、固定的大小；**
-- **在堆中分配（Allocate）内存时，会返回一个指针指向这个内存的地址，该定长地址可以存储在栈中；**
-- 向栈中 Push 数据比在堆中 Allocate 要快得多，因为不需要先找到合适的地方来存储这个数据；
-- 访问栈中的数据要比对堆中的快得多，因为堆中的数据要顺着指针来找；
-- 调用函数的时候，传入函数的参数与函数本地的数据会 Push 进栈中，函数运行结束后，栈中的数据会被 Pop 出来；
-- 栈内存有天然的 Push 和 Pop，使其不会有冗余的数据，但堆内存则需要及时堆不需要的部分进行清理。
+An example of stack:
+
+```rust
+fn man() {
+    let a = 10;          // stored in stack frame main()
+    let b = 20;          // stored in stack frame main()
+    some_func {          // create new stack frame {}
+        let c = 30;      // stored in stack frame {}
+        let d = &c;      // the value of d is the address of c, d is stored in stack frame {}
+    }                    // stack frame {} poped, c and d droped
+    let e = add_five(a)  // create new stack frame add_five(), num and i stored there
+}
+
+fn add_five(num: i32) -> i32 { // num has the same value as a, but in different address
+    let i = 5;
+    num + 1;
+}
+```
 
 ## Primitive vs. Complex Types
 
@@ -1412,6 +1679,7 @@ Rust 中，可以通过 Borrowing 从 `String` 中拿到 `&str`：
 
 ```rust
 let owned_string: String = "Hello, world!".to_string();
+// NOTE: Deref coercion happened! &String -> &str
 let string_slice: &str = &owned_string; // Borrowing a slice of the whole String
 ```
 
@@ -1446,7 +1714,7 @@ println!("{}", s1);     // error, because value is nolonger owned by s1
 
 Because in Rust  `drop` method is called to clean up memory.
 
-To prevent the same memory being clean up twice, which can cause memory safety issues, `s1` is nolonger accessible after ownership transferred.
+**To prevent the same memory being clean up twice**, which can cause memory safety issues, `s1` is nolonger accessible after ownership transferred.
 
 This way, memory of `s1` is not considered in cleaning up.
 
