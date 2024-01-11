@@ -1,11 +1,11 @@
 ---
-title: Angular
+title: Angular Basic
 date: 2020-03-24 15:40:32
 categories:
-  - [前端]
+  - - 前端
 ---
 
-.
+
 
 <!-- more -->
 
@@ -677,3 +677,7 @@ const routes: Routes = [
 ```
 
 我们可以通过 `+this.route.snapshot.paramMap.get('id')` 这样的方法来从当前的地址中获取到 params
+
+# Advanced Topics
+
+[[Change Detection in Angular]]

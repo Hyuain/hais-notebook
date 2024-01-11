@@ -294,7 +294,7 @@ immutableObj.set('a', 2)
 
 # Webpack
 
-[更多问题可以查看这篇知乎专栏](zhuanlan.zhihu.com/p/44438844)
+[更多问题可以查看这篇知乎专栏](https://zhuanlan.zhihu.com/p/44438844)
 
 ## 提高构建速度
 

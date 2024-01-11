@@ -2,7 +2,7 @@
 title: React - Deep Dive
 date: 2023-06-23 16:41:41
 categories:
-  - [前端]
+  - - 前端
 ---
 
 与另一篇 React 笔记不同，本文主要是深入讨论 React 的源码与设计理念。
