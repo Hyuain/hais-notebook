@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hais-notebook/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/hais-notebook/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/hais-notebook/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/hais-notebook/images/safari-pinned-tab.svg" color="#222">
+
+<link rel="stylesheet" href="/hais-notebook/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.font.im/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="/hais-notebook/lib/@fortawesome/fontawesome-free/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"hyuain.github.io","root":"/hais-notebook/","images":"/hais-notebook/images","scheme":"Gemini","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac","show_result":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/hais-notebook/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/hais-notebook/js/config.js"></script>
+
+    <meta name="description" content=".">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Internet Security">
+<meta property="og:url" content="https://hyuain.github.io/hais-notebook/2023/01/18/Security/Internet%20Security/index.html">
+<meta property="og:site_name" content="Hais Notebook">
+<meta property="og:description" content=".">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Web-Application.png">
+<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Login-Process.webp">
+<meta property="article:published_time" content="2023-01-18T14:38:30.000Z">
+<meta property="article:modified_time" content="2023-01-18T14:38:30.000Z">
+<meta property="article:author" content="Harvey Zhang">
+<meta property="article:tag" content="Notebook">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Web-Application.png">
+
+
+<link rel="canonical" href="https://hyuain.github.io/hais-notebook/2023/01/18/Security/Internet%20Security/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hyuain.github.io/hais-notebook/2023/01/18/Security/Internet%20Security/","path":"2023/01/18/Security/Internet Security/","title":"Internet Security"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Internet Security | Hais Notebook</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/hais-notebook/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/hais-notebook/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Hais Notebook</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/hais-notebook/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/hais-notebook/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/hais-notebook/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/hais-notebook/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#web-%E5%AE%89%E5%85%A8%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">Web 安全概述</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#web-%E5%BA%94%E7%94%A8"><span class="nav-number">1.1.</span> <span class="nav-text">Web 应用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#web-%E5%BA%94%E7%94%A8%E4%B8%89%E5%B1%82%E6%9E%B6%E6%9E%84"><span class="nav-number">1.2.</span> <span class="nav-text">Web 应用三层架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#wasc-%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="nav-number">1.3.</span> <span class="nav-text">WASC 的定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#owasp-%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="nav-number">1.4.</span> <span class="nav-text">OWASP 的定义</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%AA%8C%E8%AF%81%E6%9C%BA%E5%88%B6%E5%AE%89%E5%85%A8"><span class="nav-number">2.</span> <span class="nav-text">验证机制安全</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E9%AA%8C%E8%AF%81%E6%9C%BA%E5%88%B6"><span class="nav-number">2.1.</span> <span class="nav-text">什么是验证机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%AA%8C%E8%AF%81%E6%9C%BA%E5%88%B6%E5%AD%98%E5%9C%A8%E7%9A%84%E5%AE%89%E5%85%A8%E9%9A%90%E6%82%A3"><span class="nav-number">2.2.</span> <span class="nav-text">验证机制存在的安全隐患</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%B1%E5%AF%86%E7%A0%81"><span class="nav-number">2.2.1.</span> <span class="nav-text">弱密码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9A%B4%E5%8A%9B%E7%A0%B4%E8%A7%A3"><span class="nav-number">2.2.2.</span> <span class="nav-text">暴力破解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BF%98%E8%AE%B0%E5%AF%86%E7%A0%81"><span class="nav-number">2.2.3.</span> <span class="nav-text">忘记密码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E9%98%B6%E7%99%BB%E5%BD%95%E6%9C%BA%E5%88%B6"><span class="nav-number">2.2.4.</span> <span class="nav-text">多阶登录机制</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BC%9A%E8%AF%9D%E7%AE%A1%E7%90%86"><span class="nav-number">3.</span> <span class="nav-text">会话管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E4%BC%9A%E8%AF%9D%E7%AE%A1%E7%90%86"><span class="nav-number">3.1.</span> <span class="nav-text">什么是会话管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%9A%E8%AF%9D%E7%AE%A1%E7%90%86%E7%9A%84%E5%AE%89%E5%85%A8%E9%9A%90%E6%82%A3"><span class="nav-number">3.2.</span> <span class="nav-text">会话管理的安全隐患</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%9A%E8%AF%9D%E4%BB%A4%E7%89%8C%E7%94%9F%E6%88%90%E6%BC%8F%E6%B4%9E"><span class="nav-number">3.2.1.</span> <span class="nav-text">会话令牌生成漏洞</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A4%E7%89%8C%E5%8F%AF%E9%A2%84%E6%B5%8B"><span class="nav-number">3.2.1.1.</span> <span class="nav-text">令牌可预测</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9A%8F%E6%9C%BA%E6%95%B0%E5%BC%BA%E5%BA%A6%E4%B8%8D%E8%B6%B3"><span class="nav-number">3.2.1.2.</span> <span class="nav-text">随机数强度不足</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%9A%E8%AF%9D%E4%BC%A0%E8%BE%93%E6%BC%8F%E6%B4%9E"><span class="nav-number">3.2.2.</span> <span class="nav-text">会话传输漏洞</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BC%9A%E8%AF%9D%E7%BB%88%E6%AD%A2%E6%94%BB%E5%87%BB"><span class="nav-number">3.2.2.1.</span> <span class="nav-text">会话终止攻击</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BC%9A%E8%AF%9D%E5%8A%AB%E6%8C%81%E6%94%BB%E5%87%BB"><span class="nav-number">3.2.2.2.</span> <span class="nav-text">会话劫持攻击</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%9A%E8%AF%9D%E7%AE%A1%E7%90%86%E6%BC%8F%E6%B4%9E%E7%9A%84%E9%98%B2%E5%BE%A1"><span class="nav-number">3.3.</span> <span class="nav-text">会话管理漏洞的防御</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#sql-%E6%B3%A8%E5%85%A5%E6%94%BB%E5%87%BB"><span class="nav-number">4.</span> <span class="nav-text">SQL 注入攻击</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#sql-%E6%B3%A8%E5%85%A5%E5%8D%B1%E5%AE%B3"><span class="nav-number">4.1.</span> <span class="nav-text">SQL 注入危害</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sql-%E6%B3%A8%E5%85%A5%E9%98%B2%E5%BE%A1"><span class="nav-number">4.2.</span> <span class="nav-text">SQL 注入防御</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#xss-%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%AC%E6%94%BB%E5%87%BB"><span class="nav-number">5.</span> <span class="nav-text">XSS 跨站脚本攻击</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#xss-%E6%94%BB%E5%87%BB%E5%8D%B1%E5%AE%B3"><span class="nav-number">5.1.</span> <span class="nav-text">XSS 攻击危害</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#xss-%E6%94%BB%E5%87%BB%E5%88%86%E7%B1%BB"><span class="nav-number">5.2.</span> <span class="nav-text">XSS 攻击分类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8D%E5%B0%84%E5%BC%8F-xss-%E6%94%BB%E5%87%BB"><span class="nav-number">5.2.1.</span> <span class="nav-text">反射式 XSS 攻击</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E5%BC%8F-xss-%E6%94%BB%E5%87%BB"><span class="nav-number">5.2.2.</span> <span class="nav-text">存储式 XSS 攻击</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E-dom-%E7%9A%84-xss-%E6%94%BB%E5%87%BB"><span class="nav-number">5.2.3.</span> <span class="nav-text">基于 DOM 的 XSS 攻击</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#xss-%E6%94%BB%E5%87%BB%E8%BD%BD%E8%8D%B7"><span class="nav-number">5.3.</span> <span class="nav-text">XSS 攻击载荷</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#xss-%E9%98%B2%E5%BE%A1%E6%8E%AA%E6%96%BD"><span class="nav-number">5.4.</span> <span class="nav-text">XSS 防御措施</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#csrf-%E8%B7%A8%E7%AB%99%E8%AF%B7%E6%B1%82%E4%BC%AA%E9%80%A0"><span class="nav-number">6.</span> <span class="nav-text">CSRF 跨站请求伪造</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%A0%E7%A7%8D%E5%B8%B8%E8%A7%81%E7%9A%84%E6%94%BB%E5%87%BB%E7%B1%BB%E5%9E%8B"><span class="nav-number">6.1.</span> <span class="nav-text">几种常见的攻击类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#get-%E7%B1%BB%E5%9E%8B%E7%9A%84-csrf"><span class="nav-number">6.1.1.</span> <span class="nav-text">GET 类型的 CSRF</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#post-%E7%B1%BB%E5%9E%8B%E7%9A%84-csrf"><span class="nav-number">6.1.2.</span> <span class="nav-text">POST 类型的 CSRF</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%93%BE%E6%8E%A5%E7%B1%BB%E5%9E%8B%E7%9A%84-csrf"><span class="nav-number">6.1.3.</span> <span class="nav-text">链接类型的 CSRF</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#csrf-%E7%9A%84%E7%89%B9%E7%82%B9"><span class="nav-number">6.2.</span> <span class="nav-text">CSRF 的特点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#csrf-%E9%98%B2%E5%BE%A1%E6%8E%AA%E6%96%BD"><span class="nav-number">6.3.</span> <span class="nav-text">CSRF 防御措施</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8C%E6%BA%90%E6%A3%80%E6%B5%8B"><span class="nav-number">6.3.1.</span> <span class="nav-text">同源检测</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#csrf-token"><span class="nav-number">6.3.2.</span> <span class="nav-text">CSRF Token</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E6%A0%A1%E9%AA%8C"><span class="nav-number">6.3.3.</span> <span class="nav-text">分布式校验</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8C%E9%87%8D-cookie-%E9%AA%8C%E8%AF%81"><span class="nav-number">6.3.4.</span> <span class="nav-text">双重 Cookie 验证</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#samesite-cookie"><span class="nav-number">6.3.5.</span> <span class="nav-text">Samesite Cookie</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Harvey Zhang</p>
+  <div class="site-description" itemprop="description">海鲜酱的笔记本</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/hais-notebook/archives/">
+          <span class="site-state-item-count">49</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/hais-notebook/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2023/01/18/Security/Internet%20Security/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
+      <meta itemprop="name" content="Harvey Zhang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hais Notebook">
+      <meta itemprop="description" content="海鲜酱的笔记本">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Internet Security | Hais Notebook">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Internet Security
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-01-18 14:38:30" itemprop="dateCreated datePublished" datetime="2023-01-18T14:38:30+00:00">2023-01-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/" itemprop="url" rel="index"><span itemprop="name">计算机</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>.</p>
+<span id="more"></span>
+<h1 id="web-安全概述">Web 安全概述</h1>
+<h2 id="web-应用">Web 应用</h2>
+<ul>
+<li>由动态脚本、编译过的代码等组合而成</li>
+<li>通常架设在 Web 服务器上，用户在 Web 浏览器上发送请求</li>
+<li>这些请求使用 HTTP 协议，由 Web 应用和企业后台数据库及其他动态内容通信</li>
+</ul>
+<h2 id="web-应用三层架构">Web 应用三层架构</h2>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Web-Application.png" alt="Web 应用三层架构" /><figcaption aria-hidden="true">Web 应用三层架构</figcaption>
+</figure>
+<h2 id="wasc-的定义">WASC 的定义</h2>
+<blockquote>
+<p>WASC（Web Application Security Consortium）是一个由安全专家、行业顾问和诸多组织的代表组成的国际团体，负责为 WWW 指定广为接受的应用安全标准</p>
+</blockquote>
+<p>WASC 将应用安全威胁分为六大类：</p>
+<ol type="1">
+<li>Authentication（验证）</li>
+<li>Authorization（授权）</li>
+<li>Client-Side Attacks（客户侧攻击）</li>
+<li>Command Execution（命令执行）</li>
+<li>Information Disclosure（信息暴露）</li>
+<li>Logical Attacks（逻辑性攻击）</li>
+</ol>
+<h2 id="owasp-的定义">OWASP 的定义</h2>
+<blockquote>
+<p>OWASP（Open Web Application Security Project）致力于发现和解决不安全 Web 应用的根本原因</p>
+</blockquote>
+<ol type="1">
+<li>Injection（注入）</li>
+<li>Broken Authentication（失效的身份认证）</li>
+<li>Sensitive Data Exposure（敏感信息泄露）</li>
+<li>XXE, XML External Entities（XML 外部实体）</li>
+<li>Broken Access Control（失效的访问控制）</li>
+<li>Security Misconfiguration（安全配置错误）</li>
+<li>XSS, Cross-Site Scripting（跨站脚本）</li>
+<li>Insecure Deserialization（不安全的反序列化）</li>
+<li>Using Components with Known Vulnerabilities（使用含有已知漏洞的组件）</li>
+<li>Insufficient Logging &amp; Monitoring（不足的日志记录和监控）</li>
+</ol>
+<h1 id="验证机制安全">验证机制安全</h1>
+<h2 id="什么是验证机制">什么是验证机制</h2>
+<ul>
+<li>验证机制是 Web 应用中最简单的一种安全机制。一般来说，应用程序 <strong>必须用户提交的用户名和密码，判断是否允许登录</strong></li>
+<li>验证机制是应用程序防御恶意攻击的 <strong>核心机制</strong>，处于安全防御的最前沿，如果缺乏安全有效的验证机制，其他核心安全机制（会话管理和访问控制）都无法实施</li>
+</ul>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Login-Process.webp" alt="典型的用户登陆流程" /><figcaption aria-hidden="true">典型的用户登陆流程</figcaption>
+</figure>
+<p>有这样几种常用的验证技术：</p>
+<ul>
+<li>基于 HTML 表单的验证</li>
+<li>多元机制</li>
+<li>客户端 SSL 证书</li>
+</ul>
+<h2 id="验证机制存在的安全隐患">验证机制存在的安全隐患</h2>
+<h3 id="弱密码">弱密码</h3>
+<p>许多 Web 应用程序没有或很少对用户密码强度进行控制：</p>
+<ul>
+<li>非常短或空白密码</li>
+<li>以常用字典词汇为密码</li>
+<li>密码与用户名完全相同</li>
+<li>长时间使用默认密码</li>
+</ul>
+<h3 id="暴力破解">暴力破解</h3>
+<p>登陆功能的公开性会诱使攻击者视图猜测用户名和密码，有诸如 Burp Suite 等工具提供了一些常用的字典</p>
+<p>为了防止暴力破解，可以使用验证码，而验证码也需要注意几个问题：</p>
+<ul>
+<li>验证码是否真实有效</li>
+<li>验证码的复杂度</li>
+<li>应对当前诸如 OCR、打码等技术</li>
+</ul>
+<p>也可以设置 Cookie 和会话检测，增加失败计数器，当然 Cookie 在客户端可以随意修改</p>
+<p>此外现在常用双因子认证（你知道的 + 你拥有的）</p>
+<h3 id="忘记密码">忘记密码</h3>
+<p>包括问题的答案、邮箱、手机验证码用明文或简单的 MD5 加密等</p>
+<h3 id="多阶登录机制">多阶登录机制</h3>
+<p>多次验证检查可能会提高登录机制的安全性，但在这个过程中可能也存在更多的执行缺陷：</p>
+<ul>
+<li>可能会认为到达第三阶段的用户已经通过了第一二阶段</li>
+<li>可能认为每个阶段用户的身份不会变化</li>
+<li>有些问题的细节或答案没有保存在服务器上，而是放在隐藏的 HTML 字段中</li>
+</ul>
+<h1 id="会话管理">会话管理</h1>
+<h2 id="什么是会话管理">什么是会话管理</h2>
+<ul>
+<li>会话管理在用户通过请求提交他们的证书后，<strong>持续</strong> 向应用程序保证用户身份的真实性</li>
+<li>由于会话管理机制发挥关键作用，且比较难以发现其漏洞，因此成为针对应用程序的恶意攻击的主要目标，攻击者若能破坏应用程序的会话管理，就能轻易避开验证机制</li>
+</ul>
+<h2 id="会话管理的安全隐患">会话管理的安全隐患</h2>
+<h3 id="会话令牌生成漏洞">会话令牌生成漏洞</h3>
+<p>通过简单的用户名、电子邮件经过简单的编码、加密生成的，不安全</p>
+<h4 id="令牌可预测">令牌可预测</h4>
+<p>令牌有一定的模式和规则、时间依赖</p>
+<h4 id="随机数强度不足">随机数强度不足</h4>
+<p>计算机中的数据极少完全随机，一般通过软件使用各种技巧生成伪随机数</p>
+<h3 id="会话传输漏洞">会话传输漏洞</h3>
+<p>尽可能缩短一个会话的寿命可以降低攻击者截获、猜测或滥用有效会话的风险</p>
+<h4 id="会话终止攻击">会话终止攻击</h4>
+<p>有一些应用程序没有有效的会话终止功能，他的有效期非常长</p>
+<p>有些时候，退出功能并不能帮助服务器终止会话，比如只是简单地删除客户端的 Cookie，我们需要让服务端的会话失效</p>
+<h4 id="会话劫持攻击">会话劫持攻击</h4>
+<p>攻击者通过网络嗅探、XSS 攻击等方式截获令牌</p>
+<h2 id="会话管理漏洞的防御">会话管理漏洞的防御</h2>
+<ul>
+<li><strong>令牌传输过程</strong>：令牌只能通过 HTTPS 传送，让浏览器不能通过 HTTP 传送令牌</li>
+<li><strong>增加软硬会话过期</strong>
+<ul>
+<li>软会话过期：一定时间没有交互之后，Session 失效</li>
+<li>应会话过期：经过一定时间之后，不管用户做什么，会话都会过期</li>
+</ul></li>
+<li><strong>提供完善的注销功能</strong></li>
+</ul>
+<h1 id="sql-注入攻击">SQL 注入攻击</h1>
+<p>Web 程序经常会建立用户提交数据的 SQL 语句，但如果建立 SQL 语句的方法不安全，则容易造成 SQL 注入漏洞</p>
+<h2 id="sql-注入危害">SQL 注入危害</h2>
+<ul>
+<li><strong>探知数据库的具体结构</strong>，为进一步攻击做准备</li>
+<li><strong>泄露数据</strong>，尤其是机密信息、账户信息等</li>
+<li><strong>获得更高权限</strong>，来修改数据甚至是内部结构</li>
+</ul>
+<h2 id="sql-注入防御">SQL 注入防御</h2>
+<ul>
+<li><strong>参数化查询</strong>：最根本性的防御
+<ul>
+<li>指定查询结构，用户输入预留占位符</li>
+<li>指定占位符的内容</li>
+</ul></li>
+</ul>
+<h1 id="xss-跨站脚本攻击">XSS 跨站脚本攻击</h1>
+<p>攻击者通常通过注入 HTML 或 JS 脚本发动攻击，攻击成功后，攻击者可以得到私密网页内容和 Cookie 等</p>
+<h2 id="xss-攻击危害">XSS 攻击危害</h2>
+<ul>
+<li><strong>盗号</strong></li>
+<li><strong>控制数据</strong>，读取、篡改、添加、删除敏感数据</li>
+<li><strong>非法转账</strong></li>
+<li><strong>网站挂马</strong></li>
+<li><strong>控制肉鸡</strong></li>
+</ul>
+<h2 id="xss-攻击分类">XSS 攻击分类</h2>
+<h3 id="反射式-xss-攻击">反射式 XSS 攻击</h3>
+<p>又称非永久性 XSS，是目前最流行的 XSS 攻击</p>
+<p>出现在服务器直接使用客户端提交的数据，比如 URL 数据、HTML 表单等，并且没有对数据进行无害化处理，这些数据中藏着一些可执行脚本，最常见的方式就是恶意连接，其中包含了 XSS 攻击脚本</p>
+<h3 id="存储式-xss-攻击">存储式 XSS 攻击</h3>
+<p>又称永久性 XSS，危害更大</p>
+<p>攻击者将脚本上传到 Web 服务器上，使得所有访问该页面的用户都面临信息泄露的可能</p>
+<p>多发生在个人信息字段、文档或上传的文件及其他数据的名称、提交给应用程序管理员的反馈或问题、向其他用户传送的信息、在用户之间共享的上传文件内容</p>
+<h3 id="基于-dom-的-xss-攻击">基于 DOM 的 XSS 攻击</h3>
+<p>基于 DOM 的 XSS 攻击仅仅通过 JavaScript 执行，常发生在应用程序每次返回相同的静态 HTML，而客户端 JavaScript 动态生成信息，并不会跟服务端交互获取的时候</p>
+<h2 id="xss-攻击载荷">XSS 攻击载荷</h2>
+<ul>
+<li><strong>会话令牌</strong>：XSS 攻击最普遍的方式，截取受害者的会话令牌，劫持他的会话</li>
+<li><strong>虚拟置换</strong>：向 Web 应用程序页面注入恶意数据（修改页面），没有修改保存在服务器上保存的内容，而是通过程序处理来显示置换</li>
+<li><strong>注入木马</strong>：比如突然弹出一个对话框（木马登录表单），诱导你输入用户密码</li>
+</ul>
+<h2 id="xss-防御措施">XSS 防御措施</h2>
+<ul>
+<li><strong>输入验证</strong>
+<ul>
+<li>数据不是太长</li>
+<li>数据仅包含合法字符</li>
+<li>数据与正则表达式匹配</li>
+<li>对不同的数据类型（比如账号、邮箱等）设置不同的规则</li>
+</ul></li>
+<li><strong>输出编码</strong>
+<ul>
+<li>对数据进行 HTML 编码，使用 HTML 实体代替字面量字符，净化可能的恶意字符</li>
+</ul></li>
+</ul>
+<h1 id="csrf-跨站请求伪造">CSRF 跨站请求伪造</h1>
+<p>典型的流程如下：</p>
+<ol type="1">
+<li>受害者登录 <code>a.com</code>，并且保留了登录凭证（Cookie）</li>
+<li>攻击者诱使受害者访问 <code>hack.com</code></li>
+<li><code>hack.com</code> 向 <code>a.com</code> 发送请求：<code>a.com/act=xx</code> 浏览器默认会携带上 <code>a.com</code> 的 <code>Cookie</code></li>
+<li><code>a.com</code> 收到请求后，确认是受害者的凭证，误认为是受害者自己发送的请求</li>
+<li><code>a.com</code> 以受害者的名义执行了 <code>act=x</code></li>
+</ol>
+<h2 id="几种常见的攻击类型">几种常见的攻击类型</h2>
+<h3 id="get-类型的-csrf">GET 类型的 CSRF</h3>
+<p>这个类型非常简单，一般只需要一个 HTTP 请求：</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>http://bank.example/withraw?amount=10000&amp;for=hacker<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>在受害者访问有这个 img 的页面之后，浏览器会自动向 <code>http://bank.example/withraw?amount=10000&amp;for=hacker</code> 发送请求</p>
+<h3 id="post-类型的-csrf">POST 类型的 CSRF</h3>
+<p>这类攻击通常是使用一个自动提交的表单：</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>form</span> <span class="token attr-name">action</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>http://bank.example/withdraw<span class="token punctuation">"</span></span> <span class="token attr-name">method</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>POST<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>hidden<span class="token punctuation">"</span></span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>account<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>xiaoming<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>hidden<span class="token punctuation">"</span></span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>amount<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>10000<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>hidden<span class="token punctuation">"</span></span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>for<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>hacker<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>form</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span><span class="token punctuation">></span></span><span class="token script"><span class="token language-javascript">
+  document<span class="token punctuation">.</span>forms<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">submit</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="链接类型的-csrf">链接类型的 CSRF</h3>
+<p>需要用户点击链接才会触发：</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>http://bank.example/withraw?amount=10000&amp;for=hacker<span class="token punctuation">"</span></span> <span class="token attr-name">target</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>_blank<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+重磅消息！！
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h2 id="csrf-的特点">CSRF 的特点</h2>
+<ul>
+<li>攻击一般发起在 <strong>第三方网站</strong>，而不是被攻击的网站（通常是 <strong>跨域</strong> 的），因此被攻击的网站无法防止攻击的发生</li>
+<li>攻击者利用受害者的登陆凭证，而不是直接盗取数据</li>
+<li>攻击者仅仅是 <strong>利用</strong> 受害者的登录凭证，而 <strong>不能获取</strong> 到这个凭证</li>
+<li>跨站请求可以用各种方式：图片、超链接、CORS、Form 表单等，部分请求可以直接嵌入第三方论坛、文章中，难以进行追踪</li>
+<li>通常是跨域的，但有时候也可以在 <strong>本域</strong> 进行，比如在论坛和评论区可以发图和连接，这种攻击更加危险</li>
+</ul>
+<h2 id="csrf-防御措施">CSRF 防御措施</h2>
+<p>针对 CSRF 通常是跨域请求，并且攻击者只是冒用、而无法真正获得 Cookie 的特点，可以采取以下策略：</p>
+<ul>
+<li><strong>阻止不明外域的访问</strong>
+<ul>
+<li>同源检测</li>
+<li>Samesite Cookie</li>
+</ul></li>
+<li><strong>提交时要求附加本域才能获得的信息</strong>
+<ul>
+<li>CSRF Token</li>
+<li>双重 Cookie 验证</li>
+</ul></li>
+</ul>
+<h3 id="同源检测">同源检测</h3>
+<p>可以通过 <strong>Origin Header</strong> 和 <strong>Referer Header</strong> 来判断请求是否来自外域</p>
+<p>对于 Origin 有两个问题：</p>
+<ul>
+<li>IE 11 不会在 CORS 请求上添加 Origin 标头</li>
+<li>302 重定向之后，Origin 不再包含在重定向之后的请求中</li>
+</ul>
+<p>对于 Referer 也有问题：</p>
+<ul>
+<li>每个浏览器对于 Referer 的实现可能有差别，不能保证浏览器自身没有安全漏洞</li>
+<li>攻击请求可能隐藏 Referer</li>
+</ul>
+<p>当 Origin 和 Referer 都不存在的时候，建议直接阻止访问</p>
+<p>，同源验证是一个相对简单的防范方法，能够防范绝大多数的CSRF攻击。但这有时候也有问题，比如搜索引擎来的请求也会被当做疑似 CSRF 攻击，并且安全性并不是很高</p>
+<h3 id="csrf-token">CSRF Token</h3>
+<ol type="1">
+<li><strong>将 CSRF Token 输出到页面中</strong>，用户打开页面时，需要给用户生成一个 Token，可以将这个 Token 保存在 Session 中，同时给页面上所有的 a 标签 和 form 标签后面加入这个 Token</li>
+<li><strong>页面提交的请求携带这个 Token</strong></li>
+<li><strong>服务器验证 Token 是否正确</strong></li>
+</ol>
+<h3 id="分布式校验">分布式校验</h3>
+<p>使用一种计算出来的结果而不是随机生成的字符串作为 Token，这样在校验的时候就无需读取存储的 Token，只需要再计算一次即可</p>
+<h3 id="双重-cookie-验证">双重 Cookie 验证</h3>
+<p>因为攻击者实际上无法知道 Cookie 里面的内容，所以只需要让 AJAX 和表单请求中携带一个 Cookie 中的值，后端接口验证 Cookie 中的字段与请求参数中的字段是否相同，这样可以减小后端服务器 Session 存储的压力</p>
+<p>但是也有一些问题：</p>
+<ol type="1">
+<li>如果用户访问 <code>www.a.com</code>，后端域名为 <code>api.a.com</code>，那么在 <code>www.a.com</code> 下就拿不到 <code>api.a.com</code> 的 Cookie</li>
+<li>于是这个认证必须种在 <code>a.com</code> 下</li>
+<li>于是任意子域名都可以修改 <code>a.com</code> 下的 Cookie</li>
+<li>如果某个子域名存在漏洞被 XSS 攻击，那么攻击者就可以修改 <code>a.com</code> 下的 Cookie</li>
+<li>攻击者就可以使用自己配置的 Cookie，对用户在 <code>www.a.com</code> 下发起 CSRF 攻击</li>
+</ol>
+<h3 id="samesite-cookie">Samesite Cookie</h3>
+<p>Google 起草了一份草案来改进 HTTP 协议，就是为 <code>Set-Cookie</code> 响应头增加 <code>Samesite</code> 属性，表明这个 Cookie 是个 <strong>同站 Cookie</strong></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2023/01/17/Computer%20Science/Book%20-%20Structure%20And%20Interpretation%20Of%20Computer%20Programs/" rel="prev" title="读书笔记：《计算机程序的构造和解释》">
+                  <i class="fa fa-chevron-left"></i> 读书笔记：《计算机程序的构造和解释》
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2023/01/18/Computer%20Science/Operating%20System/" rel="next" title="Operating System">
+                  Operating System <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Harvey Zhang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="/hais-notebook/lib/animejs/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/hais-notebook/js/comments.js"></script><script src="/hais-notebook/js/utils.js"></script><script src="/hais-notebook/js/next-boot.js"></script>
+
+  <script src="/hais-notebook/lib/hexo-generator-searchdb/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/hais-notebook/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"/hais-notebook/lib/mathjax/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/hais-notebook/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

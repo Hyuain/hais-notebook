@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hais-notebook/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/hais-notebook/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/hais-notebook/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/hais-notebook/images/safari-pinned-tab.svg" color="#222">
+
+<link rel="stylesheet" href="/hais-notebook/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.font.im/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="/hais-notebook/lib/@fortawesome/fontawesome-free/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"hyuain.github.io","root":"/hais-notebook/","images":"/hais-notebook/images","scheme":"Gemini","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac","show_result":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/hais-notebook/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/hais-notebook/js/config.js"></script>
+
+    <meta name="description" content="本文是来从 Chromium 和 V8 的博客中摘录的一些不好归类的内容。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Topics From Chromium Blogs">
+<meta property="og:url" content="https://hyuain.github.io/hais-notebook/2022/06/16/Browser/Chromium%20Blogs/index.html">
+<meta property="og:site_name" content="Hais Notebook">
+<meta property="og:description" content="本文是来从 Chromium 和 V8 的博客中摘录的一些不好归类的内容。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-GC-1.svg">
+<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-GC-2.svg">
+<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-GC-3.svg">
+<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-GC-4.svg">
+<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-OI-1.png">
+<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-OI-2.png">
+<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-OI-3.png">
+<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-OI-4.png">
+<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-OI-5.png">
+<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-OI-6.png">
+<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-OI-7.png">
+<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-OI-8.png">
+<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-OI-9.png">
+<meta property="article:published_time" content="2022-06-16T10:30:50.000Z">
+<meta property="article:modified_time" content="2022-06-16T10:30:50.000Z">
+<meta property="article:author" content="Harvey Zhang">
+<meta property="article:tag" content="Notebook">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-GC-1.svg">
+
+
+<link rel="canonical" href="https://hyuain.github.io/hais-notebook/2022/06/16/Browser/Chromium%20Blogs/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hyuain.github.io/hais-notebook/2022/06/16/Browser/Chromium%20Blogs/","path":"2022/06/16/Browser/Chromium Blogs/","title":"Topics From Chromium Blogs"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Topics From Chromium Blogs | Hais Notebook</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/hais-notebook/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/hais-notebook/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Hais Notebook</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/hais-notebook/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/hais-notebook/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/hais-notebook/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/hais-notebook/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#javascript"><span class="nav-number">1.</span> <span class="nav-text">JavaScript</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#jit-just-in-time-compilation"><span class="nav-number">1.1.</span> <span class="nav-text">JIT: Just-in-time compilation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ignition-interpreter"><span class="nav-number">1.2.</span> <span class="nav-text">Ignition Interpreter</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#garbage-collection"><span class="nav-number">1.3.</span> <span class="nav-text">Garbage Collection</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#generational-garbage-collection"><span class="nav-number">1.3.1.</span> <span class="nav-text">Generational Garbage Collection</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#v8s-garbage-collection-engine"><span class="nav-number">1.3.2.</span> <span class="nav-text">V8&#39;s Garbage Collection Engine</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#generational-layout"><span class="nav-number">1.3.2.1.</span> <span class="nav-text">Generational Layout</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#major-gc-full-mark-compact"><span class="nav-number">1.3.2.2.</span> <span class="nav-text">Major GC (Full Mark-Compact)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#minor-gc-scavenger"><span class="nav-number">1.3.2.3.</span> <span class="nav-text">Minor GC (Scavenger)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#orinoco"><span class="nav-number">1.3.2.4.</span> <span class="nav-text">Orinoco</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#regexp"><span class="nav-number">1.4.</span> <span class="nav-text">RegExp</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#lookbehind-assertions"><span class="nav-number">1.4.1.</span> <span class="nav-text">Lookbehind assertions</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#object-iteration"><span class="nav-number">1.5.</span> <span class="nav-text">Object Iteration</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ecma-specification"><span class="nav-number">1.5.1.</span> <span class="nav-text">ECMA Specification</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fast-properties-in-v8"><span class="nav-number">1.5.2.</span> <span class="nav-text">Fast Properties In V8</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#named-properties-vs.-elements"><span class="nav-number">1.5.2.1.</span> <span class="nav-text">Named Properties vs. Elements</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#hiddenclasses-and-descriptorarrays"><span class="nav-number">1.5.2.2.</span> <span class="nav-text">HiddenClasses and DescriptorArrays</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#the-three-different-kinds-of-named-properties"><span class="nav-number">1.5.2.3.</span> <span class="nav-text">The three different kinds of named properties</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#in-object-properties"><span class="nav-number">1.5.2.3.1.</span> <span class="nav-text">1. In-object Properties</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#fast-properties"><span class="nav-number">1.5.2.3.2.</span> <span class="nav-text">2. Fast Properties</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#slow-properties"><span class="nav-number">1.5.2.3.3.</span> <span class="nav-text">3. Slow Properties</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#elements-or-array-indexed-properties"><span class="nav-number">1.5.2.4.</span> <span class="nav-text">Elements or array-indexed properties</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#packed-or-holey-elements"><span class="nav-number">1.5.2.4.1.</span> <span class="nav-text">Packed or Holey Elements</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#fast-or-dictionary-elements"><span class="nav-number">1.5.2.4.2.</span> <span class="nav-text">Fast or Dictionary Elements</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#semi-and-double-elements"><span class="nav-number">1.5.2.4.3.</span> <span class="nav-text">Semi and Double Elements</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#special-elements"><span class="nav-number">1.5.2.4.4.</span> <span class="nav-text">Special Elements</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#the-elementsaccessor"><span class="nav-number">1.5.2.4.5.</span> <span class="nav-text">The ElementsAccessor</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Harvey Zhang</p>
+  <div class="site-description" itemprop="description">海鲜酱的笔记本</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/hais-notebook/archives/">
+          <span class="site-state-item-count">49</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/hais-notebook/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2022/06/16/Browser/Chromium%20Blogs/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
+      <meta itemprop="name" content="Harvey Zhang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hais Notebook">
+      <meta itemprop="description" content="海鲜酱的笔记本">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Topics From Chromium Blogs | Hais Notebook">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Topics From Chromium Blogs
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-06-16 10:30:50" itemprop="dateCreated datePublished" datetime="2022-06-16T10:30:50+00:00">2022-06-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/Memo/" itemprop="url" rel="index"><span itemprop="name">Memo</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>本文是来从 <a target="_blank" rel="noopener" href="https://blog.chromium.org/">Chromium</a> 和 <a target="_blank" rel="noopener" href="https://v8.dev/blog">V8</a> 的博客中摘录的一些不好归类的内容。</p>
+<span id="more"></span>
+<h1 id="javascript">JavaScript</h1>
+<h2 id="jit-just-in-time-compilation">JIT: Just-in-time compilation</h2>
+<blockquote>
+<p>V8 uses <a target="_blank" rel="noopener" href="https://v8.dev/blog/turbofan-jit">TurboFan JIT</a>.</p>
+<p>Overview:</p>
+<ol type="1">
+<li>JIT = AOT + interpretation</li>
+<li>Source code -&gt; bytecode -&gt; machine code</li>
+<li>Generating better machine code increase initial delay</li>
+</ol>
+</blockquote>
+<ol type="1">
+<li>Introduction:
+<ol type="1">
+<li>JIT is a way of executing computer code that involves compilation <strong>during execution of a program</strong> (at <strong>run time</strong>) rather than before execution.</li>
+<li>This may consist of <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Source_code"><em>source code</em></a> translation but is more commonly <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Bytecode"><em>bytecode</em></a> translation to <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Machine_code"><em>machine code</em></a>, which is then executed directly.</li>
+<li>JIT compilation is a <strong>combination</strong> of the two traditional approaches to translation to machine code - <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Ahead-of-time_compilation"><em>ahead-of-time compilation</em></a> (<em>AOT</em>), and <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Interpreter_(computing)"><em>interpretation</em></a> - and combines some advantages and drawbacks of both.</li>
+<li>Roughly, JIT compilation combines <strong>the speed of compiled code</strong> with <strong>the flexibility of interpretation</strong>, with <strong>the overhead of an interpreter</strong> and <strong>the additional overhead of compiling and <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Linker_(computing)">linking</a></strong> (not just interpreting).</li>
+</ol></li>
+<li>Design:
+<ol type="1">
+<li>Source code is translated to an intermediate representation known as <em>bytecode</em>.</li>
+<li><em>Bytecode</em> is not the machine code for any particular computer, and may be portable among computer architectures. The <em>bytecode</em> may then be <strong>interpreted</strong> by, or run on <strong>a virtual machine</strong>.</li>
+<li><em>Traditional interpreted virtual machine</em> vs. <em>JIT</em>
+<ol type="1">
+<li><em>The traditional interpreted virtual machine</em>: simply <strong>interpret the bytecode</strong>, generally with much lower performance.</li>
+<li><em>The JIT compiler</em>: reads the bytecodes in many sections (or in full, rarely) and <strong>compiles</strong> them dynamically <strong>into machine code</strong> so the program can run faster. This can be done per-file, per-function or even on any arbitrary code fragment; the code can be compiled when it is about to be executed (hence the name "just-in-time"), and then <strong>cached and reused</strong> later without needing to be recompiled.</li>
+</ol></li>
+<li>Because a JIT must render and execute a native binary image at runtime, true machine-code JITs necessitate platforms that allow for data to be executed at runtime, making using such JITs on a <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Harvard_architecture"><em>Harvard architecture</em></a>-based machine impossible; the same can be said for certain operating systems and virtual machines as well.</li>
+</ol></li>
+<li><em>Startup time delay</em> or <em>warm-up time</em>: the time taken to load and compile the bytecode. The more optimization JIT performs, the better the code it will generate, but the initial delay will also increase.</li>
+</ol>
+<h2 id="ignition-interpreter">Ignition Interpreter</h2>
+<blockquote>
+<p>See <a target="_blank" rel="noopener" href="https://v8.dev/blog/ignition-interpreter">this blog</a>.</p>
+</blockquote>
+<ol type="1">
+<li>Code is initially compiled by <em>baseline compiler</em>, which can generated non-optimized machine code quickly.</li>
+<li>The compiled code is analyzed during runtime and optionally re-compiled dynamically with a more advanced optimizing compiler for peak performance.</li>
+<li>JITed machine code can consume a significant amount of memory, so V8 uses Ignition to compile JavaScript functions to a concise bytecode. This bytecode is then executed by a interpreter.</li>
+</ol>
+<h2 id="garbage-collection">Garbage Collection</h2>
+<blockquote>
+<p>See <a target="_blank" rel="noopener" href="https://v8.dev/blog/free-garbage-collection">this blog</a>.</p>
+<p>Overview: Two ways to find garbage: tracing garbage collection &amp; reference counting</p>
+</blockquote>
+<p>There are several kinds of garbage collection:</p>
+<ol type="1">
+<li><em>Tracing garbage collection</em>
+<ol type="1">
+<li>Based on <em>reachability</em> (An object is <strong>reachable</strong> if it is <strong>referred to by a root</strong>, or is <strong>referred to by a reachable object</strong>; that is, if it can be reached from the roots by following references.)</li>
+<li><em>Object</em>: A contiguous block of memory forming a single logical structure, objects are the units of allocation, deallocation, etc.</li>
+<li>If an object is <strong>not reachable</strong>, there is no way the mutator could ever access it, and therefore it <strong>cannot be live</strong>.</li>
+<li>In each collection cycle, some or all of the objects are <em>condemned</em> (those objects are candidates for recycling), and the graph is traced to find which of the condemned objects are reachable. Those that were not reachable may be reclaimed.</li>
+<li>Typical scenes:
+<ol type="1">
+<li><em>Copying garbage collection</em>: relocate reachable objects, and then reclaim objects are left behind.</li>
+<li><em>Generational garbage collection</em>: see next part.</li>
+</ol></li>
+</ol></li>
+<li><em>Reference counting</em>
+<ol type="1">
+<li>Keeping a count in each object, of how many references there are to the object.</li>
+<li>The reference count is incremented for each new reference, and is decremented if a reference is overwritten, or if the referring object is recycled.</li>
+<li>Advantages:
+<ol type="1">
+<li>Can reclaim objects promptly.</li>
+<li>Pauses are typically fairly short, but removing a single reference may cause the recycling of a large number of objects at once.</li>
+<li>It can be implemented without any support from the language or compiler.</li>
+</ol></li>
+<li>Problems:
+<ol type="1">
+<li><strong>The reference count filed size is limited</strong>, system will break down if there are too many references.</li>
+<li><strong>Performance penalty</strong>, since the count need to be maintained after every modification of pointers.</li>
+<li><strong>Object will become larger</strong> to store the reference count.</li>
+<li><strong>Cyclic data structure</strong> problems.</li>
+</ol></li>
+<li>Typical scenes:
+<ol type="1">
+<li><em>Distributed garbage collection</em>: The garbage collection in a system where objects might not reside in the same address space or even on the same machine. Because the costs of synchronization and communication between processes are particularly high for a <em>tracing garbage collector</em>, so other techniques, including <em>weighted reference counting</em>, are commonly used instead.</li>
+</ol></li>
+</ol></li>
+</ol>
+<h3 id="generational-garbage-collection">Generational Garbage Collection</h3>
+<blockquote>
+<p>See <a target="_blank" rel="noopener" href="https://www.memorymanagement.org/glossary/g.html#term-generational-garbage-collection">this website</a>.</p>
+<p>Overview: Based on "young is more likely to die than old"</p>
+</blockquote>
+<ol type="1">
+<li>Generational garbage collection is <em>tracing garbage collection</em> that makes use of the <em>generational hypothesis</em>.</li>
+<li><em>Generational hypothesis (also say Infant mortality)</em>: in most cases, young objects are much more likely to die than old objects.</li>
+<li>Objects are gathered together <strong>in generations</strong>. New objects are allocated in the <em>youngest</em> or <em>nursery</em> generation, and promoted to (or become) <em>older</em> generations if they survive. <strong>Objects in older generations are condemned less frequently</strong>, saving CPU time.</li>
+</ol>
+<h3 id="v8s-garbage-collection-engine">V8's Garbage Collection Engine</h3>
+<blockquote>
+<p>V8 uses a generational garbage collector. See <a target="_blank" rel="noopener" href="https://v8.dev/blog/trash-talk">this article</a>.</p>
+<p>Overview:</p>
+<ol type="1">
+<li>Split into young (nursery and intermediate) and old.</li>
+<li>Major GC collects garbage in the entire heap, including marking, sweeping and compaction.</li>
+<li>Minor GC is responsible for the young generation, using semi-space allocation strategy.</li>
+<li>Orinoco is a project try to improve GC performance.</li>
+</ol>
+</blockquote>
+<h4 id="generational-layout">Generational Layout</h4>
+<p>Split the JavaScript heap into:</p>
+<ol type="1">
+<li><strong>A small young generation</strong> for newly allocated objects (split further into <em>nursery</em> and <em>intermediate</em> sub-generations).</li>
+<li><strong>A large old generation</strong> for long living objects.</li>
+</ol>
+<p>Objects are first allocated into the <em>nursery</em>. If they survive the next GC, they remain in the young generation but are considered <em>intermediate</em>. If they survive yet another GC, they are moved into the old generation.</p>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-GC-1.svg" alt="Generational layout of GC in V8" /><figcaption aria-hidden="true">Generational layout of GC in V8</figcaption>
+</figure>
+<h4 id="major-gc-full-mark-compact">Major GC (Full Mark-Compact)</h4>
+<p>The Major GC collects garbage from the entire heap.</p>
+<ol type="1">
+<li><em>Marking</em>: Marking reachable objects from the root.</li>
+<li><em>Sweeping</em>: Add the gaps in memory left by dead objects into a <em>free-list</em>. In the future when we want to allocate memory, we just look at the free-list and find an appropriately sized chunk of memory.</li>
+<li><em>Compaction</em>: if needed, evacuate/compact some pages, to make use of the small and scattered gaps within the memory left behind by dead objects.</li>
+</ol>
+<h4 id="minor-gc-scavenger">Minor GC (Scavenger)</h4>
+<p>The Minor GC (Scavenger) collects garbage in the young generation.</p>
+<ol type="1">
+<li>It uses a <em>semi-space allocation</em> strategy, where <em>nursery</em> object are initially allocated in the young generation’s active semi-space.</li>
+<li>Once that semi-space becomes full, a <em>scavenge</em> operation (also use marking to check reachability) will move live objects to other semi-space, and become <em>intermediate</em>. If a object is already <em>intermediate</em>, it will be promoted to the old generation.</li>
+<li>The new semi-spaces becomes active, and all the remaining objects in old semi-space are discarded.</li>
+</ol>
+<p>Unlike Major GC, in scavenging we actually do these three steps - marking, evacuating, and pointer-updating - all interleaved, rather than in distinct phases.</p>
+<h4 id="orinoco">Orinoco</h4>
+<p>Orinoco is the codename of the GC project and try to obtain better performance.</p>
+<ol type="1">
+<li><strong>Parallel</strong>: <em>Main Thread</em> and <em>Helper Threads</em> do a roughly equal amount of work at the same time.</li>
+</ol>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-GC-2.svg" /></p>
+<ol start="2" type="1">
+<li><strong>Incremental</strong>: The main thread does a small amount of work intermittently.</li>
+</ol>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-GC-3.svg" /></p>
+<ol start="3" type="1">
+<li><strong>Concurrent</strong>: The main thread executes JavaScript constantly, and helper threads do GC work totally in the background.</li>
+</ol>
+<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-GC-4.svg" /></p>
+<h2 id="regexp">RegExp</h2>
+<h3 id="lookbehind-assertions">Lookbehind assertions</h3>
+<blockquote>
+<p>See <a target="_blank" rel="noopener" href="https://v8.dev/blog/regexp-lookbehind-assertions">this blog</a>.</p>
+<p>Overview:</p>
+<ol type="1">
+<li>V8's lookbehind implementation supports patterns of arbitrary length (can use <code>*</code> <code>+</code>)</li>
+<li>Some strange features because of the implementation</li>
+</ol>
+</blockquote>
+<ol type="1">
+<li>Two ways to implement lookbehind assertions:
+<ol type="1">
+<li>Perl: Requires fixed length, so cannot use <code>*</code> <code>+</code>. Because the regular expression engine can step back by that fixed length and match.</li>
+<li>.NET framework: Can match patterns of arbitrary length. It simply matches the lookbehind pattern backwards (reading characters against the normal read direction).</li>
+</ol></li>
+<li>A capturing group with a <em>quantifier captures</em> the last match. Usually, that is the right-most match. But inside a lookbehind assertion, we match from right to left, therefore the left-most match is captured:</li>
+</ol>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token regex"><span class="token regex-delimiter">/</span><span class="token regex-source language-regex">h(?=\w)</span><span class="token regex-delimiter">/</span></span><span class="token punctuation">.</span><span class="token function">exec</span><span class="token punctuation">(</span><span class="token string">'hodor'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// ['h']</span>
+<span class="token operator">/</span><span class="token function">h</span><span class="token punctuation">(</span><span class="token operator">?</span><span class="token operator">=</span><span class="token punctuation">(</span>\w<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token operator">/</span><span class="token punctuation">.</span><span class="token function">exec</span><span class="token punctuation">(</span><span class="token string">'hodor'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// ['h', 'o']</span>
+<span class="token operator">/</span><span class="token function">h</span><span class="token punctuation">(</span><span class="token operator">?</span><span class="token operator">=</span><span class="token punctuation">(</span>\w<span class="token punctuation">)</span><span class="token punctuation">&#123;</span><span class="token number">2</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token operator">/</span><span class="token punctuation">.</span><span class="token function">exec</span><span class="token punctuation">(</span><span class="token string">'hodor'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// ['h', 'd']</span>
+<span class="token operator">/</span><span class="token function">h</span><span class="token punctuation">(</span><span class="token operator">?</span><span class="token operator">=</span><span class="token punctuation">(</span>\w<span class="token punctuation">)</span><span class="token operator">+</span><span class="token punctuation">)</span><span class="token operator">/</span><span class="token punctuation">.</span><span class="token function">exec</span><span class="token punctuation">(</span><span class="token string">'hodor'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// ['h', 'r']</span>
+
+<span class="token operator">/</span><span class="token punctuation">(</span><span class="token operator">?</span><span class="token operator">&lt;=</span><span class="token punctuation">(</span>\w<span class="token punctuation">)</span><span class="token punctuation">&#123;</span><span class="token number">2</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span>r<span class="token operator">/</span><span class="token punctuation">.</span><span class="token function">exec</span><span class="token punctuation">(</span><span class="token string">'hodor'</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// ['r', 'd']</span>
+<span class="token operator">/</span><span class="token punctuation">(</span><span class="token operator">?</span><span class="token operator">&lt;=</span><span class="token punctuation">(</span>\w<span class="token punctuation">)</span><span class="token operator">+</span><span class="token punctuation">)</span>r<span class="token operator">/</span><span class="token punctuation">.</span><span class="token function">exec</span><span class="token punctuation">(</span><span class="token string">'hodor'</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// ['r', 'h']</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ol start="3" type="1">
+<li>A capturing group can be referenced via back reference after it has been captured. Usually, the back reference has to be to the right of the capture group. Otherwise, it would match the empty string, as nothing has been captured yet. However, inside a lookbehind assertion, the match direction is reversed:</li>
+</ol>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token regex"><span class="token regex-delimiter">/</span><span class="token regex-source language-regex">(?&lt;=(o)d\1)r</span><span class="token regex-delimiter">/</span></span><span class="token punctuation">.</span><span class="token function">exec</span><span class="token punctuation">(</span><span class="token string">'hodor'</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// null</span>
+<span class="token operator">/</span><span class="token punctuation">(</span><span class="token operator">?</span><span class="token operator">&lt;=</span>\<span class="token number">1</span><span class="token function">d</span><span class="token punctuation">(</span>o<span class="token punctuation">)</span><span class="token punctuation">)</span>r<span class="token operator">/</span><span class="token punctuation">.</span><span class="token function">exec</span><span class="token punctuation">(</span><span class="token string">'hodor'</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// ['r', 'o']</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h2 id="object-iteration">Object Iteration</h2>
+<h3 id="ecma-specification">ECMA Specification</h3>
+<blockquote>
+<p>See <a target="_blank" rel="noopener" href="https://tc39.es/ecma262/#sec-ordinaryownpropertykeys">this document</a>.</p>
+</blockquote>
+<ol type="1">
+<li>JavaScript objects mostly behave like dictionaries, with <em>string</em> keys and <em>arbitrary objects</em> as values.</li>
+<li>The specification treat <em>integer-indexed properties</em> and <em>other properties</em> differently during <em>iteration</em>. Other than that, the different properties behave mostly the same.</li>
+</ol>
+<h3 id="fast-properties-in-v8">Fast Properties In V8</h3>
+<blockquote>
+<p>See <a target="_blank" rel="noopener" href="https://v8.dev/blog/fast-properties">this blog</a>.</p>
+</blockquote>
+<h4 id="named-properties-vs.-elements">Named Properties vs. Elements</h4>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-OI-1.png" alt="A basic JavaScript object looks like in memory" /><figcaption aria-hidden="true">A basic JavaScript object looks like in memory</figcaption>
+</figure>
+<ol type="1">
+<li>Elements and properties are stored in two separate data structures which makes adding and accessing properties or elements more efficient for different usage patterns.</li>
+<li><em>Elements</em>:
+<ol type="1">
+<li>Most of time, V8 represents <em>elements</em> as <em>simple arrays</em> internally, since methods (like <code>pop</code> <code>slice</code> in <code>Array.prototype</code>) access properties in consecutive ranges.</li>
+<li>But sometimes switch to a sparse <em>dictionary-based</em> representation to save memory.</li>
+</ol></li>
+<li><em>Named properties</em>:
+<ol type="1">
+<li>They are stored in a similar way in a separate <em>array</em>.</li>
+<li>We cannot simply use the <em>key</em> to deduce their <em>position</em> within the properties array, we need some additional metadata - In V8, every JavaScript object has a <em>HiddenClass</em> associated.</li>
+<li>The <em>HiddenClass</em> stores information about the <em>shape</em> of an object, a <em>mapping</em> from property names to indices into the properties, and so on.</li>
+</ol></li>
+</ol>
+<h4 id="hiddenclasses-and-descriptorarrays">HiddenClasses and DescriptorArrays</h4>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-OI-2.png" alt="Overview of HiddenClass in V8" /><figcaption aria-hidden="true">Overview of HiddenClass in V8</figcaption>
+</figure>
+<ol type="1">
+<li><p>The first field of any object on V8 heap points to a HiddenClass.</p></li>
+<li><p>The third bit field of HiddenClass stores the number of properties, and a pointer to the <em>descriptor array</em>.</p></li>
+<li><p>The <em>descriptor array</em> contains information about <em>named properties</em>, like <em>the name itself</em> and <em>the position</em> where value is stored. (there is no entry of <em>indexed properties</em> in the <em>descriptor array</em>)</p></li>
+<li><p>Objects with the same structure (e.g. the same named properties in the same order) share the same HiddenClass.</p></li>
+</ol>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-OI-3.png" alt="HiddenClass change when add new properties" /><figcaption aria-hidden="true">HiddenClass change when add new properties</figcaption>
+</figure>
+<ol start="5" type="1">
+<li>V8 creates a <em>transition tree</em> that links the HiddenClasses together.</li>
+</ol>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-OI-4.png" alt="Transition tree" /><figcaption aria-hidden="true">Transition tree</figcaption>
+</figure>
+<ol start="6" type="1">
+<li>If we create a <strong>new object</strong> that gets a different property added, in this case property <code>"d"</code>, V8 creates a <strong>separate branch</strong> for the new HiddenClasses.</li>
+</ol>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-OI-5.png" alt="Transition tree with branches" /><figcaption aria-hidden="true">Transition tree with branches</figcaption>
+</figure>
+<ol start="7" type="1">
+<li>Adding <em>array-indexed properties</em> does <strong>not</strong> create new HiddenClasses.</li>
+</ol>
+<h4 id="the-three-different-kinds-of-named-properties">The three different kinds of named properties</h4>
+<ol type="1">
+<li>A simple object such as <code>&#123;a: 1, b: 2&#125;</code> can have various internal presentations in V8.</li>
+<li>While JavaScript objects behave like simple <em>dictionaries</em> from outside, V8 tries to avoid dictionaries because they hamper certain optimizations such as <em>inline caches</em>.</li>
+</ol>
+<h5 id="in-object-properties">1. In-object Properties</h5>
+<p>In-object properties stored directly on the object themselves. These are the fastest properties available in V8.</p>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-OI-6.png" alt="In-object and fast properties" /><figcaption aria-hidden="true">In-object and fast properties</figcaption>
+</figure>
+<h5 id="fast-properties">2. Fast Properties</h5>
+<ol type="1">
+<li>Fast properties are stored in the <em>linear properties store</em>, and can simply accessed by index.</li>
+<li>To get from the property name actual position in the properties store, we have to consult the <em>descriptor array</em> on <em>HiddenClass</em>.</li>
+</ol>
+<h5 id="slow-properties">3. Slow Properties</h5>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-OI-7.png" alt="Object with slow properties" /><figcaption aria-hidden="true">Object with slow properties</figcaption>
+</figure>
+<ol type="1">
+<li>Many properties get added and deleted from an object. They are slow properties.</li>
+<li>An object with slow properties has a self-contained dictionary as a properties store. <strong>All the properties meta information</strong> is no longer stored in the descriptor array on the HiddenClass but <strong>directly in the properties' dictionary</strong>.</li>
+<li>Properties can be added and removed without updating the HiddenClass.</li>
+<li><em>Inline caches</em> don't work with those dictionary properties.</li>
+</ol>
+<h4 id="elements-or-array-indexed-properties">Elements or array-indexed properties</h4>
+<p>There are several types of elements.</p>
+<h5 id="packed-or-holey-elements">Packed or Holey Elements</h5>
+<p>To ways to get hole: delete an indexed element or just don't defined it (like <code>[1,,3]</code>).</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">const</span> o <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'a'</span><span class="token punctuation">,</span> <span class="token string">'b'</span><span class="token punctuation">,</span> <span class="token string">'c'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>o<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>          <span class="token comment">// Prints 'b'.</span>
+
+<span class="token keyword">delete</span> o<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">;</span>                <span class="token comment">// Introduces a hole in the elements store.</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>o<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>          <span class="token comment">// Prints 'undefined'; property 1 does not exist.</span>
+o<span class="token punctuation">.</span>__proto__ <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token number">1</span><span class="token operator">:</span> <span class="token string">'B'</span><span class="token punctuation">&#125;</span><span class="token punctuation">;</span>     <span class="token comment">// Define property 1 on the prototype.</span>
+
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>o<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>          <span class="token comment">// Prints 'a'.</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>o<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>          <span class="token comment">// Prints 'B'.</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>o<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>          <span class="token comment">// Prints 'c'.</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>o<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>          <span class="token comment">// Prints undefined</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-OI-8.png" alt="Holey elements example" /><figcaption aria-hidden="true">Holey elements example</figcaption>
+</figure>
+<ol type="1">
+<li>Given that element properties are self-contained (we don't store information about element on the HiddenClass), we need a special value (called <code>the_hole</code>) to mark properties that are not present.</li>
+<li>This is crucial for the performance of Array functions. Because if we know that there are no holes (the elements store is packed), we can perform local operations without expensive lookups on the prototype chain.</li>
+</ol>
+<h5 id="fast-or-dictionary-elements">Fast or Dictionary Elements</h5>
+<ol type="1">
+<li>Fast elements are simple <em>VM-internal arrays</em> where the <em>property index</em> maps to the in <em>index in the elements store</em>.</li>
+<li>The simple presentation is rather wasteful for very large <em>sparse/holey arrays</em>. V8 creates a <em>dictionary</em> where we store a <em>key-value-descriptor triplets</em>.</li>
+</ol>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">const</span> sparseArray <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+sparseArray<span class="token punctuation">[</span><span class="token number">9999</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">'foo'</span><span class="token punctuation">;</span> <span class="token comment">// Creates an array with dictionary elements.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<ol start="3" type="1">
+<li>V8 resorts to slow elements whenever you define an indexed properties with a custom descriptor.</li>
+</ol>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">const</span> array <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token comment">// 0 is slow element</span>
+Object<span class="token punctuation">.</span><span class="token function">defineProperty</span><span class="token punctuation">(</span>array<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token punctuation">&#123;</span><span class="token literal-property property">value</span><span class="token operator">:</span> <span class="token string">'fixed'</span> <span class="token literal-property property">configurable</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>array<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>      <span class="token comment">// Prints 'fixed'.</span>
+array<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">'other value'</span><span class="token punctuation">;</span>   <span class="token comment">// Cannot override index 0.</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>array<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>      <span class="token comment">// Still prints 'fixed'.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ol start="4" type="1">
+<li>Array functions perform considerably slower on objects with slow elements.</li>
+</ol>
+<h5 id="semi-and-double-elements">Semi and Double Elements</h5>
+<ol type="1">
+<li>If you only store integers in an Array, a common use-case, the GC does not have to look at the array, as integers are directly encoded as so called <em>small integers (Smis)</em> in place.</li>
+<li>Unlike Smis, floating point numbers are usually represented as full objects occupying several words. However, V8 stores raw doubles for pure double arrays to avoid memory and performance overhead.</li>
+</ol>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">const</span> a1 <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span>   <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">;</span>  <span class="token comment">// Smi Packed</span>
+<span class="token keyword">const</span> a2 <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span>    <span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">;</span>  <span class="token comment">// Smi Holey, a2[1] reads from the prototype</span>
+<span class="token keyword">const</span> b1 <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1.1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">;</span>  <span class="token comment">// Double Packed</span>
+<span class="token keyword">const</span> b2 <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1.1</span><span class="token punctuation">,</span>  <span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">;</span>  <span class="token comment">// Double Holey, b2[1] reads from the prototype</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h5 id="special-elements">Special Elements</h5>
+<p>There are more types: TypedArrays, string wrappers, arguments objects.</p>
+<h5 id="the-elementsaccessor">The ElementsAccessor</h5>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Memo-ChromiumBlogs-OI-9.png" alt="What happens when call array methods" /><figcaption aria-hidden="true">What happens when call array methods</figcaption>
+</figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2022/05/29/Computer%20Science/Linux/" rel="prev" title="Linux">
+                  <i class="fa fa-chevron-left"></i> Linux
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2023/01/16/Ruby%20on%20Rails/Rails/" rel="next" title="Rails">
+                  Rails <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Harvey Zhang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="/hais-notebook/lib/animejs/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/hais-notebook/js/comments.js"></script><script src="/hais-notebook/js/utils.js"></script><script src="/hais-notebook/js/next-boot.js"></script>
+
+  <script src="/hais-notebook/lib/hexo-generator-searchdb/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/hais-notebook/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"/hais-notebook/lib/mathjax/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/hais-notebook/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

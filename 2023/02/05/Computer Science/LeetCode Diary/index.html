@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hais-notebook/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/hais-notebook/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/hais-notebook/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/hais-notebook/images/safari-pinned-tab.svg" color="#222">
+
+<link rel="stylesheet" href="/hais-notebook/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.font.im/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="/hais-notebook/lib/@fortawesome/fontawesome-free/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"hyuain.github.io","root":"/hais-notebook/","images":"/hais-notebook/images","scheme":"Gemini","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac","show_result":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/hais-notebook/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/hais-notebook/js/config.js"></script>
+
+    <meta name="description" content="与 vvv post_link Algorithm vvv 不同，算法与数据结构一文中主要是从理论、宏观、模板的角度体系化地记录常见的算法与数据结构。而本文是做算法题中的学习记录，主要记录主观的心路历程和一些实际做题中的坑点、想法和解法。 本文将按照一定的 Tag，比如二分查找、双指针等来进行展开。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LeetCodeDiray">
+<meta property="og:url" content="https://hyuain.github.io/hais-notebook/2023/02/05/Computer%20Science/LeetCode%20Diary/index.html">
+<meta property="og:site_name" content="Hais Notebook">
+<meta property="og:description" content="与 vvv post_link Algorithm vvv 不同，算法与数据结构一文中主要是从理论、宏观、模板的角度体系化地记录常见的算法与数据结构。而本文是做算法题中的学习记录，主要记录主观的心路历程和一些实际做题中的坑点、想法和解法。 本文将按照一定的 Tag，比如二分查找、双指针等来进行展开。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-02-05T15:49:12.000Z">
+<meta property="article:modified_time" content="2023-02-05T15:49:12.000Z">
+<meta property="article:author" content="Harvey Zhang">
+<meta property="article:tag" content="Notebook">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://hyuain.github.io/hais-notebook/2023/02/05/Computer%20Science/LeetCode%20Diary/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hyuain.github.io/hais-notebook/2023/02/05/Computer%20Science/LeetCode%20Diary/","path":"2023/02/05/Computer Science/LeetCode Diary/","title":"LeetCodeDiray"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>LeetCodeDiray | Hais Notebook</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/hais-notebook/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/hais-notebook/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Hais Notebook</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/hais-notebook/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/hais-notebook/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/hais-notebook/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/hais-notebook/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE"><span class="nav-number">1.</span> <span class="nav-text">二分查找</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#leetcode-704.-binarysearch"><span class="nav-number">1.1.</span> <span class="nav-text">LeetCode 704. BinarySearch</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#leetcode-35.-searchinsertposition"><span class="nav-number">1.2.</span> <span class="nav-text">LeetCode 35. SearchInsertPosition</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#leetcode-34.-findfirstandlastpositionofelementinsortedarray"><span class="nav-number">1.3.</span> <span class="nav-text">LeetCode 34. FindFirstAndLastPositionOfElementInSortedArray</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#leetcode-69.-sqrtx"><span class="nav-number">1.4.</span> <span class="nav-text">LeetCode 69. SqrtX</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#leetcode-367.-validperfectsquare"><span class="nav-number">1.5.</span> <span class="nav-text">LeetCode 367. ValidPerfectSquare</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%8C%E6%8C%87%E9%92%88"><span class="nav-number">2.</span> <span class="nav-text">双指针</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#leetcode-27.-removeelement"><span class="nav-number">2.1.</span> <span class="nav-text">LeetCode 27. RemoveElement</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#leetcode-283.-movezeros"><span class="nav-number">2.2.</span> <span class="nav-text">LeetCode 283. MoveZeros</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#leetcode-844.-backspacestringcompare"><span class="nav-number">2.3.</span> <span class="nav-text">LeetCode 844. BackspaceStringCompare</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#leetcode-977.-squaresofasortedarray"><span class="nav-number">2.4.</span> <span class="nav-text">LeetCode 977. SquaresOfASortedArray</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#leetcode-209.-minimunsizesubarraysum"><span class="nav-number">2.5.</span> <span class="nav-text">LeetCode 209. MinimunSizeSubarraySum</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#leetcode-59.-spiralmatrixii"><span class="nav-number">2.6.</span> <span class="nav-text">LeetCode 59. SpiralMatrixII</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#leetcode-19.-removenthnodefromendoflist"><span class="nav-number">2.7.</span> <span class="nav-text">LeetCode 19. RemoveNthNodeFromEndOfList</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#interview-2.7.-intersectionoftwolinkedlistlcci"><span class="nav-number">2.8.</span> <span class="nav-text">Interview 2.7. IntersectionOfTwoLinkedListLCCI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#leetcode-142.-linkedlistcycleii"><span class="nav-number">2.9.</span> <span class="nav-text">LeetCode 142. LinkedListCycleII</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#leetcode-15.-threesum"><span class="nav-number">2.10.</span> <span class="nav-text">LeetCode 15. ThreeSum</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#leetcode-18.-foursum"><span class="nav-number">2.11.</span> <span class="nav-text">LeetCode 18. FourSum</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#offer-05.-replacespaces"><span class="nav-number">2.12.</span> <span class="nav-text">Offer 05. ReplaceSpaces</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%93%88%E5%B8%8C%E8%A1%A8"><span class="nav-number">3.</span> <span class="nav-text">哈希表</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#leetcode-242.-validanagram"><span class="nav-number">3.1.</span> <span class="nav-text">LeetCode 242. ValidAnagram</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#leetcode-349.-intersectionoftwoarrays"><span class="nav-number">3.2.</span> <span class="nav-text">LeetCode 349. IntersectionOfTwoArrays</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#leetcode-202.-happynumber"><span class="nav-number">3.3.</span> <span class="nav-text">LeetCode 202. HappyNumber</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#leetcode-1.-twosum"><span class="nav-number">3.4.</span> <span class="nav-text">LeetCode 1. TwoSum</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#leetcode-454.-foursumii"><span class="nav-number">3.5.</span> <span class="nav-text">LeetCode 454. FourSumII</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">4.</span> <span class="nav-text">字符串</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#leetcode-1177.-canmakepalindromefromsubstring"><span class="nav-number">4.1.</span> <span class="nav-text">LeetCode 1177. CanMakePalindromeFromSubstring</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#leetcode-28.-findtheindexoffirstoccurenceinastring"><span class="nav-number">4.2.</span> <span class="nav-text">LeetCode 28. FindTheIndexOfFirstOccurenceInAString</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Harvey Zhang</p>
+  <div class="site-description" itemprop="description">海鲜酱的笔记本</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/hais-notebook/archives/">
+          <span class="site-state-item-count">49</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/hais-notebook/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2023/02/05/Computer%20Science/LeetCode%20Diary/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
+      <meta itemprop="name" content="Harvey Zhang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hais Notebook">
+      <meta itemprop="description" content="海鲜酱的笔记本">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="LeetCodeDiray | Hais Notebook">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          LeetCodeDiray
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-02-05 15:49:12" itemprop="dateCreated datePublished" datetime="2023-02-05T15:49:12+00:00">2023-02-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/" itemprop="url" rel="index"><span itemprop="name">计算机</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>与 vvv post_link Algorithm vvv 不同，算法与数据结构一文中主要是从理论、宏观、模板的角度体系化地记录常见的算法与数据结构。而本文是做算法题中的学习记录，主要记录主观的心路历程和一些实际做题中的坑点、想法和解法。</p>
+<p>本文将按照一定的 Tag，比如二分查找、双指针等来进行展开。</p>
+<span id="more"></span>
+<h1 id="二分查找">二分查找</h1>
+<h2 id="leetcode-704.-binarysearch">LeetCode 704. BinarySearch</h2>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/binary-search/">LeetCode 704. 二分查找</a></p>
+<p>Last Reviewed: 2023.6.8</p>
+</blockquote>
+<p>该题主要需要注意熟悉 <strong>左闭右开</strong> 和 <strong>左闭右闭</strong> 的两种写法，具体写法见 vvv Algorithm %} 对应章节。</p>
+<h2 id="leetcode-35.-searchinsertposition">LeetCode 35. SearchInsertPosition</h2>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/search-insert-position/">LeetCode 35. 搜索插入位置</a></p>
+<p>Last Reviewed: 2023.6.8</p>
+</blockquote>
+<p>该题与二分查找别无二致，返回值既可以是右指针 <code>r</code>，也可以是左指针 <code>l</code>，比如我们如果使用左闭右闭区间 <code>[l, r]</code> 的写法：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">while</span> <span class="token punctuation">(</span>l <span class="token operator">&lt;=</span> r<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>num<span class="token punctuation">[</span>mid<span class="token punctuation">]</span> <span class="token operator">===</span> target<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  	<span class="token keyword">return</span> mid
+  <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>nums<span class="token punctuation">[</span>mid<span class="token punctuation">]</span> <span class="token operator">&lt;</span> target<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    l <span class="token operator">=</span> mid <span class="token operator">+</span> <span class="token number">1</span>
+  <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+    r <span class="token operator">=</span> mid <span class="token operator">-</span> <span class="token number">1</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token keyword">return</span> l<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以看到三种情况下返回值均可以为 <code>l</code>：</p>
+<ul>
+<li>当 <code>target &lt; nums[0]</code>，我们要将 <code>target</code> 插入第 <code>0</code> 位，此时 <code>l</code> 也将永远为 <code>0</code>。</li>
+<li>当 <code>target</code> 在 <code>nums</code> 范围内时，比如 <code>[0, 2]</code> 中插入 <code>1</code>，应该返回 <code>1</code>，也就是大于 <code>1</code> 的第一个数字的 <code>index</code>；由于 <code>l</code> 最后加了一，所以正好是这一位。</li>
+<li>当 <code>target &gt; nums[nums.length - 1]</code> 时，我们要将 <code>target</code> 第 <code>nums.length</code> 位，同上，也正好可以用 <code>l</code> 来表示。</li>
+</ul>
+<h2 id="leetcode-34.-findfirstandlastpositionofelementinsortedarray">LeetCode 34. FindFirstAndLastPositionOfElementInSortedArray</h2>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/">LeetCode 34. 在排序数组中查找元素的第一个和最后一个位置</a></p>
+<p>Last Reviewed: 2023.6.8</p>
+</blockquote>
+<p>该题刚拿到的时候毫无头绪，想着可能是二分查找嵌套。看了题解之后其实也是有点懵，题解将整体拆成三步：</p>
+<ol type="1">
+<li>查找区间的右边界（约定右边界也不包含 target）</li>
+<li>查找区间的左边界（约定左边界不包含 target）</li>
+<li>根据左右边界确定最终 target 的 position
+<ol type="1">
+<li>target 不在 nums 的范围内：表现为该区间的右边界不在 nums 的范围内（target 位于 nums 的左侧），或该区间的左边界不在 nums 的范围内（target 位于 nums 的右侧）。</li>
+<li>target 在 nums 的范围内，但 nums 中不存在 target：表现为左右区间中间的元素数量小于 1。</li>
+<li>target 在 nums 的范围内，且 nums 中存在 target：输出结果即可。</li>
+</ol></li>
+</ol>
+<h2 id="leetcode-69.-sqrtx">LeetCode 69. SqrtX</h2>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/sqrtx/">LeetCode 69. X 的平方根</a></p>
+<p>Last Reviewed: 2023.6.8</p>
+</blockquote>
+<p>因为要找到的结果是整数，因此直接在整数范围用二分查找即可。</p>
+<h2 id="leetcode-367.-validperfectsquare">LeetCode 367. ValidPerfectSquare</h2>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/valid-perfect-square/">LeetCode 367. 有效的完全平方数</a></p>
+<p>Last Reviewed: 2023.6.8</p>
+</blockquote>
+<p>与 69 题相同。</p>
+<h1 id="双指针">双指针</h1>
+<h2 id="leetcode-27.-removeelement">LeetCode 27. RemoveElement</h2>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/remove-element/">LeetCode 27. 移除元素</a></p>
+<p>Last Reviewed: 2023.6.8</p>
+</blockquote>
+<p>一眼快慢指针。</p>
+<h2 id="leetcode-283.-movezeros">LeetCode 283. MoveZeros</h2>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/move-zeroes/">LeetCode 283. 移动零</a></p>
+<p>Last Reviewd: 2023.6.8</p>
+</blockquote>
+<p>快慢指针，需要想清楚慢指针的定义，我的解法是慢指针指向最后一个非 0 的后一位。</p>
+<h2 id="leetcode-844.-backspacestringcompare">LeetCode 844. BackspaceStringCompare</h2>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/backspace-string-compare/">LeetCode 844. 比较含退格的字符串</a></p>
+<p>Last Reviewed: 2023.6.8</p>
+</blockquote>
+<p>刚拿到这道题的时候只能想到用栈来模拟退格的过程，创建两个新的结果字符串来进行比较，想不到怎样将使用双指针来解。</p>
+<p>题解确实巧妙，将字符串反向遍历，将 # 看做是 Skip 而不是 Back。</p>
+<h2 id="leetcode-977.-squaresofasortedarray">LeetCode 977. SquaresOfASortedArray</h2>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/squares-of-a-sorted-array/">LeetCode 977. 有序数组的平方</a></p>
+<p>Last Reviewed: 2023.6.8</p>
+</blockquote>
+<p>刚拿到这道题的时候，想的是找到第一个非负数，然后用两个指针向两头移动，逐个按平方大小的顺序推入结果数组。</p>
+<p>题解也确实巧妙，不是从中间向两边发散，而是从两头向中间走，相当于反向生成结果，与 844 有异曲同工之妙。</p>
+<h2 id="leetcode-209.-minimunsizesubarraysum">LeetCode 209. MinimunSizeSubarraySum</h2>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/minimum-size-subarray-sum/">LeetCode 209. 长度最小的子数组</a></p>
+<p>Last Reviewed: 2023.6.8</p>
+</blockquote>
+<p>这道题也是刚拿到的时候毫无头绪，结果发现是题目看得有问题，他要求的子数组是连续的而不是随便选，这样自然就可以用双指针（滑动窗口）来做了。</p>
+<h2 id="leetcode-59.-spiralmatrixii">LeetCode 59. SpiralMatrixII</h2>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/spiral-matrix-ii/">LeetCode 59. 螺旋矩阵</a></p>
+<p>Last Reviewed: 2023.6.8</p>
+</blockquote>
+<p>该题题解是可以以一圈为一个大循环，在每个大循环内确定该次大循环的四个小循环的边界，然后填充矩阵。</p>
+<p>我自己考虑的解法是使用一个 <code>next</code> 变量维护下一次应该朝哪个方向走，比如 <code>right</code> <code>down</code> 等，然后走到边界之后再换向，模拟人思考的过程。</p>
+<h2 id="leetcode-19.-removenthnodefromendoflist">LeetCode 19. RemoveNthNodeFromEndOfList</h2>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/remove-nth-node-from-end-of-list/">LeetCode 19. 删除链表的倒数第 N 个节点</a></p>
+<p>Last Rveiewed: 2023.6.10</p>
+</blockquote>
+<p>该题首先想到的就是先遍历一遍找到 size，然后再找到正数的 index，该方法需要遍历两次链表。</p>
+<p>题解使用快慢指针可以达仅用一次遍历的效果。具体做法是先将快指针指向 n + 1 的位置，然后快慢指针同时向后遍历，此时若快指针指向 null，则慢指针则会指向要删除的节点的父结点，利用这个快慢指针的差值记录 n，可谓非常巧妙。</p>
+<h2 id="interview-2.7.-intersectionoftwolinkedlistlcci">Interview 2.7. IntersectionOfTwoLinkedListLCCI</h2>
+<blockquote>
+<p><a href="%5BIntersection%20of%20Two%20Linked%20Lists%20LCCI%5D(https://leetcode.cn/problems/intersection-of-two-linked-lists-lcci/)">Interview 2.7. 链表相交</a></p>
+<p>Last Reviewed: 2023.6.10</p>
+</blockquote>
+<p>该题首先想到是用 Set 存起来已经遍历的节点，该解法要求额外 O(n) 的空间。</p>
+<p>同样的，该题也可以用快慢指针来解决。首先找到两个链表的长度差值 diff，然后通过将快指针（用来遍历长链表）先走 diff 步，使得两个链表右对齐。此时再让快（遍历长链表）慢（遍历短链表）指针同时出发，就可以找到相交的节点了。利用了如果两个链表相交，那么他们相交之后的部分长度相同的特点。</p>
+<h2 id="leetcode-142.-linkedlistcycleii">LeetCode 142. LinkedListCycleII</h2>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/linked-list-cycle-ii/">LeetCode 142. 环形链表 II</a></p>
+<p>Last Reviewd: 2023.6.10</p>
+</blockquote>
+<p>该题其实也可以通过 Set 来解，用 Set 的话就无比简单，但需要额外 O(n) 的空间。</p>
+<p>如果用快慢指针的话，该题需要让快指针的一次走两步，慢指针一次走一步，慢指针若能追上快指针，则链表有环。</p>
+<p>找到环开始的地方就相对比较麻烦了，可以设三段的长度，环开始节点的左边长度为 <span class="math inline">\(x\)</span>，环开始的地方到追上的地方长度为 <span class="math inline">\(y\)</span>，环剩下的部分长度为 z。那么快指针走过的距离为 <span class="math inline">\(x + k * (y + z)\)</span>；也可以表示为慢指针的两倍，即 <span class="math inline">\(2 * (x + y)\)</span>，那么有以下等式： <span class="math display">\[
+x + k * (y + z) +y = 2 * (x + y)
+\]</span> 可以化简为： <span class="math display">\[
+x + y = k * (y + z)
+\]</span> 如果此时快指针只多走了一圈，那么有 <span class="math inline">\(k = 1\)</span>，则： <span class="math display">\[
+x = z
+\]</span> 也就是说，从相遇的地方开始一个指针，从链表头开始一个指针，两个指针相交的地方则为环开始的地方。</p>
+<p>如果 <span class="math inline">\(k \neq 1\)</span>，那么其实也可以用上述算法，只是在环中开始的节点会在环中多转几圈。</p>
+<h2 id="leetcode-15.-threesum">LeetCode 15. ThreeSum</h2>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/3sum/">LeetCode 15. 三数之和</a></p>
+<p>Last Reviewed: 2023.6.13</p>
+</blockquote>
+<p>该题由于是在同一数组中的三个数，三个数下标不能相等，且不能有重复的三元组，因此难度是要高于四数之和 II 的。</p>
+<p>该题主要是要借助双指针来对问题进行降维。该题在暴力解法下的时间复杂度是 O(n^3)。但借助双指针，可以同时遍历后面两个下标（若和小于 0，则第二个下标右移；若和大于 0，则第三个下标左移），使得时间复杂度下降至 O(n^2)。</p>
+<h2 id="leetcode-18.-foursum">LeetCode 18. FourSum</h2>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/4sum/">LeetCode 18. 四数之和</a></p>
+<p>Last Reviewed: 2023.6.13</p>
+</blockquote>
+<p>该题与三数之和类似，同样是用双指针来进行降维，四个下标中第一个和第二个暴力遍历，第三个和第四个用类似三数之和的双指针法同时遍历剩下的部分。</p>
+<h2 id="offer-05.-replacespaces">Offer 05. ReplaceSpaces</h2>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/ti-huan-kong-ge-lcof/">Offer 05. 替换空格 LCOF</a></p>
+<p>Last Reviewed: 2023.6.14</p>
+</blockquote>
+<p>该题是考字符串的操作，增补操作通常可以通过从字符串末尾开始的两个指针来完成。</p>
+<h1 id="哈希表">哈希表</h1>
+<h2 id="leetcode-242.-validanagram">LeetCode 242. ValidAnagram</h2>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/valid-anagram/">LeetCode 242. 有效的字母异位词</a></p>
+<p>Last Reviewed: 2023.6.12</p>
+</blockquote>
+<p>该题非常简单，可以考虑直接用dic实现或者直接用数组实现。</p>
+<h2 id="leetcode-349.-intersectionoftwoarrays">LeetCode 349. IntersectionOfTwoArrays</h2>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/intersection-of-two-arrays/">LeetCode 349. 两个数组的交集</a></p>
+<p>Last Reviewed: 2023.6.12</p>
+</blockquote>
+<p>Set中元素不重复，能很好的解决这个问题。</p>
+<h2 id="leetcode-202.-happynumber">LeetCode 202. HappyNumber</h2>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/happy-number/">LeetCode 202. 快乐数</a></p>
+<p>Last Reviewed: 2023.6.12</p>
+</blockquote>
+<p>不是快乐数的话会进入循环，即后面出现的数是之前出现过的，可以根据这个判断是否为快乐数。</p>
+<h2 id="leetcode-1.-twosum">LeetCode 1. TwoSum</h2>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/two-sum/">LeetCode 1. 两数之和</a></p>
+<p>Last Reviewed: 2023.6.12</p>
+</blockquote>
+<p>一边遍历一边把数和index加入dic，遍历数i时只需要考虑dic中是否存在target-i即可</p>
+<h2 id="leetcode-454.-foursumii">LeetCode 454. FourSumII</h2>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/4sum-ii/">LeetCode 454. 四数之和 II</a></p>
+<p>Last Reviewed: 2023.6.13</p>
+</blockquote>
+<p>由于题目没有说同一个数组中不能取相同的数字，因此可以简单将其分为两两一组，暴力得到每组的所有可能的和，并借助哈希表来统计个数即可。</p>
+<h1 id="字符串">字符串</h1>
+<h2 id="leetcode-1177.-canmakepalindromefromsubstring">LeetCode 1177. CanMakePalindromeFromSubstring</h2>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/can-make-palindrome-from-substring/">LeetCode 1177. 构建回文串检测</a></p>
+<p>Last Reviewed: 2023.6.15</p>
+</blockquote>
+<p>该题由于可以重新构建字符串，因此可以通过对字符串中字符进行计数来判断是否能构成回文串。</p>
+<h2 id="leetcode-28.-findtheindexoffirstoccurenceinastring">LeetCode 28. FindTheIndexOfFirstOccurenceInAString</h2>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/find-the-index-of-the-first-occurrence-in-a-string/">LeetCode 28. 找出字符串中第一个匹配项的下标</a></p>
+<p>Last Reviewed: 2023.6.15</p>
+</blockquote>
+<p>该题使用 KMP，具体见 vvv Algorithm %} 对应章节。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2023/01/18/Computer%20Science/Networking/" rel="prev" title="Networking">
+                  <i class="fa fa-chevron-left"></i> Networking
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2023/02/09/Java/Java/" rel="next" title="Java">
+                  Java <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Harvey Zhang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="/hais-notebook/lib/animejs/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/hais-notebook/js/comments.js"></script><script src="/hais-notebook/js/utils.js"></script><script src="/hais-notebook/js/next-boot.js"></script>
+
+  <script src="/hais-notebook/lib/hexo-generator-searchdb/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/hais-notebook/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"/hais-notebook/lib/mathjax/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/hais-notebook/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

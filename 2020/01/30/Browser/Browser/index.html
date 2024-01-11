@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hais-notebook/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/hais-notebook/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/hais-notebook/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/hais-notebook/images/safari-pinned-tab.svg" color="#222">
+
+<link rel="stylesheet" href="/hais-notebook/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.font.im/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="/hais-notebook/lib/@fortawesome/fontawesome-free/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"hyuain.github.io","root":"/hais-notebook/","images":"/hais-notebook/images","scheme":"Gemini","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac","show_result":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/hais-notebook/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/hais-notebook/js/config.js"></script>
+
+    <meta name="description" content="浏览器是前端代码赖以生存的环境，本文将重点关注与工程和生产相关的 Cookie、同源策略、浏览器架构等内容。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Browser">
+<meta property="og:url" content="https://hyuain.github.io/hais-notebook/2020/01/30/Browser/Browser/index.html">
+<meta property="og:site_name" content="Hais Notebook">
+<meta property="og:description" content="浏览器是前端代码赖以生存的环境，本文将重点关注与工程和生产相关的 Cookie、同源策略、浏览器架构等内容。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/2.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/3.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/4.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/15.gif">
+<meta property="og:image" content="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/16.gif">
+<meta property="og:image" content="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/17.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/18.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/19.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/20.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/21.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/22.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/23.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/24.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/25.png">
+<meta property="article:published_time" content="2020-01-30T09:45:22.000Z">
+<meta property="article:modified_time" content="2020-01-30T09:45:22.000Z">
+<meta property="article:author" content="Harvey Zhang">
+<meta property="article:tag" content="Notebook">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/2.png">
+
+
+<link rel="canonical" href="https://hyuain.github.io/hais-notebook/2020/01/30/Browser/Browser/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hyuain.github.io/hais-notebook/2020/01/30/Browser/Browser/","path":"2020/01/30/Browser/Browser/","title":"Browser"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Browser | Hais Notebook</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/hais-notebook/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/hais-notebook/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Hais Notebook</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/hais-notebook/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/hais-notebook/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/hais-notebook/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/hais-notebook/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#cookie"><span class="nav-number">1.</span> <span class="nav-text">Cookie</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-cookie"><span class="nav-number">1.1.</span> <span class="nav-text">创建 Cookie</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE-cookie-%E6%9C%89%E6%95%88%E6%9C%9F"><span class="nav-number">1.1.1.</span> <span class="nav-text">设置 Cookie 有效期</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cookie-%E8%AE%BF%E9%97%AE%E9%99%90%E5%88%B6"><span class="nav-number">1.1.2.</span> <span class="nav-text">Cookie 访问限制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE-cookie-%E7%9A%84%E5%8F%91%E9%80%81%E8%80%85"><span class="nav-number">1.1.3.</span> <span class="nav-text">设置 Cookie 的发送者</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cookie-%E9%98%B2%E7%AF%A1%E6%94%B9"><span class="nav-number">1.2.</span> <span class="nav-text">Cookie 防篡改</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cookielocalstoragesessionstorage-%E5%92%8C-session"><span class="nav-number">1.3.</span> <span class="nav-text">Cookie、LocalStorage、SessionStorage 和 Session</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#cookie-%E5%92%8C-session-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">1.3.1.</span> <span class="nav-text">Cookie 和 Session 的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cookie-%E5%92%8C-localstorage-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">1.3.2.</span> <span class="nav-text">Cookie 和 LocalStorage 的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#localstorage-%E5%92%8C-sessionstorage-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">1.3.3.</span> <span class="nav-text">LocalStorage 和 SessionStorage 的区别</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#same-origin-policy"><span class="nav-number">2.</span> <span class="nav-text">Same-Origin Policy</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#cors"><span class="nav-number">2.1.</span> <span class="nav-text">CORS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#jsonp"><span class="nav-number">2.2.</span> <span class="nav-text">JSONP</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#multi-process-architecture-of-browsers"><span class="nav-number">3.</span> <span class="nav-text">Multi-Process Architecture of Browsers</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#chrome-%E7%9A%84%E5%A4%9A%E8%BF%9B%E7%A8%8B%E6%9E%B6%E6%9E%84"><span class="nav-number">3.1.</span> <span class="nav-text">Chrome 的多进程架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E8%BF%9B%E7%A8%8B%E6%9E%B6%E6%9E%84%E7%9A%84%E5%A5%BD%E5%A4%84"><span class="nav-number">3.2.</span> <span class="nav-text">多进程架构的好处</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E8%BF%9B%E7%A8%8B%E6%9E%B6%E6%9E%84%E4%BC%98%E5%8C%96"><span class="nav-number">3.3.</span> <span class="nav-text">多进程架构优化</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AF%BC%E8%88%AA%E8%BF%87%E7%A8%8B"><span class="nav-number">4.</span> <span class="nav-text">导航过程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E9%A1%B5%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B"><span class="nav-number">4.1.</span> <span class="nav-text">网页加载过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%E5%A4%84%E7%90%86%E8%BE%93%E5%85%A5"><span class="nav-number">4.1.1.</span> <span class="nav-text">第一步：处理输入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%E5%BC%80%E5%A7%8B%E5%AF%BC%E8%88%AA"><span class="nav-number">4.1.2.</span> <span class="nav-text">第二步：开始导航</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%E8%AF%BB%E5%8F%96%E5%93%8D%E5%BA%94"><span class="nav-number">4.1.3.</span> <span class="nav-text">第三步：读取响应</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E5%9B%9B%E6%AD%A5%E6%9F%A5%E6%89%BE%E6%B8%B2%E6%9F%93%E8%BF%9B%E7%A8%8B"><span class="nav-number">4.1.4.</span> <span class="nav-text">第四步：查找渲染进程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%BA%94%E6%AD%A5%E6%8F%90%E4%BA%A4%E5%AF%BC%E8%88%AA"><span class="nav-number">4.1.5.</span> <span class="nav-text">第五步：提交导航</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E5%85%AD%E6%AD%A5%E5%88%9D%E5%A7%8B%E5%8C%96%E5%8A%A0%E8%BD%BD%E5%AE%8C%E6%88%90"><span class="nav-number">4.1.6.</span> <span class="nav-text">第六步：初始化加载完成</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E9%A1%B5%E6%B8%B2%E6%9F%93%E5%8E%9F%E7%90%86"><span class="nav-number">4.2.</span> <span class="nav-text">网页渲染原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E5%BB%BA-dom"><span class="nav-number">4.2.1.</span> <span class="nav-text">构建 DOM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%90%E8%B5%84%E6%BA%90%E5%8A%A0%E8%BD%BD"><span class="nav-number">4.2.2.</span> <span class="nav-text">子资源加载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#javascript-%E7%9A%84%E5%8A%A0%E8%BD%BD%E4%B8%8E%E6%89%A7%E8%A1%8C"><span class="nav-number">4.2.3.</span> <span class="nav-text">Javascript 的加载与执行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B7%E5%BC%8F%E8%AE%A1%E7%AE%97style-calculation"><span class="nav-number">4.2.4.</span> <span class="nav-text">样式计算：Style Calculation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%83%E5%B1%80layout"><span class="nav-number">4.2.5.</span> <span class="nav-text">布局：Layout</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%98%E5%88%B6paint"><span class="nav-number">4.2.6.</span> <span class="nav-text">绘制：Paint</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%88%E6%88%90compositing"><span class="nav-number">4.2.7.</span> <span class="nav-text">合成：Compositing</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%90%88%E6%88%90"><span class="nav-number">4.2.7.1.</span> <span class="nav-text">什么是合成</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E7%9A%84%E7%BB%98%E5%88%B6%E6%96%B9%E5%BC%8F"><span class="nav-number">4.2.7.1.1.</span> <span class="nav-text">简单的绘制方式</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%87%87%E7%94%A8%E5%90%88%E6%88%90%E7%9A%84%E6%96%B9%E5%BC%8F%E6%8F%90%E9%AB%98%E6%80%A7%E8%83%BD"><span class="nav-number">4.2.7.1.2.</span> <span class="nav-text">采用合成的方式提高性能</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BB%E7%BA%BF%E7%A8%8B%E4%B8%8E%E5%85%83%E7%B4%A0%E5%88%86%E5%B1%82"><span class="nav-number">4.2.7.2.</span> <span class="nav-text">主线程与元素分层</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%88%E6%88%90%E5%99%A8%E7%BA%BF%E7%A8%8B%E5%85%89%E6%A0%85%E5%8C%96%E7%BA%BF%E7%A8%8B"><span class="nav-number">4.2.7.3.</span> <span class="nav-text">合成器线程、光栅化线程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E4%BA%A4%E5%90%88%E6%88%90%E5%B8%A7"><span class="nav-number">4.2.7.4.</span> <span class="nav-text">提交合成帧</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E5%A4%84%E7%90%86%E4%BA%8B%E4%BB%B6"><span class="nav-number">5.</span> <span class="nav-text">浏览器处理事件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B8%B2%E6%9F%93%E8%BF%9B%E7%A8%8B%E4%B8%AD%E7%9A%84%E5%90%88%E6%88%90%E5%99%A8%E7%BA%BF%E7%A8%8B%E6%8E%A5%E6%94%B6%E4%BA%8B%E4%BB%B6"><span class="nav-number">5.1.</span> <span class="nav-text">渲染进程中的合成器线程接收事件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E6%89%BE%E4%BA%8B%E4%BB%B6%E5%AF%B9%E8%B1%A1-event-target"><span class="nav-number">5.2.</span> <span class="nav-text">查找事件对象 Event Target</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E5%AF%B9%E4%BA%8B%E4%BB%B6%E7%9A%84%E4%BC%98%E5%8C%96"><span class="nav-number">5.3.</span> <span class="nav-text">浏览器对事件的优化</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#web-workers"><span class="nav-number">6.</span> <span class="nav-text">Web Workers</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#dedicated-workers"><span class="nav-number">6.1.</span> <span class="nav-text">Dedicated Workers</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#shared-workers"><span class="nav-number">6.2.</span> <span class="nav-text">Shared Workers</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#service-workers"><span class="nav-number">6.3.</span> <span class="nav-text">Service Workers</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B7%A8%E9%A1%B5%E9%9D%A2%E9%80%9A%E4%BF%A1"><span class="nav-number">7.</span> <span class="nav-text">跨页面通信</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8C%E6%BA%90%E9%A1%B5%E9%9D%A2"><span class="nav-number">7.1.</span> <span class="nav-text">同源页面</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#broadcastchannel"><span class="nav-number">7.1.1.</span> <span class="nav-text">BroadcastChannel</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#serviceworker"><span class="nav-number">7.1.2.</span> <span class="nav-text">ServiceWorker</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#localstorage"><span class="nav-number">7.1.3.</span> <span class="nav-text">LocalStorage</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sharedworker"><span class="nav-number">7.1.4.</span> <span class="nav-text">SharedWorker</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#indexeddb"><span class="nav-number">7.1.5.</span> <span class="nav-text">IndexedDB</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#window.open-window.opener"><span class="nav-number">7.1.6.</span> <span class="nav-text">window.open + window.opener</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%9E%E5%90%8C%E6%BA%90%E9%A1%B5%E9%9D%A2%E9%80%9A%E4%BF%A1"><span class="nav-number">7.2.</span> <span class="nav-text">非同源页面通信</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Harvey Zhang</p>
+  <div class="site-description" itemprop="description">海鲜酱的笔记本</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/hais-notebook/archives/">
+          <span class="site-state-item-count">49</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/hais-notebook/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2020/01/30/Browser/Browser/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
+      <meta itemprop="name" content="Harvey Zhang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hais Notebook">
+      <meta itemprop="description" content="海鲜酱的笔记本">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Browser | Hais Notebook">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Browser
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-01-30 09:45:22" itemprop="dateCreated datePublished" datetime="2020-01-30T09:45:22+00:00">2020-01-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">前端</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>浏览器是前端代码赖以生存的环境，本文将重点关注与工程和生产相关的 Cookie、同源策略、浏览器架构等内容。</p>
+<span id="more"></span>
+<h1 id="cookie">Cookie</h1>
+<p>Cookie 是浏览器下发给浏览器的一段字符串，浏览器必须保存这个 Cookie，之后发起的相同二级域名的请求，浏览器必须附上 Cookie。</p>
+<h2 id="创建-cookie">创建 Cookie</h2>
+<p>服务端接收到 HTTP 请求后，可以返回一个或多个 <code>Set-Cookie</code> 响应头。</p>
+<p>服务端像这样设置响应头：</p>
+<pre class="line-numbers language-http" data-language="http"><code class="language-http"><span class="token header"><span class="token header-name keyword">Set-Cookie</span><span class="token punctuation">:</span> <span class="token header-value">&lt;cookie-name>=&lt;cookie-value></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-http" data-language="http"><code class="language-http"><span class="token response-status"><span class="token http-version property">HTTP/2.0</span> <span class="token status-code number">200</span> <span class="token reason-phrase string">OK</span></span>
+<span class="token header"><span class="token header-name keyword">Content-Type</span><span class="token punctuation">:</span> <span class="token header-value">text/html</span></span>
+<span class="token header"><span class="token header-name keyword">Set-Cookie</span><span class="token punctuation">:</span> <span class="token header-value">yummy_cookie=choco</span></span>
+<span class="token header"><span class="token header-name keyword">Set-Cookie</span><span class="token punctuation">:</span> <span class="token header-value">tasty_cookie=strawberry</span></span>
+<span class="token text-html">
+[page content]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>然后浏览器会在请求中带上这个 Cookie：</p>
+<pre class="line-numbers language-http" data-language="http"><code class="language-http"><span class="token request-line"><span class="token method property">GET</span> <span class="token request-target url">/sample_page.html</span> <span class="token http-version property">HTTP/2.0</span></span>
+<span class="token header"><span class="token header-name keyword">Host</span><span class="token punctuation">:</span> <span class="token header-value">www.example.org</span></span>
+<span class="token header"><span class="token header-name keyword">Cookie</span><span class="token punctuation">:</span> <span class="token header-value">yummy_cookie=choco; tasty_cookie=strawberry</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h3 id="设置-cookie-有效期">设置 Cookie 有效期</h3>
+<p>有两种方式定义 Cookie 有效期：</p>
+<ul>
+<li>Session Cookies：当前会话结束时会被删除。浏览器自己会定义”会话结束“。一些浏览器会使用会话恢复（Session Restoring），这会导致 Cookies 长期有效。</li>
+<li>Permanent Cookies：在 <code>Expires</code> 或 <code>Max-Age</code> 结束后删除。</li>
+</ul>
+<pre class="line-numbers language-http" data-language="http"><code class="language-http"><span class="token header"><span class="token header-name keyword">Set-Cookie</span><span class="token punctuation">:</span> <span class="token header-value">id=a3fWa; Expires=Thu, 31 Oct 2021 07:28:00 GMT;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>注意 <code>Expires</code> 是浏览器时间，不是服务器时间。</p>
+<h3 id="cookie-访问限制">Cookie 访问限制</h3>
+<ul>
+<li><code>Secure</code>：可以防止部分非法的第三方访问，但实际上仍然可以通过硬盘或 JavaScript 拿到此 Cookie。有此属性的 Cookie 只能被通过 HTTPS 协议发送，不能使用 HTTP（localhost 除外），这是为了减少中间人攻击。</li>
+<li><code>HttpOnly</code>：让 Cookie 不能被 JavaScript 的 <code>Document.cookie</code> API 访问到。这可以减少 XSS 攻击。</li>
+</ul>
+<pre class="line-numbers language-http" data-language="http"><code class="language-http"><span class="token header"><span class="token header-name keyword">Set-Cookie</span><span class="token punctuation">:</span> <span class="token header-value">id=a3fWa; Expires=Thu, 21 Oct 2021 07:28:00 GMT; Secure; HttpOnly</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="设置-cookie-的发送者">设置 Cookie 的发送者</h3>
+<ul>
+<li><code>Domain</code>：规定了哪些 hosts 可以接受此 Cookie（可设置子域名）。
+<ul>
+<li>如果服务器没有设置该属性，浏览器将默认为设置该 Cookie 的那个域名（不包括子域名）。</li>
+<li>设置子域名后校验会更加严格：比如如果只设置了 <code>Domain=mozilla.org</code>，那么 <code>developer.mozillar.org</code> 也可以访问他。</li>
+</ul></li>
+<li><code>Path</code>：与 <code>Domain</code> 类似，指明了路径的约束条件。如果设置了 <code>Path=/docs</code>，则：
+<ul>
+<li><code>/docs</code> <code>/docs/</code> <code>/docs/Web/</code> <code>/docs/Web/HTTP</code> 可以访问；</li>
+<li><code>/</code> <code>/docsets</code> <code>/fr/docs</code> 无法访问。</li>
+<li>Path 属性可以用来隔离 Cookie，但不能依赖 Path 属性来保证安全性。</li>
+</ul></li>
+<li><code>SameSite</code>：指定是否在跨网站的请求中发送 Cookie，减少 CSRF，默认是 <code>Lax</code>。
+<ul>
+<li><code>SameSite=Strict</code>：浏览器只能从 Cookie 的 Origin 发送 Cookie；</li>
+<li><code>SameSite=Lax</code>：与 <code>Strict</code> 类似，但浏览器也可以先从别的地方跳转到 Origin 一样的网站，再发送 Cookie；</li>
+<li><code>SameSite=None</code>：浏览器可以发送跨域 Cookie，但必须同时使用 <code>Secure</code>。</li>
+<li></li>
+</ul></li>
+</ul>
+<h2 id="cookie-防篡改">Cookie 防篡改</h2>
+<p>思路一：加密，但是有安全漏洞（加密后的内容可以无限期使用）</p>
+<p>思路二：把用户信息隐藏在服务器，这样我就可以自由控制 Cookie 的失效时间</p>
+<ul>
+<li>把用户信息放在服务器的 <code>session</code> 里，再给信息一个随机 <code>id</code></li>
+<li>把随机的 <code>id</code> 发送给浏览器</li>
+<li>后端读取的时候，通过 <code>session[id]</code> 获取用户信息</li>
+</ul>
+<h2 id="cookielocalstoragesessionstorage-和-session">Cookie、LocalStorage、SessionStorage 和 Session</h2>
+<h3 id="cookie-和-session-的区别">Cookie 和 Session 的区别</h3>
+<p>Cookie 是服务器发给浏览器的一段字符串，每次浏览器在访问对应域名的时候，都需要把这个字符串带上 Session 是会话，表示浏览器与服务器一段时间内的会话</p>
+<ul>
+<li>一般 Cookie 在浏览器上，Session 在服务器上</li>
+<li>Session 一般是基于 Cookie 来实现的（把 SessionID 放到 Cookie 里面）</li>
+</ul>
+<h3 id="cookie-和-localstorage-的区别">Cookie 和 LocalStorage 的区别</h3>
+<ul>
+<li>Cookie 上限一般为 4K，LocalStorage 为 5M</li>
+<li>Cookie 一般存储用户信息，LocalStorage 一般存储不重要的数据</li>
+<li>Cookie 需要发送到服务器上，LocalStorage 不发送到服务器上</li>
+</ul>
+<h3 id="localstorage-和-sessionstorage-的区别">LocalStorage 和 SessionStorage 的区别</h3>
+<p>LocalStorage 一般不过期，SessionStorage 一般在 Session 结束的时候过期（比如关闭浏览器的时候）</p>
+<h1 id="same-origin-policy">Same-Origin Policy</h1>
+<ul>
+<li>源：输入 <code>window.origin</code> 或者 <code>location.origin</code>，我们就可以看到 <strong>源</strong>，实际上他就是 <strong>协议 + 域名 + 端口号</strong>。</li>
+<li>同源：当两个 url 的源（协议、域名、端口号）完全一致，则称之为 <strong>同源</strong>，比如 <code>https://baidu.com</code> 和 <code>https://www.baidu.com</code> 就不同源。</li>
+<li>同源策略：<strong>浏览器</strong> 规定：如果 JS <strong>运行在</strong>源 A 里，那么就不能获取源 B 的数据，这就是 <strong>同源策略</strong> ——不允许不同源的资源 <strong>跨域访问</strong>。</li>
+</ul>
+<div class="note warning"><p>要注意的是，同源策略限制的是 <strong>数据的访问</strong>，引用 CSS、JS 和图片的时候，其实并不知道其内容，只是在 <strong>引用</strong>，因此不受同源策略限制。</p>
+</div>
+<h2 id="cors">CORS</h2>
+<blockquote>
+<p>Cross-Origin Resource Sharing</p>
+</blockquote>
+<p>只需要在响应头里面写 <code>Access-Control-Allow-Origin: http://foo.example</code> 就可以了，但是 IE 6、7、8、9 都不支持，得用 JSONP。</p>
+<h2 id="jsonp">JSONP</h2>
+<blockquote>
+<p>JSONP 和 JSON 没有多大关系</p>
+</blockquote>
+<p>让 <code>frank.com</code> 访问 <code>qq.com</code> 的方法：</p>
+<ol type="1">
+<li><code>qq.com</code> 将 数据写到 <code>/friends.js</code></li>
+<li><code>frank.com</code> 用 <code>script</code> 标签引用 <code>/friends.js</code></li>
+<li><code>/friends.js</code> 执行，执行 <code>frank.com</code> 事先定义好的 <code>window.xxx</code> 函数（<code>window.xxx(&#123;friends:[...]&#125;)</code>）</li>
+<li>然后 <code>frank.com</code> 通过 <code>window.xxx</code> 获取到了数据，这也是一个回调</li>
+</ol>
+<p>但是，JSONP 存在安全性问题：</p>
+<ul>
+<li>因为每个人都可以引用 js，需要进行 <code>referer</code> 检查</li>
+<li>仍然存在安全问题，如果 <code>frank.com</code> 被攻陷，则 <code>qq.com</code> 也被攻陷</li>
+</ul>
+<p>如何自动生成 window.xxx（如何把 frank.com 定义好的函数传给后台）？</p>
+<ul>
+<li>通过查询参数</li>
+</ul>
+<blockquote>
+<p>什么是 JSONP？ 背景：当前浏览器或者由于某些因素导致不支持跨域 方法：请求一个 JS 文件，文件会执行一个回调，回调里面有我们的数据，回调的名字可以随机生成，我们把名字用 callback 参数传给后台，后台再返回给我们再执行 优点：兼容 IE、可以跨域 缺点：由于是 <code>script</code> 标签，所以读不到 AJAX 那么精确的状态（比如 Status、响应头等等），并且只能发 <code>GET</code> 请求，不支持 <code>POST</code></p>
+</blockquote>
+<p>一个代码实现：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">function</span> <span class="token function">jsonp</span><span class="token punctuation">(</span><span class="token parameter">settings</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> data <span class="token operator">=</span> settings<span class="token punctuation">.</span>data <span class="token operator">||</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>
+  <span class="token keyword">const</span> key <span class="token operator">=</span> settings<span class="token punctuation">.</span>key <span class="token operator">||</span> <span class="token string">'callback'</span>
+  <span class="token keyword">const</span> callback <span class="token operator">=</span> settings<span class="token punctuation">.</span>callback <span class="token operator">||</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>
+  
+  data<span class="token punctuation">[</span>key<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">'__onGetData__'</span>
+  window<span class="token punctuation">.</span><span class="token function-variable function">__onGetData__</span> <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token parameter">response</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token function">callback</span><span class="token punctuation">(</span>response<span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+  
+  <span class="token keyword">const</span> query <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> key <span class="token keyword">in</span> data<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    query<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>key <span class="token operator">+</span> <span class="token string">'='</span> <span class="token operator">+</span> data<span class="token punctuation">.</span>key<span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token keyword">const</span> script <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">createElement</span><span class="token punctuation">(</span><span class="token string">'script'</span><span class="token punctuation">)</span>
+  script<span class="token punctuation">.</span>src <span class="token operator">=</span> url <span class="token operator">+</span> <span class="token string">'?'</span> <span class="token operator">+</span> <span class="token function">encodeURIComponent</span><span class="token punctuation">(</span>query<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token string">'&amp;'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+  document<span class="token punctuation">.</span>head<span class="token punctuation">.</span><span class="token function">appendChild</span><span class="token punctuation">(</span>script<span class="token punctuation">)</span>
+  document<span class="token punctuation">.</span>head<span class="token punctuation">.</span><span class="token function">removeChild</span><span class="token punctuation">(</span>script<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="multi-process-architecture-of-browsers">Multi-Process Architecture of Browsers</h1>
+<h2 id="chrome-的多进程架构">Chrome 的多进程架构</h2>
+<p>浏览器可以是单进程的，也可以是多进程的（不同的进程间可以通过IPC通信），不同的浏览器使用不同的架构，比如对于 Chrome：</p>
+<ul>
+<li><strong>浏览器进程 Browser Process</strong>：浏览器只会存在一个浏览器进程，他负责管理浏览器的 Tabs、Windows 以及 "chrome"，以及与硬盘、网络、用户输入、显示器的交互，具体来说包括 Tab 的前进、后退、地址栏、书签栏、网络请求、文件访问等。但他不会负责解析或渲染来自网络的任何内容。</li>
+<li><strong>渲染器进程 Renderer Process</strong>：浏览器进程会创建多个渲染器进程，每个浏览器进程会负责一个 Tab 内的显示相关工作。浏览器进程包揽了所有处理 HTML、JavaScript、CSS、图片等的复杂逻辑。每个渲染器进程都在一个沙盒中运行，并不会直接访问硬盘、网络或显示器。所有与 Web APP 的交互（包括处理用户输入事件、绘制屏幕等）都需要经过浏览器进程。因此浏览器进程可以监控渲染器进程，并终止可疑的恶意进程。</li>
+<li><strong>插件进程 Plugin Process</strong>：浏览器进程还会为每一个运行中的插件创建一个插件进程。</li>
+<li><strong>GPU 进程 GPU Process</strong>：负责处理 GPU 任务。</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/2.png" /></p>
+<p>当我们在浏览器地址栏输入 URL 后：</p>
+<ol type="1">
+<li><strong>Browser Process</strong> 会向 URL 发请求，获取 HTML 内容，将 HTML 交给 <strong>Renderer Process</strong></li>
+<li><strong>Renderer Process</strong> 解析 HTML 内容，如果遇到网络请求就又返回给 <strong>Browser Process</strong> 进行加载；同时通知 <strong>Browser Process</strong> 需要 <strong>Plugin Process</strong> 加载插件资源</li>
+<li>解析完成后，<strong>Renderer Process</strong> 计算得到图像帧，并将其交给 <strong>GPU Process</strong></li>
+<li><strong>GPU Process</strong> 将图像帧转化为图像显示在屏幕上</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/3.png" /></p>
+<h2 id="多进程架构的好处">多进程架构的好处</h2>
+<p><img src="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/4.png" /></p>
+<ol type="1">
+<li>容错性。防止崩溃传染</li>
+<li>安全性。浏览器针对不同的进程限制了不同的权限，并为其提供沙盒运行环境，使其更加安全可靠</li>
+<li>更高的响应速度。避免各个任务抢占 CPU 资源</li>
+</ol>
+<h2 id="多进程架构优化">多进程架构优化</h2>
+<p>一个 Tab 对应一个 <strong>Renderer Process</strong>，进程之间的内存无法共享，而不同的进程内存常常有相同的内容，此时需要优化。</p>
+<p><strong>Chrome 提供了四种进程模式（Process Models），不同的进程会对 Tab 进程做不同的处理。</strong></p>
+<ul>
+<li><strong>Process-per-site-instance</strong> (default)：同一个 site-instance 使用一个进程</li>
+<li><strong>Process-per-site</strong>：同一个 site 使用一个进程</li>
+<li><strong>Process-per-tab</strong>：同一个 tab 使用一个进程</li>
+<li><strong>Single Process</strong>：所有 tab 共用一个进程</li>
+</ul>
+<p>其中：</p>
+<ul>
+<li><strong>site</strong> 指的是相同的 domain name(比如 google.com) 和 scheme(比如 https://)。比如 a.baidu.com 和 b.baidu.com 就可以理解为一个 site（这与同源策略不同，同源策略还涉及子域名和端口）</li>
+<li><strong>site-instance</strong> 指的是一组 connected pages from the same site。connected 即 can obtain references to each other in script code。比如满足下面两种情况，并打开的新页面和旧页面就属于同一个 site，那么他们就属于一个 site-instance：
+<ul>
+<li>用户通过 <code>&lt;a&gt;</code> 标签打开的页面</li>
+<li>通过 Javascript 代码打开的新页面（比如 <code>window.open</code>）</li>
+</ul></li>
+</ul>
+<p>举个栗子：若使用 <strong>Process-per-site-instance</strong> 模式，当打开一个 tab 访问 a.baidu.com，再打开一个 tab 访问 b.baidu.com，就是两个进程；若在 a.baidu.com 中，通过 Javascript 代码打开了 b.baidu.com，就会使用同一个进程。</p>
+<p>因此实际上这是介于 <strong>Process-per-site</strong> 和 <strong>Process-per-tab</strong> 之间的一种模式。</p>
+<h1 id="导航过程">导航过程</h1>
+<h2 id="网页加载过程">网页加载过程</h2>
+<p><strong>Browser Process</strong> 又划分为不同的工作线程：</p>
+<ul>
+<li><strong>UI Thread</strong>：控制浏览器上的按钮和输入框</li>
+<li><strong>Network Thread</strong>：处理网络请求（Chrome 72以后，已将network thread单独摘成network service process，当然也可以通过 chrome://flags/#network-service-in-process修改配置，将其其作为线程运行在Browser Process中 的提出）</li>
+<li><strong>Storage Thread</strong>：控制文件的访问</li>
+</ul>
+<h3 id="第一步处理输入">第一步：处理输入</h3>
+<p>在浏览器地址栏输入内容，按下回车之后 <strong>UI Thread</strong> 会判断输入的内容是搜索关键词还是 URL，然后跳转至搜索引擎或请求 URL。</p>
+<h3 id="第二步开始导航">第二步：开始导航</h3>
+<p><strong>UI Thread</strong> 会将 URL 交给网络进程，并显示一个 Loading 图标。然后网络进程会进行诸如 DNS 寻址、建立 TLS 等连接进行资源请求。如果收到服务器的301重定向响应，它就会告知UI线程进行重定向然后它会再次发起一个新的网络请求。</p>
+<h3 id="第三步读取响应">第三步：读取响应</h3>
+<p>网络进程收到响应之后会开始解析 HTTP 响应报文，然后根据 <code>Content-Type</code> 字段确定媒体类型（MIME Type）：如果媒体类型是 HTML 文件，则会交给渲染进程进行下一步工作；如果是 Zip 或者其他文件，会把相关数据交给下载管理器。</p>
+<p>与此同时，浏览器会进行 <a target="_blank" rel="noopener" href="https://safebrowsing.google.com/">Safe Browsing</a> 安全检查，有可能会展示一个警告页。除此之外，还会做 <a target="_blank" rel="noopener" href="https://www.chromium.org/Home/chromium-security/corb-for-developers">CORB</a> 检查来确定敏感的跨站数据不会发送到渲染进程。</p>
+<h3 id="第四步查找渲染进程">第四步：查找渲染进程</h3>
+<p>检查完毕之后，网络线程会通知UI线程，说数据已经准备好了。UI线程会查找到一个渲染进程进行网页渲染。</p>
+<h3 id="第五步提交导航">第五步：提交导航</h3>
+<p>此时，数据和渲染进程都已经准备好了，浏览器进程会向渲染进程发送 IPC 消息来确认导航。渲染进程接收到数据后，会告诉浏览器进程导航已经提交了，页面开始加载。</p>
+<p>这时导航栏会更新，安全指示符更新，访问历史列表更新。</p>
+<h3 id="第六步初始化加载完成">第六步：初始化加载完成</h3>
+<p>渲染进程渲染完毕之后（页面及内部的 iframe 都触发了 onload 事件），会向浏览器进程发送 IPC 消息，告知浏览器进程。UI 线程就会取消 Loading 状态。</p>
+<h2 id="网页渲染原理">网页渲染原理</h2>
+<p>渲染进程其实主要就是渲染 HTML + CSS + JS，将其转化为用户可交互的 Web 页面。他包含这几个线程：</p>
+<ul>
+<li><strong>Main Thread</strong>：一个主线程</li>
+<li><strong>Work Thread</strong>：多个工作线程</li>
+<li><strong>Compositor Thread</strong>：一个合成器线程</li>
+<li><strong>Raster Thread</strong>：多个光栅化线程</li>
+</ul>
+<h3 id="构建-dom">构建 DOM</h3>
+<p>当渲染进程收到导航的确认信息之后，开始接受来自浏览器进程的数据。此时，主线程会转化为 DOM 对象。</p>
+<h3 id="子资源加载">子资源加载</h3>
+<p>在构建 DOM 的过程中，会解析到图片、CSS、Javascript 等资源，这些资源需要从网络或者缓存中获取，主线程在构建 DOM 过程中如果遇到了这些资源，逐一发起请求去获取。而为了提升效率，浏览器也会运行预加载扫描程序，如果 HTML 中存在 <code>img</code> <code>link</code> 等，预加载扫描程序会把这些请求传递给网络线程进行资源下载。</p>
+<h3 id="javascript-的加载与执行">Javascript 的加载与执行</h3>
+<p>构建 DOM 的过程中，如果遇到 <code>&lt;script&gt;</code> 标签，会停止对 HTML 的解析，去加载执行 Javascript 代码，因为 Javascript 代码可能会改变 DOM 的结构。</p>
+<p>但我们也可以在 <code>&lt;script&gt;</code> 上添加 <code>async</code> <code>defer</code> 等属性，让浏览器不要阻塞。</p>
+<blockquote>
+<p>defer 仅适用于外部脚本。并且 defer 会保证脚本之间的<strong>执行</strong>的相对顺序，前面的脚本先执行，且一定会在 DOMContentLoaded 之前执行。 async 不会保证脚本的相对顺序，谁先下载好谁先执行，且与 DOMContentLoaded 执行顺序无关。</p>
+</blockquote>
+<h3 id="样式计算style-calculation">样式计算：Style Calculation</h3>
+<p>主线程在解析页面时，遇到 <code>&lt;style&gt;</code> 或 <code>&lt;link&gt;</code> 标签的 CSS 资源，会加载 CSS 代码，并以此确定每个 DOM 节点的 <strong>计算样式（Computed Style）</strong>。</p>
+<h3 id="布局layout">布局：Layout</h3>
+<p>主线程会遍历 <strong>DOM</strong> 及相关元素的 <strong>计算样式</strong>，构建出包含每个元素的页面 <strong>坐标信息</strong> 及 <strong>盒子模型大小</strong> 的布局树（Render Tree）。遍历过程中，会跳过隐藏的元素（display: none）；另外，伪元素虽然在 DOM 上不可见，但是在布局树上是可见的。</p>
+<h3 id="绘制paint">绘制：Paint</h3>
+<p>主线程会遍历布局树（Layout Tree），生成一系列的绘画记录（Paint Records）。绘画记录可以看做是记录各元素绘制先后顺序的笔记。</p>
+<blockquote>
+<p>关于他们与 CSS 动画的关系，看这篇笔记：vvv CSS %}</p>
+</blockquote>
+<h3 id="合成compositing">合成：Compositing</h3>
+<blockquote>
+<p>将 文档结构、元素的样式、元素的几何关系、绘画顺序 这些信息转化为显示器中的像素的过程，叫做 <strong>光栅化(Rasterizing)</strong>。</p>
+</blockquote>
+<h4 id="什么是合成">什么是合成</h4>
+<h5 id="简单的绘制方式">简单的绘制方式</h5>
+<p>最简单的绘制方法就是只光栅化视口（Viewport）内的内容，如果滚动了页面，就移动光栅帧（Rastered Frame）并且光栅化更多的内容：</p>
+<p><img src="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/15.gif" /></p>
+<p>Chrome 最开始就是使用的这种方式，他的缺点在于每当页面滚动，光栅线程都需要对新视图的内容进行光栅化——这会导致性能损耗。于是 Chrome 采用合成的方式来优化这种情况。</p>
+<h5 id="采用合成的方式提高性能">采用合成的方式提高性能</h5>
+<p>合成就是 <strong>将页面分成若干层</strong>，然后分别对他们进行光栅化，最后在一个单独的线程——合成线程中合成一个页面。 当用户滚动页面的时候，由于各个层都已经光栅化了，浏览器只需要合成一个新的帧来展示滚动之后的效果。 页面动画也是类似，将页面上的层移动并构建出一个新的帧。</p>
+<p><img src="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/16.gif" /></p>
+<h4 id="主线程与元素分层">主线程与元素分层</h4>
+<p><strong>主线程</strong> 需要遍历布局树来构建一棵层次树（Layer Tree）。对于有 <a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/will-change">will-change</a> 属性的元素，会被看做是单独的一层；没有 <code>will-change</code> CSS 属性的元素，浏览器会根据情况决定是否把元素放在单独的层——如果层数过多，可能这个合成过程比光栅化还要慢。</p>
+<p><img src="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/17.png" /></p>
+<h4 id="合成器线程光栅化线程">合成器线程、光栅化线程</h4>
+<p>一旦 Layer Tree 被创建，渲染顺序被确定，主线程会把这些信息通知给 <strong>合成器线程</strong>，<strong>合成器线程</strong> 开始对每一层进行光栅化。有的层可以达到整个页面的大小，因此合成器线程需要将他们切成小块的图块（tiles）。之后将这些小图块分别发送给一系列的 <strong>光栅化线程</strong> 进行光栅化，结束后 <strong>光栅化线程</strong> 会将每个图块的光栅化结果存在 <strong>GPU 线程</strong> 的内存中。</p>
+<p><img src="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/18.png" /></p>
+<p>为了优化显示体验，<strong>合成线程</strong> 可以给不同的 <strong>光栅化线程</strong> 赋予不同的优先级，将那些在视口中或者视口附近的层优先光栅化。</p>
+<p>当图层上面的图块都被光栅化后，<strong>合成线程</strong> 会收集图块上面的 <strong>绘画四边形（Draw Quads）</strong> 信息来构建一个 <strong>合成帧（Compositor Frame）</strong></p>
+<blockquote>
+<p>绘画四边形：包含图块在内存的位置、图块在页面的位置之类的信息 合成帧：代表一个帧的内容的绘画四边形的集合。</p>
+</blockquote>
+<h4 id="提交合成帧">提交合成帧</h4>
+<p>当以上步骤完成之后，合成线程会通过 IPC 向浏览器进程提交（Commit）一个渲染帧。这时浏览器线程的 UI 进程也可能提交合成帧来改变浏览器的UI。这些合成帧都会被发送给 GPU 然后展示在屏幕上。如果合成线程收到了页面滚动事件，他会再构建一个合成帧发送给 GPU 来更新页面。</p>
+<p><img src="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/19.png" /></p>
+<p>由于合成的过程没有涉及到主线程，因此合成线程不需要等待样式的计算以及 Javascript 执行完成。因此 <a target="_blank" rel="noopener" href="https://www.html5rocks.com/en/tutorials/speed/high-performance-animations/">合成相关的动画最流畅</a>，比如 <code>transform</code> <code>opacity</code>。</p>
+<h1 id="浏览器处理事件">浏览器处理事件</h1>
+<p>以点击事件为例，当鼠标点击页面的时候：</p>
+<ol type="1">
+<li>浏览器进程 Browser Process 最先接收到事件信息，他知道了事件的类型和位置，然后把事件信息传递给渲染进程。</li>
+<li>渲染进程 Renderer Process 会根据事件发生的坐标，找到目标对象，并运行绑定的监听函数。</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/20.png" /></p>
+<h2 id="渲染进程中的合成器线程接收事件">渲染进程中的合成器线程接收事件</h2>
+<p>比如对于页面滚动，如果我们没有绑定页面滚动事件，合成器线程可以独立于主线程创建合成帧；但如果页面绑定了滚动事件，合成器线程需要先等待主线程的事件处理完成之后才能创建合成帧。</p>
+<p>当页面合成时，合成器线程会标记页面中有绑定事件处理器的区域为 <strong>非快速滚动区域（Non-Fast Scrollable Region）</strong>。如果这些区域发生事件，合成器线程就会先把事件发送给主线程，否则他就会直接合成新的帧。</p>
+<p><img src="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/21.png" /></p>
+<p>因此，我们需要注意全局事件绑定，比如有时候我们使用事件委托，将目标元素的事件发送给根元素 body 来进行处理：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript">document<span class="token punctuation">.</span>body<span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">'touchstart'</span><span class="token punctuation">,</span> <span class="token parameter">event</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>event<span class="token punctuation">.</span>target <span class="token operator">===</span> area<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    event<span class="token punctuation">.</span><span class="token function">preventDefault</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在这段代码下，整个 body 被绑定了事件监听器，也就意味着整个页面都视为非快速滚动区域，合成器每次都需要与主线程通信并且等待反馈。</p>
+<p><img src="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/22.png" /></p>
+<p>我们为了提升性能可以这样改一下：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript">document<span class="token punctuation">.</span>body<span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">'touchstart'</span><span class="token punctuation">,</span> <span class="token parameter">event</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>event<span class="token punctuation">.</span>target <span class="token operator">===</span> area<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 注意这时候就不能调用 preventDefault 了，因为合成器线程不会再等待主线程的反馈</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">,</span> <span class="token punctuation">&#123;</span> <span class="token literal-property property">passive</span><span class="token operator">:</span> <span class="token boolean">true</span> <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="查找事件对象-event-target">查找事件对象 Event Target</h2>
+<p>当事件没有发生在非快速滚动区域的时候，合成器线程会向主线程发送事件信息，主线程获取到事件信息之后会通过命中测试（Hit Test）去找到事件的目标对象——命中测试会遍历在绘制阶段生成的绘画记录（Paint Record）来找到包含事件发生坐标上的元素对象。</p>
+<p><img src="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/23.png" /></p>
+<h2 id="浏览器对事件的优化">浏览器对事件的优化</h2>
+<p>一般我们的屏幕是 60 fps，但某些事件触发频率可以超过这个数值（比如 <code>wheel</code> <code>mousewheel</code> <code>mousemove</code> <code>pointermove</code> <code>touchmove</code>，他们一般会每秒触发60~120次）。对于相对较低的屏幕刷新率来说，这样主线程就会触发过量的命中测试和 JavaScript 代码，浪费性能。</p>
+<p><img src="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/24.png" /></p>
+<p>为了优化这个问题，浏览器会合并这些连续的事件，延迟到下一帧渲染时进行——也就是 <code>requestAnimationFrame</code> 之前。</p>
+<p><img src="https://raw.githubusercontent.com/yacan8/blog/master/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/25.png" /></p>
+<h1 id="web-workers">Web Workers</h1>
+<p>Web Workers 简单来说就是在后台线程运行一些代码的上下文。Worker 线程可以在不影响 UI 的情况下执行一些任务，比如可以使用 XHR、fetch 等。Worker 创建后，可以给创建其的 JS 代码发送消息，也可以接受他发送过来的消息。</p>
+<p>Worker 是在另一个全局上下文中运行的（而不是当前的 <code>window</code>），并且在 Worker 中访问 <code>window</code> 会报错。</p>
+<p>目前有四种 Web Workers：</p>
+<ul>
+<li>Dedicated Workers</li>
+<li>Shared Workers</li>
+<li>Service Workers</li>
+<li>Audio Worklet</li>
+</ul>
+<h2 id="dedicated-workers">Dedicated Workers</h2>
+<p>可以通过 <code>Worker()</code> 构造函数来创建，只有最开始创建 Dedicated Workers 的 JavaScript 代码才能访问到他：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// 创建 Worker</span>
+<span class="token keyword">const</span> myWorker <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Worker</span><span class="token punctuation">(</span><span class="token string">"worker.js"</span><span class="token punctuation">)</span>
+<span class="token comment">// 发送消息</span>
+myWorker<span class="token punctuation">.</span><span class="token function">postMessage</span><span class="token punctuation">(</span>myData<span class="token punctuation">)</span>
+<span class="token comment">// 监听消息</span>
+myWocker<span class="token punctuation">.</span><span class="token function-variable function">onmessage</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span>
+<span class="token comment">// 处理错误</span>
+myWocker<span class="token punctuation">.</span><span class="token function-variable function">onerror</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">err</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span>
+  <span class="token comment">// 可以阻止默认的错误行为</span>
+  err<span class="token punctuation">.</span><span class="token function">preventDefault</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span>
+<span class="token comment">// 终止 Worker</span>
+myWoker<span class="token punctuation">.</span><span class="token function">terminate</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在 <code>worker.js</code> 中可以获取到发送的数据：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// 监听消息</span>
+<span class="token function-variable function">onmessage</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span>
+  <span class="token comment">// 发送消息</span>
+  <span class="token function">postMessage</span><span class="token punctuation">(</span>newData<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>Worker 还可以创建同源的 Sub-Workers，子 Workers 的 URIs 是基于父 Worker 的位置的，而不是最开始的页面。</p>
+<p>通过 <code>importScripts()</code> 还可以引入代码：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token function">importScripts</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">/* imports nothing */</span>
+<span class="token function">importScripts</span><span class="token punctuation">(</span><span class="token string">"foo.js"</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">/* imports just "foo.js" */</span>
+<span class="token function">importScripts</span><span class="token punctuation">(</span><span class="token string">"foo.js"</span><span class="token punctuation">,</span> <span class="token string">"bar.js"</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">/* imports two scripts */</span>
+<span class="token function">importScripts</span><span class="token punctuation">(</span>
+  <span class="token string">"//example.com/hello.js"</span>
+<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">/* You can import scripts from other origins */</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><code>importScripts()</code> 失败的话会报出 <code>NETWORK_ERROR</code>，并且代码执行会被中断，之前执行的代码仍然生效。</p>
+<h2 id="shared-workers">Shared Workers</h2>
+<p>Shared Workers 可以被多个代码使用，尽管他们来自于不同的 Browsing Context，比如不同的 Windows、iframes、Wockers。<strong>但注意与 Dedicated Worker 一样，这些必须来自同源。</strong></p>
+<p>与创建 Dedicated Worker 类似相同，通过 <code>SharedWorker()</code> 构造函数创建：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">const</span> myWorker <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SharedWorker</span><span class="token punctuation">(</span><span class="token string">"worker.js"</span><span class="token punctuation">)</span>
+myWorker<span class="token punctuation">.</span>port<span class="token punctuation">.</span><span class="token function">postMessage</span><span class="token punctuation">(</span>myData<span class="token punctuation">)</span>
+myWorker<span class="token punctuation">.</span>port<span class="token punctuation">.</span><span class="token function-variable function">onmessage</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>也可以使用 <code>addEventListener</code> 来监听，这样的话需要调用 <code>sharedWorker.port.start()</code> 来启动，而 <code>onmessage</code> 则不需要。</p>
+<p>在 <code>worker.js</code> 中这样接受与发送消息：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token function-variable function">onconnect</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> port <span class="token operator">=</span> e<span class="token punctuation">.</span>ports<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>
+  port<span class="token punctuation">.</span><span class="token function-variable function">onmessage</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+    port<span class="token punctuation">.</span><span class="token function">postMessage</span><span class="token punctuation">(</span>workerResult<span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="service-workers">Service Workers</h2>
+<p>Service Worker 主要用于充当一个 Web 应用、浏览器和网络之间的代理服务器，来提供更好的离线体验。</p>
+<p>Service Worker 可以使用静态的 <code>import</code> 语法，但不能动态引入 JavaScript 模组，<code>import()</code> 也会报错。</p>
+<p>Service Worker 只能在 HTTPS 上使用，因为 HTTP 容易遭到中间人攻击而被注入恶意代码。</p>
+<p>TBC....</p>
+<h1 id="跨页面通信">跨页面通信</h1>
+<blockquote>
+<p>Browsing Context 是浏览器显示 Document 的环境。现代浏览器中，主要是指 Tab，也可以指 Window、frame、iframe 和 Worker 等。</p>
+<p>这里说的跨页面通信指的都是跨 Browsing Context 通信。</p>
+</blockquote>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th>方法</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>同源</td>
+<td>BroadcastChannel</td>
+</tr>
+<tr class="even">
+<td>同源</td>
+<td>ServiceWorker</td>
+</tr>
+<tr class="odd">
+<td>同源</td>
+<td>LocalStorage</td>
+</tr>
+<tr class="even">
+<td>同源</td>
+<td>SharedWorker</td>
+</tr>
+<tr class="odd">
+<td>同源</td>
+<td>IndexedDB</td>
+</tr>
+<tr class="even">
+<td>同源</td>
+<td>window.open + window.opener</td>
+</tr>
+</tbody>
+</table>
+<p>参考资料: <a target="_blank" rel="noopener" href="https://juejin.cn/post/6844903811232825357">面试官：前端跨页面通信，你知道哪些方法？</a></p>
+<h2 id="同源页面">同源页面</h2>
+<h3 id="broadcastchannel">BroadcastChannel</h3>
+<p>同源页面可以监听同一个 <a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/API/BroadcastChannel">BroadcastChannel</a> 的 <code>message</code> 事件，或使用 <code>postMessage</code> 方法：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">const</span> bc <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BroadcastChannel</span><span class="token punctuation">(</span><span class="token string">'MyChannel'</span><span class="token punctuation">)</span>
+bc<span class="token punctuation">.</span><span class="token function-variable function">onmessage</span> <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span>
+bc<span class="token punctuation">.</span><span class="token function">postMessage</span><span class="token punctuation">(</span>myData<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="serviceworker">ServiceWorker</h3>
+<p><a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API">ServiceWorker</a> 可以在后台长期运行，并且多页面的 ServiceWorker 可以共享：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript">navigator<span class="token punctuation">.</span>serviceWorker<span class="token punctuation">.</span><span class="token function">register</span><span class="token punctuation">(</span><span class="token string">'my-service-worker.js'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'registered'</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>需要在 <code>my-service-worker.js</code> 中加入消息中转站的逻辑：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript">self<span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">'message'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span>
+  e<span class="token punctuation">.</span><span class="token function">waitUntil</span><span class="token punctuation">(</span>
+    <span class="token comment">// 通过 self.clients.matchAll() 获取所有注册了该 serviceWorker 的页面</span>
+    self<span class="token punctuation">.</span>clients<span class="token punctuation">.</span><span class="token function">matchAll</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">clients</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+      clients<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">client</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+        client<span class="token punctuation">.</span><span class="token function">postMessage</span><span class="token punctuation">(</span>e<span class="token punctuation">.</span>data<span class="token punctuation">)</span>
+      <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>页面上就可以通过该 ServiceWorker 实现消息中转了：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript">navigator<span class="token punctuation">.</span>serviceWorker<span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">'message'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h3 id="localstorage">LocalStorage</h3>
+<p>通过监听 <code>storage</code> 事件来达到消息共享的目的：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript">window<span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">'storage'</span><span class="token punctuation">,</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h3 id="sharedworker">SharedWorker</h3>
+<p><a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API">SharedWorker</a> 没有 ServiceWorker 的注册机制，也不能直接知道现在有多少 Client，因此需要通过客户端轮询或 Worker 维护订阅池的方式来实现通信的效果。</p>
+<p>方案一：订阅池。监听 <code>connect</code> 事件，并将所有的 <code>port</code> 加入 <code>connectionPool</code> 中，然后通过类似 ServiceWorker 的广播来发送消息。</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">const</span> connectionPool <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Set</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token function-variable function">onconnect</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> port <span class="token operator">=</span> e<span class="token punctuation">.</span>ports<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>
+  connectionPool<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>port<span class="token punctuation">)</span>
+  port<span class="token punctuation">.</span><span class="token function-variable function">onmessage</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+    connectionPool<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">p</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+      p<span class="token punctuation">.</span><span class="token function">postMessage</span><span class="token punctuation">(</span>newData<span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>方案二：客户端轮询。Worker 接受 <code>get</code> 和 <code>post</code> 两种消息，将 <code>post</code> 接受到的消息存下来，然后客户端 <code>get</code> 的时候，再发送回去。</p>
+<p>Worker 中监听 <code>messsage</code> 事件：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">let</span> data <span class="token operator">=</span> <span class="token keyword">null</span>
+self<span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">'connect'</span><span class="token punctuation">,</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> port <span class="token operator">=</span> e<span class="token punctuation">.</span>ports<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+  port<span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">'message'</span><span class="token punctuation">,</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">event</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token comment">// get 指令则返回存储的消息数据</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>event<span class="token punctuation">.</span>data<span class="token punctuation">.</span>get<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+          data <span class="token operator">&amp;&amp;</span> port<span class="token punctuation">.</span><span class="token function">postMessage</span><span class="token punctuation">(</span>data<span class="token punctuation">)</span>
+      <span class="token punctuation">&#125;</span>
+      <span class="token comment">// 非 get 指令则存储该消息数据</span>
+      <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+          data <span class="token operator">=</span> event<span class="token punctuation">.</span>data<span class="token punctuation">;</span>
+      <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+  port<span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>客户端中定时轮询：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token function">setInterval</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    sharedWorker<span class="token punctuation">.</span>port<span class="token punctuation">.</span><span class="token function">postMessage</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span><span class="token literal-property property">get</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">,</span> <span class="token number">1000</span><span class="token punctuation">)</span>
+
+<span class="token comment">// 监听 get 消息的返回数据</span>
+sharedWorker<span class="token punctuation">.</span>port<span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">'message'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span>
+sharedWorker<span class="token punctuation">.</span>port<span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="indexeddb">IndexedDB</h3>
+<p>由于 <a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB">IndexedDB</a> 没有像 LocalStorage 那样的事件，因此也需要借助 SharedWorker 中使用的类似轮询的方法来获取到最新的数据。</p>
+<p>先封装一些创建数据库和存取数据的方法</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">const</span> <span class="token constant">STORAGE_NAME</span> <span class="token operator">=</span> <span class="token string">'eventBus'</span>
+
+<span class="token keyword">function</span> <span class="token function">openStore</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Promise</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">resolve<span class="token punctuation">,</span> reject</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">const</span> request <span class="token operator">=</span> indexedDB<span class="token punctuation">.</span><span class="token function">open</span><span class="token punctuation">(</span><span class="token string">'EventBusDB'</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span>
+    request<span class="token punctuation">.</span>onerror <span class="token operator">=</span> reject
+    request<span class="token punctuation">.</span>onsuccess <span class="token operator">=</span> resolve
+    request<span class="token punctuation">.</span><span class="token function-variable function">onupgradeneeded</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+      <span class="token keyword">const</span> db <span class="token operator">=</span> e<span class="token punctuation">.</span>target<span class="token punctuation">.</span>result
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>e<span class="token punctuation">.</span>oldVersion <span class="token operator">===</span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>db<span class="token punctuation">.</span>objectStroageNames<span class="token punctuation">.</span><span class="token function">contains</span><span class="token punctuation">(</span>storageName<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+         <span class="token keyword">const</span> store <span class="token operator">=</span> db<span class="token punctuation">.</span><span class="token function">createObjectStore</span><span class="token punctuation">(</span><span class="token constant">STORAGE_NAME</span><span class="token punctuation">,</span> <span class="token punctuation">&#123;</span><span class="token literal-property property">keyPath</span><span class="token operator">:</span> <span class="token string">'tag'</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+         store<span class="token punctuation">.</span><span class="token function">createIndex</span><span class="token punctuation">(</span><span class="token constant">STORAGE_NAME</span> <span class="token operator">+</span> <span class="token string">'Index'</span><span class="token punctuation">,</span> <span class="token string">'tag'</span><span class="token punctuation">,</span> <span class="token punctuation">&#123;</span><span class="token literal-property property">unique</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+      <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">function</span> <span class="token function">saveData</span><span class="token punctuation">(</span><span class="token parameter">db<span class="token punctuation">,</span> data</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Promise</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">resolve<span class="token punctuation">,</span> reject</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">const</span> tx <span class="token operator">=</span> db<span class="token punctuation">.</span><span class="token function">transaction</span><span class="token punctuation">(</span><span class="token constant">STORAGE_NAME</span><span class="token punctuation">,</span> <span class="token string">'readwrite'</span><span class="token punctuation">)</span>
+    <span class="token keyword">const</span> store <span class="token operator">=</span> tx<span class="token punctuation">.</span><span class="token function">objectStore</span><span class="token punctuation">(</span><span class="token constant">STORAGE_NAME</span><span class="token punctuation">)</span>
+    <span class="token keyword">const</span> request <span class="token operator">=</span> store<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span> <span class="token literal-property property">tag</span><span class="token operator">:</span> <span class="token string">'data'</span><span class="token punctuation">,</span> data <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+    request<span class="token punctuation">.</span><span class="token function-variable function">onsuccess</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">resolve</span><span class="token punctuation">(</span>db<span class="token punctuation">)</span>
+    request<span class="token punctuation">.</span>onerror <span class="token operator">=</span> reject
+  <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">function</span> <span class="token function">query</span><span class="token punctuation">(</span><span class="token parameter">db</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Promise</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">resolve<span class="token punctuation">,</span> reject</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">try</span> <span class="token punctuation">&#123;</span>
+      <span class="token keyword">const</span> tx <span class="token operator">=</span> db<span class="token punctuation">.</span><span class="token function">transaction</span><span class="token punctuation">(</span><span class="token constant">STORAGE_NAME</span><span class="token punctuation">,</span> <span class="token string">'readwrite'</span><span class="token punctuation">)</span>
+      <span class="token keyword">const</span> store <span class="token operator">=</span> tx<span class="token punctuation">.</span><span class="token function">objectStore</span><span class="token punctuation">(</span><span class="token constant">STORAGE_NAME</span><span class="token punctuation">)</span>
+      <span class="token keyword">const</span> request <span class="token operator">=</span> store<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'data'</span><span class="token punctuation">)</span>
+      request<span class="token punctuation">.</span>onsuccess <span class="token operator">=</span> resolve
+      request<span class="token punctuation">.</span>onerror <span class="token operator">=</span> reject
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>然后打开数据库并进行长轮询：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token function">openStore</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token parameter">db</span> <span class="token operator">=></span> <span class="token function">saveData</span><span class="token punctuation">(</span>db<span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">db</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token function">setInterval</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token function">query</span><span class="token punctuation">(</span>db<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">res</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>res<span class="token punctuation">)</span>
+      <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span> <span class="token number">1000</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="window.open-window.opener">window.open + window.opener</h3>
+<p>该方案主要是借助：</p>
+<ul>
+<li><code>window.open</code> 会返回被打开页面的 <code>window</code>，可以使用被打开页面的 <code>window.postMessage</code> 来给被打开页面发送消息；</li>
+<li><code>window.opener</code> 可以得到打开他的页面的 <code>window</code>，同样可以使用他的 <code>window.postMessage</code> 发送消息；</li>
+<li><code>window.addEventListener('message')</code> 可以得到 <code>postMessage</code> 的消息。</li>
+</ul>
+<h2 id="非同源页面通信">非同源页面通信</h2>
+<p>可以借助一个 iframe 来进行通信：</p>
+<ul>
+<li>iframe 与父页面之间可以通过指定 <code>origin</code> 来忽略同源限制</li>
+<li>iframe 之间由于同源，可以使用 Broadcast Channel 等来进行消息同步</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2020/01/29/Git/Git/" rel="prev" title="Git & GitHub">
+                  <i class="fa fa-chevron-left"></i> Git & GitHub
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2020/01/30/Vue/Vue/" rel="next" title="Vue">
+                  Vue <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Harvey Zhang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="/hais-notebook/lib/animejs/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/hais-notebook/js/comments.js"></script><script src="/hais-notebook/js/utils.js"></script><script src="/hais-notebook/js/next-boot.js"></script>
+
+  <script src="/hais-notebook/lib/hexo-generator-searchdb/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/hais-notebook/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"/hais-notebook/lib/mathjax/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/hais-notebook/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

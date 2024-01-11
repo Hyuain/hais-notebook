@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hais-notebook/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/hais-notebook/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/hais-notebook/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/hais-notebook/images/safari-pinned-tab.svg" color="#222">
+
+<link rel="stylesheet" href="/hais-notebook/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.font.im/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="/hais-notebook/lib/@fortawesome/fontawesome-free/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"hyuain.github.io","root":"/hais-notebook/","images":"/hais-notebook/images","scheme":"Gemini","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac","show_result":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/hais-notebook/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/hais-notebook/js/config.js"></script>
+
+    <meta name="description" content="Rails 的一个项目是如何搭建起来的。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Rails">
+<meta property="og:url" content="https://hyuain.github.io/hais-notebook/2023/01/16/Ruby%20on%20Rails/Rails/index.html">
+<meta property="og:site_name" content="Hais Notebook">
+<meta property="og:description" content="Rails 的一个项目是如何搭建起来的。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-01-16T11:48:41.000Z">
+<meta property="article:modified_time" content="2023-01-16T11:48:41.000Z">
+<meta property="article:author" content="Harvey Zhang">
+<meta property="article:tag" content="Notebook">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://hyuain.github.io/hais-notebook/2023/01/16/Ruby%20on%20Rails/Rails/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hyuain.github.io/hais-notebook/2023/01/16/Ruby%20on%20Rails/Rails/","path":"2023/01/16/Ruby on Rails/Rails/","title":"Rails"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Rails | Hais Notebook</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/hais-notebook/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/hais-notebook/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Hais Notebook</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/hais-notebook/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/hais-notebook/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/hais-notebook/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/hais-notebook/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#gem-%E5%92%8C-bundle"><span class="nav-number">1.</span> <span class="nav-text">Gem 和 Bundle</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#development"><span class="nav-number">2.</span> <span class="nav-text">Development</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-rails-%E9%A1%B9%E7%9B%AE"><span class="nav-number">2.1.</span> <span class="nav-text">创建 Rails 项目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-docker-%E5%AE%B9%E5%99%A8"><span class="nav-number">2.2.</span> <span class="nav-text">创建 docker 容器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E7%9A%84-docker-%E5%91%BD%E4%BB%A4"><span class="nav-number">2.2.1.</span> <span class="nav-text">其他的 docker 命令</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%86%E5%A4%87%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">2.3.</span> <span class="nav-text">准备数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">2.3.1.</span> <span class="nav-text">配置数据库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">2.3.2.</span> <span class="nav-text">创建数据库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">2.3.3.</span> <span class="nav-text">查看数据库</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hello-rails"><span class="nav-number">2.4.</span> <span class="nav-text">Hello Rails</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#routes"><span class="nav-number">2.4.1.</span> <span class="nav-text">Routes</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#controller"><span class="nav-number">2.4.2.</span> <span class="nav-text">Controller</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%89%8B%E5%8A%A8%E5%88%9B%E5%BB%BA-controller"><span class="nav-number">2.4.2.1.</span> <span class="nav-text">手动创建 controller</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%9A%E8%BF%87%E5%91%BD%E4%BB%A4%E5%88%9B%E5%BB%BA-controller"><span class="nav-number">2.4.2.2.</span> <span class="nav-text">通过命令创建 controller</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B8%B2%E6%9F%93-json"><span class="nav-number">2.4.2.3.</span> <span class="nav-text">渲染 JSON</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#view"><span class="nav-number">2.4.3.</span> <span class="nav-text">View</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B8%B2%E6%9F%93-html"><span class="nav-number">2.4.3.1.</span> <span class="nav-text">渲染 HTML</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#layout"><span class="nav-number">2.4.3.2.</span> <span class="nav-text">Layout</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E5%86%8C%E5%8A%9F%E8%83%BD"><span class="nav-number">2.5.</span> <span class="nav-text">注册功能</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%E5%88%9B%E5%BB%BA-model-%E4%B8%8E%E6%95%B0%E6%8D%AE%E8%A1%A8"><span class="nav-number">2.5.1.</span> <span class="nav-text">第一步：创建 Model 与数据表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%E9%85%8D%E7%BD%AE%E8%B7%AF%E7%94%B1"><span class="nav-number">2.5.2.</span> <span class="nav-text">第二步：配置路由</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%E5%9C%A8-rails-console-%E4%B8%AD%E5%B0%9D%E8%AF%95%E8%BF%9B%E8%A1%8C%E5%A2%9E%E5%88%A0%E6%94%B9%E6%9F%A5"><span class="nav-number">2.5.3.</span> <span class="nav-text">第三步：在 Rails Console 中尝试进行增删改查</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E5%9B%9B%E6%AD%A5%E5%AD%98%E5%82%A8%E5%AF%86%E7%A0%81"><span class="nav-number">2.5.4.</span> <span class="nav-text">第四步：存储密码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%BA%94%E6%AD%A5%E5%88%9B%E5%BB%BA%E4%B8%8E%E9%85%8D%E7%BD%AE-controller"><span class="nav-number">2.5.5.</span> <span class="nav-text">第五步：创建与配置 Controller</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A8%A1%E6%8B%9F%E8%AF%B7%E6%B1%82%E8%BF%9B%E8%A1%8C%E8%B0%83%E8%AF%95"><span class="nav-number">2.5.5.1.</span> <span class="nav-text">模拟请求进行调试</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-rubymine-%E4%B8%AD%E7%9A%84-http-client"><span class="nav-number">2.5.5.1.1.</span> <span class="nav-text">使用 RubyMine 中的 HTTP Client</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-postman-%E6%B5%8B%E8%AF%95"><span class="nav-number">2.5.5.1.2.</span> <span class="nav-text">使用 Postman 测试</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E5%85%AD%E6%AD%A5%E5%9C%A8-model-%E4%B8%AD%E8%BF%9B%E8%A1%8C%E6%95%B0%E6%8D%AE%E6%A0%A1%E9%AA%8C"><span class="nav-number">2.5.6.</span> <span class="nav-text">第六步：在 Model 中进行数据校验</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%83%E6%AD%A5%E9%94%99%E8%AF%AF%E4%BF%A1%E6%81%AF%E6%B1%89%E5%8C%96"><span class="nav-number">2.5.7.</span> <span class="nav-text">第七步：错误信息汉化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E5%85%AB%E6%AD%A5%E5%8F%91%E9%80%81%E9%82%AE%E4%BB%B6"><span class="nav-number">2.5.8.</span> <span class="nav-text">第八步：发送邮件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%99%BB%E5%BD%95%E5%8A%9F%E8%83%BD"><span class="nav-number">2.6.</span> <span class="nav-text">登录功能</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%E9%85%8D%E7%BD%AE%E8%B7%AF%E7%94%B1"><span class="nav-number">2.6.1.</span> <span class="nav-text">第一步：配置路由</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%E5%88%9B%E5%BB%BA-model"><span class="nav-number">2.6.2.</span> <span class="nav-text">第二步：创建 Model</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#attr_accessor"><span class="nav-number">2.6.2.1.</span> <span class="nav-text">attr_accessor</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%E5%88%9B%E5%BB%BA-controller"><span class="nav-number">2.6.3.</span> <span class="nav-text">第三步：创建 Controller</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E5%9B%9B%E6%AD%A5%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A0%A1%E9%AA%8C%E6%A0%A1%E9%AA%8C%E8%B4%A6%E5%8F%B7%E5%AF%86%E7%A0%81"><span class="nav-number">2.6.4.</span> <span class="nav-text">第四步：自定义校验，校验账号密码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%BA%94%E6%AD%A5%E4%BD%BF%E7%94%A8%E4%B8%AD%E9%97%B4%E4%BB%B6%E8%AE%B0%E5%BD%95-sessioncookie"><span class="nav-number">2.6.5.</span> <span class="nav-text">第五步：使用中间件，记录 session（cookie）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E5%85%AD%E6%AD%A5%E8%8E%B7%E5%8F%96%E5%BD%93%E5%89%8D%E7%94%A8%E6%88%B7%E7%9A%84%E4%BF%A1%E6%81%AF"><span class="nav-number">2.6.6.</span> <span class="nav-text">第六步：获取当前用户的信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%83%E6%AD%A5%E6%B3%A8%E9%94%80%E7%99%BB%E5%BD%95"><span class="nav-number">2.6.7.</span> <span class="nav-text">第七步：注销登录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95"><span class="nav-number">2.6.8.</span> <span class="nav-text">单元测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%8A%A8%E7%94%9F%E6%88%90%E6%96%87%E6%A1%A3"><span class="nav-number">2.6.9.</span> <span class="nav-text">自动生成文档</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7"><span class="nav-number">2.6.10.</span> <span class="nav-text">其他技巧</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8E%E7%AB%AF%E5%88%86%E9%A1%B5"><span class="nav-number">2.7.</span> <span class="nav-text">后端分页</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E4%B8%AD%E9%97%B4%E8%A1%A8%E5%85%B3%E8%81%94%E4%B8%A4%E4%B8%AA%E8%A1%A8"><span class="nav-number">2.8.</span> <span class="nav-text">使用中间表关联两个表</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-model"><span class="nav-number">2.8.1.</span> <span class="nav-text">创建 Model</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-factory-bot-%E5%8A%A0%E9%80%9F%E6%B5%8B%E8%AF%95"><span class="nav-number">2.9.</span> <span class="nav-text">使用 Factory Bot 加速测试</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#deployment"><span class="nav-number">3.</span> <span class="nav-text">Deployment</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B4%AD%E4%B9%B0%E5%B9%B6%E7%99%BB%E5%BD%95%E9%98%BF%E9%87%8C%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">3.1.</span> <span class="nav-text">购买并登录阿里云服务器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E4%BD%8E%E6%9D%83%E9%99%90%E7%94%A8%E6%88%B7"><span class="nav-number">3.2.</span> <span class="nav-text">创建低权限用户</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-docker"><span class="nav-number">3.3.</span> <span class="nav-text">安装 Docker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%A8-docker-%E5%90%AF%E5%8A%A8%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">3.4.</span> <span class="nav-text">用 Docker 启动数据库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95-ruby-%E5%AE%B9%E5%99%A8"><span class="nav-number">3.5.</span> <span class="nav-text">测试 Ruby 容器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%AC%E5%9C%B0%E6%9E%84%E5%BB%BA-rails-%E9%95%9C%E5%83%8F"><span class="nav-number">3.6.</span> <span class="nav-text">本地构建 Rails 镜像</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Harvey Zhang</p>
+  <div class="site-description" itemprop="description">海鲜酱的笔记本</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/hais-notebook/archives/">
+          <span class="site-state-item-count">49</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/hais-notebook/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2023/01/16/Ruby%20on%20Rails/Rails/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
+      <meta itemprop="name" content="Harvey Zhang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hais Notebook">
+      <meta itemprop="description" content="海鲜酱的笔记本">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Rails | Hais Notebook">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Rails
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-01-16 11:48:41" itemprop="dateCreated datePublished" datetime="2023-01-16T11:48:41+00:00">2023-01-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E5%85%A8%E6%A0%88/" itemprop="url" rel="index"><span itemprop="name">全栈</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>Rails 的一个项目是如何搭建起来的。</p>
+<span id="more"></span>
+<h1 id="gem-和-bundle">Gem 和 Bundle</h1>
+<p>类似于 npm，gem 用于全局安装依赖，bundle 用于局部安装依赖。</p>
+<p>如果 <code>gem install</code> 安装很慢，按照 <a target="_blank" rel="noopener" href="https://gems.ruby-china.com/">RubyChina</a> 的方法进行操作。</p>
+<h1 id="development">Development</h1>
+<h2 id="创建-rails-项目">创建 Rails 项目</h2>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">gem <span class="token function">install</span> rails
+rails new <span class="token punctuation">[</span>ProjectName<span class="token punctuation">]</span> <span class="token parameter variable">--database</span><span class="token operator">=</span>postgresql --skip-action-mailbox --skip-action-text --skip-sprockets --skip-javascript --skip-turbolinks --skip-system-test --skip-test <span class="token parameter variable">--api</span> --skip-webpack-install<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>然后使用 <code>bin/rails server</code> 命令启动服务器，但是这时会报错，因为我们还没有数据库。</p>
+<h2 id="创建-docker-容器">创建 docker 容器</h2>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">docker</span> run <span class="token parameter variable">-v</span> <span class="token punctuation">[</span>容器路径<span class="token punctuation">]</span>:/var/lib/postgresql/data <span class="token parameter variable">-p</span> <span class="token number">5001</span>:5432 <span class="token parameter variable">-e</span> <span class="token assign-left variable">POSTGRES_USER</span><span class="token operator">=</span><span class="token punctuation">[</span>用户名<span class="token punctuation">]</span> <span class="token parameter variable">-e</span> <span class="token assign-left variable">POSTGRES_PASSWORD</span><span class="token operator">=</span><span class="token punctuation">[</span>密码<span class="token punctuation">]</span> <span class="token parameter variable">-d</span> postgres:<span class="token punctuation">[</span>版本号 也可以不指定<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>如果速度太慢，需要使用镜像，按照 <a target="_blank" rel="noopener" href="http://guide.daocloud.io/dcs/daocloud-9153151.html">此教程</a> 进行配置。 可将镜像地址配置为中科大镜像地址：https://docker.mirrors.ustc.edu.cn</p>
+<h3 id="其他的-docker-命令">其他的 docker 命令</h3>
+<ul>
+<li><code>docker ps -a</code> 查看所有的容器（Containers）</li>
+<li><code>docker kill &lt;id|name&gt;</code> 关闭对应的容器</li>
+<li><code>docker restart &lt;id|name&gt;</code> 重启关闭的容器</li>
+<li><code>docker rm &lt;id|name&gt;</code> 删除对应的容器</li>
+<li><code>docker container prune</code> 删除无用的容器，以节省空间</li>
+</ul>
+<h2 id="准备数据库">准备数据库</h2>
+<h3 id="配置数据库">配置数据库</h3>
+<p>数据库需要在 <code>config/database.yml</code> 中进行配置。</p>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">default</span><span class="token punctuation">:</span> <span class="token important">&amp;default</span> <span class="token comment"># 默认公共配置</span>
+  <span class="token key atrule">adapter</span><span class="token punctuation">:</span> postgresql
+  <span class="token key atrule">encoding</span><span class="token punctuation">:</span> unicode
+  <span class="token key atrule">pool</span><span class="token punctuation">:</span> &lt;%= ENV.fetch("RAILS_MAX_THREADS") <span class="token punctuation">&#123;</span> <span class="token number">5</span> <span class="token punctuation">&#125;</span> %<span class="token punctuation">></span>
+  <span class="token key atrule">database</span><span class="token punctuation">:</span>
+  <span class="token key atrule">username</span><span class="token punctuation">:</span>
+  <span class="token key atrule">password</span><span class="token punctuation">:</span>
+  <span class="token key atrule">host</span><span class="token punctuation">:</span> localhost
+  <span class="token key atrule">port</span><span class="token punctuation">:</span> <span class="token number">5001</span>
+
+<span class="token key atrule">development</span><span class="token punctuation">:</span>
+  <span class="token key atrule">&lt;&lt;</span><span class="token punctuation">:</span> <span class="token important">*default</span>
+  <span class="token key atrule">database</span><span class="token punctuation">:</span> xxx_development
+
+<span class="token key atrule">test</span><span class="token punctuation">:</span>
+  <span class="token key atrule">&lt;&lt;</span><span class="token punctuation">:</span> <span class="token important">*default</span>
+  <span class="token key atrule">database</span><span class="token punctuation">:</span> xxx_test
+
+<span class="token key atrule">production</span><span class="token punctuation">:</span>
+  <span class="token key atrule">&lt;&lt;</span><span class="token punctuation">:</span> <span class="token important">*default</span>
+  <span class="token key atrule">database</span><span class="token punctuation">:</span> morney_rails_1_production
+  <span class="token key atrule">username</span><span class="token punctuation">:</span> morney_rails_1
+  <span class="token key atrule">password</span><span class="token punctuation">:</span> &lt;%= ENV<span class="token punctuation">[</span><span class="token string">'MORNEY_RAILS_1_DATABASE_PASSWORD'</span><span class="token punctuation">]</span> %<span class="token punctuation">></span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="创建数据库">创建数据库</h3>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">bin/rials db:create<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="查看数据库">查看数据库</h3>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 进入虚拟机并运行 bash：</span>
+<span class="token function">docker</span> <span class="token builtin class-name">exec</span> <span class="token parameter variable">-it</span> <span class="token operator">&lt;</span>容器名<span class="token operator">></span> <span class="token function">bash</span>
+<span class="token comment"># 登录</span>
+psql <span class="token parameter variable">-U</span> <span class="token operator">&lt;</span>用户名<span class="token operator">></span>
+<span class="token comment"># 连接数据库</span>
+<span class="token punctuation">\</span>c <span class="token operator">&lt;</span>数据库名称<span class="token operator">></span>
+<span class="token comment"># display tables</span>
+<span class="token punctuation">\</span>dt
+<span class="token comment"># 查看某一个表的内容</span>
+<span class="token keyword">select</span> * from <span class="token operator">&lt;</span>表名称<span class="token operator">></span> limit <span class="token number">10</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="hello-rails">Hello Rails</h2>
+<h3 id="routes">Routes</h3>
+<p>路由需要在 <code>config/routes.rb</code> 中进行配置。</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">Rails<span class="token punctuation">.</span>application<span class="token punctuation">.</span>routes<span class="token punctuation">.</span>draw <span class="token keyword">do</span>
+  get <span class="token string-literal"><span class="token string">'/hello'</span></span><span class="token punctuation">,</span> <span class="token symbol">to</span><span class="token operator">:</span> <span class="token string-literal"><span class="token string">'first#hello'</span></span> <span class="token comment"># get 请求路径 /hello 的时候，会去找 FirstController 上的 hello 方法 </span>
+  get <span class="token string-literal"><span class="token string">'/hi'</span></span><span class="token punctuation">,</span> <span class="token symbol">to</span><span class="token operator">:</span> <span class="token string-literal"><span class="token string">'first#hi'</span></span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以通过 <code>bin/rails routes</code> 命令查看所有的路由。</p>
+<h3 id="controller">Controller</h3>
+<h4 id="手动创建-controller">手动创建 controller</h4>
+<p>controller 需要在 <code>app/controllers</code> 中进行配置。 比如如上面 routes 中的配置所说，我们需要一个 <code>app/controllers/first_controller.rb</code> 文件，里面有一个 <code>FirstController</code> class，其中对应有 <code>hello</code> 和 <code>hi</code> 方法：</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># 继承自 ApplicationController</span>
+<span class="token keyword">class</span> <span class="token class-name">FirstController</span> <span class="token operator">&lt;</span> ApplicationController
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">hello</span></span>
+    render plain<span class="token operator">:</span> <span class="token string-literal"><span class="token string">'hello'</span></span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="通过命令创建-controller">通过命令创建 controller</h4>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">bin/rails g controller <span class="token function">users</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h4 id="渲染-json">渲染 JSON</h4>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">FirstController</span> <span class="token operator">&lt;</span> ApplicationController
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">hello</span></span>
+    render json<span class="token operator">:</span> <span class="token punctuation">&#123;</span> <span class="token symbol">name</span><span class="token operator">:</span> <span class="token string-literal"><span class="token string">'harvey'</span></span> <span class="token punctuation">&#125;</span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="view">View</h3>
+<h4 id="渲染-html">渲染 HTML</h4>
+<p>一般前后端分离的情况下，不是由 rails 来渲染 HTML，当然 rails 也可以用于渲染 HTML，这时我们需要建立一个新的文件 <code>app/views/first/hello.html</code>，然后在 FirstController 中这样写：</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">FirstController</span> <span class="token operator">&lt;</span> ApplicationController
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">hello</span></span>
+    render <span class="token string-literal"><span class="token string">'first/hello'</span></span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>注意，如果使用 API 模式，默认是不支持渲染 html 的，我们需要在 <code>app/controllersapplication_controller.rb</code> 中进行引入：</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">ApplicationController</span> <span class="token operator">&lt;</span> ActionController<span class="token double-colon punctuation">::</span><span class="token constant">API</span>
+  <span class="token keyword">include</span> ActionView<span class="token double-colon punctuation">::</span>Layouts
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h4 id="layout">Layout</h4>
+<p>erb 可以使用 <code>&lt;% %&gt;</code> 来包裹语句：</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">&lt;% a = 5 %>
+&lt;% if a &lt; 10 %>
+  a 小于 10
+&lt;% end %><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>也可以使用 <code>&lt;%= %&gt;</code> 来表示需要渲染的内容：</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">&lt;%= @dataInController %><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>此外很多 html 有公共的部分，我们可以将其放在 <code>views/layoutsapplication.html.erb</code> 中，然后在其中空出类似插槽的东西：</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token comment">&lt;!-- 前略 --></span>
+&lt;%= yield %>
+
+&lt;% if content_for? :footer %>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>footer</span><span class="token punctuation">></span></span>
+    &lt;%= yield :footer %>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>footer</span><span class="token punctuation">></span></span>
+&lt;% end %>
+<span class="token comment">&lt;!-- 后略 --></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>普通内容<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+&lt;% content_for :footer do %>
+  页脚内容
+&lt;% end %><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="注册功能">注册功能</h2>
+<h3 id="第一步创建-model-与数据表">第一步：创建 Model 与数据表</h3>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">bin/rails g model User
+<span class="token comment"># 也可以像下面这样写，他会在数据库迁移脚本中多两个字段</span>
+bin/rails g model User email:string password_digest:string<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>执行此命令后，会创建一个数据库迁移脚本，和一个新文件 <code>app/model/user.rb</code>。</p>
+<p>数据库迁移脚本形式如下：</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">CreateUsers</span> <span class="token operator">&lt;</span> ActiveRecord<span class="token double-colon punctuation">::</span>Migration<span class="token punctuation">[</span><span class="token number">6.1</span><span class="token punctuation">]</span>
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">change</span></span>
+    create_table <span class="token symbol">:users</span> <span class="token keyword">do</span> <span class="token operator">|</span>t<span class="token operator">|</span>
+      t<span class="token punctuation">.</span>string <span class="token symbol">:email</span>
+      t<span class="token punctuation">.</span>string <span class="token symbol">:password_digest</span>
+
+      t<span class="token punctuation">.</span>timestamps
+    <span class="token keyword">end</span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>然后需要运行迁移脚本，创建 User 表：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">bin/rails db:migrate<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>然后可以在 rubyMine 中查看数据库、User 表。</p>
+<h3 id="第二步配置路由">第二步：配置路由</h3>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">Rails<span class="token punctuation">.</span>application<span class="token punctuation">.</span>routes<span class="token punctuation">.</span>draw <span class="token keyword">do</span>
+  get <span class="token string-literal"><span class="token string">'/users'</span></span><span class="token punctuation">,</span> <span class="token symbol">to</span><span class="token operator">:</span> <span class="token string-literal"><span class="token string">'users#index'</span></span>
+  get <span class="token string-literal"><span class="token string">'/users/:id'</span></span><span class="token punctuation">,</span> <span class="token symbol">to</span><span class="token operator">:</span> <span class="token string-literal"><span class="token string">'users#show'</span></span>
+  post <span class="token string-literal"><span class="token string">'/users'</span></span><span class="token punctuation">,</span> <span class="token symbol">to</span><span class="token operator">:</span> <span class="token string-literal"><span class="token string">'users#create'</span></span>
+  delete <span class="token string-literal"><span class="token string">'/users/:id'</span></span><span class="token punctuation">,</span> <span class="token symbol">to</span><span class="token operator">:</span> <span class="token string-literal"><span class="token string">'users#destroy'</span></span>
+  patch <span class="token string-literal"><span class="token string">'/users/:id'</span></span><span class="token punctuation">,</span> <span class="token symbol">to</span><span class="token operator">:</span> <span class="token string-literal"><span class="token string">'users#update'</span></span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>简单的增删改查我们不需要配置如上的路由，只需要下面这一句，他就会帮我们自动创建路由：</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">resources <span class="token symbol">:users</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="第三步在-rails-console-中尝试进行增删改查">第三步：在 Rails Console 中尝试进行增删改查</h3>
+<p>可以在 Rails Console 中先体验一下增删改查是如何进行的：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">bin/rails console<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>然后执行：</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">u <span class="token operator">=</span> <span class="token class-name">User</span><span class="token punctuation">.</span><span class="token keyword">new</span>
+u<span class="token punctuation">.</span>email <span class="token operator">=</span> <span class="token string-literal"><span class="token string">'1@qq.com'</span></span>
+u<span class="token punctuation">.</span>password_digest <span class="token operator">=</span> <span class="token string-literal"><span class="token string">'123456'</span></span>
+u<span class="token punctuation">.</span>save<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>就会自动执行一个 SQL 语句，<strong>创建</strong> 一个新用户。</p>
+<p>可以通过 <code>User.first</code> <code>User.second</code> 来 <strong>查看</strong> 已有的用户。</p>
+<p>输入 <code>exit</code> 或者按 <code>Ctrl</code>+<code>D</code> 可以退出 Rails Console。</p>
+<h3 id="第四步存储密码">第四步：存储密码</h3>
+<p>我们平时的 User 表中不会存储密码的明文，而是存储一个 <code>password_digest</code> 字段，这可以通过 has_secure_password 来实现。</p>
+<p>放开 <code>Gemfile</code> 中 <code>bcrypt</code> 的注释，通过 <code>bundle install</code> 安装依赖。</p>
+<p>然后需要在 <code>app/modles/user.rb</code> 中加上 <code>has_secure_password</code>：</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">User</span> <span class="token operator">&lt;</span> ApplicationRecord
+  has_secure_password
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>这时在 Rails Console 中执行以下代码试试：</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">u <span class="token operator">=</span> <span class="token class-name">User</span><span class="token punctuation">.</span><span class="token keyword">new</span>
+u<span class="token punctuation">.</span>email <span class="token operator">=</span> <span class="token string-literal"><span class="token string">'1@qq.com'</span></span>
+u<span class="token punctuation">.</span>password <span class="token operator">=</span> <span class="token string-literal"><span class="token string">'123456'</span></span>
+u<span class="token punctuation">.</span>password_confirmation <span class="token operator">=</span> <span class="token string-literal"><span class="token string">'123456'</span></span>
+u<span class="token punctuation">.</span>save<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这样就会自动在表中 <code>password_digest</code> 中存一段密文。</p>
+<p>然后可以通过这样来比对用户的密码是否正确：</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">u<span class="token punctuation">.</span>authenticate<span class="token punctuation">(</span><span class="token string-literal"><span class="token string">'123'</span></span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="第五步创建与配置-controller">第五步：创建与配置 Controller</h3>
+<p>我们可以通过如下命令创建 Controller，得到 <code>app/controllers/users_controller.rb</code>：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">bin/rails g controller <span class="token function">users</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">UsersController</span> <span class="token operator">&lt;</span> ApplicationController
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">create</span></span>
+    user <span class="token operator">=</span> <span class="token class-name">User</span><span class="token punctuation">.</span><span class="token keyword">new</span> create_params
+    user<span class="token punctuation">.</span>save
+    <span class="token comment"># new + save 可以简写为 User.create</span>
+    render_resource user
+  <span class="token keyword">end</span>
+
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">create_params</span></span>
+    params<span class="token punctuation">.</span>permit<span class="token punctuation">(</span><span class="token symbol">:email</span><span class="token punctuation">,</span> <span class="token symbol">:password</span><span class="token punctuation">,</span> <span class="token symbol">:password_confirmation</span><span class="token punctuation">)</span>
+  <span class="token keyword">end</span>
+
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">render_resource</span></span><span class="token punctuation">(</span>resource<span class="token punctuation">)</span>
+    <span class="token comment"># 也可以用 resource.valid?，不过据说会触发重新校验</span>
+    <span class="token keyword">if</span> resource<span class="token punctuation">.</span>errors<span class="token punctuation">.</span>empty<span class="token operator">?</span>
+      render json<span class="token operator">:</span> <span class="token punctuation">&#123;</span> <span class="token symbol">resource</span><span class="token operator">:</span> resource <span class="token punctuation">&#125;</span><span class="token punctuation">,</span> <span class="token symbol">status</span><span class="token operator">:</span> <span class="token number">200</span>
+    <span class="token keyword">else</span>
+      render json<span class="token operator">:</span> <span class="token punctuation">&#123;</span> <span class="token symbol">errors</span><span class="token operator">:</span> resource<span class="token punctuation">.</span>errors <span class="token punctuation">&#125;</span><span class="token punctuation">,</span> <span class="token symbol">status</span><span class="token operator">:</span> <span class="token number">400</span>
+    <span class="token keyword">end</span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="模拟请求进行调试">模拟请求进行调试</h4>
+<h5 id="使用-rubymine-中的-http-client">使用 RubyMine 中的 HTTP Client</h5>
+<p><code>Double Shift</code> - <code>HTTP Client</code>，然后可以通过 examples 看看如何使用。</p>
+<h5 id="使用-postman-测试">使用 Postman 测试</h5>
+<h3 id="第六步在-model-中进行数据校验">第六步：在 Model 中进行数据校验</h3>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">User</span> <span class="token operator">&lt;</span> ApplicationRecord
+  has_secure_password
+
+  validates_presence_of <span class="token symbol">:email</span> <span class="token comment"># email 必须存在</span>
+  validates_presence_of <span class="token symbol">:password</span> <span class="token comment"># password 必须存在</span>
+  validates_presence_of <span class="token symbol">:password_confirmation</span><span class="token punctuation">,</span> <span class="token symbol">on</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token symbol">:create</span><span class="token punctuation">]</span> <span class="token comment"># 在创建时，确认输入密码必须存在</span>
+
+  validates_format_of <span class="token symbol">:email</span><span class="token punctuation">,</span> <span class="token symbol">with</span><span class="token operator">:</span> <span class="token regex-literal"><span class="token regex">/.+@.+/</span></span><span class="token punctuation">,</span> <span class="token symbol">if</span><span class="token operator">:</span> <span class="token symbol">:email</span> <span class="token comment"># 在 email 存在时校验邮箱格式</span>
+  validates_length_of <span class="token symbol">:password</span><span class="token punctuation">,</span> <span class="token symbol">minimum</span><span class="token operator">:</span> <span class="token number">6</span><span class="token punctuation">,</span> <span class="token symbol">on</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token symbol">:create</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token symbol">if</span><span class="token operator">:</span> <span class="token symbol">:password</span> <span class="token comment"># 在创建时，校验密码格式</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="第七步错误信息汉化">第七步：错误信息汉化</h3>
+<p>首先需要在 <code>config/initializers/local.rb</code> 中添加：</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">I18n<span class="token punctuation">.</span>available_locales <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token symbol">:en</span><span class="token punctuation">,</span> <span class="token string-literal"><span class="token string">'zh-CN'</span></span><span class="token punctuation">]</span>
+I18n<span class="token punctuation">.</span>default_locale <span class="token operator">=</span> <span class="token string-literal"><span class="token string">'zh-CN'</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>然后按照提示在 <code>config/locales/zh-CN.yml</code> 中进行配置：</p>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">zh-CN</span><span class="token punctuation">:</span>
+  <span class="token key atrule">activerecord</span><span class="token punctuation">:</span>
+    <span class="token key atrule">errors</span><span class="token punctuation">:</span>
+      <span class="token key atrule">models</span><span class="token punctuation">:</span>
+        <span class="token key atrule">user</span><span class="token punctuation">:</span>
+          <span class="token key atrule">attributes</span><span class="token punctuation">:</span>
+            <span class="token key atrule">password</span><span class="token punctuation">:</span>
+              <span class="token key atrule">blank</span><span class="token punctuation">:</span> 密码不能为空
+              <span class="token key atrule">too_short</span><span class="token punctuation">:</span> 密码不能少于6个字符
+            <span class="token key atrule">email</span><span class="token punctuation">:</span>
+              <span class="token key atrule">blank</span><span class="token punctuation">:</span> 邮箱不能为空
+              <span class="token key atrule">invalid</span><span class="token punctuation">:</span> 邮箱必须含有 @ 字符
+            <span class="token key atrule">password_confirmation</span><span class="token punctuation">:</span>
+              <span class="token key atrule">blank</span><span class="token punctuation">:</span> 请添加确认密码
+              <span class="token key atrule">confirmation</span><span class="token punctuation">:</span> 两次密码不匹配<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="第八步发送邮件">第八步：发送邮件</h3>
+<p>可以通过 <code>mailer</code> 来发送邮件，点击 <a target="_blank" rel="noopener" href="https://ruby-china.github.io/rails-guides/action_mailer_basics.html">这里查看官方文档</a>。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">bin/rails generate mailer UserMailer<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>这个命令会创建文件 <code>app/mailers/user_mailer</code>，详细请看 <a target="_blank" rel="noopener" href="https://github.com/Hyuain/ruby-demo/commits/master">相关 commit</a></p>
+<p>通过 <code>dotenv-rails</code> 和 <code>.env</code> <code>.env.local</code> 文件来抽出环境变量，注意 <code>.env.local</code> 需要被加入 <code>.gitignore</code> 中，防止将密码提交到 Git 记录中。</p>
+<h2 id="登录功能">登录功能</h2>
+<h3 id="第一步配置路由">第一步：配置路由</h3>
+<p>按照惯例我们需要先配置路由：</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">Rails<span class="token punctuation">.</span>application<span class="token punctuation">.</span>routes<span class="token punctuation">.</span>draw <span class="token keyword">do</span>
+  resources <span class="token symbol">:sessions</span><span class="token punctuation">,</span> <span class="token symbol">only</span><span class="token operator">:</span> <span class="token string-literal"><span class="token string">%i[create destroy]</span></span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h3 id="第二步创建-model">第二步：创建 Model</h3>
+<p>Session 不需要写入数据库，故而不需要创建一个完整的 Model（继承于 ActiveRecord），而是一个轻量的 Model（继承于/include ActiveModel）。</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">Session</span>
+  <span class="token keyword">include</span> ActiveModel<span class="token double-colon punctuation">::</span>Model
+  attr_accessor <span class="token symbol">:email</span><span class="token punctuation">,</span> <span class="token symbol">:password</span>
+
+  validates <span class="token symbol">:email</span><span class="token punctuation">,</span> <span class="token symbol">presence</span><span class="token operator">:</span> <span class="token boolean">true</span>
+  validates <span class="token symbol">:password</span><span class="token punctuation">,</span> <span class="token symbol">presence</span><span class="token operator">:</span> <span class="token boolean">true</span>
+
+  validates_format_of <span class="token symbol">:email</span><span class="token punctuation">,</span> <span class="token symbol">with</span><span class="token operator">:</span> <span class="token regex-literal"><span class="token regex">/.+@.+/</span></span><span class="token punctuation">,</span> <span class="token symbol">if</span><span class="token operator">:</span> <span class="token symbol">:email</span>
+  validates_length_of <span class="token symbol">:password</span><span class="token punctuation">,</span> <span class="token symbol">minimum</span><span class="token operator">:</span> <span class="token number">6</span><span class="token punctuation">,</span> <span class="token symbol">if</span><span class="token operator">:</span> <span class="token symbol">:password</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="attr_accessor">attr_accessor</h4>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">attr_accessor <span class="token symbol">:xxx</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<ol type="1">
+<li>会声明一个对象的属性：<code>@xxx</code></li>
+<li>会定义一个方法：<code>xxx</code>，用于获取 <code>@xxx</code> 的值</li>
+<li>会定义一个方法：<code>xxx=</code>，用于给 <code>@xxx</code> 赋值</li>
+</ol>
+<h3 id="第三步创建-controller">第三步：创建 Controller</h3>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">bin/rails g controller sessions<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">SessionsController</span> <span class="token operator">&lt;</span> ApplicationController
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">create</span></span>
+    s <span class="token operator">=</span> <span class="token class-name">Session</span><span class="token punctuation">.</span><span class="token keyword">new</span> create_params
+    s<span class="token punctuation">.</span>validate
+    render_resource s
+  <span class="token keyword">end</span>
+
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">destroy</span></span>
+
+  <span class="token keyword">end</span>
+
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">create_params</span></span>
+    params<span class="token punctuation">.</span>permit<span class="token punctuation">(</span><span class="token symbol">:email</span><span class="token punctuation">,</span> <span class="token symbol">:password</span><span class="token punctuation">)</span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="第四步自定义校验校验账号密码">第四步：自定义校验，校验账号密码</h3>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">Session</span>
+  <span class="token keyword">include</span> ActiveModel<span class="token double-colon punctuation">::</span>Model
+  attr_accessor <span class="token symbol">:email</span><span class="token punctuation">,</span> <span class="token symbol">:password</span><span class="token punctuation">,</span> <span class="token symbol">:email</span>
+
+  validate <span class="token symbol">:check_email</span><span class="token punctuation">,</span> <span class="token symbol">if</span><span class="token operator">:</span> <span class="token symbol">:email</span>
+  validate <span class="token symbol">:check_email_password_matched</span><span class="token punctuation">,</span> <span class="token symbol">if</span><span class="token operator">:</span> <span class="token class-name">Proc</span><span class="token punctuation">.</span><span class="token keyword">new</span><span class="token punctuation">&#123;</span> <span class="token operator">|</span>s<span class="token operator">|</span> s<span class="token punctuation">.</span>email<span class="token punctuation">.</span>present<span class="token operator">?</span> <span class="token keyword">and</span> s<span class="token punctuation">.</span>password<span class="token punctuation">.</span>present<span class="token operator">?</span> <span class="token punctuation">&#125;</span>
+
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">check_email</span></span>
+    <span class="token variable">@user</span> <span class="token operator">||=</span> User<span class="token punctuation">.</span>find_by email<span class="token operator">:</span> email
+    <span class="token keyword">if</span> user<span class="token punctuation">.</span><span class="token keyword">nil</span><span class="token operator">?</span>
+      errors<span class="token punctuation">.</span>add <span class="token symbol">:email</span><span class="token punctuation">,</span> <span class="token symbol">:unregistered</span>
+    <span class="token keyword">end</span>
+  <span class="token keyword">end</span>
+
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">check_email_password_matched</span></span>
+    <span class="token variable">@user</span> <span class="token operator">||=</span> User<span class="token punctuation">.</span>find_by email<span class="token operator">:</span> email
+    <span class="token keyword">if</span> user <span class="token keyword">and</span> <span class="token operator">!</span>user<span class="token punctuation">.</span>authenticate<span class="token punctuation">(</span>password<span class="token punctuation">)</span>
+      errors<span class="token punctuation">.</span>add <span class="token symbol">:password</span><span class="token punctuation">,</span> <span class="token symbol">:mismatch</span>
+    <span class="token keyword">end</span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="第五步使用中间件记录-sessioncookie">第五步：使用中间件，记录 session（cookie）</h3>
+<p><code>config/application.rb</code></p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">config<span class="token punctuation">.</span>session_store <span class="token symbol">:cookie_store</span><span class="token punctuation">,</span> <span class="token symbol">key</span><span class="token operator">:</span> <span class="token string-literal"><span class="token string">'rails_demo_session_id'</span></span>
+config<span class="token punctuation">.</span>middleware<span class="token punctuation">.</span>use ActionDispatch<span class="token double-colon punctuation">::</span>Cookies
+config<span class="token punctuation">.</span>middleware<span class="token punctuation">.</span>use config<span class="token punctuation">.</span>session_store<span class="token punctuation">,</span> config<span class="token punctuation">.</span>session_options<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p><code>session_controller.rb</code></p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">SessionsController</span> <span class="token operator">&lt;</span> ApplicationController
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">create</span></span>
+    s <span class="token operator">=</span> <span class="token class-name">Session</span><span class="token punctuation">.</span><span class="token keyword">new</span> create_params
+    s<span class="token punctuation">.</span>validate
+    render_resource s
+    session<span class="token punctuation">[</span><span class="token symbol">:current_user_id</span><span class="token punctuation">]</span> <span class="token operator">=</span> s<span class="token punctuation">.</span>user<span class="token punctuation">.</span>id <span class="token comment"># 将 id 记录起来</span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这样前端在发送请求之后将会得到一个 cookie，RubyMine 可以在 <code>http-client.cookies</code> 中查看</p>
+<h3 id="第六步获取当前用户的信息">第六步：获取当前用户的信息</h3>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">def</span> <span class="token method-definition"><span class="token function">current_user</span></span>
+  <span class="token comment"># 如果找不到，会返回 nil，ruby 这样会默认返回 current_user</span>
+  <span class="token variable">@current_user</span> <span class="token operator">||=</span> User<span class="token punctuation">.</span>find_by_id session<span class="token punctuation">[</span><span class="token symbol">:current_user_id</span><span class="token punctuation">]</span>
+  <span class="token comment"># 如果找不到，会报错</span>
+  <span class="token comment"># User.find user_id</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="第七步注销登录">第七步：注销登录</h3>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">SessionsController</span> <span class="token operator">&lt;</span> ApplicationController
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">destroy</span></span>
+    session<span class="token punctuation">[</span><span class="token symbol">:current_user_id</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token keyword">nil</span>
+    head <span class="token symbol">:ok</span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>将 session 中对应 id 的值删掉即可。</p>
+<h3 id="单元测试">单元测试</h3>
+<p>使用 RSpec 进行单元测试，详情查看 <a target="_blank" rel="noopener" href="https://github.com/rspec/rspec-rails">RSpec For Rails 文档</a>。</p>
+<p>详细请看 <a target="_blank" rel="noopener" href="https://github.com/Hyuain/ruby-demo/commits/master">相关 commit</a></p>
+<ul>
+<li>Model 需要测试：validation 和 public 方法</li>
+<li>Controller 需要测试：响应体和响应头（status、body、cookie），一般要测试正反两种情况（成功和不成功）</li>
+</ul>
+<h3 id="自动生成文档">自动生成文档</h3>
+<p>使用 <code>rspec_api_documentation</code> 可以直接通过单元测试生成 API 文档，详细内容可以 <a target="_blank" rel="noopener" href="https://github.com/zipmark/rspec_api_documentation">查看这里</a></p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">rake docs:generate
+start doc/api/index.html<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h3 id="其他技巧">其他技巧</h3>
+<ol type="1">
+<li>可以在 <code>rspec_helper.rb</code> 中定义一些常用的工具函数</li>
+<li>可以使用 <code>rspec_api_documentation</code> 直接生成 API 文档</li>
+</ol>
+<h2 id="后端分页">后端分页</h2>
+<p>使用 <code>kaminari</code> gem</p>
+<h2 id="使用中间表关联两个表">使用中间表关联两个表</h2>
+<p>比如我们需要建立 tagging 来关联 record 和 tag</p>
+<h3 id="创建-model">创建 Model</h3>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">bin/rails g model tagging<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">CreateTaggings</span> <span class="token operator">&lt;</span> ActiveRecord<span class="token double-colon punctuation">::</span>Migration<span class="token punctuation">[</span><span class="token number">6.1</span><span class="token punctuation">]</span>
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">change</span></span>
+    create_table <span class="token symbol">:taggings</span> <span class="token keyword">do</span> <span class="token operator">|</span>t<span class="token operator">|</span>
+      t<span class="token punctuation">.</span>references <span class="token symbol">:tag</span><span class="token punctuation">,</span> <span class="token symbol">null</span><span class="token operator">:</span> <span class="token boolean">false</span>
+      t<span class="token punctuation">.</span>references <span class="token symbol">:record</span><span class="token punctuation">,</span> <span class="token symbol">null</span><span class="token operator">:</span> <span class="token boolean">false</span>
+
+      t<span class="token punctuation">.</span>timestamps
+    <span class="token keyword">end</span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>由于我们加了 <code>reference</code>，可以看到在 <code>schema.rb</code> 中多了一些东西：</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">create_table <span class="token string-literal"><span class="token string">"taggings"</span></span><span class="token punctuation">,</span> <span class="token symbol">force</span><span class="token operator">:</span> <span class="token symbol">:cascade</span> <span class="token keyword">do</span> <span class="token operator">|</span>t<span class="token operator">|</span>
+  t<span class="token punctuation">.</span>bigint <span class="token string-literal"><span class="token string">"tag_id"</span></span><span class="token punctuation">,</span> <span class="token symbol">null</span><span class="token operator">:</span> <span class="token boolean">false</span> <span class="token comment"># 多了这一行</span>
+  t<span class="token punctuation">.</span>bigint <span class="token string-literal"><span class="token string">"record_id"</span></span><span class="token punctuation">,</span> <span class="token symbol">null</span><span class="token operator">:</span> <span class="token boolean">false</span> <span class="token comment"># 多了这一行</span>
+  t<span class="token punctuation">.</span>datetime <span class="token string-literal"><span class="token string">"created_at"</span></span><span class="token punctuation">,</span> <span class="token symbol">precision</span><span class="token operator">:</span> <span class="token number">6</span><span class="token punctuation">,</span> <span class="token symbol">null</span><span class="token operator">:</span> <span class="token boolean">false</span>
+  t<span class="token punctuation">.</span>datetime <span class="token string-literal"><span class="token string">"updated_at"</span></span><span class="token punctuation">,</span> <span class="token symbol">precision</span><span class="token operator">:</span> <span class="token number">6</span><span class="token punctuation">,</span> <span class="token symbol">null</span><span class="token operator">:</span> <span class="token boolean">false</span>
+  t<span class="token punctuation">.</span>index <span class="token punctuation">[</span><span class="token string-literal"><span class="token string">"record_id"</span></span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token symbol">name</span><span class="token operator">:</span> <span class="token string-literal"><span class="token string">"index_taggings_on_record_id"</span></span> <span class="token comment"># 多了这一行</span>
+  t<span class="token punctuation">.</span>index <span class="token punctuation">[</span><span class="token string-literal"><span class="token string">"tag_id"</span></span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token symbol">name</span><span class="token operator">:</span> <span class="token string-literal"><span class="token string">"index_taggings_on_tag_id"</span></span> <span class="token comment"># 多了这一行</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>然后需要调整 <code>model/tagging.rb</code> <code>model/record.rb</code> <code>model/tag.rb</code></p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">Tagging</span> <span class="token operator">&lt;</span> ApplicationRecord
+  belongs_to <span class="token symbol">:record</span>
+  belongs_to <span class="token symbol">:tag</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">Tag</span> <span class="token operator">&lt;</span> ApplicationRecord
+  has_many <span class="token symbol">:taggings</span>
+  has_many <span class="token symbol">:records</span><span class="token punctuation">,</span> <span class="token symbol">through</span><span class="token operator">:</span> <span class="token symbol">:taggings</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">Record</span> <span class="token operator">&lt;</span> ApplicationRecord
+  has_many <span class="token symbol">:taggings</span>
+  has_many <span class="token symbol">:tags</span><span class="token punctuation">,</span> <span class="token symbol">through</span><span class="token operator">:</span> <span class="token symbol">:taggings</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="使用-factory-bot-加速测试">使用 Factory Bot 加速测试</h2>
+<p>可以使用 <a target="_blank" rel="noopener" href="https://github.com/thoughtbot/factory_bot">factory-bot</a> 来帮助我们自动化一些流程，比如：</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># spec/factories/user_factory.rb</span>
+FactoryBot<span class="token punctuation">.</span>define <span class="token keyword">do</span>
+  factory <span class="token symbol">:user</span> <span class="token keyword">do</span>
+    email <span class="token punctuation">&#123;</span> <span class="token string-literal"><span class="token string">"test_email@qq.com"</span></span> <span class="token punctuation">&#125;</span>
+    password <span class="token punctuation">&#123;</span> <span class="token string-literal"><span class="token string">"123456"</span></span> <span class="token punctuation">&#125;</span>
+    password_confirmation <span class="token punctuation">&#123;</span> <span class="token string-literal"><span class="token string">"123456"</span></span> <span class="token punctuation">&#125;</span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># spec/requests/record.rb</span>
+user <span class="token operator">=</span> create<span class="token punctuation">(</span><span class="token symbol">:user</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h1 id="deployment">Deployment</h1>
+<h2 id="购买并登录阿里云服务器">购买并登录阿里云服务器</h2>
+<ol type="1">
+<li>去阿里云选择 ECS 服务器，购买一个。登录凭证选择使用密钥对。</li>
+<li>使用 <code>ssh root@公网ip</code> 登录到机器上</li>
+<li>公网 IP 很难记，建议记到 hosts 文件里</li>
+</ol>
+<h2 id="创建低权限用户">创建低权限用户</h2>
+<ol type="1">
+<li>进入 root 用户</li>
+<li>安装 git：<code>apt update; apt install git -y</code></li>
+<li>创建 harvey 用户：<code>adduser harvey</code>，密码为 <code>123456</code></li>
+<li>让 harvey 用户也能 ssh 登录</li>
+<li><code>mkdir -p /home/harvey/.ssh</code></li>
+<li><code>cp ~/.ssh/authorized_keys /home/harvey/.ssh/</code></li>
+<li><code>chown -R harvey:harvey /home/harvey/.ssh</code></li>
+<li>退出 root（使用 <code>exit</code> 或 <code>ctrl + D</code>）</li>
+<li>现在就可以使用 <code>ssh root@harvey</code> 登录 harvey 用户了</li>
+</ol>
+<h2 id="安装-docker">安装 Docker</h2>
+<ol type="1">
+<li>进入 root 用户</li>
+<li>根据 <a target="_blank" rel="noopener" href="https://www.runoob.com/docker/ubuntu-docker-install.html">菜鸟教程</a> 来安装 Docker</li>
+<li>将 harvey 添加到 docker 用户组：<code>usermod -aG docker harvey</code>，这样 harvey 才能运行 docker 命令</li>
+<li>运行 <code>docker run hello-world</code></li>
+<li>如果 <code>docker run hello-wrold</code> 运行很慢，可以参考 <a target="_blank" rel="noopener" href="https://developer.aliyun.com/article/29941">这篇文章</a> ，在 <a target="_blank" rel="noopener" href="https://cr.console.aliyun.com/cn-hangzhou/instances/mirrors">这里</a> 配置镜像加速器。</li>
+</ol>
+<h2 id="用-docker-启动数据库">用 Docker 启动数据库</h2>
+<ol type="1">
+<li>进入 harvey 用户</li>
+<li>创建数据库目录 <code>mkdir /home/harvey/data</code></li>
+<li>开启数据库 <code>docker run --net=host -v /home/harvey/data:/var/lib/postgresql/data -p 5432:5432 -e POSTGRES_USER=harvey -e POSTGRES_PASSWORD=123456 --name psql1 -d postgres</code></li>
+<li>注意如果 <code>-net=host</code> 没有写的话会导致两个容器网不通</li>
+<li>此处用了端口 5432 而不是 5001，因为 <code>-net=host</code> 不支持 <code>5001:5432</code></li>
+<li>测试数据库</li>
+<li><code>docker exec -t psql1 bash</code> 进入容器</li>
+<li><code>psql -U harvey</code></li>
+<li><code>\l</code> 列出所有可用数据库</li>
+</ol>
+<h2 id="测试-ruby-容器">测试 Ruby 容器</h2>
+<ol type="1">
+<li>进入 harvey 用户</li>
+<li>创建测试文件 <code>echo "p 'Hi, I am Harvey'" &gt; test.rb</code></li>
+<li>使用 ruby 容器运行测试文件：<code>docker run -it --rm -v "$PWD":/usr/src/myapp -w /usr/src/myapp ruby ruby test.rb</code></li>
+<li>看到 <code>Hi, I am Harvey</code> 就说明测试成功了，然后用 <code>rm test.rb</code> 删除测试代码</li>
+</ol>
+<h2 id="本地构建-rails-镜像">本地构建 Rails 镜像</h2>
+<ol type="1">
+<li>创建 <code>Dockerfile</code>： <pre class="line-numbers language-docker" data-language="docker"><code class="language-docker"><span class="token comment"># 从哪里下载镜像，可以指定目录</span>
+<span class="token instruction"><span class="token keyword">FROM</span> ruby</span>
+
+<span class="token comment"># 工作目录</span>
+<span class="token instruction"><span class="token keyword">WORKDIR</span> /usr/src/app</span>
+<span class="token comment"># 把源代码拷贝到这个镜像中</span>
+<span class="token instruction"><span class="token keyword">COPY</span> Gemfile .</span>
+<span class="token instruction"><span class="token keyword">COPY</span> Gemfile.lock .</span>
+<span class="token comment"># 在镜像中运行</span>
+<span class="token instruction"><span class="token keyword">RUN</span> gem sources --add https://gems.ruby-china.com/ --remove https://rubygems.org/</span>
+<span class="token instruction"><span class="token keyword">RUN</span> gem install bundler</span>
+<span class="token instruction"><span class="token keyword">RUN</span> bundle config mirror.https://rubygems.org https://gems.ruby-china.com</span>
+<span class="token instruction"><span class="token keyword">RUN</span> bundle install</span>
+<span class="token comment"># 将所有的文件都拷贝到这个镜像中</span>
+<span class="token instruction"><span class="token keyword">COPY</span> . .</span>
+<span class="token comment"># 更新 bin 目录</span>
+<span class="token instruction"><span class="token keyword">RUN</span> bundle exec rake app:update:bin</span>
+<span class="token comment"># 暴露 3000 短开口</span>
+<span class="token instruction"><span class="token keyword">EXPOSE</span> 3000</span>
+<span class="token comment"># 入口命令</span>
+<span class="token instruction"><span class="token keyword">CMD</span> [ <span class="token string">"bin/rails"</span>, <span class="token string">"server"</span>, <span class="token string">"-b"</span>,<span class="token string">"0.0.0.0"</span>, <span class="token string">"-p"</span>,<span class="token string">"3000"</span>]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+<li>将 <code>config/database.yml</code> 复制到 <code>config/database.sample.yml</code>，再把原来的 <code>config/database.yml</code> ignore 掉</li>
+<li><code>docker build -t harvey/rails-demo:0.1 .</code>，得到镜像 <code>harvey/rails-demo</code> 版本为 0.1</li>
+<li>运行刚刚得到的镜像：<code>docker run --net=host -p 3000:3000 harvey/rails-demo:0.1</code></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2022/06/16/Browser/Chromium%20Blogs/" rel="prev" title="Topics From Chromium Blogs">
+                  <i class="fa fa-chevron-left"></i> Topics From Chromium Blogs
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2023/01/16/Blockchain%20and%20Crypto/Blockchain/" rel="next" title="Blockchain">
+                  Blockchain <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Harvey Zhang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="/hais-notebook/lib/animejs/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/hais-notebook/js/comments.js"></script><script src="/hais-notebook/js/utils.js"></script><script src="/hais-notebook/js/next-boot.js"></script>
+
+  <script src="/hais-notebook/lib/hexo-generator-searchdb/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/hais-notebook/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"/hais-notebook/lib/mathjax/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/hais-notebook/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

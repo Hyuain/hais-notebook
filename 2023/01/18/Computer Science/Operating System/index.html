@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hais-notebook/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/hais-notebook/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/hais-notebook/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/hais-notebook/images/safari-pinned-tab.svg" color="#222">
+
+<link rel="stylesheet" href="/hais-notebook/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.font.im/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="/hais-notebook/lib/@fortawesome/fontawesome-free/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"hyuain.github.io","root":"/hais-notebook/","images":"/hais-notebook/images","scheme":"Gemini","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac","show_result":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/hais-notebook/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/hais-notebook/js/config.js"></script>
+
+    <meta name="description" content=".">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Operating System">
+<meta property="og:url" content="https://hyuain.github.io/hais-notebook/2023/01/18/Computer%20Science/Operating%20System/index.html">
+<meta property="og:site_name" content="Hais Notebook">
+<meta property="og:description" content=".">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-01-18T21:37:30.000Z">
+<meta property="article:modified_time" content="2023-01-18T21:37:30.000Z">
+<meta property="article:author" content="Harvey Zhang">
+<meta property="article:tag" content="Notebook">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://hyuain.github.io/hais-notebook/2023/01/18/Computer%20Science/Operating%20System/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hyuain.github.io/hais-notebook/2023/01/18/Computer%20Science/Operating%20System/","path":"2023/01/18/Computer Science/Operating System/","title":"Operating System"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Operating System | Hais Notebook</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/hais-notebook/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/hais-notebook/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Hais Notebook</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/hais-notebook/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/hais-notebook/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/hais-notebook/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/hais-notebook/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#process-thread"><span class="nav-number">2.</span> <span class="nav-text">Process &amp; Thread</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#process"><span class="nav-number">2.1.</span> <span class="nav-text">Process</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#pseudoparallelism"><span class="nav-number">2.1.1.</span> <span class="nav-text">Pseudoparallelism</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#process-model"><span class="nav-number">2.1.2.</span> <span class="nav-text">Process Model</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#creation-of-process"><span class="nav-number">2.1.3.</span> <span class="nav-text">Creation of Process</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#system-initialization"><span class="nav-number">2.1.3.1.</span> <span class="nav-text">System Initialization</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#system-call"><span class="nav-number">2.1.3.2.</span> <span class="nav-text">System Call</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#user-request"><span class="nav-number">2.1.3.3.</span> <span class="nav-text">User Request</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#batch-processing"><span class="nav-number">2.1.3.4.</span> <span class="nav-text">Batch Processing</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#end-of-process"><span class="nav-number">2.1.4.</span> <span class="nav-text">End of Process</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#exit"><span class="nav-number">2.1.4.1.</span> <span class="nav-text">Exit</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#exception"><span class="nav-number">2.1.4.2.</span> <span class="nav-text">Exception</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#error"><span class="nav-number">2.1.4.3.</span> <span class="nav-text">Error</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#killed"><span class="nav-number">2.1.4.4.</span> <span class="nav-text">Killed</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hierarchy-of-process"><span class="nav-number">2.1.5.</span> <span class="nav-text">Hierarchy of Process</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#unix"><span class="nav-number">2.1.5.1.</span> <span class="nav-text">UNIX</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#windows"><span class="nav-number">2.1.5.2.</span> <span class="nav-text">Windows</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#process-status"><span class="nav-number">2.1.6.</span> <span class="nav-text">Process Status</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#process-table"><span class="nav-number">2.1.7.</span> <span class="nav-text">Process Table</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#thread"><span class="nav-number">2.2.</span> <span class="nav-text">Thread</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#classical-thread-model"><span class="nav-number">2.2.1.</span> <span class="nav-text">Classical Thread Model</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#posix"><span class="nav-number">2.2.2.</span> <span class="nav-text">POSIX</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#section"><span class="nav-number">2.2.3.</span> <span class="nav-text"></span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5"><span class="nav-number">2.2.4.</span> <span class="nav-text">概念</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#deadlock"><span class="nav-number">3.</span> <span class="nav-text">Deadlock</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#resouce"><span class="nav-number">3.1.</span> <span class="nav-text">Resouce</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Harvey Zhang</p>
+  <div class="site-description" itemprop="description">海鲜酱的笔记本</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/hais-notebook/archives/">
+          <span class="site-state-item-count">49</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/hais-notebook/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2023/01/18/Computer%20Science/Operating%20System/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
+      <meta itemprop="name" content="Harvey Zhang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hais Notebook">
+      <meta itemprop="description" content="海鲜酱的笔记本">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Operating System | Hais Notebook">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Operating System
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-01-18 21:37:30" itemprop="dateCreated datePublished" datetime="2023-01-18T21:37:30+00:00">2023-01-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/" itemprop="url" rel="index"><span itemprop="name">计算机</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>.</p>
+<span id="more"></span>
+<h1 id="introduction">Introduction</h1>
+<h1 id="process-thread">Process &amp; Thread</h1>
+<h2 id="process">Process</h2>
+<blockquote>
+<p><strong>进程（Process）</strong> 是 <strong>程序</strong>（比如 exe）的执行实例。<strong>程序</strong> 在CPU上执行的活动叫做 <strong>进程</strong>。</p>
+</blockquote>
+<p>一个进程可以创建另一个进程（父进程与子进程）。</p>
+<h3 id="pseudoparallelism">Pseudoparallelism</h3>
+<p><strong>伪并行（Pseudoparallelism）</strong>：单核 CPU 在一个时刻，只能做一件事情，为了让用户在同一时刻可以做多件事，就需要在不同进程中快速切换。这样多个程序在宏观上并行，微观上串行。多个进程之间会出现抢资源（比如打印机就很明显）的现象。</p>
+<h3 id="process-model">Process Model</h3>
+<p>在进程模型中，所有计算机上运行的软件（包括操作系统）被组织为 <strong>顺序进程（Sequential Processes）</strong>，也简称为 <strong>进程（Process）</strong>。</p>
+<p>一个进程就是一个执行程序的实例，此外进程还包括程序计数器、寄存器和变量的当前值。</p>
+<p>多个进程独立运行，有各自的逻辑程序计数器，和共用的一个物理程序计数器。当程序需要运行的时候，他的逻辑程序计数器就会装载到物理程序计数器上。</p>
+<h3 id="creation-of-process">Creation of Process</h3>
+<h4 id="system-initialization">System Initialization</h4>
+<p>启动操作系统时会创建一些进程，包括 <strong>前台进程（Numerous Processes）</strong> 和 <strong>守护进程（Daemons）</strong>。在 UNIX 中，使用 <code>ps</code> 可以看到真该运行的进程。</p>
+<h4 id="system-call">System Call</h4>
+<p>正在运行的程序会发出 <strong>系统调用（System Calls）</strong>来创建一个或多个新进程来辅助完成工作。</p>
+<h4 id="user-request">User Request</h4>
+<p>用户可以通过命令、鼠标或其他交互方式创建新进程并与之进行交互。</p>
+<h4 id="batch-processing">Batch Processing</h4>
+<p>用户在大型机的批处理系统中提交批处理作业，当操作系统确定他有资源来运行另一个任务时，他将创建一个新进程运行下一个作业。</p>
+<h3 id="end-of-process">End of Process</h3>
+<h4 id="exit">Exit</h4>
+<p>进程完成工作后正常终止，编译器会执行一个系统调用来告诉操作系统他完成了工作。比如 UNIX 中的 <code>exit</code> 和 Windows 中的 <code>ExitProcess</code>。</p>
+<p>很多程序会提供一个按钮供用户点击，从而通知进程删除他打开的所有临时文件，然后退出。</p>
+<h4 id="exception">Exception</h4>
+<p>发生了意料之内的错误，比如执行了命令 <code>cc foo.c</code>，但文件 foo.c 并不存在，此时应用程序通常会给出错误信息，并询问是重试还是退出。</p>
+<h4 id="error">Error</h4>
+<p>进程引起的错误，通常是程序错误导致的，比如执行了非法指令、引用不存在的内存、除以零等。有时候在这类错误中，进程会收到中断信号，并不会直接终止进程。</p>
+<h4 id="killed">Killed</h4>
+<p>某个进程执行系统调用，让操作系统杀掉其他进程，比如 UNIX 中的 <code>kill</code>。</p>
+<h3 id="hierarchy-of-process">Hierarchy of Process</h3>
+<p>在有的操作系统中，进程可以通过创建其他进程来形成父子层次结构关系。</p>
+<h4 id="unix">UNIX</h4>
+<p>UNIX 中进程和他的所有子孙进程组成一个进程组。比如当用户键盘发出信号后，该信号会被发送给当前与键盘相关的进程组中的每一个成员，他们可以根据需求做出不同的响应。</p>
+<p>比如：</p>
+<ul>
+<li><p>UNIX 在启动的时候会有一个初始化进程 init。</p></li>
+<li><p>当他开始运行时，他会读取一个文件，文件会告诉他有多少个终端，然后为每个终端创建一个新进程。</p></li>
+<li><p>用户成功登录某个终端后，该登录进程就会执行一个 shell 来等待用户输入指令，这些指令可能会启动更多的进程。</p></li>
+</ul>
+<h4 id="windows">Windows</h4>
+<p>Windows 中没有进程层次的概念，里面的所有进程都是平等的。不过父进程在创建子进程的时候会得到一个令牌（句柄），可以用来控制子进程，该句柄是可以传递给别的进程的。</p>
+<h3 id="process-status">Process Status</h3>
+<ul>
+<li><strong>运行态</strong>：实际占用 CPU 时间片。</li>
+<li><strong>就绪态</strong>：可运行的状态，等待其他进程运行完成后获取 CPU 资源。就绪态和运行态之间的切换是有操作系统的进程调度程序来进行的，他会决定哪个进程优先被运行、运行多久。</li>
+<li><strong>阻塞态</strong>：除非某种外部事件发生，比如有的进程在等待 I/O 完成（比如文件读取），如果这时候即使把 CPU 分配给他，他也不会使用 CPU，而是继续等 I/O。如果 I/O 完成事件发生，则会转变为运行态或就绪态。</li>
+</ul>
+<h3 id="process-table">Process Table</h3>
+<p>操作系统会维护一张进程表（Process Table）来进行进程间的切换。</p>
+<p>每个进程都在其中占据一个进程表项，该表项会记录程序计数器、堆栈指针、内存分配情况、打开文件状态、账号和调度信息等。</p>
+<h2 id="thread">Thread</h2>
+<p>早期的面向进程设计的操作系统中，进程是程序的基本执行实体。现在的面向线程设计的系统中，进程本身不是基本运行单位，而是线程的容器。</p>
+<ul>
+<li>多线程之间共用同一块地址空间和数据，多进程之间则不行；</li>
+<li>线程比进程更加轻量级，创建一个线程比创建一个进程块 10 ~ 100 倍。</li>
+</ul>
+<h3 id="classical-thread-model">Classical Thread Model</h3>
+<p><strong>进程存放程序正文、数据、打开的文件、子进程、定时器、信号处理程序、账号信息等资源，是资源分配的基本实体。</strong></p>
+<p><strong>线程有程序计数器、寄存器、堆栈，作为 CPU 上调度执行的基本实体。</strong></p>
+<p>同一个进程中的所有线程都会有完全一样的地址空间，同样的全局变量，他甚至可以读取、写入和擦除另一个线程的堆栈。</p>
+<p>进程通常会从当前的某个单线程开始，调用某个库函数，比如 <code>thread_create</code> 来创建新进程。</p>
+<p>线程工作完成后可以调用 <code>thread_exit</code> 之类的库函数来退出。</p>
+<p>某些线程可以在运行过程中调用 <code>thread_join</code> 来等待另一个线程退出。</p>
+<p>线程与进程不同，他不能利用时钟中断强制让出 CPU，但可以调用 <code>thread_yield</code> 来自动放弃 CPU 来让其他线程运行。</p>
+<h3 id="posix">POSIX</h3>
+<p>POSIX 线程通常也被称为 pthreads，是一种通用的线程标准，一种独立于语言的执行模型，以及并行执行模型。每个工作流程被称为一个线程，可以通过 POSIX Threads API 来实现对这些流程的创建和控制，比如上面提到的 <code>thread_create</code> <code>thread_exit</code> 等。</p>
+<h3 id="section"></h3>
+<h3 id="概念">概念</h3>
+<ul>
+<li>CPU 调度和执行的最小单元</li>
+<li>一个进程中可以有一个或多个线程</li>
+<li>一个进程中的线程共享该进程的所有资源</li>
+<li>进程的第一个线程叫做初始化线程</li>
+<li>线程的调度可以由操作系统负责，也可以由用户自己负责</li>
+</ul>
+<h1 id="deadlock">Deadlock</h1>
+<p>死锁是指两个或从多个进程在执行的过程中，因为争抢资源而造成的一种僵局。</p>
+<p>想象这样一个场景：一个进程正在持有某些资源而不释放他们，并且正在等待释放其他资源，而这些其他资源也在被其他进程持有并且不释放。这就导致了一个僵局，其中进程相互等待彼此持有的资源，而没有谁能够继续执行。</p>
+<p>可以想象两个人坐在餐桌上，每个人都有一个叉子，但需要两个叉子才能吃饭。他们都不愿意放下自己的叉子去拿另一个叉子，因为他们担心另一个人会拿走它。所以，他们只是坐在那里，互相等待，没有人吃饭，这就是死锁的情况。</p>
+<h2 id="resouce">Resouce</h2>
+<p>我们把需要排他性使用的对象称为 <strong>资源（Resource）</strong>，同一时刻一个资源只能由一个进程使用，就像打印机，同一时间打印机只能打印一份东西。</p>
+<p>资源可以进一步分为：</p>
+<ul>
+<li><strong>可抢占资源（Preemtable Resource）</strong>，可以从拥有它的进程中抢占过来而不会造成其他影响，比如内存。</li>
+<li><strong>不可抢占资源（Nonpreemptable Resource）</strong>，进程无法抢占指定资源，否则会引起错误或异常，比如光盘。</li>
+</ul>
+<p>死锁通常与不可抢占资源有关，因为可抢占资源造成的死锁可以通过强行抢占资源来简单化解。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2023/01/18/Security/Internet%20Security/" rel="prev" title="Internet Security">
+                  <i class="fa fa-chevron-left"></i> Internet Security
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2023/01/18/Computer%20Science/Networking/" rel="next" title="Networking">
+                  Networking <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Harvey Zhang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="/hais-notebook/lib/animejs/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/hais-notebook/js/comments.js"></script><script src="/hais-notebook/js/utils.js"></script><script src="/hais-notebook/js/next-boot.js"></script>
+
+  <script src="/hais-notebook/lib/hexo-generator-searchdb/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/hais-notebook/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"/hais-notebook/lib/mathjax/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/hais-notebook/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

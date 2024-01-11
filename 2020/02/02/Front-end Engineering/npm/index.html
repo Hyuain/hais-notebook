@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hais-notebook/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/hais-notebook/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/hais-notebook/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/hais-notebook/images/safari-pinned-tab.svg" color="#222">
+
+<link rel="stylesheet" href="/hais-notebook/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.font.im/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="/hais-notebook/lib/@fortawesome/fontawesome-free/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"hyuain.github.io","root":"/hais-notebook/","images":"/hais-notebook/images","scheme":"Gemini","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac","show_result":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/hais-notebook/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/hais-notebook/js/config.js"></script>
+
+    <meta name="description" content="收集 npm 的包和问题。 参考了 1 , 2">
+<meta property="og:type" content="article">
+<meta property="og:title" content="npm &amp; yarn">
+<meta property="og:url" content="https://hyuain.github.io/hais-notebook/2020/02/02/Front-end%20Engineering/npm/index.html">
+<meta property="og:site_name" content="Hais Notebook">
+<meta property="og:description" content="收集 npm 的包和问题。 参考了 1 , 2">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-02-02T15:34:21.000Z">
+<meta property="article:modified_time" content="2020-02-02T15:34:21.000Z">
+<meta property="article:author" content="Harvey Zhang">
+<meta property="article:tag" content="Notebook">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://hyuain.github.io/hais-notebook/2020/02/02/Front-end%20Engineering/npm/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hyuain.github.io/hais-notebook/2020/02/02/Front-end%20Engineering/npm/","path":"2020/02/02/Front-end Engineering/npm/","title":"npm & yarn"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>npm & yarn | Hais Notebook</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/hais-notebook/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/hais-notebook/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Hais Notebook</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/hais-notebook/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/hais-notebook/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/hais-notebook/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/hais-notebook/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BE%9D%E8%B5%96%E5%8C%85%E5%88%86%E7%B1%BB"><span class="nav-number">1.</span> <span class="nav-text">依赖包分类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#dependencies-devdependencies"><span class="nav-number">1.1.</span> <span class="nav-text">dependencies, devDependencies</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#peerdependencies-bundledependencies-optionaldependencies"><span class="nav-number">1.2.</span> <span class="nav-text">peerDependencies, bundleDependencies, optionalDependencies</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#peerdependencies"><span class="nav-number">1.2.1.</span> <span class="nav-text">peerDependencies</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bundleddependencies"><span class="nav-number">1.2.2.</span> <span class="nav-text">bundledDependencies</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#optionaldependencies"><span class="nav-number">1.2.3.</span> <span class="nav-text">optionalDependencies</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#scripts"><span class="nav-number">2.</span> <span class="nav-text">scripts</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#package-lock.json"><span class="nav-number">3.</span> <span class="nav-text">package-lock.json</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#npm-%E5%AE%89%E8%A3%85%E7%9A%84%E6%B5%81%E7%A8%8B"><span class="nav-number">3.1.</span> <span class="nav-text">npm 安装的流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BE%8B1"><span class="nav-number">3.1.1.</span> <span class="nav-text">例1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BE%8B2"><span class="nav-number">3.1.2.</span> <span class="nav-text">例2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BE%8B3"><span class="nav-number">3.1.3.</span> <span class="nav-text">例3</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#npm-ci"><span class="nav-number">3.2.</span> <span class="nav-text">npm ci</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#npm-shrinkwrap.json"><span class="nav-number">4.</span> <span class="nav-text">npm-shrinkwrap.json</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#npm-outdated"><span class="nav-number">5.</span> <span class="nav-text">npm-outdated</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98"><span class="nav-number">6.</span> <span class="nav-text">一些问题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%8E%E4%B9%88%E7%9F%A5%E9%81%93%E5%8C%85%E7%9A%84%E6%9C%80%E6%96%B0%E7%89%88%E6%98%AF%E5%A4%9A%E5%B0%91"><span class="nav-number">6.1.</span> <span class="nav-text">怎么知道包的最新版是多少？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A5%BD%E7%94%A8%E7%9A%84-npm-%E5%8C%85"><span class="nav-number">7.</span> <span class="nav-text">好用的 npm 包</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#nrm"><span class="nav-number">7.1.</span> <span class="nav-text">nrm</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Harvey Zhang</p>
+  <div class="site-description" itemprop="description">海鲜酱的笔记本</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/hais-notebook/archives/">
+          <span class="site-state-item-count">49</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/hais-notebook/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2020/02/02/Front-end%20Engineering/npm/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
+      <meta itemprop="name" content="Harvey Zhang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hais Notebook">
+      <meta itemprop="description" content="海鲜酱的笔记本">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="npm & yarn | Hais Notebook">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          npm & yarn
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-02-02 15:34:21" itemprop="dateCreated datePublished" datetime="2020-02-02T15:34:21+00:00">2020-02-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index"><span itemprop="name">工具</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>收集 npm 的包和问题。 参考了 <a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000039289332">1</a> , <a target="_blank" rel="noopener" href="https://juejin.cn/post/6844903870578032647">2</a></p>
+<span id="more"></span>
+<h1 id="依赖包分类">依赖包分类</h1>
+<h2 id="dependencies-devdependencies">dependencies, devDependencies</h2>
+<table>
+<thead>
+<tr class="header">
+<th>dependencies</th>
+<th>devDependencies</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>npm install [name]</code></td>
+<td><code>npm install [name] --save-dev</code></td>
+</tr>
+<tr class="even">
+<td>生产环境，属于线上代码的一部分</td>
+<td>开发时才需要的依赖</td>
+</tr>
+<tr class="odd">
+<td>vue、element-ui 等</td>
+<td>webpack、babel-loader 等</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><code>npm install</code> 的时候，两个模块的包都会被下载</li>
+<li>可以通过 <code>npm install --production</code> 忽略开发依赖，只安装基本依赖</li>
+<li>模块是否被打包，取决于项目是否引入了该模块，而不取决于是在 dependencies 还是在 devDependencies 中</li>
+<li>对于普通项目来说，把包写在哪里区别不大，但如果将这个包发布，那么写在 devDependencies 中的依赖将不会被下载</li>
+</ul>
+<h2 id="peerdependencies-bundledependencies-optionaldependencies">peerDependencies, bundleDependencies, optionalDependencies</h2>
+<p>这三个属性主要是面向包的发布者。</p>
+<h3 id="peerdependencies">peerDependencies</h3>
+<p>表明如果想要使用这个包，需要的宿主环境所安装的包。</p>
+<p>比如在 <code>vuei</code> 的 <code>1.0.0-alpha.24</code> 版本中，有：</p>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">&#123;</span>
+  <span class="token property">"peerDependencies"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+    <span class="token property">"vue"</span><span class="token operator">:</span> <span class="token string">"^2.5.16"</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>表明如果在要使用该版本的 <code>vuei</code>，需要 <code>vue</code> 的版本 <code>&gt;=2.5.16</code> 且 <code>&lt;3.0.0</code>。</p>
+<p>在 npm3.x 以上的版本中，如果安装结束后宿主环境没有满足要求，就会在控制台打出警告。</p>
+<h3 id="bundleddependencies">bundledDependencies</h3>
+<p>如果想在本地保留一个完整的 npm 包或者想生成一个压缩文件来获取 npm 包，会用到这个 bundleDependencies。使用 <code>npm pack</code> 进行打包的时候会将 bundleDependencies 中的包一起打包，并在 <code>npm install</code> 的时候进行安装。</p>
+<p>比如：</p>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">&#123;</span>
+  <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"my-npm-pack"</span><span class="token punctuation">,</span>
+  <span class="token property">"version"</span><span class="token operator">:</span> <span class="token string">"1.0.0"</span><span class="token punctuation">,</span>
+  <span class="token property">"bundleDependencies"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token string">"renderized"</span><span class="token punctuation">,</span>
+    <span class="token string">"super-streams"</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>当我们执行 <code>npm pack</code> 之后会生成 <code>my-npm-pack-1.0.0.tgz</code> 文件，该文件中包含 <code>renderized</code> 和 <code>super-streams</code> 依赖。当执行 <code>npm install my-npm-pack-1.0.0.tgz</code> 时，会自动安装这两个依赖。他们的版本需要在 dependencies 中指定。</p>
+<p>当使用 <code>npm publish</code> 来发布包的话，这个属性将不起作用。</p>
+<h3 id="optionaldependencies">optionalDependencies</h3>
+<p>写在 optionalDependencies 里面的包，如果安装失败了也不会影响安装过程，并且 optionalDependencies 中的配置会覆盖 dependencies 中对应包的配置。</p>
+<h1 id="scripts">scripts</h1>
+<ul>
+<li>定义在 <code>scripts</code> 中的命令，可以用过 <code>npm run &lt;command&gt;</code> 来执行</li>
+<li><code>test</code> <code>start</code> <code>restart</code> <code>stop</code> 可以不用加 <code>run</code></li>
+<li><code>npm run env</code> 可以获取到脚本运行时所有的环境变量</li>
+<li><code>npm run</code> 会将 <code>node_modules/.bin/</code> 加入到 <code>shell</code> 的环境变量 <code>PATH</code> 中，这样局部安装的包就可以直接执行而不用加 <code>node_modules/.bin/</code> 的前缀</li>
+</ul>
+<h1 id="package-lock.json">package-lock.json</h1>
+<p><a target="_blank" rel="noopener" href="https://docs.npmjs.com/cli/v7/configuring-npm/package-lock-json">文档在这里</a></p>
+<p>对于 npm 来说，<code>package.json</code> 可以看做他的输入，<code>node_modules</code> 可以看成他的输出。</p>
+<p>那么在理想情况下 npm 应该是一个 <strong>纯函数</strong>，但大多数时候并不能做到这一点，主要是因为：</p>
+<ul>
+<li>使用者 npm 版本可能不同，不同版本有不同的算法</li>
+<li><code>^2.6.1</code> 这样的写法会使得安装的版本不同</li>
+<li>我们可以写死版本，但却无法控制包的依赖的升级</li>
+</ul>
+<p>为了解决这个问题，npm5.x 开始加入了 <code>package-lock.json</code> 文件，每当 <code>npm install</code> 的时候，npm 都会产生/更新 <code>package-lock.json</code> 文件，他的作用就是锁定当前依赖安装结构。</p>
+<p>我们需要注意 <code>pacakge-lock.json</code> 中的 <code>requires</code> 和 <code>dependencies</code> 两个属性的不同：</p>
+<ul>
+<li><code>requires</code> 表示包的依赖，与包的 <code>package.json</code> 中的 <code>dependencies</code> 依赖项相同</li>
+<li><code>dependencies</code> 是存在包的 <code>node_modules</code> 中的依赖（不是所有的包都有，只有当包的依赖包的版本与根目录 <code>node_moduels</code> 中的依赖冲突时才会有</li>
+</ul>
+<p>从 npm3.x 开始，就采用扁平化的方式安装 <code>node_modules</code>。在安装的时候，npm 会遍历整个依赖树，不管是项目的直接依赖还是依赖的依赖，都会优先安装在根目录的 <code>node_modules</code> 中。遇到相同名称的包，如果发现根目录的 <code>node_modules</code> 中存在，但不符合 semver-range，就会将包的依赖装在包的 <code>node_modules</code> 中。</p>
+<h2 id="npm-安装的流程">npm 安装的流程</h2>
+<ol type="1">
+<li>从磁盘加载 <code>node_modules</code> 树</li>
+<li>克隆 <code>node_modules</code> 树</li>
+<li>获取 <code>package.json</code> 文件和分类完毕的元数据信息，并把元数据信息插入到克隆树中</li>
+<li>遍历克隆树，检查是否有丢失的依赖。如果有，把他们添加到克隆树中，依赖会尽可能地添加到最高层</li>
+<li>比较原始树和克隆树，列出将原始树转换为克隆树需要采取的具体步骤</li>
+<li>执行具体步骤，包括 install、update、remove、move 等</li>
+</ol>
+<h3 id="例1">例1</h3>
+<p>假设 <code>package&#123;dep&#125;</code> 结构代表包和包的依赖，现在有 <code>A&#123;B,C&#125;</code> <code>B&#123;C&#125;</code> <code>C&#123;D&#125;</code>，按照算法执行完毕之后，生成 <code>node_modules</code> 如下：</p>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">A
++-- B
++-- C
++-- D<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在安装 <code>B</code> 的依赖——<code>C</code> 的时候，发现顶层已经有 <code>C</code> 了，于是不会再在 <code>B</code> 的 <code>node_modules</code> 中再次安装；安装 <code>D</code> 的时候发现顶层没有 <code>D</code>，于是就将 <code>D</code> 安装在顶层。</p>
+<h3 id="例2">例2</h3>
+<p>当我们使用 <code>A&#123;B,C&#125;</code> <code>B&#123;C, D@1&#125;</code> <code>C&#123;D@2&#125;</code> 这样的依赖关系，产生的结果如下：</p>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">A
++-- B
++-- C
+    +-- D@2
++-- D@1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><code>B</code> 依赖 <code>D@1</code>，安装时发现顶层没有，就会把 <code>D@1</code> 装在顶层；<code>C</code> 又依赖了 <code>D@2</code>，但安装 <code>D@2</code> 的时候发现顶层已经有了，npm 不允许同层存在两个名字相同的包，于是就将 <code>D@2</code> 装在了 <code>C</code> 自己的 <code>node_modules</code> 中。</p>
+<p>模块安装的顺序会影响当存在相同依赖时，哪个版本会被安装在顶层。首先是项目中依赖的第一层包，然后这些包会被按照 a-z 的顺序依次进行安装（与在 <code>package.json</code> 中写入的顺序无关）。</p>
+<h3 id="例3">例3</h3>
+<p>有时，我们项目中所引用的包版本比较低，比如 <code>A&#123;B@1, C&#125;</code>，但 <code>C&#123;B@2&#125;</code>，首先安装的结构如下：</p>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">A
++-- B@1
++-- C
+    +-- B@2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>然后我们将项目中的 <code>B</code> 升级到 <code>B@2</code>，理想结构应该如下：</p>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">A
++-- B@2
++-- C<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>但现在 <code>package-lock.json</code> 却是这样的：</p>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">A
++-- B@2
++-- C
+    +-- B@2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p><code>B@2</code> 出现了两份，一份在顶层，一份在 <code>C</code> 中，这个时候需要我们手动执行 <code>npm dedupe</code> 进行去重操作。</p>
+<h2 id="npm-ci">npm ci</h2>
+<p>现在我们知道了，<code>package-lock.json</code> 在每次 <code>npm install</code> 的时候都可能发生更新，他只是精确描述了当前安装的 <code>node-moduels</code> 树。并不是说 <code>package-lock.json</code> 中是什么版本，我用 <code>npm install</code> 安装的就是什么版本——若想要达成这样的效果，需要使用 <a target="_blank" rel="noopener" href="https://docs.npmjs.com/cli/v7/commands/npm-ci"><code>npm ci</code></a></p>
+<p>ci 就是 <code>clean install</code> 的意思，他不会改变 <code>package-lock.json</code>，并且会完全按照 <code>package-lock.json</code> 中的样子进行安装，比较适合用于一些自动生成的环境，比如测试平台、持续集成等。</p>
+<h1 id="npm-shrinkwrap.json">npm-shrinkwrap.json</h1>
+<p>在 npm5.x 之前，可以手动通过 <code>npm srhinkwrap</code> 生成 <code>npm-shrinkwrap.json</code> 文件，他与 <code>package-lock.json</code> 作用相同。当二者在项目中同时存在的时候，将优先使用 <code>npm-shrinkwrap.json</code></p>
+<h1 id="npm-outdated"><code>npm-outdated</code></h1>
+<p>可以查看当前的依赖的包版本是否过时，默认只列出顶层，可以通过 <code>--depth</code> 参数控制深度。</p>
+<h1 id="一些问题">一些问题</h1>
+<h2 id="怎么知道包的最新版是多少">怎么知道包的最新版是多少？</h2>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">npm</span> info <span class="token punctuation">[</span>name<span class="token punctuation">]</span> version<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h1 id="好用的-npm-包">好用的 npm 包</h1>
+<h2 id="nrm">nrm</h2>
+<p>一个 npm 镜像管理工具。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">npm</span> i <span class="token parameter variable">-g</span> nrm
+nrm use taobao
+<span class="token comment"># 所有的全局安装都在 C:\Users\Zhang\AppData\Roaming\npm\</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">yarn</span> global <span class="token function">add</span> yrm
+yrm use taobao
+<span class="token comment"># 用 yrm ls 可以看所有源</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2020/02/02/HTML/HTML/" rel="prev" title="HTML">
+                  <i class="fa fa-chevron-left"></i> HTML
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2020/02/02/React/React/" rel="next" title="React">
+                  React <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Harvey Zhang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="/hais-notebook/lib/animejs/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/hais-notebook/js/comments.js"></script><script src="/hais-notebook/js/utils.js"></script><script src="/hais-notebook/js/next-boot.js"></script>
+
+  <script src="/hais-notebook/lib/hexo-generator-searchdb/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/hais-notebook/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"/hais-notebook/lib/mathjax/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/hais-notebook/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
