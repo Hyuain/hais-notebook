@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hais-notebook/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/hais-notebook/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/hais-notebook/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/hais-notebook/images/safari-pinned-tab.svg" color="#222">
+
+<link rel="stylesheet" href="/hais-notebook/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.font.im/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="/hais-notebook/lib/@fortawesome/fontawesome-free/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"hyuain.github.io","root":"/hais-notebook/","images":"/hais-notebook/images","scheme":"Gemini","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac","show_result":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/hais-notebook/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/hais-notebook/js/config.js"></script>
+
+    <meta name="description" content="CSS 布局主要分为 固定宽度布局 和 不固定宽度布局，其中后者主要使用 Float、Flexible、Grid 等达成。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CSS Layout">
+<meta property="og:url" content="https://hyuain.github.io/hais-notebook/2020/02/01/CSS/CSS%20Layout/index.html">
+<meta property="og:site_name" content="Hais Notebook">
+<meta property="og:description" content="CSS 布局主要分为 固定宽度布局 和 不固定宽度布局，其中后者主要使用 Float、Flexible、Grid 等达成。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/CSS-Layout.png">
+<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/CSS-Layout-Minus-Margin.png">
+<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/CSS-Grid.png">
+<meta property="article:published_time" content="2020-02-01T20:12:49.000Z">
+<meta property="article:modified_time" content="2020-02-01T20:12:49.000Z">
+<meta property="article:author" content="Harvey Zhang">
+<meta property="article:tag" content="Notebook">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/CSS-Layout.png">
+
+
+<link rel="canonical" href="https://hyuain.github.io/hais-notebook/2020/02/01/CSS/CSS%20Layout/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hyuain.github.io/hais-notebook/2020/02/01/CSS/CSS%20Layout/","path":"2020/02/01/CSS/CSS Layout/","title":"CSS Layout"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>CSS Layout | Hais Notebook</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/hais-notebook/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/hais-notebook/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Hais Notebook</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/hais-notebook/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/hais-notebook/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/hais-notebook/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/hais-notebook/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%A4%E7%A7%8D%E5%B8%83%E5%B1%80%E6%96%B9%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">两种布局方式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%A4%E7%A7%8D%E5%B8%83%E5%B1%80%E6%80%9D%E8%B7%AF"><span class="nav-number">2.</span> <span class="nav-text">两种布局思路</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#float"><span class="nav-number">3.</span> <span class="nav-text">Float</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#flex"><span class="nav-number">4.</span> <span class="nav-text">Flex</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#container"><span class="nav-number">4.1.</span> <span class="nav-text">Container</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#items"><span class="nav-number">4.2.</span> <span class="nav-text">Items</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#grid"><span class="nav-number">5.</span> <span class="nav-text">Grid</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#container-1"><span class="nav-number">5.1.</span> <span class="nav-text">Container</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#items-1"><span class="nav-number">5.2.</span> <span class="nav-text">Items</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B0%B4%E5%B9%B3%E5%9E%82%E7%9B%B4%E5%B1%85%E4%B8%AD%E7%9A%84%E6%96%B9%E6%A1%88"><span class="nav-number">6.</span> <span class="nav-text">水平垂直居中的方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%BD%8D%E4%B8%89%E7%A7%8D"><span class="nav-number">6.1.</span> <span class="nav-text">定位：三种</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#flex-1"><span class="nav-number">6.2.</span> <span class="nav-text">flex</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#javascript"><span class="nav-number">6.3.</span> <span class="nav-text">JavaScript</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#table-cell"><span class="nav-number">6.4.</span> <span class="nav-text">table-cell</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B7%A6%E5%8F%B3%E5%9B%BA%E5%AE%9A%E4%B8%AD%E9%97%B4%E8%87%AA%E9%80%82%E5%BA%94%E5%B8%83%E5%B1%80"><span class="nav-number">7.</span> <span class="nav-text">左右固定、中间自适应布局</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#float-%E8%B4%9F-margin"><span class="nav-number">7.1.</span> <span class="nav-text">float + 负 margin</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#calc"><span class="nav-number">7.2.</span> <span class="nav-text">calc</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#flex-2"><span class="nav-number">7.3.</span> <span class="nav-text">flex</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%BD%8D"><span class="nav-number">7.4.</span> <span class="nav-text">定位</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Harvey Zhang</p>
+  <div class="site-description" itemprop="description">海鲜酱的笔记本</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/hais-notebook/archives/">
+          <span class="site-state-item-count">61</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/hais-notebook/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2020/02/01/CSS/CSS%20Layout/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
+      <meta itemprop="name" content="Harvey Zhang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hais Notebook">
+      <meta itemprop="description" content="海鲜酱的笔记本">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="CSS Layout | Hais Notebook">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          CSS Layout
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-02-01 20:12:49" itemprop="dateCreated datePublished" datetime="2020-02-01T20:12:49+00:00">2020-02-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">前端</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>CSS 布局主要分为 <strong>固定宽度布局</strong> 和 <strong>不固定宽度布局</strong>，其中后者主要使用 Float、Flexible、Grid 等达成。</p>
+<span id="more"></span>
+<h1 id="两种布局方式">两种布局方式</h1>
+<ul>
+<li><strong>固定宽度布局</strong>：960、1000、1024</li>
+<li><strong>不固定宽度布局</strong>：一般在手机上使用，主要靠文档流原理来布局</li>
+<li><strong>响应式布局</strong>：PC上固定宽度，手机上不固定宽度，也就是一种<strong>混合布局</strong></li>
+</ul>
+<h1 id="两种布局思路">两种布局思路</h1>
+<ul>
+<li>从大到小：先定下大局，然后再完善每个部分的小布局</li>
+<li>从小到大：先完成小布局，然后再组合成大布局</li>
+</ul>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/CSS-Layout.png" alt="两种布局思路" /><figcaption aria-hidden="true">两种布局思路</figcaption>
+</figure>
+<h1 id="float">Float</h1>
+<ol type="1">
+<li>在子元素上加 <code>float: left</code> 和 <code>width</code></li>
+<li>在父元素加上 <code>class="clearfix"</code></li>
+</ol>
+<pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token selector">.clearfix:after</span><span class="token punctuation">&#123;</span>
+  <span class="token property">content</span><span class="token punctuation">:</span> <span class="token string">''</span><span class="token punctuation">;</span>
+  <span class="token property">display</span><span class="token punctuation">:</span> block<span class="token punctuation">;</span>
+  <span class="token property">clear</span><span class="token punctuation">:</span> both<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>经验：</p>
+<ul>
+<li>有经验者会留一些空间或最后一个不设置 <code>width</code>（可以设置一个 <code>max-width</code>）</li>
+<li>不需要考虑响应式，因为手机上没有 IE，这个布局是专门为 IE 准备的</li>
+<li>在 IE 上有 BUG：最左边浮动元素的 <code>margin-left</code> 会变成双倍
+<ul>
+<li>可以加一句兼容性写法：<code>_margin-left: ?px</code></li>
+<li>也可以加上 <code>display: inline-block</code></li>
+</ul></li>
+<li>如果图片下面有空隙，加上 <code>vertical-align: middle | top</code> 就可以消除</li>
+<li><strong><code>float</code> 元素外边距不合并</strong></li>
+</ul>
+<div class="note warning"><p>必要时可以采用负 margin</p>
+</div>
+<p>比如说做平均布局，在所有的小块外面加一个 <code>div</code> ，然后再给这个 <code>div</code> 一个负 <code>margin</code></p>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/CSS-Layout-Minus-Margin.png" alt="负Margin" /><figcaption aria-hidden="true">负Margin</figcaption>
+</figure>
+<h1 id="flex">Flex</h1>
+<p>这里是 <a target="_blank" rel="noopener" href="https://css-tricks.com/snippets/css/a-guide-to-flexbox/">CSS Tricks 上的 Flex 教程</a></p>
+<h2 id="container">Container</h2>
+<ul>
+<li>让一个元素变成 flex 容器：<code>display: flex | inline-flex</code></li>
+<li>改变 items 的流动方向（主轴）：<code>flex-direction: row | row-reverse | column | column-reverse</code></li>
+<li>改变折行：<code>flex-wrap: nowrap | wrap | wrap-revers</code></li>
+<li>主轴的对齐方式：<code>justify-content: flex-start | flex-end | center | space-between | space-around | space-evenly</code></li>
+<li>次轴对齐：<code>align-items: flex-start | flex-end | center | stretch(默认)</code></li>
+<li>多行对齐（基本不用）：<code>align-content: flex-start | flex-end | center | strech | space-between | space-around</code></li>
+</ul>
+<h2 id="items">Items</h2>
+<ul>
+<li><code>order</code>：改变显示顺序</li>
+<li><code>flex-grow</code>：控制自己如何长胖（占多余所有空间的权重），默认是0（尽可能窄）</li>
+<li>导航栏常用左边 logo 和右边用户头像都是 0，中间是 1</li>
+<li><code>flex-shrink</code>：控制如何变瘦，（在空间不够用的时候，压缩的比例）默认是1（大家一起变小），可以写0（防止变小）</li>
+<li><code>flex-basis</code>：控制基准宽度，一般用得比较少，默认是 auto（跟宽度一样）</li>
+</ul>
+<p>以上可以缩写为：<code>flex: grow shrink basis</code></p>
+<ul>
+<li><code>align-self: flex-start | flex-end</code></li>
+</ul>
+<p>经验：</p>
+<ul>
+<li>永远不要把 <code>width</code> 和 <code>height</code> 写死</li>
+<li>尽量使用 <code>min-width</code> | <code>max-width</code> 等来写</li>
+<li><code>margin-xxx: auto</code>，有奇效，类似于 <code>between</code></li>
+</ul>
+<h1 id="grid">Grid</h1>
+<p>这里是 <a target="_blank" rel="noopener" href="https://css-tricks.com/snippets/css/complete-guide-grid/">CSS Tricks 上的 Grid 教程</a></p>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/CSS-Grid.png" alt="Grid布局" /><figcaption aria-hidden="true">Grid布局</figcaption>
+</figure>
+<h2 id="container-1">Container</h2>
+<ul>
+<li>让一个元素变成 grid 容器：<code>display: grid | inline-grid</code></li>
+<li>行和列：
+<ul>
+<li><code>grid-template-columns</code>: 每一列的宽度，可以写 <code>auto</code></li>
+<li><code>grid-template-rows</code>: 每一行的高度，可以写 <code>auto</code></li>
+<li><pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token property">grid-template-areas</span><span class="token punctuation">:</span>
+  <span class="token string">"header header header"</span>
+  <span class="token string">"aside main ad"</span>
+  <span class="token string">"footer fotter ."</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li><code>grid-gap</code></li>
+<li><code>grid-column-gap</code></li>
+<li><code>grid-row-gap</code></li>
+</ul></li>
+</ul></li>
+</ul>
+<h2 id="items-1">Items</h2>
+<ul>
+<li>grid-row-start</li>
+<li>grid-row-end</li>
+<li>grid-column-start</li>
+<li>grid-column-end</li>
+<li>fr：free space，类似于flex-grow</li>
+<li><strong>grid-area: header;</strong></li>
+<li><strong>grid-area: main;</strong></li>
+<li><strong>....</strong></li>
+</ul>
+<h1 id="水平垂直居中的方案">水平垂直居中的方案</h1>
+<h2 id="定位三种">定位：三种</h2>
+<ol type="1">
+<li><code>absolute</code> + <code>margin</code>：需要知道自己的宽高</li>
+</ol>
+<pre class="line-numbers language-scss" data-language="scss"><code class="language-scss"><span class="token selector">.father</span><span class="token punctuation">&#123;</span>
+  <span class="token property">position</span><span class="token punctuation">:</span> relative<span class="token punctuation">;</span>
+  <span class="token selector">.child</span><span class="token punctuation">&#123;</span>
+    <span class="token property">position</span><span class="token punctuation">:</span> absolute<span class="token punctuation">;</span>
+    <span class="token property">height</span><span class="token punctuation">:</span> 50px<span class="token punctuation">;</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> 100px<span class="token punctuation">;</span>
+    <span class="token property">left</span><span class="token punctuation">:</span> 50%<span class="token punctuation">;</span>
+    <span class="token property">top</span><span class="token punctuation">:</span> 50%<span class="token punctuation">;</span>
+    <span class="token property">margin-top</span><span class="token punctuation">:</span> -25px<span class="token punctuation">;</span>
+    <span class="token property">margin-left</span><span class="token punctuation">:</span> -50px<span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ol start="2" type="1">
+<li><code>absolute</code> + <code>margin</code>：不需要知道自己的宽高，但是得有宽高</li>
+</ol>
+<pre class="line-numbers language-scss" data-language="scss"><code class="language-scss"><span class="token selector">.father</span><span class="token punctuation">&#123;</span>
+  <span class="token property">position</span><span class="token punctuation">:</span> relative<span class="token punctuation">;</span>
+  <span class="token selector">.child</span><span class="token punctuation">&#123;</span>
+    <span class="token property">position</span><span class="token punctuation">:</span> absolute<span class="token punctuation">;</span>
+    <span class="token property">height</span><span class="token punctuation">:</span> 50px<span class="token punctuation">;</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> 100px<span class="token punctuation">;</span>
+    <span class="token property">left</span><span class="token punctuation">:</span> 0<span class="token punctuation">;</span>
+    <span class="token property">right</span><span class="token punctuation">:</span> 0<span class="token punctuation">;</span>
+    <span class="token property">top</span><span class="token punctuation">:</span> 0<span class="token punctuation">;</span>
+    <span class="token property">bottom</span><span class="token punctuation">:</span> 0<span class="token punctuation">;</span>
+    <span class="token property">margin</span><span class="token punctuation">:</span> auto<span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ol start="3" type="1">
+<li><code>absolute</code> + <code>translate</code>： 不需要知道自己的宽高，不需要有具体的宽高</li>
+</ol>
+<pre class="line-numbers language-scss" data-language="scss"><code class="language-scss"><span class="token selector">.father</span><span class="token punctuation">&#123;</span>
+  <span class="token property">position</span><span class="token punctuation">:</span> relative<span class="token punctuation">;</span>
+  <span class="token selector">.child</span><span class="token punctuation">&#123;</span>
+    <span class="token property">position</span><span class="token punctuation">:</span> absolute<span class="token punctuation">;</span>
+    <span class="token property">height</span><span class="token punctuation">:</span> 50px<span class="token punctuation">;</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> 100px<span class="token punctuation">;</span>
+    <span class="token property">left</span><span class="token punctuation">:</span> 50%<span class="token punctuation">;</span>
+    <span class="token property">top</span><span class="token punctuation">:</span> 50%<span class="token punctuation">;</span>
+    <span class="token property">transform</span><span class="token punctuation">:</span> <span class="token function">translate</span><span class="token punctuation">(</span>-50%<span class="token punctuation">,</span> -50%<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="flex-1"><code>flex</code></h2>
+<pre class="line-numbers language-scss" data-language="scss"><code class="language-scss"><span class="token selector">.father</span><span class="token punctuation">&#123;</span>
+  <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span>
+  <span class="token property">justify-content</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span>
+  <span class="token property">align-items</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span>
+  <span class="token selector">.child</span><span class="token punctuation">&#123;</span> <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="javascript">JavaScript</h2>
+<pre class="line-numbers language-scss" data-language="scss"><code class="language-scss"><span class="token selector">body</span><span class="token punctuation">&#123;</span>
+  <span class="token property">position</span><span class="token punctuation">:</span> relative<span class="token punctuation">;</span>
+  <span class="token selector">#box</span><span class="token punctuation">&#123;</span> <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">const</span> <span class="token constant">HTML</span> <span class="token operator">=</span> document<span class="token punctuation">.</span>documentElement<span class="token punctuation">,</span>
+      winW <span class="token operator">=</span> <span class="token constant">HTML</span><span class="token punctuation">.</span>clientWidth<span class="token punctuation">,</span>
+      winH <span class="token operator">=</span> <span class="token constant">HTML</span><span class="token punctuation">.</span>clientHeight<span class="token punctuation">,</span>
+      boxW <span class="token operator">=</span> box<span class="token punctuation">.</span>offsetWidth<span class="token punctuation">,</span> <span class="token comment">// 带边框的宽，也可以用 getBoundingClientReact</span>
+      boxH <span class="token operator">=</span> box<span class="token punctuation">.</span>offsetHeight <span class="token comment">// 带边框的高</span>
+box<span class="token punctuation">.</span>style<span class="token punctuation">.</span>position <span class="token operator">=</span> <span class="token string">'absolute'</span>
+box<span class="token punctuation">.</span>style<span class="token punctuation">.</span>left <span class="token operator">=</span> <span class="token punctuation">(</span>winW <span class="token operator">-</span> boxW<span class="token punctuation">)</span> <span class="token operator">/</span> <span class="token number">2</span> <span class="token operator">+</span> <span class="token string">'px'</span>
+box<span class="token punctuation">.</span>style<span class="token punctuation">.</span>top <span class="token operator">=</span> <span class="token punctuation">(</span>winH <span class="token operator">-</span> boxH<span class="token punctuation">)</span> <span class="token operator">/</span> <span class="token number">2</span> <span class="token operator">+</span> <span class="token string">'px'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="table-cell"><code>table-cell</code></h2>
+<p>要求父级有固定宽高，相当于给文本居中</p>
+<pre class="line-numbers language-scss" data-language="scss"><code class="language-scss"><span class="token selector">.father</span><span class="token punctuation">&#123;</span>
+  <span class="token property">display</span><span class="token punctuation">:</span> table-cell<span class="token punctuation">;</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> 500px<span class="token punctuation">;</span>
+  <span class="token property">height</span><span class="token punctuation">:</span> 500px<span class="token punctuation">;</span>
+  <span class="token property">vertical-align</span><span class="token punctuation">:</span> middle<span class="token punctuation">;</span>
+  <span class="token property">text-align</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span>
+  <span class="token selector">.child</span><span class="token punctuation">&#123;</span>
+    <span class="token property">display</span><span class="token punctuation">:</span> inline-block<span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="左右固定中间自适应布局">左右固定、中间自适应布局</h1>
+<h2 id="float-负-margin"><code>float</code> + 负 <code>margin</code></h2>
+<p>圣杯布局</p>
+<pre class="line-numbers language-scss" data-language="scss"><code class="language-scss"><span class="token selector">.container</span><span class="token punctuation">&#123;</span>
+  <span class="token property">padding</span><span class="token punctuation">:</span> 0 200px<span class="token punctuation">;</span>
+  <span class="token selector">.left, .right</span><span class="token punctuation">&#123;</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> 200px<span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token selector">.center</span><span class="token punctuation">&#123;</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token selector">.center, .left, .right</span><span class="token punctuation">&#123;</span>
+    <span class="token property">float</span><span class="token punctuation">:</span> left<span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token selector">.left</span><span class="token punctuation">&#123;</span>
+    <span class="token property">margin-left</span><span class="token punctuation">:</span> -100%<span class="token punctuation">;</span>
+    <span class="token property">position</span><span class="token punctuation">:</span> relative<span class="token punctuation">;</span>
+    <span class="token property">left</span><span class="token punctuation">:</span> -200px<span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token selector">.right</span><span class="token punctuation">&#123;</span>
+    <span class="token property">margin-right</span><span class="token punctuation">:</span> -200px<span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>双飞翼布局</p>
+<pre class="line-numbers language-scss" data-language="scss"><code class="language-scss"><span class="token selector">.container</span><span class="token punctuation">&#123;</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span>
+  <span class="token property">padding</span><span class="token punctuation">:</span> 0 200px<span class="token punctuation">;</span>
+  <span class="token selector">.center</span><span class="token punctuation">&#123;</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token selector">.left, .right</span><span class="token punctuation">&#123;</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> 200px<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token selector">.left, .right, .center</span><span class="token punctuation">&#123;</span>
+  <span class="token property">float</span><span class="token punctuation">:</span> left<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token selector">.left</span><span class="token punctuation">&#123;</span>
+  <span class="token property">margin-left</span><span class="token punctuation">:</span> -100%<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token selector">.right</span><span class="token punctuation">&#123;</span>
+  <span class="token property">margin-right</span><span class="token punctuation">:</span> -200px<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="calc"><code>calc</code></h2>
+<p>兼容到 IE 9，渲染会比较慢</p>
+<pre class="line-numbers language-scss" data-language="scss"><code class="language-scss"><span class="token selector">.center</span><span class="token punctuation">&#123;</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> <span class="token function">calc</span><span class="token punctuation">(</span>100% <span class="token operator">-</span> 400px<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h2 id="flex-2"><code>flex</code></h2>
+<pre class="line-numbers language-scss" data-language="scss"><code class="language-scss"><span class="token selector">.container</span><span class="token punctuation">&#123;</span>
+  <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span>
+  <span class="token property">justify-content</span><span class="token punctuation">:</span> space-between<span class="token punctuation">;</span>
+  <span class="token selector">.left, .right</span><span class="token punctuation">&#123;</span>
+    <span class="token property">flex</span><span class="token punctuation">:</span> 0 0 200px<span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token selector">.center</span><span class="token punctuation">&#123;</span>
+    <span class="token property">flex</span><span class="token punctuation">:</span> 1<span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="定位">定位</h2>
+<pre class="line-numbers language-scss" data-language="scss"><code class="language-scss"><span class="token selector">.container</span><span class="token punctuation">&#123;</span>
+  <span class="token property">position</span><span class="token punctuation">:</span> relative<span class="token punctuation">;</span>
+  <span class="token selector">.left, .right</span><span class="token punctuation">&#123;</span>
+    <span class="token property">position</span><span class="token punctuation">:</span> absolute<span class="token punctuation">;</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> 200px<span class="token punctuation">;</span>
+    <span class="token property">top</span><span class="token punctuation">:</span> 0<span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token selector">.left</span><span class="token punctuation">&#123;</span>
+    <span class="token property">left</span><span class="token punctuation">:</span> 0<span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token selector">.right</span><span class="token punctuation">&#123;</span>
+    <span class="token property">right</span><span class="token punctuation">:</span> 0<span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token selector">.center</span><span class="token punctuation">&#123;</span>
+    <span class="token property">margin</span><span class="token punctuation">:</span> 0 200px<span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2020/02/01/CSS/CSS%20Positioning/" rel="prev" title="CSS Positioning">
+                  <i class="fa fa-chevron-left"></i> CSS Positioning
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2020/02/01/CSS/Box%20Model/" rel="next" title="Box Model">
+                  Box Model <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Harvey Zhang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="/hais-notebook/lib/animejs/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/hais-notebook/js/comments.js"></script><script src="/hais-notebook/js/utils.js"></script><script src="/hais-notebook/js/next-boot.js"></script>
+
+  <script src="/hais-notebook/lib/hexo-generator-searchdb/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/hais-notebook/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"/hais-notebook/lib/mathjax/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/hais-notebook/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
