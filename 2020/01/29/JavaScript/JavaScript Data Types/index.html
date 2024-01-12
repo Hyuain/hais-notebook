@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hais-notebook/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/hais-notebook/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/hais-notebook/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/hais-notebook/images/safari-pinned-tab.svg" color="#222">
+
+<link rel="stylesheet" href="/hais-notebook/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.font.im/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="/hais-notebook/lib/@fortawesome/fontawesome-free/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"hyuain.github.io","root":"/hais-notebook/","images":"/hais-notebook/images","scheme":"Gemini","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac","show_result":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/hais-notebook/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/hais-notebook/js/config.js"></script>
+
+    <meta name="description" content="JavaScript 中一共有 8 种数据类型： 5 基 2 空 1 对象。 由于 JavaScript 是动态类型语言，很难在开发环境中进行编译时类型判断，因为 JavaScript 中变量的类型可以任意改变，并且 JavaScript 中还会进行显式或隐式的[[JavaScript Type Casting|类型转换]] 。此时可以通过 typeof 等方法在运行时[[JavaScript T">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JavaScript Data Types">
+<meta property="og:url" content="https://hyuain.github.io/hais-notebook/2020/01/29/JavaScript/JavaScript%20Data%20Types/index.html">
+<meta property="og:site_name" content="Hais Notebook">
+<meta property="og:description" content="JavaScript 中一共有 8 种数据类型： 5 基 2 空 1 对象。 由于 JavaScript 是动态类型语言，很难在开发环境中进行编译时类型判断，因为 JavaScript 中变量的类型可以任意改变，并且 JavaScript 中还会进行显式或隐式的[[JavaScript Type Casting|类型转换]] 。此时可以通过 typeof 等方法在运行时[[JavaScript T">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/JS-Number-Range.png">
+<meta property="article:published_time" content="2020-01-29T17:22:52.000Z">
+<meta property="article:modified_time" content="2020-01-29T17:22:52.000Z">
+<meta property="article:author" content="Harvey Zhang">
+<meta property="article:tag" content="FX">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/JS-Number-Range.png">
+
+
+<link rel="canonical" href="https://hyuain.github.io/hais-notebook/2020/01/29/JavaScript/JavaScript%20Data%20Types/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hyuain.github.io/hais-notebook/2020/01/29/JavaScript/JavaScript%20Data%20Types/","path":"2020/01/29/JavaScript/JavaScript Data Types/","title":"JavaScript Data Types"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>JavaScript Data Types | Hais Notebook</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/hais-notebook/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/hais-notebook/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Hais Notebook</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/hais-notebook/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/hais-notebook/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/hais-notebook/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/hais-notebook/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#number"><span class="nav-number">1.</span> <span class="nav-text">Number</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%B9%E6%AE%8A%E5%80%BC"><span class="nav-number">1.1.</span> <span class="nav-text">特殊值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%8C%83%E5%9B%B4%E5%92%8C%E7%B2%BE%E5%BA%A6"><span class="nav-number">1.2.</span> <span class="nav-text">范围和精度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#number-new-number"><span class="nav-number">1.3.</span> <span class="nav-text">Number() &amp; new Number()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#number.parsefloat-number.parseint-parsefloat-parseint"><span class="nav-number">1.4.</span> <span class="nav-text">Number.parseFloat() &amp; Number.parseInt() &amp; parseFloat() &amp; parseInt()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#number.isnan-isnan"><span class="nav-number">1.5.</span> <span class="nav-text">Number.isNaN() &amp; isNaN()</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#string"><span class="nav-number">2.</span> <span class="nav-text">String</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%99%E6%B3%95"><span class="nav-number">2.1.</span> <span class="nav-text">写法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BD%AC%E4%B9%89"><span class="nav-number">2.2.</span> <span class="nav-text">转义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E5%B1%9E%E6%80%A7"><span class="nav-number">2.3.</span> <span class="nav-text">字符串的属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#string-new-string"><span class="nav-number">2.4.</span> <span class="nav-text">String() &amp; new String()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#string-%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B%E4%B8%8E-string-%E5%AF%B9%E8%B1%A1"><span class="nav-number">2.5.</span> <span class="nav-text">String 基本类型与 String 对象</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#boolean"><span class="nav-number">3.</span> <span class="nav-text">Boolean</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#symbol"><span class="nav-number">4.</span> <span class="nav-text">Symbol</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#bigint"><span class="nav-number">5.</span> <span class="nav-text">BigInt</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#undefined"><span class="nav-number">6.</span> <span class="nav-text">undefined</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-number">7.</span> <span class="nav-text">Null</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#object"><span class="nav-number">8.</span> <span class="nav-text">Object</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#toprimitive-valueof-tostring"><span class="nav-number">9.</span> <span class="nav-text">toPrimitive &amp; valueOf &amp; toString</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Harvey Zhang</p>
+  <div class="site-description" itemprop="description">海鲜酱的笔记本</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/hais-notebook/archives/">
+          <span class="site-state-item-count">102</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/hais-notebook/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/hais-notebook/tags/">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2020/01/29/JavaScript/JavaScript%20Data%20Types/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
+      <meta itemprop="name" content="Harvey Zhang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hais Notebook">
+      <meta itemprop="description" content="海鲜酱的笔记本">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="JavaScript Data Types | Hais Notebook">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JavaScript Data Types
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-01-29 17:22:52" itemprop="dateCreated datePublished" datetime="2020-01-29T17:22:52+00:00">2020-01-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">前端</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>JavaScript 中一共有 8 种数据类型： 5 基 2 空 1 对象。</p>
+<p>由于 JavaScript 是动态类型语言，很难在开发环境中进行编译时类型判断，因为 JavaScript 中变量的类型可以任意改变，并且 JavaScript 中还会进行显式或隐式的[[JavaScript Type Casting|类型转换]] 。此时可以通过 <code>typeof</code> 等方法在运行时[[JavaScript Type Checking|检查数据类型]]。</p>
+<span id="more"></span>
+<h1 id="number">Number</h1>
+<blockquote>
+<p>64 位浮点数组成</p>
+</blockquote>
+<h2 id="特殊值">特殊值</h2>
+<p><code>0</code> <code>+0</code> <code>-0</code></p>
+<p><code>Infinity</code> <code>+Infinity</code> (1/0) <code>-Infinity</code> (1/-0)</p>
+<p><code>NaN</code>（0/0，但他还是一个数字，NaN 不等于 NaN）</p>
+<h2 id="范围和精度">范围和精度</h2>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/JS-Number-Range.png" alt="JSNumber的存储" /><figcaption aria-hidden="true">JSNumber的存储</figcaption>
+</figure>
+<p>范围：</p>
+<ul>
+<li>能准确表示的范围在 <code>Number.MAX_SAFE_INTEGER</code> 与 <code>Number.MIN_SAFE_INTEGER</code> 之间（- 2^53 + 1 ~ 2^53 - 1）</li>
+<li>事实上能存储 <code>Number.MAX_VALUE</code> ~ <code>Number.MIN_VALUE</code> 的值（±1.7976931348623157 * 10^308），但由于只有 64 bit，所以有些值实际上是近似数</li>
+</ul>
+<p>精度：大概是 15 个十进制有效数字</p>
+<h2 id="number-new-number"><code>Number()</code> &amp; <code>new Number()</code></h2>
+<ul>
+<li><code>Number(value)</code> 会将 <code>value</code> 转换为 Number 类型
+<ul>
+<li>几乎等价于 <code>+value</code>，除了对 Symbol 的处理有所不同</li>
+<li>对于对象，会按照 <code>[@@toPrimitive]()</code> <code>valueOf</code> <code>toString()</code> 的顺序调用</li>
+</ul></li>
+<li><code>new Number()</code> 会创建一个 <code>Number</code> 对象，而不是属于基本类型 Number 的值，<code>new Number(42) !== 42</code> 但 <code>new Number(42) == 42</code></li>
+<li>一般不使用 <code>new Number()</code></li>
+</ul>
+<h2 id="number.parsefloat-number.parseint-parsefloat-parseint"><code>Number.parseFloat()</code> &amp; <code>Number.parseInt()</code> &amp; <code>parseFloat()</code> &amp; <code>parseInt()</code></h2>
+<ul>
+<li><code>parseFloat === Number.parseFloat</code></li>
+<li><code>parseInt === Number.parseInt</code></li>
+<li><code>parseFloat()</code> 会将字符串转换为浮点数
+<ul>
+<li>如果不是字符串，会先被强制转换为字符串</li>
+<li>字符串开头的空格会被忽略</li>
+</ul></li>
+<li><code>parseInt()</code> 将字符串转换为整数
+<ul>
+<li>接受两个参数，第二个参数是进制</li>
+<li>其他与 <code>parseFloat</code> 相同</li>
+</ul></li>
+</ul>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">const</span> object1 <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+  <span class="token punctuation">[</span>Symbol<span class="token punctuation">.</span>toPrimitive<span class="token punctuation">]</span><span class="token punctuation">(</span><span class="token parameter">hint</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>hint <span class="token operator">===</span> <span class="token string">'number'</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token keyword">return</span> <span class="token number">42</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>hint <span class="token operator">===</span> <span class="token string">'string'</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token keyword">return</span> <span class="token number">99</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">return</span> <span class="token keyword">null</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">const</span> date1 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Date</span><span class="token punctuation">(</span><span class="token string">"December 17, 1995 03:24:00"</span><span class="token punctuation">)</span>
+
+<span class="token comment">// 下面展示 Number parseInt parseFloat 和 + 的类型转换</span>
+<span class="token comment">// 如果其他没有写出来的，则表示与 Number 结果相同</span>
+<span class="token comment">// 如果 parseFloat 没有写出来，表示与 parseInt 相同</span>
+
+<span class="token function">Number</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span>                   <span class="token comment">// 1</span>
+<span class="token function">parseInt</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span>                 <span class="token comment">// NaN, String(true) === 'true'</span>
+
+<span class="token function">Number</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span>                  <span class="token comment">// 0</span>
+<span class="token function">parseInt</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span>                <span class="token comment">// NaN, String(false) === 'false'</span>
+
+<span class="token function">Number</span><span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">)</span>                   <span class="token comment">// 0</span>
+<span class="token function">parseInt</span><span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">)</span>                 <span class="token comment">// NaN, String(null) === 'null'</span>
+
+<span class="token function">Number</span><span class="token punctuation">(</span><span class="token keyword">undefined</span><span class="token punctuation">)</span>              <span class="token comment">// NaN</span>
+<span class="token function">parseInt</span><span class="token punctuation">(</span><span class="token keyword">undefined</span><span class="token punctuation">)</span>            <span class="token comment">// NaN, String(undefined) === 'undefined'</span>
+
+<span class="token function">Number</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span>                     <span class="token comment">// NaN</span>
+<span class="token function">parseInt</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span>                   <span class="token comment">// NaN, String(&#123;&#125;) === '[object Object]'</span>
+
+<span class="token function">Number</span><span class="token punctuation">(</span>object1<span class="token punctuation">)</span>                <span class="token comment">// 42</span>
+<span class="token function">parseInt</span><span class="token punctuation">(</span>object1<span class="token punctuation">)</span>              <span class="token comment">// 99</span>
+
+<span class="token function">Number</span><span class="token punctuation">(</span>date1<span class="token punctuation">)</span>                  <span class="token comment">// 819199440000</span>
+<span class="token function">parseInt</span><span class="token punctuation">(</span>date1<span class="token punctuation">)</span>                <span class="token comment">// NaN, String(date1) === 'Sun Dec 17 1995 03:24:00 GMT+0800 (中国标准时间)'</span>
+
+<span class="token function">Number</span><span class="token punctuation">(</span><span class="token number">12345678901234567890n</span><span class="token punctuation">)</span>  <span class="token comment">// 12345678901234567000</span>
+<span class="token operator">+</span><span class="token number">12345678901234567890n</span>         <span class="token comment">// Cannot convert a BigInt value to a number</span>
+<span class="token function">parseInt</span><span class="token punctuation">(</span><span class="token number">12345678901234567890n</span><span class="token punctuation">)</span><span class="token comment">// 12345678901234567000, String(12345678901234567890n) === '12345678901234567890'</span>
+
+<span class="token function">Number</span><span class="token punctuation">(</span><span class="token function">Symbol</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>               <span class="token comment">// Cannot convert a Symbol value to a number</span>
+<span class="token function">parseInt</span><span class="token punctuation">(</span><span class="token function">Symbol</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>             <span class="token comment">// Cannot convert a Symbol value to a string</span>
+
+<span class="token function">Number</span><span class="token punctuation">(</span><span class="token string">"37.12"</span><span class="token punctuation">)</span>                <span class="token comment">// 37.12</span>
+<span class="token function">parseInt</span><span class="token punctuation">(</span><span class="token string">"37.12"</span><span class="token punctuation">)</span>              <span class="token comment">// 37</span>
+<span class="token function">parseFloat</span><span class="token punctuation">(</span><span class="token string">"37.12"</span><span class="token punctuation">)</span>            <span class="token comment">// 37.12</span>
+
+<span class="token function">Number</span><span class="token punctuation">(</span><span class="token string">"3122d"</span><span class="token punctuation">)</span>                <span class="token comment">// NaN</span>
+<span class="token function">parseInt</span><span class="token punctuation">(</span><span class="token string">"3122d"</span><span class="token punctuation">)</span>              <span class="token comment">// 3122</span>
+
+<span class="token function">Number</span><span class="token punctuation">(</span><span class="token string">"d3122"</span><span class="token punctuation">)</span>                <span class="token comment">// NaN</span>
+
+<span class="token function">Number</span><span class="token punctuation">(</span><span class="token string">"37.12.12"</span><span class="token punctuation">)</span>             <span class="token comment">// NaN</span>
+<span class="token function">parseInt</span><span class="token punctuation">(</span><span class="token string">"37.12.12"</span><span class="token punctuation">)</span>           <span class="token comment">// 37</span>
+<span class="token function">parseFloat</span><span class="token punctuation">(</span><span class="token string">"37.12.12"</span><span class="token punctuation">)</span>         <span class="token comment">// 37.12</span>
+
+<span class="token function">Number</span><span class="token punctuation">(</span><span class="token string">"0x11"</span><span class="token punctuation">)</span>                 <span class="token comment">// 17</span>
+
+<span class="token function">Number</span><span class="token punctuation">(</span><span class="token string">"0b11"</span><span class="token punctuation">)</span>                 <span class="token comment">// 3</span>
+<span class="token function">parseInt</span><span class="token punctuation">(</span><span class="token string">"0b11"</span><span class="token punctuation">)</span>               <span class="token comment">// 0</span>
+
+<span class="token function">Number</span><span class="token punctuation">(</span><span class="token string">"0o11"</span><span class="token punctuation">)</span>                 <span class="token comment">// 9</span>
+<span class="token function">parseInt</span><span class="token punctuation">(</span><span class="token string">"0o11"</span><span class="token punctuation">)</span>               <span class="token comment">// 0</span>
+
+<span class="token function">Number</span><span class="token punctuation">(</span><span class="token string">""</span><span class="token punctuation">)</span>                     <span class="token comment">// 0</span>
+<span class="token function">parseInt</span><span class="token punctuation">(</span><span class="token string">""</span><span class="token punctuation">)</span>                   <span class="token comment">// NaN</span>
+
+<span class="token function">Number</span><span class="token punctuation">(</span><span class="token string">"      "</span><span class="token punctuation">)</span>               <span class="token comment">// 0</span>
+<span class="token function">parseInt</span><span class="token punctuation">(</span><span class="token string">"      "</span><span class="token punctuation">)</span>             <span class="token comment">// NaN</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="number.isnan-isnan"><code>Number.isNaN()</code> &amp; <code>isNaN()</code></h2>
+<ul>
+<li><code>Number.isNaN</code> 更加健壮，他不会进行类型转换，他只对 <code>NaN</code> 返回 <code>true</code>，与 <code>x !== x</code> 等价</li>
+<li>全局 <code>isNaN</code> 会先将值转换为 Number 类型，对所有转换为 Number 为 <code>NaN</code> 的，也会返回 <code>true</code></li>
+</ul>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token function">isNaN</span><span class="token punctuation">(</span><span class="token string">"i'm a string"</span><span class="token punctuation">)</span> <span class="token comment">// true</span>
+<span class="token function">isNaN</span><span class="token punctuation">(</span><span class="token keyword">undefined</span><span class="token punctuation">)</span>      <span class="token comment">// true</span>
+<span class="token function">isNaN</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span>             <span class="token comment">// true</span>
+<span class="token function">isNaN</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span>           <span class="token comment">// false, Number(true) === 1</span>
+<span class="token function">isNaN</span><span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">)</span>           <span class="token comment">// false, Number(null) === 0</span>
+<span class="token function">isNaN</span><span class="token punctuation">(</span><span class="token string">"37.12"</span><span class="token punctuation">)</span>        <span class="token comment">// false, Number("37.12") === 37.12</span>
+<span class="token function">isNaN</span><span class="token punctuation">(</span><span class="token string">"3122d"</span><span class="token punctuation">)</span>        <span class="token comment">// true</span>
+<span class="token function">isNaN</span><span class="token punctuation">(</span><span class="token string">""</span><span class="token punctuation">)</span>             <span class="token comment">// false, Number("") === 0</span>
+<span class="token function">isNaN</span><span class="token punctuation">(</span><span class="token string">"      "</span><span class="token punctuation">)</span>       <span class="token comment">// false, Number("      ") === 0</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="string">String</h1>
+<blockquote>
+<p>每个字符两个字节（阉割版 UTF-8，两个字符定长）</p>
+</blockquote>
+<h2 id="写法">写法</h2>
+<p>单引号、双引号、反引号，引号不是字符串的一部分</p>
+<h2 id="转义">转义</h2>
+<p><code>\r</code> 表示回车， <code>\uFFFF</code> 表示对应的 Unicode 字符， <code>\xFF</code> 表示前256个 Unicode 字符</p>
+<h2 id="字符串的属性">字符串的属性</h2>
+<p>字符串本来不应该有属性，只有对象才有属性，见下面的解释</p>
+<ul>
+<li>长度： <code>s.length</code></li>
+<li>下标： <code>s[0]</code></li>
+<li>base64 转码： <code>window.btoa</code> 编码， <code>window.atob</code> 反编码</li>
+</ul>
+<h2 id="string-new-string"><code>String()</code> &amp; <code>new String()</code></h2>
+<ul>
+<li><code>String()</code> 得到的是一个字符串基本类型</li>
+<li><code>new String()</code> 得到的是一个对象</li>
+<li>会发生强制类型转换，值得注意的是：
+<ul>
+<li><code>undefined</code> <code>null</code> 都会被转换成那几个英文字母</li>
+<li>对于对象或其他非空的基本类型，会按照 <code>[@@toPrimitive]()</code> <code>toString()</code> <code>valueOf</code> 的顺序调用</li>
+</ul></li>
+</ul>
+<h2 id="string-基本类型与-string-对象">String 基本类型与 String 对象</h2>
+<blockquote>
+<p>Boolean 和 Number 有同样的问题，都有基本类型和对象的区别</p>
+</blockquote>
+<ul>
+<li>String 基本类型可以通过字面量（单双引号）或者 <code>String()</code> 的返回值得到</li>
+<li>String 对象可以通过 <code>new String()</code> 获得，但通常不怎么使用</li>
+<li>JavaScript 会自动检查访问基本类型 String 属性、或者在基本类型上调用方法的地方，并自动将其包裹成一个对象（Auto-Boxing），访问对象上的属性或方法</li>
+<li>他们在传给 <code>eval()</code> 的时候表现也有所不同：String 基本类型会被当成 JavaScript 源码，而 String 对象会被当做一个对象</li>
+</ul>
+<h1 id="boolean">Boolean</h1>
+<blockquote>
+<p>否定运算、相等运算、比较运算可以得到 bool 值</p>
+</blockquote>
+<div class="note warning"><p><strong>6 个 falsy 值</strong></p>
+<p><code>undefined</code> <code>null</code> <code>0</code> <code>NaN</code> <code>''</code> <code>document.all</code></p>
+</div>
+<h1 id="symbol">Symbol</h1>
+<blockquote>
+<p>每个 Symbol 都不一样</p>
+</blockquote>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// 没有参数的情况</span>
+<span class="token keyword">let</span> s1 <span class="token operator">=</span> <span class="token function">Symbol</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">let</span> s2 <span class="token operator">=</span> <span class="token function">Symbol</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+s1 <span class="token operator">===</span> s2 <span class="token comment">// false</span>
+
+<span class="token comment">// 有参数的情况</span>
+<span class="token keyword">let</span> s1 <span class="token operator">=</span> <span class="token function">Symbol</span><span class="token punctuation">(</span><span class="token string">'foo'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">let</span> s2 <span class="token operator">=</span> <span class="token function">Symbol</span><span class="token punctuation">(</span><span class="token string">'foo'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+s1 <span class="token operator">===</span> s2 <span class="token comment">// false</span>
+
+<span class="token keyword">new</span> <span class="token class-name">Symbol</span><span class="token punctuation">(</span><span class="token number">123</span><span class="token punctuation">)</span> <span class="token comment">// TypeError: Symbol is not a constructor</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="bigint">BigInt</h1>
+<blockquote>
+<p>BigInt 可以准确表示任何大小的整数值</p>
+</blockquote>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// the "n" at the end means it's a BigInt</span>
+<span class="token keyword">const</span> bigInt <span class="token operator">=</span> <span class="token number">1234567890123456789012345678901234567890n</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h1 id="undefined">undefined</h1>
+<p>如果声明了没有赋值，默认是 <code>undefined</code></p>
+<p>如果函数没有写 <code>return</code>，默认是 <code>undefined</code></p>
+<h1 id="null">Null</h1>
+<p>习惯上把非对象空值写成 undefined，对象空值写成 null；</p>
+<p>null 通常表示即该处不应该有值，undefined 通常表示"缺少值"，就是此处应该有一个值，但是还没有定义。</p>
+<h1 id="object">Object</h1>
+<div class="note warning"><p>数组、函数、日期都是 Object，不是单独的数据类型，但是使用 <code>typeof</code> 的时候，可以分辨出 function</p>
+</div>
+<h1 id="toprimitive-valueof-tostring"><code>toPrimitive</code> &amp; <code>valueOf</code> &amp; <code>toString</code></h1>
+<table>
+<tr>
+<td colspan="2">
+类型
+</td>
+<td>
+举例
+</td>
+<td>
+@<span class="citation" data-cites="toPrimitive">@toPrimitive</span>
+</td>
+<td>
+valueOf
+</td>
+<td>
+toString
+</td>
+</tr>
+<tr>
+<td rowspan="5">
+基本类型
+</td>
+<td>
+Number
+</td>
+<td>
+1
+</td>
+<td>
+-
+</td>
+<td>
+返回数字基本类型
+</td>
+<td>
+<p>
+可以接受一个参数，表示进制
+</p>
+<p>
+注意数字基本类型发生强制类型转换时（比如 <code>$&#123;someNumber&#125;</code>），并不会调用 Number.prototype.toString()，所以覆盖这个方法并不会影响到此种情况的类型转换结果
+</p>
+</td>
+</tr>
+<tr>
+<td>
+String
+</td>
+<td>
+'hello'
+</td>
+<td>
+-
+</td>
+<td>
+返回字符串基本类型
+</td>
+<td>
+与 valueOf 实现完全相同
+</td>
+</tr>
+<tr>
+<td>
+Boolean
+</td>
+<td>
+true
+</td>
+<td>
+-
+</td>
+<td>
+返回布尔基本类型
+</td>
+<td>
+返回字符串 "true" "false"
+</td>
+</tr>
+<tr>
+<td>
+Symbol
+</td>
+<td>
+Symbol()
+</td>
+<td>
+*1
+</td>
+<td>
+与 toPrimitive 效果相同
+</td>
+<td>
+*2
+</td>
+</tr>
+<tr>
+<td>
+BigInt
+</td>
+<td>
+12345678n
+</td>
+<td>
+-
+</td>
+<td>
+返回 BigInt 基本类型
+</td>
+<td>
+返回一个去掉 n 的字符串
+</td>
+</tr>
+<tr>
+<td rowspan="6">
+对象类型
+</td>
+<td>
+普通对象
+</td>
+<td>
+{a: '1', b: '2'}
+</td>
+<td>
+默认没有，可以自己定义
+</td>
+<td>
+对象自己，这是无意义的，因为 valueOf() 一般是用来转换成基本类型的，因此需要自己定义 valueOf
+</td>
+<td>
+根据 this 返回 "[object Type]"
+</td>
+</tr>
+<tr>
+<td>
+Array
+</td>
+<td>
+[1, 2, 3]
+</td>
+<td>
+-
+</td>
+<td>
+-
+</td>
+<td>
+调用 Array.prototype.join
+</td>
+</tr>
+<tr>
+<td>
+Function
+</td>
+<td>
+function() {}
+</td>
+<td>
+-
+</td>
+<td>
+-
+</td>
+<td>
+根据 this 返回函数字符串
+</td>
+</tr>
+<tr>
+<td>
+Error
+</td>
+<td>
+new Error()
+</td>
+<td>
+-
+</td>
+<td>
+-
+</td>
+<td>
+返回错误信息
+</td>
+</tr>
+<tr>
+<td>
+Date
+</td>
+<td>
+new Date()
+</td>
+<td>
+*3
+</td>
+<td>
+与 Date.prototype.getTime 效果相同
+</td>
+<td>
+返回日期字符串
+</td>
+</tr>
+<tr>
+<td>
+RegExp
+</td>
+<td>
+new RegExp()
+</td>
+<td>
+-
+</td>
+<td>
+-
+</td>
+<td>
+*4
+</td>
+</tr>
+</table>
+<p>*1. <code>Symbol.prototype[@@toPrimitive]</code> 会返回一个 Symbol 基本类型，其中的 <code>hint</code> 参数并没有被用到：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">const</span> sym <span class="token operator">=</span> <span class="token function">Symbol</span><span class="token punctuation">(</span><span class="token string">"example"</span><span class="token punctuation">)</span>
+sym <span class="token operator">===</span> sym<span class="token punctuation">[</span>Symbol<span class="token punctuation">.</span>toPrimitive<span class="token punctuation">]</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// true</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>*2. <code>Symbol.prototype.toString</code> 需要提供一个 <code>this</code>，这个 <code>this</code> 应该是一个 Symbol 基本类型或 Symbol 对象。如果不提供正确的 <code>this</code>，它将会抛错，因为 <code>Symbol.prototype[@@toPrimitive]</code> 方法只会返回一个 Symbol 基本类型：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token function">Symbol</span><span class="token punctuation">(</span><span class="token string">'desc'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// Expected output: "Symbol(desc)"</span>
+
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>Symbol<span class="token punctuation">.</span>iterator<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// Expected output: "Symbol(Symbol.iterator)</span>
+
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>Symbol<span class="token punctuation">.</span><span class="token function">for</span><span class="token punctuation">(</span><span class="token string">'foo'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// Expected output: "Symbol(foo)"</span>
+
+<span class="token comment">// console.log(Symbol('foo') + 'bar');</span>
+<span class="token comment">// Expected output: Error: Can't convert symbol to string</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>*3. <code>Date.prototype[@@toPrimitive]</code> 会根据参数返回时间戳或者字符串：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// Depending on timezone, your results will vary</span>
+<span class="token keyword">const</span> date <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Date</span><span class="token punctuation">(</span><span class="token string">'20 December 2019 14:48'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>date<span class="token punctuation">[</span>Symbol<span class="token punctuation">.</span>toPrimitive<span class="token punctuation">]</span><span class="token punctuation">(</span><span class="token string">'string'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// "Fri Dec 20 2019 14:48:00 GMT+0800 (中国标准时间)"</span>
+
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>date<span class="token punctuation">[</span>Symbol<span class="token punctuation">.</span>toPrimitive<span class="token punctuation">]</span><span class="token punctuation">(</span><span class="token string">'number'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// 1576824480000</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>*4. <code>RegExp.prototype.toString</code> 会返回类似 <code>/source/flag</code> 的字符串：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">RegExp</span><span class="token punctuation">(</span><span class="token string">'a+b+c'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// "/a+b+c/</span>
+
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">RegExp</span><span class="token punctuation">(</span><span class="token string">'a+b+c'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// "/a+b+c/"</span>
+
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">RegExp</span><span class="token punctuation">(</span><span class="token string">'bar'</span><span class="token punctuation">,</span> <span class="token string">'g'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// "/bar/g"</span>
+
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">RegExp</span><span class="token punctuation">(</span><span class="token string">'\n'</span><span class="token punctuation">,</span> <span class="token string">'g'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// "/\n/g" (if your browser supports escaping)</span>
+
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">RegExp</span><span class="token punctuation">(</span><span class="token string">'\\n'</span><span class="token punctuation">,</span> <span class="token string">'g'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// "/\n/g"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/hais-notebook/tags/FX/" rel="tag"># FX</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2020/01/29/JavaScript/JavaScript%20Deep%20Clone/" rel="prev" title="JavaScript Deep Clone">
+                  <i class="fa fa-chevron-left"></i> JavaScript Deep Clone
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2020/01/29/JavaScript/JavaScript%20Closures/" rel="next" title="JavaScript Closures">
+                  JavaScript Closures <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Harvey Zhang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="/hais-notebook/lib/animejs/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/hais-notebook/js/comments.js"></script><script src="/hais-notebook/js/utils.js"></script><script src="/hais-notebook/js/next-boot.js"></script>
+
+  <script src="/hais-notebook/lib/hexo-generator-searchdb/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/hais-notebook/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"/hais-notebook/lib/mathjax/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/hais-notebook/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

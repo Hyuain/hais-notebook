@@ -18,17 +18,17 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"hyuain.github.io","root":"/hais-notebook/","images":"/hais-notebook/images","scheme":"Gemini","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac","show_result":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/hais-notebook/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/hais-notebook/js/config.js"></script>
 
-    <meta name="description" content="CSS 和 HTML 中的 charset 直译为 字符集，但 UTF-8 不是字符集，而是字符编码（Encoding），这是历史遗留问题。  ASCII 字符集的编码形式就是 ASCII，这个字符集只有英文 GB2312 字符集是中国人发明的简体中文字符集，他的编码形式也是 GB2312 GBK 是微软发明的中日韩（CJK）字符集，他的编码形式也是 GBK unicode 是支持所有字符的字符集">
+    <meta name="description" content="CSS 和 HTML 中的 charset 直译为 字符集，但 UTF-8 不是字符集，而是字符编码（Encoding），这是历史遗留问题。  ASCII 字符集的编码形式就是 ASCII，这个字符集只有英文 GB2312 字符集是中国人发明的简体中文字符集，他的编码形式也是 GB2312 GBK 是微软发明的中日韩（CJK）字符集，他的编码形式也是 GBK。他使用 0000~FFFF，16 位，">
 <meta property="og:type" content="article">
 <meta property="og:title" content="CSS">
 <meta property="og:url" content="https://hyuain.github.io/hais-notebook/2020/02/01/CSS/Charset/index.html">
 <meta property="og:site_name" content="Hais Notebook">
-<meta property="og:description" content="CSS 和 HTML 中的 charset 直译为 字符集，但 UTF-8 不是字符集，而是字符编码（Encoding），这是历史遗留问题。  ASCII 字符集的编码形式就是 ASCII，这个字符集只有英文 GB2312 字符集是中国人发明的简体中文字符集，他的编码形式也是 GB2312 GBK 是微软发明的中日韩（CJK）字符集，他的编码形式也是 GBK unicode 是支持所有字符的字符集">
+<meta property="og:description" content="CSS 和 HTML 中的 charset 直译为 字符集，但 UTF-8 不是字符集，而是字符编码（Encoding），这是历史遗留问题。  ASCII 字符集的编码形式就是 ASCII，这个字符集只有英文 GB2312 字符集是中国人发明的简体中文字符集，他的编码形式也是 GB2312 GBK 是微软发明的中日韩（CJK）字符集，他的编码形式也是 GBK。他使用 0000~FFFF，16 位，">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-02-01T20:12:49.000Z">
 <meta property="article:modified_time" content="2020-02-01T20:12:49.000Z">
 <meta property="article:author" content="Harvey Zhang">
-<meta property="article:tag" content="Notebook">
+<meta property="article:tag" content="FX">
 <meta name="twitter:card" content="summary">
 
 
@@ -152,7 +152,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/hais-notebook/archives/">
-          <span class="site-state-item-count">61</span>
+          <span class="site-state-item-count">102</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -160,6 +160,11 @@
           <a href="/hais-notebook/categories/">
         <span class="site-state-item-count">8</span>
         <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/hais-notebook/tags/">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
 </div>
@@ -240,8 +245,13 @@
 <ul>
 <li>ASCII 字符集的编码形式就是 ASCII，这个字符集只有英文</li>
 <li>GB2312 字符集是中国人发明的简体中文字符集，他的编码形式也是 GB2312</li>
-<li>GBK 是微软发明的中日韩（CJK）字符集，他的编码形式也是 GBK</li>
-<li>unicode 是支持所有字符的字符集，他的编码形式有 UTF-8/UTF-16/UTF-32</li>
+<li>GBK 是微软发明的中日韩（CJK）字符集，他的编码形式也是 GBK。他使用 0000~FFFF，16 位，2 字节来表示</li>
+<li>Unicode 是支持所有字符的字符集
+<ul>
+<li>Unicode 已收录 13 万字符（大于 16 位），全世界通用，以后还会继续扩充，缺点是至少要三个字节</li>
+<li>Unicode 的编码形式有 UTF-8/UTF-16/UTF-32</li>
+<li>其中 UTF-8 用变长的方法表示，每个字符（亦称为码点 Code Point）使用 1 ~ 4 个字节表示。因为 UTF-8 中最小的保存单位是字节，一个字节有 8 位，因此得名 UTF-8。与之相对应的 UTF-16 则以两个字节为最小单位，一个码点用 2 或 4 个字节表示</li>
+</ul></li>
 </ul>
 
     </div>
@@ -251,6 +261,9 @@
     
 
     <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/hais-notebook/tags/FX/" rel="tag"># FX</a>
+          </div>
 
         
 

@@ -25,13 +25,11 @@
 <meta property="og:site_name" content="Hais Notebook">
 <meta property="og:description" content="实现一些常见的 API。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/11/3/16e3124af5479387?imageslim">
 <meta property="article:published_time" content="2020-02-23T16:33:44.000Z">
 <meta property="article:modified_time" content="2020-02-23T16:33:44.000Z">
 <meta property="article:author" content="Harvey Zhang">
-<meta property="article:tag" content="Notebook">
+<meta property="article:tag" content="FX">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://user-gold-cdn.xitu.io/2019/11/3/16e3124af5479387?imageslim">
 
 
 <link rel="canonical" href="https://hyuain.github.io/hais-notebook/2020/02/23/JavaScript/JavaScript%20Polyfill/">
@@ -142,7 +140,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#array"><span class="nav-number">1.</span> <span class="nav-text">Array</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#map"><span class="nav-number">1.1.</span> <span class="nav-text">map</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#reduce"><span class="nav-number">1.2.</span> <span class="nav-text">reduce</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#push"><span class="nav-number">1.3.</span> <span class="nav-text">push</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pop"><span class="nav-number">1.4.</span> <span class="nav-text">pop</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#filter"><span class="nav-number">1.5.</span> <span class="nav-text">filter</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#splice"><span class="nav-number">1.6.</span> <span class="nav-text">splice</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sort"><span class="nav-number">1.7.</span> <span class="nav-text">sort</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F%E5%8F%8A%E5%85%B6%E4%BC%98%E5%8C%96"><span class="nav-number">1.7.1.</span> <span class="nav-text">插入排序及其优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%BB%E6%89%BE%E5%93%A8%E5%85%B5%E5%85%83%E7%B4%A0"><span class="nav-number">1.7.2.</span> <span class="nav-text">寻找哨兵元素</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%8C%E6%88%90%E5%BF%AB%E6%8E%92"><span class="nav-number">1.7.3.</span> <span class="nav-text">完成快排</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#promise"><span class="nav-number">2.</span> <span class="nav-text">Promise</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8E%9F%E7%89%88-promise-%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95"><span class="nav-number">2.1.</span> <span class="nav-text">原版 Promise 的基本用法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%E5%88%9B%E5%BB%BA-class-mypromise"><span class="nav-number">2.2.</span> <span class="nav-text">第一步：创建 class MyPromise</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%E5%A4%84%E7%90%86-mypromise-%E7%9A%84%E7%8A%B6%E6%80%81%E5%92%8C%E5%80%BC"><span class="nav-number">2.3.</span> <span class="nav-text">第二步：处理 MyPromise 的状态和值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%E5%AE%9E%E7%8E%B0-then-%E6%96%B9%E6%B3%95"><span class="nav-number">2.4.</span> <span class="nav-text">第三步：实现 then 方法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#call-apply-bind"><span class="nav-number">3.</span> <span class="nav-text">call apply bind</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E6%8B%9F%E5%AE%9E%E7%8E%B0%E7%9A%84%E6%80%9D%E8%B7%AF"><span class="nav-number">3.1.</span> <span class="nav-text">模拟实现的思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E5%AE%9E%E7%8E%B0"><span class="nav-number">3.2.</span> <span class="nav-text">开始实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%E4%BC%A0%E9%80%92-this"><span class="nav-number">3.2.1.</span> <span class="nav-text">第一步：传递 this</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%E4%BC%A0%E9%80%92-arguments"><span class="nav-number">3.2.2.</span> <span class="nav-text">第二步：传递 arguments</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%E8%A7%A3%E5%86%B3%E5%85%B6%E4%BB%96%E9%97%AE%E9%A2%98"><span class="nav-number">3.2.3.</span> <span class="nav-text">第三步：解决其他问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bind"><span class="nav-number">3.3.</span> <span class="nav-text">bind</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E5%AE%9E%E7%8E%B0"><span class="nav-number">3.3.1.</span> <span class="nav-text">一个简单实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90"><span class="nav-number">3.3.2.</span> <span class="nav-text">源码分析</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#new"><span class="nav-number">4.</span> <span class="nav-text">new</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#array"><span class="nav-number">1.</span> <span class="nav-text">Array</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#map"><span class="nav-number">1.1.</span> <span class="nav-text">map</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#reduce"><span class="nav-number">1.2.</span> <span class="nav-text">reduce</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#push"><span class="nav-number">1.3.</span> <span class="nav-text">push</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pop"><span class="nav-number">1.4.</span> <span class="nav-text">pop</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#filter"><span class="nav-number">1.5.</span> <span class="nav-text">filter</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#splice"><span class="nav-number">1.6.</span> <span class="nav-text">splice</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sort"><span class="nav-number">1.7.</span> <span class="nav-text">sort</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#promise"><span class="nav-number">2.</span> <span class="nav-text">Promise</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8E%9F%E7%89%88-promise-%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95"><span class="nav-number">2.1.</span> <span class="nav-text">原版 Promise 的基本用法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%E5%88%9B%E5%BB%BA-class-mypromise"><span class="nav-number">2.2.</span> <span class="nav-text">第一步：创建 class MyPromise</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%E5%A4%84%E7%90%86-mypromise-%E7%9A%84%E7%8A%B6%E6%80%81%E5%92%8C%E5%80%BC"><span class="nav-number">2.3.</span> <span class="nav-text">第二步：处理 MyPromise 的状态和值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%E5%AE%9E%E7%8E%B0-then-%E6%96%B9%E6%B3%95"><span class="nav-number">2.4.</span> <span class="nav-text">第三步：实现 then 方法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#call-apply-bind"><span class="nav-number">3.</span> <span class="nav-text">call apply bind</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E6%8B%9F%E5%AE%9E%E7%8E%B0%E7%9A%84%E6%80%9D%E8%B7%AF"><span class="nav-number">3.1.</span> <span class="nav-text">模拟实现的思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E5%AE%9E%E7%8E%B0"><span class="nav-number">3.2.</span> <span class="nav-text">开始实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%E4%BC%A0%E9%80%92-this"><span class="nav-number">3.2.1.</span> <span class="nav-text">第一步：传递 this</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%E4%BC%A0%E9%80%92-arguments"><span class="nav-number">3.2.2.</span> <span class="nav-text">第二步：传递 arguments</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%E8%A7%A3%E5%86%B3%E5%85%B6%E4%BB%96%E9%97%AE%E9%A2%98"><span class="nav-number">3.2.3.</span> <span class="nav-text">第三步：解决其他问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bind"><span class="nav-number">3.3.</span> <span class="nav-text">bind</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E5%AE%9E%E7%8E%B0"><span class="nav-number">3.3.1.</span> <span class="nav-text">一个简单实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90"><span class="nav-number">3.3.2.</span> <span class="nav-text">源码分析</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#new"><span class="nav-number">4.</span> <span class="nav-text">new</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -155,7 +153,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/hais-notebook/archives/">
-          <span class="site-state-item-count">61</span>
+          <span class="site-state-item-count">102</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -163,6 +161,11 @@
           <a href="/hais-notebook/categories/">
         <span class="site-state-item-count">8</span>
         <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/hais-notebook/tags/">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
 </div>
@@ -242,6 +245,7 @@
         <p>实现一些常见的 API。</p>
 <span id="more"></span>
 <h1 id="array">Array</h1>
+<p>我们可以手动实现一些[[JavaScript Array|数组]]的简单方法，比如 <code>map</code>、<code>reduce</code> 等</p>
 <h2 id="map">map</h2>
 <pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token class-name">Array</span><span class="token punctuation">.</span>prototype<span class="token punctuation">.</span><span class="token function-variable function">myMap</span> <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token parameter">callback<span class="token punctuation">,</span> thisArg</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
   <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span> <span class="token operator">===</span> <span class="token keyword">null</span> <span class="token operator">||</span> <span class="token keyword">this</span> <span class="token operator">===</span> <span class="token keyword">undefined</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
@@ -442,71 +446,9 @@
   <span class="token keyword">return</span> deleteArray
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h2 id="sort">sort</h2>
-<p>在 V8 引擎中 - n &lt;= 10 时，采用插入排序 - n &gt; 10 时，采用三路快速排序 - 10 &lt; n &lt;= 1000，采用中位数作为哨兵元素 - n &gt; 1000，每隔 200~215 个元素选出一个元素，放到一个新数组，然后对他排序，找到中间位置的数，以此作为中位数</p>
-<h3 id="插入排序及其优化">插入排序及其优化</h3>
-<p>原来的插入排序：</p>
-<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">const</span> <span class="token function-variable function">insertSort</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">arr<span class="token punctuation">,</span> start <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span> end</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
-  end <span class="token operator">=</span> end <span class="token operator">||</span> arr<span class="token punctuation">.</span>length
-  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> start<span class="token punctuation">;</span> i <span class="token operator">&lt;</span> end<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-    <span class="token keyword">let</span> j
-    <span class="token keyword">for</span> <span class="token punctuation">(</span>j <span class="token operator">=</span> i<span class="token punctuation">;</span> j <span class="token operator">></span> start <span class="token operator">&amp;&amp;</span> arr<span class="token punctuation">[</span>j <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">></span> arr<span class="token punctuation">[</span>j<span class="token punctuation">]</span><span class="token punctuation">;</span> j<span class="token operator">--</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-      <span class="token keyword">let</span> temp <span class="token operator">=</span> arr<span class="token punctuation">[</span>j<span class="token punctuation">]</span>
-      arr<span class="token punctuation">[</span>j<span class="token punctuation">]</span> <span class="token operator">=</span> arr<span class="token punctuation">[</span>j <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span>
-      arr<span class="token punctuation">[</span>j <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">=</span> temp
-    <span class="token punctuation">&#125;</span>
-  <span class="token punctuation">&#125;</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>用变量覆盖的方式替代交换元素：</p>
-<p><img src="https://user-gold-cdn.xitu.io/2019/11/3/16e3124af5479387?imageslim" /></p>
-<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">const</span> <span class="token function-variable function">insertSort</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">arr<span class="token punctuation">,</span> start <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span> end</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
-  end <span class="token operator">=</span> end <span class="token operator">||</span> arr<span class="token punctuation">.</span>length
-  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> start<span class="token punctuation">;</span> i <span class="token operator">&lt;</span> end<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-    <span class="token keyword">let</span> temp <span class="token operator">=</span> arr<span class="token punctuation">[</span>i<span class="token punctuation">]</span>
-    <span class="token keyword">let</span> j
-    <span class="token keyword">for</span> <span class="token punctuation">(</span>j <span class="token operator">=</span> i<span class="token punctuation">;</span> j <span class="token operator">></span> start <span class="token operator">&amp;&amp;</span> arr<span class="token punctuation">[</span>j <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">></span> e<span class="token punctuation">;</span> j<span class="token operator">--</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-      arr<span class="token punctuation">[</span>j<span class="token punctuation">]</span> <span class="token operator">=</span> arr<span class="token punctuation">[</span>j <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span>
-    <span class="token punctuation">&#125;</span>
-    arr<span class="token punctuation">[</span>j<span class="token punctuation">]</span> <span class="token operator">=</span> temp
-  <span class="token punctuation">&#125;</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="寻找哨兵元素">寻找哨兵元素</h3>
-<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">const</span> <span class="token function-variable function">getPivotIndex</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">a<span class="token punctuation">,</span> from<span class="token punctuation">,</span> to</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
-  <span class="token keyword">let</span> tempArr <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
-  <span class="token comment">// 递增量在 200~215 之间</span>
-  <span class="token keyword">let</span> increment <span class="token operator">=</span> <span class="token number">200</span> <span class="token operator">+</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>to <span class="token operator">-</span> from<span class="token punctuation">)</span> <span class="token operator">&amp;</span> <span class="token number">15</span><span class="token punctuation">)</span>
-  <span class="token keyword">let</span> j <span class="token operator">=</span> <span class="token number">0</span>
-  from <span class="token operator">+=</span> <span class="token number">1</span>
-  to <span class="token operator">-=</span> <span class="token number">1</span>
-  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> from<span class="token punctuation">;</span> i <span class="token operator">&lt;</span> to<span class="token punctuation">;</span> i <span class="token operator">+=</span> increment<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-    tempArr<span class="token punctuation">[</span>j<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span>i<span class="token punctuation">,</span> a<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">]</span>
-    j<span class="token operator">++</span>
-  <span class="token punctuation">&#125;</span>
-  tempArr<span class="token punctuation">.</span><span class="token function">sort</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token parameter">a<span class="token punctuation">,</span> b</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-    <span class="token keyword">return</span> <span class="token function">comparefn</span><span class="token punctuation">(</span>a<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span> b<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
-  <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
-  <span class="token keyword">return</span> tempArr<span class="token punctuation">[</span>tempArr<span class="token punctuation">.</span>length <span class="token operator">>></span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="完成快排">完成快排</h3>
-<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">const</span> <span class="token function-variable function">_sort</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">a<span class="token punctuation">,</span> b<span class="token punctuation">,</span> c</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
-  <span class="token keyword">let</span> arr <span class="token operator">=</span> <span class="token punctuation">[</span>a<span class="token punctuation">,</span> b<span class="token punctuation">,</span> c<span class="token punctuation">]</span>
-  <span class="token function">innsetSort</span><span class="token punctuation">(</span>arr<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span>
-  <span class="token keyword">return</span> arr
-<span class="token punctuation">&#125;</span>
-
-<span class="token keyword">const</span> <span class="token function-variable function">quickSort</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">a<span class="token punctuation">,</span> from<span class="token punctuation">,</span> to</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
-  <span class="token comment">// 为了确保 pivot 不是最值，将他和 from to 一起排序</span>
-  <span class="token punctuation">[</span>a<span class="token punctuation">[</span>from<span class="token punctuation">]</span><span class="token punctuation">,</span> a<span class="token punctuation">[</span>pivotIndex<span class="token punctuation">]</span><span class="token punctuation">,</span> a<span class="token punctuation">[</span>to <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">_sort</span><span class="token punctuation">(</span>a<span class="token punctuation">[</span>from<span class="token punctuation">]</span><span class="token punctuation">,</span> a<span class="token punctuation">[</span>pivotIndex<span class="token punctuation">]</span><span class="token punctuation">,</span> a<span class="token punctuation">[</span>to <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
-  <span class="token keyword">let</span> pivot <span class="token operator">=</span> a<span class="token punctuation">[</span>pivotIndex<span class="token punctuation">]</span>
-  <span class="token keyword">let</span> lowEnd <span class="token operator">=</span> from <span class="token operator">+</span> <span class="token number">1</span>
-  <span class="token keyword">let</span> highStart <span class="token operator">=</span> to <span class="token operator">-</span> <span class="token number">1</span>
-  a<span class="token punctuation">[</span>pivotIndex<span class="token punctuation">]</span> <span class="token operator">=</span> a<span class="token punctuation">[</span>lowEnd<span class="token punctuation">]</span>
-  a<span class="token punctuation">[</span>lowEnd<span class="token punctuation">]</span> <span class="token operator">=</span> pivot
-  
-  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> lowEnd <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> highStart<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-    
-  <span class="token punctuation">&#125;</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>关于数组排序算法的详细介绍请看 [[Data Structure and Algorithm#Sorting|算法与数据结构中对应的章节]]。</p>
 <h1 id="promise">Promise</h1>
+<p>[<a href="#promise">Promise</a>] 是 JavaScript 中一种异步编程的解决方案。</p>
 <h2 id="原版-promise-的基本用法">原版 Promise 的基本用法</h2>
 <pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">new</span> <span class="token class-name">Promise</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">resolve<span class="token punctuation">,</span> reject</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
   <span class="token function">setTimeout</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
@@ -636,6 +578,7 @@
   <span class="token punctuation">&#125;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h1 id="call-apply-bind">call apply bind</h1>
+<p><code>call</code> <code>apply</code> 和 <code>bind</code> 主要跟[[JavaScript Function|函数]]中的 <code>this</code> 和 <code>arguments</code> 有关，原生的 <code>call</code> <code>apply</code> <code>bind</code> 提供了除了直接调用以外的其他函数调用方式。</p>
 <h2 id="模拟实现的思路">模拟实现的思路</h2>
 <p>我们有一个对象和一个函数：</p>
 <pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">var</span> foo <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
@@ -777,7 +720,7 @@ foo<span class="token punctuation">.</span><span class="token function">fn</span
   <span class="token punctuation">&#125;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h1 id="new">new</h1>
-<p>在 <code>new</code> 的时候，做了这样几件事情：</p>
+<p><code>new</code> 是创建一个新[[JavaScript Object|对象]]的方法，原生的 <code>new</code> 使得我们使用某个构造函数创建一个对象实例，这是面向对象编程中很有用的一种模式。在 <code>new</code> 的时候，做了这样几件事情：</p>
 <ol type="1">
 <li>自动创建空对象</li>
 <li>自动为空对象关联原型，原型的地址为 <code>构造函数.prototype</code></li>
@@ -801,6 +744,9 @@ foo<span class="token punctuation">.</span><span class="token function">fn</span
     
 
     <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/hais-notebook/tags/FX/" rel="tag"># FX</a>
+          </div>
 
         
 
@@ -811,8 +757,8 @@ foo<span class="token punctuation">.</span><span class="token function">fn</span
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/hais-notebook/2020/03/09/JavaScript/NodeJS/" rel="next" title="NodeJS">
-                  NodeJS <i class="fa fa-chevron-right"></i>
+                <a href="/hais-notebook/2020/03/09/NextJS/NextJS/" rel="next" title="NextJS">
+                  NextJS <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>

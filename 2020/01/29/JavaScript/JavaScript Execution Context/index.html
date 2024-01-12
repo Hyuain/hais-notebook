@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hais-notebook/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/hais-notebook/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/hais-notebook/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/hais-notebook/images/safari-pinned-tab.svg" color="#222">
+
+<link rel="stylesheet" href="/hais-notebook/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.font.im/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="/hais-notebook/lib/@fortawesome/fontawesome-free/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"hyuain.github.io","root":"/hais-notebook/","images":"/hais-notebook/images","scheme":"Gemini","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac","show_result":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/hais-notebook/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/hais-notebook/js/config.js"></script>
+
+    <meta name="description" content="DEPRECATED: 本文中的概念没有经过多方查证，信息来源有所矛盾，未来可能会重写。  JavaScript Execution Context  当浏览器遇到 &lt;script&gt; 标签或包含 JavaScript 的属性（比如 onclick）的时候，会把这些 JavaScript 代码交给 JavaScript Engine。JavaScript Engine 随即创建一个执行">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JavaScript Execution Context">
+<meta property="og:url" content="https://hyuain.github.io/hais-notebook/2020/01/29/JavaScript/JavaScript%20Execution%20Context/index.html">
+<meta property="og:site_name" content="Hais Notebook">
+<meta property="og:description" content="DEPRECATED: 本文中的概念没有经过多方查证，信息来源有所矛盾，未来可能会重写。  JavaScript Execution Context  当浏览器遇到 &lt;script&gt; 标签或包含 JavaScript 的属性（比如 onclick）的时候，会把这些 JavaScript 代码交给 JavaScript Engine。JavaScript Engine 随即创建一个执行">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-01-29T17:22:52.000Z">
+<meta property="article:modified_time" content="2020-01-29T17:22:52.000Z">
+<meta property="article:author" content="Harvey Zhang">
+<meta property="article:tag" content="FX">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://hyuain.github.io/hais-notebook/2020/01/29/JavaScript/JavaScript%20Execution%20Context/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hyuain.github.io/hais-notebook/2020/01/29/JavaScript/JavaScript%20Execution%20Context/","path":"2020/01/29/JavaScript/JavaScript Execution Context/","title":"JavaScript Execution Context"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>JavaScript Execution Context | Hais Notebook</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/hais-notebook/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/hais-notebook/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Hais Notebook</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/hais-notebook/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/hais-notebook/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/hais-notebook/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/hais-notebook/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#creation"><span class="nav-number">1.</span> <span class="nav-text">Creation</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#creation-of-the-variable-object-vo"><span class="nav-number">1.1.</span> <span class="nav-text">Creation of the Variable Object (VO)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#hoisting"><span class="nav-number">1.1.1.</span> <span class="nav-text">Hoisting</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#function-hoisting"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">Function Hoisting</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#variable-hoisting"><span class="nav-number">1.1.1.2.</span> <span class="nav-text">Variable Hoisting</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ground-rules-of-hoisting"><span class="nav-number">1.1.1.3.</span> <span class="nav-text">Ground Rules of Hoisting</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#creation-of-the-scope-chain"><span class="nav-number">1.2.</span> <span class="nav-text">Creation of the Scope Chain</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#setting-this"><span class="nav-number">1.3.</span> <span class="nav-text">Setting &quot;this&quot;</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#this-in-gec"><span class="nav-number">1.3.1.</span> <span class="nav-text">&quot;this&quot; in GEC</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#this-in-fec"><span class="nav-number">1.3.2.</span> <span class="nav-text">&quot;this&quot; in FEC</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#execution"><span class="nav-number">2.</span> <span class="nav-text">Execution</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#execution-stack"><span class="nav-number">2.1.</span> <span class="nav-text">Execution Stack</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#example"><span class="nav-number">2.1.1.</span> <span class="nav-text">Example</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Harvey Zhang</p>
+  <div class="site-description" itemprop="description">海鲜酱的笔记本</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/hais-notebook/archives/">
+          <span class="site-state-item-count">102</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/hais-notebook/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/hais-notebook/tags/">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2020/01/29/JavaScript/JavaScript%20Execution%20Context/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
+      <meta itemprop="name" content="Harvey Zhang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hais Notebook">
+      <meta itemprop="description" content="海鲜酱的笔记本">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="JavaScript Execution Context | Hais Notebook">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JavaScript Execution Context
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-01-29 17:22:52" itemprop="dateCreated datePublished" datetime="2020-01-29T17:22:52+00:00">2020-01-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">前端</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <blockquote>
+<p>DEPRECATED: 本文中的概念没有经过多方查证，信息来源有所矛盾，未来可能会重写。</p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="https://www.freecodecamp.org/news/execution-context-how-javascript-works-behind-the-scenes/">JavaScript Execution Context</a></p>
+<blockquote>
+<p>当浏览器遇到 <code>&lt;script&gt;</code> 标签或包含 JavaScript 的属性（比如 <code>onclick</code>）的时候，会把这些 JavaScript 代码交给 JavaScript Engine。JavaScript Engine 随即创建一个执行 JavaScript 代码的环境，被称为执行上下文（Execution Context）。</p>
+</blockquote>
+<p>执行上下文有两种：</p>
+<ul>
+<li><strong>全局执行上下文（Global Execution Context, GEC）</strong>。基本的、默认的执行上下文，所有不在函数里面的代码都在这里运行。对于所有的 JavaScript 文件，只有产生一个 GEC。</li>
+<li><strong>函数执行上下文（Function Execution Context, FEC）</strong>。当函数被调用的时候，JavaScript Engine 会在 GEC 中为每一个函数创建一个 FEC。</li>
+</ul>
+<span id="more"></span>
+<h1 id="creation">Creation</h1>
+<p>EC 会与与一个对象相关联，该对象被称为 Execution Context Object (ECO)。</p>
+<p>EC 的创建被分为三个阶段（创建 VO、创建作用域链、设置 <code>this</code>），在这三个阶段中，ECO 上面的属性会被逐步定义。</p>
+<h2 id="creation-of-the-variable-object-vo">Creation of the Variable Object (VO)</h2>
+<blockquote>
+<p>变量对象（Variable Object, VO）是 EC 内部的 Object-Like 容器，他存储了 EC 中的变量和函数定义。</p>
+</blockquote>
+<p>在 GEC 中，每一个用 <code>var</code> 声明的变量都会有一个对应的属性在 VO 中（这个属性指向那个变量），并且值为 <code>undefined</code>。</p>
+<p>同样，每一个函数也会有一个对应的属性在 VO 中（属性指向那个函数），并且函数会被存储在内存中，这意味着函数声明的时候就已经在 VO 中是可访问的了。</p>
+<p><em>FEC 不会创建 VO（存疑）</em>，而会创建一个 Array-Like 对象，称为 <code>argument</code>，该对象包含了所有需要提供给函数的参数。</p>
+<p>这个在执行代码之前的，存储变量和函数声明的过程被称为 <strong>提升（Hoisting）</strong>。</p>
+<h3 id="hoisting">Hoisting</h3>
+<blockquote>
+<p>JavaScript 中的函数和变量会被提升</p>
+</blockquote>
+<h4 id="function-hoisting">Function Hoisting</h4>
+<p>函数提升使得在 JavaScript 中可以先调用函数，再进行定义：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token function">getAge</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment">// 'called'</span>
+<span class="token keyword">function</span> <span class="token function">getAge</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'called'</span><span class="token punctuation">)</span> <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h4 id="variable-hoisting">Variable Hoisting</h4>
+<p>使用 <code>var</code> 声明的变量会被存到当前 EC 的 VO 中，并且初始值为 <code>undefiend</code>。因此，与函数不同，如果在赋值之前使用变量，会得到 <code>undefined</code>：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>greetings<span class="token punctuation">)</span> <span class="token comment">// condefined</span>
+<span class="token keyword">var</span> greetings <span class="token operator">=</span> <span class="token string">'Hi!'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h4 id="ground-rules-of-hoisting">Ground Rules of Hoisting</h4>
+<p>提升只对函数定义有用，对函数表达式无效，比如按照下面的方式定义，函数不会被提升：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token function">getAge</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment">// TypeError: getAge is not a function</span>
+<span class="token keyword">var</span> <span class="token function-variable function">getAge</span> <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'called'</span><span class="token punctuation">)</span> <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>使用 <code>let</code> 和 <code>const</code> 定义的变量不会被提升，在定义他们之前调用，会得到 <code>ReferenceError</code>。</p>
+<h2 id="creation-of-the-scope-chain">Creation of the Scope Chain</h2>
+<blockquote>
+<p>VO 创建完毕之后，会创建 <strong>作用域链 (Scope Chain)</strong>。作用域决定了一片代码如何被另一片代码访问。</p>
+</blockquote>
+<p>作用域解决了这些问题：</p>
+<ul>
+<li>一片代码从哪里可以被访问？从哪里不能被访问？</li>
+<li>什么可以访问他？什么不能访问？</li>
+</ul>
+<p>每个 FEC 都会创建自己的作用域。在其中，他定义的函数和变量可以通过 <strong>作用域规则（Scoping）</strong> 来访问。</p>
+<p><strong>词法作用域规则（Lexical Scoping）</strong>：当个函数定义在另一个函数中，里面的函数可以访问定义在外面函数的变量。作用域的概念带来了 <strong>闭包（Closure）</strong> 现象。</p>
+<p><strong>作用域链（Scope Chain）</strong>：JavaScript Engine 从最里面的 EC 的作用域向外查找。</p>
+<h2 id="setting-this">Setting "this"</h2>
+<blockquote>
+<p>JavaScript 中的 <code>this</code> 表明了 EC 属于谁。</p>
+</blockquote>
+<h3 id="this-in-gec">"this" in GEC</h3>
+<p>GEC 中的 <code>this</code> 指向全局对象，即 <code>window</code>，因此用 <code>var</code> 声明的函数会被绑定到 <code>window</code> 上：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">var</span> occupation <span class="token operator">=</span> <span class="token string">"Frontend Developer"</span><span class="token punctuation">;</span> 
+<span class="token keyword">function</span> <span class="token function">addOne</span><span class="token punctuation">(</span><span class="token parameter">x</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> 
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>x <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span> 
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">// 与下面的代码类似</span>
+window<span class="token punctuation">.</span>occupation <span class="token operator">=</span> <span class="token string">"Frontend Developer"</span><span class="token punctuation">;</span> 
+window<span class="token punctuation">.</span><span class="token function-variable function">addOne</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">x</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span> 
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>x <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="this-in-fec">"this" in FEC</h3>
+<p>FEC 中没有创建 <code>this</code> 对象，他内部的 <code>this</code> 会访问到 <strong>函数定义的环境</strong>。</p>
+<p>比如 GEC 中定义的函数中的 <code>this</code> 指向 <code>window</code>：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">var</span> msg <span class="token operator">=</span> <span class="token string">"I will rule the world!"</span><span class="token punctuation">;</span> 
+<span class="token keyword">function</span> <span class="token function">printMsg</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> 
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>msg<span class="token punctuation">)</span><span class="token punctuation">;</span> 
+<span class="token punctuation">&#125;</span> 
+<span class="token function">printMsg</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// logs "I will rule the world!" to the console.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>对象中定义的则会指向对象，需要通过 <code>theObject.thePropertyOrMethodDefinedInIt</code> 这样来引用：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">var</span> msg <span class="token operator">=</span> <span class="token string">"I will rule the world!"</span><span class="token punctuation">;</span> 
+<span class="token keyword">const</span> Victor <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+    <span class="token literal-property property">msg</span><span class="token operator">:</span> <span class="token string">"Victor will rule the world!"</span><span class="token punctuation">,</span> 
+    <span class="token function">printMsg</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>msg<span class="token punctuation">)</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span> 
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span> 
+Victor<span class="token punctuation">.</span><span class="token function">printMsg</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// logs "Victor will rule the world!" to the console.</span>
+<span class="token keyword">const</span> x <span class="token operator">=</span> Victor<span class="token punctuation">.</span>printMsg<span class="token punctuation">;</span>
+<span class="token function">x</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// logs "I will rule the world!" to the console.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="execution">Execution</h1>
+<p>JavaScript Engine 再一次读取当前 EC 的代码，并更新其中的变量在 VO 中的值。然后代码被解析器解析，转移为机器码，然后执行。</p>
+<h2 id="execution-stack">Execution Stack</h2>
+<blockquote>
+<p><strong>执行栈</strong> 又称 <strong>调用栈（Call Stack）</strong>，用于跟踪代码生命周期中创建的所有的 EC。</p>
+<p>JavaScript 是单线程语言，因此他一次只能执行一个任务，由将要被执行的 EC 堆起来的栈，就被称为 <strong>执行栈</strong>。</p>
+</blockquote>
+<p>当代码被加载到浏览器之后，GEC 被作为默认 EC 创建出来，并被放到 ES 的底部。</p>
+<p>当函数被调用的时候，会创建一个新的 FEC，并放到 ES 的顶部。</p>
+<p>ES 顶部的 EC 被称为活动 EC，他总是会被 JS Engine 最先执行。</p>
+<p>当活动 EC 的所有代码都执行完毕，JS Engine 将其出栈，并将栈顶指向下一个 EC。</p>
+<h3 id="example">Example</h3>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">var</span> name <span class="token operator">=</span> <span class="token string">"Victor"</span><span class="token punctuation">;</span>
+<span class="token keyword">function</span> <span class="token function">first</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">var</span> a <span class="token operator">=</span> <span class="token string">"Hi!"</span><span class="token punctuation">;</span>
+  <span class="token function">second</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span>a<span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token string"> </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span>name<span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token keyword">function</span> <span class="token function">second</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">var</span> b <span class="token operator">=</span> <span class="token string">"Hey!"</span><span class="token punctuation">;</span>
+  <span class="token function">third</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span>b<span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token string"> </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span>name<span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token keyword">function</span> <span class="token function">third</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">var</span> c <span class="token operator">=</span> <span class="token string">"Hello!"</span><span class="token punctuation">;</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span>c<span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token string"> </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span>name<span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token function">first</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>最开始，会创建一个 GEC 放到栈底：</p>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">[GEC]<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><code>name</code> <code>first</code> <code>second</code> <code>third</code> 都会放到 GEC 的 VO 中。</p>
+<p>当 JS Engine 遇到 <code>first</code> 函数调用的时候，会创建一个新的 FEC，并推入栈中：</p>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">[FEC: frist]
+[GEC]<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p><code>a</code> 保存在 FEC 中。然后 <code>second</code> 函数被调用，<code>first</code> 函数的执行会被暂停，直到 <code>second</code> 执行完毕，然后一个新的 FEC 又被推入栈中：</p>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">[FEC: second]
+[FEC: frist]
+[GEC]<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p><code>b</code> 保存在 <code>second</code> 的 FEC 中。然后 <code>third</code> 被调用，又推一个 FEC 进入 ES：</p>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">[FEC: third]
+[FEC: second]
+[FEC: frist]
+[GEC]<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p><code>c</code> 保存在 <code>third</code> 的 FEC 中。</p>
+<p>然后 <code>third</code> 执行完毕，<code>return</code>，他的 FEC 出栈，继续执行 <code>second</code>。以此类推，直到所有代码执行完毕，GEC 出栈。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/hais-notebook/tags/FX/" rel="tag"># FX</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2020/01/29/JavaScript/JavaScript%20Expressions%20&%20Statements/" rel="prev" title="JavaScript Expressions & Statements">
+                  <i class="fa fa-chevron-left"></i> JavaScript Expressions & Statements
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2020/01/29/JavaScript/JavaScript%20Deep%20Clone/" rel="next" title="JavaScript Deep Clone">
+                  JavaScript Deep Clone <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Harvey Zhang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="/hais-notebook/lib/animejs/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/hais-notebook/js/comments.js"></script><script src="/hais-notebook/js/utils.js"></script><script src="/hais-notebook/js/next-boot.js"></script>
+
+  <script src="/hais-notebook/lib/hexo-generator-searchdb/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/hais-notebook/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"/hais-notebook/lib/mathjax/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/hais-notebook/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
