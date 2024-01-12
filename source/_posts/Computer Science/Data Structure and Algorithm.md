@@ -4,6 +4,8 @@ date: 2022-02-05 15:49:12
 categories:
   - - 计算机
 mathjax: true
+tags:
+  - C1
 ---
 
 本文介绍了常见的数据结构、算法、一些典型例题及代码题中的特殊需要关注的地方。
@@ -355,7 +357,7 @@ const quickSort = (numbers, l = 0, r = numbers.length - 1) => {
 
 ### Sorting in JavaScript
 
-早年的 ECMAScript Spec 并没有规定 `Array#sort` 方法的稳定性，甚至有的 JavaScript Engine 在短数组时是稳定的（插入排序），长数组中不稳定（快速排序）。但 V8 向 ECMAScript 发起了 [数组稳定性的提案](https://v8.dev/features/stable-sort)，并且已经被采纳了，现在的 JavaScript Engine （V8 v7.0 / Chrome 70）均已支持稳定的数组排序。
+早年的 ECMAScript Spec 并没有规定 `Array#sort` 方法的稳定性，甚至有的 JavaScript Engine 在短数组时是稳定的（插入排序），长数组中不稳定（快速排序）。但 V8 向 ECMAScript 发起了 [数组稳定性的提案](https://v8.dev/features/stable-sort)，并且已经被采纳了，现在的 JavaScript Engine （V8 v7.0 / Chrome 70）均已支持稳定的数组排序，可以参考 [V8 中的排序](https://v8.dev/blog/array-sort) 博客。
 
 但具体采用什么样的算法来实现数组排序，在不同的 JavaScript Engine 中有着不同的实现。比如 V8 采用的是 [Timsort](https://v8.dev/blog/array-sort#timsort)。
 
@@ -404,7 +406,6 @@ V8 的排序预处理步骤如下：
 ##### During Sorting: Timsort
 
 - 快排的好处是原地排序，可以减少内存占用。缺点是不稳定，并且最坏的情况下时间复杂度是 O(n^2)。
-
 - Timsort 是 2002 年 Tim Peters 为 Python 开发的。
 - Timsort 是迭代调用的（而归并排序通常是递归调用）。
 

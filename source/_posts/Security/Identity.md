@@ -2,7 +2,9 @@
 title: Identity & Auth0
 date: 2023-02-22 15:57:10
 categories:
-  - [全栈]
+  - - 全栈
+tags:
+  - SS1
 ---
 
 From [Auth0 Docs](https://auth0.com/docs/get-started/identity-fundamentals). [Glossary](https://auth0.com/docs/glossary)

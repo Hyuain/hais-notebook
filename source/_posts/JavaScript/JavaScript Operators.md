@@ -1,0 +1,265 @@
+---
+title: JavaScript Operators
+date: 2020-01-29 17:22:52
+categories:
+  - - 前端
+tags:
+  - FX
+---
+
+JavaScript 是一门奇特的动态类型语言，他的设计既巧妙又一言难尽。本笔记包含以下内容：
+
+- [[JavaScript History]]
+- [Script Element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script)： [[HTML]] 中的 `<script>` 标签是网页引用 JavaScript 代码的主要方式。当浏览器解析到没有指定 `async` `defer` 或 `type="module"` 属性的 `<script>` 标签，以及没有 `type="module"` 的行内代码时，他会立即获取并执行代码的内容，完成后再继续解析页面剩下的内容
+- JavaScript Basic Syntax
+	- [[JavaScript Expressions & Statements]]
+	- JavaScript Values
+		- [[JavaScript Data Types]]
+		- [[JavaScript Type Checking]]
+		- [[JavaScript Type Casting]]
+		- [[JavaScript Variable Declaration]]
+	- JavaScript Operators
+		- 
+
+
+- JavaScript 的数组不是典型的数组，而是一个对象；**元素的数据类型可以不同，内存不一定连续，是通过字符串下标（而不是数字下标）获取元素**。
+
+<!-- more -->
+
+# 算术运算符
+
+## Number
+
+- 余数 `-x % 7` 为 `-(x % 7)`
+- 指数 `x ** 3`
+- 自增 `a++` 表达式的值是 `a` 加之前的值， `++a` 表达式的值是 `a` 加之后的值
+- 求值运算符 `+`，附属运算符 `-`
+
+## String
+
+- 连接运算 `+`
+
+{% note warning %}
+
+`number + string`，变成字符串
+
+`string - number`，变成数字
+
+{% endnote %}
+
+# 比较运算符
+
+## ==
+
+- 模糊相等，发生自动类型转换，别用两个等于
+- JavaScript 三位一体
+
+## ===
+
+全等，基本类型看值是否相等，对象看地址是否相等
+
+- `[] !== []`
+- `{} !== {}`
+- `NaN !== NaN`
+
+## `Object.is` 和 `===`
+
+`Object.is` 修复了 `===` 的一些失误：
+
+```js
+function is(x, y) {
+  if (x === y) {
+    // 修复 +0 和 -0 相等的问题
+    return x !== 0 || y !== 0 || 1 / x === 1 / y
+  } else {
+    // 修复 NaN 和 NaN 不相等的问题
+    return x !== x && y !== y
+  }
+}
+```
+
+
+# 布尔运算符
+
+```js
+console && console.log && console.log('hi') // 防止 console.log 报错（防御性编程）
+a = a || 100 // 但是五个 falsy 值都会让 a 为假，因此有 bug
+
+// 可以用函数来赋初值
+function add(n = 0) {
+  return n + 1
+}
+```
+
+## 短路逻辑
+
+### &&
+
+如果前面是 **真的**，就执行后面的（若前面是假的，表达式的值为前面；若前面是真的，表达式的值为后面）
+
+```js
+window.f1 && console.log('f1 存在')
+console && console.log && console.log('hi') // 因为 IE 没有 console.log，所以可以这样写防止出错
+```
+
+### ||
+
+如果前面是 **假的**，就执行后面的
+
+```js
+a = a || 100 // 可以用于设置保底值
+```
+
+# 二进制运算符
+
+## 或与
+
+```js
+(0b1111 | 0b1010).toString(2) // 1111
+(0b1111 & 0b1010).toString(2) // 1010
+```
+
+## 否
+
+```javascript
+(~0b0101).toString(2)         // -110 (-6)
+```
+
+JavaScript 将数字存储为 64 位浮点数，但所有按位运算都以 32 位二进制数执行。在执行位运算之前，JavaScript 将数字转换为 32 位有符号整数：
+
+```javascript
+00000000 00000000 00000000 00000101 (5)
+```
+
+然后进行位运算（比如这里的按位取反）：
+
+```javascript
+11111111 11111111 11111111 11111010 (-6)
+```
+
+这里其实是使用的二进制补码，最高位表示 -2^32，次高位表示 +2^31，当 32 位全为 1 时，表示 - 1，可以通过“按位取反再加一”的方式快速获取他的相反数（在这里就是 6）：
+
+```javascript
+00000000 00000000 00000000 00000101 // 按位取反
+00000000 00000000 00000000 00000110 // +1，得到 6
+```
+
+执行按位操作后，结果将转换回 64 位 JavaScript 数，也就是 `-110`
+
+另外一个有趣的例子：
+
+```js
+(~-0b0101).toString(2)  // 100
+```
+
+先获得其 32 位表达（因为有符号，因此要按位取反再加一得到补码）：
+
+```js
+11111111 11111111 11111111 11111011 (-0101)
+```
+
+再进行否运算：
+
+```js
+00000000 00000000 00000000 00000100
+```
+
+## 异或
+
+```js
+(0b1111 ^ 0b1010).toString(2) // 101
+```
+
+{% note warning %}
+
+按位取反可以用 `^1111`，有多少位就有多少个 `1`
+
+{% endnote %}
+
+## 左移和右移
+
+```js
+(0b0011 >> 1).toString(2) // 1
+(0b0010 << 1).toString(2) // 100
+```
+
+## 头部补零的右移运算符
+
+```js
+(0b0011 >>> 1).toString(2) // 1
+```
+
+## 使用运算符判断奇偶
+
+```js
+偶数 & 1 === 0
+奇数 & 1 === 1
+```
+
+## 使用 `~` `>>` `<<` `>>>` `|` 来取整
+
+> 位运算不支持小数，会自动抹去
+
+```js
+~~ 6.83 // 6
+6.83 >> 0
+6.83 << 0
+6.83 | 0
+6.83 >>> 0
+```
+
+## 使用 `^` 来交换 `a` `b` 的值
+
+```js
+a ^= b
+b ^= a
+a ^= b
+
+// 新版语法
+[a, b] = [b, a]
+```
+
+# 其他运算符
+
+## 点运算符
+
+```js
+对象.属性名 = 属性值
+```
+
+## void 运算符
+
+> 求表达式的值或执行语句，然后 `void` 的值总为 `undefined`
+
+```js
+void 表达式或语句
+```
+
+```html
+<!-- 防止假动作 -->
+<a href="example.com" onclick="console.log('hi'); return false;">点击</a>
+
+<!-- 也可以用 -->
+<a href="javascript:void(console.log('hi'))">点击</a>
+
+
+<!-- 或者 -->
+<a href="javascript:;">点击</a>
+```
+
+## 逗号运算符
+
+> 表示取后面的值
+
+```js
+var a = (1, 2) // a 为 2
+
+let f = x => { console.log('hi'); return x + 1 }
+let f = x => (console.log('hi'), x + 1)
+// 跟上面是一样的，先执行 console.log，再让 return 为x + 1
+```
+
+# 优先级
+
+圆括号的优先级最高
+

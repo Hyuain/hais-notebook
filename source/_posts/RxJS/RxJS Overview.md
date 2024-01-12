@@ -2,7 +2,9 @@
 title: RxJS
 date: 2021-05-13 14:39:12
 categories:
-  - [前端]
+  - - 前端
+tags:
+  - F1
 ---
 
 One Core Type: Observable.

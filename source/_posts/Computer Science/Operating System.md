@@ -2,7 +2,9 @@
 title: Operating System
 date: 2023-01-18 21:37:30
 categories:
-  - [计算机]
+  - - 计算机
+tags:
+  - C1
 ---
 
 .
@@ -10,6 +12,8 @@ categories:
 <!-- more -->
 
 # Introduction
+
+[[Thread]] [[Process]]
 
 # Process & Thread
 

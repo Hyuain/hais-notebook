@@ -2,7 +2,9 @@
 title: Java
 date: 2023-02-09 17:14:22
 categories:
-  - [全栈]
+  - - 全栈
+tags:
+  - J1
 ---
 
 Object Oriented Design, Java, Maven, Spring Boot.

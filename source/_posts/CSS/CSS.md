@@ -3,6 +3,8 @@ title: Charset
 date: 2020-02-01 20:12:49
 categories:
   - - 前端
+tags:
+  - F1
 ---
 名为 CSS 的魔法可以给网页添加色彩与各种丰富的样式。
 
@@ -44,11 +46,11 @@ CSS 全称是 **层叠样式表（Cascading Style Sheets）**，可以从以下�
 
 CSS 中包含一些概念，比如：
 
-- 文档流 [[Document Flow]]
-- 盒模型 [[Box Model]]
-- [[BFC]] 与 Margin 塌陷 [[Margin Collapse]]
-- CSS 布局 [[CSS Layout]]
-- CSS 定位 [[CSS Positioning]]
-- 层叠上下文 [[Staking Context]]
-- 动画 [[Animation]]
-- [[Default Styles & CSS Reset]]
+- [[Document Flow|文档流]]
+- [[Box Model|盒模型]]
+- [[BFC]] 与 [[Margin Collapse|Margin 塌陷]]
+- [[CSS Layout|CSS 布局]]
+- [[CSS Positioning|CSS 定位]]
+- [[Staking Context|层叠上下文]]
+- [[Animation|动画]]
+- [[Default Styles & CSS Reset|默认样式与 CSS Rest]]

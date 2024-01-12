@@ -2,7 +2,9 @@
 title: Rust
 date: 2023-07-18 14:38:01
 categories:
-  - [计算机]
+  - - 计算机
+tags:
+  - RS1
 ---
 
 熟练掌握三门语言计划之三：Rust。

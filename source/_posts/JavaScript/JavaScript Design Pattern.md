@@ -1,11 +1,13 @@
 ---
-title: 读书笔记：《JavaScript 设计模式与开发实践》
+title: JavaScript Design Pattern
 date: 2021-05-13 10:07:23
 categories:
-  - [前端]
+  - - 前端
+tags:
+  - FX
 ---
 
-.
+读书笔记：《JavaScript 设计模式与开发实践》
 
 <!-- more -->
 

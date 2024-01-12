@@ -2,7 +2,9 @@
 title: Ruby
 date: 2022-03-13 10:05:22
 categories:
-  - [全栈]
+  - - 全栈
+tags:
+  - RB1
 ---
 
 结合网课、Ruby 文档和《Ruby 元编程 2》。

@@ -3,6 +3,8 @@ title: BFC
 date: 2020-02-01 20:12:49
 categories:
   - - 前端
+tags:
+  - FX
 ---
 
 **块级格式化上下文（Block Formatting Context, BFC）** 就是一块小区域，一块独立的布局环境，在这个区域之内的任何布局和定位都不会影响到外面，外面也不能影响到里面。

@@ -2,7 +2,9 @@
 title: Kafka
 date: 2023-03-16 15:12:44
 categories:
-  - [前端]
+  - - 前端
+tags:
+  - S1
 ---
 
 Kafka is an open-source stream-processing software for collecting, processing, storing, and analyzing data at scale.

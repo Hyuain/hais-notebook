@@ -2,7 +2,9 @@
 title: TypeScript
 date: 2020-03-21 17:25:49
 categories:
-  - [前端]
+  - - 前端
+tags:
+  - FX
 ---
 
 TypeScript 三个好处： 1. 自动提示更智能；2. 不能随便写 .xxx()；3. 错误前移到编译时 

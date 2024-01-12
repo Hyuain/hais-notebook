@@ -2,7 +2,9 @@
 title: 翻译：Angular 如何检查变化
 date: 2021-05-17 18:56:06
 categories:
-  - [前端]
+  - - 前端
+tags:
+  - FX
 ---
 
 翻译自 [Angular Change Detection - How Does It Really Work?](https://blog.angular-university.io/how-does-angular-2-change-detection-really-work/) 。

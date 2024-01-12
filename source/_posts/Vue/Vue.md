@@ -2,7 +2,9 @@
 title: Vue
 date: 2020-01-30 10:31:34
 categories:
-  - [前端]
+  - - 前端
+tags:
+  - F1
 ---
 
 For Vue 2.

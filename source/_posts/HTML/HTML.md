@@ -2,13 +2,14 @@
 title: HTML
 date: 2020-02-02 13:33:25
 categories:
-  - [前端]
+  - - 前端
+tags:
+  - F1
 ---
 
 WWW、HTML，和一些常见重点的 [[HTML Tags]]。
 
 <!-- more -->
-
 
 # Word Wide Web
 
@@ -55,6 +56,8 @@ WWW、HTML，和一些常见重点的 [[HTML Tags]]。
 </body>
 </html>
 ```
+
+其中的 `charset` 可参考 CSS [[Charset]]。
 
 然后可以使用 `http-server` 或 `parcel` 等简单地起一个 HTTP 服务器，使得 HTML 网页可以通过 HTTP 访问（就像普通用户打开浏览器输入网址那样）。
 

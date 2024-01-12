@@ -2,7 +2,9 @@
 title: Containers
 date: 2023-03-08 16:29:12
 categories:
-  - [计算机]
+  - - 计算机
+tags:
+  - S1
 ---
 
 Docker is a platform for developers and sysadmins to develop, deploy, and run applications with containers.

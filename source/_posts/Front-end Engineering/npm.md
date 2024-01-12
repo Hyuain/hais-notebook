@@ -2,7 +2,9 @@
 title: npm & yarn
 date: 2020-02-02 15:34:21
 categories:
-  - [工具]
+  - - 工具
+tags:
+  - F1
 ---
 
 收集 npm 的包和问题。

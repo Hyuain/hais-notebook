@@ -3,6 +3,8 @@ title: Margin Collapse
 date: 2020-02-01 20:12:49
 categories:
   - - 前端
+tags:
+  - FX
 ---
 
 **Margin 合并** 是说我们上下两个元素若都有 `margin`，那么他们的 `margin` 将不会同时生效。有以下几个注意点：

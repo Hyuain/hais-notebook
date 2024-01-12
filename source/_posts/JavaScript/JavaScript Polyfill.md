@@ -2,7 +2,9 @@
 title: JavaScript Polyfill
 date: 2020-02-23 16:33:44
 categories:
-  - [前端]
+  - - 前端
+tags:
+  - FX
 ---
 
 实现一些常见的 API。
@@ -10,6 +12,8 @@ categories:
 <!-- more -->
 
 # Array
+
+我们可以手动实现一些[[JavaScript Array|数组]]的简单方法，比如 `map`、`reduce` 等
 
 ## map
 
@@ -236,94 +240,11 @@ Array.prototype.mySplice = function(startIndex, deleteCount, ...addElements) {
 
 ## sort
 
-在 V8 引擎中
-- n <= 10 时，采用插入排序
-- n > 10 时，采用三路快速排序
-    - 10 < n <= 1000，采用中位数作为哨兵元素
-    - n > 1000，每隔 200~215 个元素选出一个元素，放到一个新数组，然后对他排序，找到中间位置的数，以此作为中位数
-
-### 插入排序及其优化
-
-原来的插入排序：
-
-```js
-const insertSort = (arr, start = 0, end) => {
-  end = end || arr.length
-  for (let i = start; i < end; i++) {
-    let j
-    for (j = i; j > start && arr[j - 1] > arr[j]; j--) {
-      let temp = arr[j]
-      arr[j] = arr[j - 1]
-      arr[j - 1] = temp
-    }
-  }
-}
-```
-
-用变量覆盖的方式替代交换元素：
-
-![](https://user-gold-cdn.xitu.io/2019/11/3/16e3124af5479387?imageslim)
-
-```js
-const insertSort = (arr, start = 0, end) => {
-  end = end || arr.length
-  for (let i = start; i < end; i++) {
-    let temp = arr[i]
-    let j
-    for (j = i; j > start && arr[j - 1] > e; j--) {
-      arr[j] = arr[j - 1]
-    }
-    arr[j] = temp
-  }
-}
-```
-
-### 寻找哨兵元素
-
-```js
-const getPivotIndex = (a, from, to) => {
-  let tempArr = []
-  // 递增量在 200~215 之间
-  let increment = 200 + ((to - from) & 15)
-  let j = 0
-  from += 1
-  to -= 1
-  for (let i = from; i < to; i += increment) {
-    tempArr[j] = [i, a[i]]
-    j++
-  }
-  tempArr.sort(function(a, b) {
-    return comparefn(a[1], b[1])
-  })
-  return tempArr[tempArr.length >> 1][0]
-}
-```
-
-### 完成快排
-
-```js
-const _sort = (a, b, c) => {
-  let arr = [a, b, c]
-  innsetSort(arr, 0, 3)
-  return arr
-}
-
-const quickSort = (a, from, to) => {
-  // 为了确保 pivot 不是最值，将他和 from to 一起排序
-  [a[from], a[pivotIndex], a[to - 1]] = _sort(a[from], a[pivotIndex], a[to - 1])
-  let pivot = a[pivotIndex]
-  let lowEnd = from + 1
-  let highStart = to - 1
-  a[pivotIndex] = a[lowEnd]
-  a[lowEnd] = pivot
-  
-  for (let i = lowEnd + 1; i < highStart; i++) {
-    
-  }
-}
-```
+关于数组排序算法的详细介绍请看 [[Data Structure and Algorithm#Sorting|算法与数据结构中对应的章节]]。 
 
 # Promise
+
+[[Promise]] 是 JavaScript 中一种异步编程的解决方案。
 
 ## 原版 Promise 的基本用法
 
@@ -476,6 +397,8 @@ class MyPromise {
 ```
 
 # call apply bind
+
+`call` `apply` 和 `bind` 主要跟[[JavaScript Function|函数]]中的 `this` 和 `arguments` 有关，原生的 `call` `apply` `bind` 提供了除了直接调用以外的其他函数调用方式。
 
 ## 模拟实现的思路
 
@@ -663,7 +586,7 @@ if (!Function.proptotype.bind) {
 
 # new
 
-在 `new` 的时候，做了这样几件事情：
+`new` 是创建一个新[[JavaScript Object|对象]]的方法，原生的 `new` 使得我们使用某个构造函数创建一个对象实例，这是面向对象编程中很有用的一种模式。在 `new` 的时候，做了这样几件事情：
 
 1. 自动创建空对象
 2. 自动为空对象关联原型，原型的地址为 `构造函数.prototype`

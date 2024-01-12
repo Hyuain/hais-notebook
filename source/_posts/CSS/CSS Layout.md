@@ -3,6 +3,8 @@ title: CSS Layout
 date: 2020-02-01 20:12:49
 categories:
   - - 前端
+tags:
+  - FX
 ---
 CSS 布局主要分为 **固定宽度布局** 和 **不固定宽度布局**，其中后者主要使用 Float、Flexible、Grid 等达成。
 

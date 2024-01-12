@@ -2,7 +2,9 @@
 title: Rails
 date: 2023-01-16 11:48:41
 categories:
-  - [全栈]
+  - - 全栈
+tags:
+  - RB1
 ---
 
 Rails 的一个项目是如何搭建起来的。
