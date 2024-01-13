@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hais-notebook/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/hais-notebook/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/hais-notebook/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/hais-notebook/images/safari-pinned-tab.svg" color="#222">
+
+<link rel="stylesheet" href="/hais-notebook/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.font.im/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="/hais-notebook/lib/@fortawesome/fontawesome-free/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"hyuain.github.io","root":"/hais-notebook/","images":"/hais-notebook/images","scheme":"Gemini","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac","show_result":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/hais-notebook/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/hais-notebook/js/config.js"></script>
+
+    <meta name="description" content="Priority Queue &amp; Heap 优先级队列（Priority Queue）是一个抽象数据类型（Abstract Data Type, ADT），他支持插入元素（Enqueue）、删除具有最大或最小优先级的元素（Dequeue）。他可以用很多数据结构来实现，比如堆、[[Binary Tree#Binary Search Tree|二叉搜索树]]、[[Array|数组]]等。 堆（">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Heap">
+<meta property="og:url" content="https://hyuain.github.io/hais-notebook/2022/02/05/Computer%20Science/Heap/index.html">
+<meta property="og:site_name" content="Hais Notebook">
+<meta property="og:description" content="Priority Queue &amp; Heap 优先级队列（Priority Queue）是一个抽象数据类型（Abstract Data Type, ADT），他支持插入元素（Enqueue）、删除具有最大或最小优先级的元素（Dequeue）。他可以用很多数据结构来实现，比如堆、[[Binary Tree#Binary Search Tree|二叉搜索树]]、[[Array|数组]]等。 堆（">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-02-05T15:49:12.000Z">
+<meta property="article:modified_time" content="2022-02-05T15:49:12.000Z">
+<meta property="article:author" content="Harvey Zhang">
+<meta property="article:tag" content="CX">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://hyuain.github.io/hais-notebook/2022/02/05/Computer%20Science/Heap/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hyuain.github.io/hais-notebook/2022/02/05/Computer%20Science/Heap/","path":"2022/02/05/Computer Science/Heap/","title":"Heap"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Heap | Hais Notebook</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/hais-notebook/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/hais-notebook/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Hais Notebook</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/hais-notebook/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/hais-notebook/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/hais-notebook/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/hais-notebook/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#priority-queue-heap"><span class="nav-number">1.</span> <span class="nav-text">Priority Queue &amp; Heap</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#heap-sort"><span class="nav-number">2.</span> <span class="nav-text">Heap Sort</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#examples"><span class="nav-number">3.</span> <span class="nav-text">Examples</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D-k-%E4%B8%AA%E9%AB%98%E9%A2%91%E5%85%83%E7%B4%A0"><span class="nav-number">3.1.</span> <span class="nav-text">前 K 个高频元素</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Harvey Zhang</p>
+  <div class="site-description" itemprop="description">海鲜酱的笔记本</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/hais-notebook/archives/">
+          <span class="site-state-item-count">137</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/hais-notebook/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/hais-notebook/tags/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2022/02/05/Computer%20Science/Heap/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
+      <meta itemprop="name" content="Harvey Zhang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hais Notebook">
+      <meta itemprop="description" content="海鲜酱的笔记本">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Heap | Hais Notebook">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Heap
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-02-05 15:49:12" itemprop="dateCreated datePublished" datetime="2022-02-05T15:49:12+00:00">2022-02-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/" itemprop="url" rel="index"><span itemprop="name">计算机</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="priority-queue-heap">Priority Queue &amp; Heap</h1>
+<p><strong>优先级队列（Priority Queue）是一个抽象数据类型（Abstract Data Type, ADT）</strong>，他支持插入元素（Enqueue）、删除具有最大或最小优先级的元素（Dequeue）。他可以用很多数据结构来实现，比如堆、[[Binary Tree#Binary Search Tree|二叉搜索树]]、[[Array|数组]]等。</p>
+<p><strong>堆（Heap）是一个具体的数据结构</strong>，可以用来实现优先级队列，他实际上就是一棵[[Binary Tree#Complete Binary Tree|完全二叉树]]（最后一层可能不满），并且满足排序特点：大顶堆（Max-Heap）中父结点的优先级高于子结点，小顶堆（Min-Heap）中则相反。堆有很多变种，比如二叉堆、斐波那契堆、二项堆等，他们都有自己的特点。</p>
+<p>JavaScript 中并没有提供原生的堆函数，而完全二叉树可以高效地用数组表示，因此我们可以手动用数组实现一个堆：</p>
+<details class="note "><summary><p>Code</p>
+</summary>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">class</span> <span class="token class-name">Heap<span class="token operator">&lt;</span><span class="token constant">T</span> <span class="token operator">=</span> <span class="token builtin">any</span><span class="token operator">></span></span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">// 二叉堆实际上是一棵树，但保证了节点的顺序</span>
+  <span class="token keyword">private</span> tree<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token keyword">private</span> <span class="token function-variable function">compareFn</span><span class="token operator">:</span> <span class="token punctuation">(</span>a<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">,</span> b<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token builtin">number</span>
+
+  <span class="token comment">// compareFn 指定堆的特性，按照什么优先级构建堆，返回正数即意味着在 a 应当在 b 下面</span>
+  <span class="token comment">// 比如当 a, b 均为 number，传入 a - b 就意味着 a > b 时，a 应当在 b 的下面，即为小顶堆</span>
+  <span class="token comment">// arr 可以指定通过特定的数组进行堆的初始化</span>
+  <span class="token function">constructor</span><span class="token punctuation">(</span><span class="token function-variable function">compareFn</span><span class="token operator">:</span> <span class="token punctuation">(</span>a<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">,</span> b<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token builtin">number</span><span class="token punctuation">,</span> arr<span class="token operator">?</span><span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>compareFn <span class="token operator">=</span> compareFn
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>arr<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span>arr<span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token comment">// 向堆底添加元素</span>
+  <span class="token keyword">public</span> <span class="token function">push</span><span class="token punctuation">(</span>item<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 先将新的 HeapItem 直接放到堆的最底部</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>tree<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span>
+    <span class="token comment">// 将刚刚 push 的 HeapItem 往上浮</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">up</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token comment">// 弹出堆顶元素</span>
+  <span class="token keyword">public</span> <span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token constant">T</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&lt;=</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span>tree<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">const</span> top <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">top</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token comment">// 将堆底最后一个元素弹出，替代掉堆顶的元素</span>
+    <span class="token keyword">const</span> bottom <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>tree<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>tree<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span> bottom
+    <span class="token comment">// 将新的堆顶下沉</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">down</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> top
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token keyword">public</span> <span class="token function">top</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span>tree<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token keyword">public</span> <span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span>tree<span class="token punctuation">.</span>length
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token comment">// 返回正数时，指示 index1 应该在 index2 的下方，应该把 index1 往下沉，反之则代表 index2 需要往下沉</span>
+  <span class="token comment">// 注意这与这是大顶堆还是小顶堆是没关系的，不管是大顶堆还是小顶堆，都是正数表示 index1 需要往下沉</span>
+  <span class="token keyword">private</span> <span class="token function">compare</span><span class="token punctuation">(</span>index1<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">,</span> index2<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 讨论越界情况，保证 undfined 值总是在最下面</span>
+    <span class="token comment">// 当 index1 越界了，应该把 index1 所代表的 undefined 值往下沉</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>tree<span class="token punctuation">[</span>index1<span class="token punctuation">]</span> <span class="token operator">===</span> <span class="token keyword">undefined</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token keyword">return</span> <span class="token number">1</span> <span class="token punctuation">&#125;</span>
+    <span class="token comment">// 当 index2 越界了，应该把 index2 所代表的 undefined 值往下沉</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>tree<span class="token punctuation">[</span>index2<span class="token punctuation">]</span> <span class="token operator">===</span> <span class="token keyword">undefined</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">1</span> <span class="token punctuation">&#125;</span>
+    <span class="token comment">// 正常情况由传入的 compareFn 决定</span>
+    <span class="token comment">// 比如如果是小顶堆，应该写作类似 (a, b) => a - b，这样当 a 的值 > b 的值时，a 就会往下沉</span>
+    <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">compareFn</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>tree<span class="token punctuation">[</span>index1<span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>tree<span class="token punctuation">[</span>index2<span class="token punctuation">]</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token keyword">private</span> <span class="token function">down</span><span class="token punctuation">(</span>index<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// left 是左孩子 index，left + 1 是右孩子 index</span>
+    <span class="token keyword">let</span> left <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">leftIndex</span><span class="token punctuation">(</span>index<span class="token punctuation">)</span>
+    <span class="token comment">// 找到要下沉到哪里，如果左孩子比右孩子更低，那么应该跟右孩子进行比较</span>
+    <span class="token comment">// 否则可能出现操作完成后的节点比左孩子高、比右孩子低的情况（本应该节点比两个孩子都高）</span>
+    <span class="token keyword">let</span> searchChild <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">compare</span><span class="token punctuation">(</span>left<span class="token punctuation">,</span> left <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">0</span> <span class="token operator">?</span> left <span class="token operator">+</span> <span class="token number">1</span> <span class="token operator">:</span> left
+    <span class="token comment">// 注意 compare 的传参，因为要把 index 向下沉</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span>searchChild <span class="token operator">&lt;</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">compare</span><span class="token punctuation">(</span>index<span class="token punctuation">,</span> searchChild<span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token punctuation">[</span><span class="token keyword">this</span><span class="token punctuation">.</span>tree<span class="token punctuation">[</span>index<span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>tree<span class="token punctuation">[</span>searchChild<span class="token punctuation">]</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token keyword">this</span><span class="token punctuation">.</span>tree<span class="token punctuation">[</span>searchChild<span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>tree<span class="token punctuation">[</span>index<span class="token punctuation">]</span><span class="token punctuation">]</span>
+      index <span class="token operator">=</span> searchChild
+      left <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">leftIndex</span><span class="token punctuation">(</span>index<span class="token punctuation">)</span>
+      searchChild <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">compare</span><span class="token punctuation">(</span>left<span class="token punctuation">,</span> left <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">0</span> <span class="token operator">?</span> left <span class="token operator">+</span> <span class="token number">1</span> <span class="token operator">:</span> left
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token keyword">private</span> <span class="token function">up</span><span class="token punctuation">(</span>index<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// parent 是父结点的 index</span>
+    <span class="token keyword">let</span> parent <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">parentIndex</span><span class="token punctuation">(</span>index<span class="token punctuation">)</span>
+    <span class="token comment">// 注意 compare 的传参，因为 index 是要从最底下往上浮</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span>parent <span class="token operator">>=</span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">compare</span><span class="token punctuation">(</span>parent<span class="token punctuation">,</span> index<span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token punctuation">[</span><span class="token keyword">this</span><span class="token punctuation">.</span>tree<span class="token punctuation">[</span>index<span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>tree<span class="token punctuation">[</span>parent<span class="token punctuation">]</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token keyword">this</span><span class="token punctuation">.</span>tree<span class="token punctuation">[</span>parent<span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>tree<span class="token punctuation">[</span>index<span class="token punctuation">]</span><span class="token punctuation">]</span>
+      index <span class="token operator">=</span> parent
+      parent <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">parentIndex</span><span class="token punctuation">(</span>index<span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token comment">// 通过数组构建堆</span>
+  <span class="token keyword">private</span> <span class="token function">build</span><span class="token punctuation">(</span>arr<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>tree <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token operator">...</span>arr<span class="token punctuation">]</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> Math<span class="token punctuation">.</span><span class="token function">floor</span><span class="token punctuation">(</span>arr<span class="token punctuation">.</span>length <span class="token operator">/</span> <span class="token number">2</span><span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span> i <span class="token operator">>=</span> <span class="token number">0</span><span class="token punctuation">;</span> i<span class="token operator">--</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">down</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token keyword">private</span> <span class="token function">leftIndex</span><span class="token punctuation">(</span>index<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> <span class="token number">2</span> <span class="token operator">*</span> index <span class="token operator">+</span> <span class="token number">1</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token keyword">private</span> <span class="token function">parentIndex</span><span class="token punctuation">(</span>index<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> Math<span class="token punctuation">.</span><span class="token function">floor</span><span class="token punctuation">(</span><span class="token punctuation">(</span>index <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">/</span> <span class="token number">2</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+</details>
+<h1 id="heap-sort">Heap Sort</h1>
+<p><strong>堆排序实际上会经历两个过程：</strong></p>
+<ol type="1">
+<li>由数组构建大顶堆/小顶堆</li>
+<li>将堆顶不停 pop 出来，因为每次 pop 完成之后堆内部都会重建以保证其大顶堆/小顶堆的特性，因此每次 pop 出来的一定是最大值/最小值</li>
+</ol>
+<p><strong>堆的构建过程有两种方案：</strong></p>
+<ol type="1">
+<li><strong>自底向上（Bottom-Up）</strong>建堆，使用 Floyd 算法。先把用于构建堆的数组存入堆中，再从最后一个非叶节点（n / 2 - 1）遍历至第 0 个元素，将遍历到的每个元素向下沉，也是上面代码示例中所使用的方法。 令 <span class="math inline">\(h\)</span> 为堆的总高度，<span class="math inline">\(h_i\)</span> 为高度为第 <span class="math inline">\(i\)</span> 层的高度，即 <span class="math inline">\(h - i\)</span>；<span class="math inline">\(n_i\)</span> 为第 <span class="math inline">\(i\)</span> 层的节点数量，即 <span class="math inline">\(2^i\)</span>。那么 <strong>自底向上建堆的时间复杂度为 O(n)</strong>：</li>
+</ol>
+<p><span class="math display">\[
+T(n) = \sum_{i=0}^{h} n_i h_i \\
+= \sum_{i=0}^{h}2^i(h - i) \\
+= \sum_{i=0}^{h}\frac{h-i}{2^{h-i}}{2^h} \\
+= 2^h\sum_{k=0}^{h}\frac{k}{2^k} \\
+\le n\sum_{k=0}^\infty\frac{k}{2^k} \\
+= O(n)
+\]</span></p>
+<ol start="2" type="1">
+<li><strong>自顶向下（Top-Down）</strong>建堆。可以理解为最开始只有一个空堆，每次都 push 一个元素进去，然后让其上浮，堆重建，时间复杂度为 <span class="math inline">\(log(1)+log(2)+\cdots+log(n)\)</span>，即 <strong>O(nlog(n))</strong>。</li>
+</ol>
+<p><strong>堆的排序过程还可以描述为：</strong>每次将倒数第 <span class="math inline">\(i\)</span> 个元素与堆顶元素兑换，这样就能保证第 <span class="math inline">\(i\)</span> 个元素到最后一个元素都是排好序的了。然后再将兑换后的堆顶元素往下沉（不能沉到 <span class="math inline">\(i\)</span> 之后），重建堆。<strong>这样我们就可以实现原位的堆排序了</strong>。</p>
+<h1 id="examples">Examples</h1>
+<h2 id="前-k-个高频元素">前 K 个高频元素</h2>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/top-k-frequent-elements/">LeetCode.347</a></p>
+<p>Given an integer array nums and an integer k, return the k most frequent elements. You may return the answer in any order.</p>
+<p>Example 1:</p>
+<p>Input: nums = [1,1,1,2,2,3], k = 2</p>
+<p>Output: [1,2]</p>
+<details class="note "><summary><p>Code</p>
+</summary>
+<p>#二叉堆</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">topKFrequent</span><span class="token punctuation">(</span>nums<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> k<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">// 哈希表统计元素数量 O(n)</span>
+  <span class="token keyword">const</span> map <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Map</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> nums<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    map<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span>nums<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">(</span>map<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>nums<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">||</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token comment">// 遍历哈希表，用二叉堆（优先级队列）统计出前 k 个值</span>
+  <span class="token comment">// 这里用的是小顶堆，因为如果堆的size超过k，是把堆顶的那个值给扔掉</span>
+  <span class="token comment">// 如果是大顶堆就是把最大值扔掉了，我们要逐步扔掉比较小的值，把大的值沉在堆底</span>
+  <span class="token keyword">const</span> heap <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Heap<span class="token operator">&lt;</span><span class="token punctuation">[</span><span class="token builtin">number</span><span class="token punctuation">,</span> <span class="token builtin">number</span><span class="token punctuation">]</span><span class="token operator">></span></span><span class="token punctuation">(</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span> b<span class="token punctuation">)</span> <span class="token operator">=></span> a<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">-</span> b<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">const</span> entry <span class="token keyword">of</span> map<span class="token punctuation">.</span><span class="token function">entries</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    heap<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>entry<span class="token punctuation">)</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>heap<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">></span> k<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      heap<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token comment">// 将堆剩下的输出到 result 数组中</span>
+  <span class="token keyword">const</span> result <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token keyword">while</span> <span class="token punctuation">(</span>heap<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    result<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>heap<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token keyword">return</span> result
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+</details>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/hais-notebook/tags/CX/" rel="tag"># CX</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2022/02/05/Computer%20Science/Linked%20Hash%20Map/" rel="prev" title="Linked Hash Map">
+                  <i class="fa fa-chevron-left"></i> Linked Hash Map
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2022/02/05/Computer%20Science/Hash%20Map/" rel="next" title="Hash Map">
+                  Hash Map <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Harvey Zhang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="/hais-notebook/lib/animejs/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/hais-notebook/js/comments.js"></script><script src="/hais-notebook/js/utils.js"></script><script src="/hais-notebook/js/next-boot.js"></script>
+
+  <script src="/hais-notebook/lib/hexo-generator-searchdb/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/hais-notebook/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"/hais-notebook/lib/mathjax/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/hais-notebook/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
