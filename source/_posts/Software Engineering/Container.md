@@ -54,7 +54,7 @@ Docker is a platform for developers and sysadmins to develop, deploy, and run ap
 - `docker rm <id|name>` 删除对应的容器
 - `docker container prune` 删除无用的容器，以节省空间
 
-注意：用 docker 运行的容器，默认不会 [持久化](persistence-in-docker)，容器被删掉，数据也就没了
+注意：用 docker 运行的容器，默认不会 [持久化](#persistence-in-docker)，容器被删掉，数据也就没了
 
 # Example: Run a MySQL Database
 

@@ -2,7 +2,9 @@
 title: Linux
 date: 2022-05-29 16:25:00
 categories:
-  - [全栈]
+  - - 全栈
+tags:
+  - C1
 ---
 
 参考文章 [1](https://juejin.cn/post/6917096816118857736)、B 站教程等。

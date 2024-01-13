@@ -13,7 +13,7 @@ tags:
 
 # Array
 
-我们可以手动实现一些[[JavaScript Array|数组]]的简单方法，比如 `map`、`reduce` 等
+我们可以手动实现一些[[JavaScript Arrays|数组]]的简单方法，比如 `map`、`reduce` 等
 
 ## map
 
@@ -240,7 +240,7 @@ Array.prototype.mySplice = function(startIndex, deleteCount, ...addElements) {
 
 ## sort
 
-关于数组排序算法的详细介绍请看 [[Data Structure and Algorithm#Sorting|算法与数据结构中对应的章节]]。 
+关于数组排序算法的详细介绍请看 [[Array#Sorting|数组排序]]。 
 
 # Promise
 
@@ -398,7 +398,7 @@ class MyPromise {
 
 # call apply bind
 
-`call` `apply` 和 `bind` 主要跟[[JavaScript Function|函数]]中的 `this` 和 `arguments` 有关，原生的 `call` `apply` `bind` 提供了除了直接调用以外的其他函数调用方式。
+`call` `apply` 和 `bind` 主要跟[[JavaScript Functions|函数]]中的 `this` 和 `arguments` 有关，原生的 `call` `apply` `bind` 提供了除了直接调用以外的其他函数调用方式。
 
 ## 模拟实现的思路
 
@@ -586,7 +586,7 @@ if (!Function.proptotype.bind) {
 
 # new
 
-`new` 是创建一个新[[JavaScript Object|对象]]的方法，原生的 `new` 使得我们使用某个构造函数创建一个对象实例，这是面向对象编程中很有用的一种模式。在 `new` 的时候，做了这样几件事情：
+`new` 是创建一个新[[JavaScript Objects|对象]]的方法，原生的 `new` 使得我们使用某个构造函数创建一个对象实例，这是面向对象编程中很有用的一种模式。在 `new` 的时候，做了这样几件事情：
 
 1. 自动创建空对象
 2. 自动为空对象关联原型，原型的地址为 `构造函数.prototype`

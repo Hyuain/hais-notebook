@@ -1,5 +1,5 @@
 ---
-title: JavaScript Object
+title: JavaScript Objects
 date: 2020-01-29 17:22:52
 categories:
   - - 前端
@@ -7,7 +7,7 @@ tags:
   - FX
 ---
 
-JavaScript 中，万物皆对象。除了常用的普通对象（Plain Object）以外，JavaScript 中的[[JavaScript Array|数组]]、[[JavaScript Function|函数]]等实际上也都是对象，JavaScript 使用原型链（Prototype Chain）机制来提供类与继承的能力。
+JavaScript 中，万物皆对象。除了常用的普通对象（Plain Object）以外，JavaScript 中的[[JavaScript Arrays|数组]]、[[JavaScript Functions|函数]]等实际上也都是对象，JavaScript 使用原型链（Prototype Chain）机制来提供类与继承的能力。
 
 <!-- more -->
 

@@ -17,8 +17,8 @@ JavaScript 中内存分为 **栈内存（Stack）** 和 **堆内存（Heap）** 
 
 JavaScript 的内存空间可以被分为：
 
-- 栈（Stack）：[[Data Structure and Algorithm#Stack|一种先入后出（LIFO）的数据结构]]，每个数据顺序存放。存储基本类型值和执行代码的环境；浏览器加载页面就会形成栈内存，当执行函数的时候，都会形成一个新的[[JavaScript Execution Context|执行上下文]]，压入栈中执行。
-- 堆（Heap）：[[Data Structure and Algorithm#Heap|或者说二叉堆，是一种经过排序的树形结构]]，每个节点都有一个值，存取随意。存放引用类型.
+- 栈（Stack）：[[Stack|一种先入后出（LIFO）的数据结构]]，每个数据顺序存放。存储基本类型值和执行代码的环境；浏览器加载页面就会形成栈内存，当执行函数的时候，都会形成一个新的[[JavaScript Execution Context|执行上下文]]，压入栈中执行。
+- 堆（Heap）：[[Heap|或者说二叉堆，是一种经过排序的树形结构]]，每个节点都有一个值，存取随意。存放引用类型.
 - 池（一般也被归纳为栈中）：存放常量，固又称常量池
 
 ### 堆与栈的优缺点

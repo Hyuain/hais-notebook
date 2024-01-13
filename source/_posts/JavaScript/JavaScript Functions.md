@@ -1,5 +1,5 @@
 ---
-title: JavaScript Function
+title: JavaScript Functions
 date: 2020-01-29 17:22:52
 categories:
   - - 前端
@@ -7,7 +7,7 @@ tags:
   - FX
 ---
 
-JavaScript 中函数主要用 `function` 关键字或以箭头函数的方式定义，其中箭头函数没有 `this` `arguments` `super`，不能用于 [[JavaScript Generator|Generator]]，不能用作构造函数，因此也没有 `new.target` 关键字。
+JavaScript 中函数主要用 `function` 关键字或以箭头函数的方式定义，其中箭头函数没有 `this` `arguments` `super`，不能用于 [[JavaScript Generators|Generator]]，不能用作构造函数，因此也没有 `new.target` 关键字。
 
 <!-- more -->
 

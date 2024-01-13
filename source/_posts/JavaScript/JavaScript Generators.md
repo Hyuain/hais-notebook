@@ -1,5 +1,5 @@
 ---
-title: JavaScript Generator
+title: JavaScript Generators
 date: 2020-01-29 17:22:52
 categories:
   - - 前端

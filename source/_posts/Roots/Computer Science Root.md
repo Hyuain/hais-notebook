@@ -8,5 +8,6 @@ tags:
 ---
 
 - [[Operating System]]
+- [[Linux]]
 - [[Networking]]
-- [[Data Structure and Algorithm]]
+- [[Data Structures]] & [[Algorithms]]
