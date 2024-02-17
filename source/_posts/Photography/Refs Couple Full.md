@@ -1,11 +1,10 @@
 ---
-title: References Couple Selfie
+title: References Couple Full
 date: 2022-02-17 22:07:12
 categories:
   - [摄影]
 tags:
   - PX
-
 ---
 
 <img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/image-20240217104008056.png" alt="image-20240217104008056" style="zoom:50%;" />
