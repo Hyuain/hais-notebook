@@ -18,3 +18,4 @@ tags:
 - [[Java Root|Java]]
 - [[Ruby Root|Ruby]]
 - [[Blockchain & Crypto Root|区块链与加密货币]]
+- [[Photography Root|摄影]]
