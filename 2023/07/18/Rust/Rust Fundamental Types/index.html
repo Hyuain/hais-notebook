@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hais-notebook/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/hais-notebook/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/hais-notebook/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/hais-notebook/images/safari-pinned-tab.svg" color="#222">
+
+<link rel="stylesheet" href="/hais-notebook/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.font.im/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="/hais-notebook/lib/@fortawesome/fontawesome-free/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"hyuain.github.io","root":"/hais-notebook/","images":"/hais-notebook/images","scheme":"Gemini","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac","show_result":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/hais-notebook/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/hais-notebook/js/config.js"></script>
+
+    <meta name="description" content="本章包括了 Rust 的基本类型（Fundamental Types），这些源代码级别的类型都有对应的机器级表示，具有可预测的成本和性能。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Rust Fundamental Types">
+<meta property="og:url" content="https://hyuain.github.io/hais-notebook/2023/07/18/Rust/Rust%20Fundamental%20Types/index.html">
+<meta property="og:site_name" content="Hais Notebook">
+<meta property="og:description" content="本章包括了 Rust 的基本类型（Fundamental Types），这些源代码级别的类型都有对应的机器级表示，具有可预测的成本和性能。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/image-20240123191930996.png">
+<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/image-20240124211147052.png">
+<meta property="article:published_time" content="2023-07-18T14:38:01.000Z">
+<meta property="article:modified_time" content="2023-07-18T14:38:01.000Z">
+<meta property="article:author" content="Harvey Zhang">
+<meta property="article:tag" content="RSX">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/image-20240123191930996.png">
+
+
+<link rel="canonical" href="https://hyuain.github.io/hais-notebook/2023/07/18/Rust/Rust%20Fundamental%20Types/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hyuain.github.io/hais-notebook/2023/07/18/Rust/Rust%20Fundamental%20Types/","path":"2023/07/18/Rust/Rust Fundamental Types/","title":"Rust Fundamental Types"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Rust Fundamental Types | Hais Notebook</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/hais-notebook/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/hais-notebook/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Hais Notebook</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/hais-notebook/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/hais-notebook/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/hais-notebook/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/hais-notebook/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#numeric-types"><span class="nav-number">1.</span> <span class="nav-text">Numeric Types</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#integer-types"><span class="nav-number">1.1.</span> <span class="nav-text">Integer Types</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#floating-point-types"><span class="nav-number">1.2.</span> <span class="nav-text">Floating-Point Types</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#booleans"><span class="nav-number">2.</span> <span class="nav-text">Booleans</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#characters"><span class="nav-number">3.</span> <span class="nav-text">Characters</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#tuples"><span class="nav-number">4.</span> <span class="nav-text">Tuples</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pointer-types"><span class="nav-number">5.</span> <span class="nav-text">Pointer Types</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#references"><span class="nav-number">5.1.</span> <span class="nav-text">References</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#boxes"><span class="nav-number">5.2.</span> <span class="nav-text">Boxes</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#raw-pointers"><span class="nav-number">5.3.</span> <span class="nav-text">Raw Pointers</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#arrays-vectors-and-slices"><span class="nav-number">6.</span> <span class="nav-text">Arrays, Vectors, and Slices</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#arrays"><span class="nav-number">6.1.</span> <span class="nav-text">Arrays</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vectors"><span class="nav-number">6.2.</span> <span class="nav-text">Vectors</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#slices"><span class="nav-number">6.3.</span> <span class="nav-text">Slices</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#strings"><span class="nav-number">7.</span> <span class="nav-text">Strings</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Harvey Zhang</p>
+  <div class="site-description" itemprop="description">海鲜酱的笔记本</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/hais-notebook/archives/">
+          <span class="site-state-item-count">165</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/hais-notebook/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/hais-notebook/tags/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2023/07/18/Rust/Rust%20Fundamental%20Types/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
+      <meta itemprop="name" content="Harvey Zhang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hais Notebook">
+      <meta itemprop="description" content="海鲜酱的笔记本">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Rust Fundamental Types | Hais Notebook">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Rust Fundamental Types
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-07-18 14:38:01" itemprop="dateCreated datePublished" datetime="2023-07-18T14:38:01+00:00">2023-07-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/" itemprop="url" rel="index"><span itemprop="name">计算机</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>本章包括了 Rust 的基本类型（Fundamental Types），这些源代码级别的类型都有对应的机器级表示，具有可预测的成本和性能。</p>
+<span id="more"></span>
+<h1 id="numeric-types">Numeric Types</h1>
+<p>Rust 中的数值类型是定宽的（fixed-width），他是 Rust 类型系统的根基。</p>
+<p>数字类型可以加分隔符来方便阅读，比如 <code>1_000_000</code>。</p>
+<p>Rust 中几乎不会发生隐式类型转换，也就是说若参数需要 <code>u16</code> 类型，传给他 <code>u8</code> 也是错误的，需要通过 <code>as u16</code> 进行显式类型转换。</p>
+<h2 id="integer-types">Integer Types</h2>
+<blockquote>
+<p>包括 <strong>有符号整型（<code>i</code> 开头）</strong> 和 <strong>无符号整型（<code>u</code> 开头）</strong>，比如 <code>i8</code> <code>u128</code> 等，数字表示他占了多少位。其中 <code>isize</code> 和 <code>usize</code> 类型取决于程序运行所处的计算机的体系结构，比如 64 位或 32 位等。</p>
+</blockquote>
+<p><strong>整型与字节值（Byte Values）：</strong> Rust 使用 <code>u8</code> 作为字节值，比如从二进制文件或套接字中读取数据时会产生一个 <code>u8</code> 值构成的流。</p>
+<p><strong>整型与字符（Characters）：</strong> Rust 中数值与字符是两种不同的类型，<code>char</code> 就是 <code>char</code>，他不是 <code>u8</code> 也不是 <code>u32</code>。</p>
+<p><strong>整型字面量（Integer Literals）：</strong> Rust 的整型字面量可以带上一个后缀来表示他的类型，比如 <code>42u8</code> <code>1729isize</code> 等。可以使用 <code>0x</code> <code>0o</code> <code>0b</code> 前缀来表示十六进制、八进制、二进制字面量。</p>
+<blockquote>
+<p>如果某个字面量没有写后缀，那么 Rust 会延迟确定其类型，如果最后有多个候选类型，且 <code>i32</code> 是也在候选中，那么 Rust 就会 <strong>默认使用 <code>i32</code></strong>。如果无法确定类型，那么 Rust 会因为歧义而报错。</p>
+</blockquote>
+<p><strong>字节字面量（Byte Literals）：</strong> Rust 为 <code>u8</code> 值提供了一种类字符的字面量，比如 <code>b'X'</code> 用来表示字符 <code>X</code> 的 ASCII 码对应的 <code>u8</code> 值，他与 <code>65u8</code> 完全等效。对于难于书写或阅读的字符，可以将编码改成十六进制，类似于 <code>b\xHH</code> 的写法，比如用 <code>b\x1b</code> 表示字符 <code>escape</code> 的字节字面量（因为 <code>escape</code> 的 ASCII 码为 27，即十六进制的 1B）。通常我们只有当需要明确表示这个表示这个 <code>u8</code> 表示的是某个字符的时候，才会使用字节字面量，而不是简单的 <code>27u8</code>。</p>
+<p><strong>整型的方法：</strong> Rust 提供了诸如 <code>abs()</code> <code>pow()</code> 等方法，但是使用这些方法的时候需要明确表示其类型，比如 <code>(-4_i32).abs()</code> 或 <code>i32::abs(-4)</code>，尽管所有的有符号整型都有 <code>abs()</code> 方法。</p>
+<blockquote>
+<p>需要注意方法调用的优先级高于一元前缀运算符，因此为了计算 -4 的绝对值，需要写作 <code>(-4_i32).abs()</code>，而不能省略括号。</p>
+</blockquote>
+<p><strong>溢出：</strong> 当整型运算溢出时，Rust 在调试构建时会 panic，而在发布构建中，会默认使用 <strong>回绕（Wrapping）运算。</strong></p>
+<ul>
+<li><strong>检查运算（Checked Arithmetic）：</strong> 比如 <code>checked_add()</code> 方法等，会返回结果的 <code>Option</code> 值，如果数学上有效就是 <code>Some(v)</code>，否则为 <code>None</code>；</li>
+<li><strong>回绕运算（Wrapping Arithmetic）：</strong> 比如 <code>wrapping_mul()</code> 方法等，会返回“数学意义上正确的值”对“值类型范围”取模的结果；</li>
+<li><strong>饱和运算（Saturating Arithmetic）：</strong> 比如 <code>satruating_sub()</code> 方法等，会返回最接近数学意义上正确值的结果；</li>
+<li><strong>溢出运算（Overflowing Arithmetic）：</strong> 比如 <code>overflowing_add()</code> 方法等，会返回一个 <code>(result, overflowed)</code> 元祖，包含回绕版本的内容，和是否发生了溢出的布尔值。</li>
+</ul>
+<h2 id="floating-point-types">Floating-Point Types</h2>
+<blockquote>
+<p>包括 <code>f32</code> 和 <code>f64</code> 共两种。</p>
+</blockquote>
+<p>同样，如果浮点字面量缺少后缀，且 Rust 发现他两种浮点类型都符合，那么会默认使用 <code>f64</code>。</p>
+<h1 id="booleans">Booleans</h1>
+<blockquote>
+<p>Rust 的布尔类型 <code>bool</code> 包括 <code>true</code> 和 <code>false</code> 两种。</p>
+</blockquote>
+<p>需要注意的是，在 Rust 中，<code>if</code> <code>while</code> 这类的控制结构的条件必须是 <code>bool</code> 表达式，不能是 <code>0</code>、空字符串这种值，短路逻辑运算符 <code>&amp;&amp;</code> 和 <code>||</code> 也是如此。</p>
+<p>Rust 中的 <code>bool</code> 可以用 <code>as</code> 运算符转换为整型的 <code>1</code> 或 <code>0</code>，但不能反向转换。</p>
+<h1 id="characters">Characters</h1>
+<blockquote>
+<p>Rust 的字符类型 <code>char</code> 以 32 位（4 字节）值表示单个 Unicode 字符，无论是中文还是英文字符，可以用 <code>size_of_val()</code> 函数看到。</p>
+</blockquote>
+<p>Rust 不会在 <code>char</code> 和其他类型之间进行隐式的类型转换，可以使用 <code>as</code> 将 <code>char</code> 显示转换为整型，在转换为小于 32 位的数字类型时，高位会被截断。</p>
+<h1 id="tuples">Tuples</h1>
+<blockquote>
+<p>最多 12 个元素组成的一个定长序列。</p>
+</blockquote>
+<pre class="line-numbers language-rust" data-language="rust"><code class="language-rust"><span class="token keyword">let</span> person <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token string">"John"</span><span class="token punctuation">,</span> <span class="token number">27</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">let</span> person<span class="token punctuation">:</span> <span class="token punctuation">(</span><span class="token operator">&amp;</span><span class="token keyword">str</span><span class="token punctuation">,</span> <span class="token keyword">i32</span><span class="token punctuation">,</span> <span class="token keyword">bool</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token string">"John"</span><span class="token punctuation">,</span> <span class="token number">27</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token macro property">println!</span><span class="token punctuation">(</span><span class="token string">"&#123;:?&#125;"</span><span class="token punctuation">,</span> person<span class="token number">.0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>     <span class="token comment">// "John"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>可以用模式匹配语法使用元组中的值：</p>
+<pre class="line-numbers language-rust" data-language="rust"><code class="language-rust"><span class="token keyword">let</span> text <span class="token operator">=</span> <span class="token string">"hello world"</span><span class="token punctuation">;</span>
+<span class="token keyword">let</span> <span class="token punctuation">(</span>head<span class="token punctuation">,</span> tail<span class="token punctuation">)</span> <span class="token operator">=</span> text<span class="token punctuation">.</span><span class="token function">split_at</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>其中比较特殊的是零元组（Zero-Tuple），<code>()</code>，又被称为 <strong>单元类型（Unit Type）</strong>。不返回值的函数返回类型就是 <code>()</code>。</p>
+<h1 id="pointer-types">Pointer Types</h1>
+<p>Rust 中有很多表示内存地址的类型，当我们需要让一些值指向其他值时，必须显式地使用指针，Rust 对他们会有一些安全性约束，来消除未定义行为。</p>
+<h2 id="references">References</h2>
+<p>表达式 <code>&amp;x</code> 可以生成一个对 <code>x</code> 的引用（Reference），这个引用实际上是 <strong>一个机器字</strong>，其中保存了 <code>x</code> 的地址。这个地址可能指向堆中，也可能指向栈中。</p>
+<p>在 Rust中，我们将使用 <code>&amp;</code> 创建引用的过程叫做 <strong>借用了一个对 <code>x</code> 的引用</strong>。这实际上牵扯到了 Rust 核心的所有权和生命周期的概念。简单来说，由于是 <strong>借用</strong>，当这个引用超出作用域时，他指向的资源并不会自动释放，因为他并没有资源的所有权。</p>
+<p>Rust 引用有两种形式：</p>
+<ul>
+<li><code>&amp;T</code> 表示 <strong>不可变的共享引用</strong>，对单个值可以同时存在多个共享引用。</li>
+<li><code>&amp;mut T</code> 表示 <strong>可变的独占引用</strong>，可以通过该引用读取和修改其指向的值，<strong>只要这个引用还存在，就不能对该值有任何其他类型的引用。</strong></li>
+</ul>
+<h2 id="boxes">Boxes</h2>
+<p>在堆中分配值的最简单方法就是使用 <code>Box</code>：</p>
+<pre class="line-numbers language-rust" data-language="rust"><code class="language-rust"><span class="token keyword">let</span> t <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token number">12</span><span class="token punctuation">,</span> <span class="token string">"eggs"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">let</span> b <span class="token operator">=</span> <span class="token class-name">Box</span><span class="token punctuation">::</span><span class="token function">new</span><span class="token punctuation">(</span>t<span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">// b 的类型是 Box&lt;(i32, &amp;str)></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>调用 <code>Box::new()</code> 会在堆上分配足以容纳此元祖的内存。<strong>当 <code>b</code> 超出作用域时，内存会被立即释放。</strong></p>
+<h2 id="raw-pointers">Raw Pointers</h2>
+<p>Rust 中也有裸指针类型 <code>*mut T</code> 和 <code>*const T</code>，这跟 C++ 中的指针非常像，使用裸指针是不安全的，因为 Rust 并不会跟踪他指向的内容，导致她可能为空、或者指向奇怪的值。</p>
+<p>只能在 <code>unsafe</code> 块中对裸指针解引用（Dereference）。</p>
+<h1 id="arrays-vectors-and-slices">Arrays, Vectors, and Slices</h1>
+<p>Rust 中有三种类型表示内存中值的序列：</p>
+<ul>
+<li>类型 <code>[T; N]</code> 表示有 <code>N</code> 个值，类型为 <code>T</code> 的 <strong>数组</strong>，他长度和类型在运行时不能改变；</li>
+<li>类型 <code>Vec&lt;T&gt;</code> 称为 <code>T</code> 的 <strong>向量</strong>，他是动态分配的、长度可变的类型为 <code>T</code> 的值的序列；</li>
+<li>类型 <code>&amp;[T]</code> 和 <code>&amp;mut [T]</code> 分别称为 <code>T</code> 的 <strong>共享切片</strong> 和 <strong>可变切片</strong>，他们是对一系列元素的引用。</li>
+</ul>
+<p>这三种类型都可以用 <code>v.len()</code> 得到 <code>v</code> 中的元素数，<code>v[i]</code> 得到第 <code>i</code> 个元素，越界访问会导致 panic，同时 <code>i</code> 的类型必须是 <code>usize</code>。</p>
+<h2 id="arrays">Arrays</h2>
+<blockquote>
+<p>数组 <code>[T; N]</code> 的类型和长度在运行时不能改变，或者说数组的长度是其类型的一部分，并且会在编译期固定下来。</p>
+</blockquote>
+<p>创建数组</p>
+<pre class="line-numbers language-rust" data-language="rust"><code class="language-rust"><span class="token keyword">let</span> primes <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">7</span><span class="token punctuation">,</span> <span class="token number">11</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token keyword">let</span> doubles<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token keyword">f64</span><span class="token punctuation">:</span> <span class="token number">4</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">2.0</span><span class="token punctuation">,</span> <span class="token number">4.0</span><span class="token punctuation">,</span> <span class="token number">6.0</span><span class="token punctuation">,</span> <span class="token number">8.0</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token macro property">println!</span><span class="token punctuation">(</span><span class="token string">"&#123;&#125;"</span><span class="token punctuation">,</span> primes<span class="token punctuation">)</span><span class="token punctuation">;</span>     <span class="token comment">// error</span>
+<span class="token macro property">println!</span><span class="token punctuation">(</span><span class="token string">"&#123;:?&#125;"</span><span class="token punctuation">,</span> primes<span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">//ok</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用默认值创建数组</p>
+<pre class="line-numbers language-rust" data-language="rust"><code class="language-rust"><span class="token keyword">let</span> numbers <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">;</span> <span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">;</span>        <span class="token comment">// [0, 0, 0, 0];</span>
+<span class="token keyword">const</span> <span class="token constant">DEFAULT</span><span class="token punctuation">:</span> <span class="token keyword">i32</span> <span class="token operator">=</span> <span class="token number">3</span><span class="token punctuation">;</span>
+<span class="token keyword">let</span> numbers <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token constant">DEFAULT</span><span class="token punctuation">;</span> <span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">;</span>  <span class="token comment">// [3, 3, 3, 3];</span>
+
+<span class="token keyword">let</span> buffer <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">0u8</span><span class="token punctuation">;</span> <span class="token number">1024</span><span class="token punctuation">]</span><span class="token punctuation">;</span>    <span class="token comment">// 创建 1KB 的缓冲区</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>更新数组的元素</p>
+<pre class="line-numbers language-rust" data-language="rust"><code class="language-rust"><span class="token keyword">let</span> <span class="token keyword">mut</span> numbers <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">;</span> <span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+numbers<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">;</span>              <span class="token comment">// [0, 0, 0, 2];</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>使用迭代器遍历</p>
+<pre class="line-numbers language-rust" data-language="rust"><code class="language-rust"><span class="token keyword">for</span> number <span class="token keyword">in</span> numbers<span class="token punctuation">.</span><span class="token function">iter</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token macro property">println!</span><span class="token punctuation">(</span><span class="token string">"&#123;&#125;"</span><span class="token punctuation">,</span> number <span class="token operator">+</span> <span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>事实上，数组上的包括遍历、搜索、排序、填充、过滤等方法都是作为切片的方法，而非数组的方法提供的。但是 Rust 在搜索各种方法的时候会隐式地将对数组的引用转换为切片，因此可以直接在数组上调用各种切片方法。</p>
+<h2 id="vectors">Vectors</h2>
+<blockquote>
+<p>向量 <code>Vec&lt;T&gt;</code> 是一个可调整大小的 <code>T</code> 类型元素的数组，是在堆上分配的。</p>
+<p>向量并没有内置在语言中，他由 <code>std</code> 标准库提供。或者说所有在堆上分配内存的类型都没有包含在语言中。</p>
+</blockquote>
+<p>创建向量</p>
+<pre class="line-numbers language-rust" data-language="rust"><code class="language-rust"><span class="token keyword">let</span> primes<span class="token punctuation">:</span> <span class="token class-name">Vec</span><span class="token operator">&lt;</span><span class="token keyword">i32</span><span class="token operator">></span> <span class="token operator">=</span> <span class="token class-name">Vec</span><span class="token punctuation">::</span><span class="token function">new</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">let</span> primes <span class="token operator">=</span> <span class="token macro property">vec!</span><span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token macro property">println!</span><span class="token punctuation">(</span><span class="token string">"&#123;:?&#125;"</span><span class="token punctuation">,</span> primes<span class="token punctuation">)</span><span class="token punctuation">;</span>      <span class="token comment">// [2, 3, 5]</span>
+<span class="token comment">// 可以使用 collect 从迭代器创建向量，但是需要指定类型，因为他还可以构建出除了向量以外的集合</span>
+<span class="token keyword">let</span> v<span class="token punctuation">:</span> <span class="token class-name">Vec</span><span class="token operator">&lt;</span><span class="token keyword">i32</span><span class="token operator">></span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">..</span><span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">collect</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用默认值创建向量</p>
+<pre class="line-numbers language-rust" data-language="rust"><code class="language-rust"><span class="token keyword">let</span> numbers <span class="token operator">=</span> <span class="token macro property">vec!</span><span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">;</span> <span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">;</span>       <span class="token comment">// [2, 2, 2, 2]</span>
+<span class="token keyword">const</span> <span class="token constant">DEFAULT</span><span class="token punctuation">:</span> <span class="token keyword">bool</span> <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+<span class="token keyword">let</span> values <span class="token operator">=</span> <span class="token macro property">vec!</span><span class="token punctuation">[</span><span class="token constant">DEFAULT</span><span class="token punctuation">;</span> <span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">;</span>  <span class="token comment">// [true, true, true, true]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>添加、删除或插入元素（将会导致所有受影响位置后面的元素移动）</p>
+<pre class="line-numbers language-rust" data-language="rust"><code class="language-rust"><span class="token keyword">let</span> <span class="token keyword">mut</span> v<span class="token punctuation">:</span> <span class="token class-name">Vec</span><span class="token operator">&lt;</span><span class="token keyword">i32</span><span class="token operator">></span> <span class="token operator">=</span> <span class="token class-name">Vec</span><span class="token punctuation">::</span><span class="token function">new</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+v<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>                <span class="token comment">// [2]</span>
+v<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">;</span>                <span class="token comment">// [2, 3]</span>
+v<span class="token punctuation">.</span><span class="token function">insert</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">;</span>           <span class="token comment">// [2, 5, 3]</span>
+v<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>              <span class="token comment">// [5, 3]</span>
+v<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>                  <span class="token comment">// [5], 返回 Some(3)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>更新向量中的元素</p>
+<pre class="line-numbers language-rust" data-language="rust"><code class="language-rust"><span class="token keyword">let</span> <span class="token keyword">mut</span> numbers <span class="token operator">=</span> <span class="token macro property">vec!</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">;</span><span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+numbers<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">;</span>                <span class="token comment">// [0, 0, 0, 2];</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>使用迭代器遍历</p>
+<pre class="line-numbers language-rust" data-language="rust"><code class="language-rust"><span class="token keyword">for</span> number <span class="token keyword">in</span> numbers<span class="token punctuation">.</span><span class="token function">iter</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token macro property">println!</span><span class="token punctuation">(</span><span class="token string">"&#123;&#125;"</span><span class="token punctuation">,</span> number<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>与数组不同，向量主要是在堆上分配内存的，<code>Vec&lt;T&gt;</code> 由三个部分组成：</p>
+<ol type="1">
+<li>指向元素在堆中分配的缓冲区（该缓冲区由 <code>Vec&lt;T&gt;</code> 创建并拥有）的指针；</li>
+<li>缓冲区能够存储的元素数量，可以用 <code>capacity</code> 方法得到；</li>
+<li>现在实际拥有的数量，可以用 <code>len</code> 方法得到。</li>
+</ol>
+<p>当缓冲区到达最大容量后继续添加元素时，他会：</p>
+<ol type="1">
+<li>分配一个更大的缓冲区，将当前的内容复制到其中；</li>
+<li>更新向量的指针指向新的缓冲区；</li>
+<li>释放旧的缓冲区。</li>
+</ol>
+<p>可以用 <code>Vec::with_capacity()</code> 创建一个指定缓冲区大小的向量，这样就减少了在添加值的过程中不必要的内存重新分配，当然如果缓冲区满了，他还是会正常进行扩容。</p>
+<h2 id="slices">Slices</h2>
+<blockquote>
+<p>切片 <code>[T]</code> 是数组或向量中的一个区域。切片可以是任意长度，因此他不能存储在变量中或者作为函数的参数进行传递，切片总是通过引用进行传递。</p>
+<p>也就是说我们一般不直接使用切片，而是使用 <strong>对切片的引用</strong>。因此很多时候我们说的“切片”，实际上指的是对“切片的引用”，这个术语经常混用，需要注意。</p>
+</blockquote>
+<p>对切片的引用是一个 <strong>胖指针（Fat Pointer）</strong>，他是两个字长的值，包括：</p>
+<ol type="1">
+<li>指向切片第一个元素的指针；</li>
+<li>切片中元素的数量。</li>
+</ol>
+<p>比如数组切片和向量切片的例子：</p>
+<pre class="line-numbers language-rust" data-language="rust"><code class="language-rust"><span class="token keyword">let</span> v<span class="token punctuation">:</span> <span class="token class-name">Vec</span><span class="token operator">&lt;</span><span class="token keyword">f64</span><span class="token operator">></span> <span class="token operator">=</span> <span class="token macro property">vec!</span><span class="token punctuation">[</span><span class="token number">0.0</span><span class="token punctuation">,</span>  <span class="token number">0.707</span><span class="token punctuation">,</span>  <span class="token number">1.0</span><span class="token punctuation">,</span>  <span class="token number">0.707</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token keyword">let</span> a<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token keyword">f64</span><span class="token punctuation">;</span> <span class="token number">4</span><span class="token punctuation">]</span> <span class="token operator">=</span>     <span class="token punctuation">[</span><span class="token number">0.0</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">0.707</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">1.0</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">0.707</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+<span class="token comment">// 下面两行代码自动把 &amp;Vec&lt;f64> 和 &amp;[f64; 4] 转换为了对切片的引用 </span>
+<span class="token keyword">let</span> sv<span class="token punctuation">:</span> <span class="token operator">&amp;</span><span class="token punctuation">[</span><span class="token keyword">f64</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token operator">&amp;</span>v<span class="token punctuation">;</span>
+<span class="token keyword">let</span> sa<span class="token punctuation">:</span> <span class="token operator">&amp;</span><span class="token punctuation">[</span><span class="token keyword">f64</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token operator">&amp;</span>a<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/image-20240123191930996.png" alt="切片 sv 和 sa" /><figcaption aria-hidden="true">切片 sv 和 sa</figcaption>
+</figure>
+<p>普通的引用（Reference），比如 <code>&amp;i32</code> 等，是指向 <strong>单个值</strong> 的 <strong>非拥有型指针（Non-Owning Pointer）</strong>；而对切片的引用（Reference to a Slice）是指向内存中的 <strong>一系列连续值</strong> 的 <strong>非拥有型指针</strong>，可以看到他额外用了一个值表示切片的长度。</p>
+<p>事实上很多属于向量或数组的方法实际上是在切片上定义的，比如 <code>sort</code> <code>reverse</code> 等，都是定义在切片类型 <code>[T]</code> 上的方法。</p>
+<p>可以使用 Range 作为索引来获取到对切片的引用，该引用既可以指向一个数组或向量，也可以指向一个既有的切片：</p>
+<pre class="line-numbers language-rust" data-language="rust"><code class="language-rust"><span class="token function">print</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>v<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">..</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">print</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>a<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">..</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">print</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>sv<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">..</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h1 id="strings">Strings</h1>
+<p><strong>字符串字面量（String Literals）</strong></p>
+<p>Rust 中字符串字面量需要用双引号 <code>""</code> 括起来，可以使用 <code>\</code> 对特殊字符进行转义。注意不能使用单引号，单引号表示的是字符类型 <code>char</code> 字面量。</p>
+<p>Rust 中字符串里面的换行符会被记录，但是如果某一行是以 <code>\</code> 结尾，那么就会丢弃其后的换行符。</p>
+<p>如果不想每个都加一个反斜杠，可以使用 <strong>原始字符串（Raw String）</strong>，原始字符串不识别任何转译序列：</p>
+<pre class="line-numbers language-rust" data-language="rust"><code class="language-rust"><span class="token keyword">let</span> path <span class="token operator">=</span> <span class="token string">r"C:\Program Files\Gorillas"</span><span class="token punctuation">;</span>
+<span class="token keyword">let</span> pattern <span class="token operator">=</span> <span class="token class-name">Regex</span><span class="token punctuation">::</span><span class="token function">new</span><span class="token punctuation">(</span><span class="token string">r"\d+(\.\d+)*"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>如果想在原始字符串中使用双引号，那么可以在原始字符串开头和结尾添加 <code>#</code>，<code>#</code> 的数量可以随意，但是前后的 <code>#</code> 数量要一致：</p>
+<pre class="line-numbers language-rust" data-language="rust"><code class="language-rust"><span class="token macro property">println!</span><span class="token punctuation">(</span><span class="token string">r###"
+ This raw string started with 'r###"'.
+ Therefore it does not end until we reach a quote mark ('"')
+ followed immediately by three pound signs ('###'):
+"###</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><strong>字节串（Byte Strings）</strong></p>
+<p>带有 <code>b</code> 前缀的字符串都是字节串，他们可以看做 <code>u8</code> 的切片：</p>
+<pre class="line-numbers language-rust" data-language="rust"><code class="language-rust"><span class="token keyword">let</span> method <span class="token operator">=</span> <span class="token string">b"GET"</span><span class="token punctuation">;</span>  <span class="token comment">// 类型是 &amp;[u8; 3]</span>
+<span class="token macro property">assert_eq!</span><span class="token punctuation">(</span>method<span class="token punctuation">,</span> <span class="token operator">&amp;</span><span class="token punctuation">[</span><span class="token char">b'G'</span><span class="token punctuation">,</span> <span class="token char">b'E'</span><span class="token punctuation">,</span> <span class="token char">b'T'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p><strong><code>String</code> 与 <code>&amp;str</code></strong></p>
+<p><strong>Rust 字符串不以是 <code>char</code> 数组的形式存储在内存中的，而是以 [[Charset and Encoding|UTF-8 编码]] 的形式存储的。</strong> 因此字符串中的每个字符并不是像 <code>char</code> 类型一样统一占用 4 字节，而是占用一个（ASCII 字符）或多个（其他字符）字节。</p>
+<p>下面的例子展示了 <code>String</code>、<code>String</code> 切片、<code>str</code> 和 <code>&amp;str</code> 在内存中是怎么存放的：</p>
+<pre class="line-numbers language-rust" data-language="rust"><code class="language-rust"><span class="token keyword">let</span> noodles <span class="token operator">=</span> <span class="token string">"noodles"</span><span class="token punctuation">.</span><span class="token function">to_string</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">let</span> oodles <span class="token operator">=</span> <span class="token operator">&amp;</span>noodles<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">..</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token keyword">let</span> poodles <span class="token operator">=</span> <span class="token string">"ಠ_ಠ"</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/image-20240124211147052.png" alt="String, &amp;str 与 str" /><figcaption aria-hidden="true">String, &amp;str 与 str</figcaption>
+</figure>
+<p><code>String</code> 有一个可以调整大小的缓冲区，<strong>可以将 <code>String</code> 视为 <code>Vec&lt;u8&gt;</code></strong>，但他同时还保证了其是格式良好的 UTF-8。</p>
+<p><strong><code>&amp;str</code> 同其他切片类型一样，也是一个胖指针，可以认为 <code>&amp;str</code> 是 <code>&amp;[u8]</code></strong>，但他能保证其是格式良好的 UTF-8.</p>
+<p><strong>字符串字面量就是 <code>&amp;str</code></strong>，它通常与程序的机器码一起存储在只读内存区。</p>
+<p><code>String</code> 或 <code>&amp;str</code> 的 <code>len()</code> 方法会返回他的长度，<strong>这个长度是以字节而不是以字符为单位的</strong>：</p>
+<pre class="line-numbers language-rust" data-language="rust"><code class="language-rust"><span class="token function">assert_eq</span><span class="token punctuation">(</span><span class="token string">"ಠ_ಠ"</span><span class="token punctuation">.</span><span class="token function">len</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">7</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">assert_eq</span><span class="token punctuation">(</span><span class="token string">"ಠ_ಠ"</span><span class="token punctuation">.</span><span class="token function">chars</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">len</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p><code>&amp;str</code> 是不能修改的，<code>&amp;mut str</code> 也没什么用，因为对 UTF-8 的几乎所有操作都会更改总长度，但切片不能重新分配其引用目标的缓冲区，一般最多用 <code>make_ascii_uppercase</code> 和 <code>make_ascii_lowercase</code> 两个方法。</p>
+<p><strong><code>&amp;str</code> 可以引用任意字符串的任意切片，无论是存储在可执行文件中的字符串字面量，还是在运行时分配的 <code>String</code>。因此，通常将 <code>&amp;str</code> 作为函数参数类型。</strong></p>
+<blockquote>
+<p>字符串支持 <code>==</code> 和 <code>!=</code> 运算符，他会按照顺序比较字符串，不管他们是否存储在内存的相同位置。</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/hais-notebook/tags/RSX/" rel="tag"># RSX</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2023/07/18/Rust/Rust%20Macros/" rel="prev" title="Rust Macros">
+                  <i class="fa fa-chevron-left"></i> Rust Macros
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2023/07/18/Rust/Rust%20Functions/" rel="next" title="Rust Functions">
+                  Rust Functions <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Harvey Zhang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="/hais-notebook/lib/animejs/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/hais-notebook/js/comments.js"></script><script src="/hais-notebook/js/utils.js"></script><script src="/hais-notebook/js/next-boot.js"></script>
+
+  <script src="/hais-notebook/lib/hexo-generator-searchdb/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/hais-notebook/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"/hais-notebook/lib/mathjax/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/hais-notebook/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

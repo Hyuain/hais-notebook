@@ -18,12 +18,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"hyuain.github.io","root":"/hais-notebook/","images":"/hais-notebook/images","scheme":"Gemini","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac","show_result":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/hais-notebook/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/hais-notebook/js/config.js"></script>
 
-    <meta name="description" content="进程（Process） 是 程序（比如 exe）的执行实例。程序 在CPU上执行的活动叫做 进程。 一个进程可以创建另一个进程（父进程与子进程）。 多程序并发执行 单核 CPU 在一个时刻，只能做一件事情，为了让用户在同一时刻可以做多件事，就需要在不同进程中快速切换。 也就是“多程序并发执行”——多个程序在宏观上并行，微观上串行。多个进程之间会出现抢资源（比如打印机就很明显）的现象。 进程的两个状">
+    <meta name="description" content="进程（Process） 是操作系统运行程序时的主要抽象，程序 在CPU上执行的活动叫做 进程。在任何时间，进程都可以用其 机器状态（Machine State） 来描述。他的机器状态包括：  进程 地址空间（Address Space） 的内存中的内容 CPU 寄存器（CPU Registers） 中的内容，其中有两个寄存器比较特殊：  程序计数器（Program Counter, PC），有时也">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Process">
 <meta property="og:url" content="https://hyuain.github.io/hais-notebook/2023/01/18/Computer%20Science/Process/index.html">
 <meta property="og:site_name" content="Hais Notebook">
-<meta property="og:description" content="进程（Process） 是 程序（比如 exe）的执行实例。程序 在CPU上执行的活动叫做 进程。 一个进程可以创建另一个进程（父进程与子进程）。 多程序并发执行 单核 CPU 在一个时刻，只能做一件事情，为了让用户在同一时刻可以做多件事，就需要在不同进程中快速切换。 也就是“多程序并发执行”——多个程序在宏观上并行，微观上串行。多个进程之间会出现抢资源（比如打印机就很明显）的现象。 进程的两个状">
+<meta property="og:description" content="进程（Process） 是操作系统运行程序时的主要抽象，程序 在CPU上执行的活动叫做 进程。在任何时间，进程都可以用其 机器状态（Machine State） 来描述。他的机器状态包括：  进程 地址空间（Address Space） 的内存中的内容 CPU 寄存器（CPU Registers） 中的内容，其中有两个寄存器比较特殊：  程序计数器（Program Counter, PC），有时也">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-01-18T21:37:30.000Z">
 <meta property="article:modified_time" content="2023-01-18T21:37:30.000Z">
@@ -140,7 +140,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E7%A8%8B%E5%BA%8F%E5%B9%B6%E5%8F%91%E6%89%A7%E8%A1%8C"><span class="nav-number">1.</span> <span class="nav-text">多程序并发执行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E4%B8%A4%E4%B8%AA%E7%8A%B6%E6%80%81"><span class="nav-number">2.</span> <span class="nav-text">进程的两个状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%98%BB%E5%A1%9E"><span class="nav-number">3.</span> <span class="nav-text">阻塞</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E7%8A%B6%E6%80%81"><span class="nav-number">1.</span> <span class="nav-text">进程状态</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">2.</span> <span class="nav-text">数据结构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#process-api"><span class="nav-number">3.</span> <span class="nav-text">Process API</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -153,7 +153,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/hais-notebook/archives/">
-          <span class="site-state-item-count">137</span>
+          <span class="site-state-item-count">165</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -242,15 +242,59 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <p><strong>进程（Process）</strong> 是 <strong>程序</strong>（比如 exe）的执行实例。<strong>程序</strong> 在CPU上执行的活动叫做 <strong>进程</strong>。</p>
-<p>一个进程可以创建另一个进程（父进程与子进程）。</p>
-<h3 id="多程序并发执行">多程序并发执行</h3>
-<p>单核 CPU 在一个时刻，只能做一件事情，为了让用户在同一时刻可以做多件事，就需要在不同进程中快速切换。</p>
-<p>也就是“多程序并发执行”——多个程序在宏观上并行，微观上串行。多个进程之间会出现抢资源（比如打印机就很明显）的现象。</p>
-<h3 id="进程的两个状态">进程的两个状态</h3>
-<p>进程有 <strong>非运行态</strong> 与 <strong>运行态</strong>。分派程序将 CPU 分配给非运行态的进程，进程从而进入运行态；过一段时间之后进程暂停，又进入非运行态。</p>
-<h3 id="阻塞">阻塞</h3>
-<p>在进程队列中等待执行的进程都处于 <strong>非运行态</strong>，一些进程(A)在等待 CPU 资源，一些进程(B)在等待 I/O 完成（比如文件读取）。如果这时候把 CPU 分配给 B 进程，B 进程并不会使用 CPU，而是继续等 I/O——我们把 B 称为 <strong>阻塞进程</strong>。为了避免资源的浪费，分派程序只会把 CPU 分配给 <strong>非阻塞进程</strong>。</p>
+        <p><strong>进程（Process）</strong> 是操作系统运行程序时的主要抽象，<strong>程序</strong> 在CPU上执行的活动叫做 <strong>进程</strong>。在任何时间，进程都可以用其 <strong>机器状态（Machine State）</strong> 来描述。他的机器状态包括：</p>
+<ul>
+<li>进程 <strong>地址空间（Address Space）</strong> 的内存中的内容</li>
+<li><strong>CPU 寄存器（CPU Registers）</strong> 中的内容，其中有两个寄存器比较特殊：
+<ul>
+<li><strong>程序计数器（Program Counter, PC）</strong>，有时也叫 <strong>指令指针（Instruction Pointer, IP）</strong>，告诉我们程序下一步需要执行的指令</li>
+<li><strong>栈指针（Stack Pointer）</strong> 和 对应的 <strong>帧指针（Frame Pointer）</strong> 用来管理存放程序参数、本地变量、返回地址的栈</li>
+</ul></li>
+<li><strong>I/O 信息</strong></li>
+</ul>
+<h1 id="进程状态">进程状态</h1>
+<p>进程有以下三个状态：</p>
+<ul>
+<li><strong>运行（Running）</strong>：进程在处理器上运行、执行指令</li>
+<li><strong>就绪（Ready）</strong>：进程准备好运行，但是因为某些原因操作系统在此时不运行它。他可以被操作系统的 <strong>调度器（Scheduler）</strong> <strong>调度（Schedule）</strong> 从而转变到运行态</li>
+<li><strong>阻塞（Block）</strong>：进程执行了某些操作，导致他现在没有准备好运行，直到某些事件发生。比如，当一个进程向磁盘发起 I/O 请求时，他会进入阻塞，此时别的进程可以使用处理器</li>
+</ul>
+<h1 id="数据结构">数据结构</h1>
+<p>操作系统也是一个程序，他使用一些关键的数据结构来跟踪进程信息，比如说 <strong>进程列表（Process List）</strong>，或者说叫 <strong>任务列表（Task List）</strong>。有时，人们会将存储的单个进程的结构称为 <strong>进程控制块（Process Controller Block, PCB）</strong> 或 <strong>进程描述符（Process Descriptor）</strong>。</p>
+<p>下面是 <a target="_blank" rel="noopener" href="https://pdos.csail.mit.edu/6.828/2012/xv6.html">xv6</a> 内核的中采用的<a target="_blank" rel="noopener" href="https://github.com/mit-pdos/xv6-public/blob/HEAD/proc.h#L27-L52">描述进程的数据结构</a>，在其他的操作系统，诸如 Mac、Windows 中也有类似的数据结构：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">// the registers xv6 will save and restore</span>
+<span class="token comment">// to stop and subsequently restart a process</span>
+<span class="token keyword">struct</span> <span class="token class-name">context</span> <span class="token punctuation">&#123;</span>
+  uint edi<span class="token punctuation">;</span>
+  uint esi<span class="token punctuation">;</span>
+  uint ebx<span class="token punctuation">;</span>
+  uint ebp<span class="token punctuation">;</span>
+  uint eip<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+
+<span class="token comment">// the different states a process can be in</span>
+<span class="token keyword">enum</span> <span class="token class-name">procstate</span> <span class="token punctuation">&#123;</span> UNUSED<span class="token punctuation">,</span> EMBRYO<span class="token punctuation">,</span> SLEEPING<span class="token punctuation">,</span> RUNNABLE<span class="token punctuation">,</span> RUNNING<span class="token punctuation">,</span> ZOMBIE <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+
+<span class="token comment">// the information xv6 tracks about each process</span>
+<span class="token comment">// including its register context and state</span>
+<span class="token keyword">struct</span> <span class="token class-name">proc</span> <span class="token punctuation">&#123;</span>
+  uint sz<span class="token punctuation">;</span>                     <span class="token comment">// Size of process memory (bytes)</span>
+  <span class="token class-name">pde_t</span><span class="token operator">*</span> pgdir<span class="token punctuation">;</span>                <span class="token comment">// Page table</span>
+  <span class="token keyword">char</span> <span class="token operator">*</span>kstack<span class="token punctuation">;</span>                <span class="token comment">// Bottom of kernel stack for this process</span>
+  <span class="token keyword">enum</span> <span class="token class-name">procstate</span> state<span class="token punctuation">;</span>        <span class="token comment">// Process state</span>
+  <span class="token keyword">int</span> pid<span class="token punctuation">;</span>                     <span class="token comment">// Process ID</span>
+  <span class="token keyword">struct</span> <span class="token class-name">proc</span> <span class="token operator">*</span>parent<span class="token punctuation">;</span>         <span class="token comment">// Parent process</span>
+  <span class="token keyword">struct</span> <span class="token class-name">trapframe</span> <span class="token operator">*</span>tf<span class="token punctuation">;</span>        <span class="token comment">// Trap frame for current syscall</span>
+  <span class="token keyword">struct</span> <span class="token class-name">context</span> <span class="token operator">*</span>context<span class="token punctuation">;</span>     <span class="token comment">// swtch() here to run process</span>
+  <span class="token keyword">void</span> <span class="token operator">*</span>chan<span class="token punctuation">;</span>                  <span class="token comment">// If non-zero, sleeping on chan</span>
+  <span class="token keyword">int</span> killed<span class="token punctuation">;</span>                  <span class="token comment">// If non-zero, have been killed</span>
+  <span class="token keyword">struct</span> <span class="token class-name">file</span> <span class="token operator">*</span>ofile<span class="token punctuation">[</span>NOFILE<span class="token punctuation">]</span><span class="token punctuation">;</span>  <span class="token comment">// Open files</span>
+  <span class="token keyword">struct</span> <span class="token class-name">inode</span> <span class="token operator">*</span>cwd<span class="token punctuation">;</span>           <span class="token comment">// Current directory</span>
+  <span class="token keyword">char</span> name<span class="token punctuation">[</span><span class="token number">16</span><span class="token punctuation">]</span><span class="token punctuation">;</span>               <span class="token comment">// Process name (debugging)</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以看到 <strong>寄存器上下文（Register Context）</strong> 会为停止的进程保存他寄存器的内容。当进程停止时，寄存器的内容会保存到内存中；当恢复运行该进程时，这些内容会被重新放回寄存器中。这被称为 <strong>上下文切换（Context Switch）</strong>。</p>
+<h1 id="process-api">Process API</h1>
+<p>请参考 <a target="_blank" rel="noopener" href="https://github.com/Hyuain/os-practices/tree/main/process">GitHub 仓库</a> 中的代码。</p>
 
     </div>
 

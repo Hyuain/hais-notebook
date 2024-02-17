@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hais-notebook/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/hais-notebook/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/hais-notebook/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/hais-notebook/images/safari-pinned-tab.svg" color="#222">
+
+<link rel="stylesheet" href="/hais-notebook/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.font.im/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="/hais-notebook/lib/@fortawesome/fontawesome-free/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"hyuain.github.io","root":"/hais-notebook/","images":"/hais-notebook/images","scheme":"Gemini","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac","show_result":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/hais-notebook/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/hais-notebook/js/config.js"></script>
+
+    <meta name="description" content="所有权（Ownership）是 Rust 内存管理中的核心概念，Rust 通过在编译器进行复杂检查来避免运行时的内存错误，并且避免了使用垃圾回收器，从而得到了更好的性能表现。  每个值都有 唯一拥有者（A Single Owner），拥有者被丢弃时，其值也会被一并丢弃； 可以将值从一个拥有者转移给另一个拥有者，这被称为 移动（Move），这允许开发者构建、重排和拆除树形所有权结构； Copy 类型">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Rust Ownership &amp; Moves">
+<meta property="og:url" content="https://hyuain.github.io/hais-notebook/2024/01/25/Rust/Rust%20Ownership%20&%20Moves/index.html">
+<meta property="og:site_name" content="Hais Notebook">
+<meta property="og:description" content="所有权（Ownership）是 Rust 内存管理中的核心概念，Rust 通过在编译器进行复杂检查来避免运行时的内存错误，并且避免了使用垃圾回收器，从而得到了更好的性能表现。  每个值都有 唯一拥有者（A Single Owner），拥有者被丢弃时，其值也会被一并丢弃； 可以将值从一个拥有者转移给另一个拥有者，这被称为 移动（Move），这允许开发者构建、重排和拆除树形所有权结构； Copy 类型">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/image-20240125203121920.png">
+<meta property="og:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/image-20240125204723063.png">
+<meta property="article:published_time" content="2024-01-25T20:15:01.000Z">
+<meta property="article:modified_time" content="2024-01-25T20:15:01.000Z">
+<meta property="article:author" content="Harvey Zhang">
+<meta property="article:tag" content="RSX">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/image-20240125203121920.png">
+
+
+<link rel="canonical" href="https://hyuain.github.io/hais-notebook/2024/01/25/Rust/Rust%20Ownership%20&%20Moves/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hyuain.github.io/hais-notebook/2024/01/25/Rust/Rust%20Ownership%20&%20Moves/","path":"2024/01/25/Rust/Rust Ownership & Moves/","title":"Rust Ownership & Moves"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Rust Ownership & Moves | Hais Notebook</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/hais-notebook/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/hais-notebook/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Hais Notebook</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/hais-notebook/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/hais-notebook/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/hais-notebook/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/hais-notebook/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ownership"><span class="nav-number">1.</span> <span class="nav-text">Ownership</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#moves"><span class="nav-number">2.</span> <span class="nav-text">Moves</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Harvey Zhang</p>
+  <div class="site-description" itemprop="description">海鲜酱的笔记本</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/hais-notebook/archives/">
+          <span class="site-state-item-count">165</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/hais-notebook/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/hais-notebook/tags/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2024/01/25/Rust/Rust%20Ownership%20&%20Moves/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
+      <meta itemprop="name" content="Harvey Zhang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hais Notebook">
+      <meta itemprop="description" content="海鲜酱的笔记本">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Rust Ownership & Moves | Hais Notebook">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Rust Ownership & Moves
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-01-25 20:15:01" itemprop="dateCreated datePublished" datetime="2024-01-25T20:15:01+00:00">2024-01-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/" itemprop="url" rel="index"><span itemprop="name">计算机</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>所有权（Ownership）是 Rust 内存管理中的核心概念，Rust 通过在编译器进行复杂检查来避免运行时的内存错误，并且避免了使用垃圾回收器，从而得到了更好的性能表现。</p>
+<ul>
+<li>每个值都有 <strong>唯一拥有者（A Single Owner）</strong>，拥有者被丢弃时，其值也会被一并丢弃；</li>
+<li>可以将值从一个拥有者转移给另一个拥有者，这被称为 <strong>移动（Move）</strong>，这允许开发者构建、重排和拆除树形所有权结构；</li>
+<li><strong><code>Copy</code> 类型</strong> 是一类非常简单的类型，比如整数、浮点数等，他们不受所有权规则的约束；</li>
+<li>标准库也提供了 <code>Rc</code> 和 <code>Arc</code> 这两个 <strong>引用计数指针类型（Reference-Counted Pointer Types）</strong>，允许有多个拥有者；</li>
+<li>通过对值的 <strong>借用（Borrow）</strong>，可以暂时获得值的引用，这种引用是 <strong>非拥有型指针（Non-Owning Pointer）</strong>，他们的丢弃不会使得值一并被丢弃。</li>
+</ul>
+<span id="more"></span>
+<h1 id="ownership">Ownership</h1>
+<p>C++ 中，开发者使用口头约定来规定所有权，而 Rust 则将所有权的概念内置于语言本身，并且会在编译器进行强制检查。</p>
+<p><strong>每个值都有决定其生命周期的唯一拥有者（Owner）。</strong> 当拥有者被释放时，他拥有的值也会被释放，这个释放行为在 Rust 中被称为 <strong>丢弃（Drop）</strong>。</p>
+<p>当控制流离开声明变量的块时，这个变量会被丢弃，因此他的值也会被丢弃：</p>
+<pre class="line-numbers language-rust" data-language="rust"><code class="language-rust"><span class="token keyword">fn</span> <span class="token function-definition function">print_padovan</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">let</span> <span class="token keyword">mut</span> padovan <span class="token operator">=</span> <span class="token macro property">vec!</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">;</span>   <span class="token comment">// allocated here</span>
+    <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token number">3</span><span class="token punctuation">..</span><span class="token number">10</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">let</span> next <span class="token operator">=</span> padovan<span class="token punctuation">[</span>i<span class="token operator">-</span><span class="token number">3</span><span class="token punctuation">]</span> <span class="token operator">+</span> padovan<span class="token punctuation">[</span>i<span class="token operator">-</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+        padovan<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>next<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"P(1..10) = &#123;:?&#125;"</span><span class="token punctuation">,</span> padovan<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span>                                    <span class="token comment">// dropped here </span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/image-20240125203121920.png" alt="Vec" /><figcaption aria-hidden="true">Vec<i32></figcaption>
+</figure>
+<p>变量 <code>padovan</code> 的类型为 <code>Vec&lt;i32&gt;</code>，<code>print_padovan</code> 的栈帧上存储着 <strong>指向缓冲区的指针、缓冲区的容量、已使用的长度</strong>。而向量的缓冲区则被分配在堆上。</p>
+<p>当 <code>padovan</code> 超出作用域时就会被丢弃。<strong>因为向量拥有他的缓冲区，缓冲区也会一起被丢弃。</strong></p>
+<p><code>Box</code> 也是类似的，当程序使用 <code>Box::new(v)</code> 在堆上分配一些内存后，会得到一个指向该堆空间 <code>Box</code>，当这个 <code>Box</code> 被丢弃时，指向的堆空间也会被丢弃。</p>
+<p>此外，数组、向量、元组拥有他们自己的元素，结构体（Struct）拥有他们自己的字段，他们最后可能会形成一个树形结构，比如对于下面代码：</p>
+<pre class="line-numbers language-rust" data-language="rust"><code class="language-rust"><span class="token keyword">struct</span> <span class="token type-definition class-name">Person</span> <span class="token punctuation">&#123;</span> name<span class="token punctuation">:</span> <span class="token class-name">String</span><span class="token punctuation">,</span> birth<span class="token punctuation">:</span> <span class="token keyword">i32</span> <span class="token punctuation">&#125;</span>
+
+<span class="token keyword">let</span> <span class="token keyword">mut</span> composers <span class="token operator">=</span> <span class="token class-name">Vec</span><span class="token punctuation">::</span><span class="token function">new</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+composers<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token class-name">Person</span> <span class="token punctuation">&#123;</span> name<span class="token punctuation">:</span> <span class="token string">"Palestrina"</span><span class="token punctuation">.</span>to_string<span class="token punctuation">,</span> birth<span class="token punctuation">:</span> <span class="token number">1525</span> <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+composers<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token class-name">Person</span> <span class="token punctuation">&#123;</span> name<span class="token punctuation">:</span> <span class="token string">"Dowland"</span><span class="token punctuation">.</span>to_string<span class="token punctuation">,</span> birth<span class="token punctuation">:</span> <span class="token number">1563</span> <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+composers<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token class-name">Person</span> <span class="token punctuation">&#123;</span> name<span class="token punctuation">:</span> <span class="token string">"Lully"</span><span class="token punctuation">.</span>to_string<span class="token punctuation">,</span> birth<span class="token punctuation">:</span> <span class="token number">1632</span> <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">for</span> composer <span class="token keyword">in</span> composers <span class="token punctuation">&#123;</span>
+    <span class="token macro property">println!</span><span class="token punctuation">(</span><span class="token string">"&#123;&#125;, born &#123;&#125;"</span><span class="token punctuation">,</span> composer<span class="token punctuation">.</span>name<span class="token punctuation">,</span> composer<span class="token punctuation">.</span>birth<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/image-20240125204723063.png" alt="A tree of ownership" /><figcaption aria-hidden="true">A tree of ownership</figcaption>
+</figure>
+<p><code>composers</code> 拥有他里面的三个元素，而每个元素又拥有他的字段们。当控制流离开 <code>composers</code> 的作用域时，整棵所有权树都会被一起丢弃。</p>
+<h1 id="moves">Moves</h1>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/hais-notebook/tags/RSX/" rel="tag"># RSX</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2024/01/15/Computer%20Science/Limited%20Direct%20Execution/" rel="prev" title="Limited Direct Execution">
+                  <i class="fa fa-chevron-left"></i> Limited Direct Execution
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Harvey Zhang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="/hais-notebook/lib/animejs/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/hais-notebook/js/comments.js"></script><script src="/hais-notebook/js/utils.js"></script><script src="/hais-notebook/js/next-boot.js"></script>
+
+  <script src="/hais-notebook/lib/hexo-generator-searchdb/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/hais-notebook/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"/hais-notebook/lib/mathjax/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/hais-notebook/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
