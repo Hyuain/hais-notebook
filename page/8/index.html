@@ -689,319 +689,6 @@ dp<span class="token punctuation">[</span><span class="token number">2</span><sp
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2022/02/05/Computer%20Science/Graph/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
-      <meta itemprop="name" content="Harvey Zhang">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hais Notebook">
-      <meta itemprop="description" content="海鲜酱的笔记本">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Hais Notebook">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/hais-notebook/2022/02/05/Computer%20Science/Graph/" class="post-title-link" itemprop="url">Graph</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2022-02-05 15:49:12" itemprop="dateCreated datePublished" datetime="2022-02-05T15:49:12+00:00">2022-02-05</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/hais-notebook/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/" itemprop="url" rel="index"><span itemprop="name">计算机</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="topological-sorting">Topological Sorting</h1>
-<blockquote>
-<p>拓扑排序（Topological Sorting）指的是给有向无环图（Directed Acyclic Graph, DAG）的所有节点排序。</p>
-</blockquote>
-<p>下面用 <a target="_blank" rel="noopener" href="https://leetcode.cn/problems/course-schedule">LeetCode.207 Course Schedule</a> 为例介绍拓扑排序。该题有 BFS 和 DFS 两种解法，通过拓扑排序看是否有环，有环则该课程表无法实现。</p>
-<blockquote>
-<p>此外还有还可参考 <a target="_blank" rel="noopener" href="https://leetcode.cn/problems/course-schedule-ii">LeetCode.210 Course Schedule II</a>，该题需要输出顺序</p>
-</blockquote>
-<p>两种解法都需要借助 <strong>邻接表（Adjacency List）</strong>，或者 <strong>逆邻接表（Inverse Adjacency List）</strong>来降低时间复杂度，比如：</p>
-<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">const</span> edges <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">]</span>
-<span class="token keyword">const</span> adjacency <span class="token operator">=</span> <span class="token punctuation">[</span>
-  <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-  <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-  <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-  <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>上面是一个 <strong>逆邻接表</strong> 的演示，记录了 <strong>指向该顶点的所有边</strong>，而 <strong>邻接表</strong> 则是会记录 <strong>从该顶点出发的所有边</strong>。</p>
-<h2 id="bfs-topsort">BFS TopSort</h2>
-<p>BFS 算法除了逆邻接表以外，还需要 <strong>入度表（Indegrees List）</strong>，入度表将会记录每个顶点的入度（指向该顶点的边数）。</p>
-<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">canFinish</span><span class="token punctuation">(</span>n<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">,</span> prerequisites<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">boolean</span> <span class="token punctuation">&#123;</span>
-  <span class="token comment">// 入度表</span>
-  <span class="token keyword">const</span> indegrees <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name"><span class="token builtin">Array</span></span><span class="token punctuation">(</span>n<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">fill</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>
-  <span class="token comment">// 邻接表</span>
-  <span class="token keyword">const</span> adjacency <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name"><span class="token builtin">Array</span></span><span class="token punctuation">(</span>n<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">fill</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span>_<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
-  
-  <span class="token comment">// 构建入度表和邻接表</span>
-  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> prerequisites<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-    <span class="token keyword">const</span> <span class="token punctuation">[</span>cur<span class="token punctuation">,</span> pre<span class="token punctuation">]</span> <span class="token operator">=</span> prerequisites<span class="token punctuation">[</span>i<span class="token punctuation">]</span>
-    indegrees<span class="token punctuation">[</span>cur<span class="token punctuation">]</span><span class="token operator">++</span>
-    adjacency<span class="token punctuation">[</span>pre<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>cur<span class="token punctuation">)</span>
-  <span class="token punctuation">&#125;</span>
-  
-  <span class="token comment">// BFS 需要借助队列</span>
-  <span class="token keyword">const</span> queue <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
-  
-  <span class="token comment">// 先取得所有入度为 0 的顶点，他们是拓扑排序的开始</span>
-  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> indegrees<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>indegrees<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">===</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-      queue<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span>
-    <span class="token punctuation">&#125;</span>
-  <span class="token punctuation">&#125;</span>
-  
-  <span class="token comment">// BFS 拓扑排序</span>
-  <span class="token keyword">while</span> <span class="token punctuation">(</span>queue<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-    <span class="token keyword">const</span> pre <span class="token operator">=</span> queue<span class="token punctuation">.</span><span class="token function">shift</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-    n<span class="token operator">--</span>
-    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> adjacency<span class="token punctuation">[</span>pre<span class="token punctuation">]</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-      <span class="token keyword">const</span> cur <span class="token operator">=</span> adjacency<span class="token punctuation">[</span>i<span class="token punctuation">]</span>
-      indegrees<span class="token punctuation">[</span>cur<span class="token punctuation">]</span><span class="token operator">--</span>
-      <span class="token keyword">if</span> <span class="token punctuation">(</span>indegrees<span class="token punctuation">[</span>cur<span class="token punctuation">]</span> <span class="token operator">===</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-        queue<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>cur<span class="token punctuation">)</span>
-      <span class="token punctuation">&#125;</span>
-    <span class="token punctuation">&#125;</span>
-  <span class="token punctuation">&#125;</span>
-  
-  <span class="token comment">// 如果 n 还有剩下，那么说明有的课程永远无法到达（成环了）</span>
-  <span class="token keyword">return</span> <span class="token operator">!</span>n
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="dfs-topsort">DFS TopSort</h2>
-<p>DFS 算法不需要借助入度表，但是需要借助 <code>flags</code> 数组来对每个节点的状态进行标记，<code>flags[i]</code> 代表节点 <code>i</code> 的状态：</p>
-<ul>
-<li>未被 DFS 访问：<code>flags[i] === 0</code>；</li>
-<li>已被其他节点启动的 DFS 访问：<code>flags[i] === -1</code>；</li>
-<li>已被当前节点启动的 DFS 访问：<code>flags[i] === 1</code>。</li>
-</ul>
-<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">canFinish</span><span class="token punctuation">(</span>n<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">,</span> prerequisites<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">boolean</span> <span class="token punctuation">&#123;</span>
-  <span class="token comment">// 邻接表</span>
-  <span class="token keyword">const</span> adjacency <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name"><span class="token builtin">Array</span></span><span class="token punctuation">(</span>n<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">fill</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span>_<span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
-  <span class="token comment">// 记录状态</span>
-  <span class="token keyword">const</span> flags <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name"><span class="token builtin">Array</span></span><span class="token punctuation">(</span>n<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">fill</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>
-  
-  <span class="token comment">// 构建邻接表</span>
-  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> prerequisites<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-    <span class="token keyword">const</span> <span class="token punctuation">[</span>cur<span class="token punctuation">,</span> pre<span class="token punctuation">]</span> <span class="token operator">=</span> prerequisites<span class="token punctuation">[</span>i<span class="token punctuation">]</span>
-    adjacency<span class="token punctuation">[</span>pre<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>cur<span class="token punctuation">)</span>
-  <span class="token punctuation">&#125;</span>
-  
-  <span class="token comment">// 如果成环了，返回 false</span>
-  <span class="token keyword">function</span> <span class="token function">dfs</span><span class="token punctuation">(</span>start<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">boolean</span> <span class="token punctuation">&#123;</span>
-    <span class="token comment">// 该节点早已被别人访问过</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>flags<span class="token punctuation">[</span>start<span class="token punctuation">]</span> <span class="token operator">===</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-      <span class="token keyword">return</span> <span class="token boolean">true</span>
-    <span class="token punctuation">&#125;</span>
-    <span class="token comment">// 该节点我之前访问过，成环了</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>flags<span class="token punctuation">[</span>start<span class="token punctuation">]</span> <span class="token operator">===</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-      <span class="token keyword">return</span> <span class="token boolean">false</span>
-    <span class="token punctuation">&#125;</span>
-    <span class="token comment">// 将该节点标记为我方问过了</span>
-    flags<span class="token punctuation">[</span>start<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">1</span>
-    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> adjacency<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">dfs</span><span class="token punctuation">(</span>adjacency<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-        <span class="token keyword">return</span> <span class="token boolean">false</span>
-      <span class="token punctuation">&#125;</span>
-    <span class="token punctuation">&#125;</span>
-    <span class="token comment">// 回溯，调整节点访问状态为已被别人访问过，方便其他节点进行判断</span>
-    flags<span class="token punctuation">[</span>start<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">1</span>
-    <span class="token keyword">return</span> <span class="token boolean">true</span>
-  <span class="token punctuation">&#125;</span>
-  
-  <span class="token comment">// 对每个节点进行 DFS</span>
-  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> n<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">dfs</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-      <span class="token keyword">return</span> <span class="token boolean">false</span>
-    <span class="token punctuation">&#125;</span>
-  <span class="token punctuation">&#125;</span>
-  
-  <span class="token keyword">return</span> <span class="token boolean">true</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h1 id="search">Search</h1>
-<p>跟[[Binary Tree|树]]类似，图有深度优先搜索（DFS）和广度优先搜索（BFS）两种搜索方式。深度优先搜索就是先沿着某一条路径探索到底，广度优先就是一层一层地先将当前节点可触达的节点处理完成。</p>
-<h2 id="deep-first-search">Deep First Search</h2>
-<p>DFS 就像 Galgame 一样，我会先打到某个终点，再从最后一个分歧点开始探索新的分支。</p>
-<p><strong>回溯算法实际上就是 DFS 的过程</strong>，DFS 在到达终点之后会从最后一步逐步撤销再探索新的路径，<strong>这个撤销的过程就被成为回溯</strong>。</p>
-<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">dfs</span><span class="token punctuation">(</span>params<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">finish</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-    <span class="token function">saveResults</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-    <span class="token keyword">return</span>
-  <span class="token punctuation">&#125;</span>
-  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">const</span> child <span class="token keyword">of</span> children<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-    <span class="token function">process</span><span class="token punctuation">(</span>child<span class="token punctuation">)</span>
-    <span class="token function">dfs</span><span class="token punctuation">(</span>child<span class="token punctuation">,</span> newParams<span class="token punctuation">)</span>
-    <span class="token function">rollback</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-  <span class="token punctuation">&#125;</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="breadth-first-search">Breadth First Search</h2>
-<p>BFS 是一圈一圈地搜索，比较适合解决两个点之间最短路径的问题。因为由于是一圈一圈地搜索，第一次搜到的时候，就是路径最短的时候。</p>
-<p><strong>广度优先搜索习惯上用队列来实现</strong>（不过用栈也可以，用栈的话就是一圈顺时针、一圈逆时针地搜）。比树的广度优先搜索需要额外注意的一点是，由于可能访问到之前的节点，所以需要将已访问过的节点标记一下，防止重复访问。</p>
-<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">bfs</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-  <span class="token keyword">const</span> queue <span class="token operator">=</span> <span class="token punctuation">[</span>start<span class="token punctuation">]</span>
-  visited <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Set</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-  <span class="token keyword">while</span> <span class="token punctuation">(</span>queue<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-    <span class="token keyword">const</span> current <span class="token operator">=</span> queue<span class="token punctuation">.</span><span class="token function">shift</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>visited<span class="token punctuation">.</span><span class="token function">has</span><span class="token punctuation">(</span>current<span class="token punctuation">.</span>key<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-      <span class="token keyword">continue</span>
-    <span class="token punctuation">&#125;</span>
-    visited<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>current<span class="token punctuation">.</span>key<span class="token punctuation">)</span>
-    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">const</span> neighbor <span class="token keyword">of</span> neighbors<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-      queue<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>neighbor<span class="token punctuation">)</span>
-    <span class="token punctuation">&#125;</span>
-  <span class="token punctuation">&#125;</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h1 id="shortest-path">Shortest Path</h1>
-<h2 id="dijkstra">Dijkstra</h2>
-<blockquote>
-<p>Dijkstra（/ˈdikstrɑ/或/ˈdɛikstrɑ/）算法由荷兰计算机科学家 E. W. Dijkstra 于 1956 年发现，1959 年公开发表。是一种求解 <strong>非负权图</strong> 上单源最短路径的算法。</p>
-</blockquote>
-<p>该算法会记录当前已知的最短路径，并在寻找到更短的路径时更新。</p>
-<p>一旦找到最短路径，那个节点从未访问集合中被删除，并添加到已找到最短路径的集合中。</p>
-<p>重复查找的过程，直到所图中所有的节点都已经添加到路径中，这样就可以得到源节点出发访问其他所有节点的最短路径方案。</p>
-<p><img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Dijkstra-1.png" /></p>
-<p><strong>目标</strong>：如图所示我们从 <code>0</code> 出发，查找其他所有节点的最短路径。</p>
-<p><strong>初始化</strong></p>
-<ol type="1">
-<li><p>初始化距离列表：<code>distance = [0, Infinity, Infinity, Infinity, Infinity, Infinity]</code>。</p></li>
-<li><p>初始化未访问节点集合：<code>unvisitied = new Set([1, 2, 3, 4, 5, 6])</code> 和已找到最短路径的集合 <code>shortest = new Set([0])</code>，当集合为空时即为计算完成（从节点 <code>0</code> 出发可以直接将 <code>0</code> 标记为已访问）。</p></li>
-</ol>
-<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token literal-property property">distance</span><span class="token operator">:</span>   <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">Infinity</span><span class="token punctuation">,</span> <span class="token number">Infinity</span><span class="token punctuation">,</span> <span class="token number">Infinity</span><span class="token punctuation">,</span> <span class="token number">Infinity</span><span class="token punctuation">,</span> <span class="token number">Infinity</span><span class="token punctuation">,</span> <span class="token number">Infinity</span><span class="token punctuation">]</span>
-<span class="token literal-property property">unvisited</span><span class="token operator">:</span>  <span class="token function">Set</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
-<span class="token literal-property property">shortest</span><span class="token operator">:</span>   <span class="token function">Set</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span><span class="token number">0</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p><strong>第一次循环</strong></p>
-<ol type="1">
-<li>检查 <code>0</code> 到相邻节点 <code>1</code> 和 <code>2</code> 的距离， 并更新 <code>distance</code> 为对应的权重 <code>[0, 2, 6, Infinity, Infinity, Infinity]</code>。</li>
-<li>根据已知的 <code>distance</code> 选择距离源节点最近的节点，即节点 <code>1</code>，把他标记为已访问，并添加到路径中。<code>unvisitied.delete(1); shortest.add(1)</code>。</li>
-</ol>
-<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token literal-property property">istance</span><span class="token operator">:</span>   <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">,</span> <span class="token number">Infinity</span><span class="token punctuation">,</span> <span class="token number">Infinity</span><span class="token punctuation">,</span> <span class="token number">Infinity</span><span class="token punctuation">,</span> <span class="token number">Infinity</span><span class="token punctuation">]</span>
-<span class="token literal-property property">unvisited</span><span class="token operator">:</span>  <span class="token function">Set</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
-<span class="token literal-property property">shortest</span><span class="token operator">:</span>   <span class="token function">Set</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p><strong>第二次循环</strong></p>
-<ol type="1">
-<li>检查已经在最短路径的集合中包含的节点的相邻节点 <code>2</code> 和 <code>3</code>，此时需要计算源节点到 <code>3</code> 的距离，由于已经在路径中的集合只有 <code>0</code> 和 <code>1</code>，因此只能通过 <code>0 -&gt; 1 -&gt; 3</code> 进行计算，结果为 7。更新 <code>distance</code> 为 <code>[0, 2, 6, 7, Infinity, Infinity]</code>。</li>
-<li>选择已知的与源节点最近的未访问节点，即节点 <code>2</code>，将其标记为已访问并加入路径。</li>
-</ol>
-<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token literal-property property">distance</span><span class="token operator">:</span>   <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">,</span> <span class="token number">7</span><span class="token punctuation">,</span> <span class="token number">Infinity</span><span class="token punctuation">,</span> <span class="token number">Infinity</span><span class="token punctuation">,</span> <span class="token number">Infinity</span><span class="token punctuation">]</span>
-<span class="token literal-property property">unvisited</span><span class="token operator">:</span>  <span class="token function">Set</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span><span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
-<span class="token literal-property property">shortest</span><span class="token operator">:</span>   <span class="token function">Set</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p><strong>第三次循环</strong></p>
-<ol type="1">
-<li>检查已经在最短路径集合中包含的节点的相邻节点 <code>3</code>，可选路径为 <code>0 -&gt; 1 -&gt; 3</code> 和 <code>0 -&gt; 2 -&gt; 3</code>，结果是前者更小，因此保持 <code>distance</code> 中的 7 不变。</li>
-<li>将节点 <code>3</code> 标记为已访问并添加至路径中。</li>
-</ol>
-<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token literal-property property">distance</span><span class="token operator">:</span>   <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">,</span> <span class="token number">7</span><span class="token punctuation">,</span> <span class="token number">Infinity</span><span class="token punctuation">,</span> <span class="token number">Infinity</span><span class="token punctuation">,</span> <span class="token number">Infinity</span><span class="token punctuation">]</span>
-<span class="token literal-property property">unvisited</span><span class="token operator">:</span>  <span class="token function">Set</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span><span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
-<span class="token literal-property property">shortest</span><span class="token operator">:</span>   <span class="token function">Set</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p><strong>第四次循环</strong></p>
-<ol type="1">
-<li>重复上述过程，检查节点 <code>4</code> 和 <code>5</code>，节点 <code>4</code> 的最短路径是 <code>0 -&gt; 3 -&gt; 4</code>，距离为 17；节点 <code>5</code> 的最短路径是 <code>0 -&gt; 3 -&gt; 5</code>，距离为 22，用这个结果更新 <code>distance</code>。</li>
-<li>将 <code>4</code> 标记为已访问并添加至路径。</li>
-</ol>
-<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token literal-property property">distance</span><span class="token operator">:</span>   <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">,</span> <span class="token number">7</span><span class="token punctuation">,</span> <span class="token number">17</span><span class="token punctuation">,</span> <span class="token number">22</span><span class="token punctuation">,</span> <span class="token number">Infinity</span><span class="token punctuation">]</span>
-<span class="token literal-property property">unvisited</span><span class="token operator">:</span>  <span class="token function">Set</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span><span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
-<span class="token literal-property property">shortest</span><span class="token operator">:</span>   <span class="token function">Set</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p><strong>第五次循环</strong></p>
-<ol type="1">
-<li>检查 <code>5</code> 和 <code>6</code>，对于 <code>5</code> 可选 <code>0 -&gt; 3 -&gt; 5</code> 和 <code>0 -&gt; 4 -&gt; 5</code>；对于 <code>6</code> 可选 <code>0 -&gt; 4 -&gt; 6</code>，更新 <code>distance</code>。</li>
-<li>将 <code>6</code> 标记为已访问并添加至路径。</li>
-</ol>
-<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token literal-property property">distance</span><span class="token operator">:</span>   <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">,</span> <span class="token number">7</span><span class="token punctuation">,</span> <span class="token number">17</span><span class="token punctuation">,</span> <span class="token number">22</span><span class="token punctuation">,</span> <span class="token number">19</span><span class="token punctuation">]</span>
-<span class="token literal-property property">unvisited</span><span class="token operator">:</span>  <span class="token function">Set</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span><span class="token number">5</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
-<span class="token literal-property property">shortest</span><span class="token operator">:</span>   <span class="token function">Set</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p><strong>第六次循环</strong></p>
-<ol type="1">
-<li>检查 <code>5</code>，可选 <code>0 -&gt; 3 -&gt; 5</code> <code>0 -&gt; 4 -&gt; 5</code> 和 <code>0 -&gt; 6 -&gt; 5</code>，更新 <code>distance</code>。</li>
-<li>将 <code>5</code> 标记为已访问并添加至路径。</li>
-</ol>
-<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token literal-property property">distance</span><span class="token operator">:</span>   <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">,</span> <span class="token number">7</span><span class="token punctuation">,</span> <span class="token number">17</span><span class="token punctuation">,</span> <span class="token number">22</span><span class="token punctuation">,</span> <span class="token number">19</span><span class="token punctuation">]</span>
-<span class="token literal-property property">unvisited</span><span class="token operator">:</span>  <span class="token function">Set</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
-<span class="token literal-property property">shortest</span><span class="token operator">:</span>   <span class="token function">Set</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>算法代码如下：</p>
-<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">function</span> <span class="token function">dijkstra</span><span class="token punctuation">(</span><span class="token parameter">edges<span class="token punctuation">,</span> n<span class="token punctuation">,</span> source</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-  <span class="token keyword">const</span> distance <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Array</span><span class="token punctuation">(</span>n<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">fill</span><span class="token punctuation">(</span><span class="token number">Infinity</span><span class="token punctuation">)</span>
-  distance<span class="token punctuation">[</span>source<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">0</span>
-  <span class="token comment">// TBC </span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="floyd">Floyd</h2>
-<p>Floyd 算法是一种非常简单的求任意两个节点之间最短路径的算法。他的时间复杂度是 O(n^3)，但比较容易实现。适用于任何有最短路径的图，不管有向无向，边权正负，但不能有负环（不存在最短路）。比如 <a target="_blank" rel="noopener" href="https://leetcode.cn/problems/course-schedule-iv">LeetCode.1462 Course Schedule IV</a> 可以用 Floyd 算法来解决。</p>
-<p>Floyd 算法实际上是多维动态规划算法：</p>
-<ul>
-<li><p>定义数组 <code>f[k][x][y]</code>，表示节点 <code>x</code> 到节点 <code>y</code>，只允许经过 <code>1</code> 到 <code>k</code> 的最短路（显然节点 <code>f[n][x][y]</code> 即为 <code>x</code> 到 <code>y</code> 的最短路）；</p></li>
-<li><p>初始化 <code>f[0][x][y]</code>，当 <code>x</code> 等于 <code>y</code> 时为 <code>0</code>，<code>x</code> 与 <code>y</code> 直接相连时为他们的边权，否则为 <code>Infinity</code>；</p></li>
-<li><p><code>f[k][x][y] = min(f[k - 1][x][y], f[k - 1][x][k] + f[k - 1][k][y])</code>，考虑经过和不经过 <code>k</code> 两种情况。</p></li>
-</ul>
-<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">for</span> <span class="token punctuation">(</span>k <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> k <span class="token operator">&lt;=</span> n<span class="token punctuation">;</span> k<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-  <span class="token keyword">for</span> <span class="token punctuation">(</span>x <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> x <span class="token operator">&lt;=</span> n<span class="token punctuation">;</span> x<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-    <span class="token keyword">for</span> <span class="token punctuation">(</span>y <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> y <span class="token operator">&lt;=</span> n<span class="token punctuation">;</span> y<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-      f<span class="token punctuation">[</span>k<span class="token punctuation">]</span><span class="token punctuation">[</span>x<span class="token punctuation">]</span><span class="token punctuation">[</span>y<span class="token punctuation">]</span> <span class="token operator">=</span> Math<span class="token punctuation">.</span><span class="token function">min</span><span class="token punctuation">(</span>f<span class="token punctuation">[</span>k <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">[</span>x<span class="token punctuation">]</span><span class="token punctuation">[</span>y<span class="token punctuation">]</span><span class="token punctuation">,</span> f<span class="token punctuation">[</span>k <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">[</span>x<span class="token punctuation">]</span><span class="token punctuation">[</span>k<span class="token punctuation">]</span> <span class="token operator">+</span> f<span class="token punctuation">[</span>k <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">[</span>k<span class="token punctuation">]</span><span class="token punctuation">[</span>y<span class="token punctuation">]</span><span class="token punctuation">)</span>
-    <span class="token punctuation">&#125;</span>
-  <span class="token punctuation">&#125;</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>可以看出数组的第一维没什么用，可以用滚动数组优化掉：</p>
-<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">for</span> <span class="token punctuation">(</span>k <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> k <span class="token operator">&lt;=</span> n<span class="token punctuation">;</span> k<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-  <span class="token keyword">for</span> <span class="token punctuation">(</span>x <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> x <span class="token operator">&lt;=</span> n<span class="token punctuation">;</span> x<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-    <span class="token keyword">for</span> <span class="token punctuation">(</span>y <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> y <span class="token operator">&lt;=</span> n<span class="token punctuation">;</span> y<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-      f<span class="token punctuation">[</span>x<span class="token punctuation">]</span><span class="token punctuation">[</span>y<span class="token punctuation">]</span> <span class="token operator">=</span> Math<span class="token punctuation">.</span><span class="token function">min</span><span class="token punctuation">(</span>f<span class="token punctuation">[</span>x<span class="token punctuation">]</span><span class="token punctuation">[</span>y<span class="token punctuation">]</span><span class="token punctuation">,</span> f<span class="token punctuation">[</span>x<span class="token punctuation">]</span><span class="token punctuation">[</span>k<span class="token punctuation">]</span> <span class="token operator">+</span> f<span class="token punctuation">[</span>k<span class="token punctuation">]</span><span class="token punctuation">[</span>y<span class="token punctuation">]</span><span class="token punctuation">)</span>
-    <span class="token punctuation">&#125;</span>
-  <span class="token punctuation">&#125;</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2022/02/05/Computer%20Science/Greedy%20Algorithm/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1994,105 +1681,6 @@ T(n) = \sum_{i=0}^{h} n_i h_i \\
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2022/02/05/Computer%20Science/Mod/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
-      <meta itemprop="name" content="Harvey Zhang">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hais Notebook">
-      <meta itemprop="description" content="海鲜酱的笔记本">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Hais Notebook">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/hais-notebook/2022/02/05/Computer%20Science/Mod/" class="post-title-link" itemprop="url">Mod</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2022-02-05 15:49:12" itemprop="dateCreated datePublished" datetime="2022-02-05T15:49:12+00:00">2022-02-05</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/hais-notebook/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/" itemprop="url" rel="index"><span itemprop="name">计算机</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="mod">Mod</h1>
-<p>最简单的模运算：计算乘积的个位数，比如 <span class="math inline">\(1234\cdot6789\)</span> 的个位数是 <span class="math inline">\((4\cdot9)\%10=6\)</span> ，<span class="math inline">\(1234+6789\)</span> 的个位数是 <span class="math inline">\((4+9)\%10=3\)</span>。</p>
-<p>将上述结论抽象成数学公式就是： <span class="math display">\[
-(a+b) \% m = ((a \% m) + (b \% m)) \% m
-\]</span></p>
-<p><span class="math display">\[
-(a \cdot b) \% m = ((a \% m) \cdot (b \% m)) \% m
-\]</span></p>
-<h1 id="mod-1e9-7">Mod 1e9 + 7</h1>
-<p>由于有的语言对大数并没有进行特殊处理，所以无法进行高精度的大数运算，有的题目便会要求将结果对 1e9 + 7 取模，这样就不用考虑大数运算的问题了。</p>
-<p>但是，<strong>不能只是单纯地对结果取模</strong>，因为这样就没有意义了，并不能避免大数运算带来的问题。</p>
-<p>此外，还有几个注意点：</p>
-<ol type="1">
-<li><p>取模之后就不能用 Max 比较最大值了，因此有的题就不能用动态规划了（但是仍然可以使用 Sum）</p></li>
-<li><p>注意是否真的取模了： <pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// 用 += 的时候注意</span>
-<span class="token keyword">for</span><span class="token punctuation">(</span>int i <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> i <span class="token operator">&lt;=</span> n <span class="token punctuation">;</span> i <span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-    res <span class="token operator">+=</span> i <span class="token operator">%</span> <span class="token punctuation">(</span><span class="token number">1e9</span> <span class="token operator">+</span> <span class="token number">7</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 实际上并没有对 res 取模，只是取模了 i</span>
-<span class="token punctuation">&#125;</span>
-
-<span class="token comment">// 由于 * 和 % 是从左到右运算的，因此需要加上括号</span>
-res <span class="token operator">=</span> res <span class="token operator">%</span> mod <span class="token operator">+</span> pre<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">[</span>j<span class="token punctuation">]</span> <span class="token operator">%</span> mod <span class="token operator">*</span> a<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">[</span>j<span class="token punctuation">]</span> <span class="token operator">%</span> mod<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p></li>
-</ol>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2022/02/05/Computer%20Science/Linked%20List/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2176,6 +1764,105 @@ res <span class="token operator">=</span> res <span class="token operator">%</sp
 </tbody>
 </table>
 <p>*注意如果插入和删除并不知道元素到底在哪里，需要从头开始查找的话，复杂度是 O(n)</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2022/02/05/Computer%20Science/Mod/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
+      <meta itemprop="name" content="Harvey Zhang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hais Notebook">
+      <meta itemprop="description" content="海鲜酱的笔记本">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Hais Notebook">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/hais-notebook/2022/02/05/Computer%20Science/Mod/" class="post-title-link" itemprop="url">Mod</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-02-05 15:49:12" itemprop="dateCreated datePublished" datetime="2022-02-05T15:49:12+00:00">2022-02-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/" itemprop="url" rel="index"><span itemprop="name">计算机</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="mod">Mod</h1>
+<p>最简单的模运算：计算乘积的个位数，比如 <span class="math inline">\(1234\cdot6789\)</span> 的个位数是 <span class="math inline">\((4\cdot9)\%10=6\)</span> ，<span class="math inline">\(1234+6789\)</span> 的个位数是 <span class="math inline">\((4+9)\%10=3\)</span>。</p>
+<p>将上述结论抽象成数学公式就是： <span class="math display">\[
+(a+b) \% m = ((a \% m) + (b \% m)) \% m
+\]</span></p>
+<p><span class="math display">\[
+(a \cdot b) \% m = ((a \% m) \cdot (b \% m)) \% m
+\]</span></p>
+<h1 id="mod-1e9-7">Mod 1e9 + 7</h1>
+<p>由于有的语言对大数并没有进行特殊处理，所以无法进行高精度的大数运算，有的题目便会要求将结果对 1e9 + 7 取模，这样就不用考虑大数运算的问题了。</p>
+<p>但是，<strong>不能只是单纯地对结果取模</strong>，因为这样就没有意义了，并不能避免大数运算带来的问题。</p>
+<p>此外，还有几个注意点：</p>
+<ol type="1">
+<li><p>取模之后就不能用 Max 比较最大值了，因此有的题就不能用动态规划了（但是仍然可以使用 Sum）</p></li>
+<li><p>注意是否真的取模了： <pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// 用 += 的时候注意</span>
+<span class="token keyword">for</span><span class="token punctuation">(</span>int i <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> i <span class="token operator">&lt;=</span> n <span class="token punctuation">;</span> i <span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    res <span class="token operator">+=</span> i <span class="token operator">%</span> <span class="token punctuation">(</span><span class="token number">1e9</span> <span class="token operator">+</span> <span class="token number">7</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 实际上并没有对 res 取模，只是取模了 i</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">// 由于 * 和 % 是从左到右运算的，因此需要加上括号</span>
+res <span class="token operator">=</span> res <span class="token operator">%</span> mod <span class="token operator">+</span> pre<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">[</span>j<span class="token punctuation">]</span> <span class="token operator">%</span> mod <span class="token operator">*</span> a<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">[</span>j<span class="token punctuation">]</span> <span class="token operator">%</span> mod<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p></li>
+</ol>
 
       
     </div>
@@ -2885,6 +2572,401 @@ stack<span class="token punctuation">.</span><span class="token function">push</
     <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span>q<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
   <span class="token punctuation">&#125;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2022/02/05/Computer%20Science/String/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
+      <meta itemprop="name" content="Harvey Zhang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hais Notebook">
+      <meta itemprop="description" content="海鲜酱的笔记本">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Hais Notebook">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/hais-notebook/2022/02/05/Computer%20Science/String/" class="post-title-link" itemprop="url">String</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-02-05 15:49:12" itemprop="dateCreated datePublished" datetime="2022-02-05T15:49:12+00:00">2022-02-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/" itemprop="url" rel="index"><span itemprop="name">计算机</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="big-number-calculation">Big Number Calculation</h1>
+<h2 id="big-number-plus">Big Number Plus</h2>
+<details class="note "><summary><p>Code</p>
+</summary>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">addStrings</span><span class="token punctuation">(</span>num1<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">,</span> num2<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">string</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">const</span> arr1 <span class="token operator">=</span> num1<span class="token punctuation">.</span><span class="token function">split</span><span class="token punctuation">(</span><span class="token string">''</span><span class="token punctuation">)</span>
+    <span class="token keyword">const</span> arr2 <span class="token operator">=</span> num2<span class="token punctuation">.</span><span class="token function">split</span><span class="token punctuation">(</span><span class="token string">''</span><span class="token punctuation">)</span>
+    <span class="token keyword">const</span> results <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    <span class="token keyword">let</span> carry <span class="token operator">=</span> <span class="token number">0</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span>arr1<span class="token punctuation">.</span>length <span class="token operator">||</span> arr2<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">const</span> n1 <span class="token operator">=</span> <span class="token function">Number</span><span class="token punctuation">(</span>arr1<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">||</span> <span class="token number">0</span>
+        <span class="token keyword">const</span> n2 <span class="token operator">=</span> <span class="token function">Number</span><span class="token punctuation">(</span>arr2<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">||</span> <span class="token number">0</span>
+        <span class="token keyword">let</span> result <span class="token operator">=</span> n1 <span class="token operator">+</span> n2 <span class="token operator">+</span> carry
+        carry <span class="token operator">=</span> Math<span class="token punctuation">.</span><span class="token function">floor</span><span class="token punctuation">(</span>result <span class="token operator">/</span> <span class="token number">10</span><span class="token punctuation">)</span>
+        result <span class="token operator">=</span> result <span class="token operator">%</span> <span class="token number">10</span>
+        results<span class="token punctuation">.</span><span class="token function">unshift</span><span class="token punctuation">(</span>result<span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>carry<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        results<span class="token punctuation">.</span><span class="token function">unshift</span><span class="token punctuation">(</span>carry<span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">return</span> results<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token string">''</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+</details>
+<h2 id="big-number-minus">Big Number Minus</h2>
+<details class="note "><summary><p>Code</p>
+</summary>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">minusString</span><span class="token punctuation">(</span>num1<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">,</span> num2<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">string</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>num1 <span class="token operator">===</span> num2<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> <span class="token string">'0'</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token keyword">const</span> isNum1Bigger <span class="token operator">=</span> <span class="token function">compare</span><span class="token punctuation">(</span>num1<span class="token punctuation">,</span> num2<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">// 让 arr1 永远是大的那个数</span>
+  <span class="token keyword">const</span> <span class="token punctuation">[</span>arr1<span class="token punctuation">,</span> arr2<span class="token punctuation">]</span> <span class="token operator">=</span> isNum1Bigger
+    <span class="token operator">?</span> <span class="token punctuation">[</span>num1<span class="token punctuation">.</span><span class="token function">split</span><span class="token punctuation">(</span><span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">,</span> num2<span class="token punctuation">.</span><span class="token function">split</span><span class="token punctuation">(</span><span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token operator">:</span> <span class="token punctuation">[</span>num2<span class="token punctuation">.</span><span class="token function">split</span><span class="token punctuation">(</span><span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">,</span> num1<span class="token punctuation">.</span><span class="token function">split</span><span class="token punctuation">(</span><span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+  <span class="token keyword">let</span> borrow <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+  <span class="token keyword">const</span> results <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+  <span class="token keyword">while</span> <span class="token punctuation">(</span>arr1<span class="token punctuation">.</span>length <span class="token operator">||</span> arr2<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">const</span> n1 <span class="token operator">=</span> <span class="token function">Number</span><span class="token punctuation">(</span>arr1<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">||</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token keyword">const</span> n2 <span class="token operator">=</span> <span class="token function">Number</span><span class="token punctuation">(</span>arr2<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">||</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token keyword">let</span> result <span class="token operator">=</span> n1 <span class="token operator">-</span> n2 <span class="token operator">-</span> borrow<span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>result <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      result <span class="token operator">+=</span> <span class="token number">10</span><span class="token punctuation">;</span>
+      borrow <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+      borrow <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    results<span class="token punctuation">.</span><span class="token function">unshift</span><span class="token punctuation">(</span>result<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token keyword">const</span> firstNoneZeroIndex <span class="token operator">=</span> results<span class="token punctuation">.</span><span class="token function">findIndex</span><span class="token punctuation">(</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span> <span class="token operator">=></span> item<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">return</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span>isNum1Bigger <span class="token operator">?</span> <span class="token string">''</span> <span class="token operator">:</span> <span class="token string">'-'</span><span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span>results
+    <span class="token punctuation">.</span><span class="token function">slice</span><span class="token punctuation">(</span>firstNoneZeroIndex<span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token string">''</span><span class="token punctuation">)</span><span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">function</span> <span class="token function">compare</span><span class="token punctuation">(</span>num1<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">,</span> num2<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">boolean</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>num1<span class="token punctuation">.</span>length <span class="token operator">!==</span> num2<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> num1<span class="token punctuation">.</span>length <span class="token operator">></span> num2<span class="token punctuation">.</span>length<span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> num1<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>num1<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">></span> num2<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>num1<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">&lt;</span> num2<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+</details>
+<h1 id="pattern-matching">Pattern Matching</h1>
+<h2 id="single-pattern-kmp">Single-Pattern: KMP</h2>
+<p>Knuth-Morris-Pratt (KMP) 算法是一种字符串查找算法。他的核心在于：</p>
+<ol type="1">
+<li>两个指针分别用来遍历文本串和模式串；</li>
+<li>当遍历到不匹配的位置时，遍历模式串的指针并不会退回最开始重新匹配，而是找到上一次匹配的位置重新尝试，<strong>前缀表（next）</strong> 就记录了上一次匹配的位置。</li>
+</ol>
+<p>前缀表是用来指示模式串指针回退位置的，换句话说，<strong>他记录了模式串与文本串不匹配的时候，模式串应该从哪里重新开始匹配。</strong></p>
+<p>具体来说，前缀表记录了下标 <code>i</code> 之前（包括 <code>i</code>）的字符串中，有多长相同的 <strong>前缀</strong> 和 <strong>后缀</strong>。</p>
+<p>前缀是指，不包含最后一个字符的、所有以第一个字符开头的连续子串，比如 <code>aabaaf</code>，<code>a</code> 是前缀，<code>aa</code> 是前缀，甚至 <code>aabaa</code> 也能算前缀；</p>
+<p>后缀则相反，是指不包含第一个字符的、所有以最后一个字符结尾的连续字串，比如上述的 <code>abaaf</code> 是后缀，<code>baaf</code> 是后缀，<code>af</code> 是后缀，<code>f</code> 也是后缀。</p>
+<p>来看一个前缀表：</p>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">a a b a a f
+0 1 0 1 2 0<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p><code>aa</code> 的前后缀有一位相同（<code>a</code>），所以是 <code>1</code></p>
+<p><code>aab</code> 前后缀不相同，所以是 <code>0</code></p>
+<p><code>aaba</code> 的前后缀有一位相同（<code>a</code>），所以是 <code>1</code></p>
+<p><code>aabaa</code> 的前后缀有两位相同（<code>aa</code>），所以是 <code>2</code></p>
+<p><code>aabaaf</code> 的前后缀不相同，所以是 <code>0</code></p>
+<p>暴力匹配的时间复杂度是 O(n * m)，因为对于长度为 n 的文本串的每一位，都至多要遍历 m 位的模式串；KMP 的时间复杂度是 O (n + m)，因为 KMP 需要先遍历长度为 m 的模式串生成前缀表 <code>next</code>，然后再遍历长度为 n 的文本串。</p>
+<p>以下是 KMP 算法的流程图，可以看到前缀表的生成与字符串匹配的流程其实基本是一样的，都是看当前 <code>i</code> 和 <code>j</code> 指向的字符是否相等，如果不相等，<code>j</code> 就退回之前的位置（<code>next[j - 1]</code>）。不同在于，生成前缀表时 <code>i</code> 代表后缀的最后一位，从 <code>1</code> 开始；匹配字符串时 <code>i</code> 代表文本串指针，从 <code>0</code> 开始。</p>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/KMP.png" alt="KMP 算法流程图" /><figcaption aria-hidden="true">KMP 算法流程图</figcaption>
+</figure>
+<details class="note "><summary><p>Code</p>
+</summary>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// 返回 p 在 s 中出现的位置，-1 为未找到</span>
+<span class="token keyword">function</span> <span class="token function">strStr</span><span class="token punctuation">(</span><span class="token parameter">s<span class="token punctuation">,</span> p</span><span class="token punctuation">)</span><span class="token operator">:</span> number <span class="token punctuation">&#123;</span>
+  <span class="token comment">// 构建前缀表 next</span>
+  <span class="token keyword">const</span> next <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Array</span><span class="token punctuation">(</span>p<span class="token punctuation">.</span>length<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">fill</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>
+  <span class="token comment">// i 指向后缀的末尾</span>
+  <span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">1</span>
+  <span class="token comment">// j 指向前缀的末尾</span>
+  <span class="token keyword">let</span> j <span class="token operator">=</span> <span class="token number">0</span>
+  <span class="token keyword">while</span> <span class="token punctuation">(</span>i <span class="token operator">&lt;</span> p<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span>p<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">!==</span> p<span class="token punctuation">[</span>j<span class="token punctuation">]</span> <span class="token operator">&amp;&amp;</span> j <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      j <span class="token operator">=</span> next<span class="token punctuation">[</span>j <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>p<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">===</span> p<span class="token punctuation">[</span>j<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      j<span class="token operator">++</span>
+      next<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> j
+      i<span class="token operator">++</span>
+    <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+      i<span class="token operator">++</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+  
+  <span class="token comment">// 匹配字符串</span>
+  <span class="token comment">// i 指向文本串</span>
+  i <span class="token operator">=</span> <span class="token number">0</span>
+  <span class="token comment">// j 指向模式串</span>
+  j <span class="token operator">=</span> <span class="token number">0</span>
+  <span class="token keyword">while</span> <span class="token punctuation">(</span>i <span class="token operator">&lt;</span> s<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span>s<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">!==</span> p<span class="token punctuation">[</span>j<span class="token punctuation">]</span> <span class="token operator">&amp;&amp;</span> j <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      j <span class="token operator">=</span> next<span class="token punctuation">[</span>j <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>s<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">===</span> p<span class="token punctuation">[</span>j<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>j <span class="token operator">===</span> p<span class="token punctuation">.</span>length <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> i <span class="token operator">-</span> p<span class="token punctuation">.</span>length <span class="token operator">+</span> <span class="token number">1</span>
+      <span class="token punctuation">&#125;</span>
+      j<span class="token operator">++</span>
+      i<span class="token operator">++</span>
+    <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+      i<span class="token operator">++</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">1</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+</details>
+<p>有的实现中会将 <code>next</code> 数组中的所有值都初始化为 <code>-1</code>，且 <code>j</code> 也从 <code>-1</code> 开始，本质没有区别。</p>
+<h2 id="multi-parttern-ac">Multi-Parttern: AC</h2>
+<blockquote>
+<p>字符串的多模式匹配常用 Aho-Corasick Automaton（AC 自动机）来解决，其基础是 字典树（Tried）和 KMP 算法。</p>
+</blockquote>
+<h3 id="trie">Trie</h3>
+<p>如下图所示，字典树（Trie）是一个像字典一样的树，<strong>字典树的每个边代表了一个字母，从根节点到某个节点的路径就代表了一个字符串</strong>。</p>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/trie1.png" alt="Trie" /><figcaption aria-hidden="true">Trie</figcaption>
+</figure>
+<p>可以用 JavaScript 来实现一个 Trie：</p>
+<details class="note "><summary><p>Code</p>
+</summary>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// Trie 节点的实现</span>
+<span class="token keyword">class</span> <span class="token class-name">TrieNode</span> <span class="token punctuation">&#123;</span>
+  <span class="token function">constructor</span><span class="token punctuation">(</span><span class="token parameter">key</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 该节点代表的字符（指向该节点的边代表的字符）</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>key <span class="token operator">=</span> key
+    <span class="token comment">// 指向父结点</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>parent <span class="token operator">=</span> <span class="token keyword">null</span>
+    <span class="token comment">// 子结点哈希表，该表的键是边所对应的字符，值是子结点的引用</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>children <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>
+    <span class="token comment">// 看是否是某个字符串的最后一个字符</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>end <span class="token operator">=</span> <span class="token boolean">false</span>
+  <span class="token punctuation">&#125;</span>
+  
+  <span class="token comment">// 迭代父结点，得到该节点为终点的字符串</span>
+  <span class="token comment">// 时间复杂度 O(k)，k = 字符串长度</span>
+  <span class="token function">getWord</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">const</span> output <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    <span class="token keyword">const</span> node <span class="token operator">=</span> <span class="token keyword">this</span>
+    
+    <span class="token keyword">while</span> <span class="token punctuation">(</span>node <span class="token operator">!==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      output<span class="token punctuation">.</span><span class="token function">unshift</span><span class="token punctuation">(</span>node<span class="token punctuation">.</span>key<span class="token punctuation">)</span>
+      node <span class="token operator">=</span> node<span class="token punctuation">.</span>parent
+    <span class="token punctuation">&#125;</span>
+    
+    <span class="token keyword">return</span> output<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token string">''</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// Tire 的实现</span>
+<span class="token keyword">class</span> <span class="token class-name">Trie</span> <span class="token punctuation">&#123;</span>
+  root <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">TrieNode</span><span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">)</span>
+  
+  <span class="token function">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token punctuation">&#125;</span>
+  
+  <span class="token comment">// 向 Trie 插入一个字符串</span>
+  <span class="token comment">// 时间复杂度 O(k)，k = 字符串长度</span>
+  <span class="token function">insert</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">const</span> node <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>root
+    
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> word<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token comment">// 如果该字符在 children 中不存在，就创建一个</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>node<span class="token punctuation">.</span>children<span class="token punctuation">[</span>word<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        node<span class="token punctuation">.</span>children<span class="token punctuation">[</span>word<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">TrieNode</span><span class="token punctuation">(</span>word<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span>
+        node<span class="token punctuation">.</span>children<span class="token punctuation">[</span>word<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">.</span>parent <span class="token operator">=</span> node
+      <span class="token punctuation">&#125;</span>
+      <span class="token comment">// 进入下一层</span>
+      node <span class="token operator">=</span> node<span class="token punctuation">.</span>children<span class="token punctuation">[</span>word<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">]</span>
+      <span class="token comment">// 如果是字符串最后一个字符，标记为 end</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>i <span class="token operator">===</span> word<span class="token punctuation">.</span>length <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        node<span class="token punctuation">.</span>end <span class="token operator">=</span> <span class="token boolean">true</span>
+      <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+  
+  <span class="token comment">// 检查某个字符串是否是 Trie 中的一整个字符串</span>
+  <span class="token comment">// 时间复杂度 O(k)，k = 字符串长度</span>
+  <span class="token function">contains</span><span class="token punctuation">(</span><span class="token parameter">word</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">let</span> node <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>root
+    
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> word<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>node<span class="token punctuation">.</span>children<span class="token punctuation">[</span>word<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        node <span class="token operator">=</span> node<span class="token punctuation">.</span>children<span class="token punctuation">[</span>word<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">]</span>
+      <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> <span class="token boolean">false</span>
+      <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+    
+    <span class="token comment">// word 已经遍历完了，看最后这个节点有没有标记 end，是不是某个字符串的终点</span>
+    <span class="token keyword">return</span> node<span class="token punctuation">.</span>end
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token comment">// 返回具有该 prefix 的所有字符串</span>
+  <span class="token comment">// 时间复杂度 O(p + n)，p = prefix.length，n = 子路径的数量</span>
+  <span class="token function">find</span><span class="token punctuation">(</span><span class="token parameter">prefix</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">let</span> node <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>root
+    <span class="token keyword">const</span> output <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> prefix<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>node<span class="token punctuation">.</span>childrenp<span class="token punctuation">[</span>prefix<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        node <span class="token operator">=</span> node<span class="token punctuation">.</span>children<span class="token punctuation">[</span>prefix<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">]</span>
+      <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> output
+      <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+    
+    <span class="token function">findAllwords</span><span class="token punctuation">(</span>node<span class="token punctuation">,</span> output<span class="token punctuation">)</span>
+    
+    <span class="token keyword">return</span> output
+  <span class="token punctuation">&#125;</span>
+         
+  <span class="token comment">// 递归获取所有以该节点为起始的字符串</span>
+  <span class="token function">findAllWords</span><span class="token punctuation">(</span><span class="token parameter">node<span class="token punctuation">,</span> arr</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>node<span class="token punctuation">.</span>end<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      arr<span class="token punctuation">.</span><span class="token function">unshift</span><span class="token punctuation">(</span>node<span class="token punctuation">.</span><span class="token function">getWord</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">const</span> child <span class="token keyword">of</span> Object<span class="token punctuation">.</span><span class="token function">values</span><span class="token punctuation">(</span>node<span class="token punctuation">.</span>children<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token function">findAllWords</span><span class="token punctuation">(</span>child<span class="token punctuation">,</span> arr<span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+</details>
+<h3 id="ac">AC</h3>
+<p>// TBC</p>
+<h1 id="examples">Examples</h1>
+<h2 id="反转字符串中的单词">反转字符串中的单词</h2>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/reverse-words-in-a-string-iii/">LeetCode.557</a></p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">const</span> <span class="token function-variable function">reverse</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">str</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> array <span class="token operator">=</span> str<span class="token punctuation">.</span><span class="token function">split</span><span class="token punctuation">(</span><span class="token string">' '</span><span class="token punctuation">)</span>
+  <span class="token keyword">const</span> result <span class="token operator">=</span> array<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token parameter">item</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> item<span class="token punctuation">.</span><span class="token function">split</span><span class="token punctuation">(</span><span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">reverse</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token string">''</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span> result<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token string">' '</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">// 更优雅的写法</span>
+<span class="token keyword">const</span> <span class="token function-variable function">reverse</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">str</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">return</span> str
+          <span class="token punctuation">.</span><span class="token function">split</span><span class="token punctuation">(</span><span class="token string">' '</span><span class="token punctuation">)</span>
+          <span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token parameter">item</span> <span class="token operator">=></span> item<span class="token punctuation">.</span><span class="token function">split</span><span class="token punctuation">(</span><span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">reverse</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+          <span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token string">' '</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">// 使用正则表达式</span>
+<span class="token keyword">const</span> <span class="token function-variable function">reverse</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">str</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">return</span> str
+          <span class="token punctuation">.</span><span class="token function">split</span><span class="token punctuation">(</span><span class="token regex"><span class="token regex-delimiter">/</span><span class="token regex-source language-regex">\s</span><span class="token regex-delimiter">/</span><span class="token regex-flags">g</span></span><span class="token punctuation">)</span>
+          <span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token parameter">item</span> <span class="token operator">=></span> item<span class="token punctuation">.</span><span class="token function">split</span><span class="token punctuation">(</span><span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">reverse</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+          <span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token string">' '</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">// 使用 match API</span>
+<span class="token keyword">const</span> <span class="token function-variable function">reverse</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">str</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">return</span> str
+          <span class="token punctuation">.</span><span class="token function">match</span><span class="token punctuation">(</span><span class="token regex"><span class="token regex-delimiter">/</span><span class="token regex-source language-regex">[\w']+</span><span class="token regex-delimiter">/</span><span class="token regex-flags">g</span></span><span class="token punctuation">)</span>
+          <span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token parameter">item</span> <span class="token operator">=></span> item<span class="token punctuation">.</span><span class="token function">split</span><span class="token punctuation">(</span><span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">reverse</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+          <span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token string">' '</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="计数二进制子串">计数二进制子串</h2>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/count-binary-substrings/">LeetCode.696</a></p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">const</span> <span class="token function-variable function">count</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">str</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">// 建立数据结构，堆栈、保存数据</span>
+  <span class="token keyword">const</span> result <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token comment">// 给定任意子输入都返回第一个符合条件的字符串</span>
+  <span class="token keyword">const</span> <span class="token function-variable function">match</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">str</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">const</span> j <span class="token operator">=</span> str<span class="token punctuation">.</span><span class="token function">match</span><span class="token punctuation">(</span><span class="token regex"><span class="token regex-delimiter">/</span><span class="token regex-source language-regex">^(0+|1+)</span><span class="token regex-delimiter">/</span></span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>
+    <span class="token keyword">const</span> o <span class="token operator">=</span> <span class="token punctuation">(</span>j<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">^</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">repeat</span><span class="token punctuation">(</span>j<span class="token punctuation">.</span>length<span class="token punctuation">)</span>
+    <span class="token keyword">const</span> reg <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">RegExp</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span>j<span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span>o<span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>reg<span class="token punctuation">.</span><span class="token function">test</span><span class="token punctuation">(</span>str<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token keyword">return</span> RegExp<span class="token punctuation">.</span>$1
+    <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+      <span class="token keyword">return</span> <span class="token string">''</span>
+    <span class="token punctuation">&#125;</span>   
+  <span class="token punctuation">&#125;</span>
+  <span class="token comment">// 通过 for 循环控制程序运行流程</span>
+  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span> len <span class="token operator">=</span> str<span class="token punctuation">.</span>length <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> len<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">const</span> sub <span class="token operator">=</span> <span class="token function">match</span><span class="token punctuation">(</span>str<span class="token punctuation">.</span><span class="token function">slice</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>sub<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+      result<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>sub<span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token keyword">return</span> result
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
       
     </div>
