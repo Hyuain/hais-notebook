@@ -8,7 +8,7 @@ tags:
   - CX
 ---
 
-树实际上是一种特殊的[[Graph|图]]，其中比较常用的有[[Binary Tree|二叉树]]、B Tree、B+ Tree 等。
+树实际上是一种特殊的[[Graph|图]]，他有一个根节点，并向一个方向不断分出子结点。其中比较常用的有[[Binary Tree|二叉树]]、B Tree、B+ Tree 等。
 
 # B Tree
 

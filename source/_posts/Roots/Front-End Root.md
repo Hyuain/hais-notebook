@@ -12,7 +12,7 @@ tags:
 - [[JavaScript]]
 - [[TypeScript]]
 - [[NodeJS]]
-- [[Angular Basic]]
+- [[Angular]]
 - [[React]]
 - [[Vue]]
 - [[npm]]

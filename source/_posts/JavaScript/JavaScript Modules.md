@@ -82,16 +82,60 @@ testFunction()
 
 浏览器不兼容 CommonJS 的根本原因在于缺少四个 NodeJS 环境的变量：`module` `exports` `require` `gloabl`。
 
-我们可以通过提供这四个变量，让浏览器加载 CommonJS 模块，详见 Webpack vvv Webpack %}
+我们可以通过提供这四个变量，让浏览器加载 CommonJS 模块，详见 [[Webpack]]
 
 # AMD
 
-> AMD（Asynchronous Module Definition） 采用异步的方式加载模块，模块的加载不影响后面语句的进行，所有依赖模块的语句都定义在一个回调函数中
+AMD（Asynchronous Module Definition）最初是被设计来给前端用的，采用异步的方式加载模块，模块的加载不影响后面语句的进行，所有依赖模块的语句都定义在一个回调函数中，但他的定义更加繁琐一些：
+
+```javascript
+define(['dep1', 'dep2'], function (dep1, dep2) {
+  // 通过返回函数来定义模组
+  return function () {}
+})
+
+// or
+
+define(function (require) {
+  var dep1 = require('dep1'),
+      dep2 = require('dep1')
+  return function () {}
+})
+```
 
 AMD 也采用 `require()` 加载模块，但不同于 CommonJS，还需要传给他一个回调函数：
 
 ```js
 require([module], callback)
+```
+
+# UMD
+
+UMD（Universal Module Definition）是一个通用模块定义，使得这些模块可以在客户端和服务端都能工作，UMD 基于 AMD 并能兼容 CommonJS。
+
+一个典型的 UMD 模块需要这样定义：
+
+```javascript
+(function(root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD环境
+        define(['dependency1', 'dependency2'], factory);
+    } else if (typeof exports === 'object') {
+        // CommonJS环境
+        module.exports = factory(require('dependency1'), require('dependency2'));
+    } else {
+        // 全局环境（浏览器）
+        root.moduleName = factory(root.dependency1, root.dependency2);
+    }
+}(this, function(dependency1, dependency2) {
+    // 定义模块的内容
+    var moduleName = function() {
+        // ...
+    };
+    
+    // 返回模块的导出对象
+    return moduleName;
+}));
 ```
 
 # ESModules

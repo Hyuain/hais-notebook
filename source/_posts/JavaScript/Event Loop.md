@@ -29,10 +29,12 @@ tags:
 - 页面生命周期
 - 浏览器自身的事件（浏览器窗口大小变化、浏览器关闭事件）
 - JavaScript 代码执行（如果任务是通过函数调用产生的，那么函数本身也会作为宏任务）
+- [MessageChannel](https://developer.mozilla.org/en-US/docs/Web/API/MessageChannel)
 
 微任务：
 
 - [[Promise]]
+- [queueMicrotask](https://developer.mozilla.org/en-US/docs/Web/API/queueMicrotask)
 
 注意：
 

@@ -40,7 +40,7 @@ CSS 全称是 **层叠样式表（Cascading Style Sheets）**，可以从以下�
 @media (min-width: 100px) and (max-width: 200px) { }
 ```
 
-其中 `@charset` 可以指定字符编码，具体可查看 [[Charset]]。
+其中 `@charset` 可以指定字符编码，具体可查看 [[Charset and Encoding]]。
 
 # Concepts
 

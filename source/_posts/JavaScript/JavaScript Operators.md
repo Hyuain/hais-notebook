@@ -7,25 +7,6 @@ tags:
   - FX
 ---
 
-JavaScript 是一门奇特的动态类型语言，他的设计既巧妙又一言难尽。本笔记包含以下内容：
-
-- [[JavaScript History]]
-- [Script Element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script)： [[HTML]] 中的 `<script>` 标签是网页引用 JavaScript 代码的主要方式。当浏览器解析到没有指定 `async` `defer` 或 `type="module"` 属性的 `<script>` 标签，以及没有 `type="module"` 的行内代码时，他会立即获取并执行代码的内容，完成后再继续解析页面剩下的内容
-- JavaScript Basic Syntax
-	- [[JavaScript Expressions & Statements]]
-	- JavaScript Values
-		- [[JavaScript Data Types]]
-		- [[JavaScript Type Checking]]
-		- [[JavaScript Type Casting]]
-		- [[JavaScript Variable Declaration]]
-	- JavaScript Operators
-		- 
-
-
-- JavaScript 的数组不是典型的数组，而是一个对象；**元素的数据类型可以不同，内存不一定连续，是通过字符串下标（而不是数字下标）获取元素**。
-
-<!-- more -->
-
 # 算术运算符
 
 ## Number

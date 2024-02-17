@@ -1,5 +1,5 @@
 ---
-title: Angular Basic
+title: Angular
 date: 2020-03-24 15:40:32
 categories:
   - - 前端

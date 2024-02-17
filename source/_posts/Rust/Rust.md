@@ -22,7 +22,7 @@ Contents:
 - Language Basics
 	- [[Rust Expressions & Statements|Expressions & Statements]]
 	- [[Rust Variables|Variables]]
-	- [[Rust Data Types|Data Types]]
+	- [[Rust Fundamental Types|Data Types]]
 	- Operators: Increment (`++`) and decrement (`--`) are not supported
 - [[Rust Functions|Function]]
 - [[Rust Modules|Modules]]

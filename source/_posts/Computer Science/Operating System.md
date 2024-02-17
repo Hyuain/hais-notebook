@@ -7,17 +7,19 @@ tags:
   - C1
 ---
 
-.
+**操作系统（Operating System）** 包括以下基本概念：
+
+- **虚拟化（Virtualization）**
+	- 
 
 <!-- more -->
 
 # Introduction
 
-[[Thread]] [[Process]]
+[[Thread]] [[Process]] [[Spinlock]]
 
 # Process & Thread
 
-## Process
 
 > **进程（Process）** 是 **程序**（比如 exe）的执行实例。**程序** 在CPU上执行的活动叫做 **进程**。
 
@@ -149,7 +151,7 @@ POSIX 线程通常也被称为 pthreads，是一种通用的线程标准，一�
 
 可以想象两个人坐在餐桌上，每个人都有一个叉子，但需要两个叉子才能吃饭。他们都不愿意放下自己的叉子去拿另一个叉子，因为他们担心另一个人会拿走它。所以，他们只是坐在那里，互相等待，没有人吃饭，这就是死锁的情况。
 
-## Resouce
+## Resource
 
 我们把需要排他性使用的对象称为 **资源（Resource）**，同一时刻一个资源只能由一个进程使用，就像打印机，同一时间打印机只能打印一份东西。
 

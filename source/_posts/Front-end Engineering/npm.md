@@ -7,7 +7,10 @@ tags:
   - F1
 ---
 
-收集 npm 的包和问题。
+npm 是 [[NodeJS]] 的包管理器。
+
+本文收集 npm 的包和问题。
+
 参考了 [1](https://segmentfault.com/a/1190000039289332) , [2](https://juejin.cn/post/6844903870578032647)
 
 <!-- more -->
