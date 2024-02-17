@@ -150,7 +150,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/hais-notebook/archives/">
-          <span class="site-state-item-count">175</span>
+          <span class="site-state-item-count">177</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -178,6 +178,765 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2023/06/23/React/React%20Scheduling/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
+      <meta itemprop="name" content="Harvey Zhang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hais Notebook">
+      <meta itemprop="description" content="海鲜酱的笔记本">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Hais Notebook">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/hais-notebook/2023/06/23/React/React%20Scheduling/" class="post-title-link" itemprop="url">React - Deep Dive</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-06-23 16:41:41" itemprop="dateCreated datePublished" datetime="2023-06-23T16:41:41+00:00">2023-06-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">前端</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>React 的任务调度分为 <strong>宏任务调度</strong> 和 <strong>微任务调度</strong> 两种，React 会根据任务的优先级采取不同的调度策略，这个选择调度策略以及进行任务调度的阶段，即为 Schedule 阶段。</p>
+<p>Schedule 阶段主要用到 <code>react-reconciler</code> 和 <code>scheduler</code> 。</p>
+<p><code>react-reconciler</code> 主要负责在 React 的工作流中进行任务调度，而涉及到具体的调度的具体实现（比如任务队列的维护，具体使用什么 API 让宿主环境在什么时候执行什么优先级的任务等）则会根据是 [[Event Loop|宏任务]] 还是 [[Event Loop|微任务]] 而有所不同：</p>
+<p>React 中所有的更新工作都会被调度，或是在微任务中执行、或是在宏任务重执行，<strong>因此 React 中并没有严格意义上的同步更新</strong>，这也是 <code>setState</code> 并不会同步生效的原因。</p>
+<p><strong>为了避免混淆，本文中将 React 规定的同步用英文代指，称为“Sync”；而 JavaScript 中的同步仍然称为“同步”。同时，与“Sync”相对应的术语我们称为“Concurrent”。</strong></p>
+<p><strong>微任务调度</strong> 可以看做是 React 中最快任务，他们会在下一个宏任务之前进行，因此会快于所有宏任务调度的工作。<code>react-reconciler</code> 中主要使用 <code>scheduleMicrotask</code> 函数来将任务调度到微任务中来执行。该函数的实现与宿主环境有关，比如在浏览器和 ReactNoopRenderer 下，他将优先使用 <code>queueMicrotask</code> API 来进行调度：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">const</span> scheduleMicrotask <span class="token operator">=</span>
+  <span class="token keyword">typeof</span> queueMicrotask <span class="token operator">===</span> <span class="token string">'function'</span>
+    <span class="token operator">?</span> queueMicrotask
+    <span class="token operator">:</span> <span class="token keyword">typeof</span> <span class="token builtin">Promise</span> <span class="token operator">!==</span> <span class="token string">'undefined'</span>
+    <span class="token operator">?</span> callback <span class="token operator">=></span>
+        <span class="token builtin">Promise</span><span class="token punctuation">.</span><span class="token function">resolve</span><span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">)</span>
+          <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span>callback<span class="token punctuation">)</span>
+          <span class="token punctuation">.</span><span class="token function">catch</span><span class="token punctuation">(</span>error <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+            <span class="token function">setTimeout</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+              <span class="token keyword">throw</span> error<span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+          <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+    <span class="token operator">:</span> setTimeout<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><strong>宏任务调度</strong> 则会使用 <code>scheduler</code> 包中的 API，<code>react-reconciler</code> 只需要传给传给 <code>scheduler</code> <em>需要执行的任务</em> 及 <em>对应的优先级</em> 即可。</p>
+<h1 id="scheduler">Scheduler</h1>
+<p>正如上文所说，Scheduler 提供了一些核心 API 供 <code>react-reconciler</code> 包使用：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// 使用某种优先级调度 task</span>
+<span class="token function">scheduleCallback</span><span class="token punctuation">(</span>task<span class="token punctuation">,</span> priority<span class="token punctuation">)</span>
+
+<span class="token comment">// 提示时间是否用尽，需要中断循环</span>
+<span class="token function">shouldYield</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token comment">// 取消调度 task</span>
+<span class="token function">cancelCallback</span><span class="token punctuation">(</span>task<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>Scheduler 实际上就是采用了一堆计时器，每个 <code>task</code> 会有 <code>expirationTime</code> 属性代表了他的过期时间，<code>expirationTime</code> 越小就意味着优先级越高，这在一定程度上也能解决饥饿问题。</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">unstable_scheduleCallback</span><span class="token punctuation">(</span>
+  priorityLevel<span class="token operator">:</span> PriorityLevel<span class="token punctuation">,</span>
+  callback<span class="token operator">:</span> Callback<span class="token punctuation">,</span>
+  options<span class="token operator">?</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>delay<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+<span class="token punctuation">)</span><span class="token operator">:</span> Task <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> currentTime <span class="token operator">=</span> <span class="token function">getCurrentTime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment">// 如果传入了 delay 参数，则会延迟执行</span>
+  <span class="token keyword">let</span> startTime<span class="token punctuation">;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">typeof</span> options <span class="token operator">===</span> <span class="token string">'object'</span> <span class="token operator">&amp;&amp;</span> options <span class="token operator">!==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">var</span> delay <span class="token operator">=</span> options<span class="token punctuation">.</span>delay<span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">typeof</span> delay <span class="token operator">===</span> <span class="token string">'number'</span> <span class="token operator">&amp;&amp;</span> delay <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      startTime <span class="token operator">=</span> currentTime <span class="token operator">+</span> delay<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+      startTime <span class="token operator">=</span> currentTime<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+    startTime <span class="token operator">=</span> currentTime<span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token comment">// 根据传入的优先级确定 timeout，从而确定 expirationTime</span>
+  <span class="token keyword">let</span> timeout<span class="token punctuation">;</span>
+  <span class="token keyword">switch</span> <span class="token punctuation">(</span>priorityLevel<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">case</span> ImmediatePriority<span class="token operator">:</span>
+      timeout <span class="token operator">=</span> <span class="token constant">IMMEDIATE_PRIORITY_TIMEOUT</span><span class="token punctuation">;</span>      <span class="token comment">// -1</span>
+      <span class="token keyword">break</span><span class="token punctuation">;</span>
+    <span class="token keyword">case</span> UserBlockingPriority<span class="token operator">:</span>
+      timeout <span class="token operator">=</span> <span class="token constant">USER_BLOCKING_PRIORITY_TIMEOUT</span><span class="token punctuation">;</span>  <span class="token comment">// 250</span>
+      <span class="token keyword">break</span><span class="token punctuation">;</span>
+    <span class="token comment">// 永远不会到时间</span>
+    <span class="token keyword">case</span> IdlePriority<span class="token operator">:</span>
+      timeout <span class="token operator">=</span> <span class="token constant">IDLE_PRIORITY_TIMEOUT</span><span class="token punctuation">;</span>           <span class="token comment">// maxSigned31BitInt</span>
+      <span class="token keyword">break</span><span class="token punctuation">;</span>
+    <span class="token keyword">case</span> LowPriority<span class="token operator">:</span>
+      timeout <span class="token operator">=</span> <span class="token constant">LOW_PRIORITY_TIMEOUT</span><span class="token punctuation">;</span>            <span class="token comment">// 10000</span>
+      <span class="token keyword">break</span><span class="token punctuation">;</span>
+    <span class="token keyword">case</span> NormalPriority<span class="token operator">:</span>
+    <span class="token keyword">default</span><span class="token operator">:</span>
+      timeout <span class="token operator">=</span> <span class="token constant">NORMAL_PRIORITY_TIMEOUT</span><span class="token punctuation">;</span>         <span class="token comment">// 5000</span>
+      <span class="token keyword">break</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token keyword">const</span> expirationTime <span class="token operator">=</span> startTime <span class="token operator">+</span> timeout<span class="token punctuation">;</span>
+
+  <span class="token keyword">const</span> newTask<span class="token operator">:</span> Task <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+    id<span class="token operator">:</span> taskIdCounter<span class="token operator">++</span><span class="token punctuation">,</span>
+    callback<span class="token punctuation">,</span>
+    priorityLevel<span class="token punctuation">,</span>
+    startTime<span class="token punctuation">,</span>
+    expirationTime<span class="token punctuation">,</span>
+    sortIndex<span class="token operator">:</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>enableProfiling<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    newTask<span class="token punctuation">.</span>isQueued <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>startTime <span class="token operator">></span> currentTime<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 延迟任务，进入 timerQueue；延迟时间到了之后进入 taskQueue</span>
+    newTask<span class="token punctuation">.</span>sortIndex <span class="token operator">=</span> startTime<span class="token punctuation">;</span>
+    <span class="token function">push</span><span class="token punctuation">(</span>timerQueue<span class="token punctuation">,</span> newTask<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">peek</span><span class="token punctuation">(</span>taskQueue<span class="token punctuation">)</span> <span class="token operator">===</span> <span class="token keyword">null</span> <span class="token operator">&amp;&amp;</span> newTask <span class="token operator">===</span> <span class="token function">peek</span><span class="token punctuation">(</span>timerQueue<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token comment">// All tasks are delayed, and this is the task with the earliest delay.</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>isHostTimeoutScheduled<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token comment">// Cancel an existing timeout.</span>
+        <span class="token function">cancelHostTimeout</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+        isHostTimeoutScheduled <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+      <span class="token punctuation">&#125;</span>
+      <span class="token comment">// Schedule a timeout.</span>
+      <span class="token function">requestHostTimeout</span><span class="token punctuation">(</span>handleTimeout<span class="token punctuation">,</span> startTime <span class="token operator">-</span> currentTime<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 非延迟任务，进入 taskQueue</span>
+    newTask<span class="token punctuation">.</span>sortIndex <span class="token operator">=</span> expirationTime<span class="token punctuation">;</span>
+    <span class="token function">push</span><span class="token punctuation">(</span>taskQueue<span class="token punctuation">,</span> newTask<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>enableProfiling<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token function">markTaskStart</span><span class="token punctuation">(</span>newTask<span class="token punctuation">,</span> currentTime<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      newTask<span class="token punctuation">.</span>isQueued <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token comment">// Schedule a host callback, if needed. If we're already performing work,</span>
+    <span class="token comment">// wait until the next time we yield.</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>isHostCallbackScheduled <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>isPerformingWork<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      isHostCallbackScheduled <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+      <span class="token function">requestHostCallback</span><span class="token punctuation">(</span>flushWork<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token keyword">return</span> newTask<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以看到 Scheduler 中维护了两个队列： <code>timerQueue</code> 和 <code>taskQueue</code>。</p>
+<ul>
+<li>如果调用 <code>scheduleCallback</code> 的时候传入了 <code>delay</code> 参数，则会进入 <code>timerQueue</code> 并延迟开始计时的时间；</li>
+<li>否则会直接进入 <code>taskQueue</code> 开始计时，然后调用 <code>requestHostCallback</code> 来开启 <strong>宏任务</strong> 执行 <code>taskQueue</code> 中的任务。</li>
+</ul>
+<p><code>timerQueue</code> 和 <code>taskQueue</code> 均采用了 [[Heap#Priority Queue &amp; Heap|优先级队列]] 这一数据结构，优先级队列中排序的依据就是过期时间 <code>expirtionTime</code>。</p>
+<p><code>requestHostCallback</code> 等函数会 <strong>开启一个新的宏任务</strong> 来循环执行 <code>taskQueue</code>，目前 Scheduler 中是这样判断使用什么宏任务的：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">let</span> schedulePerformWorkUnitlDeadline
+<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">typeof</span> localSetImmediate <span class="token operator">===</span> <span class="token string">'function'</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">// Node.js 和老 IE，setImmediate 不像 MessageChannel 一样会阻止 Node.js 进程退出，而且执行时机更早</span>
+  <span class="token function-variable function">schedulePerformWorkUnitlDeadline</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+    <span class="token function">localSetImmediate</span><span class="token punctuation">(</span>performWorkUnitlDeadline<span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">typeof</span> MessgeChannel <span class="token operator">!==</span> <span class="token string">'undefined'</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">// DOM 和 Worker</span>
+  <span class="token keyword">const</span> channel <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">MessageChannel</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token keyword">const</span> port <span class="token operator">=</span> channel<span class="token punctuation">.</span>port2
+  channel<span class="token punctuation">.</span>port1<span class="token punctuation">.</span>onmessage <span class="token operator">=</span> performWorkUnitlDeadline
+  <span class="token function-variable function">schedulePerformWorkUnitlDeadline</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+    port<span class="token punctuation">.</span><span class="token function">postMessage</span><span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">// setTimeout 会有 4ms 延迟</span>
+  <span class="token function-variable function">schedulePerformWorkUnitlDeadline</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+    <span class="token function">localSetTimeout</span><span class="token punctuation">(</span>performWorkUntilDeadline<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>需要注意的是，<code>requestIdleCallback</code> 由于兼容性、以及他执行频率不稳定的问题没有被 React 选用。另外 <code>requestIdleCallback</code> 是在空闲时期执行低优先级工作，这与 Scheduler 需要执行多种优先级任务的需求相悖。</p>
+<h1 id="react-中的优先级">React 中的优先级</h1>
+<p>React 中有两种优先级表示方法，一种是 <code>Lane</code>，一种是事件优先级 <code>EventPriority</code>，<code>EventPriority</code> 可以看做是特殊的 <code>Lane</code>。</p>
+<p>具体来讲，不同的事件会产生不同的 <code>EventPriority</code>，比如 <code>DiscreteEventPriority</code> 代表 <code>click</code> <code>input</code> <code>focus</code> 等离散事件； <code>ContinousEventPriority</code> 代表 <code>drag</code> <code>mouseover</code> 等连续事件。这些 <code>EventPriority</code> 都有着对应的 <code>Lane</code>，他们数值相同，不需要函数来转换。</p>
+<p>但是 <code>Lanes</code> 转换为 <code>EventPriority</code> 时，由于是多对一转换，就需要 <code>lanesToEventPriority</code> 来帮忙。</p>
+<p><strong>不过，上面提到的 <code>Scheduler</code> 还有一套自己的优先级系统，React 需要再将优先级转换为 <code>SchedulerPriority</code>，才能调用 <code>Scheduler</code> 的 API。</strong> 其实也很简单，用 <code>switch-case</code> 映射一下就好了。</p>
+<h1 id="调度流程">调度流程</h1>
+<h2 id="计算并处理调度">计算并处理调度</h2>
+<p>React 中，“计算并调度更新”的过程本身也是需要在微任务中执行的，<code>ensureRootIsScheduled</code> 是整个 Schedule 阶段的入口，每次 <code>FiberRoot</code> 收到更新的时候都会调用该函数，他会：</p>
+<ol type="1">
+<li>确保 <code>FiberRoot</code> 已经被调度了</li>
+<li>确保有一个微任务在处理调度这个 <code>FiberRoot</code></li>
+</ol>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// 防止有重复的微任务</span>
+<span class="token keyword">let</span> didScheduleMicrotask <span class="token operator">=</span> <span class="token boolean">false</span>
+
+<span class="token comment">// 用于存放当前正在执行任务的 root 链表的头尾指针</span>
+<span class="token keyword">let</span> firstScheduledRoot <span class="token operator">=</span> <span class="token keyword">null</span>
+<span class="token keyword">let</span> lastScheduledRoot <span class="token operator">=</span> <span class="token keyword">null</span>
+
+<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">ensureRootIsScheduled</span><span class="token punctuation">(</span>root<span class="token operator">:</span> FiberRoot<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">// 1. 确保 root 已经被调度了</span>
+  <span class="token comment">// 将 root 加入调度</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>root <span class="token operator">===</span> lastScheduledRoot <span class="token operator">||</span> root<span class="token punctuation">.</span>next <span class="token operator">!==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// root 已经被调度了，不需要再加入调度</span>
+  <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>lastScheduledRoot <span class="token operator">===</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      firstScheduledRoot <span class="token operator">=</span> lastScheduledRoot <span class="token operator">=</span> root
+    <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+      lastScheduledRoot<span class="token punctuation">.</span>next <span class="token operator">=</span> root
+      lastScheduledRoot <span class="token operator">=</span> root
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+  
+  <span class="token comment">// 每次 root 收到更新的时候，都标记可能有 Sync 任务要做</span>
+  <span class="token comment">// 如果这个标记为 false，flushSync 将会跳过执行 Sync 任务的过程</span>
+  mightHavePendingSyncWork <span class="token operator">=</span> <span class="token boolean">true</span>
+  
+  <span class="token comment">// 2. 确保有一个微任务在处理调度这个 root</span>
+  <span class="token comment">// 在微任务中对 root 进行调度</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>didScheduleMicrotask<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    didScheduleMicrotask <span class="token operator">=</span> <span class="token boolean">true</span>
+    <span class="token function">scheduleImmediateTask</span><span class="token punctuation">(</span>processRootScheduleInMicrotask<span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">function</span> <span class="token function">scheduleImmediateTask</span><span class="token punctuation">(</span><span class="token function-variable function">cb</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token builtin">any</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">// 将任务放在微任务中执行</span>
+  <span class="token function">scheduleMicrotask</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// ... 省略对 Safari BUG 的兼容代码</span>
+    <span class="token function">cb</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><code>processRootScheduleInMicrotask</code> 是处理调度任务的核心函数，他会由 <code>scheduleMicrotask</code> 调度、使得微任务中进行：</p>
+<ol type="1">
+<li>遍历 <code>root</code> 链表</li>
+<li>通过函数 <code>scheduleTaskForRootDuringMicrotask</code> 选择我们想要执行的 <code>lanes</code>，并进行调度</li>
+<li>通过函数 <code>flushSyncWorkOnAllRoots</code> 处理所有的调度进微任务中的任务</li>
+</ol>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">processRootScheduleInMicrotask</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  didScheduleMicrotask <span class="token operator">=</span> <span class="token boolean">false</span>
+  
+  <span class="token comment">// 重新计算 mightHavePendingSyncWork 标记</span>
+  mightHavePendingSyncWork <span class="token operator">=</span> <span class="token boolean">false</span>
+  
+  <span class="token comment">// 从 Scheduler 中取到的当前时间</span>
+  <span class="token keyword">const</span> currentTime <span class="token operator">=</span> <span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  
+  <span class="token comment">// 1. 遍历 root 链表</span>
+  <span class="token keyword">let</span> prev <span class="token operator">=</span> <span class="token keyword">null</span>
+  <span class="token keyword">let</span> root <span class="token operator">=</span> firstScheduledRoot
+  <span class="token keyword">while</span> <span class="token punctuation">(</span>root <span class="token operator">!==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">const</span> next <span class="token operator">=</span> root<span class="token punctuation">.</span>next
+    <span class="token comment">// 2. 选出此次我们想要执行的 lanes，并进行调度</span>
+    <span class="token keyword">const</span> nextLanes <span class="token operator">=</span> <span class="token function">scheduleTaskForRootDuringMicrotask</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> currentTime<span class="token punctuation">)</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>nextLanes <span class="token operator">===</span> NoLane<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token comment">// 这个 root 没有更多的任务需要执行，将他从 Schedule 中移除，简单的链表操作</span>
+      <span class="token comment">// 尽管有很多地方可以将 root 加入 Schedule，但是只有这个地方移除</span>
+      root<span class="token punctuation">.</span>next <span class="token operator">=</span> <span class="token keyword">null</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>prev <span class="token operator">===</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        firstScheduledRoot <span class="token operator">=</span> next
+      <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+        prev<span class="token punctuation">.</span>next <span class="token operator">=</span> next
+      <span class="token punctuation">&#125;</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>next <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        lastScheduledRoot <span class="token operator">=</span> prev
+      <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+      <span class="token comment">// 这个 root 依然有任务要做</span>
+      prev <span class="token operator">=</span> root
+      <span class="token comment">// lanes 中包含 SyncLane | SyncHydrationLane</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">includeSyncLane</span><span class="token punctuation">(</span>nextLanes<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        mightHavePendingSyncWork <span class="token operator">=</span> <span class="token boolean">true</span>
+      <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+    root <span class="token operator">=</span> next
+  <span class="token punctuation">&#125;</span>
+  
+  <span class="token comment">// 3. 处理所有在调度进微任务执行的任务</span>
+  <span class="token function">flushSyncWorkOnAllRoots</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="在微任务中选择优先级并进行调度">在微任务中选择优先级并进行调度</h2>
+<p>这个 <code>scheduleTaskForRootDuringMicrotask</code> 函数只能在微任务中调用，他会获取到本轮调度应该执行的优先级 <code>nextLanes</code>，并进行调度：</p>
+<ol type="1">
+<li>通过 <code>getNextLanes</code> 选择优先级</li>
+<li>根据优先级把任务以回调函数的形式传给 <code>scheduleCallback</code> 交给 Scheduler 进行调度</li>
+</ol>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">scheduleTaskForRootDuringMicrotask</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> currentTime<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">// 检查是否有 lane 处于饥饿状态（低优先级任务由于高优先级的任务疯狂插队导致迟迟无法完成，称为饥饿）</span>
+  <span class="token comment">// 将他们标记为过期</span>
+  <span class="token comment">// root.expirtaionTimes 里面存有 lanes 的过期时间，通过这个与 currentTime 来判断是否已经过期</span>
+  <span class="token function">markStarvedLanesAsExpired</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> currentTime<span class="token punctuation">)</span>
+  
+  <span class="token comment">// 获取 wipRoot，实际上就是全局存了一个 wipRoot 变量，对于首次渲染，应该为 null</span>
+  <span class="token keyword">const</span> workInProgressRoot <span class="token operator">=</span> <span class="token function">getWorkInProgressRoot</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token comment">// 跟 wipRoot 逻辑类似，对于首次渲染，应该为 NoLane</span>
+  <span class="token keyword">const</span> workInProgressRootRenderLanes <span class="token operator">=</span> <span class="token function">getWorkInProgressRootRenderLanes</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token comment">// 获取本次更新要执行的优先级，可以暂时理解为 getHighestPriorityLane(root.pendingLanes)</span>
+  <span class="token keyword">const</span> nextLanes <span class="token operator">=</span> <span class="token function">getNextLanes</span><span class="token punctuation">(</span>
+    root<span class="token punctuation">,</span>
+    root <span class="token operator">===</span> workInProgressRoot <span class="token operator">?</span> workInProgressRootRenderLanes <span class="token operator">:</span> NoLanes<span class="token punctuation">,</span>
+  <span class="token punctuation">)</span>
+  <span class="token comment">// 当前正在执行的回调</span>
+  <span class="token keyword">const</span> existingCallbackNode <span class="token operator">=</span> root<span class="token punctuation">.</span>callbackNode
+  
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>
+    <span class="token comment">// 没有工作进行</span>
+    nextLanes <span class="token operator">===</span> NoLanes <span class="token operator">||</span>
+    <span class="token comment">// 当前 root Suspended，并且正在等待数据，不要调度</span>
+    <span class="token comment">// Suspended render phase</span>
+    <span class="token punctuation">(</span>root <span class="token operator">===</span> workInProgressRoot <span class="token operator">&amp;&amp;</span> <span class="token function">isWorkLoopSuspendedOnData</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">||</span>
+    <span class="token comment">//Suspended commit phase</span>
+    root<span class="token punctuation">.</span>cancelPendingCommit <span class="token operator">!==</span> <span class="token keyword">null</span>
+  <span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 取消掉之前的回调</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>existingCallbackNode <span class="token operator">!==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token function">cancelCallback</span><span class="token punctuation">(</span>existingCallbackNode<span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+    root<span class="token punctuation">.</span>callbackNode <span class="token operator">=</span> <span class="token keyword">null</span>
+    root<span class="token punctuation">.</span>callbackPriority <span class="token operator">=</span> NoLane
+    <span class="token keyword">return</span> NoLane
+  <span class="token punctuation">&#125;</span>
+  
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">includesSyncLane</span><span class="token punctuation">(</span>nextLanes<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 在本次调度任务的微任务最后，总是会 flush 一遍 Sync 任务，因此不需要额外调度</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>existingCallbackNode <span class="token operator">!==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token function">cancelCallback</span><span class="token punctuation">(</span>existingCallbackNode<span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+    root<span class="token punctuation">.</span>callbackNode <span class="token operator">=</span> <span class="token keyword">null</span>
+    root<span class="token punctuation">.</span>callbackPriority <span class="token operator">=</span> SyncLane
+    <span class="token keyword">return</span> SyncLane
+  <span class="token punctuation">&#125;</span>
+  
+  <span class="token comment">// 获取最高优先级的任务来代表回调的优先级，其实就是取 nextLanes 的最后一个 1</span>
+  <span class="token keyword">const</span> exisitingCallbackPriority <span class="token operator">=</span> root<span class="token punctuation">.</span>callbackPriority
+  <span class="token keyword">const</span> newCallbackPriority <span class="token operator">=</span> <span class="token function">getHighestPriorityLane</span><span class="token punctuation">(</span>nextLanes<span class="token punctuation">)</span>
+  
+  <span class="token comment">// 新任务的最高优先级等于正在执行的任务的优先级，优先级没有发生变化</span>
+  <span class="token comment">// 可以重复利用当前的任务，但可能会使得新的任务得不到执行</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>newCallbackPriority <span class="token operator">===</span> exisitingCallbackPriority<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> newCallbackPriority
+  <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+    <span class="token function">cancelCallback</span><span class="token punctuation">(</span>existingCallbackNode<span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+  
+  <span class="token comment">// 将 lanes 转换为 Scheduler 使用的优先级</span>
+  <span class="token comment">// 源码中实际上是 lanes 先转换为 EventPriority，再转换为 SchedulerPriority，这里做了简化</span>
+  <span class="token keyword">let</span> schedulerPriorityLevel <span class="token operator">=</span> <span class="token function">lanesToSchedulerPriority</span><span class="token punctuation">(</span>lanes<span class="token punctuation">)</span>
+  
+  <span class="token comment">// 调用 Scheduler.scheduleCallback，传入优先级和任务，在宏任务中调度</span>
+  <span class="token keyword">const</span> newCallbackNode <span class="token operator">=</span> <span class="token function">scheduleCallback</span><span class="token punctuation">(</span>
+    schedulerPriorityLevel<span class="token punctuation">,</span>
+    <span class="token function">performConcurrentWorkOnRoot</span><span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">,</span> root<span class="token punctuation">)</span>
+  <span class="token punctuation">)</span>
+  
+  root<span class="token punctuation">.</span>callbackPriority <span class="token operator">=</span> newCallbackPriority
+  root<span class="token punctuation">.</span>callbackNode <span class="token operator">=</span> newCallbackNode
+  <span class="token keyword">return</span> newCallbackPriority
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2023/06/23/React/React%20Update/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
+      <meta itemprop="name" content="Harvey Zhang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hais Notebook">
+      <meta itemprop="description" content="海鲜酱的笔记本">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Hais Notebook">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/hais-notebook/2023/06/23/React/React%20Update/" class="post-title-link" itemprop="url">React Update</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-06-23 16:41:41" itemprop="dateCreated datePublished" datetime="2023-06-23T16:41:41+00:00">2023-06-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">前端</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="update">Update</h1>
+<p><code>Update</code> 是 [[React Fiber]] 用来承载 <em>改变 State 的更新任务</em> 的数据类型，React 中通过 <code>createUpdate</code> 来创建 <code>Update</code>。</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">export</span> <span class="token keyword">type</span> <span class="token class-name">Update<span class="token operator">&lt;</span>State<span class="token operator">></span></span> <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">// 当前 Update 的优先级</span>
+  lane<span class="token operator">:</span> Lane
+  <span class="token comment">// Update 的类型，通过 createUpdate 创建的 tag 均为 UpdateState</span>
+  tag<span class="token operator">:</span> UpdateState <span class="token operator">|</span> ReplaceState <span class="token operator">|</span> ForceUpdate <span class="token operator">|</span> CaptureUpdate
+  <span class="token comment">// 本次 Update 携带的内容</span>
+  payload<span class="token operator">:</span> <span class="token builtin">any</span>
+  callback<span class="token operator">:</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token builtin">any</span><span class="token punctuation">)</span> <span class="token operator">|</span> <span class="token keyword">null</span>
+  <span class="token comment">// 指向下一个需要执行的 Update</span>
+  next<span class="token operator">:</span> Update<span class="token operator">&lt;</span>State<span class="token operator">></span> <span class="token operator">|</span> <span class="token keyword">null</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="updatequeue">UpdateQueue</h1>
+<p><code>UpdateQueue</code> 是 [[React Fiber]] 用来存放和消费 <code>Update</code> 的数据类型，<code>initializeUpdateQueue</code> 负责初始化 <code>Fiber</code> 上的 <code>updateQueue</code>，<code>enqueueUpdate</code> 用于将 <code>Update</code> 加入 <code>UpdateQueue</code> 中，<code>processUpdateQueue</code> 则用于消费 <code>Update</code>。</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">export</span> <span class="token keyword">type</span> <span class="token class-name">UpdateQueue<span class="token operator">&lt;</span>State<span class="token operator">></span></span> <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+  baseState<span class="token operator">:</span> State
+  firstBaseUpdate<span class="token operator">:</span> Update<span class="token operator">&lt;</span>State<span class="token operator">></span> <span class="token operator">|</span> <span class="token keyword">null</span>
+  lastBaseUpdate<span class="token operator">:</span> Update<span class="token operator">&lt;</span>State<span class="token operator">></span> <span class="token operator">|</span> <span class="token keyword">null</span>
+  shared<span class="token operator">:</span> SharedQueue<span class="token operator">&lt;</span>State<span class="token operator">></span>
+  callbacks<span class="token operator">:</span> <span class="token builtin">Array</span><span class="token operator">&lt;</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token builtin">any</span><span class="token operator">></span> <span class="token operator">|</span> <span class="token keyword">null</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">type</span> <span class="token class-name">SharedQueue<span class="token operator">&lt;</span>State<span class="token operator">></span></span> <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+  pending<span class="token operator">:</span> Update<span class="token operator">&lt;</span>State<span class="token operator">></span> <span class="token operator">|</span> <span class="token keyword">null</span>
+  lanes<span class="token operator">:</span> Lanes
+  hiddenCallbacks<span class="token operator">:</span> <span class="token builtin">Array</span><span class="token operator">&lt;</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token builtin">any</span><span class="token operator">></span> <span class="token operator">|</span> <span class="token keyword">null</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="enqueueupdate">enqueueUpdate</h2>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token generic-function"><span class="token function">enqueueUpdate</span><span class="token generic class-name"><span class="token operator">&lt;</span>State<span class="token operator">></span></span></span><span class="token punctuation">(</span>
+  fiber<span class="token operator">:</span> Fiber<span class="token punctuation">,</span>
+  update<span class="token operator">:</span> Update<span class="token operator">&lt;</span>State<span class="token operator">></span><span class="token punctuation">,</span>
+  lane<span class="token operator">:</span> Lane<span class="token punctuation">,</span>
+<span class="token punctuation">)</span><span class="token operator">:</span> FiberRoot <span class="token operator">|</span> <span class="token keyword">null</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> updateQueue <span class="token operator">=</span> fiber<span class="token punctuation">.</span>updateQueue
+  <span class="token comment">// 只有在 fiber unmount 的时候发生</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>updateQueue <span class="token operator">===</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> <span class="token keyword">null</span>
+  <span class="token punctuation">&#125;</span>
+  
+  <span class="token keyword">const</span> sharedQueue<span class="token operator">:</span> SharedQueue<span class="token operator">&lt;</span>State<span class="token operator">></span> <span class="token operator">=</span> updateQueue<span class="token punctuation">.</span>shared
+  
+  <span class="token comment">// TODO: 待实验验证</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isUnsafeClassRenderPhaseUpdate</span><span class="token punctuation">(</span>fiber<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// ... Render 阶段收到的更新</span>
+  <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> <span class="token function">enqueueConcurrentClassUpdate</span><span class="token punctuation">(</span>fiber<span class="token punctuation">,</span> sharedQueue<span class="token punctuation">,</span> update<span class="token punctuation">,</span> lane<span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// 如果一个 render 正在进行中时收到一个并发的事件</span>
+<span class="token comment">// 我们会先将他们先暂存在这个数组中，然后等到当前的 render 结束（完成或者被中断）之后</span>
+<span class="token comment">// 再将这个数组的内容加到 fiber.updateQueue 上去</span>
+<span class="token keyword">const</span> concurrentQueues <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+<span class="token keyword">let</span> concurrentQueuesIndex <span class="token operator">=</span> <span class="token number">0</span>
+<span class="token keyword">let</span> concurrentlyUpdatedLanes <span class="token operator">=</span> NoLanes
+
+<span class="token comment">// 将 update 暂存在 concurrentQueues 中，并返回 FiberRoot</span>
+<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token generic-function"><span class="token function">enqueueConcurrentClassUpdate</span><span class="token generic class-name"><span class="token operator">&lt;</span>State<span class="token operator">></span></span></span><span class="token punctuation">(</span>
+  fiber<span class="token operator">:</span> Fiber<span class="token punctuation">,</span>
+  queue<span class="token operator">:</span> SharedQueue<span class="token operator">&lt;</span>State<span class="token operator">></span><span class="token punctuation">,</span>
+  update<span class="token operator">:</span> Update<span class="token operator">&lt;</span>State<span class="token operator">></span><span class="token punctuation">,</span>
+  lane<span class="token operator">:</span> Lane<span class="token punctuation">,</span>
+<span class="token punctuation">)</span><span class="token operator">:</span> FiberRoot <span class="token operator">|</span> <span class="token keyword">null</span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">// 注意这个 enqueueUpdate 跟上面的不是一个函数，他会将 update 暂存在 concurrentQueues 数组中</span>
+  <span class="token function">enqueueUpdate</span><span class="token punctuation">(</span>fiber<span class="token punctuation">,</span> queue<span class="token punctuation">,</span> update<span class="token punctuation">,</span> lane<span class="token punctuation">)</span>
+  <span class="token comment">// 找到该 Fiber 的 FiberRoot</span>
+  <span class="token keyword">return</span> <span class="token function">getRootForUpdatedFiber</span><span class="token punctuation">(</span>fiber<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">// 将 update 暂存在 concurrentQueues 中</span>
+<span class="token keyword">function</span> <span class="token function">enqueueUpdate</span><span class="token punctuation">(</span>
+  fiber<span class="token operator">:</span> Fiber<span class="token punctuation">,</span>
+  queue<span class="token operator">:</span> SharedQueue<span class="token operator">&lt;</span>State<span class="token operator">></span><span class="token punctuation">,</span>
+  update<span class="token operator">:</span> Update<span class="token operator">&lt;</span>State<span class="token operator">></span><span class="token punctuation">,</span>
+  lane<span class="token operator">:</span> Lane<span class="token punctuation">,</span>
+<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  concurrentQueues<span class="token punctuation">[</span>concurrentQueuesIndex<span class="token operator">++</span><span class="token punctuation">]</span> <span class="token operator">=</span> fiber
+  concurrentQueues<span class="token punctuation">[</span>concurrentQueuesIndex<span class="token operator">++</span><span class="token punctuation">]</span> <span class="token operator">=</span> queue
+  concurrentQueues<span class="token punctuation">[</span>concurrentQueuesIndex<span class="token operator">++</span><span class="token punctuation">]</span> <span class="token operator">=</span> update
+  concurrentQueues<span class="token punctuation">[</span>concurrentQueuesIndex<span class="token operator">++</span><span class="token punctuation">]</span> <span class="token operator">=</span> lane
+  concurrentlyUpdatedLanes <span class="token operator">=</span> <span class="token function">mergeLanes</span><span class="token punctuation">(</span>concurrentlyUpdatedLanes<span class="token punctuation">,</span> lane<span class="token punctuation">)</span>
+  
+  <span class="token comment">// fiber.lanes 在有的地方会用来检查工作是否被调度了，来判断执行紧急 bailout</span>
+  <span class="token comment">// 因此需要立即更新，而不是放在数组中等下次再更新</span>
+  fiber<span class="token punctuation">.</span>lanes <span class="token operator">=</span> <span class="token function">mergeLanes</span><span class="token punctuation">(</span>fiber<span class="token punctuation">.</span>lanes<span class="token punctuation">,</span> lane<span class="token punctuation">)</span>
+  <span class="token keyword">const</span> alternate <span class="token operator">=</span> fiber<span class="token punctuation">.</span>alternate
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>alternate <span class="token operator">!==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    alternate<span class="token punctuation">.</span>lanes <span class="token operator">=</span> <span class="token function">mergeLanes</span><span class="token punctuation">(</span>alternate<span class="token punctuation">.</span>lanes<span class="token punctuation">,</span> lane<span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">// 将 concurrentQueues 中的 update 取出来放在 fiber 上</span>
+<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">finishQueueingConcurrentUpdates</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> endIndex <span class="token operator">=</span> concurrentQueuesIndex
+  concurrentQueuesIndex <span class="token operator">=</span> <span class="token number">0</span>
+  concurrentlyUpdatedLanes <span class="token operator">=</span> NoLanes
+  
+  <span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span>
+  <span class="token keyword">while</span> <span class="token punctuation">(</span>i <span class="token operator">&lt;</span> endIndex<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">const</span> fiber <span class="token operator">=</span> concurrentQueues<span class="token punctuation">[</span>i<span class="token punctuation">]</span>
+    concurrentQueues<span class="token punctuation">[</span>i<span class="token operator">++</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token keyword">null</span>
+    <span class="token keyword">const</span> queue <span class="token operator">=</span> concurrentQueues<span class="token punctuation">[</span>i<span class="token punctuation">]</span>
+    concurrentQueues<span class="token punctuation">[</span>i<span class="token operator">++</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token keyword">null</span>
+    <span class="token keyword">const</span> update <span class="token operator">=</span> concurrentQueues<span class="token punctuation">[</span>i<span class="token punctuation">]</span>
+    concurrentQueues<span class="token punctuation">[</span>i<span class="token operator">++</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token keyword">null</span>
+    <span class="token keyword">const</span> lane <span class="token operator">=</span> concurrentQueues<span class="token punctuation">[</span>i<span class="token punctuation">]</span>
+    concurrentQueues<span class="token punctuation">[</span>i<span class="token operator">++</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token keyword">null</span>
+    
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>queue <span class="token operator">!==</span> <span class="token keyword">null</span> <span class="token operator">&amp;&amp;</span> update <span class="token operator">!==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token keyword">const</span> pending <span class="token operator">=</span> queue<span class="token punctuation">.</span>pending
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>pending <span class="token operator">===</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token comment">// 第一个 update，自己指向自己，创建环状链表</span>
+        update<span class="token punctuation">.</span>next <span class="token operator">=</span> update
+      <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+        <span class="token comment">// 后续的 update，将他插到链表的第一个（同时也是最后一个）</span>
+        update<span class="token punctuation">.</span>next <span class="token operator">=</span> pending<span class="token punctuation">.</span>next
+        pending<span class="token punctuation">.</span>next <span class="token operator">=</span> update
+      <span class="token punctuation">&#125;</span>
+      queue<span class="token punctuation">.</span>pending <span class="token operator">=</span> update
+    <span class="token punctuation">&#125;</span>
+    
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>lane <span class="token operator">!==</span> NoLane<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token comment">// TBC lane 的冒泡</span>
+      <span class="token function">markUpdateLaneFromFiberToRoot</span><span class="token punctuation">(</span>fiber<span class="token punctuation">,</span> update<span class="token punctuation">,</span> lane<span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="processupdatequeue">processUpdateQueue</h2>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">processUpdateQueue</span><span class="token punctuation">(</span>
+  workInProgress<span class="token operator">:</span> Fiber<span class="token punctuation">,</span>
+  props<span class="token operator">:</span> <span class="token builtin">any</span><span class="token punctuation">,</span>
+  instance<span class="token operator">:</span> <span class="token builtin">any</span><span class="token punctuation">,</span>
+  renderLanes<span class="token operator">:</span> Lanes<span class="token punctuation">,</span>
+<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">// 对于 ClassComponent 和 HostRoot，一定非空</span>
+  <span class="token keyword">const</span> queue <span class="token operator">=</span> UpdateQueue<span class="token operator">&lt;</span>State<span class="token operator">></span> <span class="token operator">=</span> workInProgress<span class="token punctuation">.</span>updateQueue
+  
+  hasForceUpdate <span class="token operator">=</span> <span class="token boolean">false</span>
+  
+  <span class="token keyword">let</span> firstBaseUpdate <span class="token operator">=</span> queue<span class="token punctuation">.</span>firstBaseUpdate
+  <span class="token keyword">let</span> lastBaseUpdate <span class="token operator">=</span> queue<span class="token punctuation">.</span>lastBaseUpdate
+  
+  <span class="token comment">// 将 pendingUpdates 合并到 baseQueue 中（放到最后面）</span>
+  <span class="token keyword">let</span> pendingQueue <span class="token operator">=</span> queue<span class="token punctuation">.</span>share<span class="token punctuation">.</span>pending
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>pendingQueue <span class="token operator">!==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    queue<span class="token punctuation">.</span>share<span class="token punctuation">.</span>pending <span class="token operator">=</span> <span class="token keyword">null</span>
+    <span class="token comment">// pendingQueue 是一个环状链表，现在拿到他的首末节点，并解环</span>
+    <span class="token keyword">const</span> lastPendingUpdate <span class="token operator">=</span> pendingQueue
+    <span class="token keyword">const</span> firstPendingUpdate <span class="token operator">=</span> lastPendingUpdate<span class="token punctuation">.</span>next
+    lastPendingUpdate<span class="token punctuation">.</span>next <span class="token operator">=</span> <span class="token keyword">null</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>lastBaseUpdate <span class="token operator">===</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      firstBaseUpdate <span class="token operator">=</span> firstPendingUpdate
+    <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+      lastBaseUpdate<span class="token punctuation">.</span>next <span class="token operator">=</span> firstPendingUpdate
+    <span class="token punctuation">&#125;</span>
+    lastBaseUpdate <span class="token operator">=</span> lastPendingUpdate
+    <span class="token comment">// 将 baseQueue 合并到 current 上去</span>
+    <span class="token comment">// 使得在 commit 之前，不管有多少高优先级的更新打断了该 wip 的 Render，使得该 wip 重新构造，之前的 Updates 依然保留</span>
+    <span class="token keyword">const</span> current <span class="token operator">=</span> workInProgress<span class="token punctuation">.</span>alternate
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>current <span class="token operator">!==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token keyword">const</span> currentQueue <span class="token operator">=</span> current<span class="token punctuation">.</span>updateQueue
+      <span class="token keyword">const</span> currentLastBaseUpdate <span class="token operator">=</span> currentQueue<span class="token punctuation">.</span>lastBaseUpdate
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>currentLastBaseUpdate <span class="token operator">!==</span> lastBaseUpdate<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>currentLastBaseUpdate <span class="token operator">===</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+          currentQueue<span class="token punctuation">.</span>firstBaseUpdate <span class="token operator">=</span> firstPendingUpdate
+        <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+          currentLastBaseUpdate<span class="token punctuation">.</span>next <span class="token operator">=</span> firstPendingUpdate
+        <span class="token punctuation">&#125;</span>
+        currentQueue<span class="token punctuation">.</span>lastBaseUpdate <span class="token operator">=</span> lastPendingUpdate
+      <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token comment">// 如果在上述合并之后，baseQueue 里面有 Update</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>firstBaseUpdate <span class="token operator">!==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 遍历 Updates 链表，计算结果</span>
+    <span class="token keyword">let</span> newState <span class="token operator">=</span> queue<span class="token punctuation">.</span>baseState
+    <span class="token keyword">let</span> newLanes <span class="token operator">=</span> NoLanes
+    
+    <span class="token keyword">let</span> newBaseState <span class="token operator">=</span> <span class="token keyword">null</span>
+    <span class="token keyword">let</span> newFirstBaseUpdate <span class="token operator">=</span> <span class="token keyword">null</span>
+    <span class="token keyword">let</span> newLastBaseUpdate <span class="token operator">=</span> <span class="token keyword">null</span>
+    
+    <span class="token keyword">let</span> update <span class="token operator">=</span> firstUpdate
+    <span class="token keyword">do</span> <span class="token punctuation">&#123;</span>
+      <span class="token keyword">const</span> updateLane <span class="token operator">=</span> update<span class="token punctuation">.</span>lane
+      <span class="token comment">// 通过该 Update 的 lane 是否是 renderLanes 的子集，来判断本次更新中是否需要处理该 Update</span>
+      <span class="token keyword">const</span> shouldSkipUpdate <span class="token operator">=</span> <span class="token operator">!</span><span class="token function">isSubsetOfLanes</span><span class="token punctuation">(</span>renderLanes<span class="token punctuation">,</span> updateLane<span class="token punctuation">)</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>shouldSkipUpdate<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token comment">// 该 Update 优先级不足，跳过该 Update，将该 Update 放到 newBaseQueue 中供下次使用</span>
+        <span class="token keyword">const</span> clone<span class="token operator">:</span> Update<span class="token operator">&lt;</span>State<span class="token operator">></span> <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+          lane<span class="token operator">:</span> updateLane<span class="token punctuation">,</span>
+          tag<span class="token operator">:</span> update<span class="token punctuation">.</span>tag<span class="token punctuation">,</span>
+          payload<span class="token operator">:</span> update<span class="token punctuation">.</span>payload<span class="token punctuation">,</span>
+          callback<span class="token operator">:</span> update<span class="token punctuation">.</span>callback<span class="token punctuation">,</span>
+          next<span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>newLastBaseUpdate <span class="token operator">===</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+          <span class="token comment">// 如果这是第一个被跳过的 Update，则：</span>
+          <span class="token comment">// newBaseState 就固定为当前的 newState（上次 Update 计算后的结果）</span>
+          <span class="token comment">// newFirstBaseUpdate 和 newLastBaseUpdate 都是该 Update</span>
+          newFirstBaseUpdate <span class="token operator">=</span> newLastBaseUpdate <span class="token operator">=</span> clone
+          newBaseState <span class="token operator">=</span> newState
+        <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+          <span class="token comment">// 如果不是第一个被跳过的 Update，则将其加在链表尾节点即可</span>
+          newLastBaseUpdate <span class="token operator">=</span> newLastBaseUpdate<span class="token punctuation">.</span>next <span class="token operator">=</span> clone
+        <span class="token punctuation">&#125;</span>
+        <span class="token comment">// 将跳过的 Lane 记录在 newLanes 里面</span>
+        newLanes <span class="token operator">=</span> <span class="token function">mergeLanes</span><span class="token punctuation">(</span>newLanes<span class="token punctuation">,</span> updateLane<span class="token punctuation">)</span>
+      <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+        <span class="token comment">// 该 Update 有足够的优先级，本次应该得到处理</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>newLastBaseUpdate <span class="token operator">!==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+          <span class="token comment">// 前面有 Update 被跳过，该 Update 也要加入 baseQueue，否则计算会出错</span>
+          <span class="token keyword">const</span> clone<span class="token operator">:</span> Update<span class="token operator">&lt;</span>State<span class="token operator">></span> <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+            <span class="token comment">// 该 Update 实际上会被考虑到结果的计算之中，并被 commit</span>
+            <span class="token comment">// 我们不希望该 Update 因为优先级的问题一直留在 baseQueue 中（尽管他已经 commit 了）</span>
+            <span class="token comment">// 因此把他的 lane 置为 0，因为 0 是所有的子集，这样在上一步的检查中就永远不会被跳过了</span>
+            lane<span class="token operator">:</span> NoLane<span class="token punctuation">,</span>
+            tag<span class="token operator">:</span> update<span class="token punctuation">.</span>tag<span class="token punctuation">,</span>
+            payload<span class="token operator">:</span> update<span class="token punctuation">.</span>payload<span class="token punctuation">,</span>
+            <span class="token comment">// 该 Update rebased 了，他的回调不应该再被调用一遍</span>
+            callback<span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+            next<span class="token operator">:</span> <span class="token keyword">null</span>
+          <span class="token punctuation">&#125;</span>
+          newLastBaseUpdate <span class="token operator">=</span> newLastBaseUpdate<span class="token punctuation">.</span>next <span class="token operator">=</span> clone
+        <span class="token punctuation">&#125;</span>
+        
+        <span class="token comment">// 处理该 Update</span>
+        newState <span class="token operator">=</span> <span class="token function">getStateFromUpdate</span><span class="token punctuation">(</span>
+          workInProgress<span class="token punctuation">,</span> queue<span class="token punctuation">,</span> update<span class="token punctuation">,</span> newState<span class="token punctuation">,</span> props<span class="token punctuation">,</span> instance<span class="token punctuation">,</span>
+        <span class="token punctuation">)</span>
+        
+        <span class="token comment">// 如果有 callback 需要执行，给该 wipFiber 打上标记，并保存在待执行的 callbacks 列表中</span>
+        <span class="token keyword">const</span> callback <span class="token operator">=</span> update<span class="token punctuation">.</span>callback
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>callback <span class="token operator">!==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+          workInProgress<span class="token punctuation">.</span>flags <span class="token operator">|=</span> Callback
+          <span class="token keyword">const</span> callbacks <span class="token operator">=</span> queue<span class="token punctuation">.</span>callbacks
+          <span class="token keyword">if</span> <span class="token punctuation">(</span>callbacks <span class="token operator">===</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            queue<span class="token punctuation">.</span>callbacks <span class="token operator">=</span> <span class="token punctuation">[</span>callback<span class="token punctuation">]</span>
+          <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+            callbacks<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>callback<span class="token punctuation">)</span>
+          <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span>
+        
+        update <span class="token operator">=</span> update<span class="token punctuation">.</span>next
+        
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>update <span class="token operator">===</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+          pendingQueue <span class="token operator">=</span> queue<span class="token punctuation">.</span>shared<span class="token punctuation">.</span>pending
+          <span class="token keyword">if</span> <span class="token punctuation">(</span>pendingQueue <span class="token operator">===</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            <span class="token comment">// 更新处理完毕</span>
+            <span class="token keyword">break</span>
+          <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+            <span class="token comment">// 边界情况：如果在处理更新的时候有一个更新被插入，继续处理</span>
+            <span class="token keyword">const</span> lastPendingUpdate <span class="token operator">=</span> pendingQueue
+            <span class="token keyword">const</span> fistPendingUpdate <span class="token operator">=</span> lastPendingUpdate<span class="token punctuation">.</span>next
+            lastPendingUpdate<span class="token punctuation">.</span>next <span class="token operator">=</span> <span class="token keyword">null</span>
+            update <span class="token operator">=</span> firstPendingUpdate
+            queue<span class="token punctuation">.</span>lastBaseUpdate <span class="token operator">=</span> lastPendingUpdate
+            queue<span class="token punctuation">.</span>shared<span class="token punctuation">.</span>pending <span class="token operator">=</span> <span class="token keyword">null</span>
+          <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span>
+      <span class="token punctuation">&#125;</span> <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span>
+      
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>newLastBaseUpdate <span class="token operator">===</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        newBaseState <span class="token operator">=</span> newState
+      <span class="token punctuation">&#125;</span>
+      
+      queue<span class="token punctuation">.</span>baseState <span class="token operator">=</span> newBaseState
+      queue<span class="token punctuation">.</span>firstBaseUpdate <span class="token operator">=</span> newFirstBaseUpdate
+      queue<span class="token punctuation">.</span>lastBaseUpdate <span class="token operator">=</span> newLastBaseUpdate
+      
+      <span class="token comment">// TBC //</span>
+      <span class="token function">markSkippedUpdateLanes</span><span class="token punctuation">(</span>newLanes<span class="token punctuation">)</span>
+      workInProgress<span class="token punctuation">.</span>lanes <span class="token operator">=</span> newLanes
+      workInProgress<span class="token punctuation">.</span>memorizedState <span class="token operator">=</span> newState
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+  currentlyProcessingQueue <span class="token operator">=</span> <span class="token keyword">null</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -970,199 +1729,6 @@
 <li>最大的硬光源是太阳</li>
 <li>阴影和交界线硬会给人一种一清二楚、明明白白、世态炎凉的感觉</li>
 <li>硬光用来塑造角色形状，也可以软硬结合（如果全是软光，画面会非常平）</li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2023/03/27/Photography/Sketch/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
-      <meta itemprop="name" content="Harvey Zhang">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hais Notebook">
-      <meta itemprop="description" content="海鲜酱的笔记本">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Hais Notebook">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/hais-notebook/2023/03/27/Photography/Sketch/" class="post-title-link" itemprop="url">Sketch</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2023-03-27 22:07:12" itemprop="dateCreated datePublished" datetime="2023-03-27T22:07:12+00:00">2023-03-27</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/hais-notebook/categories/%E6%91%84%E5%BD%B1/" itemprop="url" rel="index"><span itemprop="name">摄影</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>主次关系（多个物体）</p>
-<ul>
-<li>视觉主体，有虚化的陪体</li>
-</ul>
-<p>空间关系（多个物体）<strong>——布景的参考</strong></p>
-<ul>
-<li>前后，是否有遮挡，前中后的分配</li>
-<li>大小，近大远小</li>
-</ul>
-<p>结构关系（单个物体自身的结构，营造立体感）<strong>——动作的参考</strong></p>
-<ul>
-<li>穿插，单个物体自身的遮挡穿插</li>
-<li>透视，单个物体自身的动作、形状、透视</li>
-</ul>
-<p>光影关系（亮暗）<strong>——光的参考</strong></p>
-<ul>
-<li>三大面五大调
-<ul>
-<li>三大面：黑白灰</li>
-<li>五大调：高光、中间调、明暗交界线、反光面、投影</li>
-</ul></li>
-<li>亮与暗
-<ul>
-<li>亮：白、高光；灰、中间调</li>
-<li>暗：黑、明暗交界线、反光、投影</li>
-</ul></li>
-<li>主光与次光
-<ul>
-<li>主光塑造形态</li>
-<li>次光塑造氛围、轮廓</li>
-</ul></li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2023/03/27/Photography/Tension/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
-      <meta itemprop="name" content="Harvey Zhang">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hais Notebook">
-      <meta itemprop="description" content="海鲜酱的笔记本">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Hais Notebook">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/hais-notebook/2023/03/27/Photography/Tension/" class="post-title-link" itemprop="url">Tension</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2023-03-27 22:07:12" itemprop="dateCreated datePublished" datetime="2023-03-27T22:07:12+00:00">2023-03-27</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/hais-notebook/categories/%E6%91%84%E5%BD%B1/" itemprop="url" rel="index"><span itemprop="name">摄影</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>使用 <strong>对比、反差</strong> 控制 <strong>张力</strong>，张力是有方向的（动作更大、冲突更大、矛盾更大，线条更紧绷）</p>
-<ul>
-<li><strong>人体张力</strong>：有方向性、动作趋势，力量感，后期可以通过强化线条肢体关系来强化张力</li>
-<li><strong>黑白张力</strong>：黑白电影、摄影、素描的黑白关系明确富有层次</li>
-<li><strong>色彩张力</strong>：米山舞</li>
-<li><strong>构图张力</strong>：动静对比</li>
 </ul>
 
       
