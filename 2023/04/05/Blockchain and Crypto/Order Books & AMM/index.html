@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hais-notebook/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/hais-notebook/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/hais-notebook/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/hais-notebook/images/safari-pinned-tab.svg" color="#222">
+
+<link rel="stylesheet" href="/hais-notebook/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.font.im/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="/hais-notebook/lib/@fortawesome/fontawesome-free/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"hyuain.github.io","root":"/hais-notebook/","images":"/hais-notebook/images","scheme":"Gemini","darkmode":false,"version":"8.14.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac","show_result":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/hais-notebook/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/hais-notebook/js/config.js"></script>
+
+    <meta name="description" content="Order Book  Order Book 不是为链上交易设计的。他的价格设置不够灵活、交易不够快速，Gas 消耗过大。 ## Price Discovery  买东西的时候，向不同的卖家（Sellers）询价（Asking for prices）。作为买家（Buyer），自然会去寻找最低的价格（Lowest Price）。 交易所（Exchanges） 的目的是 将这些活动都集中在一个地方，并">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Order Books &amp; AMM">
+<meta property="og:url" content="https://hyuain.github.io/hais-notebook/2023/04/05/Blockchain%20and%20Crypto/Order%20Books%20&%20AMM/index.html">
+<meta property="og:site_name" content="Hais Notebook">
+<meta property="og:description" content="Order Book  Order Book 不是为链上交易设计的。他的价格设置不够灵活、交易不够快速，Gas 消耗过大。 ## Price Discovery  买东西的时候，向不同的卖家（Sellers）询价（Asking for prices）。作为买家（Buyer），自然会去寻找最低的价格（Lowest Price）。 交易所（Exchanges） 的目的是 将这些活动都集中在一个地方，并">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-04-05T11:38:30.000Z">
+<meta property="article:modified_time" content="2023-04-05T11:38:30.000Z">
+<meta property="article:author" content="Harvey Zhang">
+<meta property="article:tag" content="BX">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://hyuain.github.io/hais-notebook/2023/04/05/Blockchain%20and%20Crypto/Order%20Books%20&%20AMM/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hyuain.github.io/hais-notebook/2023/04/05/Blockchain%20and%20Crypto/Order%20Books%20&%20AMM/","path":"2023/04/05/Blockchain and Crypto/Order Books & AMM/","title":"Order Books & AMM"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Order Books & AMM | Hais Notebook</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/hais-notebook/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/hais-notebook/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Hais Notebook</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/hais-notebook/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/hais-notebook/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/hais-notebook/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/hais-notebook/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#order-book"><span class="nav-number">1.</span> <span class="nav-text">Order Book</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#order-book-and-price"><span class="nav-number">1.1.</span> <span class="nav-text">Order Book and Price</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#price-time-priority"><span class="nav-number">1.2.</span> <span class="nav-text">Price Time Priority</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bid-ask-spread"><span class="nav-number">1.3.</span> <span class="nav-text">Bid Ask Spread</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#order-states-passive-aggressive"><span class="nav-number">1.4.</span> <span class="nav-text">Order States: Passive &amp; Aggressive</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#order-types-limit-market"><span class="nav-number">1.5.</span> <span class="nav-text">Order Types: Limit &amp; Market</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#exchange-fees"><span class="nav-number">1.6.</span> <span class="nav-text">Exchange Fees</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#automated-market-makers-amms"><span class="nav-number">2.</span> <span class="nav-text">Automated Market Makers (AMMs)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#constant-product-amm-cpamm"><span class="nav-number">2.1.</span> <span class="nav-text">Constant Product AMM (CPAMM)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#liquidity-slippage"><span class="nav-number">2.1.1.</span> <span class="nav-text">Liquidity &amp; Slippage</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#impermanent-loss"><span class="nav-number">2.1.2.</span> <span class="nav-text">Impermanent Loss</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Harvey Zhang</p>
+  <div class="site-description" itemprop="description">海鲜酱的笔记本</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/hais-notebook/archives/">
+          <span class="site-state-item-count">182</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/hais-notebook/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/hais-notebook/tags/">
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2023/04/05/Blockchain%20and%20Crypto/Order%20Books%20&%20AMM/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
+      <meta itemprop="name" content="Harvey Zhang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hais Notebook">
+      <meta itemprop="description" content="海鲜酱的笔记本">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Order Books & AMM | Hais Notebook">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Order Books & AMM
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-04-05 11:38:30" itemprop="dateCreated datePublished" datetime="2023-04-05T11:38:30+00:00">2023-04-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/" itemprop="url" rel="index"><span itemprop="name">计算机</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="order-book">Order Book</h1>
+<blockquote>
+<p>Order Book 不是为链上交易设计的。他的价格设置不够灵活、交易不够快速，Gas 消耗过大。 ## Price Discovery</p>
+</blockquote>
+<p>买东西的时候，向不同的卖家（Sellers）询价（Asking for prices）。作为买家（Buyer），自然会去寻找最低的价格（Lowest Price）。</p>
+<p><strong>交易所（Exchanges）</strong> 的目的是 <strong>将这些活动都集中在一个地方</strong>，并高效促进：</p>
+<ul>
+<li><strong>流动性（Liquidity）</strong>：资产、抵押品等在不影响市场价格的情况下转变为现金的便利程度；</li>
+<li><strong>价格发现（Price Discovery）</strong>：资产现货价格的设定过程。</li>
+</ul>
+<h2 id="order-book-and-price">Order Book and Price</h2>
+<ul>
+<li>Order Book 包含了买方和卖方所需的所有信息；</li>
+<li>每对交易对应一个 Order Book；</li>
+<li><strong>Bid 指的是买入价</strong>，包含了所有买入订单；<strong>Ask 指的是卖出价</strong>，包含了所有卖出信息。</li>
+</ul>
+<p><strong>Ask Price（卖出价）通常会高于买入价（Bid Price）</strong></p>
+<h2 id="price-time-priority">Price Time Priority</h2>
+<p><strong>Order Price</strong>：最高买入价被称为 Best Bid，最低卖出价被称为 Best Ask。</p>
+<p><strong>Order Time</strong>：当价格相同时，较早提交的 Order 的优先级更高。</p>
+<h2 id="bid-ask-spread">Bid Ask Spread</h2>
+<p>Best Bid 和 Best Ask 之间的差值叫做 <strong>买卖差价（Bid Ask Spread）</strong>。</p>
+<p>Best Bid 和 Best Ask 的平均值称为 <strong>中间价（Mid Price）</strong>。</p>
+<h2 id="order-states-passive-aggressive">Order States: Passive &amp; Aggressive</h2>
+<p><strong>Passive Orders</strong> 不会立即成交，他们的限价（Limit Price）处于他们应该在的区域（Bid Price 或 Ask Price），而没有跨到对面去。<strong>Passive Orders 为 Order Book 增加了流动性。</strong></p>
+<p>反之，<strong>Aggressive Orders</strong> 会立即成交，他们会<strong>减少 Order Book 的流动性。</strong></p>
+<h2 id="order-types-limit-market">Order Types: Limit &amp; Market</h2>
+<p><strong>限价单（Limit Order）</strong> 会指定成交的 <strong>最坏价格</strong>，比如对于买方来说，如果他提交一个订单：</p>
+<pre class="line-numbers language-none"><code class="language-none">BUY ETH @ 3200 USDT per ETH<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>那么价格在高于 3200 USDT 时，该订单不会成交。</p>
+<p><strong>市价单（Market Order）</strong> 则立即以市场上的最佳价格成交，因此 Market Order 永远都是 Aggressive Order，比如：</p>
+<pre class="line-numbers language-none"><code class="language-none">BUY ETH @ Market Price<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<blockquote>
+<p>最好只使用 Limit Order，不要使用 Market Order，避免 <strong>滑点（Slippage）</strong>。</p>
+</blockquote>
+<h2 id="exchange-fees">Exchange Fees</h2>
+<p>交易所从交易手续费中获利，交易手续费分为两种：</p>
+<ul>
+<li><strong>挂单成交手续费（Maker Fees）</strong>：提供一个 Passive Order，他人成交；</li>
+<li><strong>吃单成交手续费（Taker Fees）</strong>：提交一个 Aggressive Order 并成交。</li>
+</ul>
+<p>有时候交易所为了鼓励用户提供流动性，会提供 <strong>Negative Maker Fees</strong> 或称 <strong>Maker Rebate</strong>。</p>
+<p><strong>Market Makers</strong> 提供大量流动性，从 Market Rebate 中获利；他们也会同时提供 Bid 和 Ask，低买高卖赚取差价。</p>
+<h1 id="automated-market-makers-amms">Automated Market Makers (AMMs)</h1>
+<blockquote>
+<p>一种线上的合约，自动为两种资产确定合适的交易价格</p>
+</blockquote>
+<h2 id="constant-product-amm-cpamm">Constant Product AMM (CPAMM)</h2>
+<blockquote>
+<p><code>x * y = K</code>，其中 <code>x</code> 和 <code>y</code> 是两种资产的数量。资产的价值仅由其数量（供需）决定。</p>
+</blockquote>
+<p>比如有两组人，一组有 50,000 个包，一组有 50,000 个 iPhone，他们需要找到一个公平的方式来交换彼此的资产。</p>
+<p>在 CPAMM 中，应用公式 <code>x * y = K</code>，其中 <code>x</code> 是包的数量 50,000，<code>y</code> 是 iPhone 的数量 50,000，<code>K</code> 为一个常数 2.5 bn。</p>
+<p>那么按照公式，每个包和每个 iPhone 的价值均为 1。</p>
+<p>现在开始进行交换，当我们想要获得 7,000 部 iPhones 时，我们剩下的包的数量 <code>x</code> 为：</p>
+<pre class="line-numbers language-none"><code class="language-none">x &#x3D; 2.5bn &#x2F; y
+  &#x3D; 2.5bn &#x2F; 57,000
+  &#x3D; 50,000 - 6,140<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>因此，我们需要 6,140 个包进行交换。同时可以计算出新的包的价值为 1.14，iPhone 的价值为 0.88。</p>
+<h3 id="liquidity-slippage">Liquidity &amp; Slippage</h3>
+<p><strong>流动性池（Liquidity Pool）</strong> 是一个 <strong>智能合约（Smart Contract）</strong>，他持有一定数量的两种代币，并尝试得到公平的价格。</p>
+<p>由于流动性池大小的不同，资产交换的价格也会随之波动，产生价格滑点。流动性越高，滑点越小。</p>
+<h3 id="impermanent-loss">Impermanent Loss</h3>
+<p>用户在复杂的交换的过程中可能产生损失，由于池子流动性的变化，他的资产价值可能发生折损。如果用户持续持有该池中的代币，而不撤出他的流动性，那么这种损失就是 <strong>非永久性损失（Impermanent Loss）</strong>。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/hais-notebook/tags/BX/" rel="tag"># BX</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2023/03/31/Collections/Collections/" rel="prev" title="Collections">
+                  <i class="fa fa-chevron-left"></i> Collections
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/hais-notebook/2023/04/10/Software%20Engineering/Software%20Engineering/" rel="next" title="Software Engineering">
+                  Software Engineering <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Harvey Zhang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="/hais-notebook/lib/animejs/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/hais-notebook/js/comments.js"></script><script src="/hais-notebook/js/utils.js"></script><script src="/hais-notebook/js/next-boot.js"></script>
+
+  <script src="/hais-notebook/lib/hexo-generator-searchdb/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/hais-notebook/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"/hais-notebook/lib/mathjax/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/hais-notebook/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
