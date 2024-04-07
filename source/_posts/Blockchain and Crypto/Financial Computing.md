@@ -7,8 +7,8 @@ mathjax: true
 tags:
   - B1
 ---
+[[Order Books & AMM]]
 
-.
 
 <!-- more -->
 
@@ -45,7 +45,7 @@ tags:
 - Money markets (short-term)
 - Capital markets (long-term)
 
-**Types of Captial Markets**
+**Types of Captal Markets**
 
 - Equity markets (stocks / shares)
 - Debt markets (bonds)
@@ -72,7 +72,7 @@ tags:
 
 - Forward contract
 - Future contract
-- Option contract
+- [[Options|Option contract]]
 - Swap contract
 
 # Time Value of Money
@@ -236,4 +236,3 @@ $$
 $$
 {(10+100)}/{(1+0.114)}=98.7
 $$
-
