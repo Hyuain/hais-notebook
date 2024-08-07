@@ -150,7 +150,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/hais-notebook/archives/">
-          <span class="site-state-item-count">183</span>
+          <span class="site-state-item-count">184</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -178,6 +178,116 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2020/02/01/CSS/Animation/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
+      <meta itemprop="name" content="Harvey Zhang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hais Notebook">
+      <meta itemprop="description" content="海鲜酱的笔记本">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Hais Notebook">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/hais-notebook/2020/02/01/CSS/Animation/" class="post-title-link" itemprop="url">Animation</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-02-01 20:12:49" itemprop="dateCreated datePublished" datetime="2020-02-01T20:12:49+00:00">2020-02-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">前端</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>用 <code>transform</code> 的性能会比直接修改 <code>left</code> 属性好，因为浏览器不会 repaint 那么多次</p>
+<h1 id="浏览器的渲染过程">浏览器的渲染过程</h1>
+<p>根据 <a target="_blank" rel="noopener" href="https://developers.google.com/web/fundamentals/performance/critical-rendering-path/render-tree-construction">Google 团队的文章</a>分析，我们可以将网页的渲染过程大致分为以下几步：</p>
+<ol type="1">
+<li>根据 HTML 构建 HTML 树（DOM）</li>
+<li>根据 CSS 构建 CSS 树（CSSOM）</li>
+<li>将两棵树合并为渲染树（Render Tree）</li>
+<li>布局 <strong>Layout</strong>（文档流、盒模型、计算大小和位置）</li>
+<li>绘制 <strong>Paint</strong>（边框颜色、文字颜色、阴影）</li>
+<li>合成 <strong>Compose</strong>（根据层叠关系展示画面）</li>
+</ol>
+<figure>
+<img src="https://hais-note-pics-1301462215.cos.ap-chengdu.myqcloud.com/Browser-Render-Process.png" alt="浏览器渲染过程" /><figcaption aria-hidden="true">浏览器渲染过程</figcaption>
+</figure>
+<h1 id="更新样式">更新样式</h1>
+<div class="note warning"><p>一般用 JS 更新样式，比如 <pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript">div<span class="token punctuation">.</span>style<span class="token punctuation">.</span>background <span class="token operator">=</span> <span class="token string">'red'</span>
+div<span class="token punctuation">.</span>style<span class="token punctuation">.</span>display <span class="token operator">=</span> <span class="token string">'none'</span>
+div<span class="token punctuation">.</span>classList<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token string">'red'</span><span class="token punctuation">)</span>
+div<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></p>
+</div>
+<h2 id="三种更新样式的路径">三种更新样式的路径</h2>
+<p>在 <a target="_blank" rel="noopener" href="https://csstriggers.com/">这里</a> 可以看到不同的属性在不同的浏览器中的更新路径</p>
+<ul>
+<li>JS/CSS &gt; Style &gt; Layout &gt; Paint &gt; Composite: remove</li>
+<li>JS/CSS &gt; Style &gt; Paint &gt; Composite: background-color</li>
+<li>JS/CSS &gt; Style &gt; Composite: transform</li>
+</ul>
+<h2 id="css-动画优化">CSS 动画优化</h2>
+<p>可以看看 <a target="_blank" rel="noopener" href="https://developers.google.com/web/fundamentals/performance/rendering">谷歌的这篇文档</a></p>
+<ul>
+<li>JS 优化：使用 <code>requestAnimationFrame</code> 代替 <code>setTimeout</code> 或者 <code>setInterval</code></li>
+<li>CSS 优化：使用 <code>will-change</code> 或者 <code>transform</code></li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -386,91 +496,6 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2020/02/01/CSS/CSS%20Layout/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
-      <meta itemprop="name" content="Harvey Zhang">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hais Notebook">
-      <meta itemprop="description" content="海鲜酱的笔记本">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Hais Notebook">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/hais-notebook/2020/02/01/CSS/CSS%20Layout/" class="post-title-link" itemprop="url">CSS Layout</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2020-02-01 20:12:49" itemprop="dateCreated datePublished" datetime="2020-02-01T20:12:49+00:00">2020-02-01</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/hais-notebook/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">前端</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>CSS 布局主要分为 <strong>固定宽度布局</strong> 和 <strong>不固定宽度布局</strong>，其中后者主要使用 Float、Flexible、Grid 等达成。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/hais-notebook/2020/02/01/CSS/CSS%20Layout/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2020/02/01/CSS/CSS%20Positioning/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -526,6 +551,91 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/hais-notebook/2020/02/01/CSS/CSS%20Positioning/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2020/02/01/CSS/CSS%20Layout/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
+      <meta itemprop="name" content="Harvey Zhang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hais Notebook">
+      <meta itemprop="description" content="海鲜酱的笔记本">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Hais Notebook">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/hais-notebook/2020/02/01/CSS/CSS%20Layout/" class="post-title-link" itemprop="url">CSS Layout</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-02-01 20:12:49" itemprop="dateCreated datePublished" datetime="2020-02-01T20:12:49+00:00">2020-02-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">前端</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>CSS 布局主要分为 <strong>固定宽度布局</strong> 和 <strong>不固定宽度布局</strong>，其中后者主要使用 Float、Flexible、Grid 等达成。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/hais-notebook/2020/02/01/CSS/CSS%20Layout/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1008,97 +1118,6 @@
 <li><code>opacity</code> 值小于 <code>1</code> 的元素</li>
 </ul>
 <p>更多资料可以查看 <a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/Guide/CSS/Understanding_z_index/The_stacking_context">MDN 文档</a> 。</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2020/02/01/Computer%20Science/Charset%20and%20Encoding/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
-      <meta itemprop="name" content="Harvey Zhang">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hais Notebook">
-      <meta itemprop="description" content="海鲜酱的笔记本">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Hais Notebook">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/hais-notebook/2020/02/01/Computer%20Science/Charset%20and%20Encoding/" class="post-title-link" itemprop="url">Charset and Encoding</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2020-02-01 20:12:49" itemprop="dateCreated datePublished" datetime="2020-02-01T20:12:49+00:00">2020-02-01</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/hais-notebook/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">前端</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <blockquote>
-<p>CSS 和 HTML 中的 charset 直译为 <strong>字符集</strong>，但 UTF-8 不是字符集（Charset），而是字符编码（Encoding），这是历史遗留问题。</p>
-</blockquote>
-<ul>
-<li>ASCII 字符集的编码形式就是 ASCII，这个字符集只有英文</li>
-<li>GB2312 字符集是中国人发明的简体中文字符集，他的编码形式也是 GB2312</li>
-<li>GBK 是微软发明的中日韩（CJK）字符集，他的编码形式也是 GBK。他使用 0000~FFFF，16 位，2 字节来表示</li>
-<li>Unicode 是支持所有字符的字符集
-<ul>
-<li>Unicode 已收录 13 万字符（大于 16 位），全世界通用，以后还会继续扩充，缺点是至少要三个字节</li>
-<li>Unicode 的编码形式有 UTF-8/UTF-16/UTF-32</li>
-<li>其中 UTF-8 用变长的方法表示，每个字符（亦称为码点 Code Point）使用 1 ~ 4 个字节表示。因为 UTF-8 中最小的保存单位是字节，一个字节有 8 位，因此得名 UTF-8。与之相对应的 UTF-16 则以两个字节为最小单位，一个码点用 2 或 4 个字节表示</li>
-</ul></li>
-</ul>
 
       
     </div>

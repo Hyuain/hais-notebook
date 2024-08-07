@@ -150,7 +150,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/hais-notebook/archives/">
-          <span class="site-state-item-count">183</span>
+          <span class="site-state-item-count">184</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -178,6 +178,117 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2022/02/05/Computer%20Science/Hash%20Map/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
+      <meta itemprop="name" content="Harvey Zhang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hais Notebook">
+      <meta itemprop="description" content="海鲜酱的笔记本">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Hais Notebook">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/hais-notebook/2022/02/05/Computer%20Science/Hash%20Map/" class="post-title-link" itemprop="url">Hash Map</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-02-05 15:49:12" itemprop="dateCreated datePublished" datetime="2022-02-05T15:49:12+00:00">2022-02-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/" itemprop="url" rel="index"><span itemprop="name">计算机</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <blockquote>
+<p>哈希表</p>
+</blockquote>
+<h1 id="hash">Hash</h1>
+<p>考虑我们有一堆 Key-Value 值，比如 Key 是 id，Value 是姓名，怎么才能实现快速通过 id 获取到姓名呢？</p>
+<p>首先如果 id 本来就是数字，那么可以用数组来实现，id 即为数组的 index，这样就可以通过数组的 index 直接拿到姓名了，<strong>查找的时间复杂度是 O(1)</strong>。</p>
+<p>但是这样的话如果 id 分布比较分散，比如对于两个值 1 和 100，我们为了能将他们存起来，需要分配一个长度至少为 101 的数组，index 从 0 取值到 100，这样中间就有大量空间浪费掉了，空间复杂度是 <strong>O(range(id))</strong>。</p>
+<p><strong>哈希函数是一个特定的编码函数， 可以将 Key 转换为一个索引值，这样就可以节约大量空间。</strong></p>
+<p>比如定义一个简单的哈希函数 <code>H(k) = k % m</code>，那么就有 <code>H(293) = 3</code>，将这个 id 为 293 的项存在 index 为 3 的位置即可。</p>
+<h1 id="hash-collision">Hash Collision</h1>
+<p>如果映射过去的索引空间太小，就可能将不同的值映射到同样的地方去，比如 <code>8 % 5 = 3 % 5 = 3</code>，因此 id 为 8 和 5 时都会被映射到索引为 3 的地方去，这被称为 <strong>哈希碰撞</strong>。</p>
+<p>定义 <strong>负载率（Load Factor）</strong> <span class="math inline">\(\lambda = n / m\)</span>，其中 <span class="math inline">\(n\)</span> 是 key 的总数， <span class="math inline">\(m\)</span> 是哈希表索引空间的大小，最好保持 <span class="math inline">\(\lambda &lt; 0.5\)</span>。</p>
+<p>可以通过 <strong>链表（Chaining）</strong> 或 <strong>开放寻址（Open Addressing）</strong> 解决哈希碰撞问题：</p>
+<h2 id="chaining">Chaining</h2>
+<blockquote>
+<p>将碰撞的那一位 <code>A[k]</code> 使用链表来进行存储。</p>
+</blockquote>
+<p>查找的时间复杂度最坏 O(n)，平均 O(λ)（若 λ &lt; 1，则为 O(1)）；因此为了保持良好的性能，需要保持 <span class="math inline">\(\lambda &lt; 1\)</span>。</p>
+<h2 id="open-addressing">Open Addressing</h2>
+<blockquote>
+<p>如果 A[k] 已经被占据了，找另一个地方存。</p>
+</blockquote>
+<p>例如有哈希函数 <span class="math inline">\(H(k, i) = (k+i) \% m\)</span>，其中 <span class="math inline">\(i\)</span> 是尝试次数。</p>
+<p>注意：</p>
+<ul>
+<li>插入和查找不能无休止地进行下去，有最大尝试次数；</li>
+<li>删除不能无休止地进行下去，可以将已经删除的元素标记位 DELETED，遇到 DELETED 的话继续删下去，而遇到什么都没有的空元素，说明删到头了，停止删除。</li>
+</ul>
+<p>与链表不同，<strong>必须</strong> 保持 <span class="math inline">\(\lambda \le 1\)</span>，否则新的元素就插不进去了。</p>
+<p>哈希函数有两种策略：</p>
+<ul>
+<li><strong>线性探测（Linear Probing）</strong>：<span class="math inline">\((k+i)\%m\)</span>，其性能在 <span class="math inline">\(\lambda &gt; 0.5\)</span> 时显著下降；</li>
+<li><strong>次方探测（Quadratic Probing）</strong>：<span class="math inline">\(k \% m + a \cdot i + b \cdot i^2\)</span>。哈希表中的元素容易堆在一起形成集群，次方探测可以减少集群问题，从而减少碰撞，因而性能下降没有线性探测剧烈。</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -2253,91 +2364,6 @@ stack<span class="token punctuation">.</span><span class="token function">push</
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/hais-notebook/2021/08/18/Code%20Snippets/MovableArea/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2021/07/11/Computer%20Science/Course%20-%20Computation%20Structures/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
-      <meta itemprop="name" content="Harvey Zhang">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hais Notebook">
-      <meta itemprop="description" content="海鲜酱的笔记本">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Hais Notebook">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/hais-notebook/2021/07/11/Computer%20Science/Course%20-%20Computation%20Structures/" class="post-title-link" itemprop="url">在线课程：计算机组成原理</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2021-07-11 11:49:12" itemprop="dateCreated datePublished" datetime="2021-07-11T11:49:12+00:00">2021-07-11</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/hais-notebook/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/" itemprop="url" rel="index"><span itemprop="name">计算机</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p><a target="_blank" rel="noopener" href="https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-004-computation-structures-spring-2017/index.htm">Computation Structures (6.004) From MIT OCW</a></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/hais-notebook/2021/07/11/Computer%20Science/Course%20-%20Computation%20Structures/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>

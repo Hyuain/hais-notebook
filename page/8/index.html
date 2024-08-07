@@ -150,7 +150,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/hais-notebook/archives/">
-          <span class="site-state-item-count">183</span>
+          <span class="site-state-item-count">184</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -178,6 +178,423 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2022/02/05/Computer%20Science/Backtracing/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
+      <meta itemprop="name" content="Harvey Zhang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hais Notebook">
+      <meta itemprop="description" content="海鲜酱的笔记本">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Hais Notebook">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/hais-notebook/2022/02/05/Computer%20Science/Backtracing/" class="post-title-link" itemprop="url">Backtracing</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-02-05 15:49:12" itemprop="dateCreated datePublished" datetime="2022-02-05T15:49:12+00:00">2022-02-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/" itemprop="url" rel="index"><span itemprop="name">计算机</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p><strong>回溯算法</strong> 的本质是 [[Binary Tree#Deep First Traversal|DFS]]，而 <strong>回溯操作</strong> 实际上指的是：</p>
+<ul>
+<li>我们在遍历[[Binary Tree|二叉树]]的时候，可能会定义一些全局变量来记录当前所在的节点位置、或者遍历到当前节点的时候累计的某些值</li>
+<li><strong>在我们采用深度优先遍历时，这些变量需要在遍历 B 子树之前，退回到原来的状态，消除遍历 A 子树时产生的影响</strong></li>
+</ul>
+<p>由于回溯算法的本质是遍历操作，因此效率并不高，通常需要进行剪枝来些微提高效率，一般来说只有在解决以下这些比较复杂的问题时，才会考虑回溯法：</p>
+<ul>
+<li><strong>组合问题：</strong> <code>n</code> 个数里面找出 <code>k</code> 个数的集合</li>
+<li><strong>排列问题：</strong> <code>n</code> 个数按照一定规则全排列</li>
+<li><strong>切割问题：</strong> 一个字符串按照一定规则进行切割</li>
+<li><strong>子集问题：</strong> 给定一个集合，找到所有可能的子集</li>
+<li><strong>棋盘问题：</strong> N皇后、解数独</li>
+</ul>
+<p>回溯法其实就是对[[Tree|树]]的遍历，不过对象通常不是二叉树，因此需要两种循环：</p>
+<ul>
+<li><strong>横向遍历：</strong> <code>for</code> 循环</li>
+<li><strong>纵向遍历：</strong> 递归</li>
+</ul>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// 由于回溯算法本质就是 dfs，因此这里用 dfs 作为函数名，当然也可以用 backtracing 等</span>
+<span class="token comment">// 可以看到这个函数其实就是在 Graph 一章中讲的 dfs</span>
+<span class="token keyword">function</span> <span class="token function">dfs</span><span class="token punctuation">(</span>params<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">finish</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token function">saveResults</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">const</span> child <span class="token keyword">of</span> children<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token function">process</span><span class="token punctuation">(</span>child<span class="token punctuation">)</span>
+    <span class="token function">dfs</span><span class="token punctuation">(</span>child<span class="token punctuation">,</span> newParams<span class="token punctuation">)</span>
+    <span class="token function">rollback</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="组合问题">组合问题</h1>
+<p>组合问题实质上是指的 <code>n</code> 中选 <code>k</code>，不需要考虑顺序，即 <code>[1, 2]</code> 和 <code>[2, 1]</code> 认为是一种情况，因此一般不需要考虑已经考虑过的位，一位一位地考虑即可：</p>
+<ul>
+<li><strong>横向遍历</strong> 为当前位可选择的项；</li>
+<li><strong>纵向遍历</strong> 为当前位已经确定，进入下一位。</li>
+</ul>
+<p>模板代码如下：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">combine</span><span class="token punctuation">(</span>k<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> results <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token keyword">const</span> temp <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token keyword">function</span> <span class="token function">dfs</span><span class="token punctuation">(</span>start<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 已经选了 k 个了，结束</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>temp<span class="token punctuation">.</span>length <span class="token operator">===</span> k<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      results<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token operator">...</span>temp<span class="token punctuation">]</span><span class="token punctuation">)</span>
+      <span class="token keyword">return</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token comment">// 确定当前位可选的内容，通常需要借助 start 的帮忙</span>
+    <span class="token keyword">const</span> selections <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token operator">...</span><span class="token punctuation">.</span><span class="token punctuation">]</span>
+    <span class="token comment">// 横向遍历当前位的可选内容</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">const</span> selection <span class="token keyword">of</span> selections<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token comment">// 确定当前位并进入下一位</span>
+      temp<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>selection<span class="token punctuation">)</span>
+      <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+      temp<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/combinations/description/">LeetCode.77 Combinations</a></p>
+<blockquote>
+<p>从 <code>n</code> 个数里面找出 <code>k</code> 个数的集合</p>
+</blockquote>
+<details class="note "><summary><p>Code</p>
+</summary>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">combine</span><span class="token punctuation">(</span>n<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">,</span> k<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> results <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token keyword">const</span> temp <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token keyword">function</span> <span class="token function">dfs</span><span class="token punctuation">(</span>start<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>temp<span class="token punctuation">.</span>length <span class="token operator">===</span> k<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      results<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token operator">...</span>temp<span class="token punctuation">]</span><span class="token punctuation">)</span>
+      <span class="token keyword">return</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token comment">// 剪枝，因为最终集合需要 k 个数，因此在不够的情况下可以提前结束</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> start<span class="token punctuation">;</span> i <span class="token operator">&lt;=</span> n <span class="token operator">-</span> k <span class="token operator">+</span> temp<span class="token punctuation">.</span>length <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      temp<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span>
+      <span class="token function">dfs</span><span class="token punctuation">(</span>i <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span>
+      temp<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span> results
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+</details>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/letter-combinations-of-a-phone-number/">LeetCode.17 Letter Combinations of a Phone Number</a> 和 <a target="_blank" rel="noopener" href="https://leetcode.cn/problems/combination-sum-iii/description/">LeetCode.216 Combination Sum III</a> 也是类似的解法。</p>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/combination-sum/">LeetCode.39 Combination Sum</a> 稍微有点特殊，<strong>组合中的元素可以重复</strong>，但这也并不意味着我们需要考虑以前考虑过的项，只需要考虑当前项重复的情况即可。即在 LeetCode.77 等题中，纵向遍历采用 <code>dfs(i + 1)</code>；而在本题中，需要使用 <code>dfs(i)</code>。</p>
+<p>同时，<strong>此类组合还有另外一种 DFS 的思路，该思路可以转换为递推公式</strong>，即：将问题拆分到每一个元素上，对于每个元素来说，只有两种可能性，选或不选，因此可以得到类似这样的代码：</p>
+<details class="note "><summary><p>Code</p>
+</summary>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// LeetCode.39 Combination Sum</span>
+<span class="token keyword">function</span> <span class="token function">combinationSum</span><span class="token punctuation">(</span>candidates<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> target<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> temp <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token keyword">const</span> results <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token keyword">function</span> <span class="token function">dfs</span><span class="token punctuation">(</span>start<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">,</span> rest<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>rest <span class="token operator">&lt;=</span> <span class="token number">0</span> <span class="token operator">||</span> start <span class="token operator">>=</span> candidates<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>rest <span class="token operator">===</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        results<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token operator">...</span>temp<span class="token punctuation">]</span><span class="token punctuation">)</span>
+      <span class="token punctuation">&#125;</span>
+      <span class="token keyword">return</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">const</span> current <span class="token operator">=</span> candidates<span class="token punctuation">[</span>start<span class="token punctuation">]</span>
+    <span class="token comment">// 选当前项</span>
+    temp<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>current<span class="token punctuation">)</span>
+    <span class="token function">dfs</span><span class="token punctuation">(</span>start<span class="token punctuation">,</span> rest <span class="token operator">-</span> current<span class="token punctuation">)</span>
+    temp<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token comment">// 不选当前项</span>
+    <span class="token function">dfs</span><span class="token punctuation">(</span>start <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">,</span> rest<span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> target<span class="token punctuation">)</span>
+  <span class="token keyword">return</span> results
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+</details>
+<p>与动态规划不同的是，这种 DFS 是全搜索 DFS，可以看到并没有加中间判断以选出每个子问题最优解，而是对所有子问题都进行了遍历（这一点会在动态规划中有更详细的讨论）。</p>
+<h2 id="组合问题中的去重">组合问题中的去重</h2>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/combination-sum-ii/description/">LeetCode.40 Combination Sum II</a> 中就要求对组合进行去重，组合问题中去重的特点是：</p>
+<ol type="1">
+<li><strong>候选元素集合中有值相同的元素</strong></li>
+<li><strong>候选元素集合中每个元素只能使用一次</strong>，但由于候选集合中有相同的元素，因此结果集合中可能有值相同的元素</li>
+<li><strong>不能有相同的结果集合</strong></li>
+</ol>
+<p>由于候选集合中可能有值相同的元素，如果不进行去重处理，<strong>两个结果集可能分别使用了候选集合中位置不同、但值相同的元素</strong>，导致两个结果集相同了。</p>
+<p>从第 2 点可以看出来，由于并没有限制单个结果集合内不能出现重复的元素，因此比如在候选集 <code>[1, 1, 2]</code> 中，可以出现集合 <code>[1, 1]</code>，但不能出现两个 <code>[1, 2]</code>。该类去重是 <strong>对树的横向去重（在 <code>for</code> 循环中去重）</strong>，而纵向可以重复。</p>
+<p>对树的横向去重，实际上就是对 <strong>当层的可选元素数组</strong> 的去重（即对模板代码中的 <code>selections</code> 去重），数组去重常用的就是 <code>Set</code> 和 <strong>排序后相邻元素去重</strong>。</p>
+<h3 id="使用-set-去重">使用 Set 去重</h3>
+<p>在 <code>for</code> 循环遍历的时候使用 <code>Set</code> 即可很方便地进行横向去重：</p>
+<details class="note "><summary><p>Code</p>
+</summary>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">combinationSum2</span><span class="token punctuation">(</span>candidates<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> target<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">&#123;</span>
+  candidates<span class="token punctuation">.</span><span class="token function">sort</span><span class="token punctuation">(</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span> b<span class="token punctuation">)</span> <span class="token operator">=></span> a <span class="token operator">-</span> b<span class="token punctuation">)</span>
+  <span class="token keyword">const</span> results <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token keyword">const</span> temp <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token keyword">function</span> <span class="token function">dfs</span><span class="token punctuation">(</span>start<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">,</span> rest<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>rest <span class="token operator">&lt;=</span> <span class="token number">0</span> <span class="token operator">||</span> start <span class="token operator">===</span> candidates<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>rest <span class="token operator">===</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        results<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token operator">...</span>temp<span class="token punctuation">]</span><span class="token punctuation">)</span>
+      <span class="token punctuation">&#125;</span>
+      <span class="token keyword">return</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token comment">// 用 Set 记录本层已经检查过的值</span>
+    <span class="token keyword">const</span> visted <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Set</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> start<span class="token punctuation">;</span> i <span class="token operator">&lt;</span> candidates<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token keyword">const</span> current <span class="token operator">=</span> candidates<span class="token punctuation">[</span>i<span class="token punctuation">]</span>
+      <span class="token comment">// 如果这个值在本层已经被用过了，就跳过他</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>visted<span class="token punctuation">.</span><span class="token function">has</span><span class="token punctuation">(</span>current<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token keyword">continue</span> <span class="token punctuation">&#125;</span>
+      visted<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>current<span class="token punctuation">)</span>
+      temp<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>current<span class="token punctuation">)</span>
+      <span class="token function">dfs</span><span class="token punctuation">(</span>i <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">,</span> rest <span class="token operator">-</span> current<span class="token punctuation">)</span>
+      temp<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> target<span class="token punctuation">)</span>
+  <span class="token keyword">return</span> results
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+</details>
+<h3 id="相邻元素去重">相邻元素去重</h3>
+<details class="note "><summary><p>Code</p>
+</summary>
+<p>首先需要对 <code>candidates</code> 进行排序：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">candidates<span class="token punctuation">.</span><span class="token function">sort</span><span class="token punctuation">(</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span> b<span class="token punctuation">)</span> <span class="token operator">=></span> a <span class="token operator">-</span> b<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>然后直接看 <code>for</code> 循环里面的逻辑：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> start<span class="token punctuation">;</span> i <span class="token operator">&lt;</span> candidates<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>i <span class="token operator">></span> start <span class="token operator">&amp;&amp;</span> candidates<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">===</span> candidates<span class="token punctuation">[</span>i <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">continue</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token comment">// ...</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+</details>
+<h1 id="切割问题">切割问题</h1>
+<p>切割问题其实与组合问题类似：</p>
+<ul>
+<li><strong>横向遍历</strong> 为当前切割的终点；</li>
+<li><strong>纵向遍历</strong> 为当前切割的终点已经确定，作为下次的起点。</li>
+</ul>
+<p>模板代码如下：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">partition</span><span class="token punctuation">(</span>s<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> results <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token keyword">const</span> temp <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token keyword">function</span> <span class="token function">dfs</span><span class="token punctuation">(</span>start<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 字符串遍历完成了，结束</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>start <span class="token operator">===</span> results<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      results<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token operator">...</span>temp<span class="token punctuation">]</span><span class="token punctuation">)</span>
+      <span class="token keyword">return</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token comment">// 这个字符串的结尾可以是 [start, s.length]</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> end <span class="token operator">=</span> start<span class="token punctuation">;</span> end <span class="token operator">&lt;</span> s<span class="token punctuation">.</span>length<span class="token punctuation">;</span> end<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token comment">// 确定当前切割，并将当前的终止位 +1 作为下一次的起始位置</span>
+      temp<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>s<span class="token punctuation">.</span><span class="token function">slice</span><span class="token punctuation">(</span>start<span class="token punctuation">,</span> end <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+      <span class="token function">dfs</span><span class="token punctuation">(</span>end <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span>
+      temp<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span> results
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/palindrome-partitioning/description/">LeetCode.131 Palindrome Partitioning</a> 只需要在每次切割完成之后判断回文串、<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/restore-ip-addresses/description/">LeetCode.93 Restore IP Address</a> 只需要在每次切割完成之后判断合法 IP 即可。</p>
+<h1 id="子集问题">子集问题</h1>
+<p>子集问题有个很重要的特征是，他不是在最后递归终止的时候保存结果的，而是在递归的过程中保存结果。</p>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/subsets/description/">LeetCode.78 Subsets</a> 就是最简单的子集问题：</p>
+<details class="note "><summary><p>Code</p>
+</summary>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">subsets</span><span class="token punctuation">(</span>nums<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> results <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token keyword">const</span> temp <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token keyword">function</span> <span class="token function">dfs</span><span class="token punctuation">(</span>start<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 在递归的过程中收集结果集</span>
+    results<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token operator">...</span>temp<span class="token punctuation">]</span><span class="token punctuation">)</span>
+    <span class="token comment">// 当遍历到原集合的最后一个元素时，自然终止</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> start<span class="token punctuation">;</span> i <span class="token operator">&lt;</span> nums<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      temp<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>nums<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span>
+      <span class="token function">dfs</span><span class="token punctuation">(</span>i <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span>
+      temp<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span> results
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+</details>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/subsets-ii/">LeetCode.90 Subsets II</a> 要求不能出现重复的子集，子集问题的去重与组合问题一模一样；<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/non-decreasing-subsequences/">LeetCode.491 Non-dcreasing Subsequences</a> 只是多了一些额外的判断。</p>
+<h1 id="排列问题">排列问题</h1>
+<p>排列问题跟组合问题有所不同，排列问题关心顺序，因此：</p>
+<ol type="1">
+<li><strong>排列问题每次都需要从 <code>0</code> 开始遍历</strong></li>
+<li><strong>排列问题通常都需要纵向去重</strong></li>
+</ol>
+<p>组合问题不需要考虑之前已经选过的项，因此到叶节点的路径上不会选择同一个元素，因此在纵向递归的过程中隐藏着 <strong>可选元素数组</strong> <code>selections</code> 随着 <code>start</code> 的增长而改变的逻辑，也就是说 <strong>组合问题自带纵向去重</strong>。</p>
+<p>而排列问题没有 <code>start</code> 的帮忙，如果不做处理，<strong>到叶节点的路径上就会多次出现同一个的元素</strong>。因此需要每次递归之后都需要在 <code>selections</code> 中去手动去除路径中已有的元素，也就是说进行 <strong>纵向去重（对递归进行去重）</strong>，最简单的去重方法就是使用 <code>Set</code>。</p>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/permutations/description/">LeetCode.46 Permutations</a> 是一个最简单的全排列问题，注意其中的去重逻辑：</p>
+<details class="note "><summary><p>Code</p>
+</summary>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">permute</span><span class="token punctuation">(</span>nums<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> results <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token keyword">const</span> temp <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token comment">// 记录当前 DFS 到叶节点的路径上已经用了哪些元素，注意这里存的是下标！</span>
+  <span class="token keyword">const</span> used <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Set</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token keyword">function</span> <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>temp<span class="token punctuation">.</span>length <span class="token operator">===</span> nums<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      results<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token operator">...</span>temp<span class="token punctuation">]</span><span class="token punctuation">)</span>
+      <span class="token keyword">return</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> nums<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token comment">// 跳过在路径上已经用过的元素</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>used<span class="token punctuation">.</span><span class="token function">has</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token keyword">continue</span> <span class="token punctuation">&#125;</span>
+      <span class="token keyword">const</span> current <span class="token operator">=</span> nums<span class="token punctuation">[</span>i<span class="token punctuation">]</span>
+      <span class="token comment">// 进入下一层之前，标记当前元素已使用</span>
+      used<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span>
+      temp<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>current<span class="token punctuation">)</span>
+      <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+      temp<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+      <span class="token comment">// 从下一层退出，删除当前元素已使用标记</span>
+      used<span class="token punctuation">.</span><span class="token function">delete</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span> results
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+</details>
+<h2 id="排列问题中的去重">排列问题中的去重</h2>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/permutations-ii/description/">LeetCode.47 Permutations II</a> 中要求像组合问题一样，对排列问题进行去重。因为该题中出现了相同值的元素，需要进行 <strong>横向去重</strong>，而 LeetCode.46 中每个元素的值都是不同的，不需要进行横向去重。</p>
+<h3 id="使用两个-set-去重">使用两个 Set 去重</h3>
+<p>既然纵向去重和横向去重都可以使用 <code>Set</code>，那么可以使用两个 <code>Set</code> 来分别对纵向和横向进行去重：</p>
+<details class="note "><summary><p>Code</p>
+</summary>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">permuteUnique</span><span class="token punctuation">(</span>nums<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> results <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token keyword">const</span> temp <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token comment">// 记录当前 DFS 到叶节点的路径上已经用了哪些元素，注意这里存的是下标！</span>
+  <span class="token keyword">const</span> deepVisited <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Set</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+  <span class="token keyword">function</span> <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>temp<span class="token punctuation">.</span>length <span class="token operator">===</span> nums<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      results<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token operator">...</span>temp<span class="token punctuation">]</span><span class="token punctuation">)</span>
+      <span class="token keyword">return</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token comment">// 记录当前层遍历过哪些元素，注意这里是值！</span>
+    <span class="token keyword">const</span> breadthVisited <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Set</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> nums<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token comment">// 如果路径上已经有该元素，跳过</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>deepVisited<span class="token punctuation">.</span><span class="token function">has</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token keyword">continue</span> <span class="token punctuation">&#125;</span>
+      <span class="token keyword">const</span> current <span class="token operator">=</span> nums<span class="token punctuation">[</span>i<span class="token punctuation">]</span>
+      <span class="token comment">// 如果当前层已经遍历过值相同的元素，跳过</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>breadthVisited<span class="token punctuation">.</span><span class="token function">has</span><span class="token punctuation">(</span>current<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token keyword">continue</span> <span class="token punctuation">&#125;</span>
+      <span class="token comment">// 标记元素为当前层已用过</span>
+      breadthVisited<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>current<span class="token punctuation">)</span>
+      <span class="token comment">// 进入下一层之前，标记当前元素已使用</span>
+      deepVisited<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span>
+      temp<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>current<span class="token punctuation">)</span>
+      <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+      temp<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+      <span class="token comment">// 从下一层退出，删除当前元素已使用标记</span>
+      deepVisited<span class="token punctuation">.</span><span class="token function">delete</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span> results
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+</details>
+<h3 id="使用-used-数组进行去重">使用 used 数组进行去重</h3>
+<p>这是一个比较神奇的方法，将 Set 和 相邻元素去重结合了一下，首先需要对候选集进行排序，然后用数组 <code>used</code> 标记当前的使用状态：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">permuteUnique</span><span class="token punctuation">(</span>nums<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> results <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token keyword">const</span> temp <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  nums<span class="token punctuation">.</span><span class="token function">sort</span><span class="token punctuation">(</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span> b<span class="token punctuation">)</span> <span class="token operator">=></span> a <span class="token operator">-</span> b<span class="token punctuation">)</span>
+  <span class="token comment">// 标记当前元素的使用状态，会将本次路径上的元素标记为 true，其实与 deepVisited Set 类似</span>
+  <span class="token keyword">const</span> used <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name"><span class="token builtin">Array</span></span><span class="token punctuation">(</span>nums<span class="token punctuation">.</span>length<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">fill</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span>
+
+  <span class="token keyword">function</span> <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>temp<span class="token punctuation">.</span>length <span class="token operator">===</span> nums<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>temp<span class="token punctuation">)</span>
+      results<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token operator">...</span>temp<span class="token punctuation">]</span><span class="token punctuation">)</span>
+      <span class="token keyword">return</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> nums<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>used<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token keyword">continue</span> <span class="token punctuation">&#125;</span>
+      <span class="token comment">// 如果当前元素与上一个相同并且 used[i - 1] === false</span>
+      <span class="token comment">// 也就是说当前路径中没有 used[i - 1]</span>
+      <span class="token comment">// 也就是说当前在纵向遍历的过程中，而是在横向遍历的过程中</span>
+      <span class="token comment">// 横向去重时不能选择值相同的元素</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>i <span class="token operator">></span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span> nums<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">===</span> nums<span class="token punctuation">[</span>i <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>used<span class="token punctuation">[</span>i <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token keyword">continue</span> <span class="token punctuation">&#125;</span>
+      <span class="token keyword">const</span> current <span class="token operator">=</span> nums<span class="token punctuation">[</span>i<span class="token punctuation">]</span>
+      <span class="token comment">// 将当前元素标记为在路径中使用</span>
+      used<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token boolean">true</span>
+      temp<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>current<span class="token punctuation">)</span>
+      <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+      temp<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+      <span class="token comment">// 将当前元素标记为路径中未使用</span>
+      used<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token boolean">false</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token function">dfs</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span> results
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="棋盘问题">棋盘问题</h1>
+<p>TBC</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1024,6 +1441,111 @@ O(1) &lt; O(log(n)) &lt; O(n) &lt; O (nlog(n)) &lt; O(n^2) &lt; O(n^3) &lt; O(2^
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2022/02/05/Computer%20Science/Data%20Structure%20and%20Algorithm%201/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
+      <meta itemprop="name" content="Harvey Zhang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hais Notebook">
+      <meta itemprop="description" content="海鲜酱的笔记本">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Hais Notebook">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/hais-notebook/2022/02/05/Computer%20Science/Data%20Structure%20and%20Algorithm%201/" class="post-title-link" itemprop="url">Data Structure and Algorithm</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-02-05 15:49:12" itemprop="dateCreated datePublished" datetime="2022-02-05T15:49:12+00:00">2022-02-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/hais-notebook/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/" itemprop="url" rel="index"><span itemprop="name">计算机</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>本文介绍了常见的数据结构、算法、一些典型例题及代码题中的特殊需要关注的地方。</p>
+<p>按照章节来讲主要分为：</p>
+<ul>
+<li>开始（复杂度）</li>
+<li>数据结构（数组、字符串、栈、队列、链表、哈希表、二叉树、堆）
+<ul>
+<li>数组：数组的基本操作、二分查找、排序算法、数组去重</li>
+<li>字符串：大数运算</li>
+<li>栈：栈的数组实现时间复杂度、单调栈、用栈实现队列、用队列实现栈</li>
+<li>队列：用数组实现环形队列</li>
+<li>二叉树：特殊的二叉树、遍历、二叉搜索树</li>
+<li>堆：堆与优先级队列及其实现</li>
+</ul></li>
+<li>算法（回溯、贪心、动态规划）
+<ul>
+<li>回溯：组合问题、切割问题、子集问题、排列问题、棋盘问题</li>
+<li>贪心：最大子数组和、加油站、分发糖果、重叠区间</li>
+<li>动态规划：记忆化深度优先搜索、找规律、背包问题</li>
+</ul></li>
+<li>其他注意事项（对 1e9 + 7 取模）</li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/hais-notebook/2022/02/05/Computer%20Science/Data%20Structure%20and%20Algorithm%201/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2022/02/05/Computer%20Science/Data%20Structures/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1204,111 +1726,6 @@ O(1) &lt; O(log(n)) &lt; O(n) &lt; O (nlog(n)) &lt; O(n^2) &lt; O(n^3) &lt; O(2^
   <span class="token keyword">return</span> diff
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2022/02/05/Computer%20Science/Data%20Structure%20and%20Algorithm%201/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
-      <meta itemprop="name" content="Harvey Zhang">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hais Notebook">
-      <meta itemprop="description" content="海鲜酱的笔记本">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Hais Notebook">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/hais-notebook/2022/02/05/Computer%20Science/Data%20Structure%20and%20Algorithm%201/" class="post-title-link" itemprop="url">Data Structure and Algorithm</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2022-02-05 15:49:12" itemprop="dateCreated datePublished" datetime="2022-02-05T15:49:12+00:00">2022-02-05</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/hais-notebook/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/" itemprop="url" rel="index"><span itemprop="name">计算机</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>本文介绍了常见的数据结构、算法、一些典型例题及代码题中的特殊需要关注的地方。</p>
-<p>按照章节来讲主要分为：</p>
-<ul>
-<li>开始（复杂度）</li>
-<li>数据结构（数组、字符串、栈、队列、链表、哈希表、二叉树、堆）
-<ul>
-<li>数组：数组的基本操作、二分查找、排序算法、数组去重</li>
-<li>字符串：大数运算</li>
-<li>栈：栈的数组实现时间复杂度、单调栈、用栈实现队列、用队列实现栈</li>
-<li>队列：用数组实现环形队列</li>
-<li>二叉树：特殊的二叉树、遍历、二叉搜索树</li>
-<li>堆：堆与优先级队列及其实现</li>
-</ul></li>
-<li>算法（回溯、贪心、动态规划）
-<ul>
-<li>回溯：组合问题、切割问题、子集问题、排列问题、棋盘问题</li>
-<li>贪心：最大子数组和、加油站、分发糖果、重叠区间</li>
-<li>动态规划：记忆化深度优先搜索、找规律、背包问题</li>
-</ul></li>
-<li>其他注意事项（对 1e9 + 7 取模）</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/hais-notebook/2022/02/05/Computer%20Science/Data%20Structure%20and%20Algorithm%201/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
       
     </div>
 
@@ -2571,117 +2988,6 @@ cost <span class="token operator">=</span> <span class="token punctuation">[</sp
 <span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 </details>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://hyuain.github.io/hais-notebook/2022/02/05/Computer%20Science/Hash%20Map/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/hais-notebook/images/avatar.gif">
-      <meta itemprop="name" content="Harvey Zhang">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hais Notebook">
-      <meta itemprop="description" content="海鲜酱的笔记本">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Hais Notebook">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/hais-notebook/2022/02/05/Computer%20Science/Hash%20Map/" class="post-title-link" itemprop="url">Hash Map</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2022-02-05 15:49:12" itemprop="dateCreated datePublished" datetime="2022-02-05T15:49:12+00:00">2022-02-05</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/hais-notebook/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/" itemprop="url" rel="index"><span itemprop="name">计算机</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <blockquote>
-<p>哈希表</p>
-</blockquote>
-<h1 id="hash">Hash</h1>
-<p>考虑我们有一堆 Key-Value 值，比如 Key 是 id，Value 是姓名，怎么才能实现快速通过 id 获取到姓名呢？</p>
-<p>首先如果 id 本来就是数字，那么可以用数组来实现，id 即为数组的 index，这样就可以通过数组的 index 直接拿到姓名了，<strong>查找的时间复杂度是 O(1)</strong>。</p>
-<p>但是这样的话如果 id 分布比较分散，比如对于两个值 1 和 100，我们为了能将他们存起来，需要分配一个长度至少为 101 的数组，index 从 0 取值到 100，这样中间就有大量空间浪费掉了，空间复杂度是 <strong>O(range(id))</strong>。</p>
-<p><strong>哈希函数是一个特定的编码函数， 可以将 Key 转换为一个索引值，这样就可以节约大量空间。</strong></p>
-<p>比如定义一个简单的哈希函数 <code>H(k) = k % m</code>，那么就有 <code>H(293) = 3</code>，将这个 id 为 293 的项存在 index 为 3 的位置即可。</p>
-<h1 id="hash-collision">Hash Collision</h1>
-<p>如果映射过去的索引空间太小，就可能将不同的值映射到同样的地方去，比如 <code>8 % 5 = 3 % 5 = 3</code>，因此 id 为 8 和 5 时都会被映射到索引为 3 的地方去，这被称为 <strong>哈希碰撞</strong>。</p>
-<p>定义 <strong>负载率（Load Factor）</strong> <span class="math inline">\(\lambda = n / m\)</span>，其中 <span class="math inline">\(n\)</span> 是 key 的总数， <span class="math inline">\(m\)</span> 是哈希表索引空间的大小，最好保持 <span class="math inline">\(\lambda &lt; 0.5\)</span>。</p>
-<p>可以通过 <strong>链表（Chaining）</strong> 或 <strong>开放寻址（Open Addressing）</strong> 解决哈希碰撞问题：</p>
-<h2 id="chaining">Chaining</h2>
-<blockquote>
-<p>将碰撞的那一位 <code>A[k]</code> 使用链表来进行存储。</p>
-</blockquote>
-<p>查找的时间复杂度最坏 O(n)，平均 O(λ)（若 λ &lt; 1，则为 O(1)）；因此为了保持良好的性能，需要保持 <span class="math inline">\(\lambda &lt; 1\)</span>。</p>
-<h2 id="open-addressing">Open Addressing</h2>
-<blockquote>
-<p>如果 A[k] 已经被占据了，找另一个地方存。</p>
-</blockquote>
-<p>例如有哈希函数 <span class="math inline">\(H(k, i) = (k+i) \% m\)</span>，其中 <span class="math inline">\(i\)</span> 是尝试次数。</p>
-<p>注意：</p>
-<ul>
-<li>插入和查找不能无休止地进行下去，有最大尝试次数；</li>
-<li>删除不能无休止地进行下去，可以将已经删除的元素标记位 DELETED，遇到 DELETED 的话继续删下去，而遇到什么都没有的空元素，说明删到头了，停止删除。</li>
-</ul>
-<p>与链表不同，<strong>必须</strong> 保持 <span class="math inline">\(\lambda \le 1\)</span>，否则新的元素就插不进去了。</p>
-<p>哈希函数有两种策略：</p>
-<ul>
-<li><strong>线性探测（Linear Probing）</strong>：<span class="math inline">\((k+i)\%m\)</span>，其性能在 <span class="math inline">\(\lambda &gt; 0.5\)</span> 时显著下降；</li>
-<li><strong>次方探测（Quadratic Probing）</strong>：<span class="math inline">\(k \% m + a \cdot i + b \cdot i^2\)</span>。哈希表中的元素容易堆在一起形成集群，次方探测可以减少集群问题，从而减少碰撞，因而性能下降没有线性探测剧烈。</li>
-</ul>
 
       
     </div>
