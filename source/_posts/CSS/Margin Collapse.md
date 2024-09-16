@@ -11,7 +11,7 @@ tags:
 
 1. 只有上下才会发生 `margin` 合并，左右不会发生
 2. 只有 `block` 会发生 `margin` 合并，`inline-block` 不会发生（生成了 BFC）
-3. `first-child` 和 `last-child` 也会和 `parent` 发生 `margin` 合并
+3. `first-child` 和 `last-child` 也会和 `parent` 发生 `margin` 合并 ^632f55
 
 取消 margin 合并的方法，主要是靠生成 [[BFC]]：
 

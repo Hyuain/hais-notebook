@@ -66,7 +66,6 @@ There are several kinds of garbage collection:
       1. Can reclaim objects promptly.
       2. Pauses are typically fairly short, but removing a single reference may cause the recycling of a large number of objects at once.
       3. It can be implemented without any support from the language or compiler.
-
    4. Problems:
       1. **The reference count filed size is limited**, system will break down if there are too many references.
       2. **Performance penalty**, since the count need to be maintained after every modification of pointers.

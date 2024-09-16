@@ -7,5 +7,5 @@ tags:
   - B0
 ---
 
-- [[Blockchain]]
+- [[Blockchain Types & History]]
 - [[Financial Computing]]
